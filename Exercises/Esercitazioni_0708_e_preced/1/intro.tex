@@ -1,0 +1,110 @@
+\RequirePackage{color}
+\documentclass[pdf,colorBG,slideColor,vki]{prosper}
+%\usepackage{color}
+\usepackage{psfrag,graphicx}
+\graphicspath{{./} {/u/passerini/images/}}
+\usepackage{latexsym}
+\usepackage{amsbsy}
+\usepackage{amssymb}
+\usepackage{amsmath}
+%\usepackage{mathpazo}
+\usepackage{helvet}
+\usepackage{pifont}
+%\usepackage{longtable}
+
+\font\raw=pcr10
+\font\tinyraw=pcr8
+
+% Logo
+\Logo{{\includegraphics[width=2cm]{simbolomox.eps}}}
+
+\title{\vspace{-15mm} \textcolor{blue}{\small PACS 2006}} 
+\subtitle{\emph{\textcolor{red}{Note Introduttive}}}
+\slideCaption{PACS 2006}
+\author{Tiziano Passerini}
+\date{}
+\institution{%
+\includegraphics[width=5cm,height=2cm]{simbolomox.eps} \\
+MOX (Modeling and Scientific Computing) \\
+Dipartimento di Matematica\\
+Politecnico di Milano\\[5mm]
+\href{mox.polimi.it}{{\raw mox.polimi.it}}}
+
+
+\begin{document}
+%\maketitle
+
+\slideCaption{PACS 2006}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\overlays{1}{
+
+\begin{slide}{Portale WEB PACS}
+
+\begin{center}
+\textcolor{blue}{\raw{http://www2.mate.polimi.it:8080/CN/PACS05}}
+\end{center}
+
+\begin{itemize}
+
+\item accesso a \textbf{materiale didattico} e informativo sul corso
+
+\item registrazione online per \textbf{upload} e \textbf{scambio}
+  studenti / docente
+
+\item avvisi e news
+
+\end{itemize}
+
+\begin{center}
+\includegraphics[width=\textwidth]{portalePACS.eps}
+\end{center}
+
+\end{slide}
+}
+
+\overlays{1}{
+
+\begin{slide}{Laboratorio 4 piano: vademecum}
+
+\begin{enumerate}
+
+\item avviare il sistema in ambiente \textbf{Linux} (menu di scelta all'avvio)
+
+\item aprire \textbf{browser} e \textbf{terminale}
+
+\item creare una \textbf{cartella di lavoro}
+\begin{center}
+\begin{minipage}{.5\textwidth}
+\raw
+$>$ mkdir \emph{miadir}\\
+$>$ cd \emph{miadir}\\
+$>$ ls
+\end{minipage}
+\end{center} 
+
+\item caricare l'\textbf{editor di testo} (ad esempio {\raw emacs})
+\begin{center}
+\begin{minipage}{.5\textwidth}
+\raw
+$>$ emacs \&
+\end{minipage}
+\end{center}
+
+\end{enumerate}
+
+\vspace{2cm}
+\tiny{
+\emph{Introduzione ad Unix}\\
+{\tinyraw \textcolor{blue}{http://mox.polimi.it/it/progetti/unix/doc/unix/}}
+}
+
+\end{slide}
+}
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\href{run:./PPFiles/berlino/bonhomme.avi}{bonhomme}
+
+%%%%%%%%%%%%%%%%%%%%%

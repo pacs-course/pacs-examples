@@ -1,0 +1,35 @@
+\section*{Esercizio 1}
+
+\begin{enumerate}
+    \item creare le classi C++ \cpp{Bisection} e \cpp{Newton} che
+        forniscano rispettivamente l'implementazione del
+        metodo di bisezione e del metodo di Newton (\textit{programmazione
+        basata sugli oggetti}).
+
+    \item sfruttando le strutture dati costruite nell'esercizio
+        precedente, creare una classe \cpp{Robust} per l'implementazione di
+        un algoritmo robusto, che combini i due metodi di ricerca dello zero.
+
+    \item utilizzare i metodi implementati per calcolare lo zero della funzione
+        \begin{equation*}
+            f(x) = e^x (x - 0.6)
+        \end{equation*}
+        nell'intervallo $(0, 1)$.
+
+    \item sovraccaricare l'operatore \cpp{\<\<} della classe \cpp{Robust}
+        affinch\'e restituisca una referenza ad uno stream (di tipo \cpp{std::ostream}).
+        Lo stream contiene la tolleranza richesta, il numero di iterazioni dell'algoritmo
+        ``coarse'', di quello fine, il numero massimo di itearzioni ed il rapporto
+        tra le tollerenze dei due algoritmi.
+
+    \item {\bf CON CONSEGNA -} Le classi \cpp{Bisection}, \cpp{Newton} e \cpp{Robust}
+        hanno molto in comune tra loro e con altri metodi iterativi per la ricerca degli zeri,
+        che eventualmente potrebbero essere aggiunti in futuro.
+        Scrivere una classe base \cpp{IterativeMethod} che raccolga tutte le caratteristiche
+        comuni. Riscrivere le classi \cpp{Bisection}, \cpp{Newton} e \cpp{Robust} come
+        derivate della classe base \cpp{IterativeMethod}.
+        (\emph{traccia}: il costruttore della classe base riceve come parametri la
+        tolleranza, il massimo numero di iterazioni ed il tipo di controllo
+        sulla convergenza.)
+
+\end{enumerate}

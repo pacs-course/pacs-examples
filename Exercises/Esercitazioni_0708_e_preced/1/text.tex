@@ -1,0 +1,45 @@
+\section*{Es. 1}
+\begin{enumerate}
+\item Si scriva un programma per il calcolo della somma dei quadrati
+  degli interi da $n$ a $m\ge n$ 
+\begin{equation*}
+n^2 + \left(n+1\right)^2 + \ldots m^2
+\end{equation*}
+memorizzando il risultato nella variabile \cpp{sum} di tipo
+\cpp{double} e visualizzandone il contenuto sullo schermo. I valori di
+$n$ e $m$ sono forniti da tastiera. 
+\item Si verifichi cosa accade nel caso la variabile \cpp{sum} sia di
+  tipo \cpp{int} ponendo $n=1$ e $m=2000$. Si giustifichi il risultato
+  ottenuto utilizzando il modulo \emph{<limits>} della libreria
+  standard. 
+\item Si modifichi il programma in modo che i valori delle variabili
+  \cpp{n} ed \cpp{m} vengano introdotti da linea di comando alla
+  chiamata del programma, ovvero che sia lecita un'istruzione del
+  tipo: 
+\begin{verbatim}
+./sum 1 15
+\end{verbatim}
+\end{enumerate}
+
+\section*{Es. 2}
+\begin{enumerate}
+\item Si modifichi il programma precedente memorizzando tutte le somme
+  parziali nella variabile \cpp{psum} di tipo
+  \cpp{std::vector<double>}. Per inizializzare il vettore si
+  utilizzino i membri \cpp{resize} e \cpp{operator[]}. Se ne
+  visualizzi il valore scorrendo il vettore mediante l'accesso
+  indiciale. 
+\item Una maniera alternativa di costruire il vettore \cpp{psum}
+  consiste nel riservare lo spazio sufficiente per il numero di
+  elementi da memorizzare utilizzando il membro \cpp{reserve} ed
+  aggiungere gli elementi in maniera incrementale mediante il membro
+  \cpp{push\_back}. Si implementi questa seconda soluzione e si
+  verifichi come varia la dimensione del vettore man mano che gli
+  elementi vengono inseriti. Si verifichi, altres\`i, cosa accade se
+  gli elementi vengono inseriti mediante il membro \cpp{operator[]}
+  anzich\'e mediante il membro \cpp{push\_back}. 
+\item (\emph{Facoltativo}) Si calcoli il vettore delle somme parziali
+  per $n=1$, $m=15$ e si assegnino i primi $10$ elementi ad un nuovo
+  vettore \cpp{psum10} dello stesso tipo utilizzando il membro
+  \cpp{assign}. 
+\end{enumerate}

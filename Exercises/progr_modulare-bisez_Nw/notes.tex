@@ -1,0 +1,38 @@
+\subsection*{Note sui cicli}
+
+Il codice proposto al \emph{Punto 1} utilizza un ciclo \cpp{while}.
+%Un' altra alternativa possibile \`e l'uso di un ciclo \texttt{while}:
+%\lstset{basicstyle=\scriptsize\sf}
+%\lstinputlisting[caption=Ciclo \texttt{while} senza
+%\texttt{break}.,linerange={26-47}]{es/1/zerofun-while.cc}
+%\lstset{basicstyle=\sf}
+In queso caso la prima valutazione della funzione \`e necessariamente esterna
+al ciclo.
+
+In alternativa si potrebbe scrivere un ciclo \cpp{for} ed utilizzare
+l'istruzione \texttt{break} qualora venisse raggiunta la convergenza entro
+il massimo numero di iterazioni.
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=Ciclo \texttt{for} con
+        \texttt{break}.,linerange={26-67}]{es/1/old_file/zerofun-break.cc}
+\lstset{basicstyle=\sf}
+L'istruzione \texttt{break} \`e un modo efficiente per
+imporre una condizione di uscita, ma pu\`o rendere il codice di difficile
+lettura ed interpretazione; infatti le condizioni di uscita sono sparse e non
+sono raggruppate all'inizio o alla fine. Per questo motivo si cerca di limitare
+l'uso di \texttt{break} alla gestione di eccezioni.
+
+Una soluzione alternativa \`e basata sul ciclo \cpp{do}/\cpp{while}:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Ciclo \texttt{do\ldots while} senza
+    \texttt{break}.,linerange={26-47}]{es/1/old_file/zerofun-dowhile.cc}
+\lstset{basicstyle=\sf}
+In questo caso le condizioni di uscita sono chiaramente visibili in fondo al
+codice. Il prezzo da pagare \`e un inutile assegnamento di variabili
+nell'ultima iterazione eseguita. Il costrutto \texttt{do \ldots while} ha come
+caratteristica fondamentale quella di eseguire sempre almeno una iterazione,
+anche se le condizioni di uscita non sono verificate o
+verificabili all'inzio del ciclo.
+A volte questo comportamento pu\`o aiutare a generare errori non banali,
+se il codice scritto \`e complesso.
+

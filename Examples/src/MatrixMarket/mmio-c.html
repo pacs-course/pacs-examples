@@ -1,0 +1,667 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Matrix Market: C routines for Matrix Market I/O</TITLE>
+<SCRIPT language="javascript"><!--
+function enist(u){
+  var q="'",c=":",d=".",a="&#64;",s="/",e="=",b=" ";
+      i="ilto",t="a",m="ma",h="href",g="gov",n="nist";
+  var x=u+a+n+d+g,l="<",g=">";
+  document.write(l+t+b+h+e+q+m+i+c+x+q+g+x+l+s+t+g); }
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<CENTER>
+<H3><IMG SRC="images/banner.gif" ALT="Matrix Market" BORDER=0 
+         ISMAP USEMAP="#banner"></H3>
+<MAP NAME="banner">
+<AREA COORDS="  0  12 342 31" HREF="index.html" ALT="[ Home ]">
+<AREA COORDS="344  12 395 31" HREF="search.html" ALT="[ Search ]">
+<AREA COORDS="397  12 455 31" HREF="browse.html" ALT="[ Browse ]">
+<AREA COORDS="457  12 535 31" HREF="resources.html" ALT="[ Resources ]">
+</MAP>
+</CENTER>
+
+<center><H1>ANSI C library for Matrix Market I/O</H1></center>
+
+<P>
+The numerical data in the Matrix Market file formats can be easily processed
+using variants of <b><TT>fscanf()</TT></b> and  <b><TT>fprintf()</TT></b> 
+functions. 
+The only non-trivial issue is to figure out what kind of matrix is
+represented in a Matrix Market file.  Because of the wide range of
+possibilities, it is impractical to have a single function handle
+every case (furthermore, most applications will support only a subset
+of these matrix types). Instead, we provide utilities that
+identify and manage only the type and size information in MM files,  
+leaving the actual reading and writing mechanisms to the driving 
+application or higher-level I/O routines.  
+
+<p>
+Reading  a Matrix Market file can be broken into three basic steps:
+<OL>
+<li> use <a href="#mm_read_banner"><b><tt>mm_read_banner()</tt></b></a> to process the 1st line of file 
+		and identify the matrix type
+<li> use a type-specific function, such as 
+	<a href="#mm_read_mtx_crd_size"><b><tt>mm_read_mtx_crd_size()</tt></b></a>
+		to skip the optional comments and 
+		process the matrix size information
+<li> use a variant of <b><tt>scanf()</tt></b> to read the numerical data,
+			one matrix entry per line
+</OL>
+
+<p>
+Saving a matrix from an internal data structure to a Matrix Market file is 
+		a similar process:
+<OL>
+<li> use <a href="#mm_write_banner"><b><tt>mm_write_banner()</tt></b></a> 
+to create the 1st line of 
+			the Matrix Market file 
+<li> (optional) add '%' delimited comments
+<li> use a type-specific function, such as 
+<a href="#mm_write_mtx_crd_size"><b><tt>mm_write_mtx_crd_size()</tt></b></a>  
+to record the matrix size information
+<li> use a variant of  <b><tt> printf()</tt></b> to write the numerical data, 
+			one matrix entry per line
+</OL>
+<hr>
+
+
+<h3> Source code </h3>
+<UL>
+<li> examples:
+	<UL>
+	<li> <a href="mmio/c/example_read.c">example_read.c</a>
+	<li> <a href="mmio/c/example_write.c">example_write.c</a>
+	</uL>
+<li> library routines:
+	<UL> 
+	<li> <a href="mmio/c/mmio.h">mmio.h</a>
+	<li> <a href="mmio/c/mmio.c">mmio.c</a>
+	</ul>
+</UL>
+<HR>
+
+<h3>Documentation</h3>
+<UL>
+<tt>
+<li> <a href="#mm_read_banner">mm_read_banner()</a>
+<li> <a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>
+<li> <a href="#mm_read_mtx_array_size">mm_read_mtx_array_size()</a>
+<li> <a href="#mm_write_banner">mm_write_banner()</a>
+<li> <a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>
+<li> <a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>
+</tt>
+</UL>
+
+<p>
+<hr>
+
+<!------------------------------------------------------------------>
+<a name="mm_read_banner"><h2>mm_read_banner()</h2></a>
+
+
+<h3>NAME</h3>
+<p>
+mm_read_banner - determine the type of matrix being represented in a 
+			Matrix Market file
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_read_banner(FILE *f, MM_typecode *t);
+</pre>
+
+<h3>DESCRIPTION</h3>
+<tt>mm_read_banner()</tt> processes the the first line of a Matrix Market file,
+e.g. <br>
+
+		<p>
+		<center>
+		<tt> %%MatrixMarket matrix coordinate real general</tt>
+		</center>
+<br>
+and returns the matrix characteristics.  
+
+File descriptor <b><em>f</em></b> is defined in "stdio.h" and is assumed
+to have been opened for read access.  The predefined descriptor 
+<b><em>stdin</em></b> can be used to read from the standard
+input.
+
+<b><em>t</em></b> points to an internal structure that describes the 
+		matrix charateristics.   This <tt>MM_typecode</tt> is 
+		more efficient and convenient
+		than storing the explicit banner.
+		<a href="#query">query functions</a>, such as 
+		<tt>mm_is_complex(t)</tt>, are available to extract this information.
+
+<h3>RETURN VALUES</h3>
+
+	<tt>mm_read_banner()</tt> returns 0 if succesful. Otherwise,
+	it returns one of the error codes below.
+	
+<h3> ERRORS </h3>
+
+	<ul>
+	<li> MM_PREMATURE_EOF if all items are not present on first line of file.
+	<li> MM_NO_HEADER if the file does not begin with "%%MatrixMarket".
+	<li> MM_UNSUPPORTED_TYPE  if not recongizable description.
+	</ul>
+
+<h3> EXAMPLES </h3>
+
+	See <a href="mmio/c/example_read.c">example_read.c</a>.
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_array_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>
+<br>
+<br>
+<hr>
+
+
+<!----------------------------------------------------------------------->
+
+<a name="mm_read_mtx_crd_size"><h2> mm_read_mtx_crd_size()</h2></a>
+
+<h3>NAME</h3>
+mm_read_mtx_crd_size - read the size information of a sparse matrix
+		(coordinate format) in a Matrix Market file
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_read_mtx_crd_size(FILE *f, int *M, int *N, int *nz);
+</pre>
+
+<h3>DESCRIPTION</h3>
+After processing the Matrix Market <a href="#mm_read_banner">banner</a>, 
+<tt>mm_read_mtx_crd_size()</tt> reads 
+past the optional comments and initalizes size variables <b><em>M</em></b> 
+(number of rows), <b><em>N</em></b> (number of columns), and 
+<b><em>nz</em></b>(number of non-zeros).
+It is assumed that the matrix being read is in coordinate format.
+
+<h3> RETURN VALUES</h3>
+
+	<tt>mm_read_mtx_crd_size()</tt> return 0 is successful, otherwise
+	it returns one of the error codes below.
+
+<h3> ERRORS </h3>
+
+
+	<ul>
+	<li> MM_PREMATURE_EOF if an end-of-file is encountered before processing
+			these three values.
+	</ul>
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+
+<br>
+<br>
+<hr>
+
+<! ----------------------------------------------------------------------->
+
+<a name="mm_read_mtx_array_size"><h2> mm_read_mtx_array_size()</h2></a>
+
+<h3>NAME</h3>
+mm_read_mtx_crd_size - read the size information of a dense matrix
+		(array format) in a Matrix Market file
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_read_mtx_array_size(FILE *f, int *M, int *N);
+</pre>
+
+<h3>DESCRIPTION</h3>
+After processing the Matrix Market <a href="#mm_read_banner">banner</a>, 
+<tt>mm_read_mtx_crd_size()</tt> reads 
+past the optional comments and initalizes matrix size variables 
+<b><em>M</em></b> (number of rows), <b><em>N</em></b> (number of columns).
+It is assumed that the matrix being read is in array format.
+
+<h3> RETURN VALUES</h3>
+
+	<tt>mm_read_mtx_array_size()</tt> return 0 is successful, otherwise
+	it returns one of the error codes below.
+
+<h3> ERRORS </h3>
+
+
+	<ul>
+	<li> MM_PREMATURE_EOF if an end-of-file is encountered before reading
+			M and N.
+	</ul>
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+
+<br>
+<br>
+<hr>
+<!------------------------------------------------------------------>
+<a name="mm_write_banner"><h2>mm_write_banner()</h2></a>
+
+
+<h3>NAME</h3>
+<p>
+mm_write_banner - record matrix type information in Matrix Market file
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_write_banner(FILE *f, MM_typecode *t);
+</pre>
+
+<h3>DESCRIPTION</h3>
+<tt>mm_write_banner()</tt> prints the first line of a Matrix Market file,
+which consists of the "%%MatrixMarket" token followed by an attribute
+list, 
+e.g. <br>
+
+		<p>
+		<center>
+		<tt> %%MatrixMarket matrix coordinate real general</tt>
+		</center>
+<br>
+<p>
+File descriptor <b><em>f</em></b> is defined in "stdio.h" and is assumed
+to have been opened for write access.  The predefined descriptor 
+<b><em>stdout</em></b> can be used to read from the standard
+output.
+
+<b><em>t</em></b> points to an internal structure that describes the 
+		matrix charateristics.   This <tt>MM_typecode</tt> is 
+		more efficient and convenient
+		than storing the explicit banner. Various 
+		<a href="#query">assign functions</a>, such as 
+		<tt>mm_set_complex(&t)</tt>, can be used to set
+		these characterisitcs.
+
+<h3>RETURN VALUES</h3>
+
+	<tt>mm_write_banner()</tt> returns 0 if succesful. Otherwise,
+	it returns MM_COULD_NOT_OPEN_WRITE_FILE.
+	
+
+<h3> EXAMPLES </h3>
+
+	See <a href="mmio/c/example_write.c">example_write.c</a>.
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_array_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>
+<br>
+<br>
+<hr>
+
+<! ------------------------------------------------------------------->
+
+<a name="mm_write_mtx_crd_size"><h2> mm_write_mtx_crd_size()</h2></a>
+
+<h3>NAME</h3>
+mm_write_mtx_crd_size - write the size information of a dense matrix
+		(array format) to a Matrix Market file
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_write_mtx_crd_size(FILE *f, int M, int N, int nz);
+</pre>
+
+<h3>DESCRIPTION</h3>
+
+Record the matrix dimensions <b><em>M</em></b> x <b><em>N</em></b> and 
+total number of nonzeros, <b><em>nz</em></b> to Matrix Market file.
+Typically called after 
+<a href="#mm_write_banner"><tt>mm_write_banner()</tt></a>.
+
+<h3> RETURN VALUES</h3>
+
+	<tt>mm_write_mtx_crd_size()</tt> returns 0 is successful, otherwise
+	MM_COULD_NOT_WRITE_FILE.
+
+<h3> DIAGNOSTICS </h3>
+
+This is a trivial function to write three integers to <b><em>f</em></b>
+using <tt>fprintf()</tt>.
+It is included in the library only for the sake of completeness,
+as a counterpart to <a href="#mm_read_mtx_crd_size">
+<tt>mm_read_mtx_crd_size()</tt></a>.
+
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+
+<br>
+<br>
+<hr>
+<! ------------------------------------------------------------------->
+
+<a name="mm_write_mtx_array_size"><h2> mm_write_mtx_array_size()</h2></a>
+
+<h3>NAME</h3>
+mm_write_mtx_array_size - write the size information of a dense matrix
+		(array format) to a Matrix Market file
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_write_mtx_array_size(FILE *f, int M, int N);
+</pre>
+
+<h3>DESCRIPTION</h3>
+
+Record the matrix dimensions <b><em>M</em></b> x <b><em>N</em></b>
+to Matrix Market file.
+Typically called after 
+<a href="#mm_write_banner"><tt>mm_write_banner()</tt></a>.
+
+<h3> RETURN VALUES</h3>
+
+	<tt>mm_write_mtx_array_size()</tt> returns 0 is successful, otherwise
+	MM_COULD_NOT_WRITE_FILE.
+
+<h3>DIAGNOSTICS</h3>
+
+This is a trivial function to write two integers to <b><em>f</em></b>
+using <tt>fprintf()</tt>.
+It is included in the library only as a counterpart to
+<a href="#mm_read_mtx_array_size"><tt>mm_read_mtx_array_size()</tt></a>.
+
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+
+<br>
+<br>
+<hr>
+<! ------------------------------------------------------------------->
+
+<a name="query"><h2> MM_IS</h2></a>
+
+<h3>NAME</h3>
+
+
+ mm_is_matrix,
+ mm_is_sparse,
+ mm_is_coordinate,
+ mm_is_dense,
+ mm_is_array,
+ mm_is_complex,
+ mm_is_real	,
+ mm_is_pattern,
+ mm_is_integer,
+ mm_is_symmetric,
+ mm_is_general,
+ mm_is_skew,
+ mm_is_hermitian -matrix type query functions
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_is_matrix(MM_typecode t);
+
+	int mm_is_sparse(MM_typecode t);
+
+	int mm_is_coordinate(MM_typecode t);
+
+	int mm_is_dense(MM_typecode t);
+
+	int mm_is_array(MM_typecode t);
+
+	int mm_is_complex(MM_typecode t);
+
+	int mm_is_real(MM_typecode t);
+
+	int mm_is_pattern(MM_typecode t);
+
+	int mm_is_integer(MM_typecode t);
+
+	int mm_is_symmetric(MM_typecode t);
+
+	int mm_is_general(MM_typecode t);
+
+	int mm_is_skew(MM_typecode t);
+
+	int mm_is_hermitian(MM_typecode t);
+
+
+</pre>
+
+<h3>DESCRIPTION</h3>
+MM_QUERY functions provide a boolean test on matrix typecodes 
+(<tt>MM_typecode</tt>) variables for a given storage property.
+The functions return 0 if false, 1 otherwise.  Note that these properties
+refer only to the <bf>storage</bf> scheme, not the mathematical properties.  
+For example, a mathematically symmetric matrix stored with both upper
+and lower triangular halves will evaluate <tt>mm_is_symmetric()</tt> false.
+
+
+<h3> RETURN VALUES</h3>
+
+	MM_QUERY functions return 1 if true, 0 if false.
+
+
+<h3> DIAGNOSTICS </h3>
+
+These functions are implemented as macros.  
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_array_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+
+<br>
+<br>
+<hr>
+<! ------------------------------------------------------------------->
+
+
+<a name="mm_set"><h2> MM_SET</h2></a>
+
+<h3>NAME</h3>
+
+
+ mm_set_matrix,
+ mm_set_sparse,
+ mm_set_coordinate,
+ mm_set_dense,
+ mm_set_array,
+ mm_set_complex,
+ mm_set_real	,
+ mm_set_pattern,
+ mm_set_integer,
+ mm_set_symmetric,
+ mm_set_general,
+ mm_set_skew,
+ mm_set_hermitian,
+ mm_clear_typecode,
+ mm_initialize_typecode  --matrix type query functions
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	int mm_set_matrix(MM_typecode &t);
+
+	int mm_set_sparse(MM_typecode &t);
+
+	int mm_set_coordinate(MM_typecode &t);
+
+	int mm_set_dense(MM_typecode &t);
+
+	int mm_set_array(MM_typecode &t);
+
+	int mm_set_complex(MM_typecode &t);
+
+	int mm_set_real(MM_typecode &t);
+
+	int mm_set_pattern(MM_typecode &t);
+
+	int mm_set_integer(MM_typecode &t);
+
+	int mm_set_symmetric(MM_typecode &t);
+
+	int mm_set_general(MM_typecode &t);
+
+	int mm_set_skew(MM_typecode &t);
+
+	int mm_set_hermitian(MM_typecode &t);
+
+	int mm_clear_typecode(MM_typecode &t);
+
+	int mm_initialize_typecode(MM_typecode &t);
+
+</pre>
+
+<h3>DESCRIPTION</h3>
+MM_SET functions are used to encode the matrix charateristics to
+a Matrix Market file, in conjunction with <a href="#mm_write_banner">
+<tt>mm_write_banner()</tt></a>.  To use properly, <em><b>t</b></em> first
+must be initialized.  For exmaple, the set a <tt>MM_typecode</tt> to
+describe a complex, Hermititan, sparse matrix, one can write
+<pre>
+	
+	mm_initialize_typecode(&t);
+	mm_set_matrix(&t);
+	mm_set_complex(&t);
+	mm_set_coordinate(&t);
+	mm_set_hermitian(&t);
+
+</pre>
+
+<em><b>t</b></em> can then be used as an argument to 
+<tt>mm_write_banner()</tt></a>.
+<h3> RETURN VALUES</h3>
+
+	MM_SET functions return void.
+
+
+<h3> DIAGNOSTICS </h3>
+
+These functions are implemented as macros.  
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_array_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_write_mtx_crd_size">mm_write_mtx_crd_size()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+
+<br>
+<br>
+<hr>
+<! ------------------------------------------------------------------->
+
+<a name="mm_typecode_to_str"><h2> mm_typecode_to_str()</h2></a>
+
+<h3>NAME</h3>
+mm_typecode_to_str - convert a typecode to a descriptive string
+
+<h3>SYNPOSIS</h3>
+<pre>
+	#include &lt;stdio.h&gt
+	#include "mmio.h"
+
+	char *mm_typecode_to_str(MM_typecode t);
+</pre>
+
+<h3>DESCRIPTION</h3>
+
+<tt>mm_typecode_to_str</tt> converts a <tt>MM_typecode </tt>
+to mnemonic string.  This can be used as part of a diagnostics
+and error reporting.  (See "<a href="mmio/c/example_read.c">example_read.c</a>"
+for possible use.)
+
+<h3> RETURN VALUES</h3>
+
+	<tt>mm_typecode_to_str()</tt> returns a new character string if
+	successful, or NULL if an error occured.
+
+<h3> DIAGNOSTICS </h3>
+<tt>mm_typecode_to_str</tt> uses <tt>strdup()</tt> internally, and
+consequently the returned string must be freed to avoid memory leaks.
+
+<h3>SEE ALSO</h3>
+	<a href="#mm_write_banner">mm_write_banner()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_mtx_crd_size()</a>,
+	<a href="#mm_read_mtx_crd_size">mm_read_array_crd_size()</a>,
+	<a href="#mm_typecode_to_str">mm_typecode_to_str()</a>,
+	<a href="#mm_write_mtx_array_size">mm_write_mtx_array_size()</a>,
+
+<P><HR>
+<CENTER><FONT SIZE=-2>
+The Matrix Market is a service of the
+<A HREF="/mcsd/">Mathematical and Computational Sciences Division</A> / 
+<A HREF="http://www.itl.nist.gov/">Information Technology Laboratory</A> / 
+<A HREF="http://www.nist.gov/">National Institute of Standards and Technology</A>
+</FONT></CENTER>
+
+<P>
+[ <A HREF="index.html">Home</A> ]
+[ <A HREF="search.html">Search</A> ]
+[ <A HREF="browse.html">Browse</A> ]
+[ <A HREF="resources.html">Resources</A> ]
+
+<P>
+Last change in this page : <I>May 2, 2000</I>.
+[ <SCRIPT language="javascript"><!-- 
+enist('matrixmarket');
+// --></SCRIPT>
+<noscript>matrixmarket</noscript><noscript>&#64;</noscript><noscript>nist.gov</noscript>
+].
+</P>  
+
+</BODY>
+</HTML>

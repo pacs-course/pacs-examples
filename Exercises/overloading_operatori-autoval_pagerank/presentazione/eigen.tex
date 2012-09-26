@@ -1,0 +1,266 @@
+\documentclass{beamer}
+\usepackage{beamerthemesplit,bm}
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{multimedia}
+\usepackage{subfigure}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+
+\usepackage{listings}
+% User-defined colors
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.8, .8, .8}
+
+% Settings for listing class
+\lstset{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\scriptsize,                % The basic style
+  backgroundcolor=\color{LightGray},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape,  % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+}
+
+% A command to print C++ instructions
+\newcommand{\cpp}[1]{\lstinline!#1!}
+
+\usetheme{Boadilla}
+
+
+\definecolor{mygreen}{rgb}{0,0.48,0.0}
+
+\definecolor{myblue}{rgb}{0,0,0.64}
+
+\author{Alessio Fumagalli}
+\date{3-11-2011}
+\institute{Politecnico di Milano}
+
+\begin{document}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}
+
+    \frametitle{Eigen}
+
+    \begin{block}{Introduzione a}
+        \centering
+        Eigen 3.0
+    \end{block}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.2\textwidth]{images/eigen-logo}
+    \end{figure}
+
+    \begin{block}{Pagine web utili}
+        \centering
+        \begin{itemize}
+            \item http://eigen.tuxfamily.org/index.php?title=Main\_Page
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}
+
+    \frametitle{Eigen}
+
+    \begin{block}{Eigen}
+        Eigen \`e una libreria di algebra lineare che fornisce l'implementazione di matrici
+        piene e matrici sparse. Tramite tecniche di programmazione sofisticate permette di
+        effettuare operazioni algebriche con incredibile efficienza. Fornisce direttamente
+        algoritmi per la risoluzione di sistemi e fattorizzazioni, oppure interfacce per
+        utilizzare i solutori lineari pi\`u comuni.
+    \end{block}
+
+    \vspace{1cm}
+
+    \begin{block}{}
+        È anche utilizzato come libreria in molte applicazioni, ad esempio Google.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Introduzione}
+        \begin{lstlisting}
+#include <iostream>
+#include <Eigen/Dense>
+int main()
+{
+ Eigen::MatrixXd m(2,2);
+ m(0,0) = 3;
+ m(1,0) = 2.5;
+ m(0,1) = -1;
+ m(1,1) = m(1,0) + m(0,1);
+ std::cout << m << std::endl;
+}
+        \end{lstlisting}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+        \begin{block}{Matrici}
+            Matrice generica
+            \begin{lstlisting}
+Matrix<typename Scalar, int RowsAtCompileTime,
+                        int ColsAtCompileTime>
+            \end{lstlisting}
+        \end{block}
+
+        \begin{block}{Casi particolari}
+            \begin{itemize}
+                \item Matrice con dimensioni fisse
+                    \begin{lstlisting}
+typedef Matrix<float, 4, 4> Matrix4f;
+                    \end{lstlisting}
+                \item Matrice con dimensioni non-fisse
+                    \begin{lstlisting}
+typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
+                    \end{lstlisting}
+                \item Matrice con una dimensione fissa
+                    \begin{lstlisting}
+typedef Matrix<int, Dynamic, 1> VectorXi;
+                    \end{lstlisting}
+            \end{itemize}
+        \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Inizializzazioni}
+        \begin{itemize}
+            \item matrice non inizializzata
+            \begin{lstlisting}
+MatrixXd m(2,2);
+            \end{lstlisting}
+            \item matrice inizializzata
+            \begin{lstlisting}
+Matrix3f m;
+m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+            \end{lstlisting}
+            \item matrice inizializzata
+            \begin{lstlisting}
+MatrixXf m = MatrixXf::Constant(3,3,1.2);
+            \end{lstlisting}
+        \end{itemize}
+
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Aritmetica}
+        Sono implementati gli usuali operatori aritmetici, inoltre \`e possibile utilizzare
+        \begin{itemize}
+            \item trasposta \cpp{a.transpose()}
+            \item coniugata \cpp{a.conjugate()}
+            \item aggiunta \cpp{a.adjoint()}
+            \item prodotto scalare \cpp{a.dot(b)}
+            \item prodotto vettoriale \cpp{a.cross(b)}
+            \item \ldots
+        \end{itemize}
+
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Expression Template}
+        Il codice
+        \begin{lstlisting}
+VectorXf a(50), b(50), c(50), d(50);
+...
+a = 3*b + 4*c + 5*d;
+        \end{lstlisting}
+        In realt\`a viene eseguito come
+        \begin{lstlisting}
+for(int i = 0; i < 50; ++i)
+  a[i] = 3*b[i] + 4*c[i] + 5*d[i];
+        \end{lstlisting}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Vantaggi \& svantaggi}
+        L'efficienza del codice migliora notevolmente, tuttavia non sono ammesse
+        espressioni del tipo
+        \begin{lstlisting}
+a = a.transpose();
+        \end{lstlisting}
+        inoltre gli errori sia in fase di compilazione che in fase di esecuzione
+        sono di difficile lettura.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Consideriamo il seguente codice}
+        \begin{lstlisting}
+#include <iostream>
+#include <Eigen/Dense>
+int main() {
+  Eigen::Matrix3f m = Eigen::Matrix3f::Random();
+  std::cout << "m =" << std::endl << m ; }
+        \end{lstlisting}
+    \end{block}
+
+    \begin{block}{Compilare}
+        Essendo Eigen una libreria composta esclusivamente da \textit{header file},
+        per la compilazione del codice dobbiamo utilizzare l'opzione \verb1-I1
+        \begin{verbatim}
+g++ -I/path/to/eigen/ my_program.cpp -o my_program -O2
+        \end{verbatim}
+        Nel nostro caso non serve essendo installato nella directory standard
+        \verb1/usr/local/eigen1.
+    \end{block}
+
+\end{frame}
+
+\end{document}

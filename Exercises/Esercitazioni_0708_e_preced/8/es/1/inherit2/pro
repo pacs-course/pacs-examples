@@ -1,0 +1,49 @@
+Only in ../../traccia/inherit1/: doc
+Common subdirectories: ./lib and ../../traccia/inherit1/lib
+Binary files ./main_integration and ../../traccia/inherit1/main_integration differ
+diff ./main_integration.cpp ../../traccia/inherit1/main_integration.cpp
+4a5
+> 
+29,31d29
+<   Simpson simpRule;
+<   MidPoint midRule;
+<   
+33a32,35
+>   /* 
+>      Creates a GetPot variable, with an internal
+>      database of names read from command line
+>   */
+36c38
+<   double b=cl("b", 4.);
+---
+>   double b=cl("b", 4);
+40c42,45
+<        << " su " << nint << " intervalli" << endl;
+---
+>        << " su " << nint << " intervalli" <<endl;
+> 
+>   Simpson sr;
+>   MidPoint mr;
+42,43c47,48
+<   Quadrature s(simpRule,a,b,nint);
+<   Quadrature m(midRule,a,b,nint);
+---
+>   Quadrature s(sr,a,b,nint);
+>   Quadrature m(mr,a,b,nint);
+51c56,57
+<        << " Exact=" << exactVal << endl;
+---
+>        << " Exact=" << exactVal
+>        <<endl;
+Only in ../../traccia/inherit1/: main_integration.cpp~
+Binary files ./main_integration.o and ../../traccia/inherit1/main_integration.o differ
+diff ./Makefile ../../traccia/inherit1/Makefile
+53c53
+< main_integration.o: src/numerical_integration.hpp src/numerical_rule.hpp
+---
+> main_integration.o: src/numerical_integration.hpp
+55,56d54
+< src/numerical_integration.o: src/numerical_rule.hpp
+< src/numerical_rule.o: src/numerical_rule.hpp
+Only in ./: pro
+Common subdirectories: ./src and ../../traccia/inherit1/src

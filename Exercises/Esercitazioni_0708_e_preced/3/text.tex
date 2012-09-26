@@ -1,0 +1,27 @@
+Sia $f\in C^{1}\left(a, b\right)$ una funzione reale che si annulla in
+un punto $\alpha\in (a, b)$. Un algoritmo robusto per la
+ricerca dello zero di tale funzione pu\`o essere costruito combinando
+un metodo di basso ordine per cui sia garantita la convergenza globale
+con uno di alto ordine che, partendo da un valore iniziale
+sufficientemente vicino allo zero $\alpha$, si avvicini rapidamente ad
+una sua approssimazione entro una fissata tolleranza $\epsilon$. Si
+chiede di:
+\begin{enumerate}
+\item implementare un metodo per la ricerca dello zero di $f$
+  sfruttando l'algoritmo della bisezione per avvicinarsi alla radice
+  ed il metodo di Newton per ottenerne una stima accurata (si rimanda
+  a \cite{Quarteroni.Sacco.ea:2000} per l'analisi).
+\item Utilizzare il codice costruito per calcolare lo zero della
+  funzione 
+  \begin{equation*}
+    f(x) = x^2 - 0.5
+  \end{equation*}
+  nell'intervallo $(0, 1)$. Si verifichi che, scegliendo come
+  punto di partenza $x^{\left(0\right)} = 0$, il metodo di Netwon non
+  converge. 
+%\item Sovraccaricare l'operatore di scorrimento in modo che, inviando
+%  ad uno \emph{stream} la classe corrispondente a ciascun metodo, si
+%  ottenga una descrizione dell'istanza (nome del metodo, valori dei
+%  parametri, numero di iterazioni necessarie per raggiungere la
+%  convergenza all'ultima chiamata).
+\end{enumerate}

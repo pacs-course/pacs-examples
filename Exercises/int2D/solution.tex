@@ -1,0 +1,78 @@
+\newpage
+
+\section*{Soluzione}
+
+Come suggerito dal testo, anzitutto affrontiamo il problema di come fare integrazione su un singolo triangolo. La libreria \textbf{Fekete} mette a disposizione numerose funzioni, analizziamole in dettaglio.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={56-57}]{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+Tale funzione permette di restituire l'ordine della regola di Fekete dato il numero della regola stessa, da 1 a 7. Tale funzione non \`e strettamente necessaria per l'integrazione, tuttavia risulta comoda in modo da non dover ricordare l'ordine della regola.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={64-65}]{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+Tale funzione permette di riempire i vettori \cpp{hatXY} e \cpp{w} con, rispettivamente, i nodi del triangolo di riferimento e i pesi associati a ciascun nodo. I vettori devono essere precedentemente dimensionati correttamente nel seguente modo
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={59-62}]{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+In cui verranno memorizzati in \cpp{hatXY} i nodi del triangolo di riferimento, in \cpp{XY} i nodi del triangolo attuale e in \cpp{w} i pesi associati ai nodi. Essendo punti nel piano, i vettori \cpp{hatXY} e \cpp{XY} avranno dimensione doppia rispetto ai pesi \cpp{w}.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={67-68}]{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+Tale funzione permette di generare, dato il triangolo e i nodi del triangolo di riferimento, i nodi di integrazione del triangolo attuale. Risulta infine molto semplice calcolare l'integrale su un triangolo generico, essendo un calcolo analogo a quello per l'integrazione monodimensionale
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={70-79}]{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+Quando viene utilizzata la funzione \cpp{reference_to_physical_t3} dobbiamo utilizzare il formato standard della libreria \textbf{Fekete} di memorizzazione dei triangoli. L'utilizzo della funzione \cpp{triangleFekete} permette di trasformare un triangolo di classe \cpp{Triangle} in un triangolo che pu\`o essere letto dalla libreria \textbf{Fekete}. Tale conversione \`e la seguente
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={88-96}]{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+Globalmente il codice utile per calcolare gli integrali proposti \`e il seguente
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{es/sol/point1/main.cpp}
+\lstset{basicstyle=\sf}
+
+Per implementare correttamente la classe \cpp{Mesh} \`e necessario che abbia due caratteristiche principali: permette di gestire i triangoli e legge i files generati dal meshatore \textbf{Triangle}. La struttura dati scelta per memorizzare i triangoli \`e un semplice \cpp{vector}, in cui assumiamo che l'identificatore corrisponde con la posizione del triangolo nel vettore. L'interfaccia della classe \cpp{Mesh} \`e la seguente
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Classe \cpp{Mesh2D}]{es/sol/point2/mesh2D.hpp}
+\lstset{basicstyle=\sf}
+
+Il metodo \cpp{generateMesh} permette di generare la struttura dati contenente i triangoli, letta dai files di output del programma \textbf{Triangle}.\\
+\textbf{Triangle}, passando in input un file di tipo \textbf{.poly}, genera in output un file di tipo \textbf{.1.node} in cui vengono memorizzati tutti i nodi come coordinata $(x, y)$ e un file di tipo \textbf{.1.poly} in cui vengono memorizzati tutti gli elementi generati, tali elementi sono composti dagli identificatori associati ai nodi del file \textbf{.1.node}. Per leggere quindi correttamente tutti i triangoli \`e necessario leggere prima i punti e poi i triangoli. La lettura di tutti i nodi pu\`o essere fatta dal seguente codice
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={19-68}]{es/sol/point2/mesh2D.cpp}
+\lstset{basicstyle=\sf}
+
+mentre la lettura, e il riempimento della struttura dati contenente i triangoli, pu\`o essere fatta mediante il seguente codice
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={70-104}]{es/sol/point2/mesh2D.cpp}
+\lstset{basicstyle=\sf}
+
+\`E molto importante, all'interno del codice, gestire accuratamente tutti gli errori che potrebbero verificarsi e poter informare coerentemente, l'eventuale, utilizzatore del tipo di problema incontrato.\\
+
+La classe che avr\`a il compito di fare l'integrazione di una funzione su una mesh \`e analoga a quella implementata nell'esercitazione 5 e 6. La differenza \`e che non viene pi\`u utilizzata la classe \cpp{Domain} e, al posto della classe \cpp{Mesh1D}, si utilizza la classe \cpp{Mesh2D}. Riportiamo qui di seguito la definizione della classe \cpp{Quadrature}
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Classe \cpp{Quadrature}]{es/sol/point2/int2D.hpp}
+\lstset{basicstyle=\sf}
+
+La funzione \cpp{apply}, che calcola l'integrale sulla mesh, si basa sulla funzione \cpp{applyTriangle} che calcola l'integrale su ogni triangolo come mostrato precedentemente.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={62-70}]{es/sol/point2/int2D.cpp}
+\lstset{basicstyle=\sf}

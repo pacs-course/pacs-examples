@@ -1,0 +1,7 @@
+In questo esemio si confronta l'efficienza della regola di horner con il
+calcolo di un polinomio usando la regola "standard". Per vedere delle
+differenze la valutazione del polinomio viene ripetuta molte volte.
+
+
+Si usa la libreria chrono, fornita nella directory chrono/ Si veda il file
+README li fornito per la sua eventuale ricompilazione.

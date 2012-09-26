@@ -1,0 +1,184 @@
+\documentclass{beamer}
+\usetheme{default}
+\usepackage[italian]{babel}
+%\usepackage{t1enc}
+\usepackage{pgfpages}
+\usepackage{listings}
+%\pgfpagelayout{2 on 1}[a4paper]
+
+%\usepackage{../../common/espacs}
+\lstset
+{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\sf,                          % The basic style
+  keywordstyle=\color{blue}\bfseries,      % Set keyword style
+  commentstyle=\color{darkgreen}\itshape,  % Set comment style
+  extendedchars=true                       % Allow extended characters
+}
+
+\setbeamercovered{transparent}
+
+\begin{document}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    Breve ripasso e introduzione alla compilazione di un codice C++.
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    Consideriamo il seguente programma \\
+    \vspace{.3cm}
+
+    \lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting{./main.cpp}
+    \lstset{basicstyle=\sf}
+
+    \vspace{.3cm}
+    salvato nel file \verb1main.cpp1.
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    Il codice pu\`o essere compilato ed eseguito mediante i seguenti comandi
+
+    \begin{verbatim}
+        g++ -c main.cpp
+        g++ -o main main.o
+        ./main
+    \end{verbatim}
+
+    \vspace{.3cm}
+    Ottenendo
+    \begin{verbatim}
+        Hello World!
+    \end{verbatim}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    Un modo alternativo per compilare il codice, che permette di non generare il
+    file oggetto \verb1main.cpp1, \`e mediante i seguenti comandi
+    \begin{verbatim}
+        g++ -o main main.cpp
+        ./main
+    \end{verbatim}
+
+    \vspace{.3cm}
+    In questo caso la fase di compilazione e quella di linking vengono fatte
+    in sequenza e attraverso un unico comando.
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    Esistono numerose flag per il compilatore che permettono di ottenere
+    diversi comportamenti
+
+    \begin{itemize}
+        \item \verb1-Wall1 per segnalare eventuali warnings;
+        \item \verb1-O1 per ottenere il codice pi\`u efficiente;
+        \item \verb1-g1 per ottenere il codice utile per il debugging.
+    \end{itemize}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    La flag \verb1-Wall1 permette di segnalare eventuali warnings.
+    Se utilizziamo tale flag in fase di compilazione per il programma \verb1main.cpp1
+
+    \begin{verbatim}
+        g++ -o main main.cpp -Wall
+    \end{verbatim}
+
+    \vspace{.3cm}
+    Ottenendo
+    \begin{verbatim}
+        main.cpp: In function 'int main()':
+        main.cpp:7: warning: unused variable 'i'
+    \end{verbatim}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    Il flag \verb1-O1 seguito da un numero compreso tra $1$ e $3$, permette di
+    ottenere un codice pi\`u efficiente a scapito del tempo di compilazione e
+    dell'occupazione fisica dell'eseguibile.\\
+
+    \vspace{.3cm}
+    In particolare
+
+    \begin{itemize}
+
+        \item \verb2-O12 il compilatore cerca di ridurre le dimensioni del codice
+            e il tempo di esecuzione, senza eseguire alcuna ottimizzazione che
+            richiede una grande quantità di tempo di compilazione.
+
+        \item \verb1-O21 il compilatore esegue quasi tutte le ottimizzazioni che
+            comportano un buon compromesso spazio occupato-velocit\`a di esecuzione.
+            Rispetto al \verb2-O12, questa opzione aumenta sia il tempo di
+            compilazione che le prestazioni del codice generato.
+
+        \item \verb1-031 livello di ottimizzazione massimo, il compilatore
+            attiva tutte le procedure per ottenere un codice il pi\`u veloce
+            possibile.
+
+    \end{itemize}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Come compilare un codice C++}
+
+    Se utilizziamo tale flag in fase di compilazione per il programma
+    \verb1main.cpp1
+
+    \begin{verbatim}
+        g++ -o main main.cpp -O2
+    \end{verbatim}
+
+    \vspace{.3cm}
+    \`E possibile utilizzare pi\`u di una flag in contemporanea, l'ordine non conta
+    \begin{verbatim}
+        g++ -o main main.cpp -Wall -O2
+    \end{verbatim}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\end{document}

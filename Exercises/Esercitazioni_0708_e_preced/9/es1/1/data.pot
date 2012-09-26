@@ -1,0 +1,18 @@
+# -*- getpot -*- GetPot mode activation for emacs
+#
+# Data file for fin problem
+
+
+[mesh]
+M           = 10        # Number of elements
+
+[../geometry]
+length      = 1.e-1     # Fin length
+width       = 5.e-2     # Fin width
+thickness   = 5.e-3     # Fin thickness
+
+[../physics]
+T0          = 393.      # Base temperature
+Tinf        = 293.      # Asymptotic temperature
+hP          = 10.       # Convection heat transfer coefficient
+k           = 5.        # Thermal conductivity

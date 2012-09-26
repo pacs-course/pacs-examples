@@ -1,0 +1,62 @@
+Sia $W$ uno spazio di Banach e $V$ uno spazio Banach riflessivo. Si
+consideri il seguente problema astratto: trovare $u\in W$ tale che
+\begin{equation*}
+\bilin{a}{u}{v} = \intprod{f}{v}{\Omega},\quad\forall v\in V,
+\end{equation*}
+essendo $\bilin{a}{\cdot}{\cdot}\in\mathcal{L}(W\times V, \mathbb{R})$
+una forma bilineare continua.
+Il metodo di Galerkin-elementi finiti si fonda sulla sostituzione
+di $W$ e $V$ con gli spazi finito-dimensionali $W_h$ e $V_h$
+costruiti a partire da una triangolazione
+$\mathcal{T}_h$ del dominio e da un interpolante a tratti. Se
+$W_h=V_h$ si ottiene il metodo di Galerkin-elementi finiti
+standard. Di norma gli spazi discreti sono costituiti dalle funzioni
+la cui restrizione al generico elemento $K$ della triangolazione \`e
+polinomiale, ovvero:
+\begin{equation*}
+V_h \eqbydef \set{v\in
+  C^0(\Omega)}{v_{|K}\in\mathbb{P}^k(K),\quad\forall K\in\mathcal{T}_h}.
+\end{equation*}
+Per i dettagli si rimanda a \cite{Ern.Guermond:2004}.
+
+L'obiettivo di questa esercitazione \`e di implementare delle classi
+che consentano di generare gli elementi dello spazio discreto $V_h$
+costruendo una classe \cpp{Polynomial} che soddisfi i seguenti requisiti:
+\begin{itemize}
+\item la classe sia parametrizzata rispetto al tipo \cpp{T} dei
+  coefficienti dei polinomi;
+\item per coefficienti \emph{floating point} in singola e doppia
+  precisione la classe disponga di un membro \cpp{interpolate} che,
+  ricevuti due vettori \cpp{x} e \cpp{y} di lunghezza $k+1$ contenenti
+  nodi e valori, calcoli 
+  i coefficienti del polinomio interpolatore. Qualora ve ne fosse
+  bisogno, per la soluzione dei sistemi lineari si utilizzi la classe
+  \emph{template} \cpp{LinearSolver} allegata;
+\item la valutazione del polinomio nel punto \cpp{x} avvenga mediante
+  l'algoritmo di Horner (si veda, ad es.,
+  \cite[\extref{3.12}]{Yang:2001});
+\item siano implementate le operazioni di somma, differenza e prodotto
+  tra polinomi;
+\item la classe disponga di un membro \cpp{diff} che restituisca la
+  derivata $N$-esima del polinomio.
+\end{itemize}
+
+Si utilizzi la classe costruita al punto precedente per calcolare le
+la base $\left\lbrace\varphi_i\right\rbrace$ dello spazio
+$\mathbb{P}^2(\hat{K})$, essendo $\hat{K}$ l'elemento di riferimento 
+$\openint{0}{1}$. Si calcoli, inoltre, la matrice di massa locale
+\begin{equation*}
+M = [m_{ij}] = \int_{\hat{K}} \varphi_i \varphi_j ,\quad\forall i,~j =
+0,\ldots, 2.
+\end{equation*}
+Per il calcolo degli integrali si utilizzi una formula di Gauss con
+opportuno grado di esattezza. La classe \cpp{Gauss} viene fornita in
+allegato. Si confronti il risultato con il valore esatto riportato di
+seguito:
+\begin{equation*}
+M = \frac{1}{30}\left[\begin{array}{ccc}
+4 &  -1 & 2 \\
+-1 & 4 & 2 \\
+2 & 2 & 16
+\end{array}\right].
+\end{equation*}

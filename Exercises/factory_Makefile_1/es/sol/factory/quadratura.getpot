@@ -1,0 +1,4 @@
+integrand=myfun
+udflib=./libudf.so
+rule=Simpson
+fun=pippo

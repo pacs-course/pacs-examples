@@ -1,0 +1,231 @@
+diff ./src/Makefile ../../traccia/inherit1/src/Makefile
+33,34c33
+< numerical_integration.o: numerical_integration.hpp numerical_rule.hpp
+< numerical_rule.o: numerical_rule.hpp
+---
+> numerical_integration.o: numerical_integration.hpp
+diff ./src/numerical_integration.cpp ../../traccia/inherit1/src/numerical_integration.cpp
+2d1
+< #include <iostream>
+5,9c4,8
+<   
+<   Quadrature::Quadrature(QuadratureRule & rule,
+< 			 double const & a,
+< 			 double const & b,
+< 			 int const & nint):
+---
+> 
+>   Quadrature::Quadrature(QuadratureRule& rule,
+> 			 double const&a,
+> 			 double const&b,
+> 			 int const&nint):
+14c13
+<     _wf(_h/2.0),
+---
+>     _wf(_h/2.),
+19c18,19
+<     for(int i=1;i<_knots.size();++i)_knots[i]=_knots[i-1]+_h;
+---
+>     for(int i=1; i<_knots.size();++i)
+>       _knots[i]=_knots[i-1]+_h;
+22c22,26
+<   double Quadrature::apply(FunPoint f)
+---
+>   
+>   
+>   
+> 
+>   double Quadrature::apply(FunPoint f) const
+25a30
+> 
+27,31c32,36
+<       double a=_knots[i];
+<       double b=_knots[i+1];
+<       double xm=(a+b)/2.0;
+<       for (int j=0;j<nnodes;++j){
+< 	double x=xm+_wf*_rule.node(j);
+---
+>       double a  = _knots[i  ];
+>       double b  = _knots[i+1];
+>       double xm = (a+b)/2.0;
+>       for( int j = 0; j<nnodes; ++j ){
+> 	double x = xm+_wf*_rule.node(j);
+33a39
+>       return result;
+35d40
+<     return result;
+37c42,43
+< 
+---
+>     
+>     
+Only in ../../traccia/inherit1/src: numerical_integration.cpp~
+diff ./src/numerical_integration.hpp ../../traccia/inherit1/src/numerical_integration.hpp
+5d4
+< 
+10,11d8
+<   //! type for function pointer
+<   typedef double (*FunPoint)(double const &);
+13,14c10,11
+<   //! Forward declaration: used inside Quadrature class
+<   class QuadratureRule;
+---
+>   //! type for function pointers (could use functors instead)
+>   typedef double (*FunPoint)(double const &);
+16c13,14
+<   //! Quadrature
+---
+> 
+>   //! Integrator
+18c16,17
+<     A numerical integrator for f(x) in (a,b)
+---
+>     Approximate the integral of function f(x)
+>     over the interval (a, b)
+22a22
+> 
+25d24
+<       \param rule Quadrature rule
+30,31c29,32
+<     Quadrature(QuadratureRule & rule,
+< 	       double const & a, double const & b, int const & Nint);
+---
+>     Quadrature(QuadratureRule& rule,
+> 	       double const & a,
+> 	       double const & b,
+> 	       int const & Nint);
+34c35
+<     double apply(FunPoint f);
+---
+>     double apply(FunPoint f) const;
+37c38
+<     QuadratureRule & _rule;
+---
+>     QuadratureRule& _rule;
+43a45,62
+>   /*
+>   //! Integrator using Simpson formula
+>   class Simpson : public QuadratureBase
+>   {
+>   public:
+>     Simpson(double const & a, double const & b, int const & Nint);
+>     virtual double apply(FunPoint f) const;
+>   };
+> 
+> 
+>   //! Integrator using mid point formula
+>   class MidPoint : public QuadratureBase
+>   {
+>   public:
+>     MidPoint(double const & a, double const & b, int const & Nint);
+>     virtual double apply(FunPoint f) const;    
+>   };
+>   */
+Only in ../../traccia/inherit1/src: numerical_integration.hpp~
+Binary files ./src/numerical_integration.o and ../../traccia/inherit1/src/numerical_integration.o differ
+diff ./src/numerical_rule.cpp ../../traccia/inherit1/src/numerical_rule.cpp
+3c3
+< namespace NumericalIntegration{
+---
+> namespace NumericalIntegration {
+5c5
+<   QuadratureRule::QuadratureRule():_w(),_n(){};
+---
+>   QuadratureRule::QuadratureRule(): _w(), _n(){}
+7c7
+<   QuadratureRule::~ QuadratureRule(){}
+---
+>   QuadratureRule::~QuadratureRule(){}
+10c10
+<   { return _w.size();}
+---
+>   { return _w.size(); }
+12,13c12,13
+<   double QuadratureRule::node(const int i) const
+<   { return _n[i];}
+---
+>   double QuadratureRule::node( int const i ) const 
+>   { return _n[i]; }
+15,18c15,19
+<   double QuadratureRule::weight(const int i) const
+<   { return _w[i];}
+<   
+<   Simpson::Simpson(){
+---
+>   double QuadratureRule::weight( int const i ) const 
+>   { return _w[i]; }
+> 
+>   Simpson::Simpson()
+>   {
+22,24c23,25
+<     _n.push_back(-1.0);
+<     _n.push_back(0.0);
+<     _n.push_back(1.0);
+---
+>     _n.push_back(-1.);
+>     _n.push_back(0.);
+>     _n.push_back(1.);
+27,29c28,31
+<   MidPoint::MidPoint(){
+<     _w.push_back(2.0);
+<     _n.push_back(0.0);
+---
+>   MidPoint::MidPoint()
+>   {
+>     _w.push_back(2.);
+>     _n.push_back(0.);
+Only in ../../traccia/inherit1/src: numerical_rule.cpp~
+diff ./src/numerical_rule.hpp ../../traccia/inherit1/src/numerical_rule.hpp
+6c6
+< namespace NumericalIntegration{
+---
+> namespace NumericalIntegration {
+8,12d7
+<   //! Quadrature rule
+<   /*!
+<     Approximates the integral of a function f(x)
+<     over the interval (0,1)
+<   */
+16d10
+<     //! Constructor
+19d12
+<     //! Gets the number of nodes
+22,23c15,16
+<     //! Gets the coordinate of i-th node
+<     double node(const int i) const;
+---
+>     double node( int const i ) const;
+>     double weight( int const i ) const;
+25,28d17
+<     //! Gets th weigth for i-th node
+<     double weight(const int i)const;
+< 
+<     //! virtual destructor
+32,33c21,23
+<     std::vector<double>  _w; /* weigths */
+<     std::vector<double>  _n; /* nodes */
+---
+>     std::vector<double> _w;
+>     std::vector<double> _n;
+> 
+35,36c25
+<   
+<     
+---
+> 
+42,43c31
+< 
+< 
+---
+>   
+47c35
+<     MidPoint();
+---
+>    MidPoint();
+49,50c37
+< 
+< 
+---
+>   
+Only in ../../traccia/inherit1/src: numerical_rule.hpp~
+Only in ./src: numerical_rule.o

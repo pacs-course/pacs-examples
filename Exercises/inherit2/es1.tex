@@ -1,0 +1,50 @@
+\section*{Esercizio 1}
+
+Partendo dal programma \textbf{inherit1}
+\begin{enumerate}
+    \item estendere l'utilizzo di GetPot utilizzando un file per gestire
+        i dati di input;
+
+    \item si aggiunga la regola di quadratura gaussiana a quattro nodi,
+        come classe derivata pubblicamente da \cpp{QuadratureRule}.
+        Rispetto all'intervallo di riferimento $[-1,1]$ i nodi della
+        regola di quadratura sono $\{ \pm 1, \pm \sqrt{5} / 5 \}$, e
+        i rispettivi pesi sono $\{ 1/6, 5/6 \}$;
+
+    \item si calcoli l'integrale della funzione
+        \begin{align*}
+            f(x) = e^x x\,,
+        \end{align*}
+        nell'intervallo $[0,1]$, utilizzando le tre regole
+        di quadratura implementate.
+
+    \item si utilizzi la tecnica del polimorfismo per gestire le
+        istanze degli oggetti delle classi derivate da
+        \cpp{QuadratureRule}.
+
+    \item estrarre dalla classe \cpp{NumericalQuadrature} la
+        suddivisione in intervalli, in modo che la generazione di
+        intervalli sia a tutti gli effetti estranea alla classe.
+
+        Si consiglia di
+        \begin{itemize}
+            \item costruire la classe \cpp{Domain1D} che implementa
+                l'intervallo su cui fare l'integrazione;
+
+            \item costruire la classe \cpp{Mesh1D} che contiene un
+                oggetto di tipo \cpp{Domain1D}, all'interno della
+                classe \cpp{Mesh1D} \`e generata la mesh equi-spaziata
+                su cui fare l'integrale;
+
+            \item la classe \cpp{NumericalQuadrature} conterr\`a la
+                mesh e la regola di quadratura.
+
+        \end{itemize}
+
+    \item riorganizzare il codice in modo tale che le classi che
+        necessitano dei dati definiti dall'utente accedano
+        autonomamente ad essi. Ogni classe deve poter accedere
+        unicamente alla propria sezione, senza tener conto delle sezioni
+        superiori.
+
+\end{enumerate}

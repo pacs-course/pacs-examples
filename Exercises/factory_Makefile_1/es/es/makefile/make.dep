@@ -1,0 +1,3 @@
+main_integration.o: main_integration.cpp src/GetPot \
+ src/numerical_integration.hpp src/numerical_rule.hpp src/mesh.hpp \
+ src/domain.hpp src/GetPot

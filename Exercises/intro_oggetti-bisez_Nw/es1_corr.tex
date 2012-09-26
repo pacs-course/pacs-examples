@@ -1,0 +1,160 @@
+\section*{Soluzioni}
+
+\begin{enumerate}
+
+    \item Per rendere riutilizzabile il codice, si \`e scelto di raggruppare le
+        interfacce delle classi create in \emph{header file}, mentre le
+        implementazioni si trovano nei corrispondenti \emph{source
+        file}. Per rendere disponibile in tutti gli \emph{header file} le
+        definizioni generali, quali \cpp{enum} e \cpp{typedef}, \`e meglio
+        raggrupparle nel seguente \emph{header file}:
+
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./es/1/src/rootfinding.hpp}
+        \lstset{basicstyle=\sf}
+
+        In questo caso, i nomi definiti da \cpp{rootfinding.hpp} sono
+        esportati nel \cpp{namespace} \cpp{Rootfinding}.
+
+        Si riportano di seguito i listati degli \emph{header file} e dei
+        \texttt{source files} che contengono le definizioni delle classi
+        \cpp{Bisection} e \cpp{Newton}.
+        % Bisection
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting[caption=Interfaccia della classe \cpp{Bisection}]
+                {es/1/src/bisection.hpp}
+        \lstset{basicstyle=\sf}
+        Si possono notare i nomi degli attributi privati all'interno della classe,
+        sono tutti della forma \cpp{M_nomeattributo}.
+        \`E infatti buona norma utilizzare questo tipo di sintassi per rendere
+        facilmente riconoscibile, all'interno dell'implementazione di metodi della classe,
+        gli attributi della classe dalle variabili create localmente in ciascun metodo.
+
+        In metodo \cpp{converged} \`e una funzione di tipo \cpp{inline}, ovvero \`e una
+        direttiva del C++ usata per indicare al compilatore che deve eseguire l'espansione
+        inline della funzione. In altre parole, il compilatore tenter\`a
+        (\`e una richiesta rivolta al compilatore, non un obbligo) ed inserire il corpo
+        completo della funzione ogni qual volta, nel codice, viene chiamata tale funzione.
+        Come si vede dal codice, \`e possibile separare la dichiarazione della funzione
+        \cpp{inline} dalla sua implementazione. Nel caso in cui il metodo \cpp{inline} \`e
+        implementato all'interno della classe la direttiva \cpp{inline} \`e opzionale, in
+        quanto il compilatore interpreta tali metodi come \cpp{inline}. Se tuttavia il metodo
+        \`e implementato al di fuori della classe \`e necessaria la direttiva \cpp{inline} e
+        la funzione deve essere implementata nell'\textit{header file}. Si consiglia di
+        inserire all'interno della classe solamente metodi molto brevi.
+        Inoltre la direttiva \cpp{inline} \`e applicabile anche alle \textit{free function},
+        ovvero a quelle funzioni non metodi di una classe. L'utilizzo e l'effetto sono analoghi.
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting[caption=Implementazione della classe \cpp{Bisection}]
+                {es/1/src/bisection.cpp}
+        \lstset{basicstyle=\sf}
+        All'interno del costruttore della classe \`e possibile chiamare esplicitamente
+        i costruttori degli attributi della classe.
+        Nel caso considerato verranno creati gli oggetti \cpp{M_tol}, \cpp{M_maxit} e
+        \cpp{M_check} direttamente con i valori \cpp{tol}, \cpp{maxit} e \cpp{check},
+        rispettivamente.
+
+        I commenti alla classe \cpp{Newton} sono analoghi a quelli fatti per la
+        classe \cpp{Bisection}. Riportiamo i listati contenenti i codici.
+        % Newton
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting[caption=Interfaccia della classe \cpp{Newton}]
+                {es/1/src/newton.hpp}
+            \lstinputlisting[caption=Implementazione della classe \cpp{Newton}]
+                {es/1/src/newton.cpp}
+        \lstset{basicstyle=\sf}
+
+
+    \item Riportiamo qui di seguito il listato per la classe \cpp{Robust}, divisa anch'essa
+        in \emph{header file} e \emph{source file}.
+        % Robust
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting[caption=Interfaccia della classe \cpp{Robust}]{es/1/src/robust.hpp}
+            \lstinputlisting[caption=Implementazione della classe \cpp{Robust}]{es/1/src/robust.cpp}
+        \lstset{basicstyle=\sf}
+
+        All'interno della struttura \cpp{robust} sono stati definiti i tipi
+        per il metodo globalmente convergente utilizzato per trovare
+        l'approssimazione grossolana della radice (\cpp{coarseT}) e per il
+        metodo di alto ordine utilizzato per raffinare la stima
+        (\cpp{fineT}). Ci\`o pu\`o essere utile qualora si desiderasse
+        cambiare uno dei due metodi, a patto, naturalmente, che la classe che
+        implementa il nuovo metodo abbia un'interfaccia compatibile con quella
+        del metodo che sostituisce. Si provi, per esercizio, a scrivere
+        un'implementazione del metodo di Newton modificato e ad utilizzarlo
+        nella struttura \cpp{robust}. Si vedr\`a nel seguito che questa
+        tecnica pu\`o essere ulteriormente raffinata parametrizzando la classe
+        \cpp{Robust} rispetto ai due tipo \cpp{coarseT} e \cpp{fineT}
+        utilizzando la direttiva \cpp{template}.
+        Il grado di approssimazione dello zero richiesto al metodo grossolano
+        \`e definito come il prodotto della tolleranza finale \cpp{tol} per il
+        coefficiente \cpp{M\_cfratio} (\emph{coarse-to-fine ratio}).
+        I membri \emph{accessor} permettono di accedere accedere alle
+        propriet\`a non modificabili dall'utente tramite un membro \cpp{const}.
+
+        Il file \cpp{Makefile}, che permette la  compilazione di \cpp{bisection},
+        \cpp{newton} e \cpp{robust}, produce una libreria statica
+        \cpp{librootfinding.a}. Una volta preparato il file di libreria, qualsiasi
+        codice che utilizzi questi metodi, come quello proposto al \emph{Punto 3}, pu\`o
+        essere compilato passando al compilatore il nome della libreria (tramite il
+        parametro \texttt{-lrootfinding}) e la sua posizione (\texttt{-Llib} in questo esempio).
+
+        Le strutture delle classi \cpp{bisection},
+        \cpp{newton} e \cpp{robust} hanno molte propriet\`a analoghe. Replicare
+        la definizione strutture simili \`e non solo inelegante, ma rischioso
+        qualora divenga importante %in un altro punto del codice
+        che le classi che implementano i diversi metodi abbiano un'interfaccia
+        omogenea. Una soluzione migliore consiste nel creare una classe base
+        \cpp{IterativeMethod} da cui derivare le implementazioni di ciascun
+        metodo.
+
+
+    \item Si riporta di seguito il codice del \emph{main program} per la
+        soluzione del terzo punto. L'implementazione cui si fa riferimento
+        \`e quella relativa al listato riportato ai punti precedente.
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./es/1/bn.hpp}
+        \lstset{basicstyle=\sf}
+        In questo caso le classi \cpp{Bisection}, \cpp{Newton} e \cpp{Robust} sono
+        salvate nella cartella \verb1./src/1.
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./es/1/bn.cpp}
+        \lstset{basicstyle=\sf}
+        All'interno del \verb1main1 si noti l'utilizzo sia di \cpp{using namespace std}
+        che di \cpp{using namespace RootFinding}. Utile per accedere agevolmente a tutti
+        gli oggetti e funzioni dichiarate in \cpp{std} e \cpp{RootFinding}.
+
+    \item  Si fornisce la soluzione relativa alla struttura \cpp{Robust}. Il
+        sovraccaricamento dell'\cpp{operator<<} negli altri casi \`e del tutto
+        analogo.
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting[linerange={15-30}]{./es/2/src/robust.cpp}
+        \lstset{basicstyle=\sf}
+
+        Si noti che la funzione che sovraccarica l'operatore di scorrimento
+        accede ai membri privati della classe. Per questa ragione \`e
+        necessario specificare che si tratta di una \emph{friend function}
+        aggiungendo l'istruzione seguente all'interfaccia della classe:
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting[linerange=46-47]{./es/1.5/src/robust.hpp}
+        \lstset{basicstyle=\sf}
+
+        Per testare il codice scritto si pu\`o utilizzare il seguente \emph{main program}:
+        %
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./es/1.5/bn.cpp}
+        \lstset{basicstyle=\sf}
+        %
+        Compilando ed eseguendo il programma si ottiene il seguente \emph{output}:
+        \begin{verbatim}
+0.707107
+* Robust Method *
+Tolerance           :   1e-06
+Max # of iterations :   100
+Convergence check   :   increment
+# of iterations (C) :   3
+# of iterations (F) :   4
+C-to-F tol ratio    :   200000
+        \end{verbatim}
+
+\end{enumerate}

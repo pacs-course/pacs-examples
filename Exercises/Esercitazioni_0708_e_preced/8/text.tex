@@ -1,0 +1,65 @@
+\section*{Es. 1}
+Data una funzione $f(x)$ integrabile sull'intervallo $[a,b]$, lo scopo
+di un integratore numerico è quello di fornire
+un'approssimazione dell'integrale
+\[
+I_f(a,b) = \int_a^b f(x) dx.
+\]
+
+Partendo dalla traccia fornita,
+\begin{enumerate}
+\item considerare un integratore che utilizzi la regola di
+  Cavalieri-Simpson su ogni sottointervallo. Posti:
+\[
+a=-3,\ b=4,\ f(x)=arctan(10x),
+\]
+calcolare un'approssimazione di $I_f(a,b)$.
+Sapendo, inoltre, che la funzione
+\[
+F(x) = xarctan(10x) - \dfrac{log(1+100x^2)}{20}
+\]
+è una primitiva di $f$, verificare la correttezza dei risultati
+ottenuti (al variare del numero di sottointervalli considerato).
+
+\item Lo schema adottato è indipendente dalla regola di integrazione
+  utilizzata in ciascun sottointervallo. Si modifichi opportunamente
+  l'implementazione dell'integratore parametrizzandola
+  rispetto a tale regola e si verifichi come varia la bontà
+  dell'approssimazione utilizzando le regole di quadratura di
+  Cavalieri-Simpson e del punto medio.
+
+\emph{Suggerimento:} creare una classe \cpp{QuadratureRule} da passare
+come parametro all'integratore. Questa soluzione può essere
+implementata con la tecnica dei \cpp{templates}.
+
+\end{enumerate}
+
+\section*{Es. 2}
+Il problema della ricerca delle radici di una funzione non lineare
+$f:[a,b] \rightarrow \mathbb{R}$ può sempre essere trasformato in un
+problema equivalente di ricerca del \emph{punto fisso} di una funzione
+ausiliaria $\phi$:
+\[
+f(x) = 0\ \Longleftrightarrow\ x - \phi(x) = 0
+\]
+
+$\phi:[a,b] \rightarrow \mathbb{R}$ deve essere scelta in modo tale che $\phi(\alpha)=\alpha$ ogni
+volta che $f(\alpha)=0$. L'algoritmo iterativo
+\[
+x^{(k+1)} = \phi( x^{(k)} ),\ k \geq 0,
+\]
+partendo da $x^{(0)}$ converge ad $\alpha$ sotto opportune ipotesi
+\cite[\extref{6}]{Quarteroni.Sacco.ea:2000}.
+
+Implementare il metodo di punto fisso di Newton, per il quale
+\[
+\phi_{Newt}(x) = x - \dfrac{f(x)}{f'(x)}.
+\]
+Considerata la funzione $f(x)=cos^2(2x)-x^2$ nell'intervallo $0 \leq x
+\leq 1.5$, se ne calcoli lo zero con una tolleranza pari ad $\epsilon
+= 10^{-10}$.
+
+\emph{Suggerimento:} implementare il metodo di punto fisso come classe
+derivata di una classe \cpp{FixedPointBase}; creare una classe
+\cpp{SolveFP}, parametrizzata rispetto al metodo di punto fisso, per
+il calcolo delle iterate successive.

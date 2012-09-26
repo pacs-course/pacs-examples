@@ -1,0 +1,117 @@
+\newpage
+
+\section*{Soluzioni}
+
+\subsection*{Punto 1}
+Alcune definizioni sono raggruppate nel seguente \emph{header file}:
+%
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./es/1/rootfinding.hpp}
+\lstset{basicstyle=\sf}
+
+Si noti, innanzitutto, che \`e stato definito un tipo utente
+\cpp{real}. In tal modo, qualora si volesse modificare la precisione
+con cui si effettuano i calcoli, sarebbe sufficiente cambiare una
+singola linea (la definizione del tipo \cpp{real}) perch\`e le
+modifiche siano estese in maniera coerente a tutto il codice.
+
+Per rendere l'implementazione dei metodi di ricerca indipendente dalla
+funzione considerata si \`e adottata la tecnica dei \emph{puntatori a
+funzione}. L'istruzione: 
+\begin{lstlisting}
+typedef real (*fctptr)(real);
+\end{lstlisting}
+definisce il tipo \cpp{fctptr} come un puntatore a funzioni che
+ricevono un argomento di tipo \cpp{real} e restituiscono un valore di
+tipo \cpp{real}.
+
+L'arresto dei metodi iterativi per la ricerca degli zeri di una
+funzione pu\`o avvenire in base a diversi criteri. Per funzioni che
+abbiano derivata prima vicina a $1$ in modulo in corrispondenza dello
+zero cercato un efficiente metodo d'arresto \`e basato sul controllo
+del \emph{residuo}. In tal caso si considera raggiunta la convergenza
+alla prima iterazione $k$ in cui
+$\module{\function{f}{x\iter{k}}}<\cpp{tol}$. Un metodo alternativo
+basato sul controllo dell'\emph{incremento} risulta, per contro,
+efficiente qualora si utilizzino delle iterazioni di punto fisso e la
+funzione di iterazione $\function{\phi}{\cdot}$ abbia derivata prima
+lontana da $1$ in modulo in corrispondenza dello zero cercato. Tale
+criterio prevede l'arresto alla prima iterazione $k$ per cui si abbia
+$\module{x\iter{k+1} - x\iter{k}}<\cpp{tol}$. Nel caso del metodo di
+Netwon, in cui, per definizione, $\function{\phi'}{\alpha} = 0$, il
+controllo dell'incremento fornisce un bilanciamento
+ottimale. Nell'implementazione si \`e tenuto conto della
+molteplicit\`a dei criteri d'arresto definendo un tipo enumerativo
+\cpp{checkT} e dotando ogni metodo di una propriet\`a \cpp{M\_check}
+di tipo \cpp{checkT} che specificasse il metodo da utilizzare. 
+
+Si riporta di seguito il listato dell'\emph{header file} che contiene
+le dichiarazioni delle procedure che risolvono l'esercizio.
+% zerofun.hpp
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Procedure per la ricerca degli zeri di una funzione.]{es/1/zerofun.hpp}
+\lstset{basicstyle=\sf}
+
+Le corrispondenti definizioni sono state inserite nel \emph{source file}
+\texttt{zerofun.cpp}:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Procedure per la ricerca degli zeri di una
+funzione.]{es/1/zerofun.cpp}
+\lstset{basicstyle=\sf}
+
+L'istruzione \texttt{assert(u*f(b)<0.0);} permette un semplice controllo degli errori,
+ perch\`e provoca l'interruzione del programma e la generazione di un
+ messaggio di errore se l'espressione \texttt{u*f(b)<0.0} non \`e verificata.
+
+Per la compilazione si ricorre ai seguenti comandi:
+\begin{verbatim}
+g++  -c -o bn.o bn.cpp
+g++  -c -o zerofun.o zerofun.cpp
+g++  -o bn bn.o zerofun.o
+\end{verbatim} 
+
+I \emph{files} \texttt{bn.o} e \texttt{zerofun.o} sono la
+rappresentazione in codice oggetto delle
+definizioni di tipi e e funzioni contenute nei \emph{files} sorgente
+(rispettivamente \texttt{bn.cpp} e \texttt{zerofun.cpp}. Il
+collegamento (\emph{linking}) dei \emph{files} oggetto produce l'eseguibile
+\texttt{bn}.
+
+\subsection*{Punto 2}
+Si riporta di seguito il codice del \emph{main program} per la
+soluzione del secondo punto. L'implementazione cui si fa riferimento
+\`e quella relativa al primo listato riportato al punto precedente.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./es/1/bn.cpp}
+\lstset{basicstyle=\sf}
+
+\subsection*{Note sui cicli}
+Il codice proposto al \emph{Punto 1} utilizza \texttt{break} per interrompere
+i cicli. L'istruzione \texttt{break} \`e un modo efficiente per
+imporre una condizione di uscita, ma pu\`o rendere il codice di difficile
+lettura ed interpretazione; infatti le condizioni di uscita sono sparse e non
+sono raggruppate all'inizio o alla fine. Per questo motivo si cerca di limitare
+l'uso di \texttt{break} alla gestione di eccezioni.
+
+Sono possibili soluzioni alternative, come la seguente:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Ciclo \texttt{do\ldots while} senza 
+\texttt{break}.,linerange={26-47}]{es/1/zerofun-dowhile.cc}
+\lstset{basicstyle=\sf}
+
+In questo caso le condizioni di uscita sono chiaramente visibili in fondo al
+codice. Il prezzo da pagare \`e un inutile assegnamento di variabili
+nell'ultima iterazione eseguita. Il costrutto \texttt{do \ldots while} ha come
+caratteristica fondamentale quella di eseguire sempre almeno una iterazione, anche se le condizioni di uscita non sono verificate o 
+verificabili all'inzio del ciclo.
+A volte questo comportamento pu\`o aiutare a generare errori non banali, se il codice scritto \`e complesso.
+
+
+Un' altra alternativa possibile \`e l'uso di un ciclo \texttt{while}: 
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Ciclo \texttt{while} senza
+\texttt{break}.,linerange={26-47}]{es/1/zerofun-while.cc}
+\lstset{basicstyle=\sf}
+ In queso caso la prima valutazione della funzione \`e necessariamente esterna
+ al ciclo.
+ 

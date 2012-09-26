@@ -1,0 +1,59 @@
+Elenco argomenti dei laboratori 2008/2009
+
+01 - introduzione al C++ tramite l'algoritmo della somma dei quadrati 01/10
+02 - eq. del calore, con alg. di Thomas come esercizio da valutare 8/10
+03 - Programmazione modulare: algoritmo per la ricerca degli zeri - header file e funzioni
+     Scrivere funzione bisezione, separare le funzioni relative alla ricerca
+     degli zeri dal main e scrivere l'header file corrispondente, niente valutazione. 15/10
+04 - Correzione lab. 3.  Introduzione alla programmazione ad oggetti: 
+     creare classi opportune a partire da lab. 03. Overloading di operatori. Esercizio 
+     da valutare (non più): scrivere una classe base per i metodi iterativi di ricerca degli zeri. 
+     Si rimanda la creazione della libreria ed il Makefile al lab. successivo.   22/10
+05 - cenni sulle librerie statiche e sul maklefile. Debugging con gdb in Eclipse. 29/10
+06 - Overloading di operatori: esempio didattico di libreria di algebra lineare. 
+     Problema agli autovalori, calcolo del pagerank di Google. 05/11
+07 - Correzione calcolo del Pagerank. Risoluzione dell'esercizio del laboratorio 4: 
+     "scrivere una classe base per i metodi iterativi di ricerca degli zeri", che quindi
+     non è pià da fare come compito a casa. 12/11
+08 - partendo dal codice inherit2 fornito a lezione:
+     - aggiungere la regola di quadratura gaussiana a 3 punti
+     - estrarre dalla classe NumericalQuadrature la suddivisione in intervalli, in modo
+       che la generazione degli intervalli sia a tutti gli effetti esterna. 19/11
+09 - Il laboratorio verte sul wrapper semplice. Il codice corrispondente si trova nella cartella "wrapper_simple" dell'archivio esempio numerical quadrature 26/11
+10 - Prosegue l'esempio sulle regole di quadratura. A partire dalla versione con wrapper, eliminare il wrapper stesso e provare ad implementare le regole di quadratura come policy.
+ Rendere possibile l'uso di un puntatore a funtore al posto di quello a funzione. Template. Trasformare il wrapper semplice in generico. 03/12
+11 - Strutture di base per l'implementazione di una mesh. STL containers, shared_ptr, lettura da file 
+     etc. Es. da valutare:
+     1) facile - aggiungere la descrizione del tipo di condizione al contorno sul nodo
+     2) non facile - costruire la classe "lato" e scrivere un metodo della classe Mesh che trovi 
+        tutti i lati 10/12 
+12 - Dati agli studenti un archivio contenente le librerie SparseLIb++, IML++, una matrice in formato HB tratta 
+     da MatrixMarket e i manuali di SparseLIb++ e IML++. Scrivere e consegnare un breve programma che che risolva con
+     il metodo del gradiente coniugato (implementato in IML++) un sistema lineare, 
+     avente come soluzione esatta un vettore colonna i cui elementi sono tutti 1 e come matrice 
+     del sistema quella fornita. Confrontare il risultato ottenuto con la soluzione esatta. 17/12 
+13 - 13/01 soluzione e commento dell'esercizio assegnato nel laboratorio 11 
+14 - 14/01 
+15 - 21/01 Valgrind e profiler. Ad esempio new senza delete
+
+*** da fare ***
+
+profiler e valgrind
+
+
+*** argomenti ancora da trattare (tratto da 08/09)
+
+
+09 - 
+10 - (gennaio 2009)
+     ripreso ed approfondito esempio fatto a lezione: decorator che aggiunge il calcolo dell'errore
+     all'esempio sulle formule di quadratura, nella versione con wrapper template.
+     Es. da valutare: modificare il codice in modo da raffinare la mesh negli intervalli opportuni,
+     se la stima dell'errore non rispetta la tolleranza richiesta. 08/01
+11 - Matrici sparse: dati i manuali in pdf di Sparselib++ e IML++, scrivere un programma che legga una 
+	 matrice in formato Harwell-Boeing e risolva un sistema lineare con termine noto dato, precondizionatore
+	 iLU e metodo iterativo opportuno, a scelta. (N.B. la documentazione è obsoleta, leggere gli header 
+	 file per capire come funziona realmente la libreria fa parte dell'esercizio). 15/01
+12 - FEM classe polynomial 21/01 (spostato a da giovedì a merc.)
+
+ 

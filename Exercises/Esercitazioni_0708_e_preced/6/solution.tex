@@ -1,0 +1,238 @@
+\newpage
+
+\section*{Soluzione}
+
+\subsection*{Vettori}
+La classe per la gestione dei vettori deve memorizzarne i valori ed
+implementare le comuni operazioni unarie e binarie. La memorizzazione
+delle componenti del vettore \`e affidata alla propriet\`a
+\cpp{M\_super}, definita come un \textit{array} di
+\cpp{double}. Poich\'e per il contenitore si \`e scelto di utilizzare
+un \emph{array}, \`e necessario prevedere un distruttore che deallochi
+la memoria ad esso destinata mediante il comando \cpp{delete[]}.
+Sono definiti come membri della classe \cpp{LinearAlgebra::Vector} gli
+operatori di assegnamento, gli operatori \cpp{+} e \cpp{-} unari, la
+somma e la sottrazione di un vettore, la moltiplicazione di uno
+scalare per un vettore, il prodotto scalare tra due vettori e le
+funzioni per il calcolo della norma euclidea e del massimo discreta.
+
+Per la definizione di un'istanza della classe \cpp{Vector} sono stati
+previsti tre diversi costruttori:
+\begin{enumerate}
+\item il primo riceve la dimensione del vettore ed un puntatore ad un
+\emph{array} di \cpp{double} da cui copiare le componenti;
+\item il secondo riceve la dimensione del vettore ed un valore scalare
+  da attribuire a tutte le componenti. Si \`e scelto di rendere
+  entrambi gli argomenti opzionali fornendo come valori di
+  \emph{default} rispettivamente \cpp{0} e \cpp{0.}\footnote{Si
+    ricordi che \`e bene distinguere tra costanti \cpp{int} e
+  \cpp{double}.}. In assenza di argomenti, si ottiene, pertanto, il
+  costruttore di \emph{default};
+\item l'ultimo costruttore, infine, implementa la costruzione mediante
+  copia da un oggetto \cpp{Vector} preesistente.
+\end{enumerate}
+
+La ragione per cui \`e necessario implementare un \emph{copy
+  constructor} \`e che quello di \emph{default} agirebbe copiando il
+valore di \cpp{M_super} (che \`e un puntatore a \cpp{double}) e non
+  l'intero vettore. La dichiarazione
+\begin{lstlisting}
+Vector v1(10, 1.);
+Vector v2( v1 );
+\end{lstlisting}
+avrebbe come risultato la creazione di un'istanza \cpp{v2} la cui
+propriet\`a \cpp{M_super} punta alla stessa locazione di memoria di
+\cpp{v1.M_super}. Ci\`o avrebbe numerosi effetti sgradevoli, tra cui:
+assegnando un valore ad una componente di \cpp{v1} si modificherebbe
+anche \cpp{v2}; distruggendo \cpp{v1} verrebbe deallocata l'area di
+memoria puntata da \cpp{v2.M_super}, rendendo quest'ultimo privo di senso.
+
+Per accedere agli elementi del vettore \`e possibile sovraccaricare
+l'operatore \cpp{[]}. Per consentire la modifica delle componenti, il
+membro \cpp{operator[]} restituisce una referenza alla componente
+richiesta. Di tale membro \`e stata implementata anche la versione
+\cpp{const}, da utilizzarsi, ad esempio, quando si passa come
+argomento una \emph{const reference} ad un \cpp{Vector}.
+
+In ultimo, pu\`o essere utile sovraccaricare l'operatore \cpp{<%
+<} per rappresentare su uno \emph{stream} gli elementi del vettore. Si
+riporta di seguito l'implementazione completa.
+%
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Vector}]{es/yang/src/vector.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Vector}]{es/yang/src/vector.cpp}
+\lstset{basicstyle=\sf}
+
+Si noti che alcune funzioni sono state dichiarate \cpp{friend} della
+classe \cpp{Vector}. Ci\`o permette loro di accedere ai membri privati
+della classe pur non appartenendo a quest'ultima.
+
+\subsection*{Matrici}
+L'implementazione della classe \cpp{LinearAlgebra::Matrix} per matrici
+piene sfrutta un \emph{array} bidimensionale per la memorizzazione
+degli elementi della matrice. Analogamente a prima, sono stati
+previsti tre costruttori (copia degli elementi da un \emph{array}
+bidimensionale di \cpp{double}, inizializzazione di tutti gli elementi
+a partire da uno scalare e \emph{copy constructor}). Sono state
+implementate come membri della classe le operazioni di assegnamento e
+gli operatori di somma e sottrazione tra due matrici. L'accesso agli
+elementi della matrice pu\`o avvenire tramite doppio pedice, come
+avviene per gli \emph{array} bidimensionali o tramite una coppia di
+indici. Oltre a ci\`o, sono stati implementati il membro \cpp{diag},
+che restituisce il vettore degli elementi diagonali della matrice, e
+due norme (la norma di Frobenius e la norma $\function{\Psi}{\cdot}$
+definita come in \cite[\extref{5}]{Quarteroni.Sacco.ea:2000}). In
+ultimo, \`e stata sovraccaricato l'operatore \cpp{*} per realizzare la
+moltiplicazione matrice-vettore: se ne riporta di seguito
+l'implementazione.
+
+Come membro della classe, \cpp{operator*} realizza
+il prodotto $A \bf{x}$:
+%
+\label{code:matrix}
+\begin{lstlisting}[caption=Dichiarazione della funzione membro \cpp{Matrix::operator*}]
+namespace LinearAlgebra {
+
+  class Matrix {
+  public:
+    ...
+    Vector operator*(const Vector&) const;
+  protected:
+    ...
+  };
+}
+\end{lstlisting}
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Implementazione della funzione membro
+\cpp{Matrix::operator*},linerange={86-97}]{./es/yang/src/matrix.cpp}
+\lstset{basicstyle=\sf}
+Il prodotto $\bf{x}^T A$ invece non si pu\`o tradurre nello stesso
+modo: un operatore binario \emph{membro di classe} riceve sempre come
+primo operando un oggetto della classe stessa. \`E quindi necessario
+definire una funzione \cpp{operator*} \emph{non membro},
+che riceva come primo operando un \cpp{Vector}:
+\begin{lstlisting}[caption=Dichiarazione della funzione \emph{non
+membro} \cpp{operator*}]
+namespace LinearAlgebra {
+
+  class Matrix {
+  public:
+    ...
+  protected:
+    ...
+  };
+
+  //! Vector-matrix multiplication
+  Vector operator*(const Vector& /* v */, const Matrix& /* A */);
+}
+\end{lstlisting}
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Implementazione della funzione \emph{non membro}
+\cpp{operator*},linerange={125-136}]{./es/yang/src/matrix.cpp}
+\lstset{basicstyle=\sf}
+La funzione \emph{non membro} \cpp{operator*} pu\`o essere dichiarata
+\cpp{friend}: in tal caso la dichiarazione deve essere all'interno del
+corpo della classe e la funzione pu\`o accedere ai membri privati
+dell'operando di cui \`e \cpp{friend}:
+\begin{lstlisting}[caption=Dichiarazione della funzione \emph{non
+membro} \cpp{operator*} come \cpp{friend}]
+namespace LinearAlgebra {
+
+  class Matrix {
+  //! Vector-matrix multiplication
+  friend Vector operator*(const Vector& /* v */, const Matrix& /* A */);
+  public:
+    ...
+  protected:
+    ...
+  };
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Implementazione della funzione \emph{non
+membro} \cpp{operator*} come \cpp{friend}]
+  Vector operator*(const Vector& v, const Matrix& A) {
+    if(A.M_size1 != v.size())
+      std::cerr << "[Vector::operator*(Matrix)] ERROR: "
+		<< "matrix and vector sizes don't match"
+		<< std::endl;
+    Vector vm(A.M_size2);
+    for(int j = 0; j < A.M_size2; j++)
+      for(int i = 0; i < A.M_size1; i++)
+	vm[j] += v[i] * A.M_super[i][j];
+    return vm;
+  }
+\end{lstlisting}
+
+\subsection*{Metodo delle potenze}
+Viene fornita di seguito un'implementazione del metodo delle potenze
+che sfrutta le classi \cpp{Vector} e \cpp{Matrix} descritte sopra. La
+classe \cpp{LinearAlgebra::Eigenvalues::Power} possiede un unico
+costruttore cui viene passata la tolleranza ed il massimo numero di
+iterazioni. La ragione per cui si impone un limite al numero di
+iterazioni \`e evitare che, in caso di mancata convergenza, il sistema
+entri in un ciclo infinito. Il metodo viene applicato tramite una
+chiamata al membro \cpp{apply}, cui va passata la matrice di cui si
+vuole calcolare l'autovalore di modulo massimo ed una stima iniziale
+dell'autovalore destro ad esso associato. Il codice relativo alla
+classe \cpp{Power} \`e riportato di seguito.
+%
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Power}]{./es/yang/src/power.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Power}]{./es/yang/src/power.cpp}
+\lstset{basicstyle=\sf}
+
+\subsection*{Metodo di Jacobi ciclico}
+Come evidenziato nel testo dell'esercizio, il metodo di Jacobi
+costruisce una diagonalizzazione approssimata di una matrice mediante
+l'applicazione successiva di opportune trasformazioni di
+Givens. Poich\'e le matrici di Givens hanno un \emph{pattern} di
+sparsit\`a ben noto, utilizzare una funzione generica di
+moltiplicazione matriciale per effettuare i prodotti richiesti pu\`o
+risultare molto inefficiente. Si \`e, pertanto, deciso di implementare
+la classe \cpp{LinearAlgebra::GivensTransform}, il cui membro
+\cpp{apply} applica la trasformazione ottimizzando le operazioni di
+prodotto matriciale. Tale classe dispone di due costruttori, che
+permettono di definire la trasformazione mediante la coppia di indici
+corrispondenti al blocco $2\times 2$ di rotazione e l'angolo $\theta$
+o le sue funzioni trigonometriche.
+%
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Givens}]{./es/yang/src/givens.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Givens}]{./es/yang/src/givens.cpp}
+\lstset{basicstyle=\sf}
+%
+Il metodo di Jacobi ciclico \`e implementato dal codice riportato sotto.
+%
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{CyclicJacobi}]{./es/yang/src/cyclicJacobi.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{CyclicJacobi}]{./es/yang/src/cyclicJacobi.cpp}
+\lstset{basicstyle=\sf}
+
+\subsection*{Validazione del codice}
+Per la validazione del codice pu\`o essere comodo disporre di una
+classe che implementi le matrici di Hilbert. Tale classe pu\`o essere
+derivata dalla classe \cpp{Matrix} introducendo un opportuno
+costruttore:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[linerange={113-128}]{./es/yang/src/matrix.hpp}
+\lstset{basicstyle=\sf}
+Si noti che un oggetto di classe \cpp{Hilbert} \emph{\`e un} oggetto
+di classe \cpp{Matrix}. Quindi tutte le funzioni che ricevono come
+parametro un oggetto \cpp{Matrix} possono essere applicate
+direttamente ad un oggetto \cpp{Hilbert}. 
+
+ Il \emph{main program} relativo al caso test
+proposto \`e riportato di seguito.
+%
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./es/yang/eig.cpp}
+\lstset{basicstyle=\sf}

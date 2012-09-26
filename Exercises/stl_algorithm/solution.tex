@@ -1,0 +1,83 @@
+\newpage
+
+\section*{Soluzione}
+
+Analizziamo la soluzione punto per punto.
+
+\begin{enumerate}
+	\item Presentiamo qui di seguito il listato contenente la soluzione del primo esercizio
+		\lstset{basicstyle=\scriptsize\sf}
+		\lstinputlisting{./es/es1/main.cpp}
+		\lstset{basicstyle=\sf}
+		Per l'utilizzo dell'algoritmo \cpp{sort} della standard template library, \`e necessario creare un
+		predicato che permette di valutare l'espressione $>$. Un predicato \`e una funzione, o un funtore,
+		che riceve in ingresso dei parametri e fornisce in uscita un \cpp{bool}. Nella soluzione
+		presentata si \`e scelto di utilizzare un funtore. Nel caso dell'algoritmo
+		\cpp{sort} il predicato prende in ingresso due valori utili al loro confronto, tale algoritmo
+		funziona su tutti i contenitori della standard template library.
+	
+	\item Presentiamo il listato contenente la soluzione del secondo esercizio
+		\lstset{basicstyle=\scriptsize\sf}
+		\lstinputlisting{./es/es2/main.cpp}
+		\lstset{basicstyle=\sf}
+		L'algoritmo \cpp{find} della standard template library permette di trovare elementi all'interno 
+		di un contenitore, \`e richiesta quindi l'implementazione dell'operatore \cpp{==} per il tipo
+		memorizzato. In uscita, se l'elemento \`e stato correttamente trovato, l'algoritmo ritorna un
+		iteratore al valore altrimenti ritorna la posizione \cpp{end()} del contenitore. \`E quindi facile, 
+		e caldamente consigliato, controllare sempre che la ricerca abbia dato esito positivo. Per ricercare
+		l'elemento successivo al primo \`e possibile utilizzare \cpp{find} nella sotto-sequenza formata 
+		dall'elemento successivo a quello appena trovato fino alla fine della sequenza originale. Per scorrere di una posizione
+		l'iteratore \`e possibile utilizzare il pre-incremento \cpp{++}. La ricerca della terza occorrenza
+		di $55$ \`e analoga alla seconda. Per sapere quale sia l'indice che corrisponde al un iteratore,
+		in un vettore, \`e possibile utilizzare l'operatore \cpp{-} tra l'iteratore stesso e la posizione
+		\cpp{begin()} del vettore. Si noti l'utilizzo all'interno del codice.
+		
+	\item Presentiamo il listato contenente la soluzione del terzo esercizio
+		\lstset{basicstyle=\scriptsize\sf}
+		\lstinputlisting{./es/es3/main.cpp}
+		\lstset{basicstyle=\sf}
+		Per utilizzare l'algoritmo \cpp{count_if} della standard template library \`e necessario creare
+		un predicato simile a quello creato nel punto 1, con la differenza che ora vi \`e solamente un 
+		parametro di ingresso. In ingresso la funzione \cpp{count_if} prende la lista su cui operare, 
+		definita attraverso due iteratori e il predicato per la valutazione dell'\cpp{if}. In uscita 
+		\cpp{cout_if} restituisce il numero di occorrenze trovate che soddisfano il predicato. Notiamo
+		infine l'utilizzo degli \cpp{const_iterator} utile alla stampa della lista, \`e suggerito, e 
+		caldamente consigliato, utilizzare i \cpp{const_iterator} quando il valore associato all'iteratore
+		non viene modificato.
+		
+	\item Presentiamo il listato contenente la soluzione del quarto esercizio
+		\lstset{basicstyle=\scriptsize\sf}
+		\lstinputlisting{./es/es4/main.cpp}
+		\lstset{basicstyle=\sf}
+		Per risolvere l'esercizio \`e necessario creare un funtore, o una funzione, che permette di
+		accumulare i valori, ciascuno moltiplicato per $3$. L'utilizzo di default della funzione
+		\cpp{accumulate} permette di sommare tutti i valori all'interno del contenitore, tuttavia dovendo
+		moltiplicare ciascun elemento per $3$ \`e necessaria la creazione di un opportuno funtore. Tale
+		funtore prende in ingresso due valori, in cui il primo \`e la somma parziale mentre il secondo
+		\`e il nuovo valore da aggiungere. \cpp{accumulate} permette di definire un valore di partenza e,
+		grazie ad esso, capisce il tipo per il valore di ritorno. 
+		
+	\item Presentiamo il listato contenente la soluzione del quinto esercizio							
+		\lstset{basicstyle=\scriptsize\sf}
+		\lstinputlisting{./es/es5/main.cpp}
+		\lstset{basicstyle=\sf}
+		Per risolvere l'esercizio sono stati creati quattro insiemi vuoti, due che conterranno i 
+		valori e altri due che conterranno l'intersezione e l'unione  dei primi. L'utilizzo di
+		\cpp{set_union} e \cpp{set_intersection} richiede due contenitori in ingresso e un iteratore per 
+		l'uscita. Tuttavia se il contenitore associato all'iteratore di uscita \`e vuoto allora \`e
+		necessario utilizzare gli \cpp{insert_iterator}, come presentato nella soluzione.
+		
+	\item Presentiamo il listato contenente la soluzione del sesto esercizio
+		\lstset{basicstyle=\scriptsize\sf}
+		\lstinputlisting{./es/es6/main.cpp}
+		\lstset{basicstyle=\sf}	
+		L'esercizio presenta un modo elementare ma molto efficace per trattare le condizioni al bordo. 
+		Infatti \`e possibile creare una \cpp{map} la cui chiave \`e il flag associata ad un bordo, mentre
+		il valore \`e un puntatore a funzione. In questo modo, tramite l'operatore di accesso \cpp{[]}, 
+		possiamo accedere alla funzione associata ad una certa chiave. Per riempire la mappa \`e possibile
+		utilizzare l'operatore di accesso \cpp{[]}, mentre per ricercare un elemento con una certa chiave
+		\`e possibile utilizzare il metodo \cpp{find} delle \cpp{map}; viene restituito un iteratore al
+		valore trovato altrimenti alla posizione \cpp{end()} della mappa. Per accedere al valore associato
+		a tale iteratore \`e possibile utilizzare \cpp{->second}.
+	
+\end{enumerate}

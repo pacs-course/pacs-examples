@@ -1,0 +1,15 @@
+#! /bin/sh
+
+if [ $# != 2 ]
+then
+echo "Usage: codedir2tex dir_to_texify output_dir"
+exit
+fi
+
+DIR_TO_TEXIFY=$1
+OUTPUT_DIR=$2
+
+echo "Texifying all files in" ${DIR_TO_TEXIFY} "to" ${OUTPUT_DIR}
+code2tex ${DIR_TO_TEXIFY}/*.[hp]pp
+mv ${DIR_TO_TEXIFY}/*.[hp]pp.tex ${OUTPUT_DIR}
+echo "Done"

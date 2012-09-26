@@ -1,0 +1,38 @@
+La soluzione dell'esercitazione 3 fornisce un'implementazione di
+algoritmi per la ricerca dello zero di una funzione $f\in
+C^{1}\left(a, b\right)$ che si annulla in
+un punto $\alpha\in\openint{a}{b}$. Il codice \`e organizzato con una
+logica procedurale.
+
+In questa esercitazione si chiede di
+
+\begin{enumerate}
+\item creare le classi C++ \cpp{Bisection} e \cpp{Newton} che
+forniscano rispettivamente l'implementazione del
+metodo di bisezione e del metodo di Newton (\textit{programmazione
+basata sugli oggetti}).
+
+(\emph{traccia}: il costruttore della classe riceve come parametri la
+tolleranza, il massimo numero di iterazioni, il tipo di controllo
+sulla convergenza. La classe \`e dotata di una funzione \cpp{apply}
+che riceve un insieme opportuno di parametri e applica il metodo
+risolutivo.)
+
+\item sfruttando le strutture dati costruite nell'esercizio
+precedente, creare una classe \cpp{Robust} per l'implementazione di
+un algoritmo robusto, che combini i due metodi di ricerca dello zero.
+
+\item utilizzare i metodi implementati per calcolare lo zero della
+funzione
+  \begin{equation*}
+    f(x) = e^x (x - 0.6)
+  \end{equation*}
+  nell'intervallo $(0, 1)$.
+
+\item Sovraccaricare l'operatore di scorrimento in modo che, inviando
+  ad uno \emph{stream} la classe corrispondente a ciascun metodo, si
+  ottenga una descrizione dell'istanza (nome del metodo, valori dei
+  parametri, numero di iterazioni necessarie per raggiungere la
+  convergenza all'ultima chiamata).
+
+\end{enumerate}

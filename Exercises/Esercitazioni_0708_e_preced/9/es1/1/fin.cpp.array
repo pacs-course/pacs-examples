@@ -1,0 +1,101 @@
+#include <iostream>        // Input-output
+#include <fstream>         // Input-output from a file
+#include <cmath>           // Mathematical functions
+#include <vector>          // Standard vector
+#include "tridiag.hpp"     // Tridiagonal solver
+#include "GetPot"          // Getpot for retrieving data
+
+const int MMAX = 501;
+
+using namespace std;
+
+int main( ) {
+    GetPot ifile("data.pot");
+    
+    // The number of elements
+    int M = ifile("mesh/M", 40);
+    if(M <= 1 || M >= MMAX) 
+        cerr << "Wrong number of elements (1<=M<=501)" << endl;
+
+    ifile.set_prefix("geometry/");
+    // Fin length
+    double L = ifile("length", 1.e-1);
+    // Fin width
+    double w = ifile("width", 5.e-2);
+    // Fin thickness
+    double t = ifile("thickness", 5.e-3);
+
+    ifile.set_prefix("physics/");
+    // Base temperature
+    double T0 = ifile("T0", 393.);
+    // Fluid asymptotic temperature
+    double Tinf = ifile("Tinf", 293.);
+    // The convection heat transfer coefficient
+    double hP = ifile("hP", 10.);
+    // Fin thermal conductivity
+    double k = ifile("k", 5.);
+
+    cout << "M    = " << M << endl;
+    cout << "L    = " << L << endl;
+    cout << "w    = " << w << endl;
+    cout << "t    = " << t << endl;
+    cout << "T0   = " << T0 << endl;
+    cout << "Tinf = " << Tinf << endl;
+    cout << "hP   = " << hP << endl;
+    cout << "k    = " << k << endl;
+
+    // The parameter a
+    double a = 2. * hP * (w + t) / (k * w * t);
+    
+    // Grid stepsize  
+    double h = L / M;
+  
+    // Vector of unknowns
+    double uh[M + 1];
+
+    // Problem matrix
+    double va[M];
+    double vc[M];
+    double vb[M + 1];
+
+    // Fill matrix and rhs
+    vc[0] = 0.;
+    vb[0] = 1.;
+    va[M - 1] = -2.;
+    uh[0] = T0 - Tinf;
+
+    double tmp = 2 + pow(h, 2) * a;
+    for(int i = 0; i < M - 1; i++) va[i] = -1.;
+    for(int i = 1; i < M + 1; i++) { 
+        vb[i] = tmp;
+        uh[i] = 0.;
+    }
+    for(int i = 1; i < M; i++) vc[i] = -1.;
+
+    // The tridiagonal system solver
+    lapack::TriDiag solver(va, vb, vc, M + 1);
+    solver.solve(uh);
+    
+    // Interpolate analytical solution and compute Linf(0, L) error
+    // The exact solution at interpolation nodes
+    double uha[M + 1];
+    double e = -1.;
+    for(int m = 0; m <= M; m++) {
+        uha[m] = Tinf + (T0 - Tinf) * 
+            cosh(sqrt(a) * (L - m * h)) / cosh(sqrt(a) * L);
+        e = max(abs(uha[m] - (Tinf + uh[m])), e);
+    }
+
+    // Post-processing
+    cout << "|| e ||_inf = " << e << endl;
+
+    ofstream f("fin.xy");
+    for(int m = 0; m <= M; m++)
+        f << m * h
+          << "\t" << Tinf + uh[m]
+          << "\t" << uha[m] <<endl;
+    cout << "Output written to fin.xy" << endl;
+    f.close();
+
+    return 0;
+}

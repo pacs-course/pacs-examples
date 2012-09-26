@@ -1,0 +1,50 @@
+\section*{Es. 1}
+Pu\`o accadere, programmando, di volere utilizzare librerie scritte in
+un linguaggio diverso. In questa esercitazione vedremo come sia
+possibile utilizzare delle \emph{routine} Fortran all'interno di un
+codice C++.
+Nell' esercitazione 2 il problema derivante dalla discretizzazione
+alle DF dell'equazione del calore era stato risolto mediante il metodo
+di Gauss-Seidel, che non richiede la costruzione esplicita
+dell'operatore discreto. Si chiede di modificare il codice in modo
+che, dopo aver costruito e memorizzato l'operatore discreto, si
+fattorizzi e risolva il sistema lineare ad esso associato mediante le
+\emph{routine} Lapack \cpp{dgttrf} e \cpp{dgttrs}. Per memorizzare la
+matrice tridiagonale, il vettore dei termini noti e quello delle
+incognite si utilizzino dei vettori STL. 
+
+Il codice cos\`i ottenuto ha ancora alcune limitazioni. In
+particolare, per ripetere il calcolo con valori diversi dei parametri
+fisici si dovrebbe modificare il listato e ricompilare. Ci\`o non solo
+sarebbe poco pratico, ma rischioso qualora a modificare il codice sia
+un utente che non conosce il C++.
+D'altro canto, l'inserimento da terminale di tutti i dati del problema
+risulterebbe tedioso, specie se solo pochi di essi cambiano ad ogni
+esecuzione. Una buona alternativa \`e costituita dall'\emph{input} da
+\emph{file}. Si richiede di modificare il codice in modo che i valori
+dei parametri del problema vengano letti da un \emph{file} facendo uso
+della libreria GetPot (\texttt{http://getpot.sourceforge.net}). 
+
+
+\section*{Es. 2}
+
+A partire dal testo dell'esercitazione 6, si consideri il caso in cui
+il file di descrizione della mesh contenga anche l'indicazione del
+tipo di condizione al bordo associata a ciascun nodo.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Una semplice \emph{mesh}: sono indicate le
+condizioni al bordo associate ai nodi]{./es/2/mesh.msh}
+\lstset{basicstyle=\sf}
+
+Si utilizzi una opportuna struttura dati per associare
+l'identificativo di ciascun nodo con la stringa che definisce la condizione
+al bordo: si modifichi l'operatore di reindirizzamento ad output della
+classe \cpp{Mesh} per riportare a schermo la condizione al bordo
+associata a ciascun nodo.
+
+Si implementino inoltre le strutture dati e i metodi necessari per
+restituire a schermo una lista di nodi associati ad una certa stringa
+(o un messaggio di avviso se la stringa non è associata ad alcun
+nodo).
+
+Per questo esercizio si sfruttino gli algoritmi ed i contenitori STL.

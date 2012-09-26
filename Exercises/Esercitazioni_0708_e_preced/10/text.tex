@@ -1,0 +1,72 @@
+Si consideri il sistema lineare
+\begin{equation*}
+A x = b
+\end{equation*}
+descritto dalla matrice tridiagonale $A$:
+\begin{equation*}
+\mathbb{R}^{(M)\times (M)}\ni A\eqbydef\left[
+\begin{array}{ccccccc}
+4       & -1        & 0         & \ldots    & 0         & 0     \\
+-1      & 4         & -1        & \ldots    & 0         & 0     \\
+\vdots  &           & \ddots    &           &           &       \\
+0       & 0         & \ldots    & -1        & 4         & -1    \\
+0       & 0         & \ldots    & 0         & -1        & 4     \\
+\end{array}
+\right].
+\end{equation*}
+e con
+\begin{equation*}
+\mathbb{R}^{(M)}\ni b\eqbydef\left[
+\begin{array}{c}
+1 \\
+1 \\
+\vdots \\
+1
+\end{array}
+\right].
+\end{equation*}
+
+Per risolvere questo sistema è possibile ricorrere al metodo del
+gradiente coniugato precondizionato. La libreria \cpp{C++} IML++
+fornisce una raccolta di algoritmi iterativi per la soluzione di sistemi
+lineari, scritti in modo da essere indipendenti dalla implementazione
+delle strutture dati (matrici e vettori): si sfrutti la funzione
+\cpp{template} \cpp{cg} fornita nel file \texttt{cg.h}, definendo una
+classe \cpp{Preconditioner} da fornire come argomento \cpp{template}.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della funzione \cpp{template}
+\cpp{cg},linerange={26-29}]{./es/src/cg.hpp}
+\vspace{.5cm}
+\lstset{basicstyle=\sf}
+
+Nei files \texttt{matrix16.mat} e \texttt{matrix400} vengono fornite
+(sotto forma di elenco degli elementi non nulli)
+due possibili scelte per la matrice $A$,
+rispettivamente di dimensioni $16\times 16$ e $400\times 400$: si
+riporta qui l'incipit del file \texttt{matrix16.mat}.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=File \texttt{matrix16.mat} contenente la descrizione della matrice
+$A$,linerange={1-10}]{./es/matrix16.mat}
+\lstset{basicstyle=\sf}
+La prima sezione del file è definita dall'intestazione \cpp{# SIZE}
+e contiene le dimensioni della matrice; la prima riga dopo
+l'intestazione \cpp{# NZERO} indica il numero di elementi non nulli
+della matrice, che vengono di seguito elencati.
+
+Si scriva un codice in grado di costruire la matrice leggendola da
+file: quindi si risolva il sistema lineare con il metodo del gradiente
+coniugato precondizionato, con tolleranza $10^{-10}$ e massimo numero
+di iterazioni $1000$. Per la memorizzazione della matrice si utilizzino il formato denso
+ed il formato sparso e si confrontino le prestazioni del codice
+realizzato nei due casi (occupazione di memoria, tempo di esecuzione).
+\vspace{.5cm}
+
+\textit{Suggerimento:} si utilizzino le definizioni di matrici e
+vettori fornite dalla libreria \cpp{boost::numeric::ublas}. Questa
+stessa libreria fornisce anche un solutore per sistemi lineari a
+matrice triangolare che può essere sfruttato per la costruzione di un
+semplice precondizionatore triangolare.
+
+Per valutare le prestazioni del codice si utilizzino gli strumenti
+\texttt{valgrind} e \texttt{gprof}.
+

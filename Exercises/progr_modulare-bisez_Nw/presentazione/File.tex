@@ -1,0 +1,142 @@
+\documentclass{beamer}
+
+%\usepackage{t1enc}
+%\pgfpagelayout{2 on 1}[a4paper]
+
+\usepackage{beamerthemesplit,bm}
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+% \usepackage{movie15}
+\usepackage{hyperref}
+\usepackage{multimedia}
+\usepackage{subfigure}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{stmaryrd}
+
+\usetheme{Boadilla}
+
+
+\definecolor{mygreen}{rgb}{0,0.48,0.0}
+
+\definecolor{myblue}{rgb}{0,0,0.64}
+
+\author{Alessio Fumagalli}
+\date{20-10-2011}
+\institute{Politecnico di Milano}
+
+\begin{document}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Gestione dei file testuali}
+
+    \begin{block}{Headerfile da aggiungere}
+        \begin{verbatim}
+#include <fstream>
+        \end{verbatim}
+        Utile sia per l'apertura del file in lettura che in scrittura.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Gestione dei file testuali}
+
+    \begin{block}{Dichiarazione e apertura di un file in scrittura}
+        \begin{verbatim}
+std::fstream fileOut;
+fileOut.open ( fileName.c_str(), std::fstream::out |
+                                 std::fstream::app );
+        \end{verbatim}
+    \end{block}
+
+    \begin{block}{Dichiarazione e apertura di un file in lettura}
+        \begin{verbatim}
+std::fstream fileIn;
+fileIn.open ( fileName.c_str(), std::fstream::in );
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Gestione dei file testuali}
+
+    \begin{block}{Controllare che il file sia aperto}
+        \begin{verbatim}
+if ( file.is_open() == false )
+{
+    std::cerr << "File not opened" << std::endl;
+    exit(1);
+}
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Gestione dei file testuali}
+
+    \begin{block}{Scrittura su file}
+        \begin{verbatim}
+fileOut << "Ciao " << 5.3 << std::endl;
+        \end{verbatim}
+    \end{block}
+
+    \begin{block}{Lettura da file}
+        \begin{verbatim}
+char name [ 256 ];
+float value;
+fileIn >> value;
+fileIn.getline ( name, 256, '\n' );
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Gestione dei file testuali}
+
+    \begin{block}{Ricordarsi di chiudere il file}
+        \begin{verbatim}
+file.close();
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Gestione dei file testuali}
+
+    \begin{block}{Scrivere numeri reali su file}
+        Per aggiungere cifre significative di un numero reale
+        nella scrittura in un file occorre aggiungere
+        \begin{verbatim}
+fileOut.precision ( 15 );
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\end{document}

@@ -1,0 +1,34 @@
+Elenco argomenti dei laboratori 2008/2009
+
+01 - introduzione al C++ tramite l'algoritmo della somma dei quadrati 02/10
+02 - eq. del calore, con alg. di Thomas come esercizio da valutare 16/10
+03 - correzione alg. di Thomas da es 02, debuggin con gdb in Eclipse 
+     Nessun testo preparato, il debugging è stato fatto sulla correzione dell' es.2 23/10 
+04 - Programmazione modulare: algoritmo per la ricerca degli zeri - header file e funzioni
+     Esercizio da valutare: scrivere funzione bisezione, separare le funzioni relative alla ricerca
+     degli zeri dal main e scrivere l'header file corrispondente.  30/10
+05 - Correzione lab 5. Cenni sulla compilazione e sul Makefile - unita' di compilazione
+     Introduzione alla programmazione ad oggetti: creare classi opportune a partire da lab. 04 06/11  
+06 - Continuazione della intorduzione alle classi del laboratorio 05, overloading di operatori,
+	 makefile più complessi, cenni alla compilazionde di una libreria. Esercizio da valutare: scrivere
+	 una classe base per i metodi iterativi di ricerca degli zeri. 13/11
+07 - esempio quadrature rule presentato a lezione, parte 1: inherit1, inherit2, wrapper simple 27/11 
+08 - esempio quadrature rule presentato a lezione, parte 2: more delegation e wrapper (template), 
+	 quest'ultimo lasciato da svolgere agli studenti 04/12
+09 - Strutture di base per l'implementazione di una mesh. STL containers, shared_ptr, lettura da file 
+     etc. Es. da valutare:
+     1) facile - aggiungere la descrizione del tipo di condizione al contorno sul nodo
+     2) non facile - costruire la classe "lato" e scrivere un metodo della classe Mesh che trovi 
+        tutti i lati 11/12
+10 - (gennaio 2009)
+     ripreso ed approfondito esempio fatto a lezione: decorator che aggiunge il calcolo dell'errore
+     all'esempio sulle formule di quadratura, nella versione con wrapper template.
+     Es. da valutare: modificare il codice in modo da raffinare la mesh negli intervalli opportuni,
+     se la stima dell'errore non rispetta la tolleranza richiesta. 08/01
+11 - Matrici sparse: dati i manuali in pdf di Sparselib++ e IML++, scrivere un programma che legga una 
+	 matrice in formato Harwell-Boeing e risolva un sistema lineare con termine noto dato, precondizionatore
+	 iLU e metodo iterativo opportuno, a scelta. (N.B. la documentazione è obsoleta, leggere gli header 
+	 file per capire come funziona realmente la libreria fa parte dell'esercizio). 15/01
+12 - FEM classe polynomial 21/01 (spostato a da giovedì a merc.)
+
+ 

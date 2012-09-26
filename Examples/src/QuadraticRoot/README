@@ -1,0 +1,10 @@
+This is an example of floating point error accumulation due to
+cancellation. Using the common formula for the root of a quadratic
+polynomial, expecially is using float (8 bytys precision) for floating
+point type.
+
+Typing make will produce two executables main_float and main_double,
+the first uses floats to store variables.
+
+Note the use of -D option to change the type in the program using a c
+preprocessor macro.

@@ -1,0 +1,85 @@
+\newpage
+
+\section*{Soluzione}
+
+Il generico elemento
+della \emph{mesh} \`e definito  da un insieme di punti e da un insieme
+di lati. Nell'implementazione proposta i punti sono memorizzati in un
+\cpp{vector}, la cui dimensione \`e fornita come dato al costruttore.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Shape}, linerange={17-17,56-102,135-135}]{es/src/shape.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Shape}, linerange={3-3,12-18,31-31}]{es/src/shape.cpp}
+\lstset{basicstyle=\sf}
+
+Si noti che il distruttore di \cpp{Shape} \`e dichiarato
+\cpp{virtual}: questo consente alle classi derivate di 
+\emph{sovraccaricare} il distruttore, se necessario.
+
+Anche il metodo
+\cpp{measure()} \`e dichiarato \cpp{virtual}, per lo stesso
+motivo. Inoltre essendo inizializzato al valore nullo \`e
+\emph{puramente virtuale}, e di conseguenza la classe \cpp{Shape} \`e
+\emph{astratta}: non \`e possibile
+istanziare un oggetto di tipo \cpp{Shape}, se non tramite il
+costruttore di una classe derivata. Si noti anche che una funzione
+puramente virtuale della classe base \textbf{deve essere definita}
+nelle classi derivate: altrimenti rimane indefinita e questo rende
+astratte anche le classi derivate.
+
+Il \emph{lato} \`e il pi\`u semplice esempio di elemento di una mesh:
+nell'implementazione proposta viene derivato dalla classe \cpp{Shape},
+di cui invoca esplicitamente il costruttore. Si noti che la classe
+derivata \cpp{Edge} fornisce la definizione del metodo \cpp{measure()}
+e non \`e quindi astratta.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=La classe
+\cpp{Edge}, linerange={17-17,103-127,135-135}]{es/src/shape.hpp}
+\lstset{basicstyle=\sf}
+
+Allo stesso modo si derivano da \cpp{Shape} le classi \cpp{Triangle} e \cpp{Quadrangle}.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Triangle}, linerange={12-39}]{es/src/triangle.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Triangle}]{es/src/triangle.cpp}
+
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Quadrangle}, linerange={12-42}]{es/src/quadrangle.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Quadrangle}]{es/src/quadrangle.cpp}
+\lstset{basicstyle=\sf}
+
+Un oggetto di classe \cpp{Mesh} istanzia i suoi membri privati sulla base delle
+informazioni lette da file. Si noti che la lista di elementi \`e un
+oggetto di tipo \cpp{std::vector<element_pointer_type>}, ovvero contiene puntatori
+ad oggetti del tipo \emph{base} \cpp{Shape}. Tuttavia, il
+meccanismo dell'\emph{ereditariet\`a pubblica} consente di
+inizializzare la lista di elementi con puntatori alle classi derivate
+(\cpp{Triangle} e \cpp{Quadrangle}).
+
+Nell'implementazione dell'operatore di scorrimento si sfrutta il
+\cpp{polimorfismo} per la classe \cpp{Shape} e le sue derivate:
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Operatore \cpp{<%
+<} per la classe \cpp{Shape}, linerange={3-3,20-31}]{es/src/shape.cpp}
+\lstset{basicstyle=\sf}
+
+L'operatore riceve come argomento un riferimento a \cpp{Shape}, quindi
+non conosce a priori quale sia l'istanza dell'oggetto referenziato. \`E compito del compilatore
+generare codice in grado di selezionare \emph{run-time} l'istanza
+(\cpp{Triangle} o \cpp{Quadrangle}) a cui riferire la chiamata a
+funzione.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Interfaccia della classe
+\cpp{Mesh}, linerange={12-55}]{es/src/mesh.hpp}
+\lstinputlisting[caption=Implementazione della classe
+\cpp{Mesh}]{es/src/mesh.cpp}
+\lstset{basicstyle=\sf}
+

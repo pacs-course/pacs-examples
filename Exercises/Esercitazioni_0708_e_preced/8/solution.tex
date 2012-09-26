@@ -1,0 +1,187 @@
+\newpage
+
+\section*{Soluzione}
+
+\subsection*{Es. 1}
+
+Una possibile soluzione consiste nell'implementare una classe
+\cpp{QuadratureBase} che rappresenti un oggetto generico
+\emph{integratore numerico}.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Dichiarazione della classe
+\cpp{QuadratureBase}, linerange={1-49}]{es/1/inherit1/src/numerical_integration.hpp}
+\lstset{basicstyle=\sf}
+
+Da questa pu\`o essere derivata pubblicamente la classe \cpp{Simpson}
+che risolve il primo punto dell'esercizio.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Dichiarazione della classe
+\cpp{Simpson}, linerange={51-71}]{es/1/inherit1/src/numerical_integration.hpp}
+\lstset{basicstyle=\sf}
+
+Allo stesso modo si definisce la classe \cpp{MidPoint}, per il secondo
+punto dell'esercizio.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Dichiarazione della classe
+\cpp{MidPoint}, linerange={73-97}]{es/1/inherit1/src/numerical_integration.hpp}
+\lstset{basicstyle=\sf}
+
+Si noti che la classe \cpp{QuadratureBase} \`e \emph{astratta},
+poich\`e il metodo virtuale \cpp{apply} \`e definito uguale a
+\cpp{0}. Il suo costruttore pu\`o essere invocato soltanto dalle
+classi derivate, e si occupa dell'inizializzazione della struttura
+dati su cui lavora l'integratore (una lista di nodi).
+
+Le classi derivate forniscono l'implementazione del metodo
+\cpp{apply}, applicando i metodi di integrazione.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Definizioni delle classi per integrazione
+numerica]{es/1/inherit1/src/numerical_integration.cpp}
+\lstset{basicstyle=\sf}
+
+Si pu\`o pensare di organizzare il codice in un altro modo,
+interpretando la \emph{regola di quadratura} come un oggetto in grado
+di calcolare l'integrale di una funzione su un intervallo di
+riferimento. In questo modo l'oggetto \emph{integratore} riceve la
+\emph{regola di quadratura} come parametro, invocandone le funzionalit\`a.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Una strategia alternativa: definire oggetti
+di classe \emph{regola di quadratura}. Dichiarazioni.,linerange={14-82}]{es/1/inherit2/src/numerical_rule.hpp}
+\lstinputlisting[caption=Una strategia alternativa: definire oggetti
+di classe \emph{regola di quadratura}. Definizioni.]{es/1/inherit2/src/numerical_rule.cpp}
+\lstset{basicstyle=\sf}
+
+In questo modo il codice risulta pi\`u flessibile: ciascun oggetto
+esporta un insieme minimale di operazioni che vengono assemblate con
+un approccio modulare. La classe \cpp{Quadrature} in questo caso si
+occupa di invocare una \cpp{QuadratureRule} su ciascun sottointervallo
+dell'intervallo di integrazione. L'introduzione di nuove classi
+derivate che
+implementino regole di quadratura è immediata.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Dichiarazione della classe
+\cpp{Quadrature},linerange={20-53}]{es/1/inherit2/src/numerical_integration.hpp} 
+\lstinputlisting[caption=Definizione della classe
+\cpp{Quadrature}]{es/1/inherit2/src/numerical_integration.cpp}
+\lstset{basicstyle=\sf}
+
+Il prezzo da pagare \`e che la classe \cpp{Quadrature} richiede un
+riferimento ad un oggetto di tipo \cpp{QuadratureRule}: nella
+soluzione proposta si tratta di una variabile privata. In generale
+questo appesantisce l'interfaccia di \cpp{Quadrature} e rischia di
+rendere il codice meno leggibile (nel caso in cui non sia chiaro cosa
+aspettarsi da oggetti di tipo \cpp{QuadratureRule}).
+
+Questo stesso svantaggio si riscontra nell'implementazione seguente,
+nella quale la \emph{regola di quadratura} \`e un tipo generico,
+rappresentato da un parametro \cpp{template} per la classe \cpp{Quadrature}:
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Programmazione generica rispetto ai tipi:
+classe \cpp{template} \cpp{Quadrature}]{es/1/template/src/numerical_integration.hpp}
+\lstset{basicstyle=\sf}
+
+D'altra parte in questo caso non c'\`e alcun vincolo
+sull'implementazione del parametro \cpp{template}: va rispettata unicamente la
+\emph{policy} del tipo \cpp{QR}. La classe
+\cpp{QuadratureRule} soddisfa questa \emph{policy}, esportando i metodi
+pubblici \cpp{node} e \cpp{weight}.
+
+ Si noti che la programmazione
+generica rispetto ai tipi rende potenzialmente più costosa
+l'introduzione di nuove classi per le regole di quadratura, poichè
+rende necessaria la ricompilazione dell'intero codice in cui compaia
+il parametro \cpp{template}
+(\emph{polimorfismo statico}). Lo sfruttamento del polimorfismo
+\emph{dinamico} nella
+programmazione orientata agli oggetti, per contro, consente in linea
+di principio di estendere il software semplicemente creando nuove unità di
+compilazione.
+
+Il \texttt{main program} invoca gli oggetti che descrivono i diversi
+integratori. Si noti l'utilizzo del software \texttt{GetPot}: la variabile
+\cpp{cl} contiene un database, costruito a partire dalle variabili
+\cpp{argc} e \cpp{argv}, che consente di interpretare la lista di
+parametri forniti da riga di comando:
+\begin{lstlisting}
+./main_integration a=0 b=10 nint=100
+\end{lstlisting}
+produce l'inizializzazione delle variabili \cpp{double} \cpp{a=0} e
+\cpp{b=10} e della variabile \cpp{int} \cpp{nint=100}.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=\texttt{main program} per il calcolo
+dell'integrale, linerange={1-49}]{es/1/inherit1/main_integration.cpp}
+\lstset{basicstyle=\sf}
+
+Nel caso in cui si definiscano le classi \cpp{Simpson} e
+\cpp{MidPoint} come derivate da \cpp{QuadratureBase}, l'invocazione
+nel \texttt{main program} è la seguente:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Integratori come classi derivate da
+\cpp{QuadratureBase}, linerange={49-57}]{es/1/inherit1/main_integration.cpp} 
+\lstset{basicstyle=\sf}
+Il codice riportato contiene degli esempi di \emph{polimorfismo dinamico}:
+puntatori e riferimenti a oggetti di classe base possono riferirsi a
+oggetti di classe derivata.
+
+Quando invece la regola di quadratura è descritta da una classe
+\cpp{QuadratureRule}, il codice va modificato come segue:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Regole di integrazione come classi derivate da
+\cpp{QuadratureRule}, linerange={34-37,47-54}]{es/1/inherit2/main_integration.cpp} 
+\lstset{basicstyle=\sf}
+
+Infine la classe \cpp{template} \cpp{Quadrature} va invocata con la
+lista esplicita dei suoi parametri \cpp{template}:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Classe \cpp{template}
+\cpp{Quadrature}, linerange={45-58}]{es/1/template/main_integration.cpp} 
+\lstset{basicstyle=\sf}
+
+\subsection*{Es. 2}
+
+L'algoritmo iterativo è implementato nella classe \cpp{template} \cpp{SolveFP}:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Classe per l'implementazione di un algoritmo
+iterativo di punto fisso]{es/2/src/fpsolve.hpp}
+\lstset{basicstyle=\sf}
+
+Si noti che il tipo di ritorno del metodo \cpp{iterate} è a sua
+volta una classe: questo consente di esportare un insieme di
+informazioni al programma chiamante.
+
+La \emph{policy} per il parametro \cpp{template} \cpp{FP} è la
+disponibilità di un metodo pubblico \cpp{apply}: coerentemente con
+questa richiesta viene implementata la classe astratta
+\cpp{FixedPointBase}, classe base per una gerarchia di implementazioni
+di funzioni di iterazione $\phi$.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Classe astratta per l'implementazione di una
+funzione di iterazione $\phi$]{es/2/src/fpbase.hpp}
+\lstset{basicstyle=\sf}
+
+La funzione di iterazione di Newton viene implementata nella classe
+\cpp{Newton}, derivata da \cpp{FixedPointBase}:
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=Classe \cpp{Newton}. Dichiarazione.]{es/2/src/fpnewton.hpp}
+\lstinputlisting[caption=Classe \cpp{Newton}. Definizione.]{es/2/src/fpnewton.cpp}
+\lstset{basicstyle=\sf}
+
+Si riporta di seguito il \texttt{main
+  program} che risolve l'esercizio. Anche in questo caso,
+programmazione generica rispetto ai tipi e ereditarietà consentono di
+realizzare strutture molto potenti e flessibili (grazie alla
+modularità). Si noti in particolare che l'introduzione di ulteriori
+implementazioni di funzioni di iterazione è immediata.
+
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=\texttt{main program} per l'esercizio 2.]{es/2/main.cpp}
+\lstset{basicstyle=\sf}
+
+

@@ -1,0 +1,55 @@
+\subsection*{Soluzione}
+
+Viene fornita di seguito un'implementazione del metodo delle potenze
+che sfrutta i vettori e le matrici fornite da Eigen.
+
+La classe \cpp{LinearAlgebra::Eigenvalues::Power} possiede un unico
+costruttore cui viene passata la tolleranza ed il massimo numero di
+iterazioni. La ragione per cui si impone un limite al numero di
+iterazioni \`e evitare che, in caso di mancata convergenza, il sistema
+entri in un ciclo infinito. Il metodo viene applicato tramite una
+chiamata al membro \cpp{apply}, cui va passata la matrice di cui si
+vuole calcolare l'autovalore di modulo massimo ed una stima iniziale
+dell'autovettore destro ad esso associato. All'intero del codice, viene
+utilizzata tale approssimazione anche per inizializzare il calcolo
+dell'autovettore sinistro. Il codice relativo alla classe \cpp{Power}
+\`e riportato di seguito.
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=Interfaccia della classe
+        \cpp{Power}]{./es/pagerank-eigen/src/power.hpp}
+\lstset{basicstyle=\sf}
+
+Si noti i due \cpp{typedef} definiti pubblici all'inizio della classe.
+Tale definizione \`e molto utile, dato che dall'esterno posso utilizzare
+tali \cpp{typedef}. Cambiando la definizione all'interno della classe
+cambiano automaticamente in tutto il codice. \`E interessante confrontare
+la diverse implementazione dei due metodi \cpp{tol()}, oppure \cpp{maxit()}.
+La firma di tali metodi differisce unicamente ``dall'ultimo \cpp{const}'' e,
+ovviamente, non dal valore di ritorno. Nel primo caso posso modificare esternamente
+il valore di \cpp{M_tol}, oppure \cpp{M_maxit}, mentre nel secondo caso no.
+\`E stato definito anche il costruttore di copia e l'operatore di assegnazione
+come privati, in questo modo inibiamo la possibilit\`a di utilizzarle quelli
+di default. L'implementazione di tali metodi \`e inutile.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=Implementazione della classe
+        \cpp{Power}]{./es/pagerank-eigen/src/power.cpp}
+\lstset{basicstyle=\sf}
+
+All'inizio del metodo \cpp{apply()} \`e interessante notare l'utilizzo di due tipi
+di costruttori per i vettori delle Eigen. Nel primo e nel terzo caso viene utilizzato
+il costruttore di copia, mentre nel secondo e quarto caso viene utilizzato il costruttore
+che genera il vettore vuoto lungo \cpp{N}.
+
+Il listato contenente il \cpp{main} \`e riportato qui di seguito
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=Interfaccia della classe
+        \cpp{Power}]{./es/pagerank-eigen/eig.cpp}
+\lstset{basicstyle=\sf}
+
+Notiamo l'utilizzo dei \cpp{typedef} che `` derivano '' dalla classe \cpp{PowerMethod},
+tali \cpp{typedef} vengono visti dall'esterno come se la classe \cpp{PowerMethod} fosse
+un \cpp{namespace}. Infatti \`e possibile accedere a tali elementi senza creare alcun
+oggetto di classe \cpp{PowerMethod}. Tali \cpp{typedef} sono associati alla classe e non
+alla particolare istanziazione della stessa.

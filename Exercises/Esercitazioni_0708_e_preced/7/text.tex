@@ -1,0 +1,36 @@
+L'obiettivo di questa esercitazione \`e implementare le strutture dati
+di base per la gestione di una \emph{mesh}. Si supponga di voler
+gestire \emph{mesh} bidimensionali costituite da elementi triangolari
+e quadrangolari. Per ciascuna forma geometrica si vogliono
+fornire funzionalit\`a specifiche, ed \`e, pertanto, prevista nel
+progetto l'implementazione con classi separate. Una class \cpp{Mesh}
+dovr\`a, poi, occuparsi di memorizzare in un'opportuna struttura dati
+le informazioni relative alla griglia memorizzate in un file
+strutturato sul modello del listato riportato di seguito.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting[caption=File di esempio contenente la descrizione di
+una semplice \emph{mesh}]{./es/mesh.msh}
+\lstset{basicstyle=\sf}
+Si noti che il file d'esempio \`e suddiviso in tre sezioni:
+\begin{itemize}
+\item la riga successiva all'intestazione \cpp{#DATA} contiene il numero di
+nodi e di elementi della griglia;
+\item a seguire, l'elenco delle coordinate dei nodi precedute
+  dall'intestazione \cpp{#POINTS};
+\item in ultimo vi \`e l'elenco degli elementi, caratterizzati dalla
+  geometria ($0$ per gli elementi triangolari, $1$ per quelli
+  quadrangolari) e dalla sequenza ordinata dei vertici.
+\end{itemize}
+
+Poich\`e la classe \cpp{Mesh} dovr\`a contenere elementi di tipo
+diverso, si suggerisce di implementare due classi distinte
+\cpp{Triangle} e \cpp{Quadrangle} discendenti dalla medesima classe
+base \cpp{Shape} e di memorizzare gli elementi della griglia
+utilizzando una lista di puntatori a \cpp{Shape} ed i costrutti per
+l'allocazione dinamica. Si preveda, per la classe \cpp{Mesh}, un
+costruttore che riceva come argomento il nome di un file di dati di
+tipo \cpp{.msh} e costruisca a partire da esso le strutture richieste.
+
+%Come esercizio aggiuntivo, si scriva una funzione per generare i lati interni e di
+%bordo della griglia, memorizzando per ciascuno gli elementi al cui
+%bordo appartiene.

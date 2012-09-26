@@ -1,0 +1,41 @@
+#
+# Course on Advanced programming for scientific computing
+# Politecnico di Milano
+# Copyright Luca Formaggia 2012
+#
+
+Here you find the examples given in the course
+
+doc -> possible additional documentation
+
+lib -> possible general libraries needed to compile some example
+
+include -> General include files
+
+src -> Directory with example sources
+
+All examples are provided with a Makefile which accepts the following
+options (some Makefile may have additional options, reported in the
+README file specific for the example)
+
+all -makes the example
+
+clean -as it says
+
+distclean -clean and also deletes temporary file and local doc directory
+
+doc -creates directory doc and fills it with the documentation of the
+example produced by doxygen. The file DoxiFileCommon contains the common 
+doxygen configuration for all examples
+
+All makefiles include the file Makefile.inc in this directory and
+possibly the Makefile.inc file local to the example under consideration. You should modify those files to suit your need.
+
+In particular, the user may modify the Makefile.inc to change some compilation
+option. The main Makefile.inc also sets the PACS_ROOT variable, which
+should indicate this directory (with full path). You may change it to suite
+your local installation by editing the file or by setting an environmental
+variable with the same name.
+
+Being all the first target of the makefile, to compile the examples is
+sufficient to type make. with make doc you compile the documentation.

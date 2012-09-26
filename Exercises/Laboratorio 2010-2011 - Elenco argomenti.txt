@@ -1,0 +1,47 @@
+Elenco argomenti dei laboratori 2010/2011
+
+01 - Slides con introduzione ad Eclipse e su come si compila un programma
+ da riga di comando. Fare vedere le flags -g -O (per l'ottimizzazione) e -Wall. 
+Fare vedere che si può separare la compilazione vera e propria dal linking che 
+prende i files oggetto. Introduzione al linguaggio C++ tramite l'algoritmo 
+della somma dei quadrati, materiale è nella cartella 
+CorsoPACS/Esercitazioni/somma-quadrati - 01/10/2010
+
+02 - Programmazione modulare: algoritmo per la ricerca degli zeri - header
+ file e funzioni. Scrivere funzione bisezione, separare le funzioni relative 
+alla ricerca degli zeri dal main e scrivere l'header file corrispondente, 
+niente valutazione. Materiale della seconda esercitazione è nella cartella 
+CorsoPACS/Esercitazioni/progr_modulare-bisez_Nw, ovvero la terza esercitazione 
+dello scorso anno. Introdurre gnuplot e il comando system (per richiamare 
+gnuplot all'interno del programma). Introdurre il salvataggio di alcuni 
+valori in un file, così da poter essere utilizzato per gnuplot. Di gnuplot 
+fare vedere solo i comandi principali per il plot di funzioni e magari anche 
+l'output di eps su file (non so se le ultime versioni supportano anche 
+l'output in pdf, non dovrebbe). Poi mettiamo il manuale a disposizione sul 
+sito per chi vuole sapere di più. 08/10/2010
+
+03 - Introduzione alla programmazione ad oggetti: creare classi opportune a 
+partire da laboratorio 02. Materiale della terza esercitazione è nella 
+cartella CorsoPACS/Esercitazioni/intro_oggetti-bisez_Nw, ovvero la quarta 
+esercitazione dello scorso anno. No esercizio di compito. Introdurre getpot 
+come strumento MOLTO più flessibile di argc e argv. Introdurre gli assert, 
+con le flag per poterle eliminare sia da riga di comando che da Eclipse. 
+15/10/2010
+
+04 - Overloading di operatori: esempio didattico di libreria di algebra 
+lineare. Problema agli autovalori, calcolo del pagerank di Google. Materiale 
+della quarta esercitazione è nella cartella 
+CorsoPACS/Esercitazioni/overloading_operatori-autoval_pagerank, ovvero la 
+sesta esercitazione dello scorso anno. Utilizzare la libreria Eigen, 
+versione 3.0-beta1, al posto di implementare le classi Vector e Matrix, dello
+scorso anno. Lasciare l'esercizio sul PageRank. La scritture dell'algoritmo 
+di risoluzione del sistema lineare devono farlo loro. L'introduzione ad Eigen 
+viene fatta durante le lezioni. 22/10/2010
+
+05 - Partendo dal codice inherit2, nella cartella 
+CourseExamples/examples/esempio_numerical_quadrature/, e fornito a lezione:
+     - aggiungere la regola di quadratura gaussiana a tre punti;
+     - estrarre dalla classe NumericalQuadrature la suddivisione in intervalli,
+       in modo che la generazione degli intervalli sia a tutti gli effetti esterna.
+Materiale della quinta esercitazione è l'ottavo laboratorio dello scorso anno. Fare 
+il testo della esercitazione. 29/10/2010
