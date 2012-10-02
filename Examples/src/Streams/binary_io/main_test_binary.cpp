@@ -21,7 +21,7 @@ int main()
   // I call system to remove old files
   system("/bin/rm -r -f file.dat");
   system("/bin/rm -r -f file.txt");
-  ofstream binfile ("file.dat",ofstream::binary);
+  ofstream binfile ("file.dat",ios::binary);
   ofstream asciifile ("file.txt");
   // The array
   double * pippo=new double[DIM];
@@ -45,7 +45,7 @@ int main()
   tempo.stop();
   cout<<"Writing done: "<<tempo<<endl;
   
-  ifstream binfile2 ("file.dat",ifstream::binary);
+  ifstream binfile2 ("file.dat",ios::binary);
   ifstream asciifile2 ("file.txt");
   cout<<"Reading formatted file"<<endl;
   tempo.start();
