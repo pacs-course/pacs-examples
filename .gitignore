@@ -1,4 +1,5 @@
 Examples/src/*/doc/*
 *~
 a.out
-
+*.aux
+*.log
