@@ -1,5 +1,5 @@
 # This is the user defined part of the Makefile
-PACS_ROOT=/home/forma/workspace2/pacs/PACSCourse/Examples
+PACS_ROOT=/home/forma/workspace2/pacs/PACSCourse/Material/Examples
 EIGEN_DIR=/usr/local/include/eigen3/
 
 
