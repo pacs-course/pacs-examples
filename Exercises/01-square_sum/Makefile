@@ -2,27 +2,34 @@ rerun = "There were undefined references"
 bibtex = "\citation"
 
 doc = es1
-dep   = $(wildcard *.tex) $(src) $(fig)
+dep = $(wildcard *.tex) $(src) $(fig)
 bib = ../common/bibliography.bib
 
-src = $(wildcard ./es*/*.cpp) $(wildcard ./es*/*.hpp)
+src = $(wildcard ./ex*/*.cpp) $(wildcard ./ex*/*.hpp)
 
-fig = $(wildcard ./figures/eps/*.eps) $(wildcard ./figures/fig/*.fig)
+fig = $(wildcard ./figures/eps/*.eps) $(wildcard ./figures/fig/*.fig) 
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt
 
 vpath %.eps ./figures/eps/
 vpath %.fig ./figures/fig/
-vpath %.hpp ./es1:./es2
-vpath %.cpp ./es1:./es2
+vpath %.hpp ./ex1:./ex2
+vpath %.cpp ./ex1:./ex2
 
-.PHONY = default clean
+.PHONY = all clean tikz
+
+all: pdf
+
+pdf : $(doc).pdf
 
 dvi : $(doc).dvi
 
 ps : $(doc).ps
 
-pdf : $(doc).pdf
+%.pdf : %.tex tikz $(dep)
+	pdflatex $*
+	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
+	pdflatex $* && !(egrep -q $(rerun) $*.log)
 
 %.dvi : %.tex $(dep)
 	latex $*
@@ -32,15 +39,17 @@ pdf : $(doc).pdf
 %.ps : %.dvi
 	dvips $< -o $*.ps
 
-%.pdf : %.ps
-	ps2pdf $*.ps
+tikz:
+	cd figures/tikz/; make all
 
 clean :
 	for dustfile in $(DUST); do \
 	!( test -e $$dustfile ) || rm $$dustfile; \
 	done
+	cd figures/tikz/; make clean
 
 clean-all : clean
 	for dd in $(srcdir); do \
 	cd $$dd && make clean-all; cd ..;\
 	done
+	cd figures/tikz/; make clean-all

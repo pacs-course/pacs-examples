@@ -2,7 +2,7 @@
 
 int main() {
     int n, m;
-    std::cout << "Inserire due interi:" << std::endl;
+    std::cout << "Insert 2 integers:" << std::endl;
     std::cin >> n >> m;
 
     if(n > m) { // Swap variables if necessary
@@ -17,9 +17,9 @@ int main() {
         sum += i * i;
     }
 
-    std::cout << "La somma dei quadrati degli interi da " 
-              << n << " a " << m 
-              << " e' " << sum << std::endl;
+    std::cout << "the sum of squares of the integers from "
+              << n << " to " << m
+              << " is " << sum << std::endl;
 
     return 0;
 }

@@ -7,7 +7,7 @@ using namespace std; // Avoid using scope operator to access namespace std
 int main(int argc, char* argv[]) { // Arguments for function main()
     if(argc < 3)
     {
-        cerr << "ERRORE: Introdurre due numeri" << endl;
+        cerr << "ERROR: the program should be called with 2 integers as arguments" << endl;
         return 1;
     }
 
@@ -33,11 +33,11 @@ int main(int argc, char* argv[]) { // Arguments for function main()
         psum[i - n] = sum;
     }
 
-    cout << "La somma dei quadrati degli interi da "
-         << n << " a " << m
-         << " e' " << sum << endl;
+    cout << "the sum of squares of the integers from "
+         << n << " to " << m
+         << " is " << sum << endl;
 
-    cout << "Vettore delle somme parziali : " << endl;
+    cout << "Partial sum vector: " << endl;
 
     for(psumT::iterator p = psum.begin(); p != psum.end(); ++p)
     {
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) { // Arguments for function main()
     }
     cout << endl;
 
-    cout << "Vettore delle somme parziali (al contrario) : " << endl;
+    cout << "Partial sum vector (reversed): " << endl;
 
     for(psumT::reverse_iterator p = psum.rbegin(); p != psum.rend(); ++p)
     {
@@ -55,6 +55,8 @@ int main(int argc, char* argv[]) { // Arguments for function main()
 
     psumT psum10(10);
     psum10.assign(psum.begin(), psum.begin() + 10);
+
+    cout << "Partial sum vector (first 10): " << endl;
 
     for(psumT::iterator p = psum10.begin(); p != psum10.end(); ++p)
     {

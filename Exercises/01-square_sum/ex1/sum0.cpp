@@ -1,14 +1,14 @@
 /*! \file sum0.cpp
 
-\brief This program aims at evaluating the sum of the powers of integers
-taken between two user-defined values
+\brief This program aims at evaluating the sum of the powers of integers taken
+between two user-defined values
 */
 
 #include <iostream>
 
 int main() {
     int n, m;
-    std::cout << "Inserire due interi:" << std::endl;
+    std::cout << "Insert 2 integers:" << std::endl;
     std::cin >> n >> m;
 
     if(n > m) { // Swap variables if necessary
@@ -23,9 +23,9 @@ int main() {
         sum += i * i;
     }
 
-    std::cout << "La somma dei quadrati degli interi da " 
-              << n << " a " << m 
-              << " e' " << sum << std::endl;
+    std::cout << "The sum of integer squares from "
+              << n << " to " << m
+              << " is " << sum << std::endl;
 
     return 0;
 }

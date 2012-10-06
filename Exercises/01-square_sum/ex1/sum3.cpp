@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) { // Arguments for function main()
     if(argc < 3) {
-        cerr << "ERRORE: Introdurre due numeri" << endl;
+        cerr << "ERROR: the program should be called with 2 integers as arguments" << endl;
         return 1;
     }
     int n = atoi( argv[1] ); // Charachter-to-integer conversion
@@ -20,11 +20,11 @@ int main(int argc, char* argv[]) { // Arguments for function main()
 
     char sumT[] = "long double";
 
-    cout << "[Somma memorizzata in una variabile di tipo " << sumT << "]" 
-              << endl;
-    cout << " - il piu' grande  " << sumT << " : "
+    cout << "[Sum saved in a variable of type " << sumT << "]"
+         << endl;
+    cout << " - biggest  " << sumT << " : "
          << numeric_limits<long double>::max() << endl;
-    cout << " - il piu' piccolo " << sumT << " : "
+    cout << " - smallest " << sumT << " : "
          << numeric_limits<long double>::min() << endl;
     cout << endl;
 
@@ -34,8 +34,9 @@ int main(int argc, char* argv[]) { // Arguments for function main()
         sum += i * i;
     }
 
-    cout << "La somma dei quadrati degli interi da " << n << " a " << m 
-         << " e' " << sum << endl;
+    cout << "the sum of squares of the integers from "
+         << n << " to " << m
+         << " is " << sum << endl;
 
     return 0;
 }

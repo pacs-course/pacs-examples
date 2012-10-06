@@ -7,7 +7,7 @@ using namespace std; // Avoid using qualifier std:: to access namespace std
 int main(int argc, char* argv[]) { // Arguments for function main()
     if(argc < 3)
     {
-        cerr << "ERRORE: Introdurre due numeri" << endl;
+        cerr << "ERROR: the program should be called with 2 integers as arguments" << endl;
         return 1;
     }
 
@@ -34,11 +34,11 @@ int main(int argc, char* argv[]) { // Arguments for function main()
         psum[i - n] = sum;
     }
 
-    cout << "La somma dei quadrati degli interi da "
-         << n << " a " << m
-         << " e' " << sum << endl;
+    cout << "the sum of squares of the integers from "
+         << n << " to " << m
+         << " is " << sum << endl;
 
-    cout << "Vettore delle somme parziali : " << endl;
+    cout << "Partial sum vector: " << endl;
 
     for(int i = 0; i < psum.size(); ++i)
     {

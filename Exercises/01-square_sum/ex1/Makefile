@@ -1,15 +1,19 @@
-BASE	= $(PWD)
-CC   	= g++
+BASE = $(PWD)
+# CXX  = g++
+CXX  = clang++
 
-CXXFLAGS = -O
+CC   = $(CXX)
+
+
+CXXFLAGS = -Wall -O0 -g
 # -g       generate code suitable for the debugger
 # -p       generate code suitable for the profiler
-# -O       attemp code optimizations
+# -On      attemp code optimizations
 
-SRCS    = $(wildcard *.cpp)
-HDRS 	= $(wildcard *.hpp)
-OBJS 	= $(SRCS:.cpp=.o)
-EXEC	= $(OBJS:.o=)
+SRCS = $(wildcard *.cpp)
+HDRS = $(wildcard *.hpp)
+OBJS = $(SRCS:.cpp=.o)
+EXEC = $(OBJS:.o=)
 
 .PHONY : all clean clean-all
 

@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[]) { // Arguments for function main()
     if(argc < 3) {
-        std::cerr << "ERRORE: Introdurre due numeri" << std::endl;
+        std::cerr << "ERROR: the program should be called with 2 integers as arguments" << std::endl;
         return 1;
     }
     int n = atoi( argv[1] ); // Charachter-to-integer conversion

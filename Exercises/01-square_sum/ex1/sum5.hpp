@@ -53,13 +53,13 @@ template<typename T>
 void sumSquare(int n, int m) {
     std::string sumT = name<T>::get();
 
-    std::cout << "[Somma memorizzata in una variabile di tipo " << sumT << "]" 
+    std::cout << "[Sum saved in a variable of type " << sumT << "]"
               << std::endl;
-    std::cout << " - il piu' grande  " << sumT << " : "
+    std::cout << " - biggest  " << sumT << " : "
               << std::numeric_limits<T>::max() << std::endl;
-    std::cout << " - il piu' piccolo " << sumT << " : "
+    std::cout << " - smallest " << sumT << " : "
               << std::numeric_limits<T>::min() << std::endl;
-    std::cout << " - # di byte per   " << sumT << " : "
+    std::cout << " - # of bytes for " << sumT << " : "
               << sizeof(T) << std::endl;
 
     T sum = 0;
@@ -68,8 +68,9 @@ void sumSquare(int n, int m) {
         sum += i * i;
     }
 
-    std::cout << "La somma dei quadrati degli interi da " << n << " a " << m 
-         << " e' " << sum << std::endl;
+    std::cout << "The sum of integer squares from "
+              << n << " to " << m
+              << " is " << sum << std::endl;
 
     std::cout << "**************************************************"
               << std::endl;
