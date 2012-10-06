@@ -6,6 +6,7 @@ Examples/src/*/doc/*
 
 # c++ compiled
 *.o
+*.s
 a.out
 main
 *.a
@@ -21,5 +22,10 @@ make.dep
 # latex
 *.aux
 *.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
 *.pdf
 *.eps
