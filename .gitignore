@@ -1,5 +1,22 @@
+# generated documentation
 Examples/src/*/doc/*
+
+# backup files
 *~
+
+# c++ compiled
+*.o
 a.out
+main
+
+# makefile aux
+make.dep
+
+# simulation results
+*.dat
+
+# latex
 *.aux
 *.log
+*.pdf
+*.eps
