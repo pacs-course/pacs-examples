@@ -8,12 +8,15 @@ Examples/src/*/doc/*
 *.o
 a.out
 main
+*.a
+*.so
 
 # makefile aux
 make.dep
 
 # simulation results
 *.dat
+*.txt
 
 # latex
 *.aux
