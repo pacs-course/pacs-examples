@@ -38,7 +38,9 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.PHONY: all  clean main_float main_double
+.PHONY: all clean distclean doc main_float main_double
+
+.DEFAUL_GOAL = all
 
 all: $(DEPEND) main_float main_double
 
