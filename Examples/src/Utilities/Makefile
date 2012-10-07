@@ -40,13 +40,13 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all  clean
+.phony= all clean distclean doc library install
 
-all: $(DEPEND) library
+all: $(DEPEND) install
 
 library:$(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
 
-install:
+install: library
 	cp ./include/*.hpp $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
@@ -78,7 +78,5 @@ $(DEPEND): $(SRCS)
 
 
 -include $(DEPEND)
-
-
 
 
