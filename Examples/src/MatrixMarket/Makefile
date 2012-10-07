@@ -40,7 +40,10 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 EXEC_OBJS=$(exe_sources:.cpp=.o)
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all  clean
+.phony= all clean distclean doc
+
+.DEFAULT_GOAL = all
+
 
 all: $(DEPEND) library $(EXEC)
 
