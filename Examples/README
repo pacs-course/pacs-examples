@@ -39,3 +39,10 @@ variable with the same name.
 
 Being all the first target of the makefile, to compile the examples is
 sufficient to type make. with make doc you compile the documentation.
+
+                *****   IMPORTANT  ****
+To install some utilities used by different examples you must go to src/Utilities and do
+make
+make install
+
+in this way a linrary called libpacs is installed in lib and some files are installed in include
