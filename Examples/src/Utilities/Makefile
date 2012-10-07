@@ -42,7 +42,7 @@ EXEC=$(exe_sources:.cpp=)
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all  clean
 
-all: $(DEPEND) $(EXEC)
+all: $(DEPEND) library
 
 library:$(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
 
@@ -50,11 +50,11 @@ install:
 	cp ./include/*.hpp $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	-\rm -f $(EXEC) $(OBJS) $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
+	-\rm -f $(EXEC) $(OBJS) 
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
+	-\rm -r -f ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
 	-\rm *.out *.bak *~
 
 doc:
