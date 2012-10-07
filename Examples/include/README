@@ -1,0 +1,4 @@
+In this directory we put header files common to different examples
+
+Go to the directory Examples/src/Utilities and do make; make install
+
