@@ -13,6 +13,7 @@ namespace NonLinearSystems{
   /*!
     It must conform to a dynamic vector: have [] operator and
     contructor taking an integer.
+
    */
   typedef Eigen::VectorXd returnType;
   //! type of the contained functions (C++11 extension)
@@ -52,6 +53,8 @@ namespace NonLinearSystems{
     funType & operator [](unsigned int i){return M_funs[i];}
     //! Returns the i-th function.
     funType  operator [](unsigned int i) const {return M_funs[i];}
+    //! Returns \f$ ||f(x)|| \f$
+    double norm(argumentType const & x) const;
   private:
     std::vector<funType> M_funs; 
   };

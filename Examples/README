@@ -54,4 +54,4 @@ To install some utilities used by different examples you must go to src/Utilitie
 make
 make install
 
-in this way a linrary called libpacs is installed in lib and some files are installed in include
+in this way a library called libpacs is installed in lib and some files are installed in include

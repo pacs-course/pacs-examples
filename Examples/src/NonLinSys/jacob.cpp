@@ -1,5 +1,9 @@
 #include "jacob.hpp"
 namespace NonLinearSystems{
+  //! Initialization of the default tolerance.
+  double const 
+  DiscreteJacobian::defaultTol(1.e3*std::numeric_limits<double>::epsilon());
+
   jacobianType
   DiscreteJacobian::operator() (argumentType const & x) const{
     // Find system dimensions

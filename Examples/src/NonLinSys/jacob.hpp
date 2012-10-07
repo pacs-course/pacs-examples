@@ -15,7 +15,13 @@ namespace NonLinearSystems{
   //! Computes the jacobian by finite differences.
   /*!
     The final keyword has been introduced in C++11 to stop
-    a hierarchy. No class can be derived from it
+    a hierarchy. No class can be derived from it.
+
+    @note This implementation is mildly dangerous, since it stores a pointer
+    to the linear system and nobody ensures that the linear system will not
+    be destroyed before the call method of this class is used! But we may consider
+    it a very unlikely event. A safer alternative would be to store a copy of the
+    non linear system.
    */
   class DiscreteJacobian final: public Jacobian 
   {
@@ -40,14 +46,10 @@ namespace NonLinearSystems{
     NonLinSys * M_sys;
     //! The current tolerance.
     double M_tol;
-  public:
     //! Default tolerance.
     static double const defaultTol;
   };
   
-  //! Initialization of the default tolerance.
-  double const 
-  DiscreteJacobian::defaultTol(1.e6*std::numeric_limits<double>::epsilon());
   
 
 }

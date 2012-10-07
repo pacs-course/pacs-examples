@@ -1,4 +1,5 @@
 #include "nonLinSys.hpp"
+#include "jacob.hpp"
 #include <iostream>
 //! A functor
 struct f1{
@@ -31,7 +32,8 @@ int main(){
   argumentType x(2);
   x<<1.0,3.1; // Eigen initialization
   auto res=F(x);
-  cout<<res<<endl;
-  
+  cout<<" Residual at ("<<x<<")=("<<res<<")"<<endl;
+  cout<<" Jacobian at ("<<x<<")=["<<endl;
+  cout<< DiscreteJacobian(&F)(x)<<"]"<<endl;
 
 }
