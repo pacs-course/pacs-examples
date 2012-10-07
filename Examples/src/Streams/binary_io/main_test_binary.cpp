@@ -76,12 +76,12 @@ int main()
   
   //Create a new file
   // Not necessary to remove file if H5F_ACC_TRUNC flag is used
-  // system("/bin/rm -r -f file.hdf");
-  file_id=H5Fcreate("file.hdf",H5F_ACC_TRUNC,H5P_DEFAULT,H5P_DEFAULT);
-  SURE_ASSERT(file_id>0,"Cannot create file file.hdf");
+  // system("/bin/rm -r -f file.h5");
+  file_id=H5Fcreate("file.h5",H5F_ACC_TRUNC,H5P_DEFAULT,H5P_DEFAULT);
+  SURE_ASSERT(file_id>0,"Cannot create file file.h5");
   //Create the dataset
   dataset_id = H5Dcreate(file_id,"/mydata", H5T_NATIVE_DOUBLE,dataspace_id,
-			 H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   SURE_ASSERT(dataset_id>=0,"Cannot create dataset");
 
   cout<<"Writing HDF file"<<endl;
@@ -95,8 +95,8 @@ int main()
   cout<<"Writing done: "<<tempo<<endl;
 
   // Open the file read only
-  file_id=H5Fopen("file.hdf",H5F_ACC_RDONLY,H5P_DEFAULT);
-  SURE_ASSERT(file_id>0,"Cannot open file file.hdf read only");
+  file_id=H5Fopen("file.h5",H5F_ACC_RDONLY,H5P_DEFAULT);
+  SURE_ASSERT(file_id>0,"Cannot open file file.h5 read only");
   dataset_id = H5Dopen(file_id,"/mydata", H5P_DEFAULT);
 
   cout<<"Reading HDF file"<<endl;

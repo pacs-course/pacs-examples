@@ -1,0 +1,5 @@
+ex. 1 - oct 5 2012
+
+- command line compilation
+- ex. 01-square_sum
+
