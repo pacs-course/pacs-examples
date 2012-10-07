@@ -43,12 +43,12 @@ EXEC=$(exe_sources:.cpp=)
 all: $(DEPEND) main_float main_double
 
 main_float:
-	-\rm $(OBJS) $(EXEC)
+	-\rm -f $(OBJS) $(EXEC)
 	$(MAKE) $(EXEC) CPPFLAGS+=-DREAL=float
 	mv $(EXEC) main_float 
 
 main_double:
-	-\rm $(OBJS) $(EXEC)
+	-\rm -f $(OBJS) $(EXEC)
 	$(MAKE) $(EXEC) CPPFLAGS+=-DREAL=double
 	mv $(EXEC) main_double
 
