@@ -22,9 +22,9 @@
 
 %---------------------------------------------------------------------------------
 
-\begin{frame}[fragile]
+\begin{frame}
 
-    Breve ripasso e introduzione alla compilazione di un codice C++.
+    Little introduction to the compilation of a C++ code
 
 \end{frame}
 
@@ -32,17 +32,16 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
+    \frametitle{How to compile a C++ code}
 
-    Consideriamo il seguente programma \\
-    \vspace{.3cm}
+    Let's consider the following program
 
     \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting{./main.cpp}
     \lstset{basicstyle=\sf}
 
     \vspace{.3cm}
-    salvato nel file \verb1main.cpp1.
+    that is saved as \verb1main.cpp1.
 
 \end{frame}
 
@@ -50,9 +49,9 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
+    \frametitle{How to compile a C++ code}
 
-    Il codice pu\`o essere compilato ed eseguito mediante i seguenti comandi
+    The code can be compiled and executed with the following commands
 
     \begin{verbatim}
         g++ -c main.cpp
@@ -61,7 +60,7 @@
     \end{verbatim}
 
     \vspace{.3cm}
-    Ottenendo
+    To get
     \begin{verbatim}
         Hello World!
     \end{verbatim}
@@ -72,18 +71,18 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
+    \frametitle{How to compile a C++ code}
 
-    Un modo alternativo per compilare il codice, che permette di non generare il
-    file oggetto \verb1main.cpp1, \`e mediante i seguenti comandi
+    Another way to compile, that does not leave an object file, is by giving 
+    directly
     \begin{verbatim}
         g++ -o main main.cpp
         ./main
     \end{verbatim}
 
     \vspace{.3cm}
-    In questo caso la fase di compilazione e quella di linking vengono fatte
-    in sequenza e attraverso un unico comando.
+    In this case the compilation and linking phase are exectued in sequence
+    with a unique command.
 
 \end{frame}
 
@@ -91,15 +90,16 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
+    \frametitle{How to compile a C++ code}
 
-    Esistono numerose flag per il compilatore che permettono di ottenere
-    diversi comportamenti
+    There are many flags that can be passed to the compiler to get different
+    behaviors
 
     \begin{itemize}
-        \item \verb1-Wall1 per segnalare eventuali warnings;
-        \item \verb1-O1 per ottenere il codice pi\`u efficiente;
-        \item \verb1-g1 per ottenere il codice utile per il debugging.
+        \item \verb1-Wall1 to get almost all warnings
+        \item \verb1-On1 to set the level of optimization that the compiler is
+        allowed to try
+        \item \verb1-g1 to generate debugging symbols inside the code
     \end{itemize}
 
 \end{frame}
@@ -108,17 +108,17 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
+    \frametitle{How to compile a C++ code}
 
-    La flag \verb1-Wall1 permette di segnalare eventuali warnings.
-    Se utilizziamo tale flag in fase di compilazione per il programma \verb1main.cpp1
+    The flag \verb1-Wall1 tells the compiler to give feedback on the warnings.
+    If we use it with our \verb1main.cpp1
 
     \begin{verbatim}
         g++ -o main main.cpp -Wall
     \end{verbatim}
 
     \vspace{.3cm}
-    Ottenendo
+    We get
     \begin{verbatim}
         main.cpp: In function 'int main()':
         main.cpp:7: warning: unused variable 'i'
@@ -130,29 +130,28 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
+    \frametitle{How to compile a C++ code}
 
-    Il flag \verb1-O1 seguito da un numero compreso tra $1$ e $3$, permette di
-    ottenere un codice pi\`u efficiente a scapito del tempo di compilazione e
-    dell'occupazione fisica dell'eseguibile.\\
+    The flag \verb1-O1 must be followed by a number between $0$ and $3$, in
+    order to get a more efficient code (using more time to compile).
 
     \vspace{.3cm}
-    In particolare
+    In details
 
     \begin{itemize}
 
-        \item \verb2-O12 il compilatore cerca di ridurre le dimensioni del codice
-            e il tempo di esecuzione, senza eseguire alcuna ottimizzazione che
-            richiede una grande quantità di tempo di compilazione.
+        \item \verb1-O01 the compiler is not allowed to execute any optimization
 
-        \item \verb1-O21 il compilatore esegue quasi tutte le ottimizzazioni che
-            comportano un buon compromesso spazio occupato-velocit\`a di esecuzione.
-            Rispetto al \verb2-O12, questa opzione aumenta sia il tempo di
-            compilazione che le prestazioni del codice generato.
+        \item \verb2-O12 the compiler tries to reduce the dimension of the code
+            without executing any optimization that requires a long time.
 
-        \item \verb1-031 livello di ottimizzazione massimo, il compilatore
-            attiva tutte le procedure per ottenere un codice il pi\`u veloce
-            possibile.
+        \item \verb1-O21 the compiler is allowed to use a wider set of
+            optimizations that lead to a good compromise between space and
+            speed. The time required to compile is increased and the code
+            performs better.
+
+        \item \verb1-031 the compiler is allowed to use all optimizations to
+            get the fastest code available.
 
     \end{itemize}
 
@@ -162,17 +161,10 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Come compilare un codice C++}
-
-    Se utilizziamo tale flag in fase di compilazione per il programma
-    \verb1main.cpp1
-
-    \begin{verbatim}
-        g++ -o main main.cpp -O2
-    \end{verbatim}
+    \frametitle{How to compile a C++ code}
 
     \vspace{.3cm}
-    \`E possibile utilizzare pi\`u di una flag in contemporanea, l'ordine non conta
+    More than one flag can be used simultaneously, the order is not important.
     \begin{verbatim}
         g++ -o main main.cpp -Wall -O2
     \end{verbatim}
