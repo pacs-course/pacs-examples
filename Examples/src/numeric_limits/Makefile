@@ -58,7 +58,7 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ $(CXXFLAGS) -MM $(SRCS) -MF $(DEPEND)
+	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
 
 
