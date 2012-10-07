@@ -1,6 +1,9 @@
 # generated documentation
 Examples/src/*/doc/*
 
+# configuration files
+Examples/Makefile.inc
+
 # backup files
 *~
 
