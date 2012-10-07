@@ -1,4 +1,31 @@
+# generated documentation
 Examples/src/*/doc/*
-*~
-a.out
 
+# backup files
+*~
+
+# c++ compiled
+*.o
+*.s
+a.out
+main
+*.a
+*.so
+
+# makefile aux
+make.dep
+
+# simulation results
+*.dat
+*.txt
+
+# latex
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.pdf
+*.eps
