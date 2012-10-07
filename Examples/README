@@ -14,6 +14,14 @@ include -> General include files
 
 src -> Directory with example sources
 
+ ***** INSTALLATION *****
+in order to compile the examples the first operation to be done is to copy the
+file Makefile.user to Makefile.inc with
+
+$ cp Makefile.user Makefile.inc
+
+and edit it to suite your system.
+
 All examples are provided with a Makefile which accepts the following
 options (some Makefile may have additional options, reported in the
 README file specific for the example)
@@ -29,7 +37,8 @@ example produced by doxygen. The file DoxiFileCommon contains the common
 doxygen configuration for all examples
 
 All makefiles include the file Makefile.inc in this directory and
-possibly the Makefile.inc file local to the example under consideration. You should modify those files to suit your need.
+possibly the Makefile.inc file local to the example under consideration.
+You should modify those files to suit your need.
 
 In particular, the user may modify the Makefile.inc to change some compilation
 option. The main Makefile.inc also sets the PACS_ROOT variable, which
