@@ -45,6 +45,6 @@ namespace NonLinearSystems{
   NewtonStatus Newton(NonLinSys const & fSys,
 		      Jacobian const & jac,
 		      argumentType & x,
-		      const NewtonOptions opt={1.e-08,1.e-08,100});
+		      const NewtonOptions opt={1.e-08,1.e-09,100});
 }
 #endif

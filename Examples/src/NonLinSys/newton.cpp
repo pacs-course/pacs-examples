@@ -21,7 +21,7 @@ namespace NonLinearSystems{
       // A better code would check if the Jacobian is singular
       // and eventualy regularize it.
       //
-      auto step=J.fullPivLu().solve(res);
+      Eigen::VectorXd step=J.fullPivLu().solve(res);
       stepNorm=step.norm();
       x  += step;
       res = fSys.residual(x);
