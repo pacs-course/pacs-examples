@@ -35,6 +35,7 @@ OBJS = $(SRCS:.cpp=.o)
 LIB_OBJS:=$(filter-out main%.o,$(OBJS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
+HEADERS+=GetPot
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
@@ -47,7 +48,7 @@ all: $(DEPEND) install
 library:$(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
 
 install: library
-	cp ./include/*.hpp $(PACS_INC_DIR)
+	cp ./include/*.hpp ./include/GetPot $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
 	-\rm -f $(EXEC) $(OBJS) 
