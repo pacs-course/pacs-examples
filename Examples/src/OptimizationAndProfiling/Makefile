@@ -49,8 +49,8 @@ EXEC=esempioExtAss
 all: $(EXEC)
 
 esempioExtAss: esempioExtAss.o rational.o
-	$(CXX) $(CXXFLAGS) -g $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
-	$(CXX) $(CXXFLAGS) -DNDEBUG $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -DNDEBUG $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
 
 unroll: chrono.o
 	$(CXX) -S -O unroll1.cpp
