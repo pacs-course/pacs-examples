@@ -1,61 +1,109 @@
 /*---------------------------------------------------------------------*
-| header file  extendedAssert                                      |
-| #Purposes Defines typedefs and macros common to ALL lifeV.h software |
-|           it must be includes in all translation units.              |
-| THIS IS A REDUCED VERSION FOR EDUCATIONAL PURPOSES ONLY              |
+| header file  extendedAssert                                          |
+| #Purposes Defines typedefs and macros for debugging                  |
 | Copyright Luca Formaggia 2005                                        |
-
-  Questo file definisce delle macro che funzionano in modo simile ad
-  assert ed in piu` controllano la keyword inline
-
-  Quando le macro sono attivare hanno il comportamento seguente
+-----------------------------------------------------------------------*/
+/*! @file extendedAssert.hpp
+    @brief some useful macros that extend the classic assert()
   
-        INLINE          -> inline
-        SURE_ASSERT(cond,"mesg") -> se cond e` false stampa "mesg" e
-	                              abortisce
-        ASSERTM(cond,"mesg") come SURE_ASSERT
-        ASSERT(cond)  come ASSERTM ma senza messaggio
+    @detail This file introduces some C preprocessor macros that work
+    similarly to the standard assert() macro but they allow a finer control.
+    The macros may be activated/deactivated by defining suitable preprocessor variables
 
- Variabili del preprocessore
+    The macros defined in this file are: 
+  
+        - INLINE    if enabled converts to null, otherwise converts to inline;
+        - SURE_ASSERT(cond,"mesg")     prints mesg if cond==false, prints also  
+	                               line number and file name. Cannot be disabled;
+        - ASSERTM(cond,"mesg")         as SURE_ASSERT but may be disabled;
+        - ASSERT(cond)                 as ASSERTM with no message;
+	- PRE_ASSERT(cond,"mesg")      as ASSERTM;
+	- POST_ASSERT(cond,"mesg")     as ASSERTM;
+	- INV_ASSERT(cond,"mesg")      as ASSERTM.
 
-  NOINLINE    INLINE e` disattivata
-  NOASSERT    ASSERTM e` disattivata
-  NDEBUG      come NOINLINE + NOASSERT
+ The intent is to use the XXX_ASSERT version to test pre, post conditions and invariants, respectivly, and
+ be able to swich on and off the testing selectively by using preprocessor variable bassed via the -D option
+ 
+ Default values
 
-*----------------------------------------------------------------------*/
-# include<iostream>
-# ifndef __cplusplus
-# error You must use C++ 
-# endif
+ By default all macros are enabled
+ 
+ Preprocessor variables that affect the asserts 
 
+  - NDEBUG      All macros are disabled a part SURE_ASSERT;
+  - INLINED     INLINE is disabled (i.e. it converts to inline!);
+  - NOASSERT    ASSERTM disabled;
+  - NOXXX where XXX is either PRECON or POST or INV: corresponding ASSERT
+              is disactivated;
+  - ERRORSTATUS Could be defined as an integer number passed to exit (defaulted to 1).
+
+*/
 # ifndef _EXTENDEDASSERT_HH_
 # define _EXTENDEDASSERT_HH_
 
+// This test assumes you are compiling with gnu C++ compiler
+// or any other compiler which sets __cplusplus when the C++ compiler
+// is launched
+
+# ifndef __cplusplus
+# error You must use C++ 
+# endif
+# include<iostream>
+# include<cstdlib>
+
+
 #ifdef NDEBUG
-#undef NOINLINE
+#define INLINED
 #define NOASSERT
+#define NOPRE
+#define NOPOST
+#define NOINV
 #endif
 
-#ifdef NOINLINE
-#define INLINE
-#else
+#ifdef  INLINED
 #define INLINE inline
+#else
+#define INLINE
 #endif
 
+#ifndef ERRORSTATUS
+#define ERRORSTATUS 1
+#endif
 
 //
-# define SURE_ASSERT(X,A) if ( !(X) ) \
-    do{ std::cerr << std::endl << A<<std::endl << " In file " << __FILE__ \
-		  << " line " << __LINE__<<" : "; abort() ; } while (0) ;
+#define SURE_ASSERT(X,A) if ( !(X) ) \
+    do{ std::cerr << std::endl << A <<std::endl << " In file " << __FILE__ \
+		  << " line " << __LINE__<<" : "; std::exit( ERRORSTATUS ) ; } while (0) ;
 
+#ifndef NDEBUG
+#define ASSERT(X) ASSERTM(X," ")
+#else
+#define ASSERT(X)
+#endif
 
-#ifdef NOASSERT
+#ifdef  NOASSERT
 #define ASSERTM(X,A)
 #else
 #define ASSERTM(X,A)  SURE_ASSERT(X,A)
 #endif
 
-#define ASSERT(X) ASSERTM(X," ")
+#ifdef  NOPRE
+#define PRE_ASSERT(X,A)
+#else
+#define PRE_ASSERT(X,A)  SURE_ASSERT(X,A)
+#endif
+
+#ifdef  NOPOST
+#define POST_ASSERT(X,A)
+#else
+#define POST_ASSERT(X,A)  SURE_ASSERT(X,A)
+#endif
+
+#ifdef  NOINV
+#define INV_ASSERT(X,A)
+#else
+#define INV_ASSERT(X,A)  SURE_ASSERT(X,A)
+#endif
 
 //  end of  _EXTENDEDASSERT_HH_
 #endif
