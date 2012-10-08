@@ -1,10 +1,7 @@
 #include <fstream>
-#include "extendedAssert.hpp"
 #include "rational.hpp"
 #include <vector>
-/*Esempio di uso di extended assert*/
-
-//======== questa parte dovrebbe stare in due files separati
+/*Example of use of extendedAssert*/
 
 
 //===============================================
