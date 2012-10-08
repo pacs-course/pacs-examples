@@ -40,16 +40,17 @@ OPTFLAGS = -g
 # -p       generate code suitable for the profiler
 # -O       attemp code optimizations
 
-
-# Nome del file che viene incluso e contiene le dipendenze
-# dagli headers autogenerate 
 #
 DEPEND=make.dep
 EXEC=esempioExtAss
+
 .phony+= unroll optimize debug massif leak profile
 
+all: $(EXEC)
+
 esempioExtAss: esempioExtAss.o rational.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) esempioExtAss.o  rational.o -o esempioExtAss
+	$(CXX) $(CXXFLAGS) -g $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
+	$(CXX) $(CXXFLAGS) -DNDEBUG $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
 
 unroll: chrono.o
 	$(CXX) -S -O unroll1.cpp
@@ -61,7 +62,8 @@ unroll: chrono.o
 
 
 clean:
-	\rm -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat esempioExtAss *.txt unroll1_nounroll unroll1_unroll
+	\rm -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat 
+	\rm -f esempioExtAss_debug  esempioExtAss_relase *.txt unroll1_nounroll unroll1_unroll
 
 optimize: chrono.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp chrono.o
@@ -82,6 +84,7 @@ leak:
 profile:
 	g++ -std=c++0x -pg -O esempio.cpp chrono.cpp -o esempio0
 	./esempio0<dati
+#	gprof --line --annotated-source ./esempio0 gmon.out >file.txt # currently not working!
 	gprof --line ./esempio0 gmon.out >file.txt
 
 massif:

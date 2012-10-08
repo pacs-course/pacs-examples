@@ -1,5 +1,6 @@
 #include "extendedAssert.hpp"
 #include <iosfwd>
+//! A Class for rational number.
 class Rational
 {
 public:
