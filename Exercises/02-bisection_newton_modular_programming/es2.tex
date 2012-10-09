@@ -1,34 +1,54 @@
-\section*{Es. 2}
+\documentclass[10pt,a4paper,english,italian]{article}
+%\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{epsfig}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{verbatim}
+\usepackage{babel}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{psfrag}
+\usepackage{color}
+\usepackage{../common/espacs}
 
-Considerando quanto fatto nell'esercizio 1, si richiedere di:
-\begin{enumerate}
+\makeatother
 
-    \item suddividere il programma in pi\`u file, in maniera modulare,
-        cos\`i da favorire la riusabilit\`a del codice.
-        Si suggerisce di raggruppare tutte le implementazioni delle funzioni
-        in un file, scrivere un corrispondente file di intestazione
-        (\emph{header}) e lasciare \cpp{main} in un terzo file.
+%\input{../common/commands.tex}
 
-% \item implementare un metodo per la ricerca dello zero di $f$
-%   sfruttando l'algoritmo della bisezione per avvicinarsi alla radice
-%   ed il metodo di Newton per ottenerne una stima accurata (si rimanda
-%   a \cite{Quarteroni.Sacco.ea:2000} per l'analisi).
+\title{Esercitazione 2}
+\date{13/10/2011}
+\setlength{\textwidth}{100ex}
+\setlength{\oddsidemargin}{0ex}
 
-    \item ripetere l'ultimo punto dell'esercizio 1;
+\pagestyle{fancy}
+\headheight 35pt
 
-    \item sapendo che la soluzione esatta del punto precedente \`e
-        $x=\sqrt{0.5}$, modificare il codice in modo tale da poter salvare
-        la distanza tra la soluzione approssimata e quella approssimata
-        alla corrente iterazione in un file.
-        Visualizzare la soluzione tramite Gnuplot.
-        Commentare il risultato alla luce della teoria.
+\begin{document}
+\lstset{language=[ISO]C++}
+\maketitle
 
-% Si verifichi che, scegliendo come
-%   punto di partenza $x^{\left(0\right)} = 0$, il metodo di Netwon non
-%   converga.
-%\item Sovraccaricare l'operatore di scorrimento in modo che, inviando
-%  ad uno \emph{stream} la classe corrispondente a ciascun metodo, si
-%  ottenga una descrizione dell'istanza (nome del metodo, valori dei
-%  parametri, numero di iterazioni necessarie per raggiungere la
-%  convergenza all'ultima chiamata).
-\end{enumerate}
+\input{preamble}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{es1}
+\input{es1_corr}
+
+%%%%%%%%%%%%%%%%%%%%%%
+
+\input{es2}
+\input{es2_corr}
+
+%%%%%%%%%%%%%%%%%%%%%
+
+\input{notes}
+
+\bibliographystyle{siam}
+\bibliography{../common/bibliography}
+
+\end{document}
