@@ -44,7 +44,7 @@ namespace Geometry{
     }
     //! Since we are dealing with floating points it is better to have
     //  a small number so that |a| < smallNumber means for us a==0
-    double smallNumber(1000*std::numeric_limits<double>::min());
+    double const smallNumber(1000*std::numeric_limits<double>::min());
     Point2D p;
     Point2D v;
     Point2D u;
@@ -67,11 +67,11 @@ namespace Geometry{
 	    // The two edges are aligned, skip test and update res
 	    res=newres;
 	  }
-	  else if ( std::abs(newres)>= smallNumber &&
-		    (newres > 0 && res < 0) || (newres < 0 && res > 0) ){
-	    this->isconvex=false;
-	    return;
-	  } 
+	  else if ((newres > 0 && res < 0) || (newres < 0 && res > 0) )
+	    {
+	      this->isconvex=false;
+	      return;
+	    } 
 	}
       }// end for
     this->isconvex=true;
