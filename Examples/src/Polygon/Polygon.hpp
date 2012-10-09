@@ -3,17 +3,17 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <stdexcept>
 
-/*!  /file This is an example of class hierarchy that represents
-  poligonal object.
+/*!  @file Polygon.hpp 
+  @briefThis is an example of class hierarchy that
+  represents poligonal object.
 
-  This module is wrapped in the namespace `Geometry`. It represent a
-  first example of class hyerarchy with public inheritance. The class
-  `AbstractPolygon` defines the general public interface of all other
-  classes representing polygonal objects.
+  @detail This module is wrapped in the namespace `Geometry`. It
+  represent a first example of class hyerarchy with public
+  inheritance. The class `AbstractPolygon` defines the general public
+  interface of all other classes representing polygonal objects.
   
-  We make use of some syncatx of the C++11 new standard so you need to
+  We make use of some syntax of the C++11 new standard so you need to
   compile with *-std=c++0x* or (since gcc 4.7) *-std=c++11*
    */
 namespace Geometry
@@ -82,15 +82,16 @@ namespace Geometry
   {
   public:
     //! Empty polygon
-    AbstractPolygon():isconvex(false),vertexes(){};
+    AbstractPolygon():vertexes(),isconvex(false){};
     //! virtual destructor
     virtual ~AbstractPolygon(){};
     //! Returns the number of vertices.
-    /*!
-      We return Vertices::size_type and not just int because size_type is guaranteed to be the
-      correct type for indexes in stl vectors. Its actual type may be implementation dependent.
-      In this case, however, int would have been fine (size_type is guaranteed to be an integral type,
-      i.e. a type convertible to int).
+    /*!  We return Vertices::size_type and not just int because
+      size_type is guaranteed to be the correct type for indexes in
+      stl vectors. Its actual type may be implementation dependent.
+      In this case, however, int would have been fine (size_type is
+      guaranteed to be an integral type, more precisely
+      a type convertible to unsigned int).
     */
     Vertices::size_type size() const {return vertexes.size();}
     //! Is the polygon convex?
@@ -105,13 +106,12 @@ namespace Geometry
       The implementation is left to the derived classes.
     */
     virtual double area() const=0;
-    // Protected because I want that derived classes
-    // may access them
   protected:
     //! Protected constructor taking vertices.
     /* 
        This constructor is kept protected because it is not part of
-       the interface of AbstractPolygon, yet some derived classes may make use of it
+       the interface of AbstractPolygon, yet some derived classes may
+       make use of it
     */
     AbstractPolygon(Vertices const & v);
     Vertices vertexes;
