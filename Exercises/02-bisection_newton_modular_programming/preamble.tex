@@ -1,6 +1,8 @@
-Sia $f\in C^{1}\left(a, b\right)$ una funzione reale che si annulla in
-un punto $\alpha\in (a, b)$. Un algoritmo robusto per la
-ricerca dello zero di tale funzione pu\`o essere costruito combinando in sequenza l'utilizzo di
-un metodo di basso ordine, per cui sia garantita la convergenza globale,
-con uno di alto ordine.
-Infatti il metodo di alto ordine si avvicina allo zero cercato in un numero inferiore di passi rispetto al metodo di basso ordine, ma pu\`o garantire la convergenza solo partendo da una stima (``guess'') iniziale sufficientemente accurata. Questa stima pu\`o essere fornita tramite qualche passo del metodo di basso ordine, chiamato con una tollerenza larga.
+Let $f \in C^{1} \left( a, b \right)$ be a real function that goes to zero at
+the point $\alpha\in (a, b)$. A robust algorithm to find a zero of such a
+function can be built joining a low order method, for which global convergence
+is guaranteed, with a high order method. The high order method reaches the
+zero with a lower number of steps with respect to the low order one, but the
+convergence is guaranteed only if the guess is sufficiently close to the zero.
+This guess can be computed using the low order method with a coarse tolerance
+rate.
