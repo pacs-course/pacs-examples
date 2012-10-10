@@ -7,16 +7,16 @@ bib = ../common/bibliography.bib
 
 src = $(wildcard ./ex*/*.cpp) $(wildcard ./ex*/*.hpp)
 
-fig = $(wildcard ./figures/eps/*.eps) $(wildcard ./figures/fig/*.fig) 
+fig = $(wildcard ./figures/eps/*.eps) $(wildcard ./figures/fig/*.fig)
 
-DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt
+DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
 
 vpath %.eps ./figures/eps/
 vpath %.fig ./figures/fig/
 vpath %.hpp ./ex1:./ex2
 vpath %.cpp ./ex1:./ex2
 
-.PHONY = all clean tikz
+.PHONY = all pdf dvi ps tikz clean clean-all
 
 all: pdf
 
