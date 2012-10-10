@@ -1,38 +1,29 @@
-\subsection*{Note sui cicli}
+\subsection*{Notes on loops}
 
-Il codice proposto al \emph{Punto 1} utilizza un ciclo \cpp{while}.
-%Un' altra alternativa possibile \`e l'uso di un ciclo \texttt{while}:
-%\lstset{basicstyle=\scriptsize\sf}
-%\lstinputlisting[caption=Ciclo \texttt{while} senza
-%\texttt{break}.,linerange={26-47}]{ex/1/zerofun-while.cc}
-%\lstset{basicstyle=\sf}
-In queso caso la prima valutazione della funzione \`e necessariamente esterna
-al ciclo.
+The code proposed to solve the first point uses a \cpp{while} loop.
+In this way the first evaluation of the function must be performed outside the
+loop.
 
-In alternativa si potrebbe scrivere un ciclo \cpp{for} ed utilizzare
-l'istruzione \texttt{break} qualora venisse raggiunta la convergenza entro
-il massimo numero di iterazioni.
+Alternatively we can use a \cpp{for} loop and use the \cpp{break} instruction
+whenthe convergence is obtained before reaching the maximum number of
+iterations.
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Ciclo \texttt{for} con
-        \texttt{break}.,linerange={26-67}]{ex/1/old_file/zerofun-break.cc}
+    \lstinputlisting[caption=\texttt{for} loop with \texttt{break}.,
+    linerange={26-67}]{ex/1/old_file/zerofun-break.cc}
 \lstset{basicstyle=\sf}
-L'istruzione \texttt{break} \`e un modo efficiente per
-imporre una condizione di uscita, ma pu\`o rendere il codice di difficile
-lettura ed interpretazione; infatti le condizioni di uscita sono sparse e non
-sono raggruppate all'inizio o alla fine. Per questo motivo si cerca di limitare
-l'uso di \texttt{break} alla gestione di eccezioni.
+The \texttt{break} instruction is an effective way to impose the exit from the
+loop, but the worsens the readability of the code, sice the exiting instruction
+are not grouoed anymore at the beginning or the end of the cycle. This is a
+reason why the use of \texttt{break} should be limited to manage exceptions.
 
-Una soluzione alternativa \`e basata sul ciclo \cpp{do}/\cpp{while}:
+Another possible way is to use a \cpp{do}/\cpp{while} loop
 \lstset{basicstyle=\scriptsize\sf}
-\lstinputlisting[caption=Ciclo \texttt{do\ldots while} senza
-    \texttt{break}.,linerange={26-47}]{ex/1/old_file/zerofun-dowhile.cc}
+    \lstinputlisting[caption=\texttt{do\ldots while} loop without \texttt{break}.,
+    linerange={26-47}]{ex/1/old_file/zerofun-dowhile.cc}
 \lstset{basicstyle=\sf}
-In questo caso le condizioni di uscita sono chiaramente visibili in fondo al
-codice. Il prezzo da pagare \`e un inutile assegnamento di variabili
-nell'ultima iterazione eseguita. Il costrutto \texttt{do \ldots while} ha come
-caratteristica fondamentale quella di eseguire sempre almeno una iterazione,
-anche se le condizioni di uscita non sono verificate o
-verificabili all'inzio del ciclo.
-A volte questo comportamento pu\`o aiutare a generare errori non banali,
-se il codice scritto \`e complesso.
+In this way the exit condition are clearly visible at the end of the loop, but
+on the other hand we need to perform some useless extra assignements at the last
+iteration. The \texttt{do \ldots while} statement always peforms at least one
+iteration even when the exiting conditions are already satisfied. This can lead
+to non-obvious errors when the code is complex.
 
