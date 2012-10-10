@@ -1,90 +1,86 @@
-\subsection*{Soluzione es. 2}
+\subsection*{Exercise 2 solution}
 
-Si riporta di seguito il listato dell'\emph{header file} che contiene
-le dichiarazioni delle procedure che risolvono l'esercizio.
+Here follows the listing for the \emph{header file} that contains all the
+declarations of the functions in the code.
 % zerofun.hpp
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Procedure per la ricerca
-        degli zeri di una funzione.]{ex/1/zerofun.hpp}
+    \lstinputlisting[caption=Function declarations for computing the zero of a
+    function.] {ex/1/zerofun.hpp}
 \lstset{basicstyle=\sf}
 
-Le corrispondenti definizioni sono state inserite nel \emph{source file}
+We put the corresponding definitions in the \emph{source file}
 \texttt{zerofun.cpp}:
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Procedure per la ricerca degli zeri di una
-        funzione.]{ex/1/zerofun.cpp}
+    \lstinputlisting[caption=Function definitions for computing the zero of a
+    function.] {ex/1/zerofun.cpp}
 \lstset{basicstyle=\sf}
 
-L'istruzione \texttt{assert(u*f(b)<0.0);} permette un semplice controllo degli errori,
-perch\`e provoca l'interruzione del programma e la generazione di un
-messaggio di errore se l'espressione \texttt{u*f(b)<0.0} non \`e verificata.
+The instruction \texttt{assert(u*f(b)<0.0);} is used to perform a simple error
+checking. If the boolean instruction inside is not verified, the program stop
+immediately and an error message is generated.
 
-Infine riportiamo il listato contenente il main nel file \texttt{bn.cpp}:
+We have also the listing for the file \texttt{bn.cpp} that contains the main
+program
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Definizione della funzione e main del programma.]
+    \lstinputlisting[caption=function definition and main program.]
     {ex/1/bn.cpp}
 \lstset{basicstyle=\sf}
 
-Per la compilazione si ricorre ai seguenti comandi:
+The compilation can be peformed with
 \begin{verbatim}
 g++  -c -o bn.o bn.cpp -Wall
 g++  -c -o zerofun.o zerofun.cpp -Wall
 g++  -o bn bn.o zerofun.o
 \end{verbatim}
 
-I \emph{files} \texttt{bn.o} e \texttt{zerofun.o} sono la
-rappresentazione in codice oggetto delle definizioni di tipi e
-funzioni contenute nei \emph{files} sorgente
-(rispettivamente \texttt{bn.cpp} e \texttt{zerofun.cpp}.
-Il collegamento (\emph{linking}) dei \emph{files} oggetto
-produce l'eseguibile \texttt{bn}.
-Per disattivare tutti gli \cpp{assert} all'interno del codice,
-in fase di compilazione occorre aggiungere il parametro \cpp{-DNDEBUG}
-per quei files che utilizzano gli \cpp{assert}, ovvero
+The files \texttt{bn.o} and \texttt{zerofun.o} are the translation to object
+code of the type and function definitions that we wrote in the corresponding
+source files. The executable \texttt{bn} is created throught the \emph{linking}
+of the object files together with the necessary libraries.
+
+The \cpp{assert} can be disabled with the \cpp{-DNDEBUG} flag that must be
+passed to the compiler when compiling files that contain it, i.e.
 \begin{verbatim}
 g++  -c -o bn.o bn.cpp -Wall
 g++  -c -o zerofun.o zerofun.cpp -Wall -DNDEBUG
 g++  -o bn bn.o zerofun.o
 \end{verbatim}
 
-Per visualizzare graficamente l'errore commesso, \`e possibile
-aggiungere due parametri di input alle funzioni \texttt{bisection},
-\texttt{newton} e \texttt{robust}.
-Il primo \`e la soluzione esatta mentre il secondo \`e il nome del
-file su cui salvare i dati.
-Il listato dei comandi contenuti in \texttt{bng.cpp} \`e il seguente:
+In order to graphically see the error, it is possible to pass two additional
+arguments to the functions  \texttt{bisection}, \texttt{newton} and
+\texttt{robust}. The first one is the exact solution, while the second is the
+name of the file for the output.
+The listing for the \texttt{bng.cpp} file is as follows
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Definizione della funzione e main del programma.]
+    \lstinputlisting[caption=Function definition and main program.]
         {ex/1/withGnuplot/bng.cpp}
 \lstset{basicstyle=\sf}
 
-Si noti il comando finale di chiamata al sistema operativo,
-\`e richiesto quindi il file \texttt{print\_data} che contiene i seguenti comandi
+we note at the end the call to the operating system that uses the file
+\texttt{print\_data} with the following commands
 \begin{verbatim}
 set terminal png
 set output "grafico.png"
 plot "data" with lines
 \end{verbatim}
-I comandi in \texttt{zerofung.hpp} sono sostanzialmente identici a quelli
-riportati in \texttt{zerofun.hpp}, mentre i comandi in \texttt{zerofung.cpp}
-sono riportati qui di sequito
+The listing for \texttt{zerofung.hpp} is basically the same as
+\texttt{zerofun.hpp}, while the listing for \texttt{zerofung.cpp} is
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Procedure per la ricerca degli zeri di una
-        funzione.]{ex/1/withGnuplot/zerofung.cpp}
+    \lstinputlisting[caption=Definitions for the functions to compute a zero of
+	    a function.]{ex/1/withGnuplot/zerofung.cpp}
 \lstset{basicstyle=\sf}
 
-Si noti nella funzione \texttt{bisection} e \texttt{newton} la gestione del file.
-Anzitutto viene dichiarato, dove \`e necessario l'operatore di scope resolution
-\texttt{::} per accedere ai membri definiti nel namespace \texttt{std}.
-Successivamente viene aperto in modalit\`a out nel caso della funzione
-\texttt{bisection}, mentre in modalit\`a out e app nella funzione \texttt{newton}.
-La differenza \`e che nel secondo caso i dati vengono scritti dal fondo del file.
-Vi \`e poi un test per verificare se il file \`e stato effettivamente aperto.
-All'interno di cicli vi \`e la scrittura dei dati, i comandi sono analoghi a
-quelli utilizzati per la visualizzazione a schermo.
-Alla fine di entrambe le funzioni il file viene chiuso.
+Note how the functions \texttt{bisection} and \texttt{newton} manage the file.
+First of all it is declared, using the scope resolution operator \cpp{::} to
+access the members in the \cpp{std} namespace. Afterwards it is opened in the
+out mode for \texttt{bisection}, and out and app for \texttt{newton}.i This
+means that in the second case the files are written at the end of the file,
+without deleting any previous content. There is also a test to verify that the
+file has been properly opened. The data output is performed inside the loops in
+a way that is totally similar to printing to screen. at the end of each function
+the file is closed.
 
-Il grafico ottenuto \`e il seguente
+This is the graph generated by the code
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.7\textwidth]{./images/grafico}
