@@ -1,5 +1,7 @@
-BASE	= $(PWD)
-CPP		= g++
+
+CXX		= g++
+CC      = $(CXX)
+BASE	= $(PD)
 
 CXXFLAGS = -Wall -g
 # -c       compile only, generate corresponding .o files
@@ -20,14 +22,14 @@ DEPEND= makedepend $(CFLAGS)
 
 
 $(EXEC): $(OBJS)
-	$(CPP) $(LDFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) -o $@ $^
 	@echo Compilation completed. Enjoy!
 
 doc: Doxyfile $(SRCS) $(HDRS)
 	doxygen Doxyfile && touch doc
 
 clean:
-	for dustfile in $(OBJS) $(EXEC); do \
+	for dustfile in $(OBJS) $(EXEC) *~; do \
 	!( test -e $$dustfile ) || rm $$dustfile; \
 	done
 
@@ -41,3 +43,4 @@ depend: $(SRCS)
 
 bn.o: bn.hpp zerofun.hpp rootfinding.hpp
 zerofun.o: zerofun.hpp rootfinding.hpp
+
