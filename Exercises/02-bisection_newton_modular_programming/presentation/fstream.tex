@@ -1,11 +1,9 @@
 \documentclass{beamer}
 
-%\usepackage{t1enc}
 %\pgfpagelayout{2 on 1}[a4paper]
 
+\usepackage[T1]{fontenc}
 \usepackage{beamerthemesplit,bm}
-\usepackage[latin1]{inputenc}
-\usepackage[italian]{babel}
 \usepackage{graphicx}
 % \usepackage{movie15}
 \usepackage{hyperref}
@@ -18,12 +16,12 @@
 \usetheme{Boadilla}
 
 
-\definecolor{mygreen}{rgb}{0,0.48,0.0}
+%\definecolor{mygreen}{rgb}{0,0.48,0.0}
 
-\definecolor{myblue}{rgb}{0,0,0.64}
+%\definecolor{myblue}{rgb}{0,0,0.64}
 
-\author{Alessio Fumagalli}
-\date{20-10-2011}
+\author{Antonio Cervone}
+\date{October 12 2012}
 \institute{Politecnico di Milano}
 
 \begin{document}
@@ -32,13 +30,13 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Gestione dei file testuali}
+    \frametitle{Text file management}
 
-    \begin{block}{Headerfile da aggiungere}
+    \begin{block}{Header file to be added}
+        Useful for reading (input) and writing (output).
         \begin{verbatim}
 #include <fstream>
         \end{verbatim}
-        Utile sia per l'apertura del file in lettura che in scrittura.
     \end{block}
 
 \end{frame}
@@ -47,9 +45,9 @@
 
 \begin{frame}[fragile]
 
-    \frametitle{Gestione dei file testuali}
+    \frametitle{Text file management}
 
-    \begin{block}{Dichiarazione e apertura di un file in scrittura}
+    \begin{block}{Declaration and opening of an output file}
         \begin{verbatim}
 std::fstream fileOut;
 fileOut.open ( fileName.c_str(), std::fstream::out |
@@ -57,7 +55,7 @@ fileOut.open ( fileName.c_str(), std::fstream::out |
         \end{verbatim}
     \end{block}
 
-    \begin{block}{Dichiarazione e apertura di un file in lettura}
+    \begin{block}{Declaration and opening of an input file}
         \begin{verbatim}
 std::fstream fileIn;
 fileIn.open ( fileName.c_str(), std::fstream::in );
@@ -70,9 +68,9 @@ fileIn.open ( fileName.c_str(), std::fstream::in );
 
 \begin{frame}[fragile]
 
-    \frametitle{Gestione dei file testuali}
+    \frametitle{Text file management}
 
-    \begin{block}{Controllare che il file sia aperto}
+    \begin{block}{Check that a file has been properly opened}
         \begin{verbatim}
 if ( file.is_open() == false )
 {
@@ -88,15 +86,15 @@ if ( file.is_open() == false )
 
 \begin{frame}[fragile]
 
-    \frametitle{Gestione dei file testuali}
+    \frametitle{Text file management}
 
-    \begin{block}{Scrittura su file}
+    \begin{block}{Write to file}
         \begin{verbatim}
-fileOut << "Ciao " << 5.3 << std::endl;
+fileOut << "Hello " << 5.3 << std::endl;
         \end{verbatim}
     \end{block}
 
-    \begin{block}{Lettura da file}
+    \begin{block}{Read from file}
         \begin{verbatim}
 char name [ 256 ];
 float value;
@@ -111,9 +109,9 @@ fileIn.getline ( name, 256, '\n' );
 
 \begin{frame}[fragile]
 
-    \frametitle{Gestione dei file testuali}
+    \frametitle{Text file management}
 
-    \begin{block}{Ricordarsi di chiudere il file}
+    \begin{block}{Properly close the file}
         \begin{verbatim}
 file.close();
         \end{verbatim}
@@ -125,11 +123,10 @@ file.close();
 
 \begin{frame}[fragile]
 
-    \frametitle{Gestione dei file testuali}
+    \frametitle{Text file management}
 
-    \begin{block}{Scrivere numeri reali su file}
-        Per aggiungere cifre significative di un numero reale
-        nella scrittura in un file occorre aggiungere
+    \begin{block}{Write real numbers to file}
+        In order to print more digits for a real number we must add
         \begin{verbatim}
 fileOut.precision ( 15 );
         \end{verbatim}
@@ -140,3 +137,4 @@ fileOut.precision ( 15 );
 %---------------------------------------------------------------------------------
 
 \end{document}
+

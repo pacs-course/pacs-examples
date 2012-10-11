@@ -11,7 +11,7 @@ all: $(pdf)
 	pdflatex $^
 
 clean:
-	rm -f *.aux *.log *~
+	rm -f *.aux *.log *.out *.nav *.snm *toc *.vrb *~
 
 clean-all: clean
 	rm -f *.pdf
