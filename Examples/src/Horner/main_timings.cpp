@@ -39,7 +39,9 @@ int main() {
       <<" with standard formula"<<endl;
   
   vector<double> points;
-  for (double x = startx; x < endx; x += interval)points.push_back(x);
+  points.reserve(numinterval+1);
+  double x=startx;
+  for (int i=0; i <= numinterval; ++i,x+=interval)points.push_back(x);
   // to make the game fair I fill the vector results
   // so both methods start in thw same situation
   vector<double> result(points.size());
