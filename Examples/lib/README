@@ -1,1 +1,14 @@
-In this directory we will put the libraries common to different examples
+In this directory we put header files common to different examples
+
+Go to the directory Examples/src/Utilities and do make; make install
+c
+Then in the directory MatrixMarket
+make; make install istalls the library file for the MAtrixMarket reader
+
+In this directory we put header files common to different examples
+
+Go to the directory Examples/src/Utilities and do make; make install
+
+Then in the directory MatrixMarketreates libpacs.a and libpacs.so
+
+
