@@ -1,5 +1,6 @@
+CXX		= g++
+CC		= $(CXX)
 BASE	= $(PWD)
-CPP   	= g++
 
 CXXFLAGS = -Wall -g
 # -c       compile only, generate corresponding .o files
@@ -10,8 +11,8 @@ CXXFLAGS = -Wall -g
 LDFLAGS = 
 
 SRCS	= $(wildcard *.cpp)
-HDRS 	= $(wildcard *.hpp)
-OBJS 	= $(SRCS:.cpp=.o)
+HDRS	= $(wildcard *.hpp)
+OBJS	= $(SRCS:.cpp=.o)
 EXEC	= bn-allinone
 
 .PHONY : clean clean-all depend
@@ -20,7 +21,7 @@ DEPEND= makedepend $(CFLAGS)
 
 
 $(EXEC): $(OBJS)
-	$(CPP) $(LDFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) -o $@ $^
 	@echo Compilation completed. Enjoy!
 
 doc: Doxyfile $(SRCS) $(HDRS)

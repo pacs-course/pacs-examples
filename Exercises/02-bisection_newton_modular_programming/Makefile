@@ -5,7 +5,7 @@ doc = es2
 dep   = $(wildcard *.tex) $(srcdir)/$(src)
 bib = ../common/bibliography.bib
 
-srcdir = ./ex/1/
+srcdir = ./src
 src = $(wildcard *.cpp) $(wildcard *.hpp)
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~

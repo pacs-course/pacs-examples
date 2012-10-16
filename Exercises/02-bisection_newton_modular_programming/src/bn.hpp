@@ -11,7 +11,7 @@
 //! Function f(x)
 real f(real x)
 {
-  return pow(x,2) - 0.5;
+  return x * x - 0.5;
 }
 
 //! First derivative of function f(x)

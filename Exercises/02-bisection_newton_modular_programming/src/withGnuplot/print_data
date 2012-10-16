@@ -1,3 +1,3 @@
 set terminal png
-set output "grafico.png"
+set output "graph.png"
 plot "data" with lines

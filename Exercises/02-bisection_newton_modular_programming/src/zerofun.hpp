@@ -1,10 +1,10 @@
 /*!
   \file zerofun.hpp
-  \brief Algorithms to find the root of a 
+  \brief Algorithms to find the root of a
   non-linear equation f(x) = 0
-  
-  Given a continuous function f(x) on a 
-  real interval [a, b], such that f(a)f(b) < 0,
+
+  Given a continuous function f(x) on a
+  real interval [a, b], such that f(a) * f(b) < 0,
   these methods evaluate its zero in (a, b)
 */
 
@@ -19,7 +19,7 @@
   \brief Convergence check
 
   Given the stopping criterion for an iterative
-  algorithm (which is specified in \e check parameter) 
+  algorithm (which is specified in the \e check parameter) 
   this function compares the increment or the residual
   computed in the last iteration against
   the desired tolerance.
@@ -34,7 +34,7 @@
 
 /*!
   \name Root finding algorithms
-  
+
   Some parameters are used in each algorithm.
 
   - <b>Input Parameters:</b>
@@ -65,7 +65,7 @@
   Note that \e a and \e b are not defined constant:
   the algorithm needs to update the interval boundaries
 */
-real bisection(real a, real b, fctptr const f, 
+real bisection(real a, real b, fctptr const f,
                real const & tol, int const & maxit,
                checkT const & check, int & nit);
 
