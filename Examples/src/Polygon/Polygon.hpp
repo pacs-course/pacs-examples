@@ -148,6 +148,10 @@ namespace Geometry
     virtual void showMe(ostream & out=cout) const;
   };
 
+  //! A square
+  /*!
+    The square is a final class derived from polygon.
+   */
   class Square: public AbstractPolygon
   {
   public:
@@ -166,7 +170,7 @@ namespace Geometry
     virtual void showMe(ostream & out=cout) const;
   };
   
-  
+  //! A triangle
   class Triangle: public AbstractPolygon
   {
   public:
