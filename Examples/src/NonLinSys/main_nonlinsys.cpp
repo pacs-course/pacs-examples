@@ -13,6 +13,12 @@ double f2(NonLinearSystems::argumentType const & x){
   return x[0]+3*x[1];
 }
 
+//! A function that takes an addisional argument
+
+double convex(NonLinearSystems::argumentType const & x,double alpha){
+  return alpha*x[0]+(1.0-alpha)*x[1];
+}
+
 int main(){
   using namespace  NonLinearSystems;
   using std::vector;
@@ -28,6 +34,10 @@ int main(){
   F.addToSystem(&f2);
   // Lambda expression added
   F.addToSystem( [](argumentType const & x){return x[0]+x[1];} );
+  // For bind placeholders
+  using namespace std::placeholders;
+  // Using bind: it stores convex(*,0.4);
+  F.addToSystem(std::bind(convex, _1, 0.4));
   argumentType x(2);
   x<<1.0,3.1; // Eigen initialization
   auto res=F(x);
