@@ -2,7 +2,7 @@ rerun = "There were undefined references"
 bibtex = "\citation"
 
 doc = es2
-dep   = $(wildcard *.tex) $(srcdir)/$(src)
+dep = $(wildcard *.tex) $(srcdir)/$(src)
 bib = ../common/bibliography.bib
 
 srcdir = ./src

@@ -1,7 +1,7 @@
 
 CXX		= g++
 CC      = $(CXX)
-BASE	= $(PD)
+BASE	= $(PWD)
 
 CXXFLAGS = -Wall -g
 # -c       compile only, generate corresponding .o files
