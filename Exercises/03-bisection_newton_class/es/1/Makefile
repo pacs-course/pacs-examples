@@ -1,5 +1,7 @@
-BASE	= $(PWD)
-CC   	= g++
+
+CXX  = g++
+CC   = $(CXX)
+BASE = $(PWD)
 
 CXXFLAGS = -g -Wall
 # -g       generate code suitable for the debugger

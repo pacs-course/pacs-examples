@@ -1,5 +1,5 @@
 BASE	= $(PWD)
-CPP   	= g++
+CPP		= g++
 
 CXXFLAGS = -Wall -g
 # -g       generate code suitable for the debugger
@@ -7,8 +7,8 @@ CXXFLAGS = -Wall -g
 # -O       attemp code optimizations
 
 SRCS	= $(wildcard *.cpp)
-HDRS 	= $(wildcard *.hpp)
-OBJS 	= $(SRCS:.cpp=.o)
+HDRS	= $(wildcard *.hpp)
+OBJS	= $(SRCS:.cpp=.o)
 
 LIBDIR  = $(PWD)/../lib
 
@@ -16,10 +16,10 @@ LIBNAME = $(LIBDIR)/librootfinding.a
 
 DEPEND= makedepend $(CFLAGS)
 
-.PHONY : default clean depend
+.PHONY : all clean depend
 
-default: $(LIBNAME)($(OBJS))
-		
+all: $(LIBNAME)($(OBJS))
+
 clean:
 	for dustfile in $(OBJS); do \
 	!( test -e $$dustfile ) || rm $$dustfile; \

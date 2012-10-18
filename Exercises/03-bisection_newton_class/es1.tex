@@ -1,35 +1,34 @@
-\section*{Esercizio 1}
+\section*{Exercise 1}
 
 \begin{enumerate}
-    \item creare le classi C++ \cpp{Bisection} e \cpp{Newton} che
-        forniscano rispettivamente l'implementazione del
-        metodo di bisezione e del metodo di Newton (\textit{programmazione
-        basata sugli oggetti}).
+    \item create the classes \cpp{Bisection} and \cpp{Newton} that provide an
+    implementation of the bisection and Newton algorithms respectively, with an
+    \emph{Object Oriented Programming} approach.
 
-    \item sfruttando le strutture dati costruite nell'esercizio
-        precedente, creare una classe \cpp{Robust} per l'implementazione di
-        un algoritmo robusto, che combini i due metodi di ricerca dello zero.
+    \item using the data structures that have been introduced in the previous
+    point, create a \cpp{Robust} class that implements the robust algorithm, as
+    discussed in the previous exercise session.
 
-    \item utilizzare i metodi implementati per calcolare lo zero della funzione
+    \item use the classes to compute the zero of the function
         \begin{equation*}
             f(x) = e^x (x - 0.6)
         \end{equation*}
-        nell'intervallo $(0, 1)$.
+        in the interval $[0, 1]$.
 
-    \item sovraccaricare l'operatore \cpp{\<\<} della classe \cpp{Robust}
-        affinch\'e restituisca una referenza ad uno stream (di tipo \cpp{std::ostream}).
-        Lo stream contiene la tolleranza richesta, il numero di iterazioni dell'algoritmo
-        ``coarse'', di quello fine, il numero massimo di itearzioni ed il rapporto
-        tra le tollerenze dei due algoritmi.
+    \item overload \cpp{operator<<} in the \cpp{Robust} class so that
+    it has a reference to a \cpp{std::ostream} as return type. The stream should
+    print the required tolerance, the number of iterations of the coarse
+    algorithm, the number of iterations of the fine algorithm, the maximum
+    number of iterations and the ratio of tolerances between the two algorithms.
 
-    \item {\bf CON CONSEGNA -} Le classi \cpp{Bisection}, \cpp{Newton} e \cpp{Robust}
-        hanno molto in comune tra loro e con altri metodi iterativi per la ricerca degli zeri,
-        che eventualmente potrebbero essere aggiunti in futuro.
-        Scrivere una classe base \cpp{IterativeMethod} che raccolga tutte le caratteristiche
-        comuni. Riscrivere le classi \cpp{Bisection}, \cpp{Newton} e \cpp{Robust} come
-        derivate della classe base \cpp{IterativeMethod}.
-        (\emph{traccia}: il costruttore della classe base riceve come parametri la
-        tolleranza, il massimo numero di iterazioni ed il tipo di controllo
-        sulla convergenza.)
+    \item \textbf{HOMEWORK} - the classes \cpp{Bisection}, \cpp{Newton} and
+    \cpp{Robust} have a lot in common among then, that is also shared with
+    other iterative methods that perform the search of a zero, that can possibly
+    be added in the future.
+    Write a base class, called \cpp{IterativeMethod}, that hosts all the
+    common features and rewrite the \cpp{Bisection}, \cpp{Newton} e \cpp{Robust}
+    classes as derived classes. ( \emph{hint}: the constructor for the base
+    class should have as parameters the tolerance, the maximum number of
+    iterations and the convergence control type.)
 
 \end{enumerate}
