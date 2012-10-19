@@ -1,5 +1,20 @@
-ex. 1 - oct 5 2012
+es 1 - oct 5 2012
 
 - command line compilation
-- ex. 01-square_sum
+- es 01-square_sum
 
+es 2 - oct 12 2012
+
+- file streams
+- eclipse introduction
+- gnuplot introduction
+- es 02-bisection_newton_modular_programming
+- procedural implementation of zero search
+- newton, bisection, robust combination
+- modular programming of the above
+
+es 3 - oct 19 2012
+
+- git and github
+- es 03-bisection_newton_class
+- homework: pt. 5
