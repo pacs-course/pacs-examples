@@ -1,0 +1,22 @@
+Luca Formaggia August 2005
+
+The code is slightly modified version of the code available with the book
+
+C++ and Object-Oriented Numeric Computing for Scientists and Engineers
+Daoqi Yang, Springer, New York, 2001. ISBN:0-387-98990-0, see the
+readme file for details.
+
+
+Some modifications have been made to have a consistent makefile and a
+better compliance with the C++98 standard (gcc>3.4 now compiles).
+
+The code is compliant with C++98 syntax. No C++11.
+
+Some compiler warning are in fact related to the example.
+
+Luca Formaggia
+MOX, Dipartimento di Matematica
+Politecnico di Milano
+Italy
+luca.formaggia@polimi.it
+

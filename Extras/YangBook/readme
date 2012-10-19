@@ -1,0 +1,26 @@
+C++ and Object-Oriented Numeric Computing for Scientists and Engineers
+Daoqi Yang, Springer, New York, 2001. ISBN:0-387-98990-0
+
+The code that I have used in each chapter are in the 
+subdirectories. For example, subdirectory
+                chapter11 
+contains the matrix algebra code in Chapter 11 of the book.
+
+The programs may not have been neatly written. The purpose that they
+are here for free downloading is only to save your typing and time. 
+However, some code has been slightly changed to comform to the 
+new and ANSI/ISO compiler GNU g++ compiler (gcc 3.0, release June 2001). 
+The non-template code in the chapters are also compiled by SUN CC 
+(C++ 5.1, release April 2001) compiler, which does not compile some 
+templates correctly.
+
+By the way, some of the code may not compile if you are using a
+compiler that is different from mine. So modify them if necessary.
+
+If you find any error in the code, please let me know (Daoqi yang,
+yang@na-net.ornl.gov, daoqi_yang@yahoo.com, yang@math.wayne.edu). 
+I will then modify the code, which may be benefical to other readers.
+
+Thanks,
+Daoqi Yang
+2001-08-09
