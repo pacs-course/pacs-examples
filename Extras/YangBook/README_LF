@@ -1,4 +1,4 @@
-Luca Formaggia August 2005
+Luca Formaggia August 2005/Octobre 2012
 
 The code is slightly modified version of the code available with the book
 
@@ -12,7 +12,30 @@ better compliance with the C++98 standard (gcc>3.4 now compiles).
 
 The code is compliant with C++98 syntax. No C++11.
 
-Some compiler warning are in fact related to the example.
+The modifications I have made are minimal:
+
+> all standard header files now do not have the extension .h 
+
+> Massive use of using namespace std (sorry). Standard compliant
+> compilers REQUIRE the full qualified name for standard library names
+
+> exit() is in <cstdlib>. Added the include. Older compiler put exit()
+> in the global workspace, but this is not C++98 compilant
+
+> some char * have been changed to char const * to avoid warnings. Indeed
+  
+   void foo(char * c){...};
+   ....
+   foo("A message");
+
+>is tolerated by some compiler, but not correct, since a literal
+>string is not a lvalue and cannot be changed. Thus, initialising 
+>char*c to a constant string generates (at least) a warning from the
+>compiler.
+
+
+Note: some other compiler warnings are in fact related to the material 
+the example wants to illustrate.
 
 Luca Formaggia
 MOX, Dipartimento di Matematica
