@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace RootFinding 
+namespace RootFinding
 {
   //! Type for real numbers
   typedef double real;
@@ -19,7 +19,8 @@ namespace RootFinding
   typedef real (*fctptr)(real);
 
   //! Type for convergence check
-  enum checkT {
+  enum checkT
+  {
     INCREMENT, //!< Check the difference between subsequent iterates
     RESIDUAL,  //!< Check the residual
     BOTH       //!< Check both

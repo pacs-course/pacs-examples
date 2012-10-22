@@ -10,7 +10,7 @@ namespace RootFinding
     \brief Find the root of a non-linear equation using
     the Newton method
   */
-  class Newton 
+  class Newton
   {
   public:
     /** @name Constructors
@@ -38,7 +38,7 @@ namespace RootFinding
     //@}
   private:
     //! Check if the method has converged
-    bool inline converged(const real&, const real&) const;
+    bool converged(const real&, const real&) const;
     //! Tolerance
     const real M_tol;
     //! Maximum number of iterations
@@ -50,7 +50,7 @@ namespace RootFinding
   };
 
 bool inline Newton::converged(const real& increment,
-				const real& residual) const
+                              const real& residual) const
   {
        switch(M_check){
        case INCREMENT:

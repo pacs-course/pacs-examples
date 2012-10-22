@@ -14,15 +14,15 @@ namespace RootFinding
     This class provides an implementation of the Bisection
     method for rootfinding.
   */
-  class Bisection 
+  class Bisection
   {
   public:
     /** @name Constructors
      */
     //@{
-    //! Constructor   
+    //! Constructor
     Bisection(const real& tol, const int& maxit,
-	      const checkT& check);
+              const checkT& check);
     //@}
     /** @name Accessors
      */
@@ -42,7 +42,7 @@ namespace RootFinding
     //@}
   private:
     //! Check if the method has converged
-    bool inline converged(const real&, const real&) const;
+    bool converged(const real&, const real&) const;
     //! Tolerance
     const real M_tol;
     //! Maximum number of iterations
@@ -54,7 +54,7 @@ namespace RootFinding
   };
 
 bool inline Bisection::converged(const real& increment,
-				   const real& residual) const
+                                 const real& residual) const
   {
       switch(M_check){
       case INCREMENT:

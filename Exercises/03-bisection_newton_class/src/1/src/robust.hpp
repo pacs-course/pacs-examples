@@ -5,7 +5,7 @@
 #include "bisection.hpp"
 #include "newton.hpp"
 
-namespace RootFinding 
+namespace RootFinding
 {
 
   /*!
@@ -25,8 +25,8 @@ namespace RootFinding
     //@{
     //! Constructor
     Robust(const real& tol, const int& maxit,
-	   const checkT& check = INCREMENT,
-	   const real& cfratio = 1.E4);
+           const checkT& check = INCREMENT,
+           const real& cfratio = 1.E4);
     //@}
     /** @name Accessors
      */
@@ -41,12 +41,12 @@ namespace RootFinding
     //@{
     //! Apply the method
     real apply(real, real, fctptr, fctptr);
-    //@}  
-  
+    //@}
+
   private:
-        
+
     //! The tolerance
-    const real M_tol; 
+    const real M_tol;
     //! The ratio between coarse and fine method tolerance
     const real M_cfratio;
     //! The maximum number of iterations
@@ -57,7 +57,6 @@ namespace RootFinding
     coarseT M_coarse;
     //! The fine method
     fineT M_fine;
-  
   };
 } // namespace RootFinding
 
