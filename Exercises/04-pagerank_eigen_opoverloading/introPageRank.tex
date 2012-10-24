@@ -1,100 +1,95 @@
 \section*{Google PageRank}
 
-Dalla sua nascita, Google ha impiegato brevissimo tempo per imporsi
-come il pi\`u utilizzato motore di ricerca rispetto a tutti i
-concorrenti. Il successo \`e dipeso dalla accuratezza delle risposte,
-molto superiore a quelle di altri motori di ricerca.
-Google infatti stila una propria classifica (\emph{ranking})
-dell'importanza delle pagine web, per ordinare i risultati proposti;
-molto spesso questa classifica \`e proprio quella desiderata l'utente.
+Google has become the most used search engine in a very small amount of time
+after its creation. This success depends on the accuracy of the results that
+was highly better than the other search engines. Google generates its own
+\emph{ranking} of the importance of the web pages in order to sort the results
+of a query. This ranking is what the user is interested in.
 
-L'algoritmo che ordina le pagine web per importanza \`e denominato
-\emph{PageRank} ed \`e stato sviluppato da S.~Brin e L.~Page presso
-la Stanford University \cite{Brin1998}.
-Il principio su cui si basa \`e il seguente:
+The algorithm that sorts web pages based on their importance is called
+\emph{PageRank} and it has been developed by S.~Brin and L.~Page at Stanford
+University \cite{Brin1998}. The basic principle is as follows
 \begin{itemize}
 
-    \item se una pagina web A ha un collegamento (\emph{link}) verso una
-        pagina B, questo \`e interpretato come un voto di A in favore di B
-        (cio\`e alza B in graduatoria);
+    \item if a web page A has a \emph{link} to a page B, this is interpreted as
+    a vote by A in favour of B, so B's place in the ranking is raised;
 
-    \item i votanti non sono tutti uguali: il voto di chi \`e alto in
-        classifica (cio\`e ha ricevuto molti link) vale maggiormente di quello di chi \`e
-        in basso.
+    \item the voters are not all the same: the vote from someone who is high in
+    the ranking (someone who has many votes) weights more than someone who is
+    low-ranked.
 
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}
     \centering
     \includegraphics[width=0.6\textwidth]{./fig/PageRanks_Example_only_letters}
-    \caption{Diagramma schematico del \emph{ranking}: ogni sfera rappresenta una pagina
-            web, ogni freccia un link, la dimensione delle sfere \`e l'importanza
-            attribuita alla pagina.}\label{fig:PR}
+    \caption{Schematic diagram of the \emph{ranking}: every sphere represents
+    a web page, every arrow a link. The dimension of the sphere measures the
+    importance of the page.}
+    \label{fig:PR}
 \end{figure}
 
+This principle is depicted in Fig.~\ref{fig:PR}. page B recieves many links and
+therefore it is considered very important. Page C is more important than page E,
+even if it has less links, since a vote from B matters more than many small
+links that E gets (i.e. if the \emph{Washington Post} or the
+\emph{New York Times} would publish a link to the website for the PACS course,
+this link would count more than the links coming from the personal page of the
+professor, his assistant and the students of the course!).
 
-Questo principio \`e descritto schematicamente in Fig.~\ref{fig:PR}.
-La pagina B riceve molti link e quindi \`e considerata molto importante. La pagina
-C \`e considerata pi\`u importante di E, anche se riceve meno link, perch\`e il voto di
-B conta molto di pi\`u dei tanti ``piccoli'' voti che riceve E
-(ad es. se il ``Washington Post'' o il ``New York Times'' pubblicassero un link al sito
-web di ``Programmazione Avanzata per il Calcolo Scientifico'' questo varrebbe
-molto di pi\`u dei link dai siti web personali di docente, esercitatore e studenti del corso!).
-
-Dal punto di vista formale, si definisce il \emph{ranking} (importanza relativa) $r(p)$
-della pagina $p$ come la somma di tutti i \emph{ranking} $r(q)$ di tutte le
-pagine $q$ che puntano $p$:
+In a more formal way, the \emph{ranking} $r(p)$ of the page $p$ is defined as
+the sum of all the \emph{rankings} $r(q)$ of all the pages $q$ that link to $p$
 \begin{align}
     \label{eq:rank}
-    r(p)=\sum_{q \rightarrow p} \frac{r(q)}{\#q};
+    r(p)=\sum_{q \rightarrow p} \frac{r(q)}{\#q}
 \end{align}
-la somma \`e ponderata da $\#q$, numero di link presenti nella pagina $q$
-(se una pagina $q$ ha un solo link verso $p$ \`e probabile che un lettore interessato lo segua,
-viceversa se la pagina $q$ ha moltissimi link \`e poco probabile che il lettore scelga
-proprio quello verso $p$).
-\`E facile notare che si tratta di un problema in forma implicita: per conoscere il ranking di
-$p$ si devono conoscere quelli delle altre pagine, che a loro volta si basano su quello di $p$.
+The sum is weighted with $\#q$, the number of links in the page $q$ (if the page
+$q$ has only one link towards $p$ it is likely that an interested reader would
+follow it, on the other hand, if the page $q$ has many links, it is less likely
+that the reader would choose the link to $p$).
+It is simple to notice that this is an implicit problem: in order to compute the
+ranking of $p$ we need the ranking of the other pages, that are in turn based on
+the ranking of $p$.
 
-Fortunatamente il problema \`e affrontabile in modo relativamente semplice, una volta scritto
-in forma matriciale. Siano $\{p_1, p_2, \dots p_N\}$ tutte le pagine web censite e sia
-$A \in \mathbb{R}^{N \times N}$ la matrice di connessione, il cui elemento $a_{i,j}$ \`e dato da:
+The problem is simplified by writing it in a matricial form. Let $\{p_1, p_2,
+\dots, p_N\}$ be all the pages and $A \in \mathbb{R}^{N \times N}$ be the
+connection matrix, with $a_{i,j}$ given by
 \begin{align}
       \label{eq:harmonicp}
       a_{i,j}=
       \begin{cases}
-        \dfrac{1}{\#p_j} &\qquad \mbox{se esiste un link da $p_j$ a $p_i$} \\[5mm]
-        0 & \qquad \mbox{altrimenti.}
+        \dfrac{1}{\#p_j} & \text{if there is a link from $p_j$ to $p_i$} \\[1ex]
+        0 &  \mbox{otherwise}
       \end{cases}
 \end{align}
-
-Si noti che gli $a_{i,j}$ possono essere intepretati come una distribuzione di probabilit\`a,
-in particolare rappresentano la probabilit\`a che un persona che clicca a caso giunga alla
-pagina $p_i$ a partire dalla pagina $p_j$. La matrice gode della propriet\`a:
+Note that the $a_{i,j}$ can be interpreted as a probability distribution, in
+particular they decsribe the probability that a person who clicks randomly
+walks from the page $p_j$ to the page $p_i$. The matrix $A$ has the following
+property
 \begin{align} \label{eq:sum1}
-    \sum_{i=1}^{N} a_{i,j}=1.
+    \sum_{i=1}^{N} a_{i,j}=1
 \end{align}
 
-Se il \emph{ranking} delle pagine web $p_i$ \`e rappresentato dal vettore colonn
-\emph{PageRank} $\vv{r}=[r_1,r2, \dots r_n]^T$, allora l'equazione \eqref{eq:rank}
-equivale al seguente problema:
+If the ranking of the pages $p_i$ is represented by the column vector $\vv{r} =
+[r_1, r2, \dots, r_N]^T$, called \emph{PageRank}, \eqref{eq:rank} is equivalent
+to
 \begin{align*}
-    \vv{r}=A \vv{r}.
+    \vv{r}=A \vv{r}
 \end{align*}
-Il \emph{PageRank} \`e quindi l'autovettore corrispondente all'autovalore 1 del problema
-agli autovalori associato. Si pu\`o dimostrare che se i $\lambda_i$ sono gli autovalori
-di $A$ allora $|\lambda_i| \leq 1$. Inoltre $\lambda_1=1$ ha molteplicit\`a
-uno\footnote{Una condizione sufficiente \`e fornita dal teorema di Perron Frobenius,
-che richiede una matrice corrispondente ad un grafo irriducibile. Un trucco per
-soddisfare l'ipotesi potrebbe essere quello di attribuire un link ad ogni pagina
-esistente alle pagine senza link.}.
+Therefore, the \emph{PageRank} is the eigenvector that corresponds to the
+eigenvalue $1$ of the associated eigenvalue problem. It can be demonstrated
+that, if the $\lambda_i$ are the eigenvalues of $A$, then $|\lambda_i| \leq 1$.
+Moreover, $\lambda_1=1$ has molteplicity one\footnote{A sufficient condition is
+given by the Perron Frobenius theorem, that requires a matrix that corresponds
+to an irriducible graph. A trick to satisfy the hypothesis could be to assign
+a link to every existing page without links.}
 
-Dato che il numero di pagine censite $N$ \`e dell'ordine di grandezza delle decine di
-miliardi, il calcolo con un metodo diretto dell'autovettore \emph{PageRank} \`e
-computazionalmente troppo oneroso, anche per chi dispone di risorse di calcolo eccezionali.
-Si utilizza quindi un metodo iterativo, che restituisce una soluzione approssimata,
-ad esempio ci si potrebbe basare sul metodo delle potenze. In questo caso particolare,
-arrestare il numero di iterazioni al passo $k$ significa aver considerato solo le pagine
-$p_j$ che distano da $p_i$ al pi\`u $k$ click\footnote{Per ragioni di semplicit\`a di
-esposizione tralasciamo la possibilt\`a di introdurre un fattore di rilassamento
-(\emph{damping fatctor}) \cite{Brin1998}, che comunque non modifica il principio base
-dell'algoritmo.}.
+Since the number $N$ of analyzed pages is in the order of the tens of billions,
+the computationof the \emph{PageRank} eigenvector with a direct method is
+computationally expensive, even for the ones that have extraordinary
+computational resources. We therefore use an iterative method, that gives an
+approximate solution: the power method. In this particular case, stopping the
+iterations at the step $k$ means that we consider only the pages $p_j$ that
+are $k$ clicks away from $p_i$\footnote{For semplicity reasons we disregard the
+possibility to introduce a \emph{damping fatctor} \cite{Brin1998}, that does
+not modify the basic principle of the algorithm.}.
