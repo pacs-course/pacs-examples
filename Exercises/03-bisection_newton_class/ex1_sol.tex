@@ -8,7 +8,7 @@
     the common definitions, such as \cpp{enum}s and \cpp{typedef}s
 
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/1/src/rootfinding.hpp}
+    \lstinputlisting{./src/v1/src/rootfinding.hpp}
     \lstset{basicstyle=\sf}
 
     In this case, the name defined by \cpp{rootfinding.hpp} are exported in the
@@ -19,7 +19,7 @@
     % Bisection
     \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=\cpp{Bisection} class interface]
-      {src/1/src/bisection.hpp}
+      {src/v1/src/bisection.hpp}
     \lstset{basicstyle=\sf}
     note that all the private attributes in the class are in the form
     \cpp{M_attributename}. This is a common approach to clearly state in the
@@ -37,7 +37,7 @@
     way.
     \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=\cpp{Bisection} class implementation]
-    {src/1/src/bisection.cpp}
+    {src/v1/src/bisection.cpp}
     \lstset{basicstyle=\sf}
     Inside the constructor of the class it is possible to call explicitly the
     constructors of the attributes of the class. In this case, the members 
@@ -49,9 +49,9 @@
     % Newton
     \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=\cpp{Newton} class interface]
-    {src/1/src/newton.hpp}
+    {src/v1/src/newton.hpp}
     \lstinputlisting[caption=\cpp{Newton} class implementation]
-    {src/1/src/newton.cpp}
+    {src/v1/src/newton.cpp}
     \lstset{basicstyle=\sf}
 
 
@@ -60,9 +60,9 @@
     % Robust
     \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=\cpp{Robust} class interface]
-        {src/1/src/robust.hpp}
+        {src/v1/src/robust.hpp}
     \lstinputlisting[caption=\cpp{Robust} class implementation]
-        {src/1/src/robust.cpp}
+        {src/v1/src/robust.cpp}
     \lstset{basicstyle=\sf}
 
     inside the \cpp{Robust} class there are the definitions for the types for
@@ -93,12 +93,12 @@
     the third point. The implementation that it refers to is the one introduced
     in the previous points.
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/1/bn.hpp}
+    \lstinputlisting{./src/v1/bn.hpp}
     \lstset{basicstyle=\sf}
     in this case the \cpp{Bisection}, \cpp{Newton} and \cpp{Robust} classes are
     stored in the \verb!./src/! folder.
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/1/bn.cpp}
+    \lstinputlisting{./src/v1/bn.cpp}
     \lstset{basicstyle=\sf}
 
     Note in the \verb1main1 the use of two namespaces, \cpp{std} and
@@ -108,20 +108,20 @@
     overloading of \cpp{operator<<} is totally similar for the other two
     classes.
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[linerange={15-29}]{./src/2/src/robust.cpp}
+    \lstinputlisting[linerange={15-29}]{./src/v2/src/robust.cpp}
     \lstset{basicstyle=\sf}
 
     Note that the function that overloads the stream operator uses the private
     members of the class. This is the reason why it is declared as a
     \cpp{friend} function with the definition
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[linerange=46-47]{./src/1.5/src/robust.hpp}
+    \lstinputlisting[linerange=46-47]{./src/v1.5/src/robust.hpp}
     \lstset{basicstyle=\sf}
 
     The code can be tested with the following \emph{main program}
     %
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/1.5/bn.cpp}
+    \lstinputlisting{./src/v1.5/bn.cpp}
     \lstset{basicstyle=\sf}
     %
     and this is the corresponding \emph{output}
