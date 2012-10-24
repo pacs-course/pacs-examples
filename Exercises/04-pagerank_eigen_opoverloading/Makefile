@@ -10,7 +10,7 @@ src = $(wildcard *.cpp) $(wildcard *.hpp)
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
 
-.PHONY = all pdf dvi ps clean
+.PHONY = all pdf dvi ps figures clean
 
 all: pdf
 
@@ -18,7 +18,10 @@ dvi : $(doc).dvi
 
 ps : $(doc).ps
 
-pdf : $(doc).pdf
+pdf : $(doc).pdf figures
+
+figures:
+	cd fig && make
 
 %.dvi : %.tex $(bib) $(dep)
 	latex $*
