@@ -1,7 +1,6 @@
 \documentclass{beamer}
 \usepackage{beamerthemesplit,bm}
-\usepackage[latin1]{inputenc}
-\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{multimedia}
@@ -15,6 +14,8 @@
 \definecolor{DarkBlue}{rgb}{0, 0, .5}
 \definecolor{DarkRed}{rgb}{.5, 0, 0}
 \definecolor{LightGray}{rgb}{.8, .8, .8}
+\definecolor{mygreen}{rgb}{0,0.48,0.0}
+\definecolor{myblue}{rgb}{0,0,0.64}
 
 % Settings for listing class
 \lstset{
@@ -32,13 +33,8 @@
 
 \usetheme{Boadilla}
 
-
-\definecolor{mygreen}{rgb}{0,0.48,0.0}
-
-\definecolor{myblue}{rgb}{0,0,0.64}
-
-\author{Alessio Fumagalli}
-\date{3-11-2011}
+\author{Antonio Cervone}
+\date{October 26, 2012}
 \institute{Politecnico di Milano}
 
 \begin{document}
@@ -49,9 +45,9 @@
 
     \frametitle{Eigen}
 
-    \begin{block}{Introduzione a}
+    \begin{block}{Introduction to}
         \centering
-        Eigen 3.0
+        Eigen 3.1
     \end{block}
 
     \begin{figure}
@@ -59,10 +55,10 @@
         \includegraphics[width=0.2\textwidth]{images/eigen-logo}
     \end{figure}
 
-    \begin{block}{Pagine web utili}
+    \begin{block}{Useful web links}
         \centering
         \begin{itemize}
-            \item http://eigen.tuxfamily.org/index.php?title=Main\_Page
+            \item \url{http://eigen.tuxfamily.org/index.php?title=Main_Page}
         \end{itemize}
     \end{block}
 
@@ -75,17 +71,17 @@
     \frametitle{Eigen}
 
     \begin{block}{Eigen}
-        Eigen \`e una libreria di algebra lineare che fornisce l'implementazione di matrici
-        piene e matrici sparse. Tramite tecniche di programmazione sofisticate permette di
-        effettuare operazioni algebriche con incredibile efficienza. Fornisce direttamente
-        algoritmi per la risoluzione di sistemi e fattorizzazioni, oppure interfacce per
-        utilizzare i solutori lineari pi\`u comuni.
+        The Eigen library is a linear algebra library that works with dense and
+        sparse matrices. With the use of advanced programming techniques it
+        performs algebraic operations with very high efficiency. It provides
+        algorithms for the solution of linear systems, factorizations, and also
+        interfaces to external libraries that perform linear algebra operations.
     \end{block}
 
     \vspace{1cm}
 
     \begin{block}{}
-        È anche utilizzato come libreria in molte applicazioni, ad esempio Google.
+        It is widely used as a library in many applications, i.e. at Google.
     \end{block}
 
 \end{frame}
@@ -96,7 +92,7 @@
 
     \frametitle{Eigen}
 
-    \begin{block}{Introduzione}
+    \begin{block}{Introduction}
         \begin{lstlisting}
 #include <iostream>
 #include <Eigen/Dense>
@@ -120,25 +116,25 @@ int main()
 
     \frametitle{Eigen}
 
-        \begin{block}{Matrici}
-            Matrice generica
+        \begin{block}{Matricies}
+            Generic matrix
             \begin{lstlisting}
 Matrix<typename Scalar, int RowsAtCompileTime,
                         int ColsAtCompileTime>
             \end{lstlisting}
         \end{block}
 
-        \begin{block}{Casi particolari}
+        \begin{block}{Special cases}
             \begin{itemize}
-                \item Matrice con dimensioni fisse
+                \item Matrix with fixed dimensions
                     \begin{lstlisting}
 typedef Matrix<float, 4, 4> Matrix4f;
                     \end{lstlisting}
-                \item Matrice con dimensioni non-fisse
+                \item Matrix with non-fixed dimensions
                     \begin{lstlisting}
 typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
                     \end{lstlisting}
-                \item Matrice con una dimensione fissa
+                \item Matriwith only one fixed dimension
                     \begin{lstlisting}
 typedef Matrix<int, Dynamic, 1> VectorXi;
                     \end{lstlisting}
@@ -153,20 +149,20 @@ typedef Matrix<int, Dynamic, 1> VectorXi;
 
     \frametitle{Eigen}
 
-    \begin{block}{Inizializzazioni}
+    \begin{block}{Initialization}
         \begin{itemize}
-            \item matrice non inizializzata
+            \item non-initialized matrix
             \begin{lstlisting}
 MatrixXd m(2,2);
             \end{lstlisting}
-            \item matrice inizializzata
+            \item initialized matrix
             \begin{lstlisting}
 Matrix3f m;
 m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
             \end{lstlisting}
-            \item matrice inizializzata
+            \item initialized matrix
             \begin{lstlisting}
-MatrixXf m = MatrixXf::Constant(3,3,1.2);
+MatrixXf m = MatrixXf::Constant(3, 3, 1.2);
             \end{lstlisting}
         \end{itemize}
 
@@ -180,14 +176,14 @@ MatrixXf m = MatrixXf::Constant(3,3,1.2);
 
     \frametitle{Eigen}
 
-    \begin{block}{Aritmetica}
-        Sono implementati gli usuali operatori aritmetici, inoltre \`e possibile utilizzare
+    \begin{block}{Arithmetics}
+        Eigen implements all the arithmetic operators, and also
         \begin{itemize}
-            \item trasposta \cpp{a.transpose()}
-            \item coniugata \cpp{a.conjugate()}
-            \item aggiunta \cpp{a.adjoint()}
-            \item prodotto scalare \cpp{a.dot(b)}
-            \item prodotto vettoriale \cpp{a.cross(b)}
+            \item transpose \cpp{a.transpose()}
+            \item conjugate \cpp{a.conjugate()}
+            \item adjoint \cpp{a.adjoint()}
+            \item dot product \cpp{a.dot(b)}
+            \item cross product \cpp{a.cross(b)}
             \item \ldots
         \end{itemize}
 
@@ -201,18 +197,19 @@ MatrixXf m = MatrixXf::Constant(3,3,1.2);
 
     \frametitle{Eigen}
 
-    \begin{block}{Expression Template}
-        Il codice
+    \begin{block}{Expression Templates}
+        the code
         \begin{lstlisting}
 VectorXf a(50), b(50), c(50), d(50);
 ...
 a = 3*b + 4*c + 5*d;
         \end{lstlisting}
-        In realt\`a viene eseguito come
+        is implemented in such a way that it is equivalent to the execution of
         \begin{lstlisting}
 for(int i = 0; i < 50; ++i)
   a[i] = 3*b[i] + 4*c[i] + 5*d[i];
         \end{lstlisting}
+        just like the most performant (and optimizable by the compiler) c code.
     \end{block}
 
 \end{frame}
@@ -223,14 +220,13 @@ for(int i = 0; i < 50; ++i)
 
     \frametitle{Eigen}
 
-    \begin{block}{Vantaggi \& svantaggi}
-        L'efficienza del codice migliora notevolmente, tuttavia non sono ammesse
-        espressioni del tipo
+    \begin{block}{Advantages \& disadvantages}
+        the efficiency of the code greatly improves, but expression of the type
         \begin{lstlisting}
 a = a.transpose();
         \end{lstlisting}
-        inoltre gli errori sia in fase di compilazione che in fase di esecuzione
-        sono di difficile lettura.
+        are not allowed. Furthermore, compile time errors and execution time
+        errors become mostly unreadable.
     \end{block}
 
 \end{frame}
@@ -241,7 +237,7 @@ a = a.transpose();
 
     \frametitle{Eigen}
 
-    \begin{block}{Consideriamo il seguente codice}
+    \begin{block}{code}
         \begin{lstlisting}
 #include <iostream>
 #include <Eigen/Dense>
@@ -251,14 +247,13 @@ int main() {
         \end{lstlisting}
     \end{block}
 
-    \begin{block}{Compilare}
-        Essendo Eigen una libreria composta esclusivamente da \textit{header file},
-        per la compilazione del codice dobbiamo utilizzare l'opzione \verb1-I1
-        \begin{verbatim}
+    \begin{block}{compilation}
+    Since Eigen is a pure header file library, we need to add its path in the
+    compilation phase with the parameter \verb1-I1
+    \begin{verbatim}
 g++ -I/path/to/eigen/ my_program.cpp -o my_program -O2
-        \end{verbatim}
-        Nel nostro caso non serve essendo installato nella directory standard
-        \verb1/usr/local/eigen1.
+    \end{verbatim}
+    on the lab machines Eigen can be found in \verb!/opt/eigen!
     \end{block}
 
 \end{frame}
