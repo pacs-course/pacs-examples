@@ -17,7 +17,7 @@ dell'autovettore sinistro. Il codice relativo alla classe \cpp{Power}
 %
 \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=Interfaccia della classe
-        \cpp{Power}]{./es/pagerank-eigen/src/power.hpp}
+        \cpp{Power}]{./src/pagerank-eigen/src/power.hpp}
 \lstset{basicstyle=\sf}
 
 Si noti i due \cpp{typedef} definiti pubblici all'inizio della classe.
@@ -34,7 +34,7 @@ di default. L'implementazione di tali metodi \`e inutile.
 
 \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=Implementazione della classe
-        \cpp{Power}]{./es/pagerank-eigen/src/power.cpp}
+        \cpp{Power}]{./src/pagerank-eigen/src/power.cpp}
 \lstset{basicstyle=\sf}
 
 All'inizio del metodo \cpp{apply()} \`e interessante notare l'utilizzo di due tipi
@@ -45,7 +45,7 @@ che genera il vettore vuoto lungo \cpp{N}.
 Il listato contenente il \cpp{main} \`e riportato qui di seguito
 \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting[caption=Interfaccia della classe
-        \cpp{Power}]{./es/pagerank-eigen/eig.cpp}
+        \cpp{Power}]{./src/pagerank-eigen/eig.cpp}
 \lstset{basicstyle=\sf}
 
 Notiamo l'utilizzo dei \cpp{typedef} che `` derivano '' dalla classe \cpp{PowerMethod},
