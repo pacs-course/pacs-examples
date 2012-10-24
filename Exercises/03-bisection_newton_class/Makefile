@@ -1,11 +1,11 @@
 rerun = "There were undefined references"
 bibtex = "\citation"
 
-doc = text
+doc = es3
 dep = $(wildcard *.tex) $(srcdir)/$(src)
 bib = ../common/bibliography.bib
 
-srcdir = ./es/1
+srcdir = ./src/1
 src = $(wildcard *.cpp) $(wildcard *.hpp)
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
