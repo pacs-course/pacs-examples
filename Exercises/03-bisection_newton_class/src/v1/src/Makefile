@@ -1,5 +1,6 @@
-BASE	= $(PWD)
-CPP		= g++
+CXX = g++
+CC = $(CXX)
+BASE = $(PWD)
 
 CXXFLAGS = -Wall -g
 # -g       generate code suitable for the debugger
@@ -18,7 +19,10 @@ DEPEND= makedepend $(CFLAGS)
 
 .PHONY : all clean depend
 
-all: $(LIBNAME)($(OBJS))
+all: $(LIBDIR) $(LIBNAME)($(OBJS))
+
+$(LIBDIR):
+	mkdir -p $@
 
 clean:
 	for dustfile in $(OBJS); do \

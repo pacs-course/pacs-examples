@@ -1,5 +1,6 @@
-BASE	= $(PWD)
-CPP   	= g++
+CXX = g++
+CC = $(CXX)
+BASE = $(PWD)
 
 CXXFLAGS = -Wall -g
 # -g       generate code suitable for the debugger
@@ -16,9 +17,12 @@ LIBNAME = $(LIBDIR)/librootfinding.a
 
 DEPEND= makedepend $(CFLAGS)
 
-.PHONY : default clean depend
+.PHONY : all clean depend
 
-default: $(LIBNAME)($(OBJS))
+all: $(LIBDIR) $(LIBNAME)($(OBJS))
+
+$(LIBDIR):
+	mkdir -p $@
 
 clean:
 	for dustfile in $(OBJS); do \

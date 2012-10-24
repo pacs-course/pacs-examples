@@ -13,7 +13,7 @@ namespace RootFinding {
   class IterativeMethod {
   public:
     //! Type for convergence check
-    typedef enum checkT {
+    enum checkT {
       INCREMENT, //!< Check the difference between subsequent iterates
       RESIDUAL   //!< Check the residual
     };
