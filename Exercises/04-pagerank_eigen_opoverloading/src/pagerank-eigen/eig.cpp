@@ -40,7 +40,7 @@ int main()
     std::cout << "Power method solution" << std::endl;
     pm.apply( C, ev );
     std::cout << pm << std::endl;
-    std::cout << "Autovalore calcolato:" << std::endl << ev << std::endl;
+    std::cout << "pagerank:" << std::endl << ev << std::endl;
 
     return 0;
 }
