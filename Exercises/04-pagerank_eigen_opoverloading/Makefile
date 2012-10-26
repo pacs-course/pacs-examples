@@ -18,7 +18,7 @@ dvi : $(doc).dvi
 
 ps : $(doc).ps
 
-pdf : $(doc).pdf figures
+pdf : figures $(doc).pdf
 
 figures:
 	cd fig && make
