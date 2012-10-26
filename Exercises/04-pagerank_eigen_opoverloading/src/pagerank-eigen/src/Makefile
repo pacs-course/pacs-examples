@@ -1,7 +1,10 @@
-BASE	= $(PWD)
-CPP   	= g++
+BASE = $(PWD)
+CXX  = g++
+CC   = $(CXX)
 
-CXXFLAGS = -g -Wall
+EIGEN_PATH = /usr/include/eigen3
+
+CXXFLAGS = -g -Wall -I$(EIGEN_PATH)
 # -g       generate code suitable for the debugger
 # -p       generate code suitable for the profiler
 # -O       attemp code optimizations
