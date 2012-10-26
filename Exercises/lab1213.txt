@@ -18,3 +18,12 @@ es 3 - oct 19 2012
 - git and github
 - es 03-bisection_newton_class
 - homework: pt. 5
+
+es 4 - oct 26 2012
+
+- makefile intro
+- eigen
+- pagerank
+- power method
+- es 04-pagerank
+
