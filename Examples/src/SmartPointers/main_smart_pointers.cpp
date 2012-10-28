@@ -27,4 +27,11 @@ int main(){
   cout<<"there are "<<bpoly.use_count()<<" shared pointers owning a polygon"<<endl;
   bpoly.reset(); // bpoly is now empty. Polygon is deleted
   cout<<"there are "<<bpoly.use_count()<<" shared pointers owning a polygon"<<endl;
+
+  // Another way of making a shared pointer: using the facility make_shared  
+  auto ptr_res1 = make_shared<double>(5.0);
+  // ptr_res1 is a shared_ptr<double> and the istruction is equivalent to
+  // (but more efficient)
+  //  shared_ptr<double> ptr_res1(new double(5.0));
+
 }
