@@ -1,55 +1,54 @@
 \subsection*{Soluzione}
 
-Viene fornita di seguito un'implementazione del metodo delle potenze
-che sfrutta i vettori e le matrici fornite da Eigen.
+The proposed solution implements the power method using vectors and metrices
+from the \texttt{eigen} library.
 
-La classe \cpp{LinearAlgebra::Eigenvalues::Power} possiede un unico
-costruttore cui viene passata la tolleranza ed il massimo numero di
-iterazioni. La ragione per cui si impone un limite al numero di
-iterazioni \`e evitare che, in caso di mancata convergenza, il sistema
-entri in un ciclo infinito. Il metodo viene applicato tramite una
-chiamata al membro \cpp{apply}, cui va passata la matrice di cui si
-vuole calcolare l'autovalore di modulo massimo ed una stima iniziale
-dell'autovettore destro ad esso associato. All'intero del codice, viene
-utilizzata tale approssimazione anche per inizializzare il calcolo
-dell'autovettore sinistro. Il codice relativo alla classe \cpp{Power}
-\`e riportato di seguito.
+The class \cpp{LinearAlgebra\dotsEigenvalues\dotsPower} has one constructor
+that takes as parameters the tolerance and the max iteration number. We set
+a max iteration number in ordet to avoid an infinite lopp when there is no
+convergence. The power method is applied with a call to the \cpp{apply} method,
+that requires the matrix and an approximation of the right eigenvector as
+input. The code uses this approximation also as seed for the left eigenvector.
+The code for the \cpp{Power} class is as follows
 %
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Interfaccia della classe
-        \cpp{Power}]{./src/pagerank-eigen/src/power.hpp}
+    \lstinputlisting[caption=\cpp{Power} class interface]
+    {./src/pagerank-eigen/src/power.hpp}
 \lstset{basicstyle=\sf}
 
-Si noti i due \cpp{typedef} definiti pubblici all'inizio della classe.
-Tale definizione \`e molto utile, dato che dall'esterno posso utilizzare
-tali \cpp{typedef}. Cambiando la definizione all'interno della classe
-cambiano automaticamente in tutto il codice. \`E interessante confrontare
-la diverse implementazione dei due metodi \cpp{tol()}, oppure \cpp{maxit()}.
-La firma di tali metodi differisce unicamente ``dall'ultimo \cpp{const}'' e,
-ovviamente, non dal valore di ritorno. Nel primo caso posso modificare esternamente
-il valore di \cpp{M_tol}, oppure \cpp{M_maxit}, mentre nel secondo caso no.
-\`E stato definito anche il costruttore di copia e l'operatore di assegnazione
-come privati, in questo modo inibiamo la possibilit\`a di utilizzarle quelli
-di default. L'implementazione di tali metodi \`e inutile.
+Note the two public \cpp{typedef}s at the beginning of the class. They can be
+very useful from outside the class,as changing them inside the class updates
+automatically all the code. It is interesting to compare the two implementations
+for the \cpp{tol| and \cpp{maxit} methods. When there is a \cpp{const} keyword 
+at the end of the definition, it means that the method is intended to be just
+for access. When there is no \cpp[const} keyword, the method is instead used to
+modify the value of the private member. The copy constructor and the assignment
+operator have the keyword \cpp{delete}, this means that ithe compiler is now
+allowed to instantiate them implicitly. This way of disabling implicit
+implementations is only available with \texttt{c++11}. If the new standard is
+not available, a common way to avoid implicit instantiations is to declare a
+method in the private section of the class and not implement it. this will raise
+a compile error if the method is requested somewhere.
 
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Implementazione della classe
-        \cpp{Power}]{./src/pagerank-eigen/src/power.cpp}
+    \lstinputlisting[caption=\cpp{Power} class implementation]
+    {./src/pagerank-eigen/src/power.cpp}
 \lstset{basicstyle=\sf}
 
-All'inizio del metodo \cpp{apply()} \`e interessante notare l'utilizzo di due tipi
-di costruttori per i vettori delle Eigen. Nel primo e nel terzo caso viene utilizzato
-il costruttore di copia, mentre nel secondo e quarto caso viene utilizzato il costruttore
-che genera il vettore vuoto lungo \cpp{N}.
+At the beginning f the \cpp{apply} method it is interesting to note the use of
+two different constructors for \texttt{eigen} vectors. In the first and third
+case the copy constructor is used, while on the second and forth case we use the
+constrcutor that build an empty vector of size \cpp{N}.
 
-Il listato contenente il \cpp{main} \`e riportato qui di seguito
+The listing for the \cpp{main} program follows
 \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting[caption=Interfaccia della classe
-        \cpp{Power}]{./src/pagerank-eigen/eig.cpp}
+    \lstinputlisting[caption=Main program]
+    {./src/pagerank-eigen/eig.cpp}
 \lstset{basicstyle=\sf}
 
-Notiamo l'utilizzo dei \cpp{typedef} che `` derivano '' dalla classe \cpp{PowerMethod},
-tali \cpp{typedef} vengono visti dall'esterno come se la classe \cpp{PowerMethod} fosse
-un \cpp{namespace}. Infatti \`e possibile accedere a tali elementi senza creare alcun
-oggetto di classe \cpp{PowerMethod}. Tali \cpp{typedef} sono associati alla classe e non
-alla particolare istanziazione della stessa.
+We note the use of the \cpp{typedef}s that come from the \cpp{PowerMethod}
+class. They are accessed from outside the class with their fully specialized
+name, with a syntax similar to the one used for namespaces. It is worth noting
+that the use of the typedefs do not require the creation of an object of type
+\cpp{PowerMethod}, just like the use of static functions and members.
+
