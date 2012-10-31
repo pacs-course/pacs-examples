@@ -36,6 +36,10 @@ namespace LinearAlgebra
       virtual ~PowerMethod() {};
       //@}
 
+      PowerMethod ( const PowerMethod& ) = delete;
+
+      PowerMethod& operator = ( const PowerMethod& ) = delete;
+
       /** @name Accessors
        */
       //@{
@@ -71,12 +75,12 @@ namespace LinearAlgebra
       /** @name Private copy constructor
        */
       //@{
-      PowerMethod ( const PowerMethod& );
+      // PowerMethod ( const PowerMethod& );
       //@}
       /** @name Private assign operator
        */
       //@{
-      PowerMethod& operator = ( const PowerMethod& );
+      // PowerMethod& operator = ( const PowerMethod& );
       //@}
 
       //! Tolerance

@@ -4,7 +4,7 @@ CC   = $(CXX)
 
 EIGEN_PATH = /usr/include/eigen3
 
-CXXFLAGS = -g -Wall -I$(EIGEN_PATH)
+CXXFLAGS = -g -Wall -std=c++11 -I$(EIGEN_PATH)
 # -g       generate code suitable for the debugger
 # -p       generate code suitable for the profiler
 # -O       attemp code optimizations
@@ -21,7 +21,10 @@ DEPEND= makedepend $(CFLAGS)
 
 .PHONY : default clean depend
 
-default: $(LIBNAME)($(OBJS))
+default: $(LIBDIR) $(LIBNAME)($(OBJS))
+
+$(LIBDIR):
+	mkdir -p $(LIBDIR)
 
 clean:
 	for dustfile in $(OBJS); do \
