@@ -47,8 +47,7 @@ createFibonacci(std::vector<int> & v,unsigned int n){
 
 int main ()
 {
-  constexpr unsigned int n=100; // C++11
-  // ERROR!!!! fib is now a dangling reference
+  constexpr unsigned int n=10; // C++11
   std::vector<int> fib;
   createFibonacci(fib,n);
   std::cout<<n<<"th fibonacci number= ";
