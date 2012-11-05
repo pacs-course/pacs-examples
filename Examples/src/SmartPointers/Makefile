@@ -30,22 +30,24 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 # get all files *.cpp
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
-OBJS = $(SRCS:.cpp=.o)
+OBJSS = $(SRCS:.cpp=.o)
+OBJS = $(filter-out mainsimple.o,$(OBJSS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
-EXEC=$(exe_sources:.cpp=)
+simple=mainsimple
+EXEC=main_smart_pointers
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) $(EXEC)
+all: $(DEPEND) $(EXEC) $(simple)
 
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	-\rm -f $(EXEC) $(OBJS) mainsimple.o mainsimple
 
 distclean:
 	$(MAKE) clean
