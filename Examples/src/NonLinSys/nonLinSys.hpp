@@ -29,7 +29,7 @@ namespace NonLinearSystems{
     /*!
       I use the default synthetic constructor (C++11).
     */
-    explicit NonLinSys()=default;  
+    NonLinSys()=default;
     //! I use the synthetic copy constructor (C++11).
     NonLinSys(NonLinSys const &)=default;
     //! I use the synthetic copy-assignment.
