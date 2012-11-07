@@ -1,11 +1,11 @@
-\subsection*{Soluzione}
+\subsection*{Solution}
 
-The proposed solution implements the power method using vectors and metrices
+The proposed solution implements the power method using vectors and matrices
 from the \texttt{eigen} library.
 
-The class \cpp{LinearAlgebra\dotsEigenvalues\dotsPower} has one constructor
+The class \cpp{LinearAlgebra::Eigenvalues::PowerMethod} has one constructor
 that takes as parameters the tolerance and the max iteration number. We set
-a max iteration number in ordet to avoid an infinite lopp when there is no
+a max iteration number in order to avoid an infinite loop when there is no
 convergence. The power method is applied with a call to the \cpp{apply} method,
 that requires the matrix and an approximation of the right eigenvector as
 input. The code uses this approximation also as seed for the left eigenvector.
@@ -17,16 +17,16 @@ The code for the \cpp{Power} class is as follows
 \lstset{basicstyle=\sf}
 
 Note the two public \cpp{typedef}s at the beginning of the class. They can be
-very useful from outside the class,as changing them inside the class updates
+very useful from outside the class, since changing them inside the class updates
 automatically all the code. It is interesting to compare the two implementations
-for the \cpp{tol| and \cpp{maxit} methods. When there is a \cpp{const} keyword 
+for the \cpp{tol} and \cpp{maxit} methods. When there is a \cpp{const} keyword
 at the end of the definition, it means that the method is intended to be just
-for access. When there is no \cpp[const} keyword, the method is instead used to
+for access. When there is no \cpp{const} keyword, the method is instead used to
 modify the value of the private member. The copy constructor and the assignment
-operator have the keyword \cpp{delete}, this means that ithe compiler is now
+operator have the keyword \cpp{delete}, this means that the compiler is now
 allowed to instantiate them implicitly. This way of disabling implicit
 implementations is only available with \texttt{c++11}. If the new standard is
-not available, a common way to avoid implicit instantiations is to declare a
+not available, a common way to avoid implicit instantiations is to declare the
 method in the private section of the class and not implement it. this will raise
 a compile error if the method is requested somewhere.
 
@@ -35,10 +35,10 @@ a compile error if the method is requested somewhere.
     {./src/pagerank-eigen/src/power.cpp}
 \lstset{basicstyle=\sf}
 
-At the beginning f the \cpp{apply} method it is interesting to note the use of
+At the beginning of the \cpp{apply} method it is interesting to note the use of
 two different constructors for \texttt{eigen} vectors. In the first and third
 case the copy constructor is used, while on the second and forth case we use the
-constrcutor that build an empty vector of size \cpp{N}.
+constructor that builds an empty vector of size \cpp{N}.
 
 The listing for the \cpp{main} program follows
 \lstset{basicstyle=\scriptsize\sf}
@@ -49,6 +49,7 @@ The listing for the \cpp{main} program follows
 We note the use of the \cpp{typedef}s that come from the \cpp{PowerMethod}
 class. They are accessed from outside the class with their fully specialized
 name, with a syntax similar to the one used for namespaces. It is worth noting
-that the use of the typedefs do not require the creation of an object of type
-\cpp{PowerMethod}, just like the use of static functions and members.
+that the use of the typedefs does not require the creation of an object of type
+\cpp{PowerMethod}, just like the use of static functions and members does not
+too.
 

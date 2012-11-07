@@ -2,7 +2,7 @@ BASE = $(PWD)
 CXX  = g++
 CC   = $(CXX)
 
-EIGEN_PATH = /usr/include/eigen3
+EIGEN_PATH = /opt/eigen
 
 CXXFLAGS = -g -Wall -std=c++11 -I$(EIGEN_PATH)
 # -g       generate code suitable for the debugger
@@ -10,8 +10,8 @@ CXXFLAGS = -g -Wall -std=c++11 -I$(EIGEN_PATH)
 # -O       attemp code optimizations
 
 SRCS	= $(wildcard *.cpp)
-HDRS 	= $(wildcard *.hpp)
-OBJS 	= $(SRCS:.cpp=.o)
+HDRS	= $(wildcard *.hpp)
+OBJS	= $(SRCS:.cpp=.o)
 
 LIBDIR  = $(PWD)/../lib
 
