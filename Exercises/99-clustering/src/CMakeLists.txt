@@ -5,7 +5,9 @@ PROJECT(Clustering)
 SET(CMAKE_CXX_COMPILER clang++)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
 
-ADD_EXECUTABLE(main_clustering main_clustering.cpp)
+SET(SRCS main_clustering.cpp Clustering.hpp Geo.hpp Distance.hpp)
+
+ADD_EXECUTABLE(main_clustering ${SRCS})
 
 INCLUDE_DIRECTORIES("/opt/eigen")
 

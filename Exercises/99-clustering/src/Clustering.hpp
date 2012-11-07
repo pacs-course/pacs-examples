@@ -1,24 +1,12 @@
 #ifndef CLUSTERING_HPP
 #define CLUSTERING_HPP
 
-#include <Eigen/Dense>
-
-typedef double real;
-
-typedef Eigen::Vector2d Point2D;
-//struct Point2D {};
-
-struct EuclideanDistance
-{
-    real computeDistance( Point2D const & p1, Point2D const & p2 )
-    {
-        return ( p1 - p2 ).norm();
-    }
-};
-
-
 #include <array>
 #include <vector>
+
+#include "Geo.hpp"
+
+#include "Distance.hpp"
 
 template <size_t N,
           typename ObjectT,
@@ -140,4 +128,4 @@ distance_P M_distancePolicy;
 
 }; // class Clustering
 
-#endif //CLUSTERING_HPP
+#endif // CLUSTERING_HPP
