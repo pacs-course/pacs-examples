@@ -10,6 +10,8 @@ int main()
 
   euclideanClustering c;
 
+  c.setup( 1.e-6, 3, true );
+
   euclideanClustering::centroidList_T centroids;
 
   centroids[0] << -1., 0.5;
@@ -24,10 +26,12 @@ int main()
   points[2] << 1., 1.;
   points[3] << 0., 1.;
 
-  std::cout << c.apply( points ) << std::endl;
+  real dist = c.apply( points );
 
-  std::array<int, 3> v; //{2, 1, 3};
-  v[0] = 2; v[1] = 1; v[2] = 3;
+  std::cout << "centroid distance = " << dist << std::endl;
+
+  std::array<int, 3> v({2, 1, 3});
+  //v[0] = 2; v[1] = 1; v[2] = 3;
   std::cout << "min value at "
             << std::min_element( v.begin(), v.end()) - v.begin()
             << std::endl;
