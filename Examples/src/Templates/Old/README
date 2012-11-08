@@ -1,0 +1,24 @@
+############################################################
+# Some examples modified from
+# C++ and Object Oriented Numeric Computing
+# for Scientists and Engineers.
+#               Daoqi Yang  August 17, 2001 
+############################################################
+
+The makefile is different from the others. You need to set the CXX
+variable to your compiler. The code is C++98 compliant, no need of
+std=c++11.
+
+compare.cpp Use of templates as policies
+
+exprTemplate.cpp an example of expression templates
+
+mean.cpp a simple example on function template
+
+sort.cpp Another example of templates to specify policy. A suggestion:
+for real applications use std::sort (which may accept policies) and
+not the algorithm of this file
+
+templateMeta Another example of metaprogramming
+
+efficiency.cpp Compares functors and function pointer efficiency
