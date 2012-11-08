@@ -34,7 +34,9 @@ int main()
 
     std::cout << "centroid distance = " << dist << std::endl;
 
-    std::array<int, 3> v({2, 1, 3});
+    // Two {{ becaus we are initializing a subobject)
+    // It is not compulsory but it is better
+    std::array<int, 3> v={{2, 1, 3}};
     //v[0] = 2; v[1] = 1; v[2] = 3;
     std::cout << "min value at "
               << std::min_element( v.begin(), v.end()) - v.begin()
