@@ -7,16 +7,12 @@ bib = ../common/bibliography.bib
 
 src = $(wildcard ./es*/*.cpp) $(wildcard ./es*/*.hpp)
 
-fig = $(wildcard ./figures/eps/*.eps) $(wildcard ./figures/fig/*.fig)
 
-DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt
+DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
 
-vpath %.eps ./figures/eps/
-vpath %.fig ./figures/fig/
-vpath %.hpp ./es1:./es2
-vpath %.cpp ./es1:./es2
+.PHONY = all pdf dvi ps clean clean-all
 
-.PHONY = default clean
+all: pdf
 
 dvi : $(doc).dvi
 
@@ -32,8 +28,10 @@ pdf : $(doc).pdf
 %.ps : %.dvi
 	dvips $< -o $*.ps
 
-%.pdf : %.ps
-	ps2pdf $*.ps
+%.pdf : %.tex $(dep)
+	pdflatex $*
+# 	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
+	pdflatex $* && !(egrep -q $(rerun) $*.log)
 
 clean :
 	for dustfile in $(DUST); do \
