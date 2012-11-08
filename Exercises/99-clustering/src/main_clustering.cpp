@@ -16,7 +16,7 @@ int main()
     aC.setup( 1.e-6, 3, false );
 
     AnisotropicDistance<Point2D>::tensor_T matrix;
-    matrix << 1, 5, 0, 1;
+    matrix << 3, 1, 1, 3;
 
     aC.getDistancePolicy().setTensor( matrix );
 
@@ -28,7 +28,7 @@ int main()
     eC.setInitialCentroids( centroids );
     aC.setInitialCentroids( centroids );
 
-    euclideanClustering::objectList_T points( 5 );
+    euclideanClustering::objectList_T points( 6 );
 
 //    std::random_device rd;
 //    std::mt19937 gen( rd() );
@@ -42,7 +42,8 @@ int main()
     points[1] << 1., 0.;
     points[2] << 1., 1.;
     points[3] << 0., 1.;
-    points[4] << 2., 0.5;
+    points[4] << 2., 0.;
+    points[4] << 2., 1.;
 
     eC.apply( points );
     aC.apply( points );
