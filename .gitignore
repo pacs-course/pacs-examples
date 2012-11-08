@@ -33,5 +33,10 @@ CMakeLists.txt.user*
 *.snm
 *.toc
 *.vrb
+*.dvi
+*.ps
 *.pdf
 *.eps
+*.bbl
+*.blg
+
