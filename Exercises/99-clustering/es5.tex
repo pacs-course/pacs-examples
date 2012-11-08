@@ -38,6 +38,8 @@ distance
 
 \item Make the object type a parameter of the class \cpp{Clustering}.
 
+\item use the random generator to set the initial values of the centroids.
+
 \item Develop a new \cpp{Distance} type called \cpp{AnisotropicDistance}, that
 implements a non-isotropic metric $\mat{M}$ (an SPD matrix) in the 2D space. In
 this case, the centroid $\vect{c}$ of a cluster satisfies
@@ -52,6 +54,13 @@ the linear system
 \mat{M} \vect{c} = \frac{1}{N} \sum_{i=0}^N \mat{M} \vect{p}_i
 \]
 
+\item Test the implementation using the metric
+\[
+\mat{M} =
+\begin{pmatrix}
+3 & 1 \\ 1 & 3
+\end{pmatrix}
+\]
 
 \item Implement the \cpp{computeQuality} member function that gives an estimate
 of the quality of the clustering based on the average distance of the objects
