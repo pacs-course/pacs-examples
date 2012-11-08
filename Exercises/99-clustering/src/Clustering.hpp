@@ -15,7 +15,7 @@ class Clustering
 {
 public:
     typedef ObjectT object_T;
-  typedef DistanceP<ObjectT> distance_P;
+    typedef DistanceP<ObjectT> distance_P;
     typedef std::array<object_T,N> centroidList_T;
     typedef std::vector<object_T> objectList_T;
     typedef std::array<objectList_T,N> objectListOnCentroid_T;
@@ -27,7 +27,10 @@ public:
     Clustering & operator=( Clustering const & ) = delete;
 
     // getters
-    centroidList_T const & getCentroids() { return M_centroids; }
+    centroidList_T const & getCentroids() const { return M_centroids; }
+
+    distance_P const & getDistancePolicy() const { return M_distancePolicy; }
+    distance_P & getDistancePolicy() { return M_distancePolicy; }
 
     //setup
     void setup( real tol, int maxIt, bool verbose = false );
@@ -38,11 +41,16 @@ public:
     }
 
     // methods
-    real apply( objectList_T const & objects );
+    void apply( objectList_T const & objects );
 
 private:
 
     bool updateCentroids();
+
+    void computeQuality()
+    {
+        // TO BE IMPLEMENTED
+    }
 
     // members
     real M_tol;
@@ -68,7 +76,7 @@ void Clustering<N, ObjectT, DistanceP>::setup( real tol, int maxIt, bool verbose
 }
 
 template <size_t N, typename ObjectT, template<class> class DistanceP>
-real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
+void Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
 {
     // iteration loop truncated at maxIt
     for( int it = 0; it < M_maxIt; it++ )
@@ -89,7 +97,7 @@ real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
             for( size_t d = 0; d < N; d++ )
             {
                 distances[d] = M_distancePolicy( objects[kObj],
-						 M_centroids[d] );
+                                                 M_centroids[d] );
             }
 
             // find the minimum distance
@@ -104,7 +112,8 @@ real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
         {
             for( size_t d = 0; d < N; d++ )
             {
-                std::cout << "centroid " << d << " has " << M_objectList[d].size() << " objects" << std::endl;
+                std::cout << "centroid " << d << " has "
+                          << M_objectList[d].size() << " objects" << std::endl;
                 for( size_t j = 0; j < M_objectList[d].size(); j++ )
                     std::cout << M_objectList[d][j] << std::endl;
             }
@@ -118,7 +127,8 @@ real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
             break;
         }
     }
-    return M_distancePolicy( M_centroids[0], M_centroids[1] );
+
+    computeQuality();
 }
 
 template <size_t N, typename ObjectT, template<class> class DistanceP>
@@ -127,10 +137,7 @@ bool Clustering<N, ObjectT, DistanceP>:: updateCentroids()
     std::array<real,N> increment;
     for( size_t d = 0; d < N; d++ )
     {
-        object_T mean = object_T::Constant( 0. );
-        for( size_t kObj = 0; kObj < M_objectList[d].size(); kObj++ )
-            mean += M_objectList[d][kObj];
-        mean /= M_objectList[d].size();
+        object_T mean = M_distancePolicy.findCentroid( M_objectList[d] );
 
         if( M_verbose ) std::cout << "mean = " << mean << std::endl;
 
