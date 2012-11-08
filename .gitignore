@@ -18,6 +18,9 @@ main
 # makefile aux
 make.dep
 
+# qtcreator files
+CMakeLists.txt.user*
+
 # simulation results
 *.dat
 *.txt
