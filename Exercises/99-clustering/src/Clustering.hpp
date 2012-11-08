@@ -10,12 +10,12 @@
 
 template <size_t N,
           typename ObjectT,
-          typename DistanceP>
+          template<class> class DistanceP>
 class Clustering
 {
 public:
     typedef ObjectT object_T;
-    typedef DistanceP distance_P;
+  typedef DistanceP<ObjectT> distance_P;
     typedef std::array<object_T,N> centroidList_T;
     typedef std::vector<object_T> objectList_T;
     typedef std::array<objectList_T,N> objectListOnCentroid_T;
@@ -52,14 +52,14 @@ private:
     centroidList_T M_centroids;
     objectListOnCentroid_T M_objectList;
 
-    distance_P M_distancePolicy;
+    distance_P  M_distancePolicy;
 
 }; // class Clustering
 
 // TEMPLATE METHODS IMPLEMENTATION
 
 //setup
-template <size_t N, typename ObjectT, typename DistanceP>
+template <size_t N, typename ObjectT, template<class> class DistanceP>
 void Clustering<N, ObjectT, DistanceP>::setup( real tol, int maxIt, bool verbose )
 {
     M_tol = tol;
@@ -67,7 +67,7 @@ void Clustering<N, ObjectT, DistanceP>::setup( real tol, int maxIt, bool verbose
     M_verbose = verbose;
 }
 
-template <size_t N, typename ObjectT, typename DistanceP>
+template <size_t N, typename ObjectT, template<class> class DistanceP>
 real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
 {
     // iteration loop truncated at maxIt
@@ -88,8 +88,8 @@ real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
             std::array<real,N> distances;
             for( size_t d = 0; d < N; d++ )
             {
-                distances[d] = M_distancePolicy.computeDistance( objects[kObj],
-                                                                 M_centroids[d] );
+                distances[d] = M_distancePolicy( objects[kObj],
+						 M_centroids[d] );
             }
 
             // find the minimum distance
@@ -118,10 +118,10 @@ real Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
             break;
         }
     }
-    return M_distancePolicy.computeDistance( M_centroids[0], M_centroids[1] );
+    return M_distancePolicy( M_centroids[0], M_centroids[1] );
 }
 
-template <size_t N, typename ObjectT, typename DistanceP>
+template <size_t N, typename ObjectT, template<class> class DistanceP>
 bool Clustering<N, ObjectT, DistanceP>:: updateCentroids()
 {
     std::array<real,N> increment;
@@ -135,7 +135,7 @@ bool Clustering<N, ObjectT, DistanceP>:: updateCentroids()
         if( M_verbose ) std::cout << "mean = " << mean << std::endl;
 
         increment[d] = std::fabs(
-                    M_distancePolicy.computeDistance( M_centroids[d], mean ) );
+                    M_distancePolicy( M_centroids[d], mean ) );
 
         // update centroids value
         M_centroids[d] = mean;
