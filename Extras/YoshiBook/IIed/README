@@ -1,0 +1,32 @@
+Version of the code contined in the book by Mark Joshi on C++ and
+design pattern applied to mathematical finance. 
+
+The modifications have been carried out be Luca Formaggia, Politecnico
+di Milano and consist fo
+
+1) Creation of Makefiles for the compilation of the files in the
+source directory and the creation of a static and dynamic libdary (in
+the lib directory).  Another Makefile is present in the mains
+directory to compile the main programs provided (you have to create
+the library first!)
+
+2) The code is mainly for illustration and teaching purposes, so some
+header files are though as alternatives (PayOff.h and PayOff2.h, for
+instance) since they declare the same methods. The problems is that in
+the corresponding cpp files in the original version introduced name
+clashes when creating the library. The solution was found by
+introducing namespaces. The usability of the code is unchanged,
+however, since the header files interested in this modification
+eventually introduce a namespace directive to bring the names to the
+current namespace. Therefore, incompatible headers file in the
+original version remains incompatible. The only advantage is that now
+we can create the library.
+
+3) Some errors were present for Unix systems, where the names of files
+are case sensitive. This has been corrected.
+
+4) The fabs function is now declared in the std namespace, where it belongs. 
+
+5) Header guards have been introduced throughout.
+
+Luca Formaggia. January 2011
