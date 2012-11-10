@@ -9,5 +9,5 @@ SET(SRCS main_clustering.cpp Clustering.hpp Geo.hpp Distance.hpp)
 
 ADD_EXECUTABLE(main_clustering ${SRCS})
 
-INCLUDE_DIRECTORIES("/opt/eigen")
+INCLUDE_DIRECTORIES("/usr/include/eigen3")
 

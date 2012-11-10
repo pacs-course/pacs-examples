@@ -18,10 +18,12 @@ DEPEND = make.dep
 
 all: $(DEPEND) $(TARGET) 
 
+$(TARGET): $(OBJS)
+
 clean:
 	/bin/rm $(DEPEND) $(OBJS)
 
--include make.dep
+-include $(DEPEND)
 
 $(DEPEND):
 	g++ -std=c++0x -MM $(SRCS) > $@

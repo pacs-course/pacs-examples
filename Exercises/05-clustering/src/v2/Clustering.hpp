@@ -3,6 +3,8 @@
 
 #include <array>
 #include <vector>
+#include <fstream>
+#include <iomanip>
 
 #include "Geo.hpp"
 
@@ -42,6 +44,8 @@ public:
 
     // methods
     void apply( objectList_T const & objects );
+
+    void printGnuplot( int const i );
 
 private:
 
@@ -120,6 +124,9 @@ void Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
         }
 
         bool const isIncremented = updateCentroids();
+
+        printGnuplot( it );
+
         if ( !isIncremented )
         {
             if ( M_verbose )
@@ -154,6 +161,68 @@ bool Clustering<N, ObjectT, DistanceP>:: updateCentroids()
                    [&]( real i ){ incrementMean += i; } );
     incrementMean /= N;
     return incrementMean > M_tol;
+}
+
+template <size_t N, typename ObjectT, template<class> class DistanceP>
+void Clustering<N, ObjectT, DistanceP>::printGnuplot( int const i )
+{
+/* output example
+# centroids
+# x y (fixed style)
+0. 0.5 -1
+1. 0.5 -1
+
+# points
+# x y cluster
+0. 0. 0
+1. 0. 0
+0. 1. 0
+
+0.5 0. 1
+0.5 1. 1
+*/
+
+    std::stringstream datFileName;
+    datFileName << "cluster" << std::setfill('0')
+                << std::setw( std::floor(std::log10(M_maxIt) ) )
+                << i << ".dat";
+    std::ofstream datFile( datFileName.str().c_str() );
+
+    datFile << "# centroids\n# x y (fixed style)\n";
+    for( size_t d = 0; d < N; d++ )
+    {
+        datFile << M_centroids[d][0] << " "
+                << M_centroids[d][1] << " -1\n";
+    }
+    datFile << "\n" << std::endl;
+
+    datFile << "# points\n# x y cluster\n";
+    for( size_t d = 0; d < N; d++ )
+    {
+        for( size_t kObj = 0; kObj < M_objectList[d].size(); kObj++ )
+        {
+            datFile << M_objectList[d][kObj][0] << " "
+                    << M_objectList[d][kObj][1] << " " << d << "\n";
+        }
+        datFile << "\n" << std::endl;
+    }
+    datFile.close();
+
+    std::stringstream pngFileName;
+    pngFileName << "cluster" << std::setfill('0')
+                << std::setw( std::floor(std::log10(M_maxIt) ) )<< i << ".png";
+
+    std::ofstream gpFile( "cluster.gnuplot" );
+    gpFile << "set terminal png size 800,640\n"
+           << "set output \'" << pngFileName.str() << "\'\n"
+           << "set xrange [-0.1:1.1]\n"
+           << "set yrange [-0.1:1.1]\n"
+           << "set pointsize 2.5\n"
+           << "plot \'" << datFileName.str() << "\' w p palette title \'\',\\\n"
+           << "\'<(head -n " << N + 2 << " " << datFileName.str()
+           << ")\'w p pt 7 title \'\'" << std::endl;
+
+    system( "gnuplot cluster.gnuplot" );
 }
 
 #endif // CLUSTERING_HPP
