@@ -1,12 +1,11 @@
 rerun = "There were undefined references"
 bibtex = "\citation"
 
-doc = es7
-dep   = $(wildcard *.tex) $(srcdir)/$(src)
+doc = es6
+dep   = $(wildcard *.tex) $(src) $(fig)
 bib = ../common/bibliography.bib
 
-srcdir = ./es ./es/sol
-src = $(wildcard *.cpp) $(wildcard *.hpp)
+src = $(wildcard ./es*/*.cpp) $(wildcard ./es*/*.hpp)
 
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
@@ -21,7 +20,7 @@ ps : $(doc).ps
 
 pdf : $(doc).pdf
 
-%.dvi : %.tex $(bib) $(dep)
+%.dvi : %.tex $(dep)
 	latex $*
 	if (egrep -q $(bibtex) $*.aux); then bibtex $* && latex $*; fi
 	latex $* && !(egrep -q $(rerun) $*.log)

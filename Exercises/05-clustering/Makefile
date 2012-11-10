@@ -1,17 +1,16 @@
 rerun = "There were undefined references"
 bibtex = "\citation"
 
-doc = es7
-dep   = $(wildcard *.tex) $(srcdir)/$(src)
+doc = es5
+dep = $(wildcard *.tex) $(srcdir)/$(src)
 bib = ../common/bibliography.bib
 
-srcdir = ./es ./es/sol
+srcdir = ./src/v2
 src = $(wildcard *.cpp) $(wildcard *.hpp)
-
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
 
-.PHONY = all pdf dvi ps clean clean-all
+.PHONY = all pdf dvi ps tikz clean clean-all
 
 all: pdf
 
@@ -21,6 +20,11 @@ ps : $(doc).ps
 
 pdf : $(doc).pdf
 
+%.pdf : %.tex $(dep)
+	pdflatex $*
+	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
+	pdflatex $* && !(egrep -q $(rerun) $*.log)
+
 %.dvi : %.tex $(bib) $(dep)
 	latex $*
 	if (egrep -q $(bibtex) $*.aux); then bibtex $* && latex $*; fi
@@ -28,11 +32,6 @@ pdf : $(doc).pdf
 
 %.ps : %.dvi
 	dvips $< -o $*.ps
-
-%.pdf : %.tex $(dep)
-	pdflatex $*
-# 	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
-	pdflatex $* && !(egrep -q $(rerun) $*.log)
 
 clean :
 	for dustfile in $(DUST); do \
@@ -43,3 +42,4 @@ clean-all : clean
 	for dd in $(srcdir); do \
 	cd $$dd && make clean-all; cd ..;\
 	done
+
