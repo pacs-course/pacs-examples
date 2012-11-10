@@ -18,6 +18,9 @@ main
 # makefile aux
 make.dep
 
+# qtcreator files
+CMakeLists.txt.user*
+
 # simulation results
 *.dat
 *.txt
@@ -30,5 +33,10 @@ make.dep
 *.snm
 *.toc
 *.vrb
+*.dvi
+*.ps
 *.pdf
 *.eps
+*.bbl
+*.blg
+
