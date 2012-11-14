@@ -102,16 +102,16 @@ LIBD := $(foreach lib,$(ALL_LIB_DIR),-L$(lib) )
 #
 # Set make macros
 #
-export CPPFLAGS:=$(INCLS) $(DEFINES)
-export CXXFLAGS:=$(OPTFLAGS) $(STDFLAGS)
+export CPPFLAGS=$(INCLS) $(DEFINES)
+export CXXFLAGS=$(OPTFLAGS) $(STDFLAGS)
 #
 # For C Programs 
 #
-export CCFLAGS:=$(CXXFLAGS)
+export CCFLAGS=$(CXXFLAGS)
 #
 # name of file with dependencies
 #
 DEPEND=make.dep
 #header files
-export LDFLAGS += $(OPTFLAGS) $(LIBD) $(LIBRARIES)
+export LDFLAGS=$(OPTFLAGS) $(LIBD) $(LIBRARIES)
 
