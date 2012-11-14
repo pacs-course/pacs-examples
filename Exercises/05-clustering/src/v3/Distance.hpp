@@ -4,9 +4,13 @@
 #include "Geo.hpp"
 
 template <typename ObjectT>
-struct EuclideanDistance
+struct EuclideanDistance {};
+
+// specialization
+template <>
+struct EuclideanDistance<Point2D>
 {
-    typedef ObjectT object_T;
+    typedef Point2D object_T;
     typedef std::vector<object_T> objectList_T;
 
     real operator()( object_T const & p1, object_T const & p2 )
@@ -17,8 +21,7 @@ struct EuclideanDistance
     object_T findCentroid( objectList_T const & objList );
 };
 
-template <typename ObjectT>
-ObjectT EuclideanDistance<ObjectT>::findCentroid( objectList_T const & objList )
+Point2D EuclideanDistance<Point2D>::findCentroid( objectList_T const & objList )
 {
     object_T centroid = object_T::Constant( 0. );
     for( size_t kObj = 0; kObj < objList.size(); kObj++ )
@@ -30,6 +33,7 @@ ObjectT EuclideanDistance<ObjectT>::findCentroid( objectList_T const & objList )
 template <typename ObjectT>
 struct AnisotropicDistance {};
 
+// specialization
 template <>
 struct AnisotropicDistance<Point2D>
 {

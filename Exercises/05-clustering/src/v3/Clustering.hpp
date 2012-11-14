@@ -51,10 +51,7 @@ private:
 
     bool updateCentroids();
 
-    void computeQuality()
-    {
-        // TO BE IMPLEMENTED
-    }
+    void computeQuality();
 
     // members
     real M_tol;
@@ -139,7 +136,7 @@ void Clustering<N, ObjectT, DistanceP>::apply( objectList_T const & objects )
 }
 
 template <size_t N, typename ObjectT, template<class> class DistanceP>
-bool Clustering<N, ObjectT, DistanceP>:: updateCentroids()
+bool Clustering<N, ObjectT, DistanceP>::updateCentroids()
 {
     std::array<real,N> increment;
     for( size_t d = 0; d < N; d++ )
@@ -223,6 +220,20 @@ void Clustering<N, ObjectT, DistanceP>::printGnuplot( int const i )
            << ")\'w p pt 7 title \'\'" << std::endl;
 
     system( "gnuplot cluster.gnuplot" );
+}
+
+template <size_t N, typename ObjectT, template<class> class DistanceP>
+void Clustering<N, ObjectT, DistanceP>::computeQuality()
+{
+  real sum = 0.;
+  for( size_t d = 0; d < N; d++ )
+  {
+    std::for_each( M_objectList[d].begin(),
+                   M_objectList[d].end(),
+                   [&]( object_T const & p )
+                   { sum += M_distancePolicy( M_centroids[d], p ); } );
+  }
+  std::cout << "Quality = " << sum << std::endl;
 }
 
 #endif // CLUSTERING_HPP
