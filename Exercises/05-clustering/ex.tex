@@ -1,0 +1,41 @@
+\section*{Exercise}
+
+Starting from the given set of files that implement an algorithm that computes
+the centroids for a clustering of 2D points with respect to the euclidean
+distance
+
+\begin{enumerate}
+
+\item Make the object type a parameter of the class \cpp{Clustering}.
+
+\item use the random generator to set the initial values of the centroids.
+
+\item Develop a new \cpp{Distance} type called \cpp{AnisotropicDistance}, that
+implements a non-isotropic metric $\mat{M}$ (an SPD matrix) in the 2D space. In
+this case, the centroid $\vect{c}$ of a cluster satisfies
+\[
+\min_{\vect{c}} \sum_{i=0}^N d_{\mat{M}}( \vect{c}, \vect{p}_i )
+\]
+where $d_{\mat{M}}( \vect{a}, \vect{b} ) = ( \vect{a} - \vect{b} )^T \mat{M}
+( \vect{a} - \vect{b} )$ is the distance in the metric set by $\mat{M}$ and $N$
+is the number of objects $\vect{p}_i$ that have been assigned to the cluster.
+The minimization leads to the linear system
+\begin{equation}
+\label{eqn:aniso_bc}
+\mat{M} \vect{c} = \frac{1}{N} \sum_{i=0}^N \mat{M} \vect{p}_i
+\end{equation}
+
+\item Test the implementation using the metric
+\[
+\mat{M} =
+\begin{pmatrix}
+3 & 2 \\ 2 & 3
+\end{pmatrix}
+\]
+
+\item Implement the \cpp{computeQuality} member function that gives an estimate
+of the quality of the clustering based on the average distance of the objects
+in the cluster from the centroid. Compare the value of the quality increasing
+the number of clusters.
+
+\end{enumerate}

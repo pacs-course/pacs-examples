@@ -10,6 +10,8 @@ src = $(wildcard *.cpp) $(wildcard *.hpp)
 
 DUST = *.aux *.log *.nav *.out *.dvi *.pdf *.ps *.snm *.toc *.bbl *.blg *.vrb *.txt *~
 
+PDF_FIGURES = $(wildcard fig/*.pdf)
+
 .PHONY = all pdf dvi ps tikz clean clean-all
 
 all: pdf
@@ -20,7 +22,7 @@ ps : $(doc).ps
 
 pdf : $(doc).pdf
 
-%.pdf : %.tex $(dep)
+%.pdf : %.tex $(dep) $(PDF_FIGURES)
 	pdflatex $*
 	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
 	pdflatex $* && !(egrep -q $(rerun) $*.log)
