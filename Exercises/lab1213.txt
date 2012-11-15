@@ -27,3 +27,7 @@ es 4 - oct 26 2012
 - power method
 - es 04-pagerank
 
+es 5 - nov 9 2012
+- static library makefile
+- coding guidelines from LifeV
+- es 05-clustering
