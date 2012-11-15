@@ -7,7 +7,7 @@ Analizziamo la soluzione punto per punto.
 \begin{enumerate}
 	\item Presentiamo qui di seguito il listato contenente la soluzione del primo esercizio
 		\lstset{basicstyle=\scriptsize\sf}
-		\lstinputlisting{./es/es1/main.cpp}
+		\lstinputlisting{./src/es1/main.cpp}
 		\lstset{basicstyle=\sf}
 		Per l'utilizzo dell'algoritmo \cpp{sort} della standard template library, \`e necessario creare un
 		predicato che permette di valutare l'espressione $>$. Un predicato \`e una funzione, o un funtore,
@@ -18,7 +18,7 @@ Analizziamo la soluzione punto per punto.
 	
 	\item Presentiamo il listato contenente la soluzione del secondo esercizio
 		\lstset{basicstyle=\scriptsize\sf}
-		\lstinputlisting{./es/es2/main.cpp}
+		\lstinputlisting{./src/es2/main.cpp}
 		\lstset{basicstyle=\sf}
 		L'algoritmo \cpp{find} della standard template library permette di trovare elementi all'interno 
 		di un contenitore, \`e richiesta quindi l'implementazione dell'operatore \cpp{==} per il tipo
@@ -34,7 +34,7 @@ Analizziamo la soluzione punto per punto.
 		
 	\item Presentiamo il listato contenente la soluzione del terzo esercizio
 		\lstset{basicstyle=\scriptsize\sf}
-		\lstinputlisting{./es/es3/main.cpp}
+		\lstinputlisting{./src/es3/main.cpp}
 		\lstset{basicstyle=\sf}
 		Per utilizzare l'algoritmo \cpp{count_if} della standard template library \`e necessario creare
 		un predicato simile a quello creato nel punto 1, con la differenza che ora vi \`e solamente un 
@@ -47,7 +47,7 @@ Analizziamo la soluzione punto per punto.
 		
 	\item Presentiamo il listato contenente la soluzione del quarto esercizio
 		\lstset{basicstyle=\scriptsize\sf}
-		\lstinputlisting{./es/es4/main.cpp}
+		\lstinputlisting{./src/es4/main.cpp}
 		\lstset{basicstyle=\sf}
 		Per risolvere l'esercizio \`e necessario creare un funtore, o una funzione, che permette di
 		accumulare i valori, ciascuno moltiplicato per $3$. L'utilizzo di default della funzione
@@ -59,7 +59,7 @@ Analizziamo la soluzione punto per punto.
 		
 	\item Presentiamo il listato contenente la soluzione del quinto esercizio							
 		\lstset{basicstyle=\scriptsize\sf}
-		\lstinputlisting{./es/es5/main.cpp}
+		\lstinputlisting{./src/es5/main.cpp}
 		\lstset{basicstyle=\sf}
 		Per risolvere l'esercizio sono stati creati quattro insiemi vuoti, due che conterranno i 
 		valori e altri due che conterranno l'intersezione e l'unione  dei primi. L'utilizzo di
@@ -69,7 +69,7 @@ Analizziamo la soluzione punto per punto.
 		
 	\item Presentiamo il listato contenente la soluzione del sesto esercizio
 		\lstset{basicstyle=\scriptsize\sf}
-		\lstinputlisting{./es/es6/main.cpp}
+		\lstinputlisting{./src/es6/main.cpp}
 		\lstset{basicstyle=\sf}	
 		L'esercizio presenta un modo elementare ma molto efficace per trattare le condizioni al bordo. 
 		Infatti \`e possibile creare una \cpp{map} la cui chiave \`e il flag associata ad un bordo, mentre
