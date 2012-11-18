@@ -70,10 +70,17 @@ public:
     std vector already support move semantic!
    */
   Mesh1D & operator=(Mesh1D&&)=default;
-
+  
+  //! Number of nodes.
   unsigned int numNodes() const { return myNodes.size();}
+  //! The i-th node.
   double operator [](int i)const {return myNodes[i];}
+  //! I return a copy of the DOmain1D.
+  /*!
+    In case it is needed.
+   */
   Domain1D domain() const {return myDomain;}
+  //! The mesh size.
   double h() const;
 private:
   Domain1D myDomain;
