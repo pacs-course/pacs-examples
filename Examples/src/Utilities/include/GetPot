@@ -40,6 +40,7 @@ extern "C" {
 }
 #include <cmath>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <algorithm>
 
@@ -971,7 +972,7 @@ GetPot::next(const char* Default)
     //     To ensure propper functioning, create a copy inside *this
     //     object and only delete it, when *this is deleted.
     char* result = new char[Remain.length()+1];
-    strncpy(result, Remain.c_str(), Remain.length()+1);
+    std::strncpy(result, Remain.c_str(), Remain.length()+1);
 
     // store the created string internally, delete if when object deleted
     __internal_string_container.push_back(result);
@@ -1116,7 +1117,7 @@ inline std::vector<std::string>
 GetPot::string_tails(const char* StartString)
 {
     std::vector<std::string>  result;
-    const unsigned            N = static_cast<unsigned int>(strlen(StartString));
+    const unsigned            N = static_cast<unsigned int>(std::strlen(StartString));
 
     std::vector<std::string>::iterator it = argv.begin();
 
