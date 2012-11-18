@@ -52,11 +52,17 @@ int main()
 
     // remove all elements up to element with value 3
     coll2.erase (coll2.begin(), coll2.find(3));
+    cout<<" Removed all elements up to 3"<<endl;
+
+    // print all elements
+    copy (coll2.cbegin(), coll2.cend(),
+          ostream_iterator<int>(cout," "));
+    cout << endl;
 
     // remove all elements with value 5
     int num;
     num = coll2.erase (5);
-    cout << num << " element(s) removed" << endl;
+    cout << num << " element with value 5 removed" << endl;
 
     // print all elements
     copy (coll2.cbegin(), coll2.cend(),
