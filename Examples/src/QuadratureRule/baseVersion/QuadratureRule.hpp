@@ -13,13 +13,11 @@ namespace NumericalIntegration{
   /*
     This basis class is the common class for all numerical integration 
     formulae that approximate the integral \f$ \int_{-1}^{1} f(y) dy\f$.
-    Its a very light class (no variable members), that provides
+    It's a very light class (no variable members) that provides
     the common interface to all integration rules.
 
     Constructors and assignement operators
     are not defined since the synthetic ones are sufficient.
-
-
   */
   class QuadratureRule
   {
@@ -35,6 +33,10 @@ namespace NumericalIntegration{
     virtual double apply(FunPoint const & f)const=0;
   };
   
+
+  //! The type of the object holding the quadrature rule.
+  typedef std::unique_ptr<QuadratureRule> QuadratureRuleHandler;
+
   /*! \brief  A base class for standard quadrature rules.
     
     This class provides the common interface to  a quadrature rule in
@@ -53,10 +55,6 @@ namespace NumericalIntegration{
     This version implements the virtual constuctor paradigm through the
     method clone();
   */
-
-  //! The type of the object holding the quadrature rule.
-  typedef std::unique_ptr<QuadratureRule> QuadratureRuleHandler;
-
   class StandardQuadratureRule: public QuadratureRule
   {
   public:
@@ -85,18 +83,19 @@ namespace NumericalIntegration{
   };
 
 
-  // Definition of inlined methods
+  // Definition of inlined methods. Inlined meshods must be defined
+  // in the header file. Alternative: use in-class definition 
 
-  inline int StandardQuadratureRule::num_nodes() const
+  int StandardQuadratureRule::num_nodes() const
   { return _w.size();}
 
-  inline double StandardQuadratureRule::node(const int i) const
+  double StandardQuadratureRule::node(const int i) const
   { return _n[i];}
   
-  inline double StandardQuadratureRule::weight(const int i) const
+  double StandardQuadratureRule::weight(const int i) const
   { return _w[i];}
   
-  inline unsigned int StandardQuadratureRule::order() const
+  unsigned int StandardQuadratureRule::order() const
   { return my_order;}
 }
 #endif
