@@ -3,9 +3,9 @@
 #include <iostream> 
 #include <vector>
 #include <cmath>
-#include <ctime>
 #include <algorithm>
 #include <random>
+#include <stdexcept>
 /*! MyMat0.
 
   @file MyMat0.hpp
@@ -93,17 +93,17 @@ namespace LinearAlgebra{
 #endif
     //! Copy assignement operator for matrices with
     //! same storage order.
-    MyMat0<T> const & operator =(MyMat0<T> const & m);
+    MyMat0<T> & operator =(MyMat0<T> const & m);
     //! Copy assignement operator.
     /*!
       It accepts a matrix with different storage order.
      */
     template <StoragePolicySwitch S>
-    MyMat0<T> const & operator =(MyMat0<S> const & m);
+    MyMat0<T> & operator =(MyMat0<S> const & m);
 #ifndef NOMOVE
 #warning "Move copyassignement active"
     //! Copy assignement with move semantic. Only for matrices of same type.
-    MyMat0<T> const & operator =(MyMat0<T>&& m);
+    MyMat0<T> & operator =(MyMat0<T>&& m);
 #endif
     //! Resizing the matrix.
     /*!
@@ -113,14 +113,14 @@ namespace LinearAlgebra{
      */
     void resize(size_type const nrow, size_type const ncol);
     //! Number of rows.
-    inline  size_type nrow()const {return nr;};
+    size_type nrow()const {return nr;};
     //! Number of columns.
-    inline  size_type ncol()const {return nc;};
+    size_type ncol()const {return nc;};
     //! Returns element with no bound check (const version).
     /*!
       It allows a=m(1,1) on constant matrix m.
     */
-    inline double operator () (const size_type i, const size_type j) const
+    double operator () (const size_type i, const size_type j) const
     {
       return data[(this->getIndex)(i,j)];
     }
@@ -128,7 +128,7 @@ namespace LinearAlgebra{
     /*!
       It allows m(1,1)=1 on non-constant matrix m
     */
-    inline double & operator () (const size_type i, const size_type j)
+    double & operator () (const size_type i, const size_type j)
     {
       return data[(this->getIndex)(i,j)];
     }
@@ -211,7 +211,6 @@ namespace LinearAlgebra {
 
 #ifndef NOMOVE
   // std containers implement move semantic, so I just move
-  // Maybe std::move is not needed here! I have to check. But, better safe than sorry.
   template <StoragePolicySwitch T>
   MyMat0<T>::MyMat0(MyMat0<T>&& m):nr(m.nr),nc(m.nc),data(std::move(m.data))
   {
@@ -220,7 +219,7 @@ namespace LinearAlgebra {
 #endif
 
   template <StoragePolicySwitch T>
-  MyMat0<T> const & MyMat0<T>::operator =(MyMat0<T> const & m){
+  MyMat0<T>  & MyMat0<T>::operator =(MyMat0<T> const & m){
     this->nr=m.nr;
     this->nc=m.nc;
     this->data=m.data; 
@@ -230,7 +229,7 @@ namespace LinearAlgebra {
   // Case for different storage order
   template <StoragePolicySwitch T>
   template <StoragePolicySwitch S>
-  MyMat0<T> const & MyMat0<T>::operator =(MyMat0<S> const & m){
+  MyMat0<T> & MyMat0<T>::operator =(MyMat0<S> const & m){
     // Cannot access private data: the two types are different!
     this->nr=m.nrow();
     this->nc=m.ncol();
@@ -242,12 +241,12 @@ namespace LinearAlgebra {
   
 #ifndef NOMOVE
   template <StoragePolicySwitch T>
-  MyMat0<T> const & MyMat0<T>::operator =(MyMat0<T>&& m){
+  MyMat0<T> & MyMat0<T>::operator =(MyMat0<T>&& m){
     // std containers implement move semantic, so I just move
     nr=std::move(m.nr);
     nc=std::move(m.nc);
     data=std::move(m.data);
-    //! I am not sure if move sets integers to zero so I do it myself
+    // I am not sure if move sets integers to zero so I do it myself
     m.nr=m.nc=0;
     return *this;
   }
@@ -272,12 +271,7 @@ namespace LinearAlgebra {
   {
     // todo : this test should be hidden in a private method
     if  (i<0 || i>=nr || j<0 || i<=nc)
-      {
-	// todo this way of handling errors could be bettered
-	// using exceptions
-	std::cerr<<" Out of bounds in MyMat0";
-	std::exit(1);
-      }
+	throw std::out_of_range(" Out of bounds in MyMat0");
     return this->operator ()(i,j);
   }
   
@@ -285,10 +279,7 @@ namespace LinearAlgebra {
   void  MyMat0<T>::setValue(size_type const i, size_type const j, double const & v)
   {
     if  (i<0 || i>=nr || j<0 || i<=nc)
-      {
-	std::cerr<<" Out of bounds";
-	std::exit(1);
-      }
+	throw std::out_of_range(" Out of bounds in MyMat0");
     this->operator ()(i,j)=v;
   }
   
@@ -376,12 +367,18 @@ namespace LinearAlgebra {
   template<StoragePolicySwitch T>
   void  MyMat0<T>:: fillRandom(unsigned int seed)
   {
-    if (seed==0) seed=std::time(0);
-    // A uniform distribution between 0 and 1
-    std::uniform_real_distribution<double> ur(0.,1.);
+    // If I do not give the sees I initialize the
+    // sequence using the random device. Every call
+    // will produce a different matrix
+    if(seed==0){
+      std::random_device rd;
+      seed=rd();
+    }
     // I use the standard engine for random numbers
     // Not the best one but simple and effective
-    std::default_random_engine dre(seed);
+    std::default_random_engine dre(seed);    
+    // A uniform distribution between 0 and 1
+    std::uniform_real_distribution<double> ur(0.,1.);
     // Generate random numbers
     for (auto & i : data) i=ur(dre);
   }
