@@ -56,12 +56,12 @@ int main()
   MyMat0<ROWMAJOR> tc(std::move(t));
   std::cout<<" This matrix should be also equal to a"<<std::endl;
   tc.showMe();
-  std::cout<<" This matrix is now empty"<<std::endl;
+  std::cout<<" This matrix is now empty?"<< std::endl;
   t.showMe();
   t=std::move(tc);
   std::cout<<" Now is back"<<std::endl;
   t.showMe();
-  std::cout<<" And this is empty"<<std::endl;
+  std::cout<<" And this is empty?"<<std::endl;
   tc.showMe();
 
   /* SHOW THE ADVANTAGES OF MOVE SEMANTIC */
