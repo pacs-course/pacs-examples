@@ -29,8 +29,10 @@ namespace NumericalIntegration{
       QuadratureRule hierarchy by composition.
     */
     virtual std::unique_ptr<QuadratureRule> clone() const =0;
-    // Applies the rule in the interval (-1,1)
-    virtual double apply(FunPoint const & f)const=0;
+    // Applies the rule in the interval (a,b)
+    
+    virtual double apply(FunPoint const & f, double const &a, 
+			 double const & b)const=0;
   };
   
 
@@ -44,10 +46,11 @@ namespace NumericalIntegration{
 
     \f$ \int_{-1}^{1} f(y) dy \simeq  \sum_{i=0}^{m-1}w_i f(y_i)\f$
 
-    It also provides the containers for nodes \f$y_i\f$ and weights
-    \f$w_i\f$.  This is the base class, the derived class constructs
-    the appropriate points and weights. No method is overritten in the
-    derived class (a part the destructor and the clone method).
+    It also provides the containers for nodes \f$y_i\in[-1,1]\f$ and
+    corresponding weights \f$w_i\f$.  This is the base class, the
+    derived class constructs the appropriate points and weights. No
+    method is overritten in the derived class (a part the destructor
+    and the clone method).
 
     Constructors and assignement operators
     are not defined since the synthetic ones are sufficient.
@@ -73,8 +76,8 @@ namespace NumericalIntegration{
       QuadratureRule hierarchy by composition.
      */
     virtual QuadratureRuleHandler clone() const =0;
-    // Applies the rule in the interval (-1,1)
-    double apply(FunPoint const & f)const;
+    // Applies the rule in the interval (a,b)
+    double apply(FunPoint const & f, double const &a, double const& b)const;
   protected:
     std::vector<double>  _w;
     std::vector<double>  _n;

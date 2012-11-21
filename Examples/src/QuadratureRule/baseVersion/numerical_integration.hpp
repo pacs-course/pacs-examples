@@ -74,6 +74,7 @@ namespace NumericalIntegration{
     Quadrature & operator=(Quadrature const &);
     //! Calculates the integal on the passed integrand function.
     double apply(FunPoint const &) const;
+    QuadratureRule const & myRule()const {return *(_rule.get());}
   protected:
     QuadratureRuleHandler _rule;
     Mesh1D _mesh;
