@@ -50,12 +50,12 @@ CXXFLAGS+=-O3
 all: $(DEPEND) $(PROGRAMS)
 
 main_myMat0_move:
-	-rm *.o $(EXEC)
+	-\rm -f *.o $(EXEC)
 	$(MAKE)	$(EXEC)
 	mv $(EXEC) main_myMat0_move
 
 main_myMat0_nomove:
-	-rm *.o $(EXEC)
+	-\rm -f *.o $(EXEC)
 	$(MAKE) $(EXEC) CPPFLAGS+=-DNOMOVE
 	mv $(EXEC) main_myMat0_nomove
 test:
