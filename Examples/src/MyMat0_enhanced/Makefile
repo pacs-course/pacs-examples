@@ -42,7 +42,7 @@ PROGRAMS=main_myMat0_move  main_myMat0_nomove
 CXXFLAGS+=-O3
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc
+.phony= all clean distclean doc main_myMat0_move main_myMat0_nomove
 
 .DEFAULT_GOAL = all
 
@@ -52,7 +52,7 @@ all: $(DEPEND) $(PROGRAMS)
 main_myMat0_move:
 	-\rm -f *.o $(EXEC)
 	$(MAKE)	$(EXEC)
-	mv $(EXEC) main_myMat0_move
+	mv -f $(EXEC) main_myMat0_move
 
 main_myMat0_nomove:
 	-\rm -f *.o $(EXEC)
@@ -67,7 +67,7 @@ clean:
 	-\rm -f $(EXEC) $(OBJS)
 	-\rm -r -f ./doc main_myMat0_move main_myMat0_nomove test_move.* \
          test_nomove.txt Matrix.dat
-	-\rm *.out *.bak *~
+	-\rm -f *.out *.bak *~
 
 distclean:
 	$(MAKE) clean
