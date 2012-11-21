@@ -91,13 +91,15 @@ namespace LinearAlgebra{
     //! Move copy constructor (only if matrix is of the same type)
     MyMat0(MyMat0<T>&& m);
 #endif
-    //! Copy assignement operator for matrices with
-    //! same storage order.
-    MyMat0<T> & operator =(MyMat0<T> const & m);
-    //! Copy assignement operator.
+    //! Copy assignment operator
+    /*!
+      The synthetic one is enough.
+     */
+    MyMat0<T> & operator =(MyMat0<T> const & m)=default;
+    //! Copy assignement operator
     /*!
       It accepts a matrix with different storage order.
-     */
+    */
     template <StoragePolicySwitch S>
     MyMat0<T> & operator =(MyMat0<S> const & m);
 #ifndef NOMOVE
@@ -218,15 +220,8 @@ namespace LinearAlgebra {
   }
 #endif
 
-  template <StoragePolicySwitch T>
-  MyMat0<T>  & MyMat0<T>::operator =(MyMat0<T> const & m){
-    this->nr=m.nr;
-    this->nc=m.nc;
-    this->data=m.data; 
-    return *this;
-  }
-  
-  // Case for different storage order
+  // Copy assignment for matrices with different storage order
+  // if S=T the non-template version defined in the class wins!
   template <StoragePolicySwitch T>
   template <StoragePolicySwitch S>
   MyMat0<T> & MyMat0<T>::operator =(MyMat0<S> const & m){
