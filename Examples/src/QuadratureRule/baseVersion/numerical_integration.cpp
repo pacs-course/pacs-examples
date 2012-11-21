@@ -30,17 +30,10 @@ namespace NumericalIntegration{
   double Quadrature::apply(FunPoint const & f) const
   {
     double result(0);
-    // h2 half interval length
-    // xm interval mid point
-    double h2,xm;
-    // scale fun from (-1 1) to given interval
-    auto fscaled=[&](double x){return f(x*h2+xm);};
     for(unsigned int i=0;i<_mesh.numNodes()-1;++i){
       double a=_mesh[i];
       double b=_mesh[i+1];
-      h2=(b-a)*0.5;
-      xm=(a+b)*0.5;
-      result += h2*_rule->apply(fscaled);
+      result += _rule->apply(f,a,b);
     }
     return result;
   }
