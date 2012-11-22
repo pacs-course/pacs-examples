@@ -1,0 +1,19 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+PROJECT(RandomLaplacian)
+
+SET(CMAKE_CXX_COMPILER clang++)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
+
+SET(SRCS main_randomlap.cpp) 
+
+ADD_EXECUTABLE(main_randomlap ${SRCS})
+
+INCLUDE_DIRECTORIES("/opt/eigen")
+
+INCLUDE(CPack)
+
+INSTALL(FILES ${SRCS} CMakeLists.txt
+  DESTINATION .
+)
+
