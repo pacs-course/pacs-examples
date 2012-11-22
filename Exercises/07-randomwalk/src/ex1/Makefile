@@ -3,11 +3,7 @@ CXX = clang++
 #CXX = g++-4.7
 CC  = $(CXX)
 
-EIGEN_DIR=/opt/eigen
-
-INCLUDES=-I$(EIGEN_DIR)
-
-CXXFLAGS = -Wall -ansi -pedantic -std=c++11 $(INCLUDES)
+CXXFLAGS = -Wall -ansi -pedantic -g -std=c++11
 
 TARGET = main_randomlap
 
