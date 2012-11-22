@@ -15,11 +15,13 @@
 
 %\input{../common/commands.tex}
 
+
 \newcommand*{\vect}[1]{\boldsymbol{#1}}
 \newcommand*{\mat}[1]{\boldsymbol{#1}}
 
-\title{Exercise Session 5}
-\date{November 9, 2012}
+%\author{}
+\title{Exercise Session 7}
+\date{November 23, 2012}
 
 \pagestyle{fancy}
 \headheight 35pt
@@ -28,49 +30,36 @@
 \lstset{language=[ISO]C++}
 \maketitle
 
-\section*{Data mining: $k$-means clustering}
+\section*{Random walk and the Fourier equation}
 
-$k$-means clustering is a common method used in data mining, which aims to
-partition $N$ objects into $k$ clusters, with $k << N$. The clusters are built
-such as each object belongs to the \emph{nearest} cluster, so there must be a
-notion of distance between objects.
+As throughfully explained in S. Salsa, \emph{Equazioni a derivate parziali},
+Chp.~2, there is a direct connection between the Fourier equation
+\begin{equation}i
+\label{eqn:fourier}
+u_t - D \, u_{xx} = f
+\end{equation}
+with suitable boundary and initial conditions, and the unidimensional random
+process known as Brownian motion. In particular, the fundamental solution to
+\eqref{eqn:fourier} is the Gaussian distribution
+\[
+G(x,t) = \frac{1}{\sqrt{ 4 \pi D t}} \exp{-\frac{x^2}{4 D t}}
+\]
+%
+\begin{figure}
+\centering
+\includegraphics[width=.6\textwidth]{fig/randomlap20}
+\caption{Discrete distribution and continuous distribution for set of particles
+         in 1D Brownian motion at $t = 20$.}
+\label{fig:distr}
+\end{figure}
+%
+This distribution can be seen as the limiting case, with the number of particles
+that goes to infinity, while the lenght of the step and the time go to zero, of
+the discrete distribution of a randomly walking set of particles, under the
+hypothesis that the probability of moving to left or to the right are exactly
+$\frac{1}{2}$ each. The distribution, along with the fundamental solution is
+plotted in Fig. \ref{fig:distr}.
 
-An object example can be a point in $\RR^n$ equipped with the Euclidean norm. In
-this case the distance would be computed with respect to the centroid of the
-cluster and the space would be partitioned in Voronoi cells. The approach is
-however more genaral, it can be applied to any set of objcts with a kwnoledge of
-a distance between then, e.g. functions in a suitable space and a suitable norm,
-etc.
-
-%%%%%%%%%%%%%%
-%\begin{figure}[htb]
-%\centering
-%$\vcenter{\hbox{\includegraphics[width=.3\textwidth]{fig/wiki1}}}$
-%\hfil
-%$\vcenter{\hbox{\includegraphics[width=.3\textwidth]{fig/wiki2}}}$
-%\\[1ex]
-%$\vcenter{\hbox{\includegraphics[width=.3\textwidth]{fig/wiki3}}}$
-%\hfil
-%$\vcenter{\hbox{\includegraphics[width=.3\textwidth]{fig/wiki4}}}$
-%\caption{$k$-means algorithm in $\RR^2$. The squares represent the objects to be
-%clustered, while the circles represent the centroids of the partitions. Each
-%}
-%\label{fig:alg}
-%\end{figure}
-%%%%%%%%%%%%%%
-The problem is NP-hard, but an algorithm can be devised in order to approach a
-local optimum. The algorithm is depicted in Fig. \ref{fig:alg} for the case of
-points in $\RR^2$. Given a set of initial centroids, the objects are associated
-to the nearest centroid to build up the clusters. Afterwords, the centroid is
-updated to the point that minimizes the distance between the objects that belong
-to the partition. In the case of the Euclidean norm it will be the barycenter of
-the points in the cluster. This concludes a step of the algorithm, that is
-repeated starting again assigning the points to the nearest centroid.
-
-The algorithm stops when the clusters are fixed: when all the points are again
-assigned to the same partition, the update of the centroids gives a null
-increment. Note that, since we only reach a local optimum, the solution is
-dependent on the choice of the initial guess for the centroids.
 
 \input{ex}
 

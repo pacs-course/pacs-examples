@@ -1,41 +1,25 @@
-\section*{Exercise}
+\section*{Exercise 1}
 
-Starting from the given set of files that implement an algorithm that computes
-the centroids for a clustering of 2D points with respect to the euclidean
-distance
+Implement a random walk in one dimension, using the following tips:
+\begin{itemize}
+  \item use a \cpp{map} to store the distribution of particles.
+  \item use as starting configuration a Dirac delta --- approximated with
+  $10000$ particles located at zero (use a much smaller value until the code
+  is functioning properly).
+  \item consider that the particles move by 1 or -1 at each time step,
+  \item use a \cpp{discrete_distribution} to emulate the random motion, with
+  equal probability of moving forwards or backwards.
+  \item simulate 20 time steps.
+  \ item print out the distribution to screen and to file, in order to plot it
+  in \texttt{gnuplot}.
+  \item plot also the fundamental solution in gnuplot to compare the result,
+  remembering that $D = \frac{h^2}{2t}$.
+  \item check what happens if the distrubution is biased towards one direction,
+  or if the particle is allowed to remain in the same position, without	moving.
+\end{itemize}
 
-\begin{enumerate}
+\section*{Exercise 2}
 
-\item Make the object type a parameter of the class \cpp{Clustering}.
+Implement a class that performs MonteCarlo (MC) integration, using a suitable
+probability distribution.
 
-\item use the random generator to set the initial values of the centroids.
-
-\item Develop a new \cpp{Distance} type called \cpp{AnisotropicDistance}, that
-implements a non-isotropic metric $\mat{M}$ (an SPD matrix) in the 2D space. In
-this case, the centroid $\vect{c}$ of a cluster satisfies
-\[
-\min_{\vect{c}} \sum_{i=0}^N d_{\mat{M}}( \vect{c}, \vect{p}_i )
-\]
-where $d_{\mat{M}}( \vect{a}, \vect{b} ) = ( \vect{a} - \vect{b} )^T \mat{M}
-( \vect{a} - \vect{b} )$ is the distance in the metric set by $\mat{M}$ and $N$
-is the number of objects $\vect{p}_i$ that have been assigned to the cluster.
-The minimization leads to the linear system
-\begin{equation}
-\label{eqn:aniso_bc}
-\mat{M} \vect{c} = \frac{1}{N} \sum_{i=0}^N \mat{M} \vect{p}_i
-\end{equation}
-
-\item Test the implementation using the metric
-\[
-\mat{M} =
-\begin{pmatrix}
-3 & 2 \\ 2 & 3
-\end{pmatrix}
-\]
-
-\item Implement the \cpp{computeQuality} member function that gives an estimate
-of the quality of the clustering based on the average distance of the objects
-in the cluster from the centroid. Compare the value of the quality increasing
-the number of clusters.
-
-\end{enumerate}
