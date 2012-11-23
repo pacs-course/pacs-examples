@@ -12,7 +12,7 @@ set yrange [0:0.51]
 
 gauss(x,D,t) = 2*exp(-x*x / (4*D*t))/sqrt( 4*pi*D*t )
 
-plot 'randomlap${n}.out' w boxes, gauss(x,0.5,${n}) w l
+plot 'randomlap${n}.out' w boxes lw 2, gauss(x,0.5,${n}) w l lw 3
 EOF
 
 gnuplot tmp.gnuplot
