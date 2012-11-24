@@ -49,10 +49,10 @@ endif
 export DEBUG
 ifeq ($(DEBUG),no)
   OPTFLAGS=-O3
-  LIBRARIES+=-L$(PACS_LIB_DIR)  -l$(LIBNAME2) -l$(LIBNAME) -L. -l$(LIBNAME3)
+  LIBRARIES=-L. -L$(PACS_LIB_DIR)  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3)
 else
   OPTFLAGS=-g -O0
-  LIBRARIES+=-L.  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3)
+  LIBRARIES=-L.  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3)
   LDFLAGS+=-Wl,-rpath=.
 endif
 #
@@ -109,11 +109,11 @@ all:
 depend: $(DEPEND)
 
 static:
-	-rm -f $(LIB_OBJS) $(LIB2_OBJS) $(LIB3_OBJS) 
+	-rm -f *.o
 	$(MAKE) library LIBTYPE=STATIC 
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	-rm -f $(LIB_OBJS) $(LIB2_OBJS) $(LIB3_OBJS) 
+	-rm -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
