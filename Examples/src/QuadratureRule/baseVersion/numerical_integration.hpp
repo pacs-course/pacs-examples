@@ -31,7 +31,7 @@ namespace NumericalIntegration{
       \param rule A unique_ptr storing the rule.  
       \param Mesh1D The 1D mesh 
      */
-    Quadrature(QuadratureRuleHandler rule, Mesh1D& mesh);
+    Quadrature(QuadratureRuleHandler rule, Mesh1D const & mesh);
     //!Constructor.
     /*!  
       \param rule A unique_ptr storing the rule.  
@@ -61,13 +61,11 @@ namespace NumericalIntegration{
       \param rule A unique_ptr storing the rule.
       \param Mesh1D The 1D mesh
      */ 
-    template <class T>
-    Quadrature(const T & rule, Mesh1D& mesh):
-      Quadrature(QuadratureRuleHandler(rule.clone()),mesh){}
+    Quadrature(const QuadratureRule & rule, Mesh1D const & mesh):
+      Quadrature(rule.clone(),mesh){}
     //! Version that moves the mesh.
-    template <class T>
-    Quadrature(const T & rule, Mesh1D&& mesh):
-      Quadrature(QuadratureRuleHandler(rule.clone()),std::move(mesh)){}
+    Quadrature(const QuadratureRule & rule, Mesh1D&& mesh):
+      Quadrature(rule.clone(),std::move(mesh)){}
     //! Copy constructor.
     Quadrature(Quadrature const &);
     //! Copy assignment.

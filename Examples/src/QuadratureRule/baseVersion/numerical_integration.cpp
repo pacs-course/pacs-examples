@@ -1,7 +1,7 @@
 #include "numerical_integration.hpp"
 namespace NumericalIntegration{
   
-  Quadrature::Quadrature(QuadratureRuleHandler rule, Mesh1D & mesh):_rule(std::move(rule)),_mesh(mesh){}
+  Quadrature::Quadrature(QuadratureRuleHandler rule, Mesh1D const & mesh):_rule(std::move(rule)),_mesh(mesh){}
 
   /*! 
     Formally identical! I need a move-constructor in the mesh class to have 
