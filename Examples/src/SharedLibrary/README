@@ -1,0 +1,6 @@
+A vesi simple example of use of dynamic libraries
+The command exec.sh runs the example
+
+Try with
+export LD_DEBUG=files
+
