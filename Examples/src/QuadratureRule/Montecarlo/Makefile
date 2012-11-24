@@ -102,11 +102,11 @@ all:
 depend: $(DEPEND)
 
 static:
-	-rm -f $(LIB_OBJS)
+	-rm -f $(LIB_OBJS) $(LIB2_OBJS) $(LIB3_OBJS)
 	$(MAKE) library LIBTYPE=STATIC 
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	-rm -f $(LIB_OBJS)
+	-rm -f $(LIB_OBJS) $(LIB2_OBJS) $(LIB3_OBJS)
 	$(MAKE) library LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
