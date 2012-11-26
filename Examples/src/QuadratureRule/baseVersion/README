@@ -19,9 +19,9 @@ make install
 
 ===
 
-make exec DEBUG=no
+make exec DEBUG=no LIBTYPE=static/dynamic
 
 compiles the exec without recompiling the libraries and do not use
 local (i.e.  current directory) linking but used the directories in
-Examples/lib. 
+Examples/lib. use static/dynamic if you want static or dynamic linking.
 
