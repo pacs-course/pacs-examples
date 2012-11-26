@@ -1,5 +1,5 @@
-#ifndef _H_SMALLLIB_HPP
-#define _H_SMALLLIB_HPP
+#ifndef H_SMALLLIB_HPP
+#define H_SMALLLIB_HPP
 #include <iosfwd>
 class foo 
 {
