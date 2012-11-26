@@ -95,14 +95,17 @@ EXEC_SRCS:=$(exe_sources)
 .DEFAULT_GOAL = all
 
 all:
-	@echo "make static makes static library and executable"
-	@echo "make dynamic makes dynamic library and executable"
+	@echo "make static makes static library"
+	@echo "make dynamic makes dynamic library"
+	@echo "make exec compiles executable"
 	@echo "make depend just makes dependency file"
 	@echo "make clean cleans all not library"
 	@echo "make distclean cleans all"
 	@echo "make install installs in the root directory"
+	@echo "macro LIBTYPE=static compiles against dynamic lib"
+	@echo "macro LIBTYPE=dynamic compiles against static lib"
 	@echo "macro DEBUG=no deactivates debugging and uses libraries in the"
-	@echo "root lib and include directories when compiling executable"
+	@echo "root lib when compiling executable"
 	@echo "To run executable when compiling with DEBUG=no you need to type"
 	@echo "export LD_LIBRARY_PATH="$(PACS_LIB_DIR):.
 
@@ -111,11 +114,9 @@ depend: $(DEPEND)
 static:
 	-rm -f *.o
 	$(MAKE) library LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
 	-rm -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
