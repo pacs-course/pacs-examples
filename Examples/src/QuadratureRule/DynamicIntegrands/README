@@ -1,0 +1,12 @@
+YOU NEED TO INSTALL THE MAIN QUAQDRATURE RULE LIBRARIES FROM THE baseVersion
+directory. Otherwise the example does not work.
+
+Example of dynamic loading of integrands (only)
+
+make dynamic to compile the library libintegrands.so with the integrands
+
+make exec to compile executable
+
+DEBUG=no for optimized version
+
+./main_integration -h gives instruction on the parameters
