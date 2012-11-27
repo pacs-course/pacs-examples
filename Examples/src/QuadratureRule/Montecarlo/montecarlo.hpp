@@ -18,7 +18,7 @@ namespace NumericalIntegration{
     MonteCarlo();
     virtual std::unique_ptr<QuadratureRule> clone()const override;
     virtual double apply(FunPoint const &, double const & a,
-			 double const & b) const override;
+             double const & b) const override;
     //! Sets desired maximal error
     void setError(double e);
     //! Sets maximal number of samples;
@@ -33,10 +33,10 @@ namespace NumericalIntegration{
     void resetError();
     virtual ~MonteCarlo(){}
   private:
-    //! Desired error;
-    double error_level;
     //! Max iterations
     unsigned int max_iter;
+    //! Desired error;
+    double error_level;
     //! The last error
     /*!
     Mutable because I want to be able to change it also
