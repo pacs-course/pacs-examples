@@ -1,0 +1,23 @@
+
+TARGET=et_fe
+
+# CXX=clang++
+CXX=g++
+#CXXFLAGS=-Wall -ansi -pedantic -g -std=c++0x
+CXXFLAGS=-Wall -pedantic -g -std=c++11
+SRCFILES=main.cpp
+OBJFILES=main.o
+
+all: $(TARGET) test
+
+$(TARGET): $(OBJFILES)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+.PHONY:
+	clean test
+
+clean:
+	rm -rf *.o *~ $(TARGET)
+
+test: $(TARGET)
+	./$(TARGET)
