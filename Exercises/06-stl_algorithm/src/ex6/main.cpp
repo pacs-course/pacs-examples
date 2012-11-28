@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <cstdlib>
+
 using namespace std;
 
 typedef double (*FunPoint)( const double&, 
@@ -39,13 +40,14 @@ int main()
   
   // Check if the function is present
   if ( iteratorBC == boundaryMap.end() )
-    {
+  {
       cerr << " Boundary not found " << endl;
       abort();
-    }
+  }
   
   // Evaluate the function
   cout << "Value " << iteratorBC->second(1, 2, 3) << endl;  
 
   return 0;
 }
+
