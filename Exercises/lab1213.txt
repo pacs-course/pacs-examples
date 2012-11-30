@@ -31,3 +31,14 @@ es 5 - nov 9 2012
 - static library makefile
 - coding guidelines from LifeV
 - es 05-clustering
+
+es 6 - nov 16 2012
+- es 06-stl
+
+es 7 - nov 23 2012
+- es 07-randomwalk
+
+es 8 - nov 30 2012
+- bit flags
+- initializer lists
+- es 08-functor_template
