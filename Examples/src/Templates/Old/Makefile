@@ -35,7 +35,7 @@ LIBS =-lm
 # To see a libaray: ar t mylib.a
 
 #header files
-LDFLAGS=$(LIBS)
+LDLIBS=$(LIBS)
 
 .PHONY= clean all
 HDRS = 

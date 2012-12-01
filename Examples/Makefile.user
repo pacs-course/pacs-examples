@@ -113,5 +113,6 @@ export CCFLAGS=$(CXXFLAGS)
 #
 DEPEND=make.dep
 #header files
-export LDFLAGS=$(OPTFLAGS) $(LIBD) $(LIBRARIES)
+export LDFLAGS=$(OPTFLAGS)
+export LDLIBS=$(LIBD) $(LIBRARIES)
 
