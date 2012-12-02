@@ -15,7 +15,8 @@ namespace GenericFactory{
   template
   < 
     typename AbstractProduct,
-    typename Identifier
+    typename Identifier,
+    typename Builder=std::function<std::unique_ptr<AbstractProduct> ()>
   >
   class Factory{
   public:
@@ -29,14 +30,13 @@ namespace GenericFactory{
     typedef  Identifier Identifier_type;
     //! The builder type.
     /*
-      I could have passed the builder type as template parameter.
-      For simplicity I use a function. In C++98 I would have used
+      The default is a function. In C++98 I would have used
       a function pointer. Here I prefer to use a function wrapper instead.
       I return a unique_ptr (C++11). This can make the handling more complex
       but it is much safer with respect to memory leaks. A simpler version
       may use a bare pointer and return type.
     */
-    typedef  std::function<std::unique_ptr<AbstractProduct> ()> Builder_type;
+    typedef  Builder Builder_type;
     //! Method to access the only instance of the factory
     static Factory & Instance();
     //! Get the rule with given name . 
@@ -65,13 +65,15 @@ namespace GenericFactory{
   };
 
   
+  //! We use the Meyer's trick to istantiate the factory.
   template
   <
     typename AbstractProduct,
-    typename Identifier
+    typename Identifier,
+    typename Builder
     >
-  Factory<AbstractProduct,Identifier> & 
-  Factory<AbstractProduct,Identifier>::Instance() {
+  Factory<AbstractProduct,Identifier,Builder> & 
+  Factory<AbstractProduct,Identifier,Builder>::Instance() {
     static Factory theFactory;
     return theFactory;
   }
@@ -79,23 +81,25 @@ namespace GenericFactory{
   template
   <
     typename AbstractProduct,
-    typename Identifier
+    typename Identifier,
+    typename Builder
     >
   std::unique_ptr<AbstractProduct> 
-  Factory<AbstractProduct,Identifier>::create(Identifier const & name) 
+  Factory<AbstractProduct,Identifier,Builder>::create(Identifier const & name) 
     const {
     auto f = _storage.find(name); //C++11
     return (f == _storage.end()) ? std::unique_ptr<AbstractProduct>(): 
-      f->second();
+      std::unique_ptr<AbstractProduct>(f->second());
   }
 
   template
   <
     typename AbstractProduct,
-    typename Identifier
+    typename Identifier,
+    typename Builder
     >
   void  
-  Factory<AbstractProduct,Identifier>::add(Identifier const & name, 
+  Factory<AbstractProduct,Identifier,Builder>::add(Identifier const & name, 
 					   Builder_type const & func){
     auto f = 
       _storage.insert(std::make_pair(name, func));
@@ -107,9 +111,10 @@ namespace GenericFactory{
   template
   <
     typename AbstractProduct,
-    typename Identifier
+    typename Identifier,
+    typename Builder
     >
-  std::vector<Identifier>  Factory<AbstractProduct,Identifier>::registered() 
+  std::vector<Identifier>  Factory<AbstractProduct,Identifier,Builder>::registered() 
     const {
     std::vector<Identifier> tmp;
     tmp.reserve(_storage.size());
