@@ -8,9 +8,10 @@
 void printHelp(){
 	using std::cout;
 	using std::endl;
+	cout<<"*** PROGRAM FOR COMPOSITE INTEGRATION  ***"<<endl<<endl;
 	cout<<"*** Line Options ***"<<endl;
 	cout<<"[-h  --help] This help"<<endl;
-	cout<<"[InputFile=string] Input file name (quadrature.getpot)"<<endl;
+	cout<<"[InputFile=string] Input file name (quadrature.getpot)"<<endl<<endl;
 	cout<<"*** File Options ***"<<endl;
 	cout<<"[library=string] Quadrature rule library (libmyrules.so)"<<endl;
 	cout<<"[udflib=string]  Library holding integrands (libudf.so)"<<endl;
