@@ -111,7 +111,7 @@ all:
 	@echo "macro LIBTYPE=dynamic compiles against static lib"
 	@echo "macro DEBUG=no deactivates debugging and uses libraries in the"
 	@echo "root lib when compiling executable"
-	@echo "To run executable when compiling with DEBUG=no you need to type"
+	@echo "To run executable you need to type"
 	@echo "export LD_LIBRARY_PATH="$(PACS_LIB_DIR):.
 
 depend: $(DEPEND)
@@ -147,10 +147,10 @@ $(EXEC): $(EXEC_OBJS) $(OTHER_OBJS)
 	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
 
 $(EXEC_OBJS): $(EXEC_SRCS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $?
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $<
 
 $(OTHER_OBJS): $(OTHER_SRCS)
-	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(CPPFLAGS) -c $?
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(CPPFLAGS) -c $<
 
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 #	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
