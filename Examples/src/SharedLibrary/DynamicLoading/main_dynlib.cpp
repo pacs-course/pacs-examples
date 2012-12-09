@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include "functions.hpp"
+//#include "functions.hpp"
 #include <dlfcn.h>
 
 typedef double(*Fun)(double);
@@ -23,8 +23,9 @@ int main(){
   else
     fn = reinterpret_cast<Fun>(dlsym(lib_handle,"square"));
 
-  char* error;
-  if((error = dlerror()) != NULL ){
+  char* error=dlerror();
+   
+  if(error != 0 ){
     std::cerr<<"Error "<< error<<std::endl;
     std::exit(2);
   }
