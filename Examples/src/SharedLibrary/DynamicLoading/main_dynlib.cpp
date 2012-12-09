@@ -25,7 +25,7 @@ int main(){
 
   char* error=dlerror();
    
-  if(error != 0 ){
+  if(error != nullptr ){
     std::cerr<<"Error "<< error<<std::endl;
     std::exit(2);
   }
