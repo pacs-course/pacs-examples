@@ -86,7 +86,7 @@ LIB3_SRCS:=udf.cpp
 LIB3_OBJS:=$(LIB3_SRCS:.cpp=.o)
 LIB3_HEADERS:=$(LIB3_SRCS:.cpp=.hpp)
 OTHER_OBJS:=udfHandler.o
-OTHER_SRCS:=udfHandler.o
+OTHER_SRCS:=udfHandler.cpp
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
