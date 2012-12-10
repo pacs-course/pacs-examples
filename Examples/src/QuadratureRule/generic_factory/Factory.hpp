@@ -1,5 +1,5 @@
-#ifndef RULES_FACTORY_HPP_
-#define RULES_FACTORY_HPP_
+#ifndef H_FACTORY_HPP_
+#define H_FACTORY_HPP_
 #include <map>
 #include <vector>
 #include <memory>
@@ -10,11 +10,15 @@ namespace GenericFactory{
   /*! A generic factory. 
     
     It is implemented as a Singleton. The compulsory way to 
-    access a method is RuleFactory::Instance().method().
+    access a method is Factory::Instance().method().
+    Typycally to access the factory one does
+    \code
+    auto&  myFactory = Factory<A,I,B>::Instance();
+    myFactory.add(...)
+    \endcode
   */
   template
-  < 
-    typename AbstractProduct,
+  < typename AbstractProduct,
     typename Identifier,
     typename Builder=std::function<std::unique_ptr<AbstractProduct> ()>
   >
