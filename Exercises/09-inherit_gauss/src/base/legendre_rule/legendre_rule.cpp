@@ -1,37 +1,9 @@
-# include <cstdlib>
-# include <cmath>
-# include <iostream>
-# include <fstream>
-# include <iomanip>
-# include <ctime>
-# include <cstring>
+# include "legendre_rule.hpp"
 
 using namespace std;
 
-int main ( int argc, char *argv[] );
-void cdgqf ( int nt, int kind, double alpha, double beta, double t[], 
-  double wts[] );
-void cgqf ( int nt, int kind, double alpha, double beta, double a, double b, 
-  double t[], double wts[] );
-double class_matrix ( int kind, int m, double alpha, double beta, double aj[], 
-  double bj[] );
-void imtqlx ( int n, double d[], double e[], double z[] );
-void parchk ( int kind, int m, double alpha, double beta );
-double r8_abs ( double x );
-double r8_epsilon ( );
-double r8_sign ( double x );
-void r8mat_write ( string output_filename, int m, int n, double table[] );
-void rule_write ( int order, string filename, double x[], double w[], 
-  double r[] );
-void scqf ( int nt, double t[], int mlt[], double wts[], int nwts, int ndx[], 
-  double swts[], double st[], int kind, double alpha, double beta, double a, 
-  double b );
-void sgqf ( int nt, double aj[], double bj[], double zemu, double t[], 
-  double wts[] );
-void timestamp ( );
-
 //****************************************************************************80
-
+/*
 int main ( int argc, char *argv[] )
 
 //****************************************************************************80
@@ -201,7 +173,7 @@ int main ( int argc, char *argv[] )
   return 0;
 }
 //****************************************************************************80
-
+*/
 void cdgqf ( int nt, int kind, double alpha, double beta, double t[], 
   double wts[] )
 
@@ -470,13 +442,13 @@ double class_matrix ( int kind, int m, double alpha, double beta, double aj[],
 
   temp2 = 0.5;
 
-  if ( 500.0 * temp < r8_abs ( pow ( gamma ( temp2 ), 2 ) - pi ) )
-  {
-    cout << "\n";
-    cout << "CLASS_MATRIX - Fatal error!\n";
-    cout << "  Gamma function does not match machine parameters.\n";
-    exit ( 1 );
-  }
+//   if ( 500.0 * temp < r8_abs ( pow ( gamma ( temp2 ), 2 ) - pi ) )
+//   {
+//     cout << "\n";
+//     cout << "CLASS_MATRIX - Fatal error!\n";
+//     cout << "  Gamma function does not match machine parameters.\n";
+//     exit ( 1 );
+//   }
 
   if ( kind == 1 )
   {

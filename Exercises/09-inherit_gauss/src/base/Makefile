@@ -13,7 +13,7 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-MAKEFILEH_DIR=../../..
+MAKEFILEH_DIR=.
 #
 # Library with quadrature rules
 LIBNAME=quadrules
@@ -44,22 +44,21 @@ else
  export LIBRARY=$(STATIC_LIBFILE)
  export LIBRARY2=$(STATIC_LIBFILE2)
  export LIBRARY3=$(STATIC_LIBFILE3)
- LDFLAGS +=-static 
+ LDFLAGS+=-static
 endif
 export DEBUG
 ifeq ($(DEBUG),no)
   OPTFLAGS=-O3
-  LIBRARIES=-L. -L$(PACS_LIB_DIR)  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3) -dynamic
-  LDFLAGS+=-Wl,-rpath=. -Wl,-Bdynamic
+  LIBRARIES=-L. -L$(PACS_LIB_DIR)  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3)
 else
   OPTFLAGS=-g -O0
   LIBRARIES=-L.  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3)
-  LDFLAGS+=-Wl,-rpath=. -Wl,-Bdynamic
+  LDFLAGS+=-Wl,-rpath=.
 endif
 #
 # You may have an include file also in the current directory
 #
--include Makefile.inc
+#-include Makefile.inc
 
 #
 # The general setting is as follows:
