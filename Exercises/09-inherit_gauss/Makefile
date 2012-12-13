@@ -1,7 +1,7 @@
 rerun = "There were undefined references"
 bibtex = "\citation"
 
-doc = text
+doc = es9
 dep   = $(wildcard *.tex) $(src) $(fig)
 bib = ../common/bibliography.bib
 
@@ -30,7 +30,7 @@ pdf : $(doc).pdf
 
 %.pdf : %.tex $(dep)
 	pdflatex $*
-# 	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
+#	if (egrep -q $(bibtex) $*.aux); then bibtex $* && pdflatex $*; fi
 	pdflatex $* && !(egrep -q $(rerun) $*.log)
 
 clean :
