@@ -1,6 +1,7 @@
-#include <stack>
+#include <queue>
 #include <utility>
 #include "QuadratureRuleAdaptive.hpp"
+#include <iostream>
 namespace NumericalIntegration{
 
   // Here a cannot use simply clone() since it returns a unique_ptr to a 
@@ -29,17 +30,17 @@ namespace NumericalIntegration{
   double QuadratureRuleAdaptive::apply(FunPoint const & f, double const & a,
 					double const & b) const
   {
-    using std::stack;
+    using std::queue;
     using std::pair;
     using std::make_pair;
     unsigned int counter(0);
     double result(0);
     double dSize=b-a;
-    stack<pair<double,double> > subint;
+    queue<pair<double,double> > subint;
     subint.push(make_pair(a,b));
 
     while(counter<_maxIter && !subint.empty()){
-      pair<double,double> z = subint.top();
+      pair<double,double> z = subint.front();
       subint.pop();
       ExtractError::reset();
       double x1=z.first;
@@ -57,7 +58,8 @@ namespace NumericalIntegration{
     }      
     if(counter>=_maxIter) 
       throw std::runtime_error("Max number iteration exceeded in QuadratureRuleAdaptive");
-    return result;
+	std::cout<<"Num Iter= "<<counter<<std::endl;    
+	return result;
   }
 }
 
