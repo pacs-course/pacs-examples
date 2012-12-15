@@ -33,6 +33,7 @@ namespace NumericalIntegration{
     
     virtual double apply(FunPoint const & f, double const &a, 
 			 double const & b)const=0;
+    virtual ~QuadratureRule()=default;
   };
   
 
@@ -78,6 +79,8 @@ namespace NumericalIntegration{
     virtual QuadratureRuleHandler clone() const =0;
     // Applies the rule in the interval (a,b)
     double apply(FunPoint const & f, double const &a, double const& b)const;
+    virtual ~StandardQuadratureRule()=default;
+
   protected:
     std::vector<double>  _w;
     std::vector<double>  _n;
