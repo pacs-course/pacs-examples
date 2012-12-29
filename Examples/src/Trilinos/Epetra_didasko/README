@@ -1,0 +1,16 @@
+This files have been taken from the packages/didasko/example/epetra
+directory of the trilinos Ver. 10.10. They should work also with later
+versions of trilinos.
+
+I have remade the Makefile to be able to compile the code if one has
+trilinos installed. Set the correct trilinos path in the main Makefile.inc file.
+
+Check is the trilinos libraries have the form libXXX.so of
+libtrilinos_XXX.so, end set in the Makefile.inc the variable
+TILINOS_PREFIX accordingly.
+
+You may chancge CXX to mpic++ and remember to use mpirun to run the executables!
+
+If yor trilinos installation is not standard remember to set up the
+environment variable LD_LIBRARY_PATH.
+
