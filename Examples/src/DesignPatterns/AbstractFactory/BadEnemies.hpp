@@ -33,6 +33,6 @@ public:
 	 Enemy * MakeSuperMonster();
 };
 
-std::auto_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory();
+std::unique_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory();
 
 #endif /* BADENEMIES_HPP_ */

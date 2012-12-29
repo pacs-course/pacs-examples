@@ -16,5 +16,5 @@ public:
 	 virtual Enemy * MakeSuperMonster();
 };
 
-typedef std::auto_ptr<AbstractEnemyFactory> (*BuildEnemyFactory)();
+typedef std::unique_ptr<AbstractEnemyFactory> (*BuildEnemyFactory)();
 #endif /* ABSTRACTENEMYFACTORY_HPP_ */

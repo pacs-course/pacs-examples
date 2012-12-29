@@ -19,22 +19,28 @@ int main(){
   // Level 1
   myLevelFactory.push_back(&BuildAdvancedLevelEnemyFactory);
   //
-  std::vector<Enemy* > theEnemies;
+  std::vector<std::unique_ptr<Enemy> > theEnemies;
   int level;
   std::cout<<"Give me level: 0 Beginner, 1 Advanced"<<std::endl;
   std::cin>>level;
-  std::auto_ptr<AbstractEnemyFactory> enemyFactory( myLevelFactory[level]());
+  std::unique_ptr<AbstractEnemyFactory> enemyFactory( myLevelFactory[level]());
   //
-  theEnemies.push_back(enemyFactory->MakeMonster());
-  theEnemies.push_back(enemyFactory->MakeSuperMonster());
-  theEnemies.push_back(enemyFactory->MakeSoldier());
+  // I use emplace_back (C++11!!!) that calls directly the
+  // constructor: unique_ptr<Enemy>() If I want to use push_back I
+  // need to do
+  //
+  // theEnemies.push_back(std::unique_ptr<Enemy>(enemyFactory->MakeMonster()));
+  //
+  // etc. In fact push_back calls the default constructor and then the
+  // assigmenet operator. But a unique_ptr cannot ne assigned to a
+  // pointer.
 
+ 
+    theEnemies.emplace_back(enemyFactory->MakeMonster());
+    theEnemies.emplace_back(enemyFactory->MakeSuperMonster());
+    theEnemies.emplace_back(enemyFactory->MakeSoldier());
+ 
   for (unsigned int i=0; i<theEnemies.size();++i)
     theEnemies.at(i)->speak();
 
-// Clean memory not necessary in this case but advisable:
-// for any new you need a delete!
-
-  for (unsigned int i=0; i<theEnemies.size();++i) 
-    delete theEnemies[i];
 }

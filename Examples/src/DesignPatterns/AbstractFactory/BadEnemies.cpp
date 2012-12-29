@@ -45,8 +45,8 @@ Enemy *AdvancedLevelEnemyFactory::MakeSoldier()
 	return new BadSoldier;
 }
 
-std::auto_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory(){
-  return std::auto_ptr<AbstractEnemyFactory>(new AdvancedLevelEnemyFactory);
+std::unique_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory(){
+  return std::unique_ptr<AbstractEnemyFactory>(new AdvancedLevelEnemyFactory);
 }
 
 
