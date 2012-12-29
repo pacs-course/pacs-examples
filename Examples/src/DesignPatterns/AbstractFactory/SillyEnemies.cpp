@@ -45,8 +45,8 @@ Enemy *EasyLevelEnemyFactory::MakeSoldier()
 	return new SillySoldier;
 }
 
-std::auto_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory(){
-  return std::auto_ptr<AbstractEnemyFactory>(new EasyLevelEnemyFactory);
+std::unique_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory(){
+  return std::unique_ptr<AbstractEnemyFactory>(new EasyLevelEnemyFactory);
 }
 
 

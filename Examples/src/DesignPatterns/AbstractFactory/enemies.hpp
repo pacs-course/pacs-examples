@@ -9,26 +9,25 @@
 #define ENEMIES_HPP_
 class Enemy{
 public:
-  virtual void speak()=0;
-  virtual ~Enemy(){};
+	virtual void speak()=0;
 };
 
 class Soldier: public Enemy
 {
 public:
-  virtual void speak();
+	virtual void speak();
 };
 
 class Monster: public Enemy
 {
 public:
-  virtual void speak();
+    virtual void speak();
 };
 
 class SuperMonster: public Enemy
 {
 public:
-  virtual void speak();
+    virtual void speak();
 };
 
 #endif /* ENEMIES_HPP_ */

@@ -33,5 +33,5 @@ public:
 	 Enemy * MakeSuperMonster();
 };
 
-std::auto_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory();
+std::unique_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory();
 #endif /* SILLYENEMIES_HPP_ */
