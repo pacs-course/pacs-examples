@@ -1,8 +1,32 @@
+# BEWARE
+# This file must be renamed into Makefile.inc in order to work!!
+#
+
 # This is the user defined part of the Makefile
+
+# The directory where the examples reside
 PACS_ROOT=/home/forma/workspace2/pacs/PACSCourse/Material/Examples
+# The directory with the Eigen (leave blank if they are in a standard directory)
 EIGEN_DIR=/usr/local/include/eigen3/
 
+OTHER_LIB_DIR=
+OTHER_INC_DIR=
+#
+# You need trilinos at least 10.10
+#
+TRILINOS_LIBDIR=-L/home/forma/lifev-env/trilinos-install/lib
+TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
+#
+# Some istallations add tilinos_ to the name of the libraries
+# i.e. libtrilinos_teuchos.so. In that case set TRILINOS_SUFFIX=trilinos_
+# The
+TRILINOS_SUFFIX=# To make sure there is no space!
 
+#
+# Mpi directories for library and includes
+#
+MPI_LIBDIR=
+MPI_INCDIR=-I/usr/lib/openmpi/include
 ##
 #  END USER MODIFIABLE PART
 ##
@@ -113,6 +137,6 @@ export CCFLAGS=$(CXXFLAGS)
 #
 DEPEND=make.dep
 #header files
-export LDFLAGS=$(OPTFLAGS)
+export LDFLAGS=$(OPTFLAGS) 
 export LDLIBS=$(LIBD) $(LIBRARIES)
 

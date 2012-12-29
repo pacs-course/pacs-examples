@@ -49,8 +49,8 @@ clean:
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm -f *.out *.bak *~
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
