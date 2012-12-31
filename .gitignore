@@ -35,10 +35,7 @@ CMakeLists.txt.user*
 *.vrb
 *.dvi
 *.ps
-*.pdf
-*.eps
 *.bbl
 *.blg
 *.png
-*.svg
 
