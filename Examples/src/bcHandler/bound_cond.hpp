@@ -17,23 +17,24 @@ namespace FEM {
     Dirichlet, Neumann, Robin, Generic, Other
   };
   
+  //! The type used to identify a boundary condition.
+  typedef std::string BCName;
   
-  //! This struct encapsulates the boundary conditions identifiers
+  //! This struct encapsulates the boundary conditions identifiers.
   /*!
-   *  Boundary condition identifiers are formed by a BCType entry, which select the type of
-   *  boundary conditions, and a string, which gives a name of the BC within that type.
-   *  For instance: BCId may contain Dirichlet and "Wall" which identifies the boundary condition
-   *  "Wall" of being of Dirichlet type. We will not allow two BC with the same name, even if they
-   *  are of different type
-   *  The class is a template to allow different definitions of BCName. Indeed, in many implementations
-   *  we require that BCName be just an int. The important thing is that a BCName should have an ordering
-   *  since we may use it later as a key.
+   *  Boundary condition identifiers are formed by a BCType entry,
+   *  which select the type of boundary conditions, and a string,
+   *  which gives a name of the BC within that type.  For instance:
+   *  BCId may contain Dirichlet and "Wall" which identifies the
+   *  boundary condition "Wall" of being of Dirichlet type. We will
+   *  not allow two BC with the same name, even if they are of
+   *  different type The class is a template to allow different
+   *  definitions of BCName. Indeed, in many implementations we
+   *  require that BCName be just an int. The important thing is that
+   *  a BCName should have an ordering since we may use it later as a
+   *  key.
    */
-  template <class BCName=std::string>
   struct BCId{
-    //! To be able to know which type we are using for names
-    typedef BCName name_t;
-    //! The constructor takes a BCType  and a BCName
     BCId(BCType t, BCName n):type(t),name(n){};
     //! the type
     BCType type;
@@ -41,45 +42,21 @@ namespace FEM {
     BCName name;
   };
 
-  //! Utility function which builds an ID
-  template<class BCName>
+  //! Utility function which builds an ID.
   inline BCId make_BCId(BCType typ, BCName const & n){return BCId(typ,n);}
-
-  //! Ordering relations for the IDs
-  /*!
-   * We define a the less<> functor orders the BCId in a lexicografic order
-   * with the type first. In this way we assure tha BCs with the same type
-   * are "adiacent" in a multiset container. We provide a partial specialization
-   * of std::less<T>. We also define a std::equal_to<T> in the case we want
-   * to use unordered sets. Yet we still require that both BCtype and BCName be
-   * less-than comparable since equal_to<> is implemented in function of less<>.
-   */
-  template<class BCName>
-  std::less<BCId<BCName> > {
-    bool operator()(BCId<BCName>const & a; BCId<BCName>const & b)
-    {
-      if(!std::less<BCType>(a.type,b.type) && !std::less<BCType>(b.type,a.type)) //same type!
-	return std::less<BCName>(a.name,b.name);
-      else
-	return std::less<BCType>(a.type,b.type);
-    }
-  };
-  //! Equality operator.  
-  template<class BCName>
-  std::equal_to<BCId<BCName> > {
-    bool operator()(BCId<BCName>const & a; BCId<BCName>const & b)
-    {
-      return !std::less<BCId<BCName> >(a,b) && !std::less<BCId<BCName> >(b,a);
-    }
-  };
-
   
-  //! The type of the function  which imposes the bc
+  //! The type of the function  which imposes the bc (C++11 only).
   typedef std::function<double (double const t, double const * coord)> BcFun;
   
-  //! the zero function
-  BCFun zerofun;
+  //! The zero function.
+  extern BCFun zerofun;
 
+  //! The one function.
+  extern BCFun onefun;
+  
+  //! A helper function that translates an int into a BCName.
+  BCName intToBCName(int i);
+  
   //! A class for holding BConditions
   /*!This is a concrete base class to implement boundary conditions in a
    * finite element code. A boundary condition is identified by a type,
@@ -90,83 +67,63 @@ namespace FEM {
    * the geometry entities to which the bc applies. For a Neumann and Robin
    * boundary contition it will be a list of faces/edges, for a Dirichlet boundary condition a
    * list of nodes. Since the BCBase will be stored in a set we need to make
-   * those entities writable on constant object! So they are declared mutable.
+   * those entities writable on constant objects! So they are declared mutable.
    *
    * A function is recalled by the apply() method, and it implements
    * the boundary condition the function ha as argument the time and the
-   * coordinate of a point
+   * coordinate of a point.
    */
-  class BCBase {
+  class BCBase: public BCId
+  {
   public:
     //! Constructor using string as names
     explicit  BCBase(BCType t=Dirichlet,
-		     BCName n = std::string("Homogeneous"),
-		     BcFun fun = zerofun):_entities(),_fun(fun),_id(t,n){};
-    //! Constructor if the name is an integer
-    explicit BCBase(BCType t,
-		    int n,
-		    BcFun fun = zerofun):_entities(),_fun(fun),_id(t,n){};
-    //! It returns the identifier
-    BCId get_Id() const {return _id;}
-    //! Sets the identifier
-    void set_Id(BCId const & id){_id = id;}
+		     BCName n = BCName("Homogeneous"),
+		     BcFun fun = zerofun):BCId(t,n),entities_(),fun_(fun){};
+    //! Change the identifier
+    void set_Id(BCId const & id);
     //! Changes the function
-    void set_fun(BcFun const f)const{_fun = f;}
+    void set_fun(BCFun const f)const{fun_ = f;}
     // Returns the name
-    BCName name()const {return _id.name;}
+    BCName name()const {return this->name;}
     // Returns the type
-    BCType type()const {return _id.type;}
+    BCType type()const {return this->type;}
     //! Applies boundary condition
     double apply(double const t, double const * coord) const {
-      return _fun(t,coord);
+      return fun_(t,coord);
     }
     //! It sets the entities to a new value
-    void set_entities(std::vector<int> const & e) const;
+    void set_entities(std::vector<int> const & e);
     //! It returns the vector of entity index for any use (const version)
-    std::vector<int> const & entities() const {return _entities;}
+    std::vector<int> const & entities() const {return entities_;}
     void showMe(std::ostream & stream=std::cout) const;
-    //! Predicates
-    friend class isBCTypeEqual;
-    friend class isBCNameEqual;
-    //! Ordering relation for storing in a set/map
-    friend bool operator <(BCBase const &,BCBase const &);
-    friend bool operator ==(BCBase const &, BCBase const &);
   protected:
-    //! The entities
-    //! They must be mutable since they can be changed
-    //! after the container has been set
-    mutable std::vector<int> _entities;
-    mutable BcFun _fun;
-    BCId _id;
+    std::vector<int> entities_;
+    BcFun fun_;
   };
-  //! Ordering relations for the boundary conditions
-  inline bool operator < (BCBase const & l, BCBase const & r){
-    return l._id<r._id;}
-  inline bool operator == (BCBase const & l, BCBase const & r)
-  {return l._id==r._id;}
   
-  //! Useful predicates
+  //! A predicate to test if a bc has a given type.
+  /* 
+     To extract from a container all the bc of a certain type.
+  */
   class isBCTypeEqual{
   public:
-    isBCTypeEqual(BCType t):_type(t){};
-    bool operator() (const BCBase & b){return b._id.type==_type;}
+    explicit isBCTypeEqual(BCType t):type_(t){};
+    bool operator() (const BCBase & b){return b.type()==type_;}
   private:
-    BCType _type;
+    BCType type_;
   };
   
+  //! A predicate to test if a bc has a given name.
+  /* 
+     Useful to extract from a container all the bc with a given name.
+  */
   class isBCNameEqual{
   public:
-    isBCNameEqual(BCName n):_name(n){};
-    bool operator() (const BCBase & b){return b._id.name==_name;}
+    explicit isBCNameEqual(BCName n):name_(n){};
+    bool operator() (const BCBase & b){return b.name()==name_;}
   private:
-    BCName _name;
+    BCName name_;
   };
-  //! Useful comparison operator
-  /*!
-   * It defines a strict weak ordering of BCBase according
-   * to the stored type
-   */
-  bool compareOnType(BCBase const &, BCBase const &);
-  
 }
 #endif /* BOUND_COND_HPP_ */
