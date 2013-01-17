@@ -1,3 +1,0 @@
-myRules.o: myRules.cpp Quadrature/rulesProxy.hpp \
- Quadrature/rulesFactory.hpp Quadrature/numerical_rule.hpp myRules.hpp \
- Quadrature/numerical_rule.hpp
