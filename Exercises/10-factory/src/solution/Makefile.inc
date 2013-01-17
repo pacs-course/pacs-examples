@@ -5,7 +5,7 @@
 # This is the user defined part of the Makefile
 
 # The directory where the examples reside
-PACS_ROOT=/u/dati1/numer/fumagalli/Didattica/A.A.2012-2013/pacs/PACSCourse/Material/Exercises/10-factory/src/exercice
+PACS_ROOT=/u/dati1/numer/fumagalli/Didattica/A.A.2012-2013/pacs/PACSCourse/Material/Exercises/10-factory/src/solution
 
 # The directory with the Eigen (leave blank if they are in a standard directory)
 EIGEN_DIR=/usr/local/include/eigen3/
