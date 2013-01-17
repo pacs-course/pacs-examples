@@ -2,7 +2,6 @@
 #define GENERICPROXY_HPP_
 #include <string>
 #include <memory>
-#include <type_traits>
 
 namespace GenericFactory {
   /*! A simple proxy for registering into a factory.
@@ -41,13 +40,6 @@ namespace GenericFactory {
 
   template<typename F, typename C>
   Proxy<F,C>::Proxy(Identifier_type const & name) {
-
-    static_assert(std::is_base_of<AbstractProduct_type,C>::value,
-        "AbstractProduct must be base of ConcreteProduct");
-
-    static_assert(std::is_convertible<decltype(Build),Builder_type>::value,
-        "Builder defined in Facrory not compatible");
-
     // get the factory. First time creates it.
     Factory_type & factory(Factory_type::Instance());
     // Insert the builder. The & is not needed.
