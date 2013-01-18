@@ -1,6 +1,6 @@
 ############################################################
 #
-# An example of Makefile for the course on 
+# An example of Makefile for the course on
 # Advanced Programming for Scientific Computing
 # It should be modified for adapting it to the various examples
 #
@@ -20,13 +20,18 @@ LIBNAME=myrules
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
+# Library with function rules proxy
+LIBNAME1=udf
+DYNAMIC_LIBFILE1=lib$(LIBNAME1).so
+STATIC_LIBFILE1=lib$(LIBNAME1).a
+
 # Library with composite integration stuff
-LIBNAME2=
-DYNAMIC_LIBFILE2=
-STATIC_LIBFILE2=
+LIBNAME2=myFunctor
+DYNAMIC_LIBFILE2=lib$(LIBNAME2).so
+STATIC_LIBFILE2=lib$(LIBNAME2).a
 
 # Library with integrands
-LIBNAME3=udf
+LIBNAME3=myFunctions
 DYNAMIC_LIBFILE3=lib$(LIBNAME3).so
 STATIC_LIBFILE3=lib$(LIBNAME3).a
 
@@ -39,12 +44,14 @@ LIBTYPE=DYNAMIC
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
  export LIBRARY=$(DYNAMIC_LIBFILE)
+ export LIBRARY1=$(DYNAMIC_LIBFILE1)
  export LIBRARY2=$(DYNAMIC_LIBFILE2)
  export LIBRARY3=$(DYNAMIC_LIBFILE3)
- LDFLAGS+=-dynamic 
+ LDFLAGS+=-dynamic
 else
  EXTRA_CXXFLAGS=
  export LIBRARY=$(STATIC_LIBFILE)
+ export LIBRARY1=$(STATIC_LIBFILE1)
  export LIBRARY2=$(STATIC_LIBFILE2)
  export LIBRARY3=$(STATIC_LIBFILE3)
  LDFLAGS+=-static
@@ -79,14 +86,15 @@ OBJS = $(SRCS:.cpp=.o)
 LIB_SRCS:=myRules.cpp
 LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
 LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp)
-LIB2_SRCS:=
+LIB1_SRCS:=udf.cpp
+LIB1_OBJS:=$(LIB1_SRCS:.cpp=.o)
+LIB1_HEADERS:=$(LIB1_SRCS:.cpp=.hpp)
+LIB2_SRCS:=myFunctor.cpp
 LIB2_OBJS:=$(LIB2_SRCS:.cpp=.o)
 LIB2_HEADERS:=$(LIB2_SRCS:.cpp=.hpp)
-LIB3_SRCS:=udf.cpp
+LIB3_SRCS:=myFunctions.cpp
 LIB3_OBJS:=$(LIB3_SRCS:.cpp=.o)
 LIB3_HEADERS:=$(LIB3_SRCS:.cpp=.hpp)
-OTHER_OBJS:=udfHandler.o
-OTHER_SRCS:=udfHandler.cpp
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -118,8 +126,8 @@ depend: $(DEPEND)
 
 static:
 	-rm -f *.o
-	$(MAKE) library LIBTYPE=STATIC 
-#	$(MAKE) exec LIBTYPE=STATIC 
+	$(MAKE) library LIBTYPE=STATIC
+#	$(MAKE) exec LIBTYPE=STATIC
 dynamic:
 	-rm -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
@@ -127,7 +135,7 @@ dynamic:
 
 exec: $(EXEC)
 
-library:  $(LIBRARY) $(LIBRARY2) $(LIBRARY3)
+library:  $(LIBRARY) $(LIBRARY1) $(LIBRARY2) $(LIBRARY3)
 
 #install:
 #	cp $(LIB_HEADERS) $(LIB2_HEADERS) $(PACS_INC_DIR)
@@ -155,6 +163,9 @@ $(OTHER_OBJS): $(OTHER_SRCS)
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 #	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
+$(STATIC_LIBFILE1): $(STATIC_LIBFILE1)($(LIB1_OBJS))
+#	ar -r $(STATIC_LIBFILE1) $(LIB1_OBJS)
+
 $(STATIC_LIBFILE2): $(STATIC_LIBFILE2)($(LIB2_OBJS))
 #	ar -r $(STATIC_LIBFILE2) $(LIB2_OBJS)
 
@@ -164,11 +175,14 @@ $(STATIC_LIBFILE3): $(STATIC_LIBFILE3)($(LIB3_OBJS))
 $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LIBLIB) -o $(DYNAMIC_LIBFILE)
 
+$(DYNAMIC_LIBFILE1): $(LIB1_OBJS)
+	$(CXX) -shared $(OPTFLAGS)  $(LIB1_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE1)
+
 $(DYNAMIC_LIBFILE2): $(LIB2_OBJS)
 	$(CXX) -shared $(OPTFLAGS)  $(LIB2_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE2)
 
 $(DYNAMIC_LIBFILE3): $(LIB3_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIB3_OBJS) -o $(DYNAMIC_LIBFILE3)
+	$(CXX) -shared $(OPTFLAGS) -Wl,-rpath=. $(LIB3_OBJS) -o $(DYNAMIC_LIBFILE3) -L. -l$(LIBNAME1)
 
 $(DEPEND): $(SRCS) $(HEADERS)
 	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
