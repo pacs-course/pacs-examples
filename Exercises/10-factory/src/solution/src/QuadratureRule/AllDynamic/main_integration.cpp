@@ -95,6 +95,9 @@ int main(int argc, char** argv){
 
   // Close rule library
   dlclose(dylib);
+
+  for ( auto & i :dyFunlib ) dlclose( i );
+
 }
 
 void printHelp()
