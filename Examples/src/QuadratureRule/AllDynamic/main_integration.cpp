@@ -66,7 +66,7 @@ int main(int argc, char** argv){
   QuadratureRuleHandler theRule=rulesFactory.create(rule);
   bool notThere = (theRule==nullptr);
   if (notThere || rule=="?"){
-    if (notThere){
+    if (rule!="?"){
       cout <<"Rule "<< rule<< "does not exist"<<endl;
     }
     auto lista=rulesFactory.registered();
