@@ -60,10 +60,10 @@ namespace GenericFactory{
     typedef std::map<Identifier,Builder_type> Container_type;
     //! Made private since it is a Singleton
     Factory()=default;
-    //! Made private since it is a Singleton
-    Factory(Factory &&)=default;
-    //! Made private since it is a Singleton
-    Factory & operator =(Factory &&)=default;
+    //! Deleted since it is a Singleton
+    Factory(Factory const &)=delete;
+    //! Deleted since it is a Singleton
+    Factory & operator =(Factory const &)=delete;
     //! It contains the actual object factory.
     Container_type _storage;
   };
