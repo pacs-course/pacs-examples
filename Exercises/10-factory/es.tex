@@ -22,9 +22,16 @@ funzionalit\`a.
     \item Non utilizzare pi\`u la classe \texttt{udfHandler}, al suo posto
     verr\`a utilizzata la factory.
 
+    \item Utilizzare il function wrapper della standard library per uniformare
+    il tipo che dovr\`a essere contenuto nelle factory.
+
     \item Creare un nuova nuova classe proxy che servir\`a per la registrazione
     delle funzioni. Capire perch\'e \`e utile scorporare il metodo builder dal proxy
     vero e proprio.
+
+    \item Non \`e quindi pi\`u utile inserire le funzioni all'interno degli
+    \texttt{extern "C"}. Creare quindi un file per la registrazione delle
+    funzioni utilizzando il proxy introdotto.
 
     \item Creare un funtore e associargli la registrazione.
 
@@ -32,7 +39,7 @@ funzionalit\`a.
 
 Un'aggiunta per rendere pi\`u robusta la gestione delle regole di quadratura \`e
 determinare staticamente se il parametro \texttt{AbstractProduct\_type},
-definito nella factory \`e genitore di \texttt{ConcreteProduct}. Inoltre il
+definito nella factory, \`e genitore di \texttt{ConcreteProduct}. Inoltre il
 metodo statico \texttt{Build} deve essere poter convertito nel tipo
 corrispettivo definito nella factory. Utilizzare i \texttt{traits} definiti
 nella standard libray e lo \texttt{static\_assert}.
