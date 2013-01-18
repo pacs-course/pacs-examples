@@ -1,3 +1,38 @@
-\section*{Es. factory}
+\section*{Esercizio}
 
-Considerare il programma contenuto dell'archivio \texttt{factory.zip}, in cui viene implementata l'integrazione monodimensionale sfruttando le factory. In particolare le regole di quadratura sono gestite mediante factory, lasciando quindi all'utente la scelta della regola attraverso il file di data. Le funzioni da integrare sono contenute nel file \texttt{Quadrature/udf.cpp}, e vengono utilizzate in maniera statica. Si vuole creare una factory che possa gestire in maniera dinamica la selezione della funzione da integrare.
+Si vuole integrare nella programma \texttt{AllDynamic} la possibilit\`a di
+gestire anche le integrande attraverso le factory. In particolare si vuole
+collezionare una serie di librerie dinamiche contenenti le integrande, anche
+definite tramite funtori. Il caricamento delle librerie, il cui numero \`e a
+priori incognito, deve rimanere dinamico e la scelta dell'integranda deve poter
+essere fatta ancora tramite il file di dati gestito da GetPot.
+Ogni libreria che contiene le funzioni deve essere indipendente dalle altre e
+deve poter autonomamente registrare nella factory i propri dati. In questo modo
+all'aggiunta di una nuova libreria non bisogner\`a fare altro che inserire il
+nome della nuovo libreria nel file di dati, i suoi oggetti verrano ad essere
+automaticamente gestiti della factory.
+
+Non si vuole modificare la classe \texttt{Factory} in alcun modo.
+I punti per ottenere quanto richiesto sono i seguenti, facendo attenzione di
+modificare opportunamente in \texttt{Makefile} per poter gestire le nuove
+funzionalit\`a.
+
+\begin{enumerate}
+
+    \item Non utilizzare pi\`u la classe \texttt{udfHandler}, al suo posto
+    verr\`a utilizzata la factory.
+
+    \item Creare un nuova nuova classe proxy che servir\`a per la registrazione
+    delle funzioni. Capire perch\'e \`e utile scorporare il metodo builder dal proxy
+    vero e proprio.
+
+    \item Creare un funtore e associargli la registrazione.
+
+\end{enumerate}
+
+Un'aggiunta per rendere pi\`u robusta la gestione delle regole di quadratura \`e
+determinare staticamente se il parametro \texttt{AbstractProduct\_type},
+definito nella factory \`e genitore di \texttt{ConcreteProduct}. Inoltre il
+metodo statico \texttt{Build} deve essere poter convertito nel tipo
+corrispettivo definito nella factory. Utilizzare i \texttt{traits} definiti
+nella standard libray e lo \texttt{static\_assert}.
