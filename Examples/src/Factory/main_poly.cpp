@@ -38,6 +38,7 @@ int main()
     }else{
       cout<<"ERROR: this polygon is not registered!"<<endl;
     }
+    // WHO IS DELETING THE POLY OBJECT???
   }
   
   // Now with the builder class I use unique_pointers to ensure proper
@@ -57,7 +58,7 @@ int main()
     if(answer=="END")break;
     auto where=factory2.find(answer);
     if(where != factory2.end()){
-      Polygon * thePoly=where->second->create();
+      auto thePoly=where->second->create();
       thePoly->showMe(cout);
     }else{
       cout<<"ERROR: this polygon is not registered!"<<endl;
