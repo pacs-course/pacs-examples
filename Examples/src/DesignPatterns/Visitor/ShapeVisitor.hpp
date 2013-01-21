@@ -17,9 +17,9 @@ class Square;
 
 class ShapeVisitor{
 public:
-	virtual void visit(Triangle&);
-	virtual void visit(Square&);
-	virtual void visit(Point&);
+	virtual void visit(Triangle&)=0;
+	virtual void visit(Square&)=0;
+	virtual void visit(Point&)=0;
 	virtual ~ShapeVisitor(){};
 };
 

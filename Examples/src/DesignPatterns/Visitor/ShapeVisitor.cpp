@@ -45,24 +45,12 @@ void Geometry::CountShapes::visit(Triangle & s)
 
 
 
-void Geometry::ShapeVisitor::visit(Point & s)
-{
-}
 
 
 
 Geometry::ComputeArea::ComputeArea() : totalArea(0)
 {}
 
-
-
-void Geometry::ShapeVisitor::visit(Triangle & s)
-{}
-
-
-
-void Geometry::ShapeVisitor::visit(Square & s)
-{}
 
 
 
