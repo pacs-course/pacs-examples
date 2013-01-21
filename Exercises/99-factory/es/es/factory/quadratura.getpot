@@ -1,3 +1,0 @@
-integrand=myfun
-udflib=./libudf.so
-rule=Simpson
