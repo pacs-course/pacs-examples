@@ -1,45 +1,41 @@
-\section*{Esercizio}
 
-Si vuole integrare nella programma \texttt{AllDynamic} la possibilit\`a di
-gestire anche le integrande attraverso le factory. In particolare si vuole
-collezionare una serie di librerie dinamiche contenenti le integrande, anche
-definite tramite funtori. Il caricamento delle librerie, il cui numero \`e a
-priori incognito, deve rimanere dinamico e la scelta dell'integranda deve poter
-essere fatta ancora tramite il file di dati gestito da GetPot.
-Ogni libreria che contiene le funzioni deve essere indipendente dalle altre e
-deve poter autonomamente registrare nella factory i propri dati. In questo modo
-all'aggiunta di una nuova libreria non bisogner\`a fare altro che inserire il
-nome della nuovo libreria nel file di dati, i suoi oggetti verrano ad essere
-automaticamente gestiti della factory.
+We would like to intragrate in the program \texttt{AllDynamic} the possibility
+to handle also the integrands with a factory. In particular we would like to
+collect some dynamic libraries with different integrands, using both classes
+functor and free functions. The number of the libraries is unknown and their
+loading still have to be dynamic. The chosen of the integrand is done in the
+data file, handled by GetPot, using the key associated in the registration
+process.  Each library has to be independent from the others one and has to
+resister autonomously their products. In this way the adding of a new library is
+just a modification in the data file, the main program has not to be recompiled.
 
-Non si vuole modificare la classe \texttt{Factory} in alcun modo.
-I punti per ottenere quanto richiesto sono i seguenti, facendo attenzione di
-modificare opportunamente in \texttt{Makefile} per poter gestire le nuove
-funzionalit\`a.
+Modifications on the class \cpp{class Factory} are not allowed.
+In the sequel there are present some useful points that might be followed.
+Beware that each modification of the code might also affect the \texttt{Makefile}.
 
 \begin{enumerate}
 
-    \item Non utilizzare pi\`u la classe \texttt{udfHandler}, al suo posto
-    verr\`a utilizzata la factory.
+    \item Do not use the class \cpp{class udfHandler}, using the new factory
+    instead.
 
-    \item Utilizzare il function wrapper della standard library per uniformare
-    il tipo che dovr\`a essere contenuto nelle factory.
+    \item Using the function wrapper \cpp{std::function}, of the standard
+    library, to uniformly register the integrands into the factory.
 
-    \item Creare un nuova nuova classe proxy che servir\`a per la registrazione
-    delle funzioni. Capire perch\'e \`e utile scorporare il metodo builder dal proxy
-    vero e proprio.
+    \item Create a new proxy class for the registration of the integrands.
+    Discuss why it is useful to split the builder function from the class proxy.
 
-    \item Non \`e quindi pi\`u utile inserire le funzioni all'interno degli
-    \texttt{extern "C"}. Creare quindi un file per la registrazione delle
-    funzioni utilizzando il proxy introdotto.
+    \item Remove the \cpp{extern "C"} from the header files containing the free
+    functions. Create a new file, or use the corresponding source file,
+    for the registration using the proxy previously introduced.
 
-    \item Creare un funtore e associargli la registrazione.
+    \item Introduce also a class functor, in a separate library, and use it.
 
 \end{enumerate}
 
-Un'aggiunta per rendere pi\`u robusta la gestione delle regole di quadratura \`e
-determinare staticamente se il parametro \texttt{AbstractProduct\_type},
-definito nella factory, \`e genitore di \texttt{ConcreteProduct}. Inoltre il
-metodo statico \texttt{Build} deve essere poter convertito nel tipo
-corrispettivo definito nella factory. Utilizzare i \texttt{traits} definiti
-nella standard libray e lo \texttt{static\_assert}.
+To increase the robustness of using the quadrature rules with the factory,
+statically check if the template parameter \cpp{ConcreteProduct} inherits
+from \cpp{AbstractProduct_type}, defined into the factory. Furthermore the
+static member \cpp{Build} has to be converted in the corresponding type defined
+into the factory. Use the \cpp{std::traits} and the \cpp{static_assert} for this
+purpose. Statically checked means that these features have to be checked at
+compile time.
