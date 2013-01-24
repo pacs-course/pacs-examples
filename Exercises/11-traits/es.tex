@@ -4,16 +4,16 @@ Write a different program for each of the following point.
     \item Statically check if a template parameter of a class is \cpp{int} or
     \cpp{double}; rise an error otherwise.
 
-    \item Declare a function that print a template variable. Statically check
+    \item Declare a function template that prints a the variable passed as argument. Statically check
     if the latter is not a raw pointer.
 
-    \item Declare \cpp{unsigned int i}, then declear a \cpp{float} or an \cpp{int}
-    if \cpp{i} is signed or unsigned without explicity know the type of \cpp{i}.
-    Check the result.
+    \item Declare \cpp{unsigned int i}, then declare a \cpp{float} or an \cpp{int}
+    if \cpp{i} is signed or unsigned, respectively, without knowing the type of \cpp{i}.
+    Explicitly. Check the result.
 
 \end{itemize}
 
-Write a program that perform a dot product using the template metaprogramming
+Write a program that perform a dot product of two arrays using the template metaprogramming
 technique. Using the following hints:
 
 \begin{enumerate}
@@ -21,14 +21,16 @@ technique. Using the following hints:
     \item Use the container \cpp{std::array} to store the two vectors.
 
     \item Declare a class templetized on the index, using a
-    \cpp{std::size_t}, of the array.
+    \cpp{std::size_t} (you need to include \cpp{<cstdef>}) to declare the template parameter (\cpp{size_t}
+    is the type used to address arrays, in this way you avoid errors).
 
     \item In the class introduce a static method, called \cpp{apply}, which
-    perform one operation of the dot product and call again \cpp{apply} with the
+    perform one operation of the dot product and calls again \cpp{apply} with the
     index decreased by one. Beware, this method should be \cpp{inline}.
 
     \item Specialize the method \cpp{apply} for the case of zero index.
 
-    \item Overload the \cpp{operator *} and use it.
+    \item Overload a \cpp{operator *} that implements the dot product using the class just defined.
+    It is better if it returns a \cpp{constexpr}.
 
 \end{enumerate}
