@@ -63,7 +63,7 @@ ifeq ($(DEBUG),no)
 else
   OPTFLAGS=-g -O0
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
-  LDFLAGS+=-Wl,-rpath=.
+  LDFLAGS+=-Wl,-rpath=. -Wl,-E
 endif
 
 LIBLIB=-L$(PACS_LIB_DIR) -lquadrules
