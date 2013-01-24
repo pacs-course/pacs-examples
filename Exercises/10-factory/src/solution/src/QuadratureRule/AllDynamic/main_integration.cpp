@@ -10,7 +10,7 @@
 void printHelp();
 
 template <typename FactoryType>
-void checkObject( bool, const std::string& , const FactoryType&, const std::string& );
+int checkObject( const std::string& , const FactoryType&, const std::string& );
 
 
 int main(int argc, char** argv){
@@ -43,8 +43,15 @@ int main(int argc, char** argv){
   }
 
   // Now get the library with the functions to be integrated
-  int libNumber = cl.vector_variable_size("udflib");
-  vector<string> userdeflibs{"./libmyFunctions.so","./libmyFunctor.so"};
+  const int libNumber = cl.vector_variable_size("udflib");
+  cout << "Number of libraries " << libNumber << endl;
+
+  vector<string> userdeflibs(libNumber);
+
+  for ( unsigned int i = 0; i < libNumber; ++i )
+  {
+    userdeflibs[i] = cl("udflib", "./libmyFunctions.so", i );
+  }
 
   vector<void *> dyFunlib(libNumber);
 
@@ -68,7 +75,12 @@ int main(int argc, char** argv){
   // Extract the function. I usa an auto_ptr to be sure to eventually delete the object
   std::unique_ptr<FunPoint> f = functionFactory.create( fun_name );
 
-  for ( auto i : userdeflibs )  checkObject( f == nullptr, fun_name, functionFactory, i );
+  if ( f == nullptr )
+  {
+    int checked(1);
+    for ( auto i : userdeflibs )  checked *= checkObject( fun_name, functionFactory, i );
+    exit( checked / libNumber );
+  }
 
   // Load all other info
   double a=cl("a", 0.);
@@ -80,7 +92,11 @@ int main(int argc, char** argv){
   // Extract the rule. I usa an auto_ptr to be sure to eventually delete the object
   QuadratureRuleHandler theRule=rulesFactory.create(rule);
 
-  checkObject( theRule == nullptr, rule, rulesFactory, quadlib );
+  if ( theRule == nullptr )
+  {
+    const int checked =  checkObject( rule, rulesFactory, quadlib );
+    exit(checked);
+  }
 
   //  get the rule
   cout<<"Integral between "<<a<<" and "<<b <<" with "<< nint <<" intervals"<<endl;
@@ -120,27 +136,26 @@ void printHelp()
 }
 
 template <typename FactoryType>
-void checkObject( bool notThere, const std::string& objname,
-                  const FactoryType& factory, const std::string& libname)
+int checkObject( const std::string& objname,
+                 const FactoryType& factory, const std::string& libname)
 {
     using std::cout;
     using std::endl;
 
-    if (notThere || objname=="?")
+    if ( objname=="?" )
     {
-        if (notThere)
-        {
-            cout <<"Object "<< objname<< "does not exist"<<endl;
-        }
         auto lista = factory.registered();
         cout<<" The following objects are registered in " << libname << endl;
         for ( const auto & i : lista )
         {
             cout << i << endl;
         }
-        if (notThere) std::exit(2);
-        else std::exit(0); // exit without error status
-  }
+        return 0; // exit without error status
+    }
+    else
+    {
+        return 2;
+    }
 
 }
 
