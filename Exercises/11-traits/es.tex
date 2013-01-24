@@ -13,3 +13,22 @@ Write a different program for each of the following point.
 
 \end{itemize}
 
+Write a program that perform a dot product using the template metaprogramming
+technique. Using the following hints:
+
+\begin{enumerate}
+
+    \item Use the container \cpp{std::array} to store the two vectors.
+
+    \item Declare a class templetized on the index, using a
+    \cpp{std::size_t}, of the array.
+
+    \item In the class introduce a static method, called \cpp{apply}, which
+    perform one operation of the dot product and call again \cpp{apply} with the
+    index decreased by one. Beware, this method should be \cpp{inline}.
+
+    \item Specialize the method \cpp{apply} for the case of zero index.
+
+    \item Overload the \cpp{operator *} and use it.
+
+\end{enumerate}
