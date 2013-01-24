@@ -1,6 +1,6 @@
 ############################################################
 #
-# An example of Makefile for the course on 
+# An example of Makefile for the course on
 # Advanced Programming for Scientific Computing
 # It should be modified for adapting it to the various examples
 #
@@ -41,7 +41,7 @@ ifeq ($(LIBTYPE),DYNAMIC)
  export LIBRARY=$(DYNAMIC_LIBFILE)
  export LIBRARY2=$(DYNAMIC_LIBFILE2)
  export LIBRARY3=$(DYNAMIC_LIBFILE3)
- LDFLAGS+=-dynamic 
+ LDFLAGS+=-dynamic
 else
  EXTRA_CXXFLAGS=
  export LIBRARY=$(STATIC_LIBFILE)
@@ -56,7 +56,7 @@ ifeq ($(DEBUG),no)
 else
   OPTFLAGS=-g -O0
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
-  LDFLAGS+=-Wl,-rpath=.
+  LDFLAGS+=-Wl,-rpath=. -Wl,-E
 endif
 
 LIBLIB=-L$(PACS_LIB_DIR) -lquadrules
@@ -118,8 +118,8 @@ depend: $(DEPEND)
 
 static:
 	-rm -f *.o
-	$(MAKE) library LIBTYPE=STATIC 
-#	$(MAKE) exec LIBTYPE=STATIC 
+	$(MAKE) library LIBTYPE=STATIC
+#	$(MAKE) exec LIBTYPE=STATIC
 dynamic:
 	-rm -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
