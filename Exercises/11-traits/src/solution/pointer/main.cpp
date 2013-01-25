@@ -1,6 +1,5 @@
 #include <type_traits>
 #include <iostream>
-#include <memory>
 
 template <typename T >
 void printValue ( const T& t )
