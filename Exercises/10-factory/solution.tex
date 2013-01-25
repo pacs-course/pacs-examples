@@ -1,0 +1,28 @@
+The \cpp{class Proxy}, contained in \texttt{generic\_factory/Proxy.hpp},
+is written when the factory handles different types.
+But this case all the types are equal to \cpp{std::function<double (double const
+&)>}, since we are using the function wrapper to handle free functions, lambda
+functions and functor classes. The new proxy is contained in the file
+\texttt{generic\_factory/ProxyFunction.hpp} and reported below.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/generic_factory/ProxyFunction.hpp}
+\lstset{basicstyle=\sf}
+We have discorporated the \cpp{static} method \cpp{Build} from the proxy in a
+new class. In fact the proxy used for the quadrature rules can link the type,
+via the template parameter \cpp{ConcreteProduct}. The new builder stores the
+function so, when the \cpp{operator ()} is called, it can return the function.
+For simplicity we have assumed that this proxy works only for the \cpp{class
+Factory}. The specialization of the factory for this case is in the file
+\texttt{AllDynamic/functionProxy.hpp}, reported below.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/functionProxy.hpp}
+\lstset{basicstyle=\sf}
+The third parameter template is now used indicating the new builder.
+The registration of the functions stored in \texttt{udf.*pp} are
+in the file \texttt{AllDynamic/myRules.cpp}, reported below.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/myFunctions.cpp}
+\lstset{basicstyle=\sf}
+We have registered, in an anonymous \cpp{namespace}, the four functions using
+the interface of the new proxy. We directly pass the wrapped objects and not
+each the free function itself.

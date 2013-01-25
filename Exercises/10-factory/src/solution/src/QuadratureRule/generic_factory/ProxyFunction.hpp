@@ -33,10 +33,7 @@ namespace FunctionsFactory
     It provides the builder as static method
     and the automatic registration mechanism.
 
-    \param Factory The type of the factory.
-    \param ConcreteProduct is the derived (concrete) type to be
-    registered in the factory
-  */
+    */
   class ProxyFunction
   {
   public:
