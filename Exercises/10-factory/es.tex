@@ -40,6 +40,7 @@ into the factory. Use the \cpp{std::traits} and the \cpp{static_assert} for this
 purpose. Statically checked means that these features have to be checked at
 compile time.
 
+\paragraph*{How to use the program}
 The structure of the folder \texttt{exercice} is the following.
 \begin{verbatim}
 .
@@ -51,3 +52,16 @@ The structure of the folder \texttt{exercice} is the following.
     `-- Utilities
         `-- include
 \end{verbatim}
+To use the programm edit the \texttt{Makefile.inc} in the folder
+\texttt{exercice} specifying the absolute path of the folder \texttt{exercice}
+in the variable \texttt{PACS\_ROOT}. Moreover beware the location of your
+compiler, specify it in the variable \texttt{CXX}. Create two empty folder
+called \texttt{include} and \texttt{lib} at the same level of \texttt{src}. Go
+in the directory \texttt{src/Utilities} and type \texttt{make install}. Now go
+in the directory \texttt{src/QuadratureRule/baseVersion} and type \texttt{make
+dynamic; make install}. In the directory
+\texttt{src/QuadratureRule/generic\_factory} type \texttt{make install}. Go in
+the directory \texttt{src/QuadratureRule/AllDynamic} and type \texttt{make
+dynamic; make exec}. Before running the program set the
+\texttt{LD\_LIBRARY\_PATH}. You can use the command \texttt{make} to suggest the
+correct path for the command.
