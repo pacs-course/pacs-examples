@@ -25,7 +25,9 @@ struct metaDot
 };
 
 //! Specialization for the first element.
-template<> struct metaDot<1>{
+template<>
+struct metaDot<1>
+{
   template<std::size_t N,typename T>
   static T apply(std::array<T,N>const & a,std::array<T,N> const & b)
   {
