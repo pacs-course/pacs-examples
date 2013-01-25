@@ -4,29 +4,31 @@
 %    \lstinputlisting{./src/ex1/main.cpp}
 %    \lstset{basicstyle=\sf}
 
-The programs which use the traits are reported below
-
 \begin{enumerate}
 
-    \item An implementation is the following:
-    \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/solution/isSame/main.cpp}
-    \lstset{basicstyle=\sf}
-    First of all we need to include the \cpp{<type_traits>} to have the access to
-    the methods to handle the types. This functionality is introdued from the C++11.
-    We can access to different traits and, in particular for our case, to the class
-    \cpp{std::is_same}. The latter takes in input two template parameters needed for
-    the comparison, we can access to its member \cpp{value} to determine if they
-    are equal or not.  This operation is done statically. After the evaluation of
-    both the \cpp{std::is_same} we have two boolean linked with the \cpp{||}
-    operator.  Also in this case the operation is done statically, since the
-    values
-    are known.  Finally we can use the \cpp{static_assert} to rise a compilation
-    error if the condition, specified in the first argument, is \cpp{false}.
-    The \cpp{static_assert} is checked only during the compilation and not at
-    run time. \\
-    Compiling the program we obtain
-    \begin{verbatim}
+    \item The programs which use the traits are reported below
+
+    \begin{enumerate}
+
+        \item An implementation is the following:
+        \lstset{basicstyle=\scriptsize\sf}
+        \lstinputlisting{./src/solution/isSame/main.cpp}
+        \lstset{basicstyle=\sf}
+        First of all we need to include the \cpp{<type_traits>} to have the access to
+        the methods to handle the types. This functionality is introdued from the C++11.
+        We can access to different traits and, in particular for our case, to the class
+        \cpp{std::is_same}. The latter takes in input two template parameters needed for
+        the comparison, we can access to its member \cpp{value} to determine if they
+        are equal or not.  This operation is done statically. After the evaluation of
+        both the \cpp{std::is_same} we have two boolean linked with the \cpp{||}
+        operator.  Also in this case the operation is done statically, since the
+        values
+        are known.  Finally we can use the \cpp{static_assert} to rise a compilation
+        error if the condition, specified in the first argument, is \cpp{false}.
+        The \cpp{static_assert} is checked only during the compilation and not at
+        run time. \\
+        Compiling the program we obtain
+        \begin{verbatim}
 main.cpp:7:7: error: static_assert failed "Bad value"
     { static_assert( std::is_same<T,int>::value ||
 std::is_same<T,double>::value, "Bad value" ); }
@@ -36,59 +38,61 @@ here
     B<char> a;
             ^
 1 error generated.
-    \end{verbatim}
-    The template parameter \cpp{char} is not allowed by the class.
+        \end{verbatim}
+        The template parameter \cpp{char} is not allowed by the class.
 
-    \item An implementation is the following:
-    \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/solution/pointer/main.cpp}
-    \lstset{basicstyle=\sf}
-    Since the input parameter of \cpp{printValue} is a-priori unknown we have to
-    check if it is a raw pointer or not. We use the class \cpp{std::is_pointer}
-    to check if the type, specified as the first template parameter, is a
-    pointer or not.
-    Beware, this class does not work as you expect with \cpp{std::shared_ptr}
-    but it works only with raw pointers.
+        \item An implementation is the following:
+        \lstset{basicstyle=\scriptsize\sf}
+        \lstinputlisting{./src/solution/pointer/main.cpp}
+        \lstset{basicstyle=\sf}
+        Since the input parameter of \cpp{printValue} is a-priori unknown we have to
+        check if it is a raw pointer or not. We use the class \cpp{std::is_pointer}
+        to check if the type, specified as the first template parameter, is a
+        pointer or not.
+        Beware, this class does not work as you expect with \cpp{std::shared_ptr}
+        but it works only with raw pointers.
 
-    \item An implementation is the following:
+        \item An implementation is the following:
+        \lstset{basicstyle=\scriptsize\sf}
+        \lstinputlisting{./src/solution/conditional/main.cpp}
+        \lstset{basicstyle=\sf}
+        We need a method that can do a conditional chose depending on a boolean.
+        In particular the return value have to be a type. The most easy way is to
+        use \cpp{std::conditional}, which takes three template paramters: the
+        boolean as first then the two possible types. In our case if \cpp{check}
+        is \cpp{true} then \cpp{new_type} is a \cpp{float} otherwise is a \cpp{int}.
+        To deduce the type of the variable \cpp{i} we use the function
+        \cpp{decltype} then, using the trait \cpp{std::is_signed}, we can understand
+        if \cpp{i} is a signed or unsigned type.
+
+    \end{enumerate}
+
+    \item To construct the dot product using the template metaprogramming the key
+    ingredients are templates and \cpp{static} and \cpp{inline} functions. In this way the
+    compiler can perform a lot of optimization. First of all we need a class,
+    templetized on the index of the array, that perform the operations.
+    Its implementation is reported below.
     \lstset{basicstyle=\scriptsize\sf}
-    \lstinputlisting{./src/solution/conditional/main.cpp}
+    \lstinputlisting{./src/solution/MetaDot/metadot.hpp}
     \lstset{basicstyle=\sf}
-    We need a method that can do a conditional chose depending on a boolean.
-    In particular the return value have to be a type. The most easy way is to
-    use \cpp{std::conditional}, which takes three template paramters: the
-    boolean as first then the two possible types. In our case if \cpp{check}
-    is \cpp{true} then \cpp{new_type} is a \cpp{float} otherwise is a \cpp{int}.
-    To deduce the type of the variable \cpp{i} we use the function
-    \cpp{decltype} then, using the trait \cpp{std::is_signed}, we can understand
-    if \cpp{i} is a signed or unsigned type.
+    As the comment says the class is templetized on the \cpp{std::size_t}, since it
+    returns the correct type used to dimension array. This type it can be
+    implementation dependent (32 or 64 bits) it is better to use it instead of just
+    unsigned int. The class \cpp{metaDot} contains the static method \cpp{apply}
+    which is templetize on the same template variable of the \cpp{std::array}.
+    Notice that we statically check that the two arrays have the same dimension. The
+    method simply perform a single operation of the dot product and then call again
+    \cpp{apply} with the index decreased by one. This strategy lead us to perform
+    the dot product recursively. The method is static, so we do not need an object
+    of type \cpp{metaDot} for each of the index.  Moreover the implementation is
+    done inside the class so the inlining is automatic.  Finally we need a stopping
+    criteria, so we implement a specialization of \cpp{apply} for the first index.
+    The free function \cpp{operator *} mask the call of the method \cpp{apply} by
+    using the normal \cpp{*} operator. The return value is a \cpp{constexpr T} which
+    can be more usefull than only the value.\\
+    The use of the dot product is reported below.
+    \lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting{./src/solution/MetaDot/main_metadot.cpp}
+    \lstset{basicstyle=\sf}
 
 \end{enumerate}
-
-To construct the dot product using the template metaprogramming the key
-ingredients are templates and \cpp{static} and \cpp{inline} functions. In this way the
-compiler can perform a lot of optimization. First of all we need a class,
-templetized on the index of the array, that perform the operations.
-Its implementation is reported below.
-\lstset{basicstyle=\scriptsize\sf}
-\lstinputlisting{./src/solution/MetaDot/metadot.hpp}
-\lstset{basicstyle=\sf}
-As the comment says the class is templetized on the \cpp{std::size_t}, since it
-returns the correct type used to dimension array. This type it can be
-implementation dependent (32 or 64 bits) it is better to use it instead of just
-unsigned int. The class \cpp{metaDot} contains the static method \cpp{apply}
-which is templetize on the same template variable of the \cpp{std::array}.
-Notice that we statically check that the two arrays have the same dimension. The
-method simply perform a single operation of the dot product and then call again
-\cpp{apply} with the index decreased by one. This strategy lead us to perform
-the dot product recursively. The method is static, so we do not need an object
-of type \cpp{metaDot} for each of the index.  Moreover the implementation is
-done inside the class so the inlining is automatic.  Finally we need a stopping
-criteria, so we implement a specialization of \cpp{apply} for the first index.
-The free function \cpp{operator *} mask the call of the method \cpp{apply} by
-using the normal \cpp{*} operator. The return value is a \cpp{constexpr T} which
-can be more usefull than only the value.\\
-The use of the dot product is reported below.
-\lstset{basicstyle=\scriptsize\sf}
-\lstinputlisting{./src/solution/MetaDot/main_metadot.cpp}
-\lstset{basicstyle=\sf}
