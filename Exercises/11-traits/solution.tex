@@ -89,7 +89,7 @@ here
     criteria, so we implement a specialization of \cpp{apply} for the first index.
     The free function \cpp{operator *} mask the call of the method \cpp{apply} by
     using the normal \cpp{*} operator. The return value is a \cpp{constexpr T} which
-    can be more usefull than only the value.\\
+    can be more usefull since all the variables are known at compile time.\\
     The use of the dot product is reported below.
     \lstset{basicstyle=\scriptsize\sf}
     \lstinputlisting{./src/solution/MetaDot/main_metadot.cpp}
