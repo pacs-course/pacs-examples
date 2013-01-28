@@ -1,3 +1,5 @@
+\section*{Solution}
+
 The \cpp{class Proxy}, contained in \texttt{generic\_factory/Proxy.hpp},
 is written when the factory handles different types.
 But this case all the types are equal to \cpp{std::function<double (double const
@@ -17,12 +19,36 @@ Factory}. The specialization of the factory for this case is in the file
 \lstset{basicstyle=\scriptsize\sf}
 \lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/functionProxy.hpp}
 \lstset{basicstyle=\sf}
-The third parameter template is now used indicating the new builder.
-The registration of the functions stored in \texttt{udf.*pp} are
+The third parameter template, in the \cpp{class Factory} is now used indicating
+the new builder.  The registration of the functions stored in \texttt{udf.*pp}
+are
 in the file \texttt{AllDynamic/myRules.cpp}, reported below.
 \lstset{basicstyle=\scriptsize\sf}
 \lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/myFunctions.cpp}
 \lstset{basicstyle=\sf}
 We have registered, in an anonymous \cpp{namespace}, the four functions using
 the interface of the new proxy. We directly pass the wrapped objects and not
-each the free function itself.
+each the free function itself. The Makefile should be modified to take into
+account the new library and its dependence with \texttt{libudf.so}.
+If we want to handle functor class we can use the same strategy. In the file
+\texttt{AllDynamic/myFunctor.*pp} we have introduced an example of standing
+alone library, which register a functor. The code is reported below.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/myFunctor.hpp}
+\lstset{basicstyle=\sf}
+And the registration is done in the following source file.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/myFunctor.cpp}
+\lstset{basicstyle=\sf}
+Finally in the main program we read all the library defined in the data file
+and we compute the integral. An example is reported below.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/main_integration.cpp}
+\lstset{basicstyle=\sf}
+And the data file is the following with the list of all the library loaded
+dynamically.
+\lstset{basicstyle=\scriptsize\sf}
+\lstinputlisting{./src/solution/src/QuadratureRule/AllDynamic/quadratura.getpot}
+\lstset{basicstyle=\sf}
+Note that if a new library with some integrands are introduced, we do not need
+to rebuild the main program.
