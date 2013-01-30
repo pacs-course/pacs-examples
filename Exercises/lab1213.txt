@@ -42,3 +42,7 @@ es 8 - nov 30 2012
 - bit flags
 - initializer lists
 - es 08-functor_template
+
+es 9 - dec 14 2012
+- getpot
+- es 09-inherit_gauss
