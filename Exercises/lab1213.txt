@@ -46,3 +46,12 @@ es 8 - nov 30 2012
 es 9 - dec 14 2012
 - getpot
 - es 09-inherit_gauss
+
+es 10 - jan 18 2013
+- factory for functions
+- proxy and builder
+- es 10-factory
+
+es 11 - jan 25 2013
+- traits and compile time checks
+- es 11-traits
