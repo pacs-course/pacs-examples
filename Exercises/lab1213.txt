@@ -1,10 +1,8 @@
 es 1 - oct 5 2012
-
 - command line compilation
 - es 01-square_sum
 
 es 2 - oct 12 2012
-
 - file streams
 - eclipse introduction
 - gnuplot introduction
@@ -14,13 +12,11 @@ es 2 - oct 12 2012
 - modular programming of the above
 
 es 3 - oct 19 2012
-
 - git and github
 - es 03-bisection_newton_class
 - homework: pt. 5
 
 es 4 - oct 26 2012
-
 - makefile intro
 - eigen
 - pagerank
