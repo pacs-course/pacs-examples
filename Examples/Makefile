@@ -4,7 +4,8 @@ tarfile:
 	$(MAKE) clean
 	tar cvzf CourseExamples.tgz --exclude=.svn  --exclude=*~ --exclude=*.o --exclude=*.so --exclude=*.bak examples/
 
-
+clean:
+	$(RM) CourseExamples.tgz
 %.pdf : %.tex
 	pdflatex $<
 
