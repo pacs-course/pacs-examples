@@ -1,0 +1,149 @@
+\documentclass[10pt,c,ignorenonframetext]{beamer}
+\renewcommand{\emph}[1]{\textcolor{blue}{\bf #1}}
+
+%%*************************************%
+\author[C. de Falco]{Carlo de Falco}
+\institute[]{}
+%**************************************%
+\renewcommand{\emph}{\alert}
+
+\input{../LATEX/settings}
+\title{PACS 2013-2014 Lab 01}
+\date{11/10/2013}
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Hello World!}
+
+\begin{frame}
+\begin{itemize}
+\item Online resources
+\begin{itemize}
+\item Beep
+\item GitHub
+\end{itemize}
+\item Contact
+\begin{itemize}
+\item Carlo de Falco: {\tt carlo.defalco@polimi.it}
+\item Guido Iori: {\tt guidofr.iori@gmail.com}
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Hello World! I}
+
+The infamous ``Hello World!'' program:
+
+\begin{lstlisting}
+#include <iostream>
+
+int main (void)
+ {
+   std::cout << "Hello World!" << std::endl;
+   return 0;
+ }
+\end{lstlisting}
+
+edit and save as {\tt helloworld.cpp}
+
+\begin{lstlisting}[language=bash]
+$ touch helloworld.cpp
+$ emacs helloworld.cpp
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Hello World! II}
+
+Let's make it work:
+
+\begin{lstlisting}[language=bash]
+$ which g++
+$ g++ --version
+$ source /opt/src/setenvironment 
+$ module avail
+$ module load gcc/4.8.0
+$ module list
+$ which g++
+$ g++ --version
+\end{lstlisting}
+
+now we are ready to build the executable
+
+\begin{lstlisting}[language=bash]
+$ g++ -c helloworld.cpp
+$ g++ -o helloworld helloworld.o
+\end{lstlisting}
+
+and run it
+
+\begin{lstlisting}[language=bash]
+$ ./helloworld
+\end{lstlisting}
+
+Congratulations!!
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Excercise 1: IEEE double representation}
+\includegraphics[width=.9\linewidth]{IEEE}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 1: IEEE double representation}
+
+Write a {\tt C++} program that displays the byte 
+representation of a double.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 1: IEEE double representation}
+
+Write a {\tt C++} program that displays the byte 
+representation of a double.
+
+\scriptsize
+\begin{lstlisting}
+#include <iostream>
+#include <cstdint>
+
+int main (void)
+{
+
+  union 
+  {
+    double d;
+    unsigned char b[8];
+  }  d;
+
+  d.d = 2.0;
+  for (int ii = 7; ii > 0; --ii)
+    {      
+      std::cout << static_cast<int> (d.b[ii]);
+      std::cout << " ";
+    }
+  std::cout << std::endl;
+
+  return 0;
+}
+\end{lstlisting}
+\end{frame}
+
+\section{Shell scripting 101}
+\frame{}
+
+\section{Makefile basics}
+\frame{}
+
+\section{Portability}
+\frame{}
+
+\end{document}
+

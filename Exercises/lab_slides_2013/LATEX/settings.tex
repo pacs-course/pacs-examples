@@ -1,0 +1,64 @@
+\usepackage[]{multimedia}
+\usepackage[]{xmpmulti}
+\usepackage[]{listings}
+\usepackage[]{amsfonts}
+\usepackage{t1enc}
+\usepackage{subfigure}
+\usepackage{times}
+
+\lstset{language=C++,stringstyle=\color{green}, %
+identifierstyle=\color{blue}\tt\bfseries, %
+keywordstyle=\color{blue},commentstyle=\color{brown}\small\tt}
+
+\newcommand{\comment}[1]{\center{\textcolor{blue}{\bf #1}}}
+\newcommand{\of}[1]{\left( #1 \right)}
+\newcommand{\ofv}[1]{\left[ #1 \right]}
+\newcommand{\grad}{\vec{\nabla}}
+\newcommand{\divg}[1]{\text{div} \left(#1 \right)}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Po}{\mathbb{P}}
+\newcommand{\Le}{\mathbb{L}}
+\newcommand{\Pe}{\mathbb{P}e}
+\newcommand{\Hd}{ H^{\text{div}}}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\dual}[1]{#1^{\prime}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\dz}[2]{#1^{\prime} \of{x}}
+\newcommand{\dzm}[2]{#1^{\prime}} %{\frac{d #1}{d #2}}
+\newcommand{\dztwo}[2]{#1^{\prime \prime} \of{x} }%{\frac{d^2 #1}{d #2^2}}
+\newcommand{\pztwo}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\bern}[2]{{\cal B}  \of{#2 #1 }}
+\newcommand{\bernmod}[3]{{\cal B} \of{#2 #1 \ofv{#3} }}
+\newcommand{\restr}[2]{{#1}_{#2}}
+\newcommand{\restri}[2]{\left. #1\right|_{#2}}
+\newcommand{\Ne}{N_{\text{ele}}}
+\newcommand{\Nn}{N_{\text{nod}}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\harm}[2]{\exp \left[H_{#1}\left(#2\right)\right]}
+\newcommand{\curl}[1]{\vec{curl\,}\of{#1}}
+\newcommand{\Div}[1]{div\,\of{#1}}
+\newcommand{\ep}{\psi}
+\newcommand{\fp}{\phi}
+\newcommand{\rb}[1]{\left( #1 \right)}
+
+\graphicspath{{../figures/}}
+
+%--------------------------------------%
+\usetheme[]{pacs}
+
+\AtBeginSubsection[\inserttocsection]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
