@@ -225,6 +225,16 @@ fi
 \end{enumerate}
 \end{frame}
 
+\begin{frame}
+\frametitle{More about {\tt bash}}
+
+\begin{itemize}
+\item {\tt bash} cheat-sheet attached
+\item Advanced Bash Scripting Guide {\tt http://www.tldp.org/LDP/abs/html/abs-guide.html}
+\end{itemize}
+
+\end{frame}
+
 \section{Makefile basics}
 \frame{
 \frametitle{Excercise 3: LaTeX slides make}
@@ -238,6 +248,15 @@ Write a Makefile that behaves like the script of Excercise 2\\
 \lstinputlisting{./Makefile}
 }}
 
+\frame{
+\frametitle{More on makefiles}
+\begin{itemize}
+\item More exercises on Makefiles in the folder {\tt 99-makefile}
+\item GNU make documentation\\
+{\tt http://www.gnu.org/software/make}
+\end{itemize}
+}
+
 \section{Portability}
 \frame{
 \frametitle{Complex Makefiles for large projects}
@@ -245,13 +264,23 @@ Write a Makefile that behaves like the script of Excercise 2\\
 There is one main thing you should know about Complex Makefiles for large projects:
 
 \begin{center}
-\emph \large Don't write them!
+\emph \large \bf Don't write them!
 \end{center}
 
 For large complex projects you should use 
 \begin{itemize}
 \item Autotools
+\begin{itemize}
+\item {\tt http://www.gnu.org/software/automake}
+\item {\tt http://www.gnu.org/software/autoconf}
+\item {\tt http://www.gnu.org/software/libtool}
+\end{itemize}
+
 \item CMake
+\begin{itemize}
+\item {\tt http://www.cmake.org/}
+\end{itemize}
+
 \end{itemize}
 
 To generate the makefiles.
