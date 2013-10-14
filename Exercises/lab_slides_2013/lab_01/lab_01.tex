@@ -148,11 +148,95 @@ Write an executable shell script that
 \end{enumerate}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+{\tiny
+\begin{lstlisting}[language=bash]
+if [[ $1 = build ]]
+then
+    TEXINPUTS=../LATEX/: pdflatex $2
+    TEXINPUTS=../LATEX/: pdflatex $2
+    TEXINPUTS=../LATEX/: pdflatex $2
+\end{lstlisting}}
+\item Given the input argument {\tt "clean"} removes all temporary files
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+\item Given the input argument {\tt "clean"} removes all temporary files
+{\tiny
+\begin{lstlisting}[language=bash]
+elif [[ $1 = clean ]]
+then
+    FILES=$(ls $2.*)   
+    for file in ${FILES}
+    do
+        echo $file
+        if [[ $file = $2.tex ]]
+        then
+            echo "do not delete $file"
+        elif [[ $file = $2.pdf ]]
+        then
+            echo "do not delete $file"
+        elif [[ $file != $2.tex ]] && [[ $file != $2.pdf ]]
+        then
+            rm $file
+        fi        
+    done
+\end{lstlisting}
+}
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+\item Given the input argument {\tt "clean"} removes all temporary files
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+{\tiny
+\begin{lstlisting}[language=bash]
+elif [[ $1 = distclean ]]
+then
+    FILES = $(ls $2.*)
+    for file in ${FILES}
+    do
+        if [[ $file = $2.tex ]]
+        then
+            echo "do not delete $file"
+        elif [[ $file != $2.tex ]]
+        then
+            rm $file
+        fi        
+    done
+fi
+\end{lstlisting}
+}
+\end{enumerate}
+\end{frame}
+
 \section{Makefile basics}
 \frame{
 \frametitle{Excercise 3: LaTeX slides make}
 Write a Makefile that behaves like the script of Excercise 2
 }
+
+\frame{
+\frametitle{Excercise 3: LaTeX slides make}
+Write a Makefile that behaves like the script of Excercise 2\\
+{\tiny
+\lstinputlisting{./Makefile}
+}}
 
 \section{Portability}
 \frame{
