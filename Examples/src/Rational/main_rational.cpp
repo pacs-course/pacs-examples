@@ -10,7 +10,7 @@ int main()
   Rational b(6);
   Rational c(b);
   Rational d;
-  c=static_cast<Rational>(1);
+  c=Rational(1);
   double aa=a;
   cout<<a<<endl;
   cout<<++a<<endl;
@@ -22,11 +22,11 @@ int main()
   cout<<a+1<<endl; // it converts a to double
   cout<<a+Rational(1)<<endl; // explicit conversion!
 
-  std::ratio<3,4> threeQuarter;
-  Rational tq(threeQuarter);
-  cout<< tq<<endl;
-  Rational mu=std::micro();
-  cout<<" A micro is "<<mu<<endl;
+  //std::ratio<3,4> threeQuarter;
+  //Rational tq(threeQuarter);
+  //cout<< tq<<endl;
+  //Rational mu=std::micro();
+  //cout<<" A micro is "<<mu<<endl;
 
   cout<<" Give me a Rational in the form a/b (followed by a space):";
   cin>>a;
