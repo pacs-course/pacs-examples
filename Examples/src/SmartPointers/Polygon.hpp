@@ -165,7 +165,7 @@ namespace Geometry
     Square(Point2D origin, double length,double angle=0.0);
     //! Specialised version for squares
     virtual double area() const;
-    virtual ~Square(){};
+    virtual ~Square(){std::cout<<"Destroying a square"<<std::endl;};
     //! Specialised version for squares.
     virtual void showMe(ostream & out=cout) const;
   };
@@ -184,7 +184,7 @@ namespace Geometry
     Triangle(Vertices const &);
     //! Specialised for Triangles
     virtual double area() const;
-    virtual ~Triangle(){};
+    virtual ~Triangle(){std::cout<<"Destroying a TRiangle"<<std::endl;};
     //! Specialised for Triangles
     virtual void showMe(ostream & out=cout) const;
   };

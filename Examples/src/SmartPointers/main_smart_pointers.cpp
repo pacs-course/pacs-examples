@@ -13,7 +13,7 @@ int main(){
   // Assign a triangle
   a.setPolygon(polyFactory(Shape::Triangle));
   a.showMe();
-  // Triangle is destroyed, now I own a Square
+  // Triangle is destroyed, now Iown a Square
   a.setPolygon(polyFactory(Shape::Square));
   a.showMe();
 

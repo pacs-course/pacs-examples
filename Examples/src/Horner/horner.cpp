@@ -4,8 +4,8 @@ double eval (std::vector<double> const & a, double const x){
   double sum = a[0];
   double y(x);
   for (std::vector<double>::size_type k = 1; k<a.size(); ++k){ 
-    //sum += a[k]*pow(x,k);// Pow is VERY expensive
-    sum += a[k]*y; y*=y; //it is better. 
+    sum += a[k]*pow(x,k);// Pow is VERY expensive
+    //sum += a[k]*y; y*=y; //it is better. 
   }
   return sum;
 }

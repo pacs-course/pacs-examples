@@ -19,7 +19,9 @@ int main()
   std::cout<<"Area: "<<aPolygon.area()<<std::endl;
   // A triangle built with the first 3 vertices
   Triangle aTriangle(Vertices(v.begin(),v.begin()+3));
-  aTriangle.showMe();
+  AbstractPolygon * p_ab=&aTriangle;
+
+  p_ab->showMe();
   std::cout<<"Area: "<<aTriangle.area()<<std::endl;
   //! Unit Square
   //C++11 syntax. I expoit the fact that the is an implicit conversion
@@ -27,8 +29,9 @@ int main()
   //as argument 
   // In C++98 I would have written
   //Square aSquare(Point2D(0.0,0.0),1.0); 
-  Square aSquare({0.0,0.0},1.0); 
-  aSquare.showMe();
+  Square aSquare({0.0,0.0},1.0);
+  p_ab=&aSquare; 
+  p_ab->showMe();
   std::cout<<"Area: "<<aSquare.area()<<std::endl;
 }
   
