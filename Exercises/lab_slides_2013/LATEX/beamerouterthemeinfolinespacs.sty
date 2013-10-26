@@ -1,0 +1,70 @@
+% Copyright 2007 by Till Tantau
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+%
+% See the file doc/licenses/LICENSE for more details.
+
+\ProvidesPackageRCS $Header: /cvsroot/latex-beamer/latex-beamer/themes/outer/beamerouterthemeinfolines.sty,v 1.9 2007/01/28 20:48:30 tantau Exp $
+
+\usepackage{pgf}
+
+\mode<presentation>
+
+\setbeamercolor*{author in head/foot}{parent=palette tertiary}
+\setbeamercolor*{title in head/foot}{parent=palette secondary}
+\setbeamercolor*{date in head/foot}{parent=palette primary}
+
+\setbeamercolor*{section in head/foot}{parent=palette tertiary}
+\setbeamercolor*{subsection in head/foot}{parent=palette primary}
+
+\definecolor{comviolet}{RGB}{107,107,181}
+\setbeamercolor{banner}{fg=white, bg=comviolet}
+
+\defbeamertemplate*{footline}{infolines theme}
+{
+  \leavevmode%
+   % \hbox{
+  	%\includegraphics[width=1\paperwidth]{footer.png}
+   %}
+  \hbox{%
+    
+  %\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+  %  \usebeamerfont{author in head/foot}\insertshortauthor~~(\insertshortinstitute)
+  %\end{beamercolorbox}%
+  %\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+  %  \usebeamerfont{title in head/foot}\inserttitle - \insertshorttitle
+  %\end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=1\paperwidth,ht=2.25ex,dp=1ex,right]{banner}%{date in head/foot}%
+    \includegraphics[width=1\paperwidth]{footer.png}
+    \usebeamerfont{date in head/foot}\insertdate{}\hspace*{2ex}
+    %\includegraphics[width=1\paperwidth]{footer.png}
+   %% \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}
+  }%
+  %\vskip0pt%
+ 
+}
+
+\defbeamertemplate*{headline}{infolines theme}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.8\paperwidth,ht=2.25ex,dp=1ex,left]{banner}%
+   ..:: \usebeamerfont{section in head/foot}\insertsectionhead\hspace*{2ex}
+  \end{beamercolorbox}%
+ % \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,left]{banner}%
+  %  \usebeamerfont{subsection in head/foot}\hspace*{2ex}\insertsubsectionhead
+  %\end{beamercolorbox}
+  \begin{beamercolorbox}[wd=.2\paperwidth,ht=2.25ex,dp=1ex,right]{banner}%
+   $>>>$ \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\setbeamersize{text margin left=1em,text margin right=1em}
+
+\mode
+<all>

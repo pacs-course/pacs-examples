@@ -1,0 +1,290 @@
+\documentclass[10pt,c,ignorenonframetext]{beamer}
+\renewcommand{\emph}[1]{\textcolor{blue}{\bf #1}}
+
+%%*************************************%
+\author[C. de Falco]{Carlo de Falco}
+\institute[]{}
+%**************************************%
+\renewcommand{\emph}{\alert}
+
+\input{../LATEX/settings}
+\title{PACS 2013-2014 Lab 01}
+\date{11/10/2013}
+\begin{document}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Hello World!}
+
+\begin{frame}
+\begin{itemize}
+\item Online resources
+\begin{itemize}
+\item Beep
+\item GitHub
+\end{itemize}
+\item Contact
+\begin{itemize}
+\item Carlo de Falco: {\tt carlo.defalco@polimi.it}
+\item Guido Iori: {\tt guidofr.iori@gmail.com}
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Hello World! I}
+
+The infamous ``Hello World!'' program:
+
+\begin{lstlisting}
+#include <iostream>
+
+int main (void)
+ {
+   std::cout << "Hello World!" << std::endl;
+   return 0;
+ }
+\end{lstlisting}
+
+edit and save as {\tt helloworld.cpp}
+
+\begin{lstlisting}[language=bash]
+$ touch helloworld.cpp
+$ emacs helloworld.cpp
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Hello World! II}
+
+Let's make it work:
+
+\begin{lstlisting}[language=bash]
+$ which g++
+$ g++ --version
+$ source /opt/src/setenvironment 
+$ module avail
+$ module load gcc/4.8.0
+$ module list
+$ which g++
+$ g++ --version
+\end{lstlisting}
+
+now we are ready to build the executable
+
+\begin{lstlisting}[language=bash]
+$ g++ -c helloworld.cpp
+$ g++ -o helloworld helloworld.o
+\end{lstlisting}
+
+and run it
+
+\begin{lstlisting}[language=bash]
+$ ./helloworld
+\end{lstlisting}
+
+Congratulations!!
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Excercise 1: IEEE double representation}
+\includegraphics[width=.9\linewidth]{IEEE}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 1: IEEE double representation}
+
+Write a {\tt C++} program that displays the byte 
+representation of a double.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 1: IEEE double representation}
+
+Write a {\tt C++} program that displays the byte 
+representation of a double.
+
+{\scriptsize
+\begin{lstlisting}
+#include <iostream>
+#include <cstdint>
+
+int main (void)
+{
+
+  union 
+  {
+    double d;
+    unsigned char b[8];
+  }  d;
+
+  d.d = 2.0;
+  for (int ii = 7; ii > 0; --ii)
+    {      
+      std::cout << static_cast<int> (d.b[ii]);
+      std::cout << " ";
+    }
+  std::cout << std::endl;
+
+  return 0;
+}
+\end{lstlisting}}
+\end{frame}
+
+\section{Shell scripting 101}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+\item Given the input argument {\tt "clean"} removes all temporary files
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+{\tiny
+\begin{lstlisting}[language=bash]
+if [[ $1 = build ]]
+then
+    TEXINPUTS=../LATEX/: pdflatex $2
+    TEXINPUTS=../LATEX/: pdflatex $2
+    TEXINPUTS=../LATEX/: pdflatex $2
+\end{lstlisting}}
+\item Given the input argument {\tt "clean"} removes all temporary files
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+\item Given the input argument {\tt "clean"} removes all temporary files
+{\tiny
+\begin{lstlisting}[language=bash]
+elif [[ $1 = clean ]]
+then
+    FILES=$(ls $2.*)   
+    for file in ${FILES}
+    do
+        echo $file
+        if [[ $file = $2.tex ]]
+        then
+            echo "do not delete $file"
+        elif [[ $file = $2.pdf ]]
+        then
+            echo "do not delete $file"
+        elif [[ $file != $2.tex ]] && [[ $file != $2.pdf ]]
+        then
+            rm $file
+        fi        
+    done
+\end{lstlisting}
+}
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Excercise 2: LaTeX slides build scripts}
+Write an executable shell script that
+\begin{enumerate}
+\item Given the input argument {\tt "build"} builds these slides from the LaTeX sources
+\item Given the input argument {\tt "clean"} removes all temporary files
+\item Given the input argument {\tt "distclean"} removes all temporary files and the pdf file
+{\tiny
+\begin{lstlisting}[language=bash]
+elif [[ $1 = distclean ]]
+then
+    FILES = $(ls $2.*)
+    for file in ${FILES}
+    do
+        if [[ $file = $2.tex ]]
+        then
+            echo "do not delete $file"
+        elif [[ $file != $2.tex ]]
+        then
+            rm $file
+        fi        
+    done
+fi
+\end{lstlisting}
+}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{More about {\tt bash}}
+
+\begin{itemize}
+\item {\tt bash} cheat-sheet attached
+\item Advanced Bash Scripting Guide {\tt http://www.tldp.org/LDP/abs/html/abs-guide.html}
+\end{itemize}
+
+\end{frame}
+
+\section{Makefile basics}
+\frame{
+\frametitle{Excercise 3: LaTeX slides make}
+Write a Makefile that behaves like the script of Excercise 2
+}
+
+\frame{
+\frametitle{Excercise 3: LaTeX slides make}
+Write a Makefile that behaves like the script of Excercise 2\\
+{\tiny
+\lstinputlisting{./Makefile}
+}}
+
+\frame{
+\frametitle{More on makefiles}
+\begin{itemize}
+\item More exercises on Makefiles in the folder {\tt 99-makefile}
+\item GNU make documentation\\
+{\tt http://www.gnu.org/software/make}
+\end{itemize}
+}
+
+\section{Portability}
+\frame{
+\frametitle{Complex Makefiles for large projects}
+
+There is one main thing you should know about Complex Makefiles for large projects:
+
+\begin{center}
+\emph \large \bf Don't write them!
+\end{center}
+
+For large complex projects you should use 
+\begin{itemize}
+\item Autotools
+\begin{itemize}
+\item {\tt http://www.gnu.org/software/automake}
+\item {\tt http://www.gnu.org/software/autoconf}
+\item {\tt http://www.gnu.org/software/libtool}
+\end{itemize}
+
+\item CMake
+\begin{itemize}
+\item {\tt http://www.cmake.org/}
+\end{itemize}
+
+\end{itemize}
+
+To generate the makefiles.
+}
+
+\end{document}
+
