@@ -84,7 +84,9 @@ public:
   real apply (real, real);
 
   template <typename T, class W>
-  friend std::ostream& operator << (std::ostream&, Robust<T, W>&);
+  friend std::ostream& 
+  operator << 
+  (std::ostream&, Robust<T, W>&);
 
 private:
   
@@ -99,12 +101,14 @@ private:
 
 /// Ctor for the base class
 template<typename real, class fun>
-IterativeMethod<real, fun>::IterativeMethod (real tol, int maxit, checkT check)
+IterativeMethod<real, fun>::IterativeMethod 
+(real tol, int maxit, checkT check)
   : M_tol(tol), M_maxit(maxit), M_check(check) {};
 
 /// Method for convergence check
 template<typename real, class fun>
-bool IterativeMethod<real, fun>::converged (real increment, real residual) 
+bool IterativeMethod<real, fun>::converged
+(real increment, real residual) 
 {
   return (M_check == INCREMENT && increment < M_tol) ||
     (M_check == RESIDUAL && residual < M_tol);
@@ -112,7 +116,8 @@ bool IterativeMethod<real, fun>::converged (real increment, real residual)
 
 /// Ctor for the bisection class
 template<typename real, class fun>
-Bisection<real, fun>::Bisection (real tol, int maxit, checkT check)
+Bisection<real, fun>::Bisection 
+(real tol, int maxit, checkT check)
   : IterativeMethod<real, fun> (tol, maxit, check) {};
 
 /// Main method for the bisection class
@@ -145,7 +150,8 @@ real Bisection<real, fun>::apply (real a, real b)
 /// Ctor for the Newton class
 template <typename real, class fun>
 Newton<real, fun>::Newton (real tol, int maxit) 
-  : IterativeMethod<real, fun>(tol, maxit, IterativeMethod<real, fun>::INCREMENT) {};
+  : IterativeMethod<real, fun>
+    (tol, maxit, IterativeMethod<real, fun>::INCREMENT) {};
 
 /// Main method for the Newton class
 template <typename real, class fun>
@@ -179,7 +185,8 @@ real Newton<real, fun>::apply (real xp)
 
 /// Ctor for the Robust class
 template <typename real, class fun>
-Robust<real, fun>::Robust(real tol, int maxit, checkT check, real cfratio)
+Robust<real, fun>::Robust
+(real tol, int maxit, checkT check, real cfratio)
   :
   IterativeMethod<real, fun>(tol, maxit, check),
   M_cfratio(cfratio),
@@ -194,7 +201,9 @@ real Robust<real, fun>::apply(real a, real b)
 };
 
 template <typename real, class fun>
-std::ostream& operator<<(std::ostream& ostr, Robust<real, fun>& r) 
+std::ostream& 
+operator<<
+(std::ostream& ostr, Robust<real, fun>& r) 
 {
   ostr << "* Robust Method *" << std::endl
        << "Tolerance           :" << '\t' << r.M_tol

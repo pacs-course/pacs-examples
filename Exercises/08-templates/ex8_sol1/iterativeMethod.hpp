@@ -78,7 +78,9 @@ public:
   typedef Bisection<real> coarseT;
   typedef Newton<real> fineT;
   
-  Robust(real, int, checkT = IterativeMethod<real>::INCREMENT, real = 5e4);
+  Robust (real, int, 
+          checkT = IterativeMethod<real>::INCREMENT, 
+          real = 5e4);
 
   inline int nitcoarse() { return M_coarse.nit(); }
   inline int nitfine() { return M_fine.nit(); }
@@ -101,12 +103,14 @@ private:
 
 /// Ctor for the base class
 template<typename real>
-IterativeMethod<real>::IterativeMethod (real tol, int maxit, checkT check)
+IterativeMethod<real>::IterativeMethod 
+(real tol, int maxit, checkT check)
   : M_tol(tol), M_maxit(maxit), M_check(check) {};
 
 /// Method for convergence check
 template<typename real>
-bool IterativeMethod<real>::converged(real increment, real residual) 
+bool IterativeMethod<real>::converged
+(real increment, real residual) 
 {
   return (M_check == INCREMENT && increment < M_tol) ||
     (M_check == RESIDUAL && residual < M_tol);
@@ -114,12 +118,14 @@ bool IterativeMethod<real>::converged(real increment, real residual)
 
 /// Ctor for the bisection class
 template<typename real>
-Bisection<real>::Bisection (real tol, int maxit, checkT check)
+Bisection<real>::Bisection 
+(real tol, int maxit, checkT check)
   : IterativeMethod<real> (tol, maxit, check) {};
 
 /// Main method for the bisection class
 template<typename real>
-real Bisection<real>::apply (real a, real b, fctptr f)
+real Bisection<real>::apply 
+(real a, real b, fctptr f)
 {
 
   real u = f(a);
@@ -147,7 +153,8 @@ real Bisection<real>::apply (real a, real b, fctptr f)
 /// Ctor for the Newton class
 template <typename real>
 Newton<real>::Newton (real tol, int maxit) 
-  : IterativeMethod<real>(tol, maxit, IterativeMethod<real>::INCREMENT) {};
+  : IterativeMethod<real>(tol, maxit, 
+                          IterativeMethod<real>::INCREMENT) {};
 
 /// Main method for the Newton class
 template <typename real>
@@ -181,7 +188,8 @@ real Newton<real>::apply(real xp, fctptr f, fctptr df)
 
 /// Ctor for the Robust class
 template <typename real>
-Robust<real>::Robust(real tol, int maxit, checkT check, real cfratio)
+Robust<real>::Robust(real tol, int maxit, 
+                     checkT check, real cfratio)
   :
   IterativeMethod<real>(tol, maxit, check),
   M_cfratio(cfratio),
