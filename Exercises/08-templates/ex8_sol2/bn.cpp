@@ -35,7 +35,7 @@ int main() {
   cout << result_double << endl;
   cout << r_double << endl << endl;
 
-  /// Solve the problem using 32 bit doubles
+  /// Solve the problem using 32 bit floats
   Robust<float, f<float> > 
     r_float (numeric_limits<float>::epsilon () * 4, 100, 
              IterativeMethod<float, f<float> >::INCREMENT, 
@@ -47,7 +47,7 @@ int main() {
   cout << result_float << endl;
   cout << r_float << endl << endl;
 
-  /// Solve the problem using 128 bit doubles
+  /// Solve the problem using 128 bit long doubles
   Robust<long double, f<long double> >
     r_ldouble
     (numeric_limits<long double>::epsilon () * 4, 100, 
