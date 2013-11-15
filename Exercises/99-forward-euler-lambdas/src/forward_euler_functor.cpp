@@ -1,0 +1,108 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+template<typename real>
+class 
+forward_euler
+{
+public:
+  
+  forward_euler (real _start, real _stop,
+                 real _dt0, real _tol) :
+    start (_start), stop (_stop), 
+    dt0 (_dt0), tol (_tol)
+  {};
+
+  template<class T>
+  void apply (T fun, real x0, 
+         std::vector<real>& result,
+         std::vector<real>& time) 
+  {
+    real t = start;
+    real dt = dt0;
+    real x = x0;
+    real xold = x;
+    real x2 = x;
+    real err = 10 * tol;
+    real told = t;
+    real xprime = 0;
+
+    result.clear ();
+    time.clear ();
+    
+    result.push_back (x);
+    time.push_back (t);
+
+    while (t < stop)      
+      {
+
+        xold = x;
+        told = t;
+        xprime = fun (x, t);
+        
+        t += dt;
+        x += xprime * dt;
+        xprime = fun (x, t);
+
+        real x2 = .5 * (x + xold + xprime * dt);
+        real err = fabs (x2 - x);
+        if (err <= tol)
+          {
+            result.push_back (x);
+            time.push_back (t); 
+          }
+        else
+          {
+            std::cout << "%% reject" << std::endl;
+            x = xold;
+            t = told;
+          }
+
+        std::cout << "% t = " << t 
+                  << ";\t x = " << x
+                  << std::endl;
+
+        dt *= .5 * sqrt (tol / err);
+        dt = t + dt > stop ? stop - t : dt;
+      }      
+  }
+  
+private:
+
+  real start, stop, dt0, tol;
+  
+};
+
+template<typename real>
+class fun 
+{
+private:
+  real k;
+public:
+
+  fun (real _k): k(_k) {};
+
+  real operator() (real x, real t) {return (-k * x); };
+};
+
+int main (void)
+{
+  std::vector<double> x;
+  std::vector<double> t;
+
+  fun<double> fcn (.5);
+  forward_euler<double> f (0.0, 100.0, .1, 1e-3);
+  f.apply (fcn, 10, x, t);
+
+  std::cout << "r = [" << std::endl;
+  for (auto ii = x.begin (), 
+         jj = t.begin (); 
+       ii != x.end () && jj != t.end (); 
+       ++ii, ++jj)
+
+    std::cout << *jj << ",\t " << *ii << std::endl;
+  std::cout << "];" << std::endl;
+
+  return 0;
+}
