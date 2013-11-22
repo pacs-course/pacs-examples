@@ -1,52 +1,15 @@
-#ifndef __MYEXCEPTIONS_HPP__
-#define __MYEXCEPTIONS_HPP__
-#include <exception>
-#include <stdexcept>
-#include <string>
-//! General overflow
-class BadFPOper: public std::runtime_error { 
-public:
-  BadFPOper(std::string const & s="Bad Floating point operation"):
-    runtime_error(s){}
-  virtual ~BadFPOper(){}
-};
+#include "myexceptions.hpp"
+#include <sstream>
 
-//! Floating point overflow
-class FloatOverflow: public BadFPOper{
-public:
-  FloatOverflow(std::string const s="Floating Point Overflow"):BadFPOper(s){}
-  virtual ~FloatOverflow(){}
-};   
+namespace{
+  std::string bMessage(double s){
+    std::ostringstream tmp;
+    tmp<<"Small divisor. Value= "<< s<< "smaller than min value="<<SmallDivisor::minValue;
+    return tmp.str();
+  }
+}
 
-//! Floating point overflow
-class InvalidFPOperation: public BadFPOper {
-public:
-  InvalidFPOperation(std::string const s="Invalid FP Operation"):BadFPOper(s){}
-  virtual ~InvalidFPOperation(){}
-};   
+SmallDivisor::SmallDivisor(double s):BadDivision(bMessage(s)){}
 
-//Bad division
-class BadDivision: public std::runtime_error { 
-public:
-  BadDivision(std::string const & s):runtime_error(s){};
-  virtual ~BadDivision(){}
-};
+double SmallDivisor::minValue=1.e-30;
 
-//! Zero division
-
-class ZeroDivision: public BadDivision {
-public:
-  ZeroDivision(std::string const & s="Divide by zero"):
-    BadDivision(s){}
-  virtual ~ZeroDivision(){}
-};   
-
-//! Small divisor
-class SmallDivisor: public BadDivision { 
-public:
-  SmallDivisor(std::string const & s="Small Divisor"):BadDivision(s){};
-  SmallDivisor(double s);
-  virtual ~SmallDivisor(){}
-  static double minValue;
-};
-#endif

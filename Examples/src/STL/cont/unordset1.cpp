@@ -9,6 +9,8 @@
  * warranty, and with no claim as to its suitability for any purpose.
  */
 #include <unordered_set>
+#include <set>
+#include <vector>
 #include <numeric>
 #include "print.hpp"
 using namespace std;
@@ -16,7 +18,7 @@ using namespace std;
 int main()
 {
     // create and initialize unordered set
-    unordered_set<int> coll = { 1,2,3,5,7,11,13,17,19,77 };
+    vector<int> coll = { 1,2,3,5,7,11,13,17,19,77 };
 
     // print elements
     // - elements are in arbitrary order
@@ -40,7 +42,7 @@ int main()
     }
 
     // remove all negative values
-    unordered_set<int>::iterator pos;
+    vector<int>::iterator pos;
     for (pos=coll.begin(); pos!= coll.end(); ) {
         if (*pos < 0) {
             pos = coll.erase(pos);

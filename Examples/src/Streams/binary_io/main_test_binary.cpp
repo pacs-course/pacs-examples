@@ -17,7 +17,7 @@ int main()
 {
   using namespace std;
   // Dimension of the array to be stored
-  int const  DIM=1000000;
+  unsigned int const  DIM=10000000;
   // I call system to remove old files
   system("/bin/rm -r -f file.dat");
   system("/bin/rm -r -f file.txt");
@@ -61,6 +61,7 @@ int main()
   tempo.stop();
   cout<<"Reading done: "<<tempo<<endl;
 
+  /*
   // Now hdf5 stuff
 
   // These are the identifiers
@@ -108,6 +109,7 @@ int main()
   tempo.stop();
   cout<<"Reading done: "<<tempo<<endl;  
 
+  */
   // Cleanup vector
   delete[] pippo;
 }

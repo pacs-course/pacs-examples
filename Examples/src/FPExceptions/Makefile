@@ -134,7 +134,7 @@ $(LIB_OBJS): $(LIB_SRCS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
 $(DEPEND): $(SRCS) $(HEADERS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+	$(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
 
 
