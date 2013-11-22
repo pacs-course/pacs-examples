@@ -29,4 +29,16 @@ public:
   //! Implementation of the static function.
   static void fstatic(){std::cout<<"Static function in derived"<<std::endl;}
 };
+//!Derived class
+class Derived2: public Base<Derived2>
+{
+public:
+  //!Implementation of function fun
+  void fun(double const & x){
+    std::cout<<"In Derived  x="<<x<<std::endl;
+  }
+  //! Implementation of the static function.
+  static void fstatic(){std::cout<<"Static function in derived2"<<std::endl;}
+};
+
 #endif

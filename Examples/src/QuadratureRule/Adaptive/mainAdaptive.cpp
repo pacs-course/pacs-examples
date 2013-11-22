@@ -66,8 +66,11 @@ int main(int argc, char** argv){
   Quadrature s(sr,mesh);
   Quadrature m(mr,mesh);
   Quadrature t(tr,std::move(mesh));
+  std::cout <<" SIMPSON"<<std::endl;
   double approxs=s.apply(f);
+  std::cout <<" MIDPOINT"<<std::endl;
   double approxm=m.apply(f);
+  std::cout <<" TRAPEZOIDAL"<<std::endl;
   double approxt=t.apply(f);
   double exactVal=exact(a,b);
   printout(approxs,exactVal,targetError,"SIMPSON");

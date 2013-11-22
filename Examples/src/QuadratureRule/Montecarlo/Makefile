@@ -132,7 +132,7 @@ doc:
 	doxygen $(DOXYFILE)
 
 $(EXEC): $(EXEC_OBJS) $(OTHER_OBJS)
-	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) -lquadrules -o $(EXEC)
+	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LIBRARIES) -lquadrules -o $(EXEC)
 
 $(EXEC_OBJS): $(EXEC_SRCS)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $<
