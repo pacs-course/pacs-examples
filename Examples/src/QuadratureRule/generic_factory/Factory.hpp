@@ -5,6 +5,7 @@
 #include <memory>
 #include <functional>
 #include <stdexcept>
+#include <type_traits>
 namespace GenericFactory{
   
   /*! A generic factory. 
@@ -68,6 +69,22 @@ namespace GenericFactory{
     Container_type _storage;
   };
 
+  /*!
+    Converts an identifier to string if it is possible. 
+   */
+  template<bool Convertible, typename Identifier>
+  struct IdentifierToString
+  {
+    static std::string value(Identifier const & id){return std::string();}
+  };
+
+  //! Partial specialization if convertible (c++11)
+  template<typename Identifier> 
+  struct IdentifierToString<true,Identifier>
+  {
+    static std::string value(Identifier const & id){return std::string(id);}
+  };
+
   
   //! We use the Meyer's trick to istantiate the factory.
   template
@@ -92,10 +109,21 @@ namespace GenericFactory{
   Factory<AbstractProduct,Identifier,Builder>::create(Identifier const & name) 
     const {
     auto f = _storage.find(name); //C++11
-    return (f == _storage.end()) ? std::unique_ptr<AbstractProduct>(): 
-      std::unique_ptr<AbstractProduct>(f->second());
+    if (f == _storage.end())
+      {
+	std::string out="Identifier " + IdentifierToString<std::is_convertible<Identifier, std::string>::value,Identifier >::value(name) +
+	  " is not stored in the factory";
+	throw std::invalid_argument(out);
+      }
+    else
+      {
+	return std::unique_ptr<AbstractProduct>(f->second());
+      }
+    //Old version:
+    //return (f == _storage.end()) ? std::unique_ptr<AbstractProduct>(): 
+    //std::unique_ptr<AbstractProduct>(f->second());
   }
-
+  
   template
   <
     typename AbstractProduct,
