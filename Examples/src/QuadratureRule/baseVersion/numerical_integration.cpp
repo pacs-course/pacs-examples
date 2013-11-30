@@ -1,20 +1,20 @@
 #include "numerical_integration.hpp"
 namespace NumericalIntegration{
   
-  Quadrature::Quadrature(QuadratureRuleHandler rule, Mesh1D const & mesh):_rule(std::move(rule)),_mesh(mesh){}
+  Quadrature::Quadrature(QuadratureRuleHandler && rule, Mesh1D const & mesh):_rule(std::move(rule)),_mesh(mesh){}
 
   /*! 
     Formally identical! I need a move-constructor in the mesh class to have 
     a different behaviour.
   */
 
-  Quadrature::Quadrature(QuadratureRuleHandler rule, Mesh1D && mesh):_rule(std::move(rule)),_mesh(std::move(mesh)){}
+  Quadrature::Quadrature(QuadratureRuleHandler && rule, Mesh1D && mesh):_rule(std::move(rule)),_mesh(std::move(mesh)){}
 
 
 
   //! I need to copy the QuadratureRule not its handler!
   Quadrature::Quadrature(Quadrature const & rhs):
-    _rule(rhs._rule.get()),  _mesh(rhs._mesh){}
+    _rule(rhs._rule->clone()),  _mesh(rhs._mesh){}
   
 //! I need to copy the QuadratureRule not its handler!
   Quadrature & Quadrature::operator=(Quadrature const & rhs){
@@ -22,7 +22,7 @@ namespace NumericalIntegration{
       _mesh=rhs._mesh;
       // Resets the current value replacing with the pointer
       // returned by rhs._rule
-      _rule.reset(rhs._rule.get());
+      _rule=std::move(rhs._rule->clone());
     }
     return *this;
   }

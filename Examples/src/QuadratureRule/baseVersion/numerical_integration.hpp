@@ -31,7 +31,7 @@ namespace NumericalIntegration{
       \param rule A unique_ptr storing the rule.  
       \param Mesh1D The 1D mesh 
      */
-    Quadrature(QuadratureRuleHandler rule, Mesh1D const & mesh);
+    Quadrature(QuadratureRuleHandler && rule, Mesh1D const & mesh);
     //!Constructor.
     /*!  
       \param rule A unique_ptr storing the rule.  
@@ -42,7 +42,7 @@ namespace NumericalIntegration{
       temporary mesh object, to move the mesh without creating
       useless temporaries.
      */
-    Quadrature(QuadratureRuleHandler rule, Mesh1D&& mesh);
+    Quadrature(QuadratureRuleHandler && rule, Mesh1D&& mesh);
     //!A second constructor
     /*!
       In this case we pass the object and we use the fact that the
@@ -62,10 +62,10 @@ namespace NumericalIntegration{
       \param Mesh1D The 1D mesh
      */ 
     Quadrature(const QuadratureRule & rule, Mesh1D const & mesh):
-      Quadrature(rule.clone(),mesh){}
+      _rule(rule.clone()),_mesh(mesh){}
     //! Version that moves the mesh.
     Quadrature(const QuadratureRule & rule, Mesh1D&& mesh):
-      Quadrature(rule.clone(),std::move(mesh)){}
+      _rule(rule.clone()),_mesh(std::move(mesh)){}
     //! Copy constructor.
     Quadrature(Quadrature const &);
     //! Copy assignment.
