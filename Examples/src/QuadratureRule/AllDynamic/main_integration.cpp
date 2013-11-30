@@ -48,6 +48,7 @@ int main(int argc, char** argv){
     cout<< dlerror();
     exit(1);
   }
+
   // Now get the library with the functions to be integrated
   std::string userdeflib=cl("udflib","libudf.so");
   // Handle the library and get the integrand function
@@ -62,9 +63,16 @@ int main(int argc, char** argv){
   string rule=cl("rule","Simpson");
   // Get the factory with the rules
   RulesFactory & rulesFactory( RulesFactory::Instance());
-  // Extract the rule. I usa an auto_ptr to be sure to eventually delete the object
-  QuadratureRuleHandler theRule=rulesFactory.create(rule);
-  bool notThere = (theRule==nullptr);
+  // Extract the rule. 
+  bool notThere(false);
+  QuadratureRuleHandler theRule;
+  try
+    {
+      theRule=rulesFactory.create(rule);
+    }  catch (std::invalid_argument)
+    {
+      notThere = true;
+    }
   if (notThere || rule=="?"){
     if (rule!="?"){
       cout <<"Rule "<< rule<< "does not exist"<<endl;
@@ -82,10 +90,11 @@ int main(int argc, char** argv){
   // Compute integral
   Domain1D domain(a,b);
   Mesh1D mesh(domain,nint);
-  Quadrature s(*theRule,mesh);
+  QuadratureRule & myRule(*theRule);
+  Quadrature s(myRule,mesh);
   double approxs=s.apply(f);
   cout<<"Result= "<<approxs<<endl;
   // Close rule library
-  dlclose(dylib);
+  //  dlclose(dylib);
 }
 
