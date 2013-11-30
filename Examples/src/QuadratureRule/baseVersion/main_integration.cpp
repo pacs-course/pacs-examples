@@ -23,7 +23,7 @@ int main(int argc, char** argv){
   Mesh1D mesh(domain,nint);
   
   Quadrature s(Simpson(),mesh);
-  Quadrature m(QuadratureRuleHandler(new MidPoint),mesh);
+  Quadrature m(MidPoint(),mesh);
   Quadrature t(Trapezoidal(),std::move(mesh));
   // Now the mesh is empty
   cout<<" Now the mesh has "<<mesh.numNodes()<<" nodes"<<endl;
