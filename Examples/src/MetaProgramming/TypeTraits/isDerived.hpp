@@ -33,8 +33,8 @@ private:
 public:
 	/* An enum which is set at compile time to a values that depend
 	 on the outcome of the test */
-	enum {Yes=sizeof(test(static_cast<D*>(0)))==sizeof(_Yes)};
-	enum {No=! Yes };
+	enum {value=sizeof(test(static_cast<D*>(0)))==sizeof(_Yes)};
+	enum {No=! value };
 	IsDerived(){void(*p)(D*)=Constraints;}
 };
 
