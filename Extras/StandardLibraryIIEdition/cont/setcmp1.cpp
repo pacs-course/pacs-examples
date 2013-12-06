@@ -14,6 +14,10 @@
 using namespace std;
 
 // type for runtime sorting criterion
+// Using a functor: it contains a call operator that
+// compares two elements passed as a const reference.
+// The mode is used to select the ordering criterion.
+// Try to change it in the code to wee what happens.
 class RuntimeCmp {
   public:
     enum cmp_mode {normal, reverse};
@@ -43,19 +47,27 @@ typedef set<int,RuntimeCmp> IntSet;
 int main()
 {
     // create, fill, and print set with normal element order
-    // - uses default sorting criterion
+    // - uses default sorting criterion.
+    // In this case I do not need to 
+    // pass the sorting criterion to the constructor as an object of type
+    // RuntimeCmp. The set uses the standard constructor RuntimeCmp() to
+    // build the object used as comparison policy.
+   
     IntSet coll1 = { 4, 7, 5, 1, 6, 2, 5 };
     PRINT_ELEMENTS (coll1, "coll1: ");
 
     // create sorting criterion with reverse element order
+    // In this case I create an object of RuntimCmp type
     RuntimeCmp reverse_order(RuntimeCmp::reverse);
 
-    // create, fill, and print set with reverse element order
+    // create, fill, and print set with reverse element order:
+    // I pass the object to impose the wanted pcomparison policy.
     IntSet coll2(reverse_order);
     coll2 = { 4, 7, 5, 1, 6, 2, 5 };
     PRINT_ELEMENTS (coll2, "coll2: ");
 
-    // assign elements AND sorting criterion
+    // assign elements AND sorting criterion:
+    // Note that we are copying also the sorting criterium (as it should).
     coll1 = coll2;
     coll1.insert(3);
     PRINT_ELEMENTS (coll1, "coll1: ");
