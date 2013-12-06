@@ -38,15 +38,15 @@ int main(){
 
 	using namespace std;
 
-	cout<< "B Derives from A?    " <<  IsDerived<A,B>::Yes <<endl;
-	cout<< "C Derives from A?    " <<  IsDerived<A,C>::Yes <<endl;
+	cout<< "B Derives from A?    " <<  IsDerived<A,B>::value <<endl;
+	cout<< "C Derives from A?    " <<  IsDerived<A,C>::value <<endl;
 	//OK
 	IsDerived<A,B> testing;
 	// Fails!
-	//IsDerived<A,C>();
+	// IsDerived<A,C>();
 
 	//OK
 	Pippo<B> z;
 	// Fails
-//	Pippo<C> zz;
+	// Pippo<C> zz;
 }
