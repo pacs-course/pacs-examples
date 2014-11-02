@@ -29,6 +29,8 @@ int main(){
 	collection.push_back(new Triangle(p1,p2,p3));
 	collection.push_back(new Square(p0,p1,p2,p3));
 	collection.push_back(new Triangle(p4,p0,p3));
+	collection.push_back(new Triangle(p4,p0,p3));
+	collection.push_back(&p0);
 	// Visit the collection
 	CountShapes counter;
 	ComputeArea evaluateArea;

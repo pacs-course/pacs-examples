@@ -14,4 +14,11 @@ double square(double const& x)
   return x*x;
 };
 
+  double pippo(double const & x)
+  {
+  using namespace std;
+  return x*std::exp(x);
+  }
+
+
 }

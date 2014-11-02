@@ -58,7 +58,7 @@ else
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
   LDFLAGS+=-Wl,-rpath=. -Wl,-E
 endif
-
+#CXX=g++-4.7
 LIBLIB=-L$(PACS_LIB_DIR) -lquadrules
 #
 # You may have an include file also in the current directory
