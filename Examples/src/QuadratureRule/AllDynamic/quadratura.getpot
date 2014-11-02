@@ -1,5 +1,5 @@
-integrand=fsincos
+integrand=myfun
 udflib=./libudf.so
 library=./libmyrules.so
-#rule=Simpson
-rule=Trapezoidal
+rule=zzz
+#rule=Trapezoidal

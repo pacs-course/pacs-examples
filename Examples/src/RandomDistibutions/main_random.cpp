@@ -65,11 +65,12 @@ void distr (Distr d, Eng & e, const std::string& name)
  */
 int main()
 {
+  //  std::random_device re;
   // We use the knuth engine
-    std::knuth_b e;
+  //std::knuth_b e(re());
+  std::random_device e;
   
   // Try the random engine
-  //  std::random_device e;
   
   // Note the <>. It is compulsory, since it is a 
   // full specialization of a class template
