@@ -6,12 +6,12 @@
 #
 ############################################################
 #
-# The environmental variable PACS_ROOT should be set to the
+# The environment variable PACS_ROOT should be set to the
 # root directory where the examples reside. In practice, the directory
 # where this file is found. The resolution of PACS_ROOT is made in the
-# Makefile.h file, where other important variables are also set.
+# Makefile.inc file, where other important variables are also set.
 # The only user defined variable that must be set in this file is
-# the one indicating where Makefile.h resides
+# the one indicating where Makefile.inc resides
 
 MAKEFILEH_DIR=../../../
 #
@@ -59,10 +59,12 @@ $(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
-
+$(DEPEND): $(SRCS)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 
