@@ -30,7 +30,7 @@ public:
   bool operator () (std::string const & a, std::string const & b)
   {
     // Lexycografic comparison
-    for(unsigned int i=0;i<std::min(a.size(),b.size()); ++i){
+    for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
       if (std::toupper(a[i])!= std::toupper(b[i])) 
 	return std::toupper(a[i])<std::toupper(b[i]);
     }
