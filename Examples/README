@@ -22,6 +22,42 @@ $ cp Makefile.user Makefile.inc
 
 and edit it to suite your system.
 
+All makefiles include the file Makefile.inc in this directory and
+possibly the Makefile.inc file local to the example under
+consideration.  You should modify those files to suit your need.
+
+In particular, the user may modify the Makefile.inc to change some
+compilation option. The main Makefile.inc also sets the PACS_ROOT
+variable, which should indicate this directory (with full path). You
+may change it to suite your local installation by editing the file or
+by setting an environmental variable with the same name.
+
+Makefile.inc is included in all othe makefiles and it defines and exports the following make macros:
+
+PACS_ROOT the directory where the Examples resides
+TRILINOS_LIB_DIR and TRILINOS_INC DIR the directories where TRILINOS resides
+TRILINOS_SUFFIX (the suffix that may be used for some the naming scheme)
+CXX the c++ compiler of choiche
+CC aliases to CXX (for the linker)
+STDFLAGS contains the flags used for indicating the C++ standard used in compilation
+MPI_LIBDIR and MPI_INCDIR where to find mpi
+PACS_INC_DIR and PACS_LIB_DIR directory for library and include files related to exercises
+DOXIFILE Location of the configuration file for DOxygen used in the exercises
+CPPFLAGS Flags for the cpp preprocessor
+CXXFLAGS Flags for the c++ compiler
+DEPEND the file where dependence is autogenerate
+LDFLAGS FLages for the linker
+LDLIBS Common libraries (in the form -Ldir -llib)
+
+A local Makefile.inc may be contained (and included) in the various directories, when needed and may override some of the macros defined in the common Makefile.inc
+
+I recall that any macro may be overrlued by specifying it when calling make
+Example 
+
+make CXXFLAGS+=-DSOMETHING LDFLAGS=SOMETHINGELSE
+
+
+
 All examples are provided with a Makefile which accepts the following
 options (some Makefile may have additional options, reported in the
 README file specific for the example)
@@ -36,15 +72,10 @@ doc -creates directory doc and fills it with the documentation of the
 example produced by doxygen. The file DoxiFileCommon contains the common 
 doxygen configuration for all examples
 
-All makefiles include the file Makefile.inc in this directory and
-possibly the Makefile.inc file local to the example under consideration.
-You should modify those files to suit your need.
+library makes a library (whenever relevant)
 
-In particular, the user may modify the Makefile.inc to change some compilation
-option. The main Makefile.inc also sets the PACS_ROOT variable, which
-should indicate this directory (with full path). You may change it to suite
-your local installation by editing the file or by setting an environmental
-variable with the same name.
+install install everithing in PACS_LIB_DIR and PACS_INC_DIR
+
 
 Being all the first target of the makefile, to compile the examples is
 sufficient to type make. with make doc you compile the documentation.
@@ -54,4 +85,6 @@ To install some utilities used by different examples you must go to src/Utilitie
 make
 make install
 
-in this way a library called libpacs is installed in lib and some files are installed in include
+in this way a library called libpacs.a (and ist dyanamic equivalent
+libpacs.so) is installed in PACS_LIB_DIR and some files are installed in
+PACS_INC_DIR

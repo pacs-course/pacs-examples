@@ -5,17 +5,17 @@
 # This is the user defined part of the Makefile
 
 # The directory where the examples reside
-PACS_ROOT=/home/forma/workspace2/pacs/PACSCourse/Material/Examples
+export PACS_ROOT=/home/forma/workspace2/pacs/PACSCourse/Material/Examples
 # The directory with the Eigen (leave blank if they are in a standard directory)
-EIGEN_DIR=/usr/local/include/eigen3/
+export EIGEN_DIR=/usr/local/include/eigen3/
 
 OTHER_LIB_DIR=
 OTHER_INC_DIR=
 #
 # You need trilinos at least 10.10
 #
-TRILINOS_LIBDIR=-L/home/forma/lifev-env/trilinos-install/lib
-TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
+export TRILINOS_LIBDIR=-L/home/forma/lifev-env/trilinos-install/lib
+export TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
 #
 # Some istallations add tilinos_ to the name of the libraries
 # i.e. libtrilinos_teuchos.so. In that case set TRILINOS_SUFFIX=trilinos_
@@ -23,24 +23,92 @@ TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
 TRILINOS_SUFFIX=# To make sure there is no space!
 
 #
+# The C++ compiler
+#
+#CXX = g++ 
+#CXX = icc
+CXX = /opt/clang3.5/bin/clang++
+#
+# Since we are only uning c++ I set CC=CXX so that the linker LINK.o is correct
+# make has no separate macro for the linker!
+# If you need C to compiler but you still need the c++ liner do
+#CC=your favourite C compiler
+#LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
+#
+CC=$(CXX)
+#
+# Se CXX=icc for intel compiler
+#
+ifeq ($(findstring icc, $(CXX)),icc)
+inteldir=$(dir $(CXX))
+OTHER_LIB_DIR+=/usr/local/opt/intel/cc/9.0/lib
+endif
+#
+# Se CXX=clang for clang compiler
+#
+ifeq ($(findstring clang, $(CXX)),clang)
+OTHER_LIB_DIR+=/opt/clang3.5/lib
+endif
+#
+#  DEFINES: Possible -DXX statements
+# Example
+# -DNDEBUG disactivates asserts
+DEFINES=
+#
+#
+# Warning flags: Level of warning
+#
+WARNFLAGS=-Wall
+#
+# Optimization flags : May be selected by using the variable RELEASE
+#
+# -c       compile only, generate corresponding .o files
+# -g       generate code suitable for the debugger
+# -p       generate code suitable for the profiler
+# -O       attemp code optimizations
+#
+ifdef RELEASE
+OPTFLAGS = -O3
+DEFINES+=-DNDEBUG
+else
+OPTFLAGS = -g
+endif
+#
+# Flags for standard
+#
+ifeq ($(findstring clang, $(CXX)),clang)
+STANDARD=c++11
+# if you want c++14
+#STANDARD=c++14
+else
+STANDARD=c++11
+endif
+export STDFLAGS=-std=$(STANDARD)
+#
 # Mpi directories for library and includes
 #
 MPI_LIBDIR=
 MPI_INCDIR=-I/usr/lib/openmpi/include
+#
+# Name of additional libraries
+#
+LIBRARIES=
 ##
 #  END USER MODIFIABLE PART
 ##
+
+
 ifeq ($(PACS_ROOT),)
 export ROOT=/usr/local
 else
 export ROOT=$(PACS_ROOT)
 endif
 #
-# Libraries are stored here
+# PACS libraries are stored here
 #
 export PACS_LIB_DIR=$(PACS_ROOT)/lib
 #
-# Main include directory
+# Main PACS include directory
 #
 export PACS_INC_DIR=$(PACS_ROOT)/include
 #
@@ -51,57 +119,6 @@ export OTHER_LIB_DIR
 # Other include directories (if needed)
 #
 export OTHER_INC_DIR
-#
-# The C++ compiler
-#
-CXX = g++ 
-#CXX = icc
-CXX = /opt/clang/bin/clang++
-#
-# Se CXX=icc for intel compiler
-#
-ifeq ($(findstring icc, $(CXX)),icc)
-inteldir=$(dir $(CXX))
-CC=CXX
-OTHER_LIB_DIR+=/usr/local/opt/intel/cc/9.0/lib
-endif
-#
-# Optimization flags
-#
-OPTFLAGS = -g -Wall
-# -c       compile only, generate corresponding .o files
-# -g       generate code suitable for the debugger
-# -p       generate code suitable for the profiler
-# -O       attemp code optimizations
-#
-# Flags for standard
-#
-STDFLAGS=-std=c++0x
-#
-#  DEFINES: Possible -DXX statements
-# Example
-# -DNDEBUG disactivates asserts
-DEFINES=
-#
-#  SPECIAL SETTINGS FOR NON GCC COMPILERS
-#
-# Se CXX=icc for intel compiler
-#
-ifeq ($(findstring clang, $(CXX)),clang)
-CC=CXX
-OTHER_LIB_DIR+=/opt/clang/lib
-STDFLAGS=-std=c++11
-endif
-
-#
-# Name of additional libraries
-#
-LIBRARIES=
-#
-# MAke uses CC also for the loader
-# 
-CC =$(CXX)
-
 export CC
 export CXX
 # 
@@ -122,7 +139,6 @@ INCLS  = -I. -I./include $(includes)
 # collect all library dirs
 ALL_LIB_DIR=$(PACS_LIB_DIR) $(OTHER_LIB_DIR)
 LIBD := $(foreach lib,$(ALL_LIB_DIR),-L$(lib) )
-
 #
 # Set make macros
 #
@@ -135,7 +151,7 @@ export CCFLAGS=$(CXXFLAGS)
 #
 # name of file with dependencies
 #
-DEPEND=make.dep
+export DEPEND=make.dep
 #header files
 export LDFLAGS=$(OPTFLAGS) 
 export LDLIBS=$(LIBD) $(LIBRARIES)
