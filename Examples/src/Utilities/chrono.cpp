@@ -19,39 +19,47 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "chrono.hpp"
-// sysconf(_SC_CLK_TCK);
+#include<iostream>
 
 namespace Timings{
-
-  const long Chrono::_CPS=sysconf(_SC_CLK_TCK);
   
-  Chrono::Chrono():_t1(0),_ct1(0),_wallTime(0),_cpuTime(0){}
+  Chrono::Chrono():
+    startTime(std::chrono::steady_clock::now()),
+    stopTime(startTime)
+  {}
   
-  void Chrono::start(){
-    using namespace std;
-    tms temp;
-    times(&temp);
-    _t1 = (temp.tms_utime+temp.tms_stime);
-    _ct1= temp.tms_cutime+temp.tms_cstime;
-  }
+  void Chrono::start()
+  {
+    startTime=stopTime=std::chrono::steady_clock::now();
+      }
   
   void Chrono::stop()
   {
-    using namespace std;
-    tms temp;
-    times(&temp);
-    _cpuTime= double((temp.tms_utime+temp.tms_stime)-_t1)/_CPS;
-    _wallTime=_cpuTime+
-      double(temp.tms_cutime+temp.tms_cstime-_ct1)/_CPS;
+    stopTime=std::chrono::steady_clock::now();
+  }
+  
+  double Chrono::wallTime() const
+  {
+    using namespace std::chrono;
+    using duration = std::chrono::duration<double>;
+    duration time_span=duration_cast<duration>(stopTime-startTime);
+    return time_span.count();
   }
 
-std::ostream & operator <<(std::ostream & out,Chrono const &c)
-{
-  //out.setf(std::ios_base::scientific, std::ios_base::floatfield);
-  out<<"Total CPU Time= "<<c._wallTime<<" s, CPU Time="<<c._cpuTime<<" s"<<std::endl;
-  return out;
-}
+  double Chrono::wallTimeNow() const
+  {
+    using namespace std::chrono;
+    using duration = std::chrono::duration<double>;
+    duration time_span=duration_cast<duration>(stopTime-steady_clock::now());
+    return time_span.count();
+  }
 
+  std::ostream & operator <<(std::ostream & out,Chrono const &c)
+  {
+    out<<"Elapsed Time= "<<c.wallTime()<<" s"<<std::endl;
+    return out;
+  }
+  
 }
 
 
