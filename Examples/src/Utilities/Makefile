@@ -32,7 +32,7 @@ SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
-LIB_OBJS:=$(filter-out main%.o,$(OBJS))
+LIB_OBJS=$(filter-out main%.o test%.o,$(OBJS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 HEADERS+=GetPot
@@ -41,17 +41,17 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc library install
+.phony= all clean distclean doc library install test
 
-all: $(DEPEND) install
+all: $(DEPEND) install test
 
 library:$(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
 
 install: library
-	cp ./include/*.hpp ./include/GetPot $(PACS_INC_DIR)
+	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	-\rm -f $(EXEC) $(OBJS) 
+	-\rm -f $(EXEC) $(OBJS) test_chrono test_cppversion
 
 distclean:
 	$(MAKE) clean
@@ -60,6 +60,8 @@ distclean:
 
 doc:
 	doxygen $(DOXYFILE)
+
+test: test_chrono test_cppversion
 
 $(EXEC): $(OBJS)
 
@@ -70,14 +72,17 @@ $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 
 $(DYNAMIC_LIBFILE):
 	make clean
-	$(MAKE) CXXFLAGS=-fPIC $(LIB_OBJS)
+	$(MAKE) CXXFLAGS+=-fPIC $(LIB_OBJS)
 	$(CXX) -shared $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
 
 $(DEPEND): $(SRCS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
-
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
+
+
 
 
