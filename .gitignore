@@ -1,3 +1,5 @@
+/Examples/src/Utilities/test_cppversion
+/Examples/src/Utilities/test_chrono
 /Examples/#Makefile.user#
 # generated documentation
 Examples/src/*/doc/*
