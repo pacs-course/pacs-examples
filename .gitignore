@@ -1,3 +1,6 @@
+/Examples/src/DesignPatterns/AbstractFactory/main_AbstractFactory
+/Examples/src/DesignPatterns/Composite/main_composite
+/Examples/src/DesignPatterns/Visitor/main_Visitor
 /Examples/src/Utilities/test_cppversion
 /Examples/src/Utilities/test_chrono
 /Examples/#Makefile.user#
