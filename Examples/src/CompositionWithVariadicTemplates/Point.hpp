@@ -20,9 +20,21 @@ public:
   {
     return M_coordinates[i];
   }
+  
+  ////! Complex part: a constructor taking the composites
+  template<typename D=typename std::enable_if<sizeof...(Extensions)!=0,void>,typename ...T>
+    Point(T&& ...ext):Extensions(std::forward<T>(ext))...{};
+  //! Since I have defined a constructor I need to indicate the default
+  Point()=default;
 };
 
 
+//! A function for a Point
+/*! 
+  It works for any composite Point provided that:
+  \l the type of the coordinates is the same
+  \li the dimension is the same
+*/
 template <class PointExt1, class PointExt2>
 typename PointExt1::value_t dot(PointExt1 const &a, PointExt2 const & b)
 {

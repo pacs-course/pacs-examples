@@ -1,6 +1,7 @@
 #include "Point.hpp"
 #include "Id.hpp"
 #include "Bc.hpp"
+#include <iostream>
 int main()
 {
   using namespace Identifier;
@@ -21,5 +22,14 @@ int main()
   c.setBcType(BcType::Dirichlet);
   auto res=dot(a,b);
   /// auto res2=dot(a,e); ERROR dimension differs!!!
+  Id ident(5);
+  
+  Poin2dWithId pwi(ident);
+  std::cout<<pwi.getId()<<std::endl;
+  Poin2dWithId z=pwi;
+  std::cout<<z.getId()<<std::endl;
+  Poin2dWithId K(3);
+  std::cout<<K.getId()<<std::endl;
+  
 }
 
