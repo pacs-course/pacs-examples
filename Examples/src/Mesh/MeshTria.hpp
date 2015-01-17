@@ -20,67 +20,80 @@ class MeshTria;
  * Used to allow mesh readers to access private mesh
  * data.
  */
-struct MeshHandler{
+  struct MeshHandler{
     MeshHandler(MeshTria &mesh);
-	std::vector<Point> & pointList;
+    std::vector<Point> & pointList;
     std::vector<Triangle> & elementList;
-	std::vector<Edge> & edgeList;
-	std::vector<Edge> & bEdgeList;
-	MeshTria & m;
+    std::vector<Edge> & edgeList;
+    std::vector<Edge> & bEdgeList;
+    MeshTria & m;
 };
 
 
 //! Base class for all readers
-/*!
- * This class is clonable so that the Mesh class
- * may own a copy of a derived class
- */
 class MeshReader{
 public:
-	MeshReader(){};
-	virtual ~MeshReader(){};
-	virtual int read(MeshTria& mesh, std::string const & filename)=0;
-	virtual std::auto_ptr<MeshReader> clone()const=0;
-	void setverbose(bool set=true){M_verbose=set;};
+  MeshReader(bool verbose=false):M_verbose(verbose){};
+  virtual ~MeshReader(){};
+  //! Reads a mesh
+  virtual int read(MeshTria& mesh, std::string const & filename)=0;
+  //! set verbosity
+  void setverbose(bool set=true){M_verbose=set;};
 protected:
-	virtual MeshReader & operator=(MeshReader const &);
-	MeshReader(MeshReader const & m):M_verbose(m.M_verbose){};
-protected:
-	bool M_verbose;
+  bool M_verbose;
 };
 
 
-class MeshTria {
-public:
-	typedef unsigned int size_type;
-	MeshTria();
-	MeshTria(MeshReader const &);
-	MeshTria(const MeshTria &);
-	MeshTria & operator =(MeshTria const &);
-	~MeshTria(){};
-	friend struct MeshHandler;
-    void setReader(MeshReader const &);
+  class MeshTria {
+  public:
+    typedef std::size_t size_type;
+    //! Constructor
+    MeshTria()=default;
+    //! Reads a mesh form a file using a reader
+    MeshTria(std::string const filename, MeshReader &);
+    MeshTria(const MeshTria &);
+    MeshTria(MeshTria &&)=default;
+    //!Assignement operators
+    MeshTria & operator =(MeshTria const &);
+    MeshTria & operator =(MeshTria&&)=default;
+
+    friend struct MeshHandler;
+    //! Number of points
     size_type num_points()const {return M_pointList.size();}
+    //! ith point
     Point const & point(size_type i)const {return M_pointList[i];}
+    //! Number of elements
     size_type num_elements()const {return M_elementList.size();}
+    //! ith element
+    Triangle const & element(size_type i)const {return M_elementList[i];}
+    //! Ith element with specific name
     Triangle const & triangle(size_type i)const {return M_elementList[i];}
+    //! Number of edges
     size_type num_edges()const {return M_edgeList.size();}
+    //! ith Edge
     Edge const & edge(size_type i)const {return M_edgeList[i];}
+    //! Are edges stored?
+    bool has_Edges()const{return ! M_edgeList.empty();}
+    //! Number of boundary edges
     size_type num_bEdges()const {return M_bEdgeList.size();}
+    //! ith edge
     Edge const & bEdge(size_type i)const {return M_bEdgeList[i];}
+    //! Are boundary edges stored
     bool has_bEdges()const{return ! M_bEdgeList.empty();}
-    int readMesh(std::string const & file);
-	double measure()const;
-	bool checkmesh()const;
-private:
-	std::vector<Point> M_pointList;
-	std::vector<Triangle> M_elementList;
-	std::vector<Edge> M_edgeList;
-	std::vector<Edge> M_bEdgeList;
-	std::auto_ptr<MeshReader> M_reader;
-};
-
-	std::ostream & operator<<(std::ostream &, MeshTria const&);
+    //! Read a mesh from file using a reader
+    int readMesh(std::string const & file, MeshReader &);
+    //! measure of the domain
+    double measure()const;
+    //! Test mesh consistency
+    bool checkmesh()const;
+  private:
+    std::vector<Point> M_pointList;
+    std::vector<Triangle> M_elementList;
+    std::vector<Edge> M_edgeList;
+    std::vector<Edge> M_bEdgeList;
+  };
+  
+  std::ostream & operator<<(std::ostream &, MeshTria const&);
 }
 
 #endif /* MESHTRIA_H_ */
