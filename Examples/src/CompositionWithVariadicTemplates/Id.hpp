@@ -9,6 +9,7 @@ namespace Identifier
     unsigned int M_id;
   public:
     Id(): M_id(notAnId){};
+    Id(unsigned int i):M_id(i){};
     void setId(unsigned int const & i)
     {
       M_id=i;
