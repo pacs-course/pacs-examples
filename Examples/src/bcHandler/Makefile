@@ -15,33 +15,48 @@
 
 MAKEFILEH_DIR=../../
 #
-LIBNAME=bcHandler
+# You may have an include file also in the current directory
+#
+-include Makefile.inc
+
+# Say no if you want full optimization
+export DEBUG=yes
+#CXX=g++-4.9
+CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
+STANDARD=c++11
+#
+LIBNAME=bcCond
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
 include $(MAKEFILEH_DIR)/Makefile.inc
-LIBRARIES+=-L. -l$(LIBNAME)
+LIBRARIES+=-L. -l$(LIBNAME) -dynamic -L/usr/local/lib -lmuparser
+LDLIBS+=$(LIBRARIES)
+INCLUDES=-I. -I(
 
 ifeq ($(LIBTYPE),DYNAMIC)
- EXTRA_CXXFLAGS=-fPIC
+ CXXFLAGS+=-fPIC
  export LIBRARY=$(DYNAMIC_LIBFILE)
  LDFLAGS+=-dynamic 
 else
- EXTRA_CXXFLAGS=
  export LIBRARY=$(STATIC_LIBFILE)
  LDFLAGS+=-static
 endif
-export DEBUG
+
 ifeq ($(DEBUG),yes)
-  OPTFLAGS=-g -O0
-  LDFLAGS+=-Wl,-rpath=.
+  OPTFLAGS=-g
+  ifeq ($(LIBTYPE),DYNAMIC)
+   LDFLAGS+=-Wl,-rpath . # If debug we use the local dynamic libraries
+  endif
 else
   OPTFLAGS=-O3
+  CPPFLAGS+=-DNDEBUG
 endif
-#
-# You may have an include file also in the current directory
-#
--include Makefile.inc
+ifeq ($(FPEABORT),yes)
+ EXEC_CPPFLAGS=-DFPE_ABORT
+else
+ EXEC_CPPFLAGS=
+endif
 
 #
 # The general setting is as follows:
@@ -54,11 +69,11 @@ SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
-LIB_SRCS:=$(filter-out main%.cpp,$(SRCS))
-LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
-LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp)
-OTHER_OBJS:=rational.o
-OTHER_SRCS:=rational.cpp
+LIB_SRCS=$(filter-out main%.cpp,$(SRCS))
+LIB_OBJS=$(LIB_SRCS:.cpp=.o)
+LIB_HEADERS=$(LIB_SRCS:.cpp=.hpp)
+OTHER_OBJS=
+OTHER_SRCS=
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -66,8 +81,9 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 EXEC_OBJS=$(exe_sources:.cpp=.o)
 EXEC_SRCS:=$(exe_sources)
+
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc static dynamic depend install
+.PHONY: all clean distclean doc static dynamic depend install exec library
 
 .DEFAULT_GOAL = all
 
@@ -75,23 +91,20 @@ all:
 	@echo "make static makes static library and executable"
 	@echo "make dynamic makes dynamic library and executable"
 	@echo "make depend just makes dependency file"
-	@echo "make exec <LIBTYPE=STATIC|DYNAMIC> makes just executable"
-	@echo "make clean cleans all not library"
+	@echo "make clean cleans all but not not library"
 	@echo "make distclean cleans all"
 	@echo "make install installs"
-	@echo "macro DEBUG=yes  activates debugging"
+	@echo "macro DEBUG=no  deactivates debugging"
 	@echo "macro FPEABORT=yes  activates abort on FPE"
-
+	@echo "Default debug setting:" $(DEBUG)
 
 depend: $(DEPEND)
 
 static:
-	-rm $(LIB_OBJS)
-	$(MAKE) library LIBTYPE=STATIC 
+	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	-rm $(LIB_OBJS)
-	$(MAKE) library LIBTYPE=DYNAMIC
+	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
@@ -102,38 +115,45 @@ install:
 	cp $(LIB_HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	$(RM) $(EXEC) $(OBJS)
+	-\rm -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	$(RM) ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
-	$(RM) *.out *.bak *~
+	-\rm -r -f ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(DEPEND) 2>/dev/null
+	-\rm *.out *.bak *~ 2>/dev/null
 
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(EXEC_OBJS) $(OTHER_OBJS)
-	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
+main_testbcContainer: $(LIBRARY) main_testbcContainer.o
+	$(CXX) $(CXXFLAGS) main_testbcContainer.o $(LDFLAGS) $(LDLIBS) -o $@
 
-$(EXEC_OBJS): $(EXEC_SRCS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $?
+main_testbcContainer.o: main_testbcContainer.cpp
 
-$(OTHER_OBJS): $(OTHER_SRCS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $?
+main_testMuParser: main_testMuParser.o
+	$(CXX) $(CXXFLAGS) main_testMuParser.o $(LDFLAGS) -dynamic -lmuparser -o $@
+
+main_testMuParser.o: main_testMuParser.cpp
+#$(EXEC_OBJS): $(EXEC_SRCS)
+#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $?
+
+#$(OTHER_OBJS): $(OTHER_SRCS)
+#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $?
 
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
-	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
+#	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
 $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 	$(CXX) -shared $(OPTFLAGS) $(LIBD) $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
 
-$(LIB_OBJS): $(LIB_SRCS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
+#$(LIB_OBJS): $(LIB_SRCS)
+#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
-
+$(DEPEND): $(SRCS)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 

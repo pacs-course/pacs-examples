@@ -7,18 +7,20 @@
 #ifndef BC_CONTAINER_HPP_
 #define BC_CONTAINER_HPP_
 #include <vector>
+#include <set>
 #include "bound_cond.hpp"
 namespace FEM{
   //! A simple bc container
-  typename std::vector<BCBase> BCContainer;
-
+  using BCContainer=std::vector<BCBase>;
+  
   //! Extracts all boundary conditions of a given type
-  std::vector<BCContainer::const_iterator> extractBCWithType(BCContainer const & bcCOntainer,BCType const & type);
-
+  std::vector<FEM::BCContainer::const_iterator> extractBCWithType(BCContainer const & bcCOntainer,BCType const & type);
+  
   //! Extracts all boundary conditions of a given name
   std::vector<BCContainer::const_iterator> extractBCWithName(BCContainer const & bcCOntainer,BCName const & name);
   
-  void addToBCContainer(BCName const & name, BCType const & type,
+  //! Utility to add a bc to the container
+  void addToBCContainer( BCType const & type, BCName const & name,
 			BCFun const & f, BCContainer & bcContainer);
 }
   
