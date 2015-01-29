@@ -18,7 +18,10 @@ namespace Operation
 template <typename T>
 struct Plus
 {
-    T operator()( T const & e1, T const & e2 ) const { return ( e1 + e2 ); }
+    T operator() ( T const& e1, T const& e2 ) const
+    {
+        return ( e1 + e2 );
+    }
 };
 
 /*!
@@ -28,7 +31,10 @@ struct Plus
 template <typename T>
 struct Minus
 {
-    T operator()( T const & e1, T const & e2 ) const { return ( e1 - e2 ); }
+    T operator() ( T const& e1, T const& e2 ) const
+    {
+        return ( e1 - e2 );
+    }
 };
 
 /*!
@@ -38,7 +44,10 @@ struct Minus
 template <typename T>
 struct Multiply
 {
-    T operator()( T const & e1, T const & e2 ) const { return ( e1 * e2 ); }
+    T operator() ( T const& e1, T const& e2 ) const
+    {
+        return ( e1 * e2 );
+    }
 };
 
 /*!
@@ -48,7 +57,10 @@ struct Multiply
 template <typename T>
 struct Divide
 {
-    T operator()( T const & e1, T const & e2 ) const { return ( e1 / e2 ); }
+    T operator() ( T const& e1, T const& e2 ) const
+    {
+        return ( e1 / e2 );
+    }
 };
 
 /*!
@@ -58,7 +70,10 @@ struct Divide
 template <typename T>
 struct Exp
 {
-    T operator()( T const & e ) const { return std::exp( e ); }
+    T operator() ( T const& e ) const
+    {
+        return std::exp ( e );
+    }
 };
 
 } // namespace Operation
