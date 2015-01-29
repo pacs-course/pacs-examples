@@ -26,17 +26,17 @@ int main()
     auto expr = ( x + 2. ) * 3.; // << c++11 here!
 
     // evaluate the expression in a given point
-    std::cout << eval( expr, 3. ) << std::endl;
+    std::cout << eval ( expr, 3. ) << std::endl;
 
     // integrate e^x on [0.,1.] with the midpoint rule on 5 intervals
-    std::cout << Integrate::midPoint( exp(x), 0., 1., 5 ) << std::endl;
+    std::cout << Integrate::midPoint ( exp (x), 0., 1., 5 ) << std::endl;
 
     // check convergence of the midpoint rule wrt an analytical solution
-    double analyticalValue = exp(1.) - exp(0.);
-    for( int n = 10; n < 100; n *= 2 )
+    double analyticalValue = exp (1.) - exp (0.);
+    for ( int n = 10; n < 100; n *= 2 )
     {
-        double intValue = Integrate::midPoint( exp(x), 0., 1., n );
-        double error = std::fabs( intValue - analyticalValue );
+        double intValue = Integrate::midPoint ( exp (x), 0., 1., n );
+        double error = std::fabs ( intValue - analyticalValue );
         std::cout << "error with " << n << " intervals: " << error << std::endl;
     }
 
