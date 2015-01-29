@@ -12,16 +12,7 @@
 #include <iostream>
 #include <functional>
 
-namespace FEM {
-  enum BCType {
-    Dirichlet, Neumann, Robin, Generic, Other
-  };
-  
-  //! The type used to identify a boundary condition.
-  typedef std::string BCName;
-  
-  //! This struct encapsulates the boundary conditions identifiers.
-  /*!
+  /*! \file bound_cond.hpp
    *  Boundary condition identifiers are formed by a BCType entry,
    *  which select the type of boundary conditions, and a string,
    *  which gives a name of the BC within that type.  For instance:
@@ -34,20 +25,16 @@ namespace FEM {
    *  a BCName should have an ordering since we may use it later as a
    *  key.
    */
-  struct BCId{
-    BCId(BCType t, BCName n):type(t),name(n){};
-    //! the type
-    BCType type;
-    //! the name
-    BCName name;
-  };
 
-  //! Utility function which builds an ID.
-  inline BCId make_BCId(BCType typ, BCName const & n){return BCId(typ,n);}
-  
+namespace FEM {
+
+  //! The type
+  enum BCType { Dirichlet=1, Neumann=2, Robin=3, Generic=4, Other=5};
+  //! The name used to identify a boundary condition.
+  typedef std::string BCName;
   //! The type of the function  which imposes the bc (C++11 only).
-  typedef std::function<double (double const t, double const * coord)> BcFun;
-  
+  using BCFun=std::function<double (double const t, double const * coord)>;
+
   //! The zero function.
   extern BCFun zerofun;
 
@@ -57,6 +44,10 @@ namespace FEM {
   //! A helper function that translates an int into a BCName.
   BCName intToBCName(int i);
   
+  //! Type of the identifiers holding the index of the objects where the bc is imposed
+  using Id=std::size_t;
+  
+
   //! A class for holding BConditions
   /*!This is a concrete base class to implement boundary conditions in a
    * finite element code. A boundary condition is identified by a type,
@@ -73,33 +64,55 @@ namespace FEM {
    * the boundary condition the function ha as argument the time and the
    * coordinate of a point.
    */
-  class BCBase: public BCId
+  class BCBase
   {
   public:
     //! Constructor using string as names
     explicit  BCBase(BCType t=Dirichlet,
 		     BCName n = BCName("Homogeneous"),
-		     BcFun fun = zerofun):BCId(t,n),entities_(),fun_(fun){};
-    //! Change the identifier
-    void set_Id(BCId const & id);
+		     BCFun fun = zerofun):
+      M_t(t),
+      M_name(n),
+      M_fun(fun){};
+    //! Change the name
+    void set_name(BCName const & n)
+    {
+      M_name=n;
+    }
+    //! Change the type
+    void set_type(BCType const & t)
+    {
+      M_t=t;
+    }
     //! Changes the function
-    void set_fun(BCFun const f)const{fun_ = f;}
-    // Returns the name
-    BCName name()const {return this->name;}
-    // Returns the type
-    BCType type()const {return this->type;}
-    //! Applies boundary condition
-    double apply(double const t, double const * coord) const {
-      return fun_(t,coord);
+    void set_fun(BCFun const & f)
+    {
+      M_fun=f;
     }
     //! It sets the entities to a new value
-    void set_entities(std::vector<int> const & e);
-    //! It returns the vector of entity index for any use (const version)
-    std::vector<int> const & entities() const {return entities_;}
-    void showMe(std::ostream & stream=std::cout) const;
+    /*
+      \param e Any standard container of Ids that can be assigned to a vector<Id>
+     */
+    template<typename EntityList>
+    void set_entities(EntityList const& e)
+    {
+      M_entities.assign(e.cbegin(),e.cend());
+    }
+
+    // Returns the name
+    BCName name()const {return this->M_name;}
+    // Returns the type
+    BCType type()const {return this->M_t;}
+    //! Returns the vector of entity index for any use (const version)
+    std::vector<int> const & entities() const {return M_entities;}
+    //! Applies boundary condition
+    double apply(double const t, double const * coord) const;
+    std::ostream & showMe(std::ostream & stream=std::cout) const;
   protected:
-    std::vector<int> entities_;
-    BcFun fun_;
+    BCType M_t;
+    BCName M_name;
+    BCFun M_fun;
+    std::vector<int> M_entities;
   };
   
   //! A predicate to test if a bc has a given type.
