@@ -1,44 +1,47 @@
 #ifndef  __HHH_CRTP_HH__
 #define  __HHH_CRTP_HH__
-#include <iostream>
 //! @file crtp.hpp
-//! @brief An example of Curiusly recurring template patterns
+//! @brief An example of Curiusly Recurring Template Patterns
 
 //! Base class
 template<typename T>
 class Base{
  public:
   //! Delegates to derived class
-  void fun(double const & x){
-    leaf().fun(x);}
+  double fun(double const & x)
+  {
+    return derived().fun(x);
+  }
   //! Example with a static function
-  static void fstatic(){T::fstatic();}
+  static constexpr int fstatic(){return T::fstatic();}
 private:
   //! Returns myself as derived
-  T & leaf(){return static_cast<T &>(*this);}
+  T & derived(){return static_cast<T &>(*this);}
+  //! Const version
+  T const & derived() const {return static_cast<T &>(*this);}
 };
 
 //!Derived class
-class Derived: public Base<Derived>
+class Derived1: public Base<Derived1>
 {
 public:
   //!Implementation of function fun
-  void fun(double const & x){
-    std::cout<<"In the Derived. x="<<x<<std::endl;
-  }
+  double fun(double const & x);
   //! Implementation of the static function.
-  static void fstatic(){std::cout<<"Static function in derived"<<std::endl;}
+  static constexpr int fstatic(){return N;}
+private:
+  static const int N=1;
 };
 //!Derived class
 class Derived2: public Base<Derived2>
 {
 public:
   //!Implementation of function fun
-  void fun(double const & x){
-    std::cout<<"In Derived  x="<<x<<std::endl;
-  }
+  double fun(double const & x);
   //! Implementation of the static function.
-  static void fstatic(){std::cout<<"Static function in derived2"<<std::endl;}
+  static constexpr int fstatic(){return N;}
+private:
+  static const int N=2;
 };
 
 #endif
