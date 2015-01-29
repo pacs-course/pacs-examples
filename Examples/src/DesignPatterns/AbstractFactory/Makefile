@@ -13,7 +13,7 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-MAKEFILEH_DIR=../../..
+MAKEFILEH_DIR=../../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
@@ -49,8 +49,8 @@ clean:
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm -f *.out *.bak *~
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
@@ -59,10 +59,11 @@ $(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
-
+$(DEPEND): $(SRCS)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 
