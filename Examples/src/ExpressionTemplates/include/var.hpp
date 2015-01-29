@@ -17,10 +17,13 @@ namespace Var
 struct Literal
 {
     //! @brief constructor that sets the Literal to M_val
-    Literal( double val ): M_val( val ) {}
+    Literal ( double val ) : M_val ( val ) {}
 
     //! @brief return the value of the Literal
-    double eval( double /*dummy*/ ) const { return M_val; }
+    double eval ( double /*dummy*/ ) const
+    {
+        return M_val;
+    }
 private:
     const double M_val;
 };
@@ -35,15 +38,24 @@ template <typename T = double>
 struct Identity
 {
     //! @brief return the value that is passed
-    T eval( T val ) const { return val; }
+    T eval ( T val ) const
+    {
+        return val;
+    }
 };
 
 /*!
  * @class exprTraits
  * this structs are traits to map pod types to Var namespace correspondences
  */
-template <class exprT> struct exprTraits         { typedef exprT   expr_Type; };
-template <>            struct exprTraits<double> { typedef Literal expr_Type; };
+template <class exprT> struct exprTraits
+{
+    typedef exprT   expr_Type;
+};
+template <>            struct exprTraits<double>
+{
+    typedef Literal expr_Type;
+};
 //template <>            struct exprTraits<int>    { typedef Literal expr_Type; };
 
 } // namespace Var

@@ -15,14 +15,14 @@ namespace Integrate
  * @brief mid-point integration rule
  */
 template <typename exprT>
-double midPoint( exprT e, double from, double to, int n )
+double midPoint ( exprT e, double from, double to, int n )
 {
     double sum = 0.;
     double h = ( to - from ) / n;
     for ( int i = 0; i < n; i++ )
     {
         double mid = ( i + 0.5 ) * h ;
-        sum += e.eval( mid ) * h;
+        sum += e.eval ( mid ) * h;
     }
     return sum;
 }
@@ -31,7 +31,7 @@ double midPoint( exprT e, double from, double to, int n )
  * @brief trapezoidal integration rule
  */
 template <typename exprT>
-double trapez( exprT e, double from, double to, int n )
+double trapez ( exprT e, double from, double to, int n )
 {
     double sum = 0.;
     double h = ( to - from ) / n;
@@ -39,7 +39,7 @@ double trapez( exprT e, double from, double to, int n )
     {
         double left = i * h;
         double right = left + h;
-        sum += 0.5 * ( e.eval( left ) + e.eval( right ) ) * h;
+        sum += 0.5 * ( e.eval ( left ) + e.eval ( right ) ) * h;
     }
     return sum;
 }
