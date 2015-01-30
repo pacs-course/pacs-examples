@@ -18,9 +18,9 @@ MAKEFILEH_DIR=../../
 LIBNAME=fpe
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
-
 include $(MAKEFILEH_DIR)/Makefile.inc
 LIBRARIES+=-L. -l$(LIBNAME)
+LDLIBS+=$(LIBRARIES)
 
 ifeq ($(LIBTYPE),DYNAMIC)
  EXTRA_CXXFLAGS=-fPIC
@@ -31,12 +31,13 @@ else
  export LIBRARY=$(STATIC_LIBFILE)
  LDFLAGS+=-static
 endif
-export DEBUG
+DEBUG=yes#by default
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g -O0
   LDFLAGS+=-Wl,-rpath=.
 else
   OPTFLAGS=-O3
+  CPPFLAGS=-DNDEBUG
 endif
 ifeq ($(FPEABORT),yes)
  EXEC_CPPFLAGS=-DFPE_ABORT
@@ -59,11 +60,11 @@ SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
-LIB_SRCS:=myexceptions.cpp trapfpe.cpp
+LIB_SRCS:=trapfpe.cpp
 LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
 LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp)
-OTHER_OBJS:=rational.o
-OTHER_SRCS:=rational.cpp
+OTHER_OBJS=
+OTHER_SRCS=
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -83,7 +84,7 @@ all:
 	@echo "make clean cleans all not library"
 	@echo "make distclean cleans all"
 	@echo "make install installs"
-	@echo "macro DEBUG=yes  activates debugging"
+	@echo "macro DEBUG=no  deactivates debugging"
 	@echo "macro FPEABORT=yes  activates abort on FPE"
 
 depend: $(DEPEND)
@@ -133,9 +134,11 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 $(LIB_OBJS): $(LIB_SRCS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	$(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
+$(DEPEND): $(SRCS)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 
 -include $(DEPEND)
