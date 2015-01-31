@@ -3,6 +3,7 @@
 //! @detail We compare the evaluation of a polygon with the standard rule
 //!         against Horner's rule.
 
+#include <iostream>
 #include <vector>
 #include <cmath>
 #include "chrono.hpp"

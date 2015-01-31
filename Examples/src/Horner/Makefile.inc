@@ -1,4 +1,1 @@
-CXXFLAGS=-O3
-#CXXFLAGS=-O0 # no optim 
-LDFLAGS+=-Wl,-rpath,.:$(PACS_LIB_DIR)
-LDLIBS=-L$(PACS_LIB_DIR) -lpacs
+LDLIBS+=-L$(PACS_LIB_DIR) -lpacs
