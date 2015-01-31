@@ -1,38 +1,10 @@
 #include <iostream> // input output
-#include <fstream>// input output on file
 #include <cmath> // (for sqrt)
 #include <vector>
+#include "readParameters.hpp"
+#include "GetPot.hpp"
 /*!
- * @defgroup GlobConst Global Constants
- *
- *   It would have been more proper to create a struct.
- *@{
- */
-//! Max number of grid elements
-const int   MMAX=501;
-//! max number of iteration for Gauss-Siedel
-const int   itermax=1000000;
-//! Tolerance for stopping criterion
-const double  toler=1e-8;
-//! Bar length
-const double L=40.;
-//! First longitudinal dimension
-const double a1=4.;
-//! Second longitudinal dimension
-const double a2=50.;
-//! Dirichlet condition
-const double To=46.;
-//! External temperature 
-const double Te=20.;
-//! Conductivity
-const double k=0.164;
-//! Convection coefficient
-const double hc=1.e-6*200.;
-//! Precomputed coefficient for adimensional form of equation
-const double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
-/*!@}*/
-
-/*! 
+  @file main.cpp
   @brief Temperature distribution in a 1D bar.
 
   @detail
@@ -48,18 +20,51 @@ const double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
     "Simulation numerique an C++" di I. Danaila, F. Hecht e
     O. Pironneau.
 */
-int main( )
+//! helper function
+void printHelp()
+{
+  std::cout<<"USAGE: main [-h] [-v] -p parameterFile (default: parameters.pot)"<<std::endl;
+  std::cout<<"-h this help"<<std::endl;
+  std::cout<<"-v verbose output"<<std::endl;
+}
+
+//! main program
+int main(int argc, char** argv)
 {
   using namespace std; // avoid std::
-  // Build the grid
-  int M;
-  do{
-    cout << "Number of elements (1<N<"<<MMAX<<")"<<endl;
-    cin  >> M;
-  }while (M<=1 || M>=MMAX);
+  int status(0); // final program status
+  GetPot   cl(argc, argv);
+  if( cl.search(2, "-h", "--help") )
+    {
+      printHelp();
+      return 0;
+    }
+  // check if we want verbosity
+  bool verbose=cl.search(1,"-v");
+  // Get file with parameter values
+  string filename = cl.follow("parameters.pot","-p");
+  cout<<"Reading parameters from "<<filename<<std::endl;
+  // read parameters
+  const parameters param=readParameters(filename,verbose);
+  // Transfer parameters to local variables
+  // I use references to save memory (not really an issue here, it is just
+  // to show a possible  use of references)
+  const int&    itermax= param.itermax;   //max number of iteration for Gauss-Siedel
+  const double& toler=param.toler;   // Tolerance for stopping criterion
+  const double& L= param.L;  // Bar length
+  const double& a1=param.a1; // First longitudinal dimension
+  const double& a2=param.a2; //  Second longitudinal dimension
+  const double& To=param.To; // Dirichlet condition
+  const double& Te=param.Te; // External temperature (Centigrades)
+  const double& k=param.k;  // Thermal conductivity
+  const double& hc=param.hc; // Convection coefficient
+  const int&    M=param.M; // Number of grid elements
   
-  
-  double h=1./M;
+  //! Precomputed coefficient for adimensional form of equation
+  const double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
+
+  // mesh size
+  const double h=1./M;
   
   // Solution vector
   vector<double> theta(M+1);
@@ -68,7 +73,7 @@ int main( )
   // of T
   
   theta[0]=(To-Te)/Te;       //Condition at x=0
-  for(int m=1;m <= M;m++)
+  for(unsigned int m=1;m <= M;m++)
     theta[m]=(1.-m*h)*(To-Te)/Te;
   
   // Gauss-Seidel
@@ -82,9 +87,10 @@ int main( )
 
 	 // first M-1 row of linear system
          for(int m=1;m < M;m++)
-         {   xnew  = (theta[m-1]+theta[m+1])/(2.+h*h*act);
-          epsilon += (xnew-theta[m])*(xnew-theta[m]);
-          theta[m] = xnew;
+         {   
+	   xnew  = (theta[m-1]+theta[m+1])/(2.+h*h*act);
+	   epsilon += (xnew-theta[m])*(xnew-theta[m]);
+	   theta[m] = xnew;
          }
 
 	 //Last row
@@ -98,8 +104,11 @@ int main( )
     if(iter<itermax)
       cout << "M="<<M<<"  Convergence in "<<iter<<" iterations"<<endl;
     else
-      cout << "NOT CONVERGING in "<<itermax<<" iterazions "<<
-	"||dx||="<<sqrt(epsilon)<<endl;
+      {
+	cerr << "NOT CONVERGING in "<<itermax<<" iterations "<<
+	  "||dx||="<<sqrt(epsilon)<<endl;
+	status=1;
+      }
 
  // Analitic solution
 
@@ -115,7 +124,7 @@ int main( )
        for(int m = 0; m<= M; m++)
 	 // \t writes a tab 
          f<<m*h*L<<"\t"<<Te*(1.+theta[m])<<"\t"<<thetaa[m]<<endl;
-
-     f.close();
-     return 0;
+       
+       f.close();
+       return status;
 }
