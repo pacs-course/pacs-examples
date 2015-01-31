@@ -5,7 +5,7 @@
 # This is the user defined part of the Makefile
 
 # The directory where the examples reside
-PACS_ROOT=/home/forma/workspace2/pacs/PACSCourse/Material/Examples
+PACS_ROOT=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
 # The directory with the Eigen (leave blank if they are in a standard directory)
 EIGEN_DIR=/usr/local/include/eigen3/
 
@@ -21,6 +21,16 @@ TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
 # i.e. libtrilinos_teuchos.so. In that case set TRILINOS_SUFFIX=trilinos_
 # The
 TRILINOS_SUFFIX=# To make sure there is no space!
+#
+# Mpi directories for library and includes
+#
+MPI_LIBDIR=
+MPI_INCDIR=-I/usr/lib/openmpi/include
+
+#
+# Name of additional libraries
+#
+LIBRARIES=
 
 #
 # The C++ compiler
@@ -86,25 +96,9 @@ else
 STANDARD=c++11
 endif
 export STDFLAGS=-std=$(STANDARD)
-#
-# Mpi directories for library and includes
-#
-MPI_LIBDIR=
-MPI_INCDIR=-I/usr/lib/openmpi/include
-#
-# Name of additional libraries
-#
-LIBRARIES=
 ##
 #  END USER MODIFIABLE PART
 ##
-
-
-ifeq ($(PACS_ROOT),)
-export ROOT=/usr/local
-else
-export ROOT=$(PACS_ROOT)
-endif
 #
 # PACS libraries are stored here
 #
@@ -145,7 +139,7 @@ LIBD := $(foreach lib,$(ALL_LIB_DIR),-L$(lib) )
 # Set make macros
 #
 export CPPFLAGS=$(INCLS) $(DEFINES)
-export CXXFLAGS=$(OPTFLAGS) $(STDFLAGS)
+export CXXFLAGS=$(OPTFLAGS) $(STDFLAGS) $(WARNFLAGS)
 #
 # For C Programs 
 #
