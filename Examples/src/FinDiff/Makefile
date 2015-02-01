@@ -42,7 +42,18 @@ EXEC=$(exe_sources:.cpp=)
 
 .DEFAUL_GOAL = all
 
-all: $(DEPEND) main_findiff 
+all: $(DEPEND) main_float main_double main_extended
+
+main_float: main_findiff.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(STDFLAGS) -DSINGLE_PRECISION -o $@ $<
+
+
+main_double: main_findiff.cpp
+	$(CXX) $(CPPFLAGS)  $(CXXFLAGS) $(STDFLAGS)  -o $@ $<
+
+main_extended: main_findiff.cpp
+	$(CXX) $(CPPFLAGS)  $(CXXFLAGS) $(STDFLAGS) -DEXTENDED_PRECISION -o $@ $<
+
 
 run:
 	$(MAKE) all
@@ -64,7 +75,10 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 
 
