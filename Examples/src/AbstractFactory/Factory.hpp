@@ -8,7 +8,7 @@
 #include <type_traits>
 namespace GenericFactory{
   
-  /*! A generic factory. 
+  /*! @brief A generic factory.
     
     It is implemented as a Singleton. The compulsory way to 
     access a method is Factory::Instance().method().
@@ -39,7 +39,7 @@ namespace GenericFactory{
       a function pointer. Here I prefer to use a function wrapper instead.
       I return a unique_ptr (C++11). This can make the handling more complex
       but it is much safer with respect to memory leaks. A simpler version
-      may use a bare pointer and return type.
+      may use a bare pointer as return type.
     */
     typedef  Builder Builder_type;
     //! Method to access the only instance of the factory
@@ -47,6 +47,7 @@ namespace GenericFactory{
     //! Get the rule with given name . 
     /*!
       The pointer is null if no rule is present.
+      @todo use variadic templates to make it more general
     */
     std::unique_ptr<AbstractProduct> create(Identifier const & name) const;
     //! Register the given rule.
@@ -69,21 +70,6 @@ namespace GenericFactory{
     Container_type _storage;
   };
 
-  /*!
-    Converts an identifier to string if it is possible. 
-   */
-  template<bool Convertible, typename Identifier>
-  struct IdentifierToString
-  {
-    static std::string value(Identifier const & id){return std::string();}
-  };
-
-  //! Partial specialization if convertible (c++11)
-  template<typename Identifier> 
-  struct IdentifierToString<true,Identifier>
-  {
-    static std::string value(Identifier const & id){return std::string(id);}
-  };
 
   
   //! We use the Meyer's trick to istantiate the factory.
@@ -99,6 +85,31 @@ namespace GenericFactory{
     return theFactory;
   }
   
+  //! Generic utility to convert identifiers to string (if possible)
+  /*! 
+    I use type traits to identify the correct version
+   */
+  template<bool Convertible, typename Identifier>
+  struct 
+  M_identifierAsString
+  {
+    static std::string value (Identifier const & id);
+  };
+
+
+  //! Utility to convert identifiers to string (if possible)
+  template<typename Identifier>
+  std::string identifierAsString(Identifier const & id)
+  {
+    return
+      M_identifierAsString<std::is_convertible<Identifier, std::string>::value,Identifier>::value(id);
+  }
+
+  /*
+    May be it is working, check!
+    template<typename Identifier>
+    using identifierAsString(Identifier const &)=M_identifierAsString<std::is_convertible<Identifier, std::string>::value,Identifier>(Identifier const &);
+   */
   template
   <
     typename AbstractProduct,
@@ -111,7 +122,7 @@ namespace GenericFactory{
     auto f = _storage.find(name); //C++11
     if (f == _storage.end())
       {
-	std::string out="Identifier " + IdentifierToString<std::is_convertible<Identifier, std::string>::value,Identifier >::value(name) +
+	std::string out="Identifier " + identifierAsString(name) +
 	  " is not stored in the factory";
 	throw std::invalid_argument(out);
       }
@@ -154,7 +165,32 @@ namespace GenericFactory{
       tmp.push_back(i->first);
     return tmp;
   }
-}
+
+  /// SOME UTILITIES
+  /*!
+    Converts an identifier to string if it is possible. 
+   */
+  template<typename Identifier>
+  struct
+  M_identifierAsString<false,Identifier>
+  {
+    static std::string value (Identifier const & id)
+    {
+      return std::string("CANNOT RESOLVE NAME");
+    }
+  };
+  //! Partial specialization if convertible (c++11)
+  template<typename Identifier> 
+  struct
+  M_identifierAsString<true,Identifier>
+  {
+    static std::string value (Identifier const & id)
+    {
+      return std::string(id);
+    }
+  };
+
+}// end namespace
 
 
 #endif /* BC_FACTORY1_HPP_ */
