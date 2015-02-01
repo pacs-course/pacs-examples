@@ -12,6 +12,9 @@ namespace GenericFactory {
     \param Factory The type of the factory.  
     \param ConcreteProduct is the derived (concrete) type to be 
     registered in the factory
+    
+    @note I have to use the default builder provided by the factory. No check is made to verify it
+    @todo Add check un builder type using type_traits and static_assert
   */
   template
   <typename Factory, typename ConcreteProduct>
