@@ -11,10 +11,10 @@ int main(){
   geometryHolder a;
   a.showMe();
   // Assign a triangle
-  a.setPolygon(polyFactory(Shape::Triangle));
+  a.setPolygon(Shape::Triangle);
   a.showMe();
   // Triangle is destroyed, now Iown a Square
-  a.setPolygon(polyFactory(Shape::Square));
+  a.setPolygon(Shape::Square);
   a.showMe();
 
   // This works only of compiled with g++ or with clang with newest version 
@@ -33,5 +33,5 @@ int main(){
   // ptr_res1 is a shared_ptr<double> and the istruction is equivalent to
   // (but more efficient)
   //  shared_ptr<double> ptr_res1(new double(5.0));
-
+  // In C++14 we also have make_unique for unique_ptr
 }

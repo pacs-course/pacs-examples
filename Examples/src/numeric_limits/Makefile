@@ -42,7 +42,6 @@ EXEC=$(exe_sources:.cpp=)
 
 .DEFAULT_GOAL = all
 
-
 all: $(DEPEND) $(EXEC)
 
 clean:
@@ -50,8 +49,8 @@ clean:
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm *.out *.bak *~
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
@@ -61,9 +60,10 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
-
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 
