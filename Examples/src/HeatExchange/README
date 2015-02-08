@@ -1,3 +1,4 @@
+
 Little example of a program that computes the temperature in a bar solving
 the 1D heat equation with a Gauss-Siedel  iteration. 
 
@@ -6,4 +7,4 @@ Taken and adapted from "Simulation numerique an C++" of I. Danaila, F. Hecht e
 
 Using gnuplot plot.gnu you ara eble to visualize the results.
 
-make scambio_termico.pdf produce a file with the description of the example (in Italian)
+make heat_exchange.pdf produce a file with the description of the example.
