@@ -1,3 +1,3 @@
-scambio_termico.pdf:
+heat_exchange.pdf:
 	(cd Figure; make)
-	pdflatex scambio_termico.tex
+	pdflatex heat_exchange.tex
