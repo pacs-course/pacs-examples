@@ -60,7 +60,7 @@ run:
 	./main_findiff
 	gnuplot gnuplot.txt
 clean:
-	-\rm -f $(EXEC) $(OBJS) main_float main_double
+	-\rm -f $(EXEC) $(OBJS) main_float main_double main_extended
 
 distclean:
 	$(MAKE) clean
