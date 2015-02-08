@@ -23,9 +23,8 @@ namespace Geometry
   class geometryHolder{
   public:
     geometryHolder()=default;
-    geometryHolder(std::unique_ptr<AbstractPolygon> p):my_poly(std::move(p)){};
-    //! transfer ownership to the class
-    void setPolygon(std::unique_ptr<AbstractPolygon> p);
+    geometryHolder(Shape shape):my_poly(std::move(polyFactory(shape))){};
+    void setPolygon(Shape shape);
     ostream & showMe(std::ostream & out=std::cout);
   private:
     std::unique_ptr<AbstractPolygon> my_poly; 
