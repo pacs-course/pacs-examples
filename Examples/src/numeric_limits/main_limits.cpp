@@ -87,6 +87,36 @@ int main () {
   
   cout<<endl;
   cout << "**********************************************"<<endl;
+  cout <<"***************   LONG DOUBLE   ******************"<<endl;
+  cout << "largest                = " 
+       << numeric_limits<long double>::max() << '\n';
+  cout << "smallest               = " 
+       << numeric_limits<long double>::min() << '\n';
+  cout << "min exponent in binary = " 
+       << numeric_limits<long double>::min_exponent << '\n';
+  cout << "min exponent in decimal= " 
+       << numeric_limits<long double>::min_exponent10 << '\n';
+  cout << "max exponent in binary = " 
+       << numeric_limits<long double>::max_exponent << '\n';
+  cout << "max exponent in decimal= " 
+       << numeric_limits<long double>::max_exponent10 << '\n';
+  cout << "base of exponent       = " 
+       << numeric_limits<long double>::radix << '\n';
+  cout << "infinity               = " 
+       << numeric_limits<long double>::infinity() << '\n';
+  cout << "machine epsilon        = " 
+       << numeric_limits<long double>::epsilon() << '\n';
+  cout << "round off              = " 
+       << numeric_limits<long double>::round_error() << '\n';
+  cout << "rounding style         = " 
+       << numeric_limits<long double>::round_style << '\n';
+  cout << "# of binary digits in mantissa= " 
+       << numeric_limits<long double>::digits << '\n';
+  cout << "# of decimal digits in mantissa= " 
+       << numeric_limits<long double>::digits10 << '\n';
+  
+  cout<<endl;
+  cout << "**********************************************"<<endl;
   cout <<"***************    INT   **********************"<<endl;
   cout << "largest                = " 
        << numeric_limits<int>::max() << '\n';
