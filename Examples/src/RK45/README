@@ -1,0 +1,11 @@
+Function for Runge Kutta 45 adaptive time integration.
+
+For scalar ODE of the form dy/dt = f(y,t)
+
+make static makes the static library
+make dynamic the shared libary
+make installs insttalls in PACS_ROOT/include and PACS_ROOT/lib
+
+make will also crete the executable.
+
+bash plot.sh uses gnuplot to shot the result
