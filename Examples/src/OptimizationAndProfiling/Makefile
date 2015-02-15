@@ -38,7 +38,7 @@ OPTFLAGS = -g
 # -c       compile only, generate corresponding .o files
 # -g       generate code suitable for the debugger
 # -p       generate code suitable for the profiler
-# -O       attemp code optimizations
+# -OX      attemp code optimizations at level X
 
 #
 DEPEND=make.dep
@@ -62,8 +62,10 @@ unroll: chrono.o
 
 
 clean:
-	\rm -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat 
-	\rm -f esempioExtAss_debug  esempioExtAss_relase *.txt unroll1_nounroll unroll1_unroll
+	$(RM) -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat 
+	$(RM) -f esempioExtAss_debug  esempioExtAss_relase *.txt unroll1_nounroll unroll1_unroll
+
+distclean: clean
 
 optimize: chrono.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp chrono.o
@@ -82,7 +84,7 @@ leak:
 --demangle=yes --log-file=leak.log ./leak
 
 profile:
-	g++ -std=c++0x -pg -O esempio.cpp chrono.cpp -o esempio0
+	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
 	./esempio0<dati
 #	gprof --line --annotated-source ./esempio0 gmon.out >file.txt # currently not working!
 	gprof --line ./esempio0 gmon.out >file.txt
