@@ -75,11 +75,11 @@ all: dynamic
 depend: $(DEPEND)
 
 static:
-	-rm $(LIB_OBJS)
+	$(RM) $(LIB_OBJS)
 	$(MAKE) library LIBTYPE=STATIC 
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	-rm $(LIB_OBJS)
+	$(RM) $(LIB_OBJS)
 	$(MAKE) library LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
@@ -122,6 +122,12 @@ $(LIB_OBJS): $(LIB_SRCS)
 $(DEPEND): $(SRCS) $(HEADERS)
 	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
+
+$(DEPEND): $(SRCS)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 
 -include $(DEPEND)

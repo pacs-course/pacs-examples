@@ -113,12 +113,12 @@ install:
 	cp $(LIB_HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(DEPEND) 2>/dev/null
-	-\rm *.out *.bak *~ 2>/dev/null
+	$(RM) -r -f ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(DEPEND) 2>/dev/null
+	$(RM) *.out *.bak *~ 2>/dev/null
 
 doc:
 	doxygen $(DOXYFILE)
