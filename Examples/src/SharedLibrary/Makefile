@@ -49,13 +49,13 @@ lib0:
 	$(CXX) -shared -Wl,-soname,libsmall.so.1 -o libsmall.so.1.0 smalllib.o
 	ln -f -s libsmall.so.1.0 libsmall.so
 	ln -f -s libsmall.so.1.0 libsmall.so.1
-	rm -f smalllib.o
+	$(RM) -f smalllib.o
 lib1:
 	$(CXX) -Wall -fPIC -c smalllib2.cpp
 	$(CXX) -shared -Wl,-soname,libsmall.so.1 -o libsmall.so.1.1 smalllib2.o
 	ln -f -s libsmall.so.1.1 libsmall.so
 	ln -f -s libsmall.so.1.1 libsmall.so.1
-	rm -f smalllib2.o
+	$(RM) -f smalllib2.o
 
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c -O3 -Wall main.cpp -o main.o
@@ -67,21 +67,23 @@ development:
 	$(MAKE) main LOADLIBES=-Wl,-rpath=.
 
 clean:
-	\rm -f *.o main libsmall.so lib*.so.* 
+	$(RM) -f *.o main libsmall.so lib*.so.* 
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm -f *.out *.bak *~ $(DEPEND)
+	$(RM) -r -f ./doc
+	$(RM) -f *.out *.bak *~ $(DEPEND)
 
 doc:
 	doxygen $(DOXYFILE)
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 
 -include $(DEPEND)

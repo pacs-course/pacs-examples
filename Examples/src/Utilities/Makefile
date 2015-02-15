@@ -40,6 +40,23 @@ HEADERS+=GetPot
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
+ifeq ($(LIBTYPE),DYNAMIC)
+ CXXFLAGS+=-fPIC
+ export LIBRARY=$(DYNAMIC_LIBFILE)
+ LDFLAGS+=-dynamic 
+else
+ export LIBRARY=$(STATIC_LIBFILE)
+ LDFLAGS+=-static
+endif
+
+ifeq ($(DEBUG),yes)
+  OPTFLAGS=-g
+  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+else
+  OPTFLAGS=-O3
+  CPPFLAGS+=-DNDEBUG
+endif
+
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc library install test
 
@@ -61,7 +78,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-test: test_chrono test_cppversion
+test: test_chrono test_cppversion test_toString
 
 $(EXEC): $(OBJS)
 
