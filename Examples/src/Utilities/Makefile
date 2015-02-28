@@ -78,7 +78,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-test: test_chrono test_cppversion test_toString
+test: test_chrono test_cppversion test_toString test_string
 
 $(EXEC): $(OBJS)
 

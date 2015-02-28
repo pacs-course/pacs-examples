@@ -49,8 +49,5 @@ namespace NonLinearSystems{
     //! Default tolerance.
     static double const defaultTol;
   };
-  
-  
-
 }
 #endif

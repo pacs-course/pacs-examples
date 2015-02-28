@@ -55,9 +55,8 @@ namespace Generator{
     MeshNodes operator()();
   private:
     Geometry::Domain1D M_domain;
-    std::function<double (double const & x)> const & M_h;
-    std::size_t M_num_elements;;
-    
+    std::function<double (double const & x)> const   M_h;
+    std::size_t M_num_elements;
   };
   /*! @}*/
 }
