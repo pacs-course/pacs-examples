@@ -1,8 +1,10 @@
 #include <iostream> // input output
 #include <cmath> // (for sqrt)
 #include <vector>
+#include <tuple>
 #include "readParameters.hpp"
 #include "GetPot.hpp"
+#include "gnuplot-iostream.hpp"// interface with gnuplot
 /*!
   @file main.cpp
   @brief Temperature distribution in a 1D bar.
@@ -117,14 +119,27 @@ int main(int argc, char** argv)
        thetaa[m]=Te+(To-Te)*cosh(sqrt(act)*(1-m*h))/cosh(sqrt(act));
 
      // writing results with format
-     // x_i u_h(x_i) u(x_i)
+     // x_i u_h(x_i) u(x_i) and lauch gnuplot 
+
+     Gnuplot gp;
+     std::vector<double> coor(M+1);
+     std::vector<double> sol(M+1);
+     std::vector<double> exact(M+1);
 
      cout<<"Result file: result.dat"<<endl;
      ofstream f("result.dat");
-       for(int m = 0; m<= M; m++)
+     for(int m = 0; m<= M; m++)
+       {
 	 // \t writes a tab 
          f<<m*h*L<<"\t"<<Te*(1.+theta[m])<<"\t"<<thetaa[m]<<endl;
-       
-       f.close();
-       return status;
+	 // An example of use of tie and tuples!
+	 std::tie(coor[m],sol[m],exact[m])=
+	   std::make_tuple(m*h*L,Te*(1.+theta[m]),thetaa[m]);
+       }
+     // Using temporary files (another nice use of tie)
+     gp<<"plot"<<gp.file1d(std::tie(coor,sol))<<
+       "w lp title 'uh',"<< gp.file1d(std::tie(coor,exact))<<
+       "w l title 'uex'"<<std::endl;
+     f.close();
+     return status;
 }
