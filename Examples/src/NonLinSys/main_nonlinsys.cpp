@@ -1,4 +1,5 @@
 #include "newton.hpp"
+#include "fixedPoint.hpp"
 #include <iostream>
 //! A functor
 struct f1{
@@ -57,4 +58,14 @@ int main(){
   cout<<"Residual="<<result.residual<<" Iterations= "<<result.iterations;
   cout<<" Converged="<<result.converged<<endl;
   cout<<"Solution= ("<<y<<")"<<endl;
+  cout<<endl<<" ******************  FIXED POINT ****************"<<endl;
+  // Same initial point
+  y[0]=1;y[1]=1;y[2]=1;
+  auto resultFP=fixedPoint(G,y,{1.e-8,10000,0.2});
+  cout<<"Residual="<<resultFP.residual<<" Iterations= "<<resultFP.iterations;
+  cout<<" Converged="<<resultFP.converged<<endl;
+  cout<<"Solution= ("<<y<<")"<<endl;
+
+
+  
 }

@@ -7,6 +7,7 @@ int main()
   using namespace Generator;
   using namespace Geometry;
   Domain1D domain(0.,10.);
+  const double pi=std::atan(1.0)*4.0;
   // Uniform mesh
   Uniform uniformMeshGenerator(domain,100);
   auto meshNodesUniform=uniformMeshGenerator();
@@ -17,7 +18,7 @@ int main()
     }
   out1.close();
   //auto h = [](double const & x){return 0.01+0.005*x*x;};
-  auto h = [](double const & x){return (0.05+ 0.1*std::sin(x*3.1415/10.));};
+  auto h = [pi](double const & x){return (0.05+ 0.1*std::sin(x*pi/10.));};
   //auto h = [pi](double const & x){return (0.05+ 100*x);};
   VariableSize variableMeshGenerator(domain, h,10000);
   auto meshNodesVariable=variableMeshGenerator();
