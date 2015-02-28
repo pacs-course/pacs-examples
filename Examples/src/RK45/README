@@ -4,7 +4,7 @@ For scalar ODE of the form dy/dt = f(y,t)
 
 make static makes the static library
 make dynamic the shared libary
-make installs insttalls in PACS_ROOT/include and PACS_ROOT/lib
+make installs installs in PACS_ROOT/include and PACS_ROOT/lib
 
 make will also crete the executable.
 
