@@ -98,12 +98,12 @@ all:
 
 depend: $(DEPEND)
 
+targets: library exec
+
 static:
-	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
+	$(MAKE) targets
 dynamic:
-	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
+	$(MAKE) targets
 
 exec: $(EXEC)
 
