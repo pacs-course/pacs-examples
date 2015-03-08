@@ -51,7 +51,9 @@ endif
 
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
+ifeq ($(LIBTYPE),DYNAMIC)
   LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+endif
 else
   OPTFLAGS=-O3
   CPPFLAGS+=-DNDEBUG
@@ -68,20 +70,22 @@ install: library
 	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	-\rm -f $(EXEC) $(OBJS) test_chrono test_cppversion
+	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
-	-\rm *.out *.bak *~
+	$(RM) -r ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
 
-test: test_chrono test_cppversion test_toString test_string
+test: test_chrono test_cppversion test_toString test_string test_Muparser
 
 $(EXEC): $(OBJS)
 
+test_Muparser: muParserInterface.o test_Muparser.o
+	$(CXX) $(LDFLAGS) test_Muparser.o muParserInterface.o $(LDLIBS) -lmuparser -o test_Muparser 
 $(OBJS): $(SRCS)
 
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))

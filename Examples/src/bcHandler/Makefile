@@ -36,10 +36,10 @@ INCLUDES=-I. -I(
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
- export LIBRARY=$(DYNAMIC_LIBFILE)
+  LIBRARY=$(DYNAMIC_LIBFILE)
  LDFLAGS+=-dynamic 
 else
- export LIBRARY=$(STATIC_LIBFILE)
+  LIBRARY=$(STATIC_LIBFILE)
  LDFLAGS+=-static
 endif
 
@@ -100,12 +100,12 @@ all:
 
 depend: $(DEPEND)
 
+targets: library exec
+
 static:
-	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
+	make targets LIBTYPE=STATIC 
 dynamic:
-	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
+	make targets LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 

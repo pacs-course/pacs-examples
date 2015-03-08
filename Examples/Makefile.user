@@ -3,11 +3,16 @@
 #
 
 # This is the user defined part of the Makefile
+#
+# It has been modified so to read from environmental variables.
+#
+# Change it to suit your need
 
 # The directory where the examples reside
 PACS_ROOT=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
 # The directory with the Eigen (leave blank if they are in a standard directory)
-EIGEN_DIR=/usr/local/include/eigen3/
+EIGEN_DIR=$(mkEigenInc)
+#EIGEN_DIR=/usr/local/include/eigen3/
 
 OTHER_LIB_DIR=
 OTHER_INC_DIR=
@@ -24,8 +29,8 @@ TRILINOS_SUFFIX=# To make sure there is no space!
 #
 # Mpi directories for library and includes
 #
-MPI_LIBDIR=
-MPI_INCDIR=-I/usr/lib/openmpi/include
+MPI_LIBDIR=${mkOpenmpiLib}
+MPI_INCDIR=${mkOpenmpiInc}
 
 #
 # Name of additional libraries
@@ -37,11 +42,12 @@ LIBRARIES=
 #
 #CXX = g++ 
 #CXX = icc
-CXX = /opt/clang3.5/bin/clang++
+CXX = /opt/clang3.5/bin
+CXX = ${mkCxxCompiler}
 #
 # Since we are only uning c++ I set CC=CXX so that the linker LINK.o is correct
 # make has no separate macro for the linker!
-# If you need C to compiler but you still need the c++ liner do
+# If you need C to compiler but you still need the c++ linker do
 #CC=your favourite C compiler
 #LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
 #
@@ -80,11 +86,20 @@ WARNFLAGS=-Wall
 ifdef RELEASE
 OPTFLAGS = -O3
 DEFINES+=-DNDEBUG
-#DEBUG=yes
+DEBUG=no
 else
 OPTFLAGS = -g
-#DEBUG=no
+DEBUG=yes
 endif
+
+ifeq ($(DEBUG),yes)
+  OPTFLAGS=-g
+  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+else
+  OPTFLAGS=-O3
+  CPPFLAGS+=-DNDEBUG
+endif
+
 #
 # Flags for standard
 #
@@ -148,7 +163,7 @@ export CCFLAGS=$(CXXFLAGS)
 # name of file with dependencies
 #
 #header files
-export LDFLAGS=$(OPTFLAGS) 
-#export LDLIBS=$(LIBRARIES) $(LIBD)
+export LDFLAGS+=$(OPTFLAGS) 
+#export LDLIBS=$(LIBRARIES)
 export DEPEND=make.dep
 
