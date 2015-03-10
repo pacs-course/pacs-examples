@@ -40,12 +40,14 @@ ifeq ($(LIBTYPE),DYNAMIC)
  LDFLAGS+=-dynamic 
 else
  export LIBRARY=$(STATIC_LIBFILE)
- LDFLAGS+=-static
+# LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
 endif
 
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
+ifeq ($(LIBTYPE),DYNAMIC)
   LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+endif
 else
   OPTFLAGS=-O3
   CPPFLAGS+=-DNDEBUG
