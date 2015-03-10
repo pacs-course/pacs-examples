@@ -1,3 +1,14 @@
 This directory contains some extra material, in particular code
 obtained from other sources and made available (when the copyright
 allows it, of course).
+
+
+muParser: a copy of the muParser library. the script install.sh will install the library in the local pacs directories
+
+StandardLibraryIIEdition: the codes that goes with the book "Standard Library" II Edition by Nicolai Josuttis. I suggest to buy a copy of the book. The most comprehensive guide to the standard library!
+
+YangBook: The examples of the book C++ and Object-Oriented Numeric Computing for Scientists and Engineers, Daoqi Yang, Springer, New York, 2001. ISBN:0-387-98990-0. A nice book. The examples have been updated to conform with C++98 standard
+
+YoshiBook: Examples from the book C++ and Object-Oriented Numeric Computing for Scientists and Engineers Daoqi Yang, Springer, New York, 2001. ISBN:0-387-98990-0
+
+Trilinos: Tutorial for the Trilinos libraries
