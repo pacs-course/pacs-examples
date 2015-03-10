@@ -42,11 +42,11 @@ EXEC=$(exe_sources:.cpp=)
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
- export LIBRARY=$(DYNAMIC_LIBFILE)
+ LIBRARY=$(DYNAMIC_LIBFILE)
  LDFLAGS+=-dynamic 
 else
- export LIBRARY=$(STATIC_LIBFILE)
- LDFLAGS+=-static
+ LIBRARY=$(STATIC_LIBFILE)
+# LDFLAGS+=-static
 endif
 
 ifeq ($(DEBUG),yes)
@@ -62,15 +62,18 @@ endif
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc library install test
 
-all: $(DEPEND) install test
+all: $(DEPEND) library test
 
-library:$(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
+library:
+	make static
+	make clean
+	make dynamic
 
 install: library
 	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion
+	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion test_toString test_string
 
 distclean:
 	$(MAKE) clean
@@ -80,20 +83,26 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-test: test_chrono test_cppversion test_toString test_string test_Muparser
+test: test_chrono test_cppversion test_toString test_string
+
 
 $(EXEC): $(OBJS)
 
 test_Muparser: muParserInterface.o test_Muparser.o
 	$(CXX) $(LDFLAGS) test_Muparser.o muParserInterface.o $(LDLIBS) -lmuparser -o test_Muparser 
+
 $(OBJS): $(SRCS)
+
+static: $(STATIC_LIBFILE)
+	make $(STATIC_LIBFILE) LIBTYPE=STATIC
 
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
-$(DYNAMIC_LIBFILE):
-	make clean
-	$(MAKE) CXXFLAGS+=-fPIC $(LIB_OBJS)
+dynamic: 
+	make $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
+
+$(DYNAMIC_LIBFILE): $(LIB_OBJS)
 	$(CXX) -shared $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
 
 $(DEPEND): $(SRCS)
