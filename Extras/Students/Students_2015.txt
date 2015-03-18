@@ -1,2 +1,4 @@
 Student Name, GitHub username
 Alessandra Cardani, 10359056
+Student Name: Cristina Cova, GitHub username: ccova
+
