@@ -3,6 +3,7 @@ CC=gcc
 CXX=g++
 CFLAGS=-I$(IDIR)
 CXXFLAGS=-I$(IDIR)
+LDFLAGS=
 
 ODIR=../obj
 LDIR =../lib
@@ -24,7 +25,7 @@ $(ODIR)/%.o: %.cpp $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 $(BINDIR)/hellomake: $(OBJ)
-	$(CXX) -o $@ $^ $(CXXFLAGS) $(LIBS)
+	$(CXX) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 .PHONY: clean distclean
 

@@ -1,0 +1,7 @@
+This is the code from the the preliminary tutorial about
+Makefiles, to test try running
+
+ make all
+ ./bin/hellomake
+
+
