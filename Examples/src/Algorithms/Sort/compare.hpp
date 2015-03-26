@@ -46,8 +46,8 @@ public:
   {
     // Lexycografic comparison
     for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
-      if (std::toupper(a[i])!= std::toupper(b[i])) 
-	return std::toupper(a[i])<std::toupper(b[i]);
+      if (std::toupper(a[i],M_loc)!= std::toupper(b[i],M_loc)) 
+	return std::toupper(a[i],M_loc)<std::toupper(b[i],M_loc);
     }
     return (a.size()<b.size());
   }
