@@ -23,7 +23,8 @@ int main(){
 
 
   cout<<" Sorted ignoring case"<<endl;
-  std::sort(s.begin(),s.end(),Nocase());
+  //  std::sort(s.begin(),s.end(),Nocase());
+  std::sort(s.begin(),s.end(),Nocase_locale());
   for (vector<std::string>::iterator i=s.begin();i<s.end();++i)
     cout<<*i<<" ";
   cout<<endl;
