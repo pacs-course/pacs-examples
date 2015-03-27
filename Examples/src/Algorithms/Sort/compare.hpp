@@ -1,4 +1,5 @@
 #include <cctype> // for toupper()
+#include <locale> // for toupper(std::locale)
 #include <iostream>
 #include <string> // for string
 #include <algorithm> // for sort() and min()
@@ -36,4 +37,20 @@ public:
     }
     return (a.size()<b.size());
   }
+};
+
+class Nocase_locale {// compare by ignoring case (using locale 
+public:
+  Nocase_locale(std::locale const & loc=std::locale()):M_loc(loc){};
+  bool operator () (std::string const & a, std::string const & b)
+  {
+    // Lexycografic comparison
+    for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
+      if (std::toupper(a[i],M_loc)!= std::toupper(b[i],M_loc)) 
+	return std::toupper(a[i],M_loc)<std::toupper(b[i],M_loc);
+    }
+    return (a.size()<b.size());
+  }
+private:
+  std::locale M_loc;
 };
