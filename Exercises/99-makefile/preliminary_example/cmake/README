@@ -1,0 +1,13 @@
+This is the code from the the preliminary tutorial about
+Makefiles, modified to use the CMake build system
+
+To test try:
+
+ mkdir BUILD && cd BUILD
+ cmake ..
+ make all
+ ./bin/hellomake
+
+
+
+
