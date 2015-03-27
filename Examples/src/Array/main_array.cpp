@@ -34,20 +34,23 @@ int main()
   array<int,3> b{{1,2,3}}; //brace initialization (array is an aggregate!!)
 #if __cplusplus > 201103L
   array<int,3> a{1,2,3}; //brace initialization (internal braces may be omitted in C++14)
-#else
-  array<int,3> a{{1,2,3}}; //brace initialization (but not in C++11)
-#endif
   array<double,3> c={1.,2.,3.}; //brace-equal initialization (internal braces may be omitted)
+  // But we can omit all internal brackets in C++14!
+  array<aggr,3> bb{5.0,3, 6.3,4, -1.0,7};
+#else
+  array<int,3> a{{1,2,3}}; //brace initialization
+  array<double,3> c={{1.,2.,3.}}; //brace-equal initialization (internal braces may be omitted)
+  // But we can omit all internal brackets in C++14!
+  array<aggr,3> bb{{{5.0,3}, {6.3,4}, {-1.0,7}}};
+#endif
   array<double,4> d; // Default initialization
   cout<<b<<a<<c<<d; // Note that d is NOT initialised to zero!
-  // Here we cannot omit the extra bracket 
-  //  array<aggr,3> aa={{5.0,3}, {6.3,4}, {-1.0,7}}; ERROR
+  // Here we cannot omit the extra bracket in C++14
   array<aggr,3> aa={{{5.0,3}, {6.3,4}, {-1.0,7}}};
-  // But we can omit all internal brackets!
-  array<aggr,3> bb{5.0,3, 6.3,4, -1.0,7};
   // You can interrogate the size. array::size returns
   // a constexpr so it is resolved by the compiler!
-  cout<<" Array size= "<<bb.size()<<endl;
+  cout<<" Array bb size= "<<bb.size()<<endl;
+  cout<<" Array aa size= "<<aa.size()<<endl;
   // I can pass the array to a function taking a pointer
   // using data()
   fun(c.data(),c.size());
