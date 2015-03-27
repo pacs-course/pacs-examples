@@ -9,3 +9,8 @@ SOURCE = main.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 main: $(OBJ) $(SOURCE)
 	$(CXX) $(CXXFLAGS) -o $@  $^
+
+.PHONY: clear
+
+clear:
+	$(RM) $(OBJ) main
