@@ -69,7 +69,7 @@ library:
 	make clean
 	make dynamic
 
-install: library
+install:
 	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
@@ -87,9 +87,6 @@ test: test_chrono test_cppversion test_toString test_string
 
 
 $(EXEC): $(OBJS)
-
-test_Muparser: muParserInterface.o test_Muparser.o
-	$(CXX) $(LDFLAGS) test_Muparser.o muParserInterface.o $(LDLIBS) -lmuparser -o test_Muparser 
 
 $(OBJS): $(SRCS)
 
