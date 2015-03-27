@@ -1,4 +1,5 @@
 #!/bin/bash
+make distclean
 ./configure --enable-shared=yes --prefix=`pwd`/../../Examples/
 make
 make install
