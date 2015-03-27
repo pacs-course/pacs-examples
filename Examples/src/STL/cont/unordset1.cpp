@@ -18,7 +18,7 @@ using namespace std;
 int main()
 {
     // create and initialize unordered set
-    vector<int> coll = { 1,2,3,5,7,11,13,17,19,77 };
+  std::unordered_set<int> coll = { 1,2,3,5,7,11,13,17,19,77 };
 
     // print elements
     // - elements are in arbitrary order
@@ -42,8 +42,7 @@ int main()
     }
 
     // remove all negative values
-    vector<int>::iterator pos;
-    for (pos=coll.begin(); pos!= coll.end(); ) {
+    for (auto pos=coll.begin(); pos!= coll.end(); ) {
         if (*pos < 0) {
             pos = coll.erase(pos);
         }
