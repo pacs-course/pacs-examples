@@ -45,12 +45,12 @@ EXEC=$(exe_sources:.cpp=)
 all: $(DEPEND) $(EXEC)
 
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm *.out *.bak *~
+	$(RM) -r -f ./doc
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
