@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Alessandra Cardani, 10359056
 Student Name: Cristina Cova, GitHub username: ccova
 Ludovica Delpopolo Carciopolo, ludodelpop10377670
@@ -19,3 +18,4 @@ Arianna Formenti, ariannaformenti
 Lorenzo Sala, 816733
 Nicolò Antonio, 10383154
 Nicola Ferro, nicolaferro
+LIU daqing, liudaqing10
