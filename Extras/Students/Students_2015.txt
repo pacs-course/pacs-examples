@@ -2,6 +2,7 @@ Alessandra Cardani, 10359056
 Student Name: Cristina Cova, GitHub username: ccova
 Ludovica Delpopolo Carciopolo, ludodelpop10377670
 Rafael Vital, 10458355
+Federico Gualdoni, 10261597
 Francesco Regazzoni, frarega
 Stefano Ubbiali, 10395803
 Simone Carriero, 10399442
@@ -12,3 +13,4 @@ Luca Giussani, 10376920
 Mattia Soprano, matty9210455
 Laura Melas, 10397436
 Ondine Chanon, 10501404
+
