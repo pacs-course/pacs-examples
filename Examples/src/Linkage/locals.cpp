@@ -14,6 +14,9 @@ namespace
 }
 
 //! Also this function has local linkage!
+/*!
+  In C++ it is preferable to use unnamed namespaces.
+ */
 static double fun3(double x)
 {
   return x/2;
@@ -22,6 +25,8 @@ static double fun3(double x)
 //! External linkage (default)
 double fun (double y)
 {
+  // I can use fu2 and fun3 here since it is the 
+  // same translation unit
   double value=fun2(y)*fun3(y)*globalParameters.g2;
   if (globalParameters.negate)
     value=-value;
