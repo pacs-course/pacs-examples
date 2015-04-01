@@ -40,7 +40,7 @@ ifeq ($(LIBTYPE),DYNAMIC)
  LDFLAGS+=-dynamic 
 else
  export LIBRARY=$(STATIC_LIBFILE)
- LDFLAGS+=-static
+# LDFLAGS+=
 endif
 
 ifeq ($(DEBUG),yes)
