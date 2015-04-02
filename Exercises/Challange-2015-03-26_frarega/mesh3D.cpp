@@ -34,7 +34,7 @@ std::set<Triangle,TriangleLessNotOrdered> GetAllTriangles(std::vector<Tetrahedro
     std::set<Triangle,TriangleLessNotOrdered> trs;
     for (Tetrahedron t: tetras)
     {
-        trs.insert(Triangle({{t.pointId[0],t.pointId[1],t.pointId[2]}}));
+        trs.emplace({{t.pointId[0],t.pointId[1],t.pointId[2]}});
         trs.insert(Triangle({{t.pointId[0],t.pointId[2],t.pointId[3]}}));
         trs.insert(Triangle({{t.pointId[0],t.pointId[3],t.pointId[1]}}));
         trs.insert(Triangle({{t.pointId[1],t.pointId[3],t.pointId[2]}}));
