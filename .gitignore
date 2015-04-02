@@ -7,6 +7,7 @@
 /Examples/src/Utilities/test_cppversion
 /Examples/src/Utilities/test_chrono
 /Examples/#Makefile.user#
+
 # generated documentation
 Examples/src/*/doc/*
 
@@ -27,12 +28,8 @@ main
 # makefile aux
 make.dep
 
-# qtcreator files
-CMakeLists.txt.user*
-
 # simulation results
 *.dat
-*.txt
 
 # latex
 *.aux
@@ -46,5 +43,3 @@ CMakeLists.txt.user*
 *.ps
 *.bbl
 *.blg
-*.png
-
