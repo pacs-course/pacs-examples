@@ -23,7 +23,7 @@ int main()
     set<int,greater<int>> coll1;
 
     // insert elements in random order using different member functions
-    coll1.insert({4,3,5,1,6,2});
+    coll1.insert({4,8,5,1,6,2});
     coll1.insert(5);
 
     // print all elements

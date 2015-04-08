@@ -1,0 +1,55 @@
+\ProvidesPackage{generalsetting}
+\RequirePackage{listings}
+\RequirePackage{pgfpages}
+% User-defined colors
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+\setbeamertemplate{footline}{
+\flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+% Settings for listing class
+\lstset{  
+  language=[ISO]C++,                       % The default language
+  basicstyle=\small\sf,                          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  lineskip=0ex, %  frame=single
+}
+
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=links,urlcolor=DarkRed}
+
+
+\author{Luca Formaggia}
+\institute{MOX\\ Dipartimento di Matematica \\
+Politecnico di Milano}
+\date{A.A. 2014/2015}
+\newcommand{\lezione}{\emph{Give lecture title}}
+\title{Programmazione Avanzata per il Calcolo Scientifico\\
+  Advanced Programming for Scientific Computing\\
+Lecture title: \lezione}
+
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\color{red}}
+\newcommand{\black}{\color{black}}
+\newcommand{\darkred}{\color{darkred}}
+\newcommand{\darkgreen}{\color{darkgreen}}
+\newcommand{\til}{{$\tilde\null\,\,$}}
+\newcommand{\li}{\lstinline}
+\newcommand{\Exampledir}{run:./../Material/Examples}
+\newcommand{\program}[1]{run:./../Material/Examples/src/#1}
+\newcommand{\programname}[1]{./../Material/Examples/src/#1}
