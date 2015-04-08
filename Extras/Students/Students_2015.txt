@@ -3,7 +3,7 @@ Student Name: Cristina Cova, GitHub username: ccova
 Ludovica Delpopolo Carciopolo, ludodelpop10377670
 Rafael Vital, 10458355
 Federico Gualdoni, 10261597
-Francesco Regazzoni, frarega
+Francesco Regazzoni, frarega Challenge 1/2/3 OK;
 Stefano Ubbiali, 10395803
 Simone Carriero, 10399442
 Francesco Primon, FPrimon
@@ -17,3 +17,6 @@ Paolo Rusconi, PaoloRusconi
 Arianna Formenti, ariannaformenti
 Lorenzo Sala, 816733
 Nicolò Antonio, 10383154
+Nicola Ferro, nicolaferro
+LIU daqing, liudaqing10
+Federica Sottocasa, federicasottocasa
