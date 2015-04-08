@@ -71,9 +71,14 @@ optimize: chrono.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp chrono.o
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -I. -O2 -o esempio2 esempio.cpp chrono.o
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS) -I. -O3 -ffast-math  -funroll-loops -msse4 -mfpmath=sse -o esempio3 esempio.cpp chrono.o
-	@echo "\n**version with -O0"; ./esempio0;
-	@echo "\n\n**version with -O2"; ./esempio2; 
-	@echo "\n\n**version with -O3  -ffast-math -funroll-loops -msse4 -mfpmath=sse"; ./esempio3;
+	@echo
+	@echo "**version with -O0"; ./esempio0;
+	@echo
+	@echo
+	@echo "**version with -O2"; ./esempio2; 
+	@echo
+	@echo
+	@echo "**version with -O3  -ffast-math -funroll-loops -msse4 -mfpmath=sse"; ./esempio3;
 debug:
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -g -o esempio0_debug esempio.cpp chrono.cpp
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -g -o esempio1_debug esempio_errore.cpp chrono.cpp
