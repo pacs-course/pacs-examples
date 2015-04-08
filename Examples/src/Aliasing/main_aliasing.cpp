@@ -41,6 +41,7 @@ int main()
   vec a={1.,2.,3.};
   vec b={1.,2.,3.};
   vec c={1.,2.,3.};
+
   cout<<"fun(a,b,c)"<<endl;
   fun(a,b,c);
   cout<<"a= ";
@@ -48,12 +49,14 @@ int main()
   cout<<endl;
   cout<<"c= ";
   for (auto i : c) cout<<i<<" ";
-  cout<<endl;
+  cout<<endl<<endl<<endl;
+
   cout<<"fun(a,b,a)"<<endl;
   fun(a,b,a);
   cout<<"a= ";
   for (auto i : a) cout<<i<<" ";
-  cout<<endl;
+  cout<<endl<<endl<<endl;
+
   a={1.,2.,3.};
   cout<<"fun2(a,b,a)"<<endl;
   fun2(a,b,a);
