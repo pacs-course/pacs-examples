@@ -1,5 +1,6 @@
+Student Name, GitHub username
 Alessandra Cardani, 10359056
-Student Name: Cristina Cova, GitHub username: ccova
+Cristina Cova, ccova
 Ludovica Delpopolo Carciopolo, ludodelpop10377670
 Rafael Vital, 10458355
 Federico Gualdoni, 10261597
