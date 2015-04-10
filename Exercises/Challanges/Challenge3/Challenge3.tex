@@ -1,0 +1,36 @@
+%\documentclass[handout]{beamer}
+\documentclass{beamer}
+\usetheme{default}
+\usepackage[english]{babel}
+\usepackage{pgfpages}
+%\pgfpagelayout{2 on 1}[a4paper]
+
+
+%
+% The following info should normally be given in you main file:
+%
+\usepackage{generalsetting}
+
+\setbeamercovered{transparent}
+
+\renewcommand{\lezione}{Challenges}
+\begin{document}
+\begin{frame}{Challenge 1}
+\alert{Difficulty: medium}
+
+\begin{itemize}
+\item Convert the makefiles for the ‘integer-list’ example to CMakeLists.txt and build the code using CMake
+\item Add tests in the CMakeLists.txt until 100\% of the code in ‘integer-list.h’ is covered
+\item Run the test and verify the coverage with 'lcov'
+\end{itemize}
+
+\end{frame}
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
