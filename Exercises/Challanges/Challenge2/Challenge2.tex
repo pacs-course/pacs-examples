@@ -1,0 +1,43 @@
+%\documentclass[handout]{beamer}
+\documentclass{beamer}
+\usetheme{default}
+\usepackage[english]{babel}
+\usepackage{pgfpages}
+%\pgfpagelayout{2 on 1}[a4paper]
+
+
+%
+% The following info should normally be given in you main file:
+%
+\usepackage{generalsetting}
+
+\setbeamercovered{transparent}
+
+\renewcommand{\lezione}{Challenges}
+\begin{document}
+\begin{frame}{Challenge 1}
+\alert{Difficulty: low}
+
+\begin{itemize}
+\item Modify RK45 so that adaptation accepts the stepping method and options as arguments.
+\item Implement other RK pairs and allow user to choose at runtime.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Challenge 2}
+\alert{Difficulty: guru}
+
+\begin{itemize}
+\item Ler RK45 read problem specification and options from a file using muparser.
+\end{itemize}
+
+\end{frame}
+
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
