@@ -92,6 +92,10 @@ namespace LinearAlgebra{
     explicit MyMat0(size_type n=0, size_type m=0,
 		    StoragePolicySwitch sPolicy=ROWMAJOR); 
 
+    //! Default move constructor is ok
+    MyMat0(MyMat0&&)=default;
+    //! Default move assign is ok
+    MyMat0& operator=(MyMat0&&)=default;
     //! Resizing the matrix
     /*!
      * The storage policy cannot be changed;

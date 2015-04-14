@@ -33,10 +33,21 @@ namespace LinearAlgebra {
 	for(size_type i=0;i<nr*nc;++i)data[i]=mat.data[i];
     }
     else
-      data=0; //set to null pointer!
+      data=nullptr; //set to null pointer!
   }
   
+  MyMat0::MyMat0(MyMat0&& mat):
+    nr(mat.nr), nc(mat.nc),myPolicy(std::move(mat.myPolicy))
+  {
+    // release old data
+    delete[] data;
+    data = nullptr;
+    std::swap(data,mat.data);
+    mat.nr=mat.nc=0;
+  }
+
   MyMat0 & MyMat0::operator = (MyMat0 const & rhs){
+    myPolicy=rhs.myPolicy;
     bool changed=(nc*nr)!=(rhs.nc*rhs.nr);
     nc=rhs.nc;
     nr=rhs.nr;
@@ -45,7 +56,7 @@ namespace LinearAlgebra {
     if (changed){
       delete[] data;
       if (nc*nr==0)
-	data =0;
+	data =nullptr;
       else
 	data = new double[nc*nr];
     }
@@ -53,6 +64,15 @@ namespace LinearAlgebra {
     return *this;
   }
  
+  MyMat0 & MyMat0::operator = (MyMat0&& rhs){
+    nc=std::move(rhs.nc);
+    nr=std::move(rhs.nr);
+    delete[] data;
+    data = nullptr;
+    std::swap(data,rhs.data);
+    rhs.nr=rhs.nc=0;
+    return *this;
+  }
 
   size_type MyMat0::rowMajorPolicy(size_type const & i, 
 				   size_type const & j) const{
@@ -67,7 +87,7 @@ namespace LinearAlgebra {
   double  MyMat0::getValue(size_type const i, size_type const j) const
   {
     // todo : this test should be hidden in a private method
-    if  (i<0 || i>=nr || j<0 || i<=nc)
+    if  (i>=nr || i<=nc)
       {
 	// todo this way of handling errors could be bettered
 	// using exceptions
@@ -80,7 +100,7 @@ namespace LinearAlgebra {
   
   void  MyMat0::setValue(size_type const i, size_type const j, double const & v)
   {
-    if  (i<0 || i>=nr || j<0 || i<=nc)
+    if  (i>=nr || i<=nc)
       {
 	std::cerr<<" Out of bounds";
 	std::exit(1);
