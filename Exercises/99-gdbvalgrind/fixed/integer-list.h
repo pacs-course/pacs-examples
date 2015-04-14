@@ -95,7 +95,11 @@ public:
   replaceWith (Node* replacement)
   {
     previous->setNext (replacement);
+    replacement->setPrevious (previous);
+    
     next->setPrevious (replacement);
+    replacement->setNext (next);
+    
     next = NULL;
     delete this;
   }
