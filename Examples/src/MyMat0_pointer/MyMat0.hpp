@@ -95,6 +95,11 @@ namespace LinearAlgebra{
     MyMat0(MyMat0 const & mat);
     //! Copy assignment operator.
     MyMat0 & operator = (MyMat0 const & rhs); 
+    //! Move constructor
+    MyMat0(MyMat0&& m);
+    //! Move assignement operator
+    MyMat0 & operator = (MyMat0&& rhs); 
+
     //! Destructor.
     /*!
       I need a destructor for memory management.

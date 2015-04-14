@@ -34,7 +34,7 @@ namespace LinearAlgebra {
   double  MyMat0::getValue(size_type const i, size_type const j) const
   {
     // todo : this test should be hidden in a private method
-    if  (i<0 || i>=nr || j<0 || i<=nc)
+    if  (i>=nr || i<=nc)
       {
 	// todo this way of handling errors could be bettered
 	// using exceptions
@@ -47,7 +47,7 @@ namespace LinearAlgebra {
   
   void  MyMat0::setValue(size_type const i, size_type const j, double const & v)
   {
-    if  (i<0 || i>=nr || j<0 || i<=nc)
+    if  (i>=nr || i<=nc)
       {
 	std::cerr<<" Out of bounds";
 	std::exit(1);
