@@ -37,40 +37,20 @@ HEADERS=$(wildcard *.hpp)
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
-PROGRAMS=main_myMat0_move  main_myMat0_nomove
-
-CXXFLAGS+=-O3
-
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc main_myMat0_move main_myMat0_nomove
+.phony= all clean distclean doc
 
-.DEFAULT_GOAL = all
+.DEFAULT_GOAL = default
 
+all: $(DEPEND) $(EXEC)
 
-all: $(DEPEND) $(PROGRAMS)
-
-main_myMat0_move:
-	-\rm -f *.o $(EXEC)
-	$(MAKE)	$(EXEC)
-	mv -f $(EXEC) main_myMat0_move
-
-main_myMat0_nomove:
-	-\rm -f *.o $(EXEC)
-	$(MAKE) $(EXEC) CPPFLAGS+=-DNOMOVE
-	mv $(EXEC) main_myMat0_nomove
-test:
-	valgrind --tool=massif --massif-out-file=test_move.out ./main_myMat0_move
-	valgrind --tool=massif --massif-out-file=test_nomove.out ./main_myMat0_nomove
-	ms_print test_move.out > test_move.txt
-	ms_print test_nomove.out > test_nomove.txt
 clean:
-	-\rm -f $(EXEC) $(OBJS)
-	-\rm -r -f ./doc main_myMat0_move main_myMat0_nomove test_move.* \
-         test_nomove.txt Matrix.dat
-	-\rm -f *.out *.bak *~
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
@@ -80,9 +60,10 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ $(CPPFLAGS) -std=c++0x -MM $(SRCS) -MF $(DEPEND)
-
-
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 
