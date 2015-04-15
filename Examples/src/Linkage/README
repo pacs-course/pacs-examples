@@ -1,0 +1,20 @@
+Try to compile by setting NOGLOBAL:
+
+make clean
+make CPPFLAGS+=-DNOGLOBAL
+
+and see what happens.
+
+Why?
+
+Try to eliminate the static keyword in locals.cpp (or in locals2.cpp)
+
+#include "globals.hpp"
+#include "locals2.hpp"
+#ifdef  NOGLOBAL
+int globalValue;
+#endif
+//! If you wish you can use :: to specify the global scope
+void zeroGlobal(){ ::globalValue=0;}
+
+Try again (setting DNOGLOBAL) and see what happens! Why?

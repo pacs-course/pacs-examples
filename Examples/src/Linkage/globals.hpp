@@ -1,11 +1,13 @@
 #ifndef HH_GLOBALS_HH
 #define HH_GLOBALS_HH
 //! \file globals.hpp Defines use of globals with external linkage
-//! A global varibale with extenral linkage. Only declarated!
+//! A global varibale with external linkage. Only declarated!
 /*!
   Must be defined elsewhere.
  */
+#ifndef NOGLOBAL
 extern int globalValue;
+#endif
 //! A global stuct that may represent global parameters of a program
 /*!
   Declaration 
