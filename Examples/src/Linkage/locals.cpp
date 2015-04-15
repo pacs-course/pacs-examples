@@ -1,5 +1,9 @@
 #include "globals.hpp"
 #include "locals.hpp"
+#ifdef NOGLOBAL
+//! It has local linkage
+static int globalValue;
+#endif
 //! This funcaion has local linkage
 /*!
   It is not seen outside this compilation unit!
