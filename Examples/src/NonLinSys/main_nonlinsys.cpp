@@ -38,7 +38,8 @@ int main(){
   // For bind placeholders
   using namespace std::placeholders;
   // Using bind: it stores convex(*,0.4);
-  F.addToSystem(std::bind(convex, _1, 0.4));
+  //F.addToSystem(std::bind(convex, _1, 0.4));
+  F.addToSystem([](argumentType const & x){return convex(x,0.4);});
   argumentType x(2);
   x<<1.0,3.1; // Eigen initialization
   auto res=F(x);
