@@ -1,8 +1,8 @@
 
-CXX  = g++
-CC   = $(CXX)
+CXX  ?= g++
+CC   ?= $(CXX)
 
-CXXFLAGS = -O -std=gnu++11
+CXXFLAGS ?= -O -std=gnu++11
 # -g       generate code suitable for the debugger
 # -p       generate code suitable for the profiler
 # -O       attemp code optimizations
