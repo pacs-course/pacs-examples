@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+#include <functional>
 
 template<typename T>
 void setMaxPrecison (std::ostream & out)
@@ -22,8 +23,9 @@ public:
     dt0 (_dt0), tol (_tol)
   {};
 
-  template<class T>
-  void apply (T fun, real x0, 
+  void
+  apply (std::function<real(real, real)> fun,
+         real x0, 
          std::vector<real>& result,
          std::vector<real>& time) 
   {
@@ -68,7 +70,7 @@ public:
           }
 
         std::cout << "% t = " << t 
-                  << ";\t x = " << x
+                  << ";\t x = " << x 
                   << std::endl;
 
         dt *= .5 * sqrt (tol / err);
@@ -83,15 +85,9 @@ private:
 };
 
 template<typename real>
-class fun 
+real fun (real x, real t, real k)
 {
-private:
-  real k;
-public:
-
-  fun (real _k): k(_k) {};
-
-  real operator() (real x, real t) {return (-k * x); };
+  return (-sin (k * x));
 };
 
 int main (void)
@@ -99,13 +95,14 @@ int main (void)
   std::vector<double> x;
   std::vector<double> t;
 
-  fun<double> fcn (.5);
   forward_euler<double> f (0.0, 100.0, .1, 1e-3);
-  f.apply (fcn, 10, x, t);
+  f.apply ([] (double xx, double tt) 
+           {return fun<double> (xx, tt, 1.0 / 2.0);}, 
+           10, x, t);
 
   setMaxPrecison<double> (std::cout);
   std::cout << "r = [" << std::endl;
-  for (auto ii = x.begin (),  jj = t.begin (); 
+  for (auto ii = x.begin (), jj = t.begin (); 
        ii != x.end () || jj != t.end (); 
        ++ii, ++jj)
     {
