@@ -119,16 +119,11 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 $(LIB_OBJS): $(LIB_SRCS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
-
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
-
 
 -include $(DEPEND)
 
