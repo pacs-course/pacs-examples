@@ -16,7 +16,7 @@ int main()
   std::cout<<fun(5.0)<<std::endl;
   //! I can change the value of the global variables
   globalParameters.negate=true;
-  std::cout<<fun(5.0)<<std::endl;
+  std::cout<<fun2(5.0)<<std::endl;
   //std::cout<<fun2(5.0)<<std::endl; //error local linkage only
   zeroGlobal();
   std::cout<<"Global value: "<<globalValue<<std::endl;

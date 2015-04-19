@@ -108,11 +108,11 @@ namespace FunctionApproximation{
   std::vector<T> interp1D(const std::vector<T>& vx,const std::vector<T>& vy,
 			  const std::vector<T>& xcoord, 
 			  Interpolator 
-			  interpolator=LagrangeInterpolator<T>()){
+			  interpolator=Interpolator()){
     
     std::vector<T> v;
     v.reserve(xcoord.size());
-    for (auto const & i : xcoord) v.push_back(interpolator(vx,vy,i));
+    for (auto const & i : xcoord) v.emplace_back(interpolator(vx,vy,i));
     return v;
   }
 }
