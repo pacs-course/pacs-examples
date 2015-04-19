@@ -26,6 +26,13 @@ to solve the equation.
 Now define the derivative $\dot x$ as a function taking 3 input arguments 
 {\tt real func (real x, real t, real k)} and use {\tt C++11} {\tt lambdas} 
 to pass it to {\tt forward\_euler::apply ()}
+
+\item Modify the code from previous points to use a formal 
+argument of type {\tt std::function} instead of a template parameter
+
+\item Modify the code from previous points to allow the user 
+to pass the name of a matlab/octave function on the command line
+
   
 \end{enumerate}
 
