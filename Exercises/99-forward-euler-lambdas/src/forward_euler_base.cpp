@@ -66,12 +66,13 @@ int main (void)
     }      
 
   std::cout << "r = [" << std::endl;
-  for (auto ii = result.begin (), 
-         jj = time.begin (); 
-       ii != result.end () && jj != time.end (); 
+  for (auto ii = result.begin (),  jj = time.begin (); 
+       ii != result.end () || jj != time.end (); 
        ++ii, ++jj)
-
-    std::cout << *jj << ",\t " << *ii << std::endl;
+    {
+      std::cout << *jj << ",\t " << *ii << std::endl;
+    }
+  
   std::cout << "];" << std::endl;
 
   return 0;

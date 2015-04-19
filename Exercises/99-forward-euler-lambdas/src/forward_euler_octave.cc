@@ -1,7 +1,12 @@
 #include <iostream>
+#include <limits>
 #include <vector>
 #include <cmath>
-#include <limits>
+#include <octave/oct.h>
+#include <octave/octave.h>
+#include <octave/parse.h>
+#include <octave/toplev.h>
+
 
 template<typename T>
 void setMaxPrecison (std::ostream & out)
@@ -68,7 +73,7 @@ public:
           }
 
         std::cout << "% t = " << t 
-                  << ";\t x = " << x
+                  << ";\t x = " << x 
                   << std::endl;
 
         dt *= .5 * sqrt (tol / err);
@@ -83,29 +88,34 @@ private:
 };
 
 template<typename real>
-class fun 
+real fun (real x, real t, std::string s)
 {
-private:
-  real k;
-public:
-
-  fun (real _k): k(_k) {};
-
-  real operator() (real x, real t) {return (-k * x); };
+  octave_value_list out, in;
+  in(1) = octave_value (t);
+  in(0) = octave_value (x);
+  out = feval (s, in);
+  return (out(0).double_value ());
 };
 
-int main (void)
+int main (int argc, char **argv)
 {
+  string_vector ARGV (2);
+  ARGV(0) = "embedded";
+  ARGV(1) = "-q";
+
+  octave_main (ARGV.numel (), ARGV.c_str_vec (), 1);
+  
   std::vector<double> x;
   std::vector<double> t;
 
-  fun<double> fcn (.5);
   forward_euler<double> f (0.0, 100.0, .1, 1e-3);
-  f.apply (fcn, 10, x, t);
+  f.apply ([argv] (double xx, double tt) 
+           {return fun<double> (xx, tt, argv[1]);}, 
+           10, x, t);
 
   setMaxPrecison<double> (std::cout);
   std::cout << "r = [" << std::endl;
-  for (auto ii = x.begin (),  jj = t.begin (); 
+  for (auto ii = x.begin (), jj = t.begin (); 
        ii != x.end () || jj != t.end (); 
        ++ii, ++jj)
     {
@@ -114,5 +124,5 @@ int main (void)
   
   std::cout << "];" << std::endl;
 
-  return 0;
+  clean_up_and_exit (0);
 }
