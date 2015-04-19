@@ -1,0 +1,7 @@
+mkEigenInc=/u/geo2/sw/Packages/libs/eigen/3/include/eigen3
+mkEigenHome=/u/geo2/sw/Packages/libs/eigen/3
+mkOpenmpiLib=/u/geo2/sw/Toolchains/gcc+system/4.9/Packages/libs/openmpi/1.6/lib
+mkClangSystemBin=/u/geo2/sw/Packages/compilers/clang+system/3.4/bin
+mkGccSystemBin=/u/geo2/sw/Packages/compilers/gcc+system/4.9/bin
+mkCCompiler=/u/geo2/sw/Packages/compilers/gcc+system/4.9/bin/gcc
+mkCxxCompiler=/u/geo2/sw/Packages/compilers/gcc+system/4.9/bin/g++
