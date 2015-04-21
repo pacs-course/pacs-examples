@@ -6,7 +6,7 @@
 namespace LinearAlgebra {
   
   MyMat0::MyMat0(size_type n, size_type m, StoragePolicySwitch sPolicy):
-    nr(n), nc(m), data(0),myPolicy(sPolicy)
+    nr(n), nc(m), data(new double[n*m]),myPolicy(sPolicy)
   {
     switch (this->myPolicy)
       {
@@ -18,7 +18,6 @@ namespace LinearAlgebra {
 	break;
       }
     // initialize to zero
-    data = new double[n*m];
     for(size_type i=0;i<nc*nr;++i) data[i]=0.0;
   }
   
@@ -26,23 +25,20 @@ namespace LinearAlgebra {
     nr(mat.nr), nc(mat.nc),myPolicy(mat.myPolicy)
   {
     // release old data
-    delete[] data;
     // get new data storage and copy
     if (nr*nc >0){
-	data = new double[nr*nc];
-	for(size_type i=0;i<nr*nc;++i)data[i]=mat.data[i];
+      data.reset(new double[nr*nc]);
+      for(size_type i=0;i<nr*nc;++i)data[i]=mat.data[i];
     }
     else
-      data=nullptr; //set to null pointer!
+      data.release(); //set to null pointer!
   }
   
   MyMat0::MyMat0(MyMat0&& mat):
-    nr(mat.nr), nc(mat.nc),myPolicy(std::move(mat.myPolicy))
+    nr(std::move(mat.nr)), nc(std::move(mat.nc)),
+    data(std::move(mat.data)),myPolicy(std::move(mat.myPolicy))
   {
-    // release old data
-    delete[] data;
-    data = nullptr;
-    std::swap(data,mat.data);
+    // Set the input matrix to the zero matrix
     mat.nr=mat.nc=0;
   }
 
@@ -54,22 +50,20 @@ namespace LinearAlgebra {
     // Avoid useless memory management
     // if not necessary
     if (changed){
-      delete[] data;
       if (nc*nr==0)
-	data =nullptr;
+	data.release();
       else
-	data = new double[nc*nr];
+	data.reset(new double[nc*nr]);
     }
     for(size_type i=0;i<nr*nc;++i)data[i]=rhs.data[i];
     return *this;
   }
  
   MyMat0 & MyMat0::operator = (MyMat0&& rhs){
+    myPolicy=std::move(rhs.myPolicy);
     nc=std::move(rhs.nc);
     nr=std::move(rhs.nr);
-    delete[] data;
-    data = nullptr;
-    std::swap(data,rhs.data);
+    data=std::move(rhs.data);
     rhs.nr=rhs.nc=0;
     return *this;
   }
@@ -113,16 +107,15 @@ namespace LinearAlgebra {
   {
     if(n*m != nc*nr)      
       {
-	// clear data storage
-	delete[] data;
 	if(n*m != 0)
 	  {
-	    data=new double[n*m];
+	    // reset data storage
+	    data.reset(new double[n*m]);
 	    //! Set to zero
 	    for (size_type i =0;i<n*m;++i)data[i]=0.0;
 	  }
 	else
-	  data=0; // set to null pointer
+	  data.release(); // set to null pointer
       }
     //! fix number of rows and column
     nr=n;
