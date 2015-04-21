@@ -3,7 +3,8 @@
 #ifndef _MYMAT0__HH
 #define _MYMAT0__HH
 #include <iostream> 
-#include<cstddef> // for size_t 
+#include <cstddef> // for size_t 
+#include <memory> // for unique_ptr
 /*!
   @file MyMat0.hpp
   @author Luca Formaggia
@@ -40,11 +41,10 @@ namespace LinearAlgebra{
     size_type nr,nc;
     //! Data storage
     /*!
-     * We store data in pointer to double.
-     * This is not the best choiche since the class has to handle 
-     * contstrunction and destruction of data
+     * We store data in a smart pointer. 
+     * A unique pointer since the matrix owns the data
      */
-    double * data;
+    std::unique_ptr<double[]> data;
     //! Policy cannot be changed, but it may be queried
     StoragePolicySwitch myPolicy;
     //! The policy for storing by rows.
@@ -89,8 +89,8 @@ namespace LinearAlgebra{
     explicit MyMat0(size_type n=0, size_type m=0,
 		    StoragePolicySwitch sPolicy=ROWMAJOR); 
     //! Copy constructor.
-    /*!
-      I need a specialized one to handle data.
+    /*!      
+      I need a specialized one to handle data (maybe is not necessary)
      */
     MyMat0(MyMat0 const & mat);
     //! Copy assignment operator.
@@ -103,10 +103,9 @@ namespace LinearAlgebra{
     //! Destructor.
     /*!
       I need a destructor for memory management.
-      @note since I have cared to set data to the null
-      pointer when we have an empty matrix, I can just call delete[]
+      The synthetic one is enough since I am using smart pointers!
      */
-    ~MyMat0(){delete[] data;}
+    ~MyMat0()=default;
     //! Resizing the matrix
     /*!
      * The storage policy cannot be changed;
