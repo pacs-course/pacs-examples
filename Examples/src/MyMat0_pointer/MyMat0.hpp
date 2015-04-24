@@ -35,8 +35,11 @@ namespace LinearAlgebra{
    * It stores a matrix of double entries, allowing different type of
    * storage through an internal policy. The policy is implemented via
    * a pointer to function selected at construction time.
+   * The class is declared final since it does not have a virtual destructor
+   * and thus it will be very unsafe to derive from it.
    */
-  class MyMat0{
+  class MyMat0 final
+  {
   private:
     size_type nr,nc;
     //! Data storage
@@ -104,6 +107,7 @@ namespace LinearAlgebra{
     /*!
       I need a destructor for memory management.
       The synthetic one is enough since I am using smart pointers!
+      Make it virtual if you want to derive (then take out final)
      */
     ~MyMat0()=default;
     //! Resizing the matrix
