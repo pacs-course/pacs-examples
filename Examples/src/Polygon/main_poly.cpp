@@ -30,7 +30,8 @@ int main()
   // In C++98 I would have written
   //Square aSquare(Point2D(0.0,0.0),1.0); 
   Square aSquare({0.0,0.0},1.0);
-  p_ab=&aSquare; 
+  Square s2(aSquare); 
+  p_ab=&s2;
   p_ab->showMe();
   std::cout<<"Area: "<<aSquare.area()<<std::endl;
 }
