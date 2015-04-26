@@ -3,6 +3,8 @@
 #include <limits>
 #include <cstdlib>
 #include <cmath>
+#include <stdexcept>
+#include <limits>
 namespace Geometry{
   
   double distance(Point2D const & a, Point2D const & b){
@@ -15,22 +17,24 @@ namespace Geometry{
   }
   // ********************* BASE CLASS **********************
   
-  AbstractPolygon::AbstractPolygon(Vertices const & v):vertexes(v){
-    this->checkConvexity();}
+  AbstractPolygon::AbstractPolygon(Vertices const & v, bool check):vertexes(v)
+  {
+    if (check) this->checkConvexity();
+  }
   
-  void AbstractPolygon::showMe(ostream & out)const
+  void AbstractPolygon::showMe(std::ostream & out)const
   {
     if (this->size()==0){
-      out<< "empty polygon" << endl;
+      out<< "empty polygon" << std::endl;
     }
     else {
       out<<"Vertices:"<<std::endl;
-      out<<"    X     " << "   Y    "<<endl;
+      out<<"    X     " << "   Y    "<<std::endl;
       for (auto const & i : this->vertexes)
-	out<<i.x()<<" " << i.y()<<endl;
+	out<<i.x()<<" " << i.y()<<std::endl;
     }
-    if(this->isconvex) cout<<" Polygon is convex"<<endl;
-    else cout<<" Polygon is not convex"<<endl;
+    if(this->isconvex) std::cout<<" Polygon is convex"<<std::endl;
+    else std::cout<<" Polygon is not convex"<<std::endl;
   }
   
   void AbstractPolygon::checkConvexity()
@@ -82,14 +86,8 @@ namespace Geometry{
   
   // ****   POLYGON
   
-  Polygon::Polygon(Vertices const & v): AbstractPolygon(v) {
-    this->checkConvexity();
-  }
+  Polygon::Polygon(Vertices const & v): AbstractPolygon(v) {}
   
-  void  Polygon::set(Vertices const & v){
-    this->vertexes=v;
-    this->checkConvexity();
-  }
   
   //! To compute the area of a polygon we use the divergence theorem.
   /*!
@@ -116,13 +114,27 @@ namespace Geometry{
     return 0.5*result;
   }
   
-  void Polygon::showMe(ostream & out)const
+  void Polygon::showMe(std::ostream & out)const
   {
-    cout<<" A Generic Polygon"<<endl;
+    std::cout<<" A Generic Polygon"<<std::endl;
     AbstractPolygon::showMe(out);
   }
 
   // ********************* SQUARE **********************
+  Square::Square(Vertices const & v): AbstractPolygon(v,false) 
+  {
+    this->isconvex=true;
+    if(v.size() != 4){
+      throw std::runtime_error(" A square must be created giving four vertices");
+    }
+    // Check if it is a square!
+    double l1=distance(vertexes[1],vertexes[0]);
+    double l2=distance(vertexes[2],vertexes[3]);
+    auto ratio=std::abs(this->area())/(l1*l2);
+    if (std::abs(ratio - 1.0)>10*std::numeric_limits<double>::epsilon())
+      throw std::runtime_error("Vertexes do not define a square");
+  }
+
   Square::Square(Point2D origin, double length, double angle){
     this->isconvex=true;
     this->vertexes.reserve(4);
@@ -148,7 +160,7 @@ namespace Geometry{
     return v.x()*w.y()-v.y()*w.x();
     ;}
   
-  void Square::showMe(ostream & out) const
+  void Square::showMe(std::ostream & out) const
   {out<<"A Square"<<std::endl;
     AbstractPolygon::showMe(out);
   }
@@ -161,8 +173,7 @@ namespace Geometry{
     // We may use assert, in this case we would disable the control
     // in the released version (-DNDEBUG). We prefer here to exit the program
     if(this->size() != 3){
-      std::cerr<<" A trianlge must be created giving three vertices"<<std::endl;
-      std::exit(1);
+      throw std::runtime_error(" A triangle must be created giving three vertices");
     }
   }
   
@@ -177,7 +188,7 @@ namespace Geometry{
     return 0.5*(v.x()*w.y()-v.y()*w.x());
     ;}
   
-  void Triangle::showMe(ostream & out) const{
+  void Triangle::showMe(std::ostream & out) const{
     out<<"A Triangle"<<std::endl;
     AbstractPolygon::showMe(out);
   }
