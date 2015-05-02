@@ -108,11 +108,11 @@ namespace LinearAlgebra{
       return storagePolicy;
     }
     //! Computes \f$ ||A||_\infty \f$
-    const double normInf() const;
+    double normInf() const;
     //! Computes \f$ ||A||_1 \f$
-    const double norm1() const;
+    double norm1() const;
     //! Computes Frobenious norm
-    const double normF() const;
+    double normF() const;
     //! An example of matrix times vector
     /*!
      * It checks for consistency: the size of the vector must be equal
@@ -185,7 +185,7 @@ namespace LinearAlgebra{
   }
   
   template<StoragePolicySwitch storagePolicy>
-  const double MyMat0<storagePolicy>::normInf() const{
+  double MyMat0<storagePolicy>::normInf() const{
     if(nr*nc==0)return 0;
     double vmax(0.0);
     
@@ -198,7 +198,7 @@ namespace LinearAlgebra{
   }
   
   template<StoragePolicySwitch storagePolicy>
-  const double MyMat0<storagePolicy>::norm1() const{
+  double MyMat0<storagePolicy>::norm1() const{
     if(nr*nc==0)return 0;
     double vmax(0);
     for (size_type j=0;j<nc;++j){
@@ -210,7 +210,7 @@ namespace LinearAlgebra{
   }
   
   template<StoragePolicySwitch storagePolicy>
-  const double MyMat0<storagePolicy>::normF() const{
+  double MyMat0<storagePolicy>::normF() const{
     if(nr*nc==0)return 0;
     double vsum=0;
     for (auto const x: data) vsum+=x*x;
