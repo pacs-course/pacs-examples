@@ -137,11 +137,11 @@ namespace LinearAlgebra{
     inline StoragePolicySwitch getStoragePolicy()const {
     	return myPolicy;}
     //! Computes \f$ ||A||_\infty \f$
-    const double normInf() const;
+    double normInf() const;
     //! Computes \f$ ||A||_1 \f$
-    const double norm1() const;
+    double norm1() const;
     //! Computes Frobenious norm
-    const double normF() const;
+    double normF() const;
     //! An example of matrix times vector
     /*!
      * It checks for consistency: the size of the vector must be equal
