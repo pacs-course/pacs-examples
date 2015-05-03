@@ -103,7 +103,7 @@ targets: library exec
 static:
 	$(MAKE) targets
 dynamic:
-	$(MAKE) targets
+	$(MAKE) targets LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
