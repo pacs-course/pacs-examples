@@ -88,7 +88,6 @@ namespace ODE
     // Here I allow h to become 128 time smaller than that giving the maximal number of steps
     double h_min = length/(128*maxSteps);
     // SOme counters
-    std::size_t count(0);
     std::size_t stepsCounter(0);
     // Initial data
     double time(t0);
@@ -105,20 +104,14 @@ namespace ODE
 	//adjust h if needed for the last step
 	if (time + h > T) h = T-time;
 	newy = rk45_step(dy,y,time,h,localError);
-	while (localError > c1*errorPerTimeStep && count<maxReduction)
+	while (h> h_min && localError > c1*errorPerTimeStep)
 	  {
-	    if( h> h_min)
-	      {
-		// half time step
-		h /=2;
-		errorPerTimeStep /=2;
-		++count;
-		newy = rk45_step(dy,y,time,h,localError);
-	      }
-	    else status=3;
+	    // half time step
+	    h /=2;
+	    errorPerTimeStep /=2;
+	    newy = rk45_step(dy,y,time,h,localError);
 	  }
-	if (count>=maxReduction)status=1;
-	count=0;
+	if (localError>errorPerTimeStep)status=1;
 	//! advance
 	y = newy;
 	time +=h;
