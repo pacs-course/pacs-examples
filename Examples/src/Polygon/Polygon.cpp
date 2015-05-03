@@ -161,14 +161,16 @@ namespace Geometry{
     ;}
   
   void Square::showMe(std::ostream & out) const
-  {out<<"A Square"<<std::endl;
+  {
+    out<<"A Square"<<std::endl;
     AbstractPolygon::showMe(out);
   }
   
   
-  // ********************* TRIANGOLO **********************
+  //********************* TRIANGLE **********************
   
-  Triangle::Triangle(Vertices const & v):AbstractPolygon(v){
+  Triangle::Triangle(Vertices const & v):AbstractPolygon(v,false){
+    this->isconvex=true;    
     // Check if we give 3 vertices
     // We may use assert, in this case we would disable the control
     // in the released version (-DNDEBUG). We prefer here to exit the program
@@ -178,7 +180,8 @@ namespace Geometry{
   }
   
 
-  double Triangle::area() const{
+  double Triangle::area() const
+  {
     if(this->size()==0) return 0.0;
     // I use the cross product since this is a 
     // signed area!
