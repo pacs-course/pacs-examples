@@ -1,4 +1,4 @@
-/*! MyMat0 A simple class for full matrix
+/*! MyMat0 A simple class for full matrix version FULL TEMPLATE
     Luca Formaggia 2005     */
 #ifndef _MYMAT0__HH
 #define _MYMAT0__HH
@@ -32,14 +32,20 @@ namespace LinearAlgebra{
     using size_type we are sure that we are consistent with the standard
     library (and avoid problem with particular computer architectures)
    */
-  typedef std::vector<double>::size_type size_type;
 
+
+  namespace Helpers
+  {
   //! A Helper class that allow to distinguish row and column ordering
   /*! It ia a nice trick by Alexandrescu. I convert an enumerator to a type
     so that I can apply overloading
   */
-  template<StoragePolicySwitch storagePolicy>
-  struct storagePolicyType{};
+    template<StoragePolicySwitch storagePolicy>
+    struct storagePolicyType{};
+    //! A helper class to distinguish treu from false
+    template<bool T>
+    struct fillSwitch{};
+  }
   //! A simple matrix class of double
   /*!
    * It stores a matrix of double entries, allowing different type of
@@ -48,6 +54,8 @@ namespace LinearAlgebra{
    */
   template<class T=double, StoragePolicySwitch storagePolicy=ROWMAJOR>
   class MyMat0{
+  public:
+    typedef typename std::vector<T>::size_type size_type;
   private:
     size_type nr,nc;
     //! Data storage
@@ -80,18 +88,18 @@ namespace LinearAlgebra{
       
       I do not need in this case to define getIndex with only two arguments
     */
-    size_type getIndex(size_type const & i, size_type const & j, storagePolicyType<ROWMAJOR>) const
+    size_type getIndex(size_type const & i, size_type const & j, Helpers::storagePolicyType<ROWMAJOR>) const
     {
       return i + j*nr;
     }
-    size_type getIndex(size_type const & i, size_type const & j, storagePolicyType<COLUMNMAJOR>) const
+    size_type getIndex(size_type const & i, size_type const & j, Helpers::storagePolicyType<COLUMNMAJOR>) const
     {
       return j + i*nc;
     }
     //! The actual function returning the index
     size_type getIndex(size_type const & i, size_type const & j) const
     {
-      return getIndex(i,j,storagePolicyType<storagePolicy>());
+      return getIndex(i,j,Helpers::storagePolicyType<storagePolicy>());
     }
   public:
     //! Returns the type of the stored values
@@ -119,14 +127,15 @@ namespace LinearAlgebra{
     //! Default move assign is ok
     MyMat0& operator=(MyMat0&&)=default;
     //! Fills of zero. Enabled only for arithmetic types
-    template <class T1=T>
-    void fillZero(typename std::enable_if<(std::is_arithmetic<T1>::value||std::is_pointer<T1>::value)>::type* =0)
+    void fillZero(Helpers::fillSwitch<true>)
     {
-	for (auto & i : data) i=T1(0);
+      for (auto & i : data) i=T(0);
     }
-    template <class T1=T>
-    void fillZero(typename std::enable_if<!(std::is_arithmetic<T1>::value||std::is_pointer<T1>::value)>::type* =0)
+    void fillZero(Helpers::fillSwitch<false>){}
+    //! Fills with zero if arithmetic type or pointer type.
+    void fillZero()
     {
+      fillZero(Helpers::fillSwitch<std::is_arithmetic<T>::value||std::is_pointer<T>::value>());      
     }
     //! Resizing the matrix
     /*!
@@ -171,9 +180,15 @@ namespace LinearAlgebra{
       ...
       }
       \endcode
+
+      As an alternative, I can use enable_if
+      \code
+      template <class T1=T>
+      typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type normInf() const;
+      \endcode
+
+      In this case the method is not enabled at all if the condition (arithmetic type) is not satisfied.
      */
-    //template <class T1=T>
-    //typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type normInf() const;
     T normInf() const;
     //! Computes \f$ ||A||_1 \f$
     /*!
@@ -343,7 +358,7 @@ namespace LinearAlgebra{
       }
     res.resize(nr,T(0));
     // for efficiency I use two different algorithms
-    
+    // I could have used overloading!
     switch(storagePolicy)
       {
       case ROWMAJOR:
