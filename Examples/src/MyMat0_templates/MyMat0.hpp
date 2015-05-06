@@ -22,6 +22,9 @@ namespace LinearAlgebra{
  */
   enum StoragePolicySwitch {ROWMAJOR,COLUMNMAJOR};
 
+  template< StoragePolicySwitch S>
+  struct StorageType{};
+
   //! Type to hold indexex.
   /*!
     The standard library gives me one, so we use it
@@ -31,7 +34,7 @@ namespace LinearAlgebra{
     using size_type we are sure that we are consistent with the standard
     library (and avoid problem with particular computer architectures)
    */
-  typedef std::vector<double>::size_type size_type;
+  typedef unsigned int size_type;
 
   //! A simple matrix class of double
   /*!
@@ -39,8 +42,9 @@ namespace LinearAlgebra{
    * storage through an internal policy. The policy is implemented via
    * a pointer to function selected at construction time.
    */
-  template<StoragePolicySwitch storagePolicy=ROWMAJOR>
+  template<class T, StoragePolicySwitch storagePolicy=ROWMAJOR>
   class MyMat0{
+    
   private:
     size_type nr,nc;
     //! Data storage
@@ -51,11 +55,16 @@ namespace LinearAlgebra{
      * In alternative I might have used a smart pointer, in particular
      * std::unique_ptr<double>
      */
-    std::vector<double> data;
+    std::vector<T> data;
       //! The general template for the policies. Only declaration since I will always use full specializations
     //    template<StoragePolicySwitch thePolicy> size_type M_getIndex(size_type const & i, size_type const & j) const;
-    //! Function returning index according to ordering
-    size_type getIndex(size_type const & i, size_type const & j) const;
+T    //! Function returning index according to ordering
+    size_type getIndex(size_type const & i, size_type const & j, storageType<ROWMAJOR>) const;
+    size_type getIndex(size_type const & i, size_type const & j, storageType<COLUMNMAJOR>) const;
+    size_type getIndex(size_type const & i, size_type const & j) const
+    {
+      return getIndex(i,j,storageType<storagePolicy>());
+    }
   public:
     //! It builds a matrix with n rows and m columns.
     /*!
@@ -90,7 +99,7 @@ namespace LinearAlgebra{
     /*!
       It allows a=m(1,1) on constant matrix m
      */
-    double operator () (const size_type i, const size_type j) const
+    T operator () (const size_type i, const size_type j) const
     {
     	return data[getIndex(i,j)];
     }
@@ -98,7 +107,7 @@ namespace LinearAlgebra{
     /*!
       It allows m(1,1)=1 on non-constant matrix m
      */
-    double & operator () (const size_type i, const size_type j)
+    T & operator () (const size_type i, const size_type j)
     {
     	return data[getIndex(i,j)];
     }
@@ -108,17 +117,17 @@ namespace LinearAlgebra{
       return storagePolicy;
     }
     //! Computes \f$ ||A||_\infty \f$
-    double normInf() const;
+    T normInf() const;
     //! Computes \f$ ||A||_1 \f$
-    double norm1() const;
+    T norm1() const;
     //! Computes Frobenious norm
-    double normF() const;
+    long double normF() const;
     //! An example of matrix times vector
     /*!
      * It checks for consistency: the size of the vector must be equal
      * to the number of columns
      */
-    void vecMultiply(const std::vector<double> &v, std::vector<double> & res) const;
+    void vecMultiply(const std::vector<T> &v, std::vector<T> & res) const;
 
     //! Generates a random matrix
     /*!
@@ -143,8 +152,8 @@ namespace LinearAlgebra{
    * @param v The vector (with size equal to the number of columns)
    * @return The result in a vector of the size = to the number of row
    */
-  template<StoragePolicySwitch storagePolicy>
-  std::vector<double> operator * (MyMat0<storagePolicy> const & m,std::vector<double> const & v);
+  template<class T, StoragePolicySwitch storagePolicy>
+  std::vector<T> operator * (MyMat0<T,storagePolicy> const & m,std::vector<T> const & v);
 
   //                 DEFINITIONS
   
@@ -153,8 +162,8 @@ namespace LinearAlgebra{
    Note: important to declare it inline. Otherwise it should go to a cpp file! And it will be less
    efficient!
   */
-  template<>
-  inline size_type MyMat0<ROWMAJOR>::getIndex(size_type const & i, size_type const & j) const
+  template<class T>
+  inline size_type MyMat0<T,ROWMAJOR>::getIndex(size_type const & i, size_type const & j) const
   {
     return i + j*nr;;
   }
@@ -163,14 +172,14 @@ namespace LinearAlgebra{
     Note: important to declare it inline. Otherwise it should go to a cpp file! And it will be less
     efficient!
   */
-  template<>
-  inline size_type MyMat0<COLUMNMAJOR>::getIndex(size_type const & i, size_type const & j) const
+  template<class T>
+  inline size_type MyMat0<T,COLUMNMAJOR>::getIndex(size_type const & i, size_type const & j) const
   {
     return j + i*nc;
   }
   
-  template<StoragePolicySwitch storagePolicy>
-  void MyMat0<storagePolicy>::resize(size_type const n, size_type const m)
+  template<class T, StoragePolicySwitch storagePolicy>
+  void MyMat0<T, storagePolicy>::resize(size_type const n, size_type const m)
   {
     if(n*m != nc*nr)
       {
@@ -184,42 +193,42 @@ namespace LinearAlgebra{
     nc=m;
   }
   
-  template<StoragePolicySwitch storagePolicy>
-  double MyMat0<storagePolicy>::normInf() const{
+  template<class T, StoragePolicySwitch storagePolicy>
+  T MyMat0<T,storagePolicy>::normInf() const{
     if(nr*nc==0)return 0;
-    double vmax(0.0);
+    T vmax(0);
     
     for (size_type i=0;i<nr;++i){
-      double vsum=0;
+      T vsum=0;
       for (size_type j=0;j<nc;++j) vsum+=data[getIndex(i,j)];
       vmax=std::max(vsum,vmax);
     }
     return vmax;
   }
   
-  template<StoragePolicySwitch storagePolicy>
-  double MyMat0<storagePolicy>::norm1() const{
+  template<class T, StoragePolicySwitch storagePolicy>
+  T MyMat0<T,storagePolicy>::norm1() const{
     if(nr*nc==0)return 0;
-    double vmax(0);
+    T vmax(0);
     for (size_type j=0;j<nc;++j){
-      double vsum=0;
+      T vsum=0;
       for (size_type i=0;i<nr;++i) vsum+=data[getIndex(i,j)];
       vmax=std::max(vsum,vmax);
     }
     return vmax;
   }
   
-  template<StoragePolicySwitch storagePolicy>
-  double MyMat0<storagePolicy>::normF() const{
+  template<class T, StoragePolicySwitch storagePolicy>
+  long double MyMat0<T,storagePolicy>::normF() const{
     if(nr*nc==0)return 0;
-    double vsum=0;
+    long double vsum=0.0;
     for (auto const x: data) vsum+=x*x;
     return std::sqrt(vsum);
   }
   
   
-  template<StoragePolicySwitch storagePolicy>
-  void MyMat0<storagePolicy>::vecMultiply(const std::vector<double> &v, std::vector<double> & res) const
+  template<class T, StoragePolicySwitch storagePolicy>
+  void MyMat0<T, storagePolicy>::vecMultiply(const std::vector<T> &v, std::vector<T> & res) const
   {
     if(v.size() != nc)
       {
@@ -242,8 +251,8 @@ namespace LinearAlgebra{
       }
   }
     
-    template<StoragePolicySwitch storagePolicy>
-    void  MyMat0<storagePolicy>:: fillRandom(unsigned int seed)
+  template<class T, StoragePolicySwitch storagePolicy>
+  void  MyMat0<T, storagePolicy>:: fillRandom(unsigned int seed)
     {
       if (seed==0) seed=std::time(0);
       double rmax=static_cast<double>(RAND_MAX+2.0);
@@ -253,8 +262,8 @@ namespace LinearAlgebra{
   }
   
   
-  template<StoragePolicySwitch storagePolicy>
-  void MyMat0<storagePolicy>::showMe(std::ostream & out) const{
+  template<class T, StoragePolicySwitch storagePolicy>
+  void MyMat0<T,storagePolicy>::showMe(std::ostream & out) const{
     out<<"[";
     for (size_type i=0;i<nr;++i){
       for (size_type j=0;j<nc-1;++j) out<< this->operator()(i,j)<<", ";
@@ -266,8 +275,8 @@ namespace LinearAlgebra{
     }
   }
 
-  template<StoragePolicySwitch storagePolicy>
-  std::vector<double> operator * (MyMat0<storagePolicy> const & m,std::vector<double> const & v)
+  template<class T, StoragePolicySwitch storagePolicy>
+  std::vector<T> operator * (MyMat0<T, storagePolicy> const & m,std::vector<T> const & v)
   {
     std::vector<double> tmp;
     m.vecMultiply(v,tmp);
