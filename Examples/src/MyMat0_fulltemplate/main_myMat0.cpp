@@ -20,8 +20,8 @@ int main()
   MyMat0<> b(5,5);
 
   b.fillRandom();
-  a(0,0)=5;
-  a(1,1)=10;
+  a(0,0)=5.5;
+  a(1,1)=10.2;
   a(2,2)=20;
 
   //! file to output the matrix
@@ -49,7 +49,17 @@ int main()
   std::cout<<"[";
   for (auto i=res.cbegin();i<res.cend()-1;++i)std::cout<<*i<<", ";
   std::cout<<*(res.end()-1)<<"]"<<std::endl;
-  std::cout<<"Norm1, NOrmInf and NormF of a: "<<a.norm1()<<" "<<a.normInf()<<" "<<a.normF()<<std::endl;
+  std::cout<<"Norm1, NormInf and NormF of a: "<<a.norm1()<<" "<<a.normInf()<<" "<<a.normF()<<std::endl;
+
+  // A matrix of integers
+  MyMat0<int> aInt(2,2);
+  aInt(0,0)=1;
+  aInt(0,1)=2;
+  aInt(1,0)=3;
+  aInt(1,1)=4;
+  std::cout<<"Norm1, NormInf and NormF of aInt: "<<aInt.norm1()<<" "<<aInt.normInf()<<" "<<aInt.normF()<<std::endl;
+  
+  
   // A matrix of Foos
   MyMat0<Foo,ROWMAJOR> fooMat(2,2);
   fooMat(0,0)={1.0,2};
@@ -58,6 +68,8 @@ int main()
   fooMat(1,1)={4.0,-1};
   std::cout<<"fooMat(1,1)={"<<fooMat(1,1).a<<" "<<fooMat(1,1).b<<"}"<<std::endl;
   // Try to uncomment this!
-  //  fooMat.normInf();
-  
+  //fooMat.normInf();
+  // or this
+  //fooMat.norm1();
+
 }
