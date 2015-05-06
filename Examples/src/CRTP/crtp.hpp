@@ -8,7 +8,7 @@ template<typename T>
 class Base{
  public:
   //! Delegates to derived class
-  double fun(double const & x)
+  double fun(double const & x) const
   {
     return derived().fun(x);
   }
@@ -18,7 +18,7 @@ private:
   //! Returns myself as derived
   T & derived(){return static_cast<T &>(*this);}
   //! Const version
-  T const & derived() const {return static_cast<T &>(*this);}
+  T const & derived() const {return static_cast<T const &>(*this);}
 };
 
 //!Derived class
@@ -26,7 +26,7 @@ class Derived1: public Base<Derived1>
 {
 public:
   //!Implementation of function fun
-  double fun(double const & x);
+  double fun(double const & x) const;
   //! Implementation of the static function.
   static constexpr int fstatic(){return N;}
 private:
@@ -37,7 +37,7 @@ class Derived2: public Base<Derived2>
 {
 public:
   //!Implementation of function fun
-  double fun(double const & x);
+  double fun(double const & x) const;
   //! Implementation of the static function.
   static constexpr int fstatic(){return N;}
 private:
