@@ -120,12 +120,12 @@ namespace LinearAlgebra{
     MyMat0& operator=(MyMat0&&)=default;
     //! Fills of zero. Enabled only for arithmetic types
     template <class T1=T>
-    void fillZero(typename std::enable_if<(std::is_arithmetic<T1>::value)>::type* =0)
+    void fillZero(typename std::enable_if<(std::is_arithmetic<T1>::value||std::is_pointer<T1>::value)>::type* =0)
     {
 	for (auto & i : data) i=T1(0);
     }
     template <class T1=T>
-    void fillZero(typename std::enable_if<(!std::is_arithmetic<T1>::value)>::type* =0)
+    void fillZero(typename std::enable_if<!(std::is_arithmetic<T1>::value||std::is_pointer<T1>::value)>::type* =0)
     {
     }
     //! Resizing the matrix
@@ -162,19 +162,42 @@ namespace LinearAlgebra{
     }
     //! Computes \f$ ||A||_\infty \f$
     /*!
-      This method makes sense only for arithmetic types. To enable it only for those
-      type I use a trick that involved enable_if. But to meke it work I need
-      to make the method a template. But I give a default value, so in practice i will use
-      it as a non-template method
+      This method makes sense only for arithmetic types. 
+      I use static assert in the definition to make it work only for arithmetic types.
+      \code
+      T normInf()
+      {
+      static_assert(std::is_arithmetic<T>::value,"NormInf can be called only on arithmetic types");
+      ...
+      }
+      \endcode
      */
-    template <class T1=T>
-    typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type normInf() const;
+    //template <class T1=T>
+    //typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type normInf() const;
+    T normInf() const;
     //! Computes \f$ ||A||_1 \f$
+    /*!
+      To enable it only for arithmetic types I use here a trick that involves enable_if. 
+      But to make SFINAE work I need
+      to make the method a template method. But I give a default value, so in practice I can use
+      it as it were a non-template method
+    */
+
     template <class T1=T>
     typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type norm1() const;
     //! Computes Frobenious norm
+    /*
+      Cannot return an integer type (in case T is an integer). A simple, yet not so nice
+      Alternative: use conditional
+      /code
+      template <class T1=T>
+      typename std::enable_if<std::is_arithmetic<T1>::value, 
+      typename std::conditional<std::is_integer<T1>::value,double,T1>::type
+      >::type normF() const;
+      /endcode
+     */
     template <class T1=T>
-    typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type normF() const;
+    typename std::enable_if<std::is_arithmetic<T1>::value, long double>::type normF() const;
     //! An example of matrix times vector
     /*!
      * It checks for consistency: the size of the vector must be equal
@@ -236,7 +259,6 @@ namespace LinearAlgebra{
   }
   */
 
-  /* Selection by enable_if */
   template<class T, StoragePolicySwitch storagePolicy>
   void MyMat0<T,storagePolicy>::resize(size_type const n, size_type const m)
   {
@@ -251,12 +273,28 @@ namespace LinearAlgebra{
     nr=n;
     nc=m;
   }
-  
-  template<class T, StoragePolicySwitch storagePolicy>
-  template<class T1>
-  typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type 
-  MyMat0<T,storagePolicy>::normInf() const
-  {
+    
+    /*
+      template<class T, StoragePolicySwitch storagePolicy>
+      template<class T1>
+      typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type 
+      MyMat0<T,storagePolicy>::normInf() const
+      {
+      if(nr*nc==0)return 0;
+      T vmax(0.0);
+      
+      for (size_type i=0;i<nr;++i){
+      T vsum=0;
+      for (size_type j=0;j<nc;++j) vsum+=data[getIndex(i,j)];
+      vmax=std::max(vsum,vmax);
+      }
+      return vmax;
+      }
+    */
+    template<class T, StoragePolicySwitch storagePolicy>
+    T MyMat0<T,storagePolicy>::normInf() const
+    {
+    static_assert(std::is_arithmetic<T>::value," normInf can be used only on arithmetic types"); 
     if(nr*nc==0)return 0;
     T vmax(0.0);
     
@@ -267,7 +305,8 @@ namespace LinearAlgebra{
     }
     return vmax;
   }
-  
+
+  /* Selection by enable_if */
   template<class T, StoragePolicySwitch storagePolicy>
   template<class T1>
   typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type 
@@ -285,10 +324,10 @@ namespace LinearAlgebra{
 
   template<class T, StoragePolicySwitch storagePolicy>
   template<class T1>
-  typename std::enable_if<std::is_arithmetic<T1>::value, T1>::type 
+  typename std::enable_if<std::is_arithmetic<T1>::value, long double>::type
   MyMat0<T,storagePolicy>::normF() const{
-    if(nr*nc==0)return 0;
-    T vsum=0;
+    if(nr*nc==0)return 0.0;
+    long double vsum=0;
     for (auto const x: data) vsum+=x*x;
     return std::sqrt(vsum);
   }
