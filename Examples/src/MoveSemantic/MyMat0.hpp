@@ -251,14 +251,14 @@ namespace LinearAlgebra {
   template <>
   size_type MyMat0<ROWMAJOR>::getIndex(size_type const i, 
 				       size_type const j) const{
-    return i + j*nr;
+    return j + i*nc;
   }
   
   //! Specialized version for COLUMNMAJOR matrices
   template <>
   size_type MyMat0<COLUMNMAJOR>::getIndex (size_type const i, 
 					   size_type const j) const{
-    return j + i*nc;
+    return i + j*nr;
   }
 
   template<StoragePolicySwitch T>
