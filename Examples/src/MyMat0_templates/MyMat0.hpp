@@ -165,7 +165,7 @@ T    //! Function returning index according to ordering
   template<class T>
   inline size_type MyMat0<T,ROWMAJOR>::getIndex(size_type const & i, size_type const & j) const
   {
-    return i + j*nr;;
+    return j + i*nc;
   }
   //! Specialization for column major ordering
   /*!
@@ -175,7 +175,7 @@ T    //! Function returning index according to ordering
   template<class T>
   inline size_type MyMat0<T,COLUMNMAJOR>::getIndex(size_type const & i, size_type const & j) const
   {
-    return j + i*nc;
+    return i + j*nr;;
   }
   
   template<class T, StoragePolicySwitch storagePolicy>

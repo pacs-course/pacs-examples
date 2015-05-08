@@ -90,11 +90,11 @@ namespace LinearAlgebra{
     */
     size_type getIndex(size_type const & i, size_type const & j, Helpers::storagePolicyType<ROWMAJOR>) const
     {
-      return i + j*nr;
+      return j + i*nc;
     }
     size_type getIndex(size_type const & i, size_type const & j, Helpers::storagePolicyType<COLUMNMAJOR>) const
     {
-      return j + i*nc;
+      return i + j*nr;
     }
     //! The actual function returning the index
     size_type getIndex(size_type const & i, size_type const & j) const
