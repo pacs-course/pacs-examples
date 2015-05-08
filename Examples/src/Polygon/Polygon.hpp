@@ -173,9 +173,9 @@ namespace Geometry
     Square & operator=(const Square &)=default;
     Square & operator=(Square &&)=default;
     //! Specialised version for squares
-    virtual double area() const;
+    double area() const;
     //! Specialised version for squares.
-    virtual void showMe(std::ostream & out=std::cout) const;
+    void showMe(std::ostream & out=std::cout) const;
   };
   
   //! A triangle
