@@ -31,9 +31,9 @@ int main()
   //Square aSquare(Point2D(0.0,0.0),1.0); 
   Square aSquare({0.0,0.0},1.0);
   Square s2(aSquare); 
-  p_ab=&s2;
-  p_ab->showMe();
-  std::cout<<"Area: "<<aSquare.area()<<std::endl;
+  AbstractPolygon & r_ab=s2;
+  r_ab.showMe();
+  std::cout<<"Area: "<<r_ab.area()<<std::endl;
 }
   
 
