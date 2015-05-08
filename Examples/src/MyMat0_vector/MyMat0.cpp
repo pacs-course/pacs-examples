@@ -23,12 +23,12 @@ namespace LinearAlgebra {
   
   size_type MyMat0::rowMajorPolicy(size_type const & i, 
 				   size_type const & j) const{
-      return i + j*nr;
+    return j + i*nc;
     }
 
   size_type MyMat0::columnMajorPolicy(size_type const & i, 
 				      size_type const & j) const{
-    return j + i*nc;
+      return i + j*nr;
   }
 
   double  MyMat0::getValue(size_type const i, size_type const j) const
