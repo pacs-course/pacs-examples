@@ -14,6 +14,7 @@
 # the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../
+include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
 #
@@ -29,7 +30,6 @@ LIBNAME=Mesh
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
-include $(MAKEFILEH_DIR)/Makefile.inc
 LIBRARIES+=-L. -l$(LIBNAME)
 LDLIBS+=$(LIBRARIES)
 INCLUDES=-I. -I$(PACS_INC_DIR)
@@ -138,7 +138,7 @@ $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 #	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
 $(DYNAMIC_LIBFILE): $(LIB_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIBD) $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
+	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE)
 
 #$(LIB_OBJS): $(LIB_SRCS)
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
