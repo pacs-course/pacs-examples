@@ -1,13 +1,13 @@
 #ifndef QUADRATURE_RULE_HPP
 #define QUADRATURE_RULE_HPP
-#include <vector>
+#include <array>
 #include <memory>
 #include <utility>
 namespace NumericalIntegration{
   
   //! The type the integrand
   typedef std::function<double (double const &)> FunPoint;
-
+  
   
   //! The basis class for all the basic integration rules
   /*
@@ -38,7 +38,7 @@ namespace NumericalIntegration{
   
 
   //! The type of the object holding the quadrature rule.
-  typedef std::unique_ptr<QuadratureRule> QuadratureRuleHandler;
+  using QuadratureRuleHandler=std::unique_ptr<QuadratureRule>;
 
   /*! \brief  A base class for standard quadrature rules.
     
@@ -59,17 +59,43 @@ namespace NumericalIntegration{
     This version implements the virtual constuctor paradigm through the
     method clone();
   */
+  template<unsigned int NKNOTS>
   class StandardQuadratureRule: public QuadratureRule
   {
   public:
+    //! constructor
+    /*!
+      All quantities in the interval [-1,1]
+      @param weight Weights of the rules
+      @param nodes  Nodes (knots) of the rule
+      @param order Order of the quadrature (exactness +1). Required only if adaptive rule is used
+     */
+    StandardQuadratureRule(std::array<double,NKNOTS> weight,std::array<double,NKNOTS> nodes,double order=0):
+      _w(weight),_n(nodes),my_order(order)
+    {
+    }
+    //! Default constructor
+    StandardQuadratureRule():_w(),_n(),my_order(0){}
     //! number of nodes used by the rule
-    inline int num_nodes() const;
+    constexpr unsigned int num_nodes() const
+    {
+      return NKNOTS;
+    }
     //! access to the i-th node
-    inline double node(const int i) const;
+    double node(const unsigned int i) const
+    {
+      return _n[i];
+    }
     //! access to the i-th weight
-    inline double weight(const int i)const;
+    inline double weight(const unsigned int i)const
+    {
+      return _w[i];
+    }
     //! The order of convergence
-    inline unsigned int order()const;
+    inline unsigned int order()const
+    {
+      return my_order;
+    }
     //! The class is clonable.
     /*!
       Having a clonable class makes it possible to write copyconstructors
@@ -82,26 +108,27 @@ namespace NumericalIntegration{
     virtual ~StandardQuadratureRule()=default;
 
   protected:
-    std::vector<double>  _w;
-    std::vector<double>  _n;
+    std::array<double,NKNOTS>  _w;
+    std::array<double,NKNOTS>  _n;
     unsigned int my_order;
   private:
   };
-
-
-  // Definition of inlined methods. Inlined meshods must be defined
-  // in the header file. Alternative: use in-class definition 
-
-  int StandardQuadratureRule::num_nodes() const
-  { return _w.size();}
-
-  double StandardQuadratureRule::node(const int i) const
-  { return _n[i];}
   
-  double StandardQuadratureRule::weight(const int i) const
-  { return _w[i];}
-  
-  unsigned int StandardQuadratureRule::order() const
-  { return my_order;}
+  template<unsigned int N>
+  double 
+  NumericalIntegration::StandardQuadratureRule<N>::apply(
+							 FunPoint const &f, 
+							 double const &a, 
+							 double const &b)const
+  {
+    double h2((b-a)*0.5); // half length
+    double xm((a+b)*0.5); // midpoint
+    auto fscaled=[&](double x){return f(x*h2+xm);};
+    double tmp(0);
+    auto np=_n.begin();
+    for (auto wp=_w.begin();wp<_w.end();++wp,++np)tmp+=fscaled(*np)*(*wp);
+    return h2*tmp;
+  }
+
 }
 #endif

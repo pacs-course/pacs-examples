@@ -2,9 +2,9 @@
 #include <stdexcept>
 #include <algorithm>
 #include "rk45.hpp"
-namespace Generator
+namespace Geometry
 {
-  MeshNodes Uniform::operator()()
+  MeshNodes Uniform::operator()() const
   {
     unsigned int const & n=this->M_num_elements;
     double const a= this->M_domain.left();
@@ -18,7 +18,7 @@ namespace Generator
     
   }
   
-  MeshNodes VariableSize::operator()()
+  MeshNodes VariableSize::operator()() const
   {
     // calculate dy/dx = h^-1(x)
     MeshNodes mesh;
