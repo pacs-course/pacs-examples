@@ -1,4 +1,0 @@
-#include "QuadratureRulePlusError.hpp"
-
-
-
