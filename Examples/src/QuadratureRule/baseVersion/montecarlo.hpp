@@ -48,13 +48,15 @@ namespace NumericalIntegration{
     //! Iterations exceeded
     mutable bool M_iterationsExceeded;
     //! Default mx number of iterations
-    static const unsigned int max_iter_def;
+    static constexpr unsigned int max_iter_def=10000;
     //! Default error level;
     /*
       definition in the cpp file
      */
-    static const double error_level_def;
+    static constexpr double error_level_def=1.0e-2;
   };
+  //  constexpr double MonteCarlo::error_level_def(1.0e-2);
+
 }
 
 

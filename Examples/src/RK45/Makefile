@@ -14,6 +14,7 @@
 # the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../
+include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
 #
@@ -25,14 +26,12 @@ export DEBUG=yes
 #CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
 STANDARD=c++11
 #
-LIBNAME=rk45
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
-include $(MAKEFILEH_DIR)/Makefile.inc
 LIBRARIES+=-L. -l$(LIBNAME)
 LDLIBS+=$(LIBRARIES)
-INCLUDES=-I. -I(
+INCLUDES=-I. -I$(PACS_INC_DIR)
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
@@ -40,12 +39,14 @@ ifeq ($(LIBTYPE),DYNAMIC)
  LDFLAGS+=-dynamic 
 else
  export LIBRARY=$(STATIC_LIBFILE)
-# LDFLAGS+=
+# LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
 endif
 
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
+ifeq ($(LIBTYPE),DYNAMIC)
   LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+endif
 else
   OPTFLAGS=-O3
   CPPFLAGS+=-DNDEBUG
@@ -98,12 +99,12 @@ all:
 
 depend: $(DEPEND)
 
-targets: library exec
-
 static:
-	$(MAKE) targets
+	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
+	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	$(MAKE) targets LIBTYPE=DYNAMIC
+	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
+	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
