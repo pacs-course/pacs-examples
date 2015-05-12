@@ -121,6 +121,29 @@ Rational operator /(Rational const &l, Rational const & r)
   return temp;
 }
 
+bool operator<(Rational const& l, Rational const & r)
+{
+  auto al=l.M_n*r.M_d;
+  auto ar=r.M_n*l.M_d;
+  return al < ar;
+}
+bool operator<=(Rational const& l, Rational const & r)
+{
+  auto al=l.M_n*r.M_d;
+  auto ar=r.M_n*l.M_d;
+  return al <= ar;
+}
+bool operator>(Rational const& l , Rational const & r){
+  return ! (l<=r);
+}
+bool operator>=(Rational const& l, Rational const & r)
+{
+  return !(l>r);
+}
+bool operator==(Rational const& l, Rational const & r)
+{
+  return !(l<r) && ! (r<l);
+}
 
 
 std::ostream & operator << (std::ostream & str, Rational const & r)
