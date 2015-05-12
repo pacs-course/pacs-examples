@@ -58,6 +58,11 @@ public:
   friend Rational operator-(Rational const &,Rational const &);
   friend Rational operator*(Rational const &,Rational const &);
   friend Rational operator/(Rational const &,Rational const &);
+  friend bool operator<(Rational const&, Rational const &);
+  friend bool operator<=(Rational const&, Rational const &);
+  friend bool operator>(Rational const&, Rational const &);
+  friend bool operator>=(Rational const&, Rational const &);
+  friend bool operator==(Rational const&, Rational const &);
   //@}
   //! Streaming operator to output rationals in a nice way.
   friend std::ostream & operator << (std::ostream &, Rational const &);
