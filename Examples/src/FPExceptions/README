@@ -1,0 +1,15 @@
+make static; make exec
+
+or 
+
+make dynamic; make exec
+
+creates library and executable. If you specify FPEABORT
+
+make static FPEABORT=yes 
+
+or 
+
+make dynamic FPE_ABORT=yes 
+
+you have exit on floating point exception

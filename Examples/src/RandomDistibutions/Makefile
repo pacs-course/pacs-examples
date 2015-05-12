@@ -45,12 +45,12 @@ EXEC=$(exe_sources:.cpp=)
 all: $(DEPEND) $(EXEC)
 
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm *.out *.bak *~
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
@@ -59,10 +59,11 @@ $(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ $(CPPFLAGS) -std=c++0x -MM $(SRCS) -MF $(DEPEND)
-
-
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 
