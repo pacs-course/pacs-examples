@@ -10,7 +10,7 @@ namespace NumericalIntegration{
     
    */
   //! Simpson rule
-  class Simpson : public StandardQuadratureRule
+  class Simpson : public StandardQuadratureRule<3>
   {
   public:
     Simpson();
@@ -19,7 +19,7 @@ namespace NumericalIntegration{
   };
 
   //! Midpoint rule
-  class MidPoint : public StandardQuadratureRule
+  class MidPoint : public StandardQuadratureRule<1>
   {
   public:
     MidPoint();
@@ -28,7 +28,7 @@ namespace NumericalIntegration{
   };
 
   //! Trapezoidal rule
-  class Trapezoidal : public StandardQuadratureRule
+  class Trapezoidal : public StandardQuadratureRule<2>
   {
   public:
     Trapezoidal();
