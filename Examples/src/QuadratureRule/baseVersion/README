@@ -1,11 +1,18 @@
 Basic classes and function for numerical integration
 
-To compile with dynamic libaries 
-make dynamic
+They depend on the library libMesh1D, and on GetPot so you have first
+to go to src/Utilities and then to src/OneDMesh, look at the readme
+files and compile typping in each directory
+
+makedistclean;make dynamic DEBUG=no; make install; make distclean
+
+============ QUADRULES
+
+To compile with dynamic libaries make dynamic
 
 to compile with static libraries
 
-make static
+make static (It may not work)
 
 library binding is local unless DEBUG=no is indicated
 
@@ -13,6 +20,7 @@ to install libraries and headers in the directories lib eand include
 under the Example directory (where we put headers and libraries of the
 course) do
 
+make distclean
 make dynamic DEBUG=no
 make static DEBUG=no
 make install
@@ -25,3 +33,5 @@ compiles the exec without recompiling the libraries and do not use
 local (i.e.  current directory) linking but used the directories in
 Examples/lib. use static/dynamic if you want static or dynamic linking.
 
+Remeber to set LD_LIBRARY_PATH. The rule run_quadrul.sh contains a
+script to run the test program. 

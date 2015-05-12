@@ -3,8 +3,6 @@
 #include <random>
 #include "montecarlo.hpp"
 namespace NumericalIntegration{
-  const unsigned int MonteCarlo::max_iter_def(10000);
-  const double MonteCarlo::error_level_def(1.0e-2);
 
   MonteCarlo::MonteCarlo(): max_iter(max_iter_def),
 			    error_level(error_level_def),M_lastError(0),
@@ -20,7 +18,7 @@ namespace NumericalIntegration{
 			   double const & b) const
   {
     using namespace std;
-    static const unsigned int min_iter=16;  
+    static constexpr unsigned int min_iter=16;  
     random_device rd;
     // initialize random engine with the
     // random device

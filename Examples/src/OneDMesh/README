@@ -1,0 +1,25 @@
+Classes to handle a simple mesh
+
+You need first to compile and install RK45:
+
+go to Examples/src/RK45 and do
+
+make distclean
+make dynamic DEBUG=no  (to disable debugging)
+make install
+make distclean
+
+Include files go to the Examples/include and the library librk45.so in Examples/lib.
+
+Go back to this directory and run make distclean; make dynamic (or static)
+
+Make sure to set LD_LIBRARY_PATH accordingly. In 
+
+runTestGenerator.sh you have an example of how to launch the example to test the code
+
+IF YOU WANT TO INSTAL THE CODE (needed for other examples) do
+
+make distclean
+make dynamic DEBUG=no  (to disable debugging)
+make install
+make distclean
