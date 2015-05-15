@@ -138,7 +138,7 @@ bool operator>(Rational const& l , Rational const & r){
 }
 bool operator>=(Rational const& l, Rational const & r)
 {
-  return !(l>r);
+  return !(l<r);
 }
 bool operator==(Rational const& l, Rational const & r)
 {
