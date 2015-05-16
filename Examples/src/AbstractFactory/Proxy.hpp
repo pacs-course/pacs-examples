@@ -2,7 +2,7 @@
 #define GENERICPROXY_HPP_
 #include <string>
 #include <memory>
-
+#include <iostream>
 namespace GenericFactory {
   /*! A simple proxy for registering into a factory.
 
@@ -47,6 +47,7 @@ namespace GenericFactory {
     Factory_type & factory(Factory_type::Instance());
     // Insert the builder. The & is not needed.
     factory.add(name,&Proxy<F,C>::Build);
+    std::cout<<"Added "<< name << "to factory"<<std::endl;
   }
 }
 

@@ -3,10 +3,11 @@
 
 namespace NumericalIntegration{
 
-  UdfHandler::UdfHandler():M_lib_handle(0){}
+  UdfHandler::UdfHandler():M_lib_handle(nullptr){}
   
   void UdfHandler::openUdfLibrary(const std::string & s)
   {
+    if (this->M_lib_handle)dlclose(this->M_lib_handle);
     this->M_lib_handle=dlopen(s.c_str(),RTLD_LAZY);
     if (!this->M_lib_handle)
       throw std::invalid_argument("Udf library " + s + " not found");
@@ -27,7 +28,7 @@ void UdfHandler::closeUdfLibrary(){
 	if(!this->M_lib_handle) dlclose(this->M_lib_handle);
 }
 
-UdfHandler::UdfHandler(const std::string & s)
+  UdfHandler::UdfHandler(const std::string & s):UdfHandler()
 {
 	this->openUdfLibrary(s);
 }

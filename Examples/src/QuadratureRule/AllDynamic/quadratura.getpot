@@ -1,5 +1,5 @@
 integrand=myfun
 udflib=./libudf.so
 library=./libmyrules.so
-rule=zzz
-#rule=Trapezoidal
+#rule=?
+rule=Adaptive

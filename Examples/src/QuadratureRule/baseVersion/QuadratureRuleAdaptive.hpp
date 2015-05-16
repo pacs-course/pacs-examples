@@ -43,6 +43,10 @@ namespace NumericalIntegration{
     double weight(const int i)const{return _therule.weight(i);};
     unsigned int order() const{return _therule.order();};
     /*!@}*/
+    //! set Target Error
+    void setTargetError(double const t){_targetError=t;};
+    //! set Max number of iterations
+    void setMaxIter(unsigned int n){_maxIter=n;};
     //! The method that applies the rule.
     virtual double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
