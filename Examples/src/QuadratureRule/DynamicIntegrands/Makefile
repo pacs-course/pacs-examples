@@ -14,53 +14,39 @@
 # the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../..
-#
-# Library with quadrature rules
-LIBNAME=
-DYNAMIC_LIBFILE=
-STATIC_LIBFILE=
-
-# Library with composite integration stuff
-LIBNAME2=
-DYNAMIC_LIBFILE2=
-STATIC_LIBFILE2=
-
-# Library with integrands
-LIBNAME3=integrands
-DYNAMIC_LIBFILE3=lib$(LIBNAME3).so
-STATIC_LIBFILE3=lib$(LIBNAME3).a
-
-
 include $(MAKEFILEH_DIR)/Makefile.inc
-
-LIBTYPE=DYNAMIC
-
-ifeq ($(LIBTYPE),DYNAMIC)
- CXXFLAGS+=-fPIC
- export LIBRARY=$(DYNAMIC_LIBFILE)
- export LIBRARY2=$(DYNAMIC_LIBFILE2)
- export LIBRARY3=$(DYNAMIC_LIBFILE3)
- LDFLAGS+=-dynamic 
-else
- EXTRA_CXXFLAGS=
- export LIBRARY=$(STATIC_LIBFILE)
- export LIBRARY2=$(STATIC_LIBFILE2)
- export LIBRARY3=$(STATIC_LIBFILE3)
- LDFLAGS+=-static
-endif
-export DEBUG
-ifeq ($(DEBUG),no)
-  OPTFLAGS=-O3
-  LIBRARIES=-L. -L$(PACS_LIB_DIR)  -lquadrules -lnumint -ldl
-else
-  OPTFLAGS=-g -O0
-  LIBRARIES=-L.  -lquadrules -lnumint -ldl
-  LDFLAGS+=-Wl,-rpath=.
-endif
 #
 # You may have an include file also in the current directory
 #
 -include Makefile.inc
+#
+# Library with quadrature rules
+LIBNAME=integrands
+DYNAMIC_LIBFILE=lib$(LIBNAME).so
+STATIC_LIBFILE=lib$(LIBNAME).a
+
+EXTRA_LIBS=-L$(PACS_LIB_DIR) -lMesh1D -lquadrules -ldl
+LDLIBS=$(EXTRA_LIBS)
+
+ifeq ($(LIBTYPE),DYNAMIC)
+ CXXFLAGS+=-fPIC
+ export LIBRARY=$(DYNAMIC_LIBFILE)
+else
+ EXTRA_CXXFLAGS=
+ export LIBRARY=$(STATIC_LIBFILE)
+endif
+export DEBUG
+ifeq ($(DEBUG),no)
+  OPTFLAGS=-O3
+  LIBRARIES=-L. -L$(PACS_LIB_DIR)  -l$(LIBNAME) $(EXTRA_LIBS)
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
+else
+  OPTFLAGS=-g -O0
+  LIBRARIES=-L.  -l$(LIBNAME) -L$(PACS_LIB_DIR) $(EXTRA_LIBS)
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
+endif
+
+
 #
 # The general setting is as follows:
 # mains are identified bt main_XX.cpp
@@ -72,15 +58,9 @@ SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
-LIB_SRCS:=
+LIB_SRCS:=$(filter-out main%.cpp,$(SRCS))
 LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
 LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp)
-LIB2_SRCS:=
-LIB2_OBJS:=$(LIB2_SRCS:.cpp=.o)
-LIB2_HEADERS:=$(LIB2_SRCS:.cpp=.hpp)
-LIB3_SRCS:=integrands.cpp
-LIB3_OBJS:=$(LIB3_SRCS:.cpp=.o)
-LIB3_HEADERS:=$(LIB3_SRCS:.cpp=.hpp)
 OTHER_OBJS:=
 OTHER_SRCS:=
 # get all headers in the working directory
@@ -96,15 +76,15 @@ EXEC_SRCS:=$(exe_sources)
 .DEFAULT_GOAL = all
 
 all:
-#	@echo "make static makes static library"
+	@echo "make static makes static library"
 	@echo "make dynamic makes dynamic library"
 	@echo "make exec compiles executable"
 	@echo "make depend just makes dependency file"
 	@echo "make clean cleans all not library"
 	@echo "make distclean cleans all"
 	@echo "make install installs in the root directory"
-#	@echo "macro LIBTYPE=static compiles against dynamic lib"
-#	@echo "macro LIBTYPE=dynamic compiles against static lib"
+	@echo "macro LIBTYPE=STATIC compiles against dynamic lib"
+	@echo "macro LIBTYPE=DYNAMIC compiles against static lib"
 	@echo "macro DEBUG=no deactivates debugging and uses libraries in the"
 	@echo "root lib when compiling executable"
 	@echo "To run executable when compiling with DEBUG=no you need to type"
@@ -121,51 +101,41 @@ dynamic:
 
 exec: $(EXEC)
 
-library:  $(LIBRARY) $(LIBRARY2) $(LIBRARY3)
+library:  $(LIBRARY)
 
 install:
-	cp $(LIB_HEADERS) $(LIB2_HEADERS) $(PACS_INC_DIR)
-	mv -f $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(STATIC_LIBFILE2) $(DYNAMIC_LIBFILE2) $(PACS_LIB_DIR)
+
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc *.a *.so
-	-\rm -f *.out *.bak *~ $(DEPEND)
+	$(RM) -r -f ./doc *.a *.so
+	$(RM) -f *.out *.bak *~ $(DEPEND)
 
 doc:
 	doxygen $(DOXYFILE)
 
 $(EXEC): $(EXEC_OBJS) $(OTHER_OBJS)
-	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
+#	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
 
 $(EXEC_OBJS): $(EXEC_SRCS)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $<
+#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $<
 
 $(OTHER_OBJS): $(OTHER_SRCS)
-	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(CPPFLAGS) -c $<
+#	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(CPPFLAGS) -c $<
 
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 #	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
-$(STATIC_LIBFILE2): $(STATIC_LIBFILE2)($(LIB2_OBJS))
-#	ar -r $(STATIC_LIBFILE2) $(LIB2_OBJS)
-
-$(STATIC_LIBFILE3): $(STATIC_LIBFILE3)($(LIB3_OBJS))
-#	ar -r $(STATIC_LIBFILE3) $(LIB3_OBJS)
-
 $(DYNAMIC_LIBFILE): $(LIB_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIBD) $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
+	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE)
 
-$(DYNAMIC_LIBFILE2): $(LIB2_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIBD) $(LIB2_OBJS) -o $(DYNAMIC_LIBFILE2)
-
-$(DYNAMIC_LIBFILE3): $(LIB3_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIBD) $(LIB3_OBJS) -o $(DYNAMIC_LIBFILE3)
-
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 
 
