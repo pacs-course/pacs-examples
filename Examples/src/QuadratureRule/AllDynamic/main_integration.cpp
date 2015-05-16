@@ -3,6 +3,7 @@
 #include <memory>
 #include "GetPot"
 #include "numerical_integration.hpp"
+#include "numerical_rule.hpp"
 #include "udfHandler.hpp"
 #include "ruleProxy.hpp"
 void printHelp(){
@@ -18,9 +19,11 @@ void printHelp(){
 	cout<<"[integrand=string] Integrand function name (myfun)"<<endl;
 	cout<<"[rule=string] Quadrature rule name (Simpson)"<<endl;
 	cout<<"              If rule=? the list of registered rules is given"<<endl;
-	cout<<"[a=float] Left integration point (0)"<<endl;
-	cout<<"[b=float] Right integration point (1)"<<endl;
+	cout<<"[a=double] Left integration point (0)"<<endl;
+	cout<<"[b=double] Right integration point (1)"<<endl;
 	cout<<"[nint=int] Number of intervals (10)"<<endl;
+	cout<<"[maxIter=int] Max n. Iteration (for adaptive rules) (1000)"<<endl;
+	cout<<"[targetError=double] Target error (for adaptive rules) (1e-5)"<<endl;
 }
 
 int main(int argc, char** argv){
@@ -40,6 +43,8 @@ int main(int argc, char** argv){
 
   // Get the input file
   GetPot   cl("quadratura.getpot");
+  // Get the factory with the rules
+  RulesFactory & rulesFactory( RulesFactory::Instance());
   // Load library with the rules
   string quadlib=cl("library","libmyrules.so");
   void * dylib=dlopen(quadlib.c_str(),RTLD_NOW);
@@ -60,15 +65,22 @@ int main(int argc, char** argv){
   double a=cl("a", 0.);
   double b=cl("b", 1 );
   int nint=cl("nint", 10);
+  double targetError=cl("targetError", 1.e-5);
+  unsigned int maxIter=cl("maxIter", 1000);
   string rule=cl("rule","Simpson");
-  // Get the factory with the rules
-  RulesFactory & rulesFactory( RulesFactory::Instance());
   // Extract the rule. 
   bool notThere(false);
   QuadratureRuleHandler theRule;
   try
     {
       theRule=rulesFactory.create(rule);
+      if (rule=="Adaptive") 
+        {
+          // I need to use a wrapper since setTargetError and setMaxIter are not in the public
+          // interface of a non-adaptive rule!
+          ruleWrapper<QuadratureRuleAdaptive<Simpson>>::setTargetError(*theRule,targetError);
+          ruleWrapper<QuadratureRuleAdaptive<Simpson>>::setMaxIter(*theRule,maxIter);
+        }
     }  catch (std::invalid_argument)
     {
       notThere = true;
@@ -90,8 +102,7 @@ int main(int argc, char** argv){
   // Compute integral
   Domain1D domain(a,b);
   Mesh1D mesh(domain,nint);
-  QuadratureRule & myRule(*theRule);
-  Quadrature s(myRule,mesh);
+  Quadrature s(*theRule,mesh);
   double approxs=s.apply(f);
   cout<<"Result= "<<approxs<<endl;
   // Close rule library
