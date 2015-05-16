@@ -31,7 +31,9 @@ DYNAMIC_LIBFILE3=lib$(LIBNAME3).so
 STATIC_LIBFILE3=lib$(LIBNAME3).a
 
 # Additional librarie
-OTHER_LIBRARIES=-lnumint -ldl
+OTHER_LIBRARIES=-ldl
+
+
 
 include $(MAKEFILEH_DIR)/Makefile.inc
 
@@ -41,25 +43,27 @@ ifeq ($(LIBTYPE),DYNAMIC)
  export LIBRARY=$(DYNAMIC_LIBFILE)
  export LIBRARY2=$(DYNAMIC_LIBFILE2)
  export LIBRARY3=$(DYNAMIC_LIBFILE3)
- LDFLAGS+=-dynamic
+ LDFLAGS+=
 else
  EXTRA_CXXFLAGS=
  export LIBRARY=$(STATIC_LIBFILE)
  export LIBRARY2=$(STATIC_LIBFILE2)
  export LIBRARY3=$(STATIC_LIBFILE3)
- LDFLAGS+=-static
+ LDFLAGS+=
 endif
 export DEBUG
 ifeq ($(DEBUG),no)
   OPTFLAGS=-O3
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
+  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -Wl,-E
+
 else
   OPTFLAGS=-g -O0
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
-  LDFLAGS+=-Wl,-rpath=. -Wl,-E
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -Wl,-E
 endif
 #CXX=g++-4.7
-LIBLIB=-L$(PACS_LIB_DIR) -lquadrules
+LDLIBS=-L$(PACS_LIB_DIR) -lquadrules -lMesh1D $(OTHER_LIBRARIES)
 #
 # You may have an include file also in the current directory
 #
@@ -107,7 +111,7 @@ all:
 	@echo "make clean cleans all not library"
 	@echo "make distclean cleans all"
 #	@echo "make install installs in the root directory"
-#	@echo "macro LIBTYPE=static compiles against dynamic lib"
+#	@echo "macro LIBTYPE=static compiles against static lib"
 	@echo "macro LIBTYPE=dynamic compiles against static lib"
 	@echo "macro DEBUG=no deactivates debugging and uses libraries in the"
 	@echo "root lib when compiling executable"
@@ -117,11 +121,11 @@ all:
 depend: $(DEPEND)
 
 static:
-	-rm -f *.o
+	$(RM) -f *.o
 	$(MAKE) library LIBTYPE=STATIC
 #	$(MAKE) exec LIBTYPE=STATIC
 dynamic:
-	-rm -f *.o
+	$(RM) -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
 #	$(MAKE) exec LIBTYPE=DYNAMIC
 
@@ -133,12 +137,12 @@ library:  $(LIBRARY) $(LIBRARY2) $(LIBRARY3)
 #	cp $(LIB_HEADERS) $(LIB2_HEADERS) $(PACS_INC_DIR)
 #	mv -f $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(STATIC_LIBFILE2) $(DYNAMIC_#LIBFILE2) $(PACS_LIB_DIR)
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc *.a *.so
-	-\rm -f *.out *.bak *~ $(DEPEND)
+	$(RM) -r -f ./doc *.a *.so
+	$(RM) -f *.out *.bak *~ $(DEPEND)
 
 doc:
 	doxygen $(DOXYFILE)
@@ -170,8 +174,11 @@ $(DYNAMIC_LIBFILE2): $(LIB2_OBJS)
 $(DYNAMIC_LIBFILE3): $(LIB3_OBJS)
 	$(CXX) -shared $(OPTFLAGS) $(LIB3_OBJS) -o $(DYNAMIC_LIBFILE3)
 
-$(DEPEND): $(SRCS) $(HEADERS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 
 

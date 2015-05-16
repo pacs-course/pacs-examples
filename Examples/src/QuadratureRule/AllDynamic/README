@@ -1,5 +1,5 @@
 Dynamic loading of numerical rules and integrands:
-go in ../base version and do
+go in ../baseversion and do
 
 make dynamic
 make install
@@ -9,6 +9,8 @@ and do
 
 make install
 
+(you have also to install ./AbstractFactory ./RK45 ./Utility and ./OneDMesh)
+
 Data read from quadratura.getpot (a getpot file)
 
 To compile the libraries
@@ -16,7 +18,7 @@ make dynamic
 
 to compile the executable
 
-make exacutable
+make exec
 
 library binding is local unless DEBUG=no is indicated
 
@@ -24,7 +26,7 @@ if you use the macro DEBUG=no (es: make exec DEBUG=no)
 you compile with -O3 
 
 
-The linking is alwais made against libraries in Examples/lib a part
-for the local directories containing the proxy to the rules (used to
-register rules in the factory) and the library with the integrands.
+The linking is always made against libraries in Examples/lib a part
+for the local library  used to
+register rules in the factory and the library with the integrands.
 

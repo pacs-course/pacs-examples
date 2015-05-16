@@ -50,7 +50,7 @@ ifeq ($(DEBUG),no)
 else
   OPTFLAGS=-g -O0
   LIBRARIES=-L.  -l$(LIBNAME) -l$(LIBNAME3) -L$(PACS_LIB_DIR) $(EXTRA_LIBS)
-  LDFLAGS+=-Wl,-rpath=.
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
 endif
 
 LDLIBS=$(LIBRARIES)
@@ -66,9 +66,9 @@ SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
-LIB_SRCS:=numerical_rule.cpp helperfunction.cpp numerical_integration.cpp montecarlo.cpp QuadratureRuleAdaptive.cpp
+LIB_SRCS:=numerical_rule.cpp helperfunction.cpp numerical_integration.cpp montecarlo.cpp 
 LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
-LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp)
+LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp) $(wildcard Quadrature*.hpp)
 LIB3_SRCS:=integrands.cpp
 LIB3_OBJS:=$(LIB3_SRCS:.cpp=.o)
 LIB3_HEADERS:=$(LIB3_SRCS:.cpp=.hpp)
