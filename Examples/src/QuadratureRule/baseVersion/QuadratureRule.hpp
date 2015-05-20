@@ -76,6 +76,11 @@ namespace NumericalIntegration{
     }
     //! Default constructor
     StandardQuadratureRule():_w(),_n(),my_order(0){}
+    //! Default copy and move operations
+    StandardQuadratureRule(StandardQuadratureRule const &)=default;
+    StandardQuadratureRule(StandardQuadratureRule&&)=default;
+    StandardQuadratureRule & operator=(StandardQuadratureRule const &)=default;
+    StandardQuadratureRule & operator=(StandardQuadratureRule&&)=default;
     //! number of nodes used by the rule
     constexpr unsigned int num_nodes() const
     {

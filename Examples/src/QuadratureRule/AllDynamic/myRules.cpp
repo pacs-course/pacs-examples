@@ -33,6 +33,7 @@ extern "C"
 {
   void loadFactoryItems()
   {
+    using namespace QuadratureRuleFactory;
     using namespace NumericalIntegration;
     RuleProxy<Simpson> SH("Simpson");
     RuleProxy<Trapezoidal> TH("Trapezoidal");

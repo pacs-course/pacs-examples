@@ -40,12 +40,10 @@ namespace NumericalIntegration{
    */
 
   template<typename SQR>
-  class QuadratureRulePlusError: public QuadratureRule
+  class QuadratureRulePlusError final: public QuadratureRule
   {
   public:
     QuadratureRulePlusError();
-    //! Copy constructor.
-    QuadratureRulePlusError(QuadratureRulePlusError const &)=default;
     //! Cloning method.
     QuadratureRuleHandler   clone() const;
     //! Number of quadrature nodes. Delagates to the stored rules.

@@ -10,30 +10,27 @@ namespace NumericalIntegration{
     
    */
   //! Simpson rule
-  class Simpson : public StandardQuadratureRule<3>
+  class Simpson final : public StandardQuadratureRule<3>
   {
   public:
     Simpson();
-    virtual QuadratureRuleHandler clone() const;
-    virtual ~Simpson(){};
+    QuadratureRuleHandler clone() const;
   };
 
   //! Midpoint rule
-  class MidPoint : public StandardQuadratureRule<1>
+  class MidPoint final : public StandardQuadratureRule<1>
   {
   public:
     MidPoint();
-    virtual QuadratureRuleHandler clone()const ;
-    virtual ~MidPoint(){};
+    QuadratureRuleHandler clone()const ;
   };
 
   //! Trapezoidal rule
-  class Trapezoidal : public StandardQuadratureRule<2>
+  class Trapezoidal final : public StandardQuadratureRule<2>
   {
   public:
     Trapezoidal();
-    virtual QuadratureRuleHandler clone()const ;
-    virtual ~Trapezoidal(){};
+    QuadratureRuleHandler clone()const ;
   };
 
 }
