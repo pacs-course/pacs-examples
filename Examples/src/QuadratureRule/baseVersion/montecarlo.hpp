@@ -12,12 +12,12 @@ namespace NumericalIntegration{
     (default 1.e-02) and the max number of sampling.
     
    */
-  class MonteCarlo: public QuadratureRule
+  class MonteCarlo final: public QuadratureRule
   {
   public:
     MonteCarlo();
-    virtual std::unique_ptr<QuadratureRule> clone()const override;
-    virtual double apply(FunPoint const &, double const & a,
+    std::unique_ptr<QuadratureRule> clone()const override;
+    double apply(FunPoint const &, double const & a,
              double const & b) const override;
     //! Sets desired maximal error
     void setError(double e);
@@ -31,7 +31,6 @@ namespace NumericalIntegration{
     bool iterationsExceeded() const {return M_iterationsExceeded;}
     //! Resets the error accumulators.
     void resetError();
-    virtual ~MonteCarlo(){}
   private:
     //! Max iterations
     unsigned int max_iter;

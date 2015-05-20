@@ -47,7 +47,7 @@ namespace GenericFactory {
     Factory_type & factory(Factory_type::Instance());
     // Insert the builder. The & is not needed.
     factory.add(name,&Proxy<F,C>::Build);
-    std::cout<<"Added "<< name << "to factory"<<std::endl;
+    std::cout<<"Added "<< name << " to factory"<<std::endl;
   }
 }
 
