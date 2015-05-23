@@ -65,10 +65,12 @@ void distr (Distr d, Eng & e, const std::string& name)
  */
 int main()
 {
-  //  std::random_device re;
+  std::random_device re;
   // We use the knuth engine
-  //std::knuth_b e(re());
-  std::random_device e;
+  auto myseed=re();
+  std::cout<<"The seed is "<<myseed<<std::endl;	
+  std::knuth_b e(myseed);
+  //std::random_device e;
   
   // Try the random engine
   
