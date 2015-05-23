@@ -1,4 +1,4 @@
-ifndef _HH_MESH_HH
+#ifndef _HH_MESH_HH
 #define _HH_MESH_HH
 #include "domain.hpp"
 #include <vector>
@@ -7,7 +7,7 @@ ifndef _HH_MESH_HH
 namespace Geometry{
   class Mesh1D{
   public:
-    using MeshGenerator=std::function<double (double const & x);
+    using MeshGenerator=std::function<double (double const & x)>;
     //! Default constructor is deleted.
     Mesh1D()=default;
     //! Constructor for an equaly spaced mesh
