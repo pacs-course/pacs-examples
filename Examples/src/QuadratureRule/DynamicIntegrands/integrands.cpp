@@ -20,5 +20,5 @@ double square(double const& x)
   return x*std::exp(x);
   }
 
-
+  double one(const double & x){return 1.0;}
 }
