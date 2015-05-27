@@ -1,35 +1,78 @@
 #include <iostream>
 #include <iomanip>
-#include "move_swap.hpp"
+#include<vector>
+#include "isDerived.hpp"
 #include "fselect.hpp"
-#include "../../MyMat0_enhanced/MyMat0.hpp"
-struct nomove{
-  nomove(double a=0):a_(a){};
-  nomove(nomove const & rhs):a_(rhs.a_){}
-  nomove(nomove && rhs)=delete;
-  nomove & operator = (const nomove & rhs){
-    this->a_=rhs.a_;
+#include "move_swap.hpp"
+class B{
+public:
+  bool a;
+  B()=default;
+  B(B const & b):a{b.a}
+  {
+    std::cout<<" Copy construct B "<<std::endl;
+  }
+  B(B&& b):a{std::move(b.a)}
+  {
+    std::cout<<" Move construct B "<<std::endl;
+  }
+  B & operator = (B const & b)
+  {
+    std::cout<<" Copy assign B "<<std::endl;
+    a=b.a;
     return *this;
   }
-private:
-  double a_;
+  B & operator = (B&& b)
+  {
+    std::cout<<" Move assign B "<<std::endl;
+    a=std::move(b.a);
+    return *this;
+  }
+};
+class D: public B
+{
+public:
+  D()=default;
+  D(D const & b):B(b)
+  {
+    std::cout<<" Copy construct D "<<std::endl;
+  }
+  D & operator = (D const & b)
+  {
+    std::cout<<" Copy assign D "<<std::endl;
+    a=b.a;
+    return *this;
+  }
+  // Move constructor and assignment not viable because I have explicitely
+  // declared the copy equivalent ones.
 };
 
-int main(){
-  typedef  LinearAlgebra::MyMat0<> Matrix;
-  Matrix A(10,10);
-  Matrix B(10,10);
-  Move_swap<Matrix> moveMatrix;
-  moveMatrix(A,B);
-  B(1,1)=40;
-  double * p=&B(1,1);
-  std::cout<<inv(p)<<std::endl;
-  std::cout<<inv(B(1,1))<<std::endl;
-  std::cout<<std::boolalpha;
-  std::cout<<std::is_move_constructible<nomove>::value;
-  nomove a(1);
-  nomove b(2);
-  //  Move_swap<nomove > moveNomove;
+class C {};
 
-  //moveNomove(a,b);
+class E : private B{};
+
+int main(){
+  convertible_t<B,D>();
+  //convertible_t<B,C>(); //ERROR
+  std::cout<<std::boolalpha<<" D derives publicly from B? Answer="<<IsDerived<B,D>::value<<std::endl;
+  std::cout<<std::boolalpha<<" C derives publicly from B? Answer="<<IsDerived<B,C>::value<<std::endl;
+  std::cout<<std::boolalpha<<" E derives publicly from B? Answer="<<IsDerived<B,E>::value<<std::endl;
+
+  std::vector<double> a{2.,3.,4.};
+  double result(0);
+  for (auto i : a) result+=inv(i);
+  std::cout<<"Result= "<<result<<std::endl;
+  double *ap = a.data();
+  std::vector<double*> b;
+  for( auto i=0u; i<a.size();++i,++ap)b.emplace_back(ap);
+  result=0;
+  for (auto i : b) result+=inv(i);
+  std::cout<<"Resu;t= "<<result<<std::endl;
+  B b1,b2;
+  D d1,d2;
+  // Swapping movable object
+  Swap(b1,b2);
+  // Swapping non movable objects
+  Swap(d1,d2);
+
 }
