@@ -1,101 +1,69 @@
 ############################################################
 #
-# Esempio di Makefile usato per il corso 
-# Programmazione avanzata per il calcolo scientifico
-# Da modificare a seconda dei casi 
+# An example of Makefile for the course on 
+# Advanced Programming for Scientific Computing
+# It should be modified for adapting it to the various examples
 #
 ############################################################
 #
-# Nella variabile d'ambiente PACS_ROOT e` contenuta la directory di base 
-# dove sono messe le utilities (librerie e include files) usati nel corso e
-# non presenti nel folder dove si sta lavorando. 
-# Se non e` settata si considera un valore di default (/usr/local)
-#
-ifeq ($(PACS_ROOT),)
-ROOT=/usr/local
-else
-ROOT=$(PACS_ROOT)
-endif
-#
-# Il compilatore c++ usato
-#
-CXX = g++ 
-# Make usa la variabile CC anche per indicare il loader.
-# Per semplicita la metto pari a CXX 
-# 
-CC =$(CXX)
+# The environmental variable PACS_ROOT should be set to the
+# root directory where the examples reside. In practice, the directory
+# where this file is found. The resolution of PACS_ROOT is made in the
+# Makefile.h file, where other important variables are also set.
+# The only user defined variable that must be set in this file is
+# the one indicating where Makefile.h resides
 
-OPTFLAGS = -g -Wall
-# -c       compile only, generate corresponding .o files
-# -g       generate code suitable for the debugger
-# -p       generate code suitable for the profiler
-# -O       attemp code optimizations
-
-# where to look for include files
-INCLS  = -I. -I.. 
-
-CXXFLAGS=$(OPTFLAGS)
+MAKEFILEH_DIR=../../../
 #
-# Flags per il preprocessore
-# 
-CPPFLAGS= $(INCLS)
+include $(MAKEFILEH_DIR)/Makefile.inc
+#
+# You may have an include file also in the current directory
+#
+-include Makefile.inc
 
 #
-# Nome del file che viene incluso e contiene le dipendenze
-# dagli headers autogenerate 
+# The general setting is as follows:
+# mains are identified bt main_XX.cpp
+# all other files are XX.cpp
 #
-DEPEND=make.dep
 
+# get all files *.cpp
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # get all headers in the working directory
-HEADERS=$(SRCS:.cpp=.hpp)
-
-# Additional libraries
-#LIBS = -lm                   # for math library
-LDLIBS =-lm 
-
-# In questo corso, per semplicita`, gli eseguibili vengono sempre chiamati
-# 'main*.cpp' chiaramente non e` obbligatorio (ne consigliabile in
-# generale)!  Si assume anche che ce ne sia solo uno per directory
+HEADERS=$(wildcard *.hpp)
 #
-ALLSRC=$(wildcard *.cpp)
-EXESRCS=$(filter main%.cpp,$(ALLSRC))
-SRCS=$(filter-out main%.cpp,$(ALLSRC))
-OBJS = $(SRCS:.cpp=.o)
-EXEC=$(EXESRCS:.cpp=)
-EXEOBJS=$(EXESRCS:.cpp=.o)
-#
-LIBNAME=
-#
-LIBOBJS=
-#
-# Aggiungere la nostra libreria
-LDLIBS +=
+exe_sources=$(filter main%.cpp,$(SRCS))
+EXEC=$(exe_sources:.cpp=)
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all  clean doc
+.phony= all clean distclean doc
 
-all: $(DEPEND) $(LIBNAME) $(EXEC)
+.DEFAULT_GOAL = all
 
-$(EXEC): $(EXEOBJS) $(OBJS)
-	g++ -o $(EXEC) $(EXEOBJS) $(OBJS)
-doc:
-	doxygen
+all: $(DEPEND) $(EXEC)
 
 clean:
-	\rm -f $(EXEC) $(OBJS) $(LIBNAME) $(DEPEND) $(EXEOBJS)
-	\rm -r -f doc
-# Assumiamo che i MAIN dipendono da tutti i *.o e da tutti gli header nella
-# directory corrente
-# Questo e` vero nei casi piu` semplici. Altrimenti si modifichi di volta in volta 
-# a seconda del caso
+	$(RM) -f $(EXEC) $(OBJS)
 
-$(LIBNAME): $(LIBOBJS)
+distclean:
+	$(MAKE) clean
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
-$(DEPEND): $(SRCS) $(EXESRCS)
-	g++ $(CPPFLAGS) -MM $(SRCS) $(EXESRCS) -MF $(DEPEND)
+doc:
+	doxygen $(DOXYFILE)
+
+$(EXEC): $(OBJS)
+
+$(OBJS): $(SRCS)
+
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
 
 -include $(DEPEND)
 
