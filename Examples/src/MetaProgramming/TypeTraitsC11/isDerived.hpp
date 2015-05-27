@@ -7,35 +7,33 @@
 
 #ifndef ISDERIVED_HPP_
 #define ISDERIVED_HPP_
+#include <type_traits>
 /*!
- * This is an first example of metaprogramming. Some features of the C++
+ * This is a first example of metaprogramming. Some features of the C++
  * template instantiation and static member initialisation are used to craft
  * a class able to check whether a class (D) is publicly derived by another
  * class (B).
+ * C++11 has a type trait of that sort.
  */
 
-template<typename B, typename D>
-class IsDerived{
+//! This fails if D* is not convertible to B*
+template <class B, class D>
+using convertible_t = decltype(static_cast<B*>(static_cast<D*>(nullptr)));
+
+template <class B,class D>
+struct IsDerived
+{
 private:
-	//! A type of size 1byte
-	typedef char _Yes;
-	//! A (unnamed) type of size 2bytes
-	typedef struct{ char a[2];} _No;
-	//! A function returning _Yes
-	static _Yes test(B* );
-	//! A function returning _No
-	static _No  test(...);
-	/*! A function that fails if D does not derive from B
-	 The second statement in the body of the function is
-	 needed to avoid warnings about undefined variables
-	 */
-	static void Constraints(D* p){B* pb=p; pb=p;}
+  //! SFINAE if DD* is not convertible to BB* because of third template parameter
+  template<class BB, class DD,class=convertible_t<BB,DD> >
+  static std::true_type try_convert(BB&&, DD&&);
+  //! Overloading. This is chosed if the previous template function is not viable
+  static std::false_type try_convert(...);
 public:
-	/* An enum which is set at compile time to a values that depend
-	 on the outcome of the test */
-	enum {Yes=sizeof(test(static_cast<D*>(0)))==sizeof(_Yes)};
-	enum {No=! Yes };
-	IsDerived(){void(*p)(D*)=Constraints;}
+  //! type is true_type if D derives publicly from B
+  using type=decltype(try_convert(std::declval<B>(),std::declval<D>()));
+  static constexpr bool value=type::value;
+                      
 };
 
 

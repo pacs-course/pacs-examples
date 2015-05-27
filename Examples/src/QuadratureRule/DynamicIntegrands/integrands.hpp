@@ -8,5 +8,6 @@ extern "C" {
   double fsincos(double const &);
   double square(double const &);
   double pippo(double const &);
+  double one(double const &);
 }
 #endif
