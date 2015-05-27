@@ -25,7 +25,8 @@ struct metaDot
 };
 
 //! Specialization for the first element.
-template<> struct metaDot<1>{
+template<> struct metaDot<1>
+{
   template<std::size_t N,typename T>
   static T apply(std::array<T,N>const & a,std::array<T,N> const & b)
   {
@@ -34,7 +35,7 @@ template<> struct metaDot<1>{
 };
 
 template<std::size_t N,typename T>
-constexpr T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
+T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
 {
   return metaDot<N>::apply(a,b);
 }
