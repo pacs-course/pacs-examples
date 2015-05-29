@@ -33,16 +33,15 @@ int main(int argc, char** argv){
   using namespace NumericalIntegration;
   using QuadratureRuleFactory::RulesFactory;
   // Process options given to the program
-  {
-    GetPot key_input(argc,argv);
-    if (key_input.search(2, "--help", "-h")){
-      printHelp();
-      exit(0);
-    }
+  GetPot key_input(argc,argv);
+  if (key_input.search(2, "--help", "-h")){
+    printHelp();
+    exit(0);
   }
-
+    
   // Get the input file
-  GetPot   cl("quadratura.getpot");
+  std::string inputFile=key_input("InputFile","quadratura.getpot");
+  GetPot   cl(inputFile.c_str());
   // Get the factory with the rules
   RulesFactory & rulesFactory( RulesFactory::Instance());
   // Load library with the rules
