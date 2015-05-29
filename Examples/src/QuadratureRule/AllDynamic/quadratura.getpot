@@ -1,5 +1,8 @@
-integrand=myfun
+integrand=pippo
 udflib=./libudf.so
 library=./libmyrules.so
-#rule=?
-rule=Adaptive
+rule=Trapezoidal
+a=-1
+b=3
+nint=25
+#rule=Adaptive
