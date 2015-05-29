@@ -3,6 +3,8 @@
 #include <array>
 #include <memory>
 #include <utility>
+#include <functional>
+
 namespace NumericalIntegration{
   
   //! The type the integrand
