@@ -8,9 +8,12 @@
 //!Specialization of Factory and Proxy for QuadratureRules
 namespace QuadratureRuleFactory
 {
-  typedef GenericFactory::Factory<NumericalIntegration::QuadratureRule,std::string> RulesFactory;
+  typedef GenericFactory::Factory<
+    NumericalIntegration::QuadratureRule,std::string
+    > RulesFactory;
   //! Only C++11
-  template <typename ConcreteRule> using RuleProxy=GenericFactory::Proxy<RulesFactory,ConcreteRule>;
+  template <typename ConcreteRule> using 
+  RuleProxy=GenericFactory::Proxy<RulesFactory,ConcreteRule>;
 }
 
 //! If I am using adaptive quadrature rule I need to set tolerance and iteration
