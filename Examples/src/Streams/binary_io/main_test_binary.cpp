@@ -61,7 +61,7 @@ int main()
   tempo.stop();
   cout<<"Reading done: "<<tempo<<endl;
 
-  /*
+
   // Now hdf5 stuff
 
   // These are the identifiers
@@ -109,7 +109,7 @@ int main()
   tempo.stop();
   cout<<"Reading done: "<<tempo<<endl;  
 
-  */
+
   // Cleanup vector
   delete[] pippo;
 }
