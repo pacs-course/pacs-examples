@@ -52,7 +52,7 @@ class C {};
 class E : private B{};
 
 int main(){
-  convertible_t<B,D>();
+
   //convertible_t<B,C>(); //ERROR
   std::cout<<std::boolalpha<<" D derives publicly from B? Answer="<<IsDerived<B,D>::value<<std::endl;
   std::cout<<std::boolalpha<<" C derives publicly from B? Answer="<<IsDerived<B,C>::value<<std::endl;
