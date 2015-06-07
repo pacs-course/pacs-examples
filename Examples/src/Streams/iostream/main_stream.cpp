@@ -13,9 +13,9 @@ int main() {
   
   cout<<"        *****    Changing stream status by flags"<<endl<<endl;
   // Store current value of flags of cout
-  std::ios_base::fmtflags oldf=cout.flags();
+  auto oldf=cout.flags();
   // Store current value of precision
-  int oprec=cout.precision();
+  auto oprec=cout.precision();
   // Set scientific format and maximal precision for a double
   // ios_base::scientific is a flag, ios_base::floatfield is a mask
   // The mask is used to ensure that all bit not set in the flag
@@ -32,7 +32,7 @@ int main() {
   // I like uppercase E
   cout.setf(ios_base::uppercase);
   cout << pi << " with 4 digits, Scientific format, Uppercase E"<<endl;
-  int oldwidth=cout.width(); // store current width
+  auto oldwidth=cout.width(); // store current width
   // Set minumum output width
   cout.width(25);
   cout.precision(15);
