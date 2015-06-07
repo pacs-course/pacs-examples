@@ -39,3 +39,4 @@ public:
 
 
 #endif /* ISDERIVED_HPP_ */
+
