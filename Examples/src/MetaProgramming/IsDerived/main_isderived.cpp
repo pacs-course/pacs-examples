@@ -26,27 +26,24 @@ public:
 // parametro template attuale che non deriva da A
 
 template <typename T>
-class Pippo: private IsDerived<A,T>
+class Pippo
 {
+  static_assert(IsDerived<A,T>::value," Template argument must derive from A");
 public:
-	double c;
+  double c;
 private:
-	T* tp;
+  T* tp;
 };
 
 int main(){
 
-	using namespace std;
-
-	cout<< "B Derives from A?    " <<  IsDerived<A,B>::value <<endl;
-	cout<< "C Derives from A?    " <<  IsDerived<A,C>::value <<endl;
-	//OK
-	IsDerived<A,B> testing;
-	// Fails!
-	// IsDerived<A,C>();
-
-	//OK
-	Pippo<B> z;
-	// Fails
-	// Pippo<C> zz;
+  using namespace std;
+  cout<<std::boolalpha;
+  cout<< "B Derives from A?    " <<  IsDerived<A,B>::value <<endl;
+  cout<< "C Derives from A?    " <<  IsDerived<A,C>::value <<endl;
+  
+  //OK
+  Pippo<B> z;
+  // Fails
+  // Pippo<C> zz;
 }
