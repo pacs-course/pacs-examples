@@ -47,6 +47,7 @@ namespace implementation
     return pow(x, std::integral_constant<unsigned int, N-1>{} ) * x;
   }
   //! Overload for N=0
+  template<>
   constexpr long int pow(const long int  x, std::integral_constant<unsigned int, 0>)
   {
     return 1;
