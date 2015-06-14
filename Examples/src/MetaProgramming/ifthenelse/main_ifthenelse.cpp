@@ -10,12 +10,13 @@ bigsum(std::vector<T> x)
 {
   using namespace std;
   //! fails if it is not a float or an integer type
-  static_assert(is_floating_point<T>::value|| is_integral<T>::value, "Error");
+  static_assert(std::is_floating_point<T>::value|| std::is_integral<T>::value, "Error");
   using value_type=IfThenElse_t<std::is_floating_point<T>::value,long double, long int>;
   value_type init{0};
   for (auto i: x) init += static_cast<value_type>(i);
   return init;
 }
+
 template<typename T>
 T simplesum (std::vector<T> x)
 {
