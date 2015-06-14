@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples/src/ExpressionTemplates/Integral/main_integration.cpp
+iostream
+-
+cmath
+-
+var.hpp
+/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples/src/ExpressionTemplates/Integral/var.hpp
+operation.hpp
+/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples/src/ExpressionTemplates/Integral/operation.hpp
+integrate.hpp
+/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples/src/ExpressionTemplates/Integral/integrate.hpp
+expr.hpp
+/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples/src/ExpressionTemplates/Integral/expr.hpp
+
+include/expr.hpp
+operation.hpp
+include/operation.hpp
+
+include/integrate.hpp
+
+include/operation.hpp
+
+include/var.hpp
+
