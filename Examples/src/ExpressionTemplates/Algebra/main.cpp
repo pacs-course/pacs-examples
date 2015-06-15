@@ -8,11 +8,28 @@ int main()
   Vector b(a);
   std::vector<double> & bb=b;
   for (auto & i : bb) i=1;
-  std::cout<<bb.size()<<bb[3]<<std::endl;
   Vector c(a);
   c=a+b;
+  std::cout<<a.size()<<" "<<b.size()<<" "<<c.size()<<std::endl;
   Vector d(a+b+c);
-  for (auto i : d) std::cout<<i<<" ";
+  //for (auto i : d) std::cout<<i<<" ";
+  //std::cout<<std::endl;
+  std::vector<double> z(11,3.0);
+  Vector zv(z);
+  std::vector<double> & zr(zv);
+  zr.emplace_back(5.0);
+  for (auto i : zv) std::cout<<i<<" ";
   std::cout<<std::endl;
   
+  std::vector<double> & zrr{zv.as_vector()};
+  zrr.emplace_back(6.0);
+
+  for (auto i : zv) std::cout<<i<<" ";
+  std::cout<<std::endl;
+  
+  a=3.0*zv;
+
+  for (auto i : a) std::cout<<i<<" ";
+  std::cout<<std::endl;
+
 }
