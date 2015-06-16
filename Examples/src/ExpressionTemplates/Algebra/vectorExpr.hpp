@@ -42,10 +42,8 @@ namespace ET
     Vector & operator = (const Expr<T> & e)
     {
       const T & et(e);
-      M_data.clear();
-      M_data.shrink_to_fit();
-      M_data.reserve(et.size());
-      for (auto i=0; i<et.size();++i) M_data.emplace_back(et[i]);
+      M_data.resize(et.size());
+      for (auto i=0; i<et.size();++i) M_data[i]=et[i];
       return *this;
     }
     //! Returns element
