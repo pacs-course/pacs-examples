@@ -14,9 +14,15 @@ namespace ET
   struct Multiply{
     static double apply(double i, double j){return i*j;}
   };
+
   //! The basic Subtraction
   struct Subtract{
     static double apply(double i, double j){return i-j;}
+  };
+
+  //! Minus operator
+  struct Minus{
+    static double apply(double j){return -j;}
   };
   
   //! Binary operator expression.
@@ -26,15 +32,33 @@ namespace ET
   {
   public:
     BinaryOperator(LO const & l, RO const &r):M_lo(l),M_ro(r){};
+    // Applies operation on operands
     double operator [](std::size_t i) const {return OP::apply(M_lo[i],M_ro[i]);}
     std::size_t size()const 
     {
-      // disabled when NDEBUG is set. Checks if both operands have the same size.
+      // disabled when NDEBUG is set. Checks if both operands have the same size
       assert(M_lo.size() == M_ro.size());
       return M_lo.size();
     }
   private:
     LO const & M_lo;
+    RO const & M_ro;
+  };
+
+  //! Unary operator expression.
+  template<class RO, class OP>
+  class
+  UnaryOperator : public Expr<UnaryOperator<RO,OP> >
+  {
+  public:
+    UnaryOperator(RO const &r):M_ro(r){};
+    // Applies operation on operands
+    double operator [](std::size_t i) const {return OP::apply(M_ro[i]);}
+    std::size_t size()const 
+    {
+      return M_ro.size();
+    }
+  private:
     RO const & M_ro;
   };
 
@@ -84,6 +108,9 @@ namespace ET
   template <class LO, class RO>
   using SubExpr= BinaryOperator<LO,RO,Subtract>;
 
+  template <class RO>
+  using MinusExpr= UnaryOperator<RO,Minus>;
+
   template <class LO, class RO>
   inline AddExpr<LO,RO> operator +(LO const & l, RO const & r){return  AddExpr<LO,RO>(l,r);}
 
@@ -92,5 +119,9 @@ namespace ET
 
   template <class LO, class RO>
   inline SubExpr<LO,RO> operator -(LO const & l, RO const & r){return  SubExpr<LO,RO>(l,r);}
+
+  template <class RO>
+  inline MinusExpr<RO> operator -(RO const & r){return  MinusExpr<RO>(r);}
+
 }
 #endif
