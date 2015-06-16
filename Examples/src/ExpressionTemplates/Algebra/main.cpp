@@ -28,8 +28,9 @@ int main()
   std::cout<<std::endl;
   
   a=3.0*zv;
-
+  a=-a;
   for (auto i : a) std::cout<<i<<" ";
   std::cout<<std::endl;
+
 
 }
