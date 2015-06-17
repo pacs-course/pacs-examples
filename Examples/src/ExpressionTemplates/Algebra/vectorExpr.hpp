@@ -7,7 +7,8 @@ namespace ET
 {
   //! A class for vectors of double
   /*!
-    It is build around std::vector<double>
+    It is build around std::vector<double> and indeed
+    std::vector:double> is the only variable member of the class.
    */
   class Vector : public Expr<Vector>
   {
@@ -33,21 +34,25 @@ namespace ET
     template <class T>
     Vector(const Expr<T> & e):M_data()
     {
-      const T & et(e);
+      const T & et(e);// casting!
       M_data.reserve(et.size());
       for (auto i=0; i<et.size();++i) M_data.emplace_back(et[i]);
     }
     //! Assigning an expression
+    /*!
+      This method is fundamental for expression template technique.
+     */
     template <class T>
     Vector & operator = (const Expr<T> & e)
     {
-      const T & et(e);
+      const T & et(e); // casting!
       M_data.resize(et.size());
       for (auto i=0; i<et.size();++i) M_data[i]=et[i];
       return *this;
     }
-    //! Returns element
+    //! Returns i-th element
     double & operator [](std::size_t i){return M_data[i];}
+    //! Returns i-th element
     double   operator [](std::size_t i) const {return M_data[i];}
     //! size of the vector
     std::size_t size()const{return M_data.size();}
@@ -82,25 +87,29 @@ namespace ET
 
   //! I want to use range for loops with Vector objects.
   /*!
-    Note the use od declval. I do not need to istantiate a vector to interrogate the type returned by begin!
+    Note the use of declval. I do not need to istantiate a vector to interrogate the type returned by begin!
    */
   inline auto begin(Vector & a)->decltype(std::declval<std::vector<double> >().begin() )
   { 
+    // I exploit the fact tha I have a casting operator to std::vector<double>&
     return static_cast<std::vector<double> &>(a).begin();
   }
 
   inline auto end(Vector & a)->decltype(std::declval<std::vector<double> >().end() )
   { 
+    // I exploit the fact tha I have a casting operator to std::vector<double>&
     return static_cast<std::vector<double>&>(a).end();
   }
 
   inline auto cbegin(Vector const & a)->decltype(std::declval<std::vector<double> >().cbegin() )
   { 
+    // I exploit the fact tha I have a casting operator to std::vector<double> const &
     return static_cast<std::vector<double> const &>(a).cbegin();
   }
 
   inline auto cend(Vector const & a)->decltype(std::declval<std::vector<double> >().cend() )
   { 
+    // I exploit the fact tha I have a casting operator to std::vector<double> const &
     return static_cast<std::vector<double> const &>(a).cend();
   }
 }
