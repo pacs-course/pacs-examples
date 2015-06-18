@@ -9,6 +9,7 @@
 namespace ET
 {
 
+  //  CLASSES THAT ENCAPSULATE OPERATIONS
   //! Binary operator expression.
   template<class LO, class RO, class OP>
   class
@@ -82,6 +83,8 @@ namespace ET
     RO const  M_ro;
   };
 
+
+  //  THE BASIC OPERATIONS AT ELEMENT LEVEL
   //! The basic Addition
   /*! Note that we can use directly the functors
     provided by the standard library!
@@ -114,7 +117,7 @@ namespace ET
   };
  
 
-
+  // WRAPPING THE BASE OPERATIONS INTO THE OPERATION CLASSES: ARE JUST TYPEDEFS
   template <class LO, class RO>
   using AddExpr= BinaryOperator<LO,RO,Add>;
 
@@ -130,7 +133,7 @@ namespace ET
   template <class RO>
   using ExpExpr= UnaryOperator<RO,ExpOP>;
 
-  //  USER LEVEL OPERATORS
+  //  USER LEVEL OPERATORS: THESE ARE THE ONLY ONES THE USER WILL ADOPT
 
   //! Addition of  expression
   template <class LO, class RO>
