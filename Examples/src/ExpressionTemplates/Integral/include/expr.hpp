@@ -12,14 +12,14 @@ namespace ET
  * an operation on 2 objects
  */
   template <typename expr1T, typename expr2T, typename opT>
-struct BinaryExpr
-{
-  BinaryExpr( expr1T e1, expr2T e2, opT op = opT() ):
-        M_e1( e1 ), M_e2( e2 ), M_op( op ) {}
+  struct BinaryExpr
+  {
+    BinaryExpr( expr1T e1, expr2T e2, opT op = opT() ):
+      M_e1( e1 ), M_e2( e2 ), M_op( op ) {}
 
     double eval( double pt ) const { return M_op( M_e1.eval( pt ), M_e2.eval( pt ) ); }
 
-private:
+  private:
     typename Var::exprTraits<expr1T>::expr_Type M_e1;
     typename Var::exprTraits<expr2T>::expr_Type M_e2;
     opT M_op;
