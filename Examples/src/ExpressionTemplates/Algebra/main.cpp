@@ -27,10 +27,16 @@ int main()
   for (auto i : zv) std::cout<<i<<" ";
   std::cout<<std::endl;
   
-  a=3.0*zv;
+  a=3.0*zv; //multiplication by a scalar
+
   a=-a;
   for (auto i : a) std::cout<<i<<" ";
   std::cout<<std::endl;
 
+  // Formula involvind exponent
+
+  a=c+8.0*ET::exp(b);
+  for (auto i : a) std::cout<<i<<" ";
+  std::cout<<std::endl;
 
 }
