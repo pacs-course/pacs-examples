@@ -47,7 +47,7 @@ namespace ET
     RO const & M_ro;
   };
 
-  //! Specialization for moltiplication by a scalar
+  //! Specialization for operation by a scalar
   template<class RO, class OP>
   class
   BinaryOperator<double,RO,OP> : public Expr<BinaryOperator<double,RO,OP> >
@@ -65,7 +65,7 @@ namespace ET
     RO const & M_ro;
   };
 
-  //! Specialization for moltiplication by a scalar
+  //! Specialization for operation by a scalar
   template<class LO, class OP>
   class
   BinaryOperator<LO,double,OP> : public Expr<BinaryOperator<LO,double,OP> >

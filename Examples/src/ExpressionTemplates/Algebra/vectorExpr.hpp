@@ -36,7 +36,7 @@ namespace ET
     {
       const T & et(e);// casting!
       M_data.reserve(et.size());
-      for (auto i=0; i<et.size();++i) M_data.emplace_back(et[i]);
+      for (auto i=0u; i<et.size();++i) M_data.emplace_back(et[i]);
     }
     //! Assigning an expression
     /*!
@@ -47,7 +47,7 @@ namespace ET
     {
       const T & et(e); // casting!
       M_data.resize(et.size());
-      for (auto i=0; i<et.size();++i) M_data[i]=et[i];
+      for (auto i=0u; i<et.size();++i) M_data[i]=et[i];
       return *this;
     }
     //! Returns i-th element
@@ -93,6 +93,8 @@ namespace ET
   { 
     // I exploit the fact tha I have a casting operator to std::vector<double>&
     return static_cast<std::vector<double> &>(a).begin();
+	// If you prefer
+	// return a.as_vector().begin();
   }
 
   inline auto end(Vector & a)->decltype(std::declval<std::vector<double> >().end() )
