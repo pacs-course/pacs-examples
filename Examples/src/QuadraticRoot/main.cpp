@@ -7,16 +7,28 @@
 #include <iostream>
 #include <cstdlib>
 #include <algorithm>
+#include <stdexcept>
 #include "QuadraticRoot.hpp"
+// Computing residuals in high precision
+void printResidual(result_type y1, result_type y2, Real aa, Real bb, Real cc)
+{
+  auto a=static_cast<long double>(aa);
+  auto b=static_cast<long double>(bb);
+  auto c=static_cast<long double>(cc);
+  auto x1=std::complex<long double>(static_cast<long double>(y1.real()),static_cast<long double>(y1.imag()));
+  auto x2=std::complex<long double>(static_cast<long double>(y2.real()),static_cast<long double>(y2.imag()));
+  std::cout<<"Residuals: "<< a*x1*x1+b*x1+c<<", "<<
+    a*x2*x2+b*x2+c<<std::endl<<std::endl;
+}
+
 int main(){
   using namespace std;
-  double x1,x2;
   cout<< "I will compute the root of ax^2+b^x+c"<<endl;
   cout<< "This version uses floating point type of size "<<sizeof(Real)<<" bytes"<<endl;
   Real a(0);
   Real b(1);
   Real c(0);
-  std::pair<Real,Real> result;
+  std::pair<result_type,result_type> result;
   cout.setf(ios::scientific); // use scientific float format
  TryAgain:
   while (true)
@@ -51,22 +63,15 @@ int main(){
 	      result = quadraticRoot_simple(a,b,c);
 	      cout<< " With naive method:"<<endl;
 	      cout<<"x1="<<result.first<<" x2="<<result.second<<endl;
-	      // Residual is always computed in double precision
-	      x1=static_cast<double>(result.first);
-	      x2=static_cast<double>(result.second);
-	      cout<<"Residuals: "<< a*x1*x1+b*x1+c<<", "<<
-		a*x2*x2+b*x2+c<<endl<<endl;
+              printResidual(result.first,result.second,a,b,c);
 	      // Compute with more stable method
 	      cout<< " With more stable method:"<<endl;
 	      result=quadraticRoot(a,b,c);
 	      cout<<"x1="<<result.first<<" x2="<<result.second<<endl<<endl;
 	      // Residual is always computed in double precision
-	      x1=static_cast<double>(result.first);
-	      x2=static_cast<double>(result.second);
-	      cout<<"Residuals: "<< a*x1*x1+b*x1+c<<", "<<
-		a*x2*x2+b*x2+c<<endl<<endl;
+              printResidual(result.first,result.second,a,b,c);
 	    }
-	  catch (negativeDiscriminant error)
+	  catch (std::runtime_error & error)
 	    {
 	      cerr<<error.what()<<endl;
 	      //exit(1);
