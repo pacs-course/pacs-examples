@@ -21,37 +21,37 @@ namespace Geometry
   /*! \defgroup meshers Functors which generates a 1D mesh.
     @{ */
   //! Uniform mesh
-    class Uniform: public OneDMeshGenerator
-    {
-    public:
+  class Uniform: public OneDMeshGenerator
+  {
+  public:
       /*! constructor
 	@param domain A 1D domain
 	@param b num_elements Number of elements
       */
-      Uniform(Geometry::Domain1D const & domain, unsigned int const num_elements):
-	OneDMeshGenerator(domain),M_num_elements(num_elements){}
-      //! Call operator
-      /*!
-	@param meshNodes a mesh of nodes
-      */
+    Uniform(Geometry::Domain1D const & domain, unsigned int const num_elements):
+      OneDMeshGenerator(domain),M_num_elements(num_elements){}
+    //! Call operator
+    /*!
+      @param meshNodes a mesh of nodes
+    */
     MeshNodes operator()() const;
-    private:
-      std::size_t M_num_elements;
-    };
-    
-    //! variable mesh size
-    /*! 
-      The class accepts a spacing function h=h(x) which should return a strictly 
-      positive value
+  private:
+    std::size_t M_num_elements;
+  };
+  
+  //! variable mesh size
+  /*! 
+    The class accepts a spacing function h=h(x) which should return a strictly 
+    positive value
       for all x in the domain: \f$ h(x)\ge \alpha>0, \quad x\in\Omega \f$.
       The mesh is generated so that
       \f[
       x_i=\beta\int_0^i h(s)^{-1}ds
       \f]
       where \f$\beta\f$ 
-    */
-    class VariableSize: public OneDMeshGenerator
-    {
+  */
+  class VariableSize: public OneDMeshGenerator
+  {
     public:
     /*!
       @brief Constructor
@@ -63,11 +63,11 @@ namespace Geometry
 		 std::function<double (double const & x)> const & h, 
 		 const unsigned int max_num_elements):
       OneDMeshGenerator(domain),M_h(h),M_num_elements(max_num_elements){}
-      MeshNodes operator()() const;
+    MeshNodes operator()() const;
     private:
     std::function<double (double const & x)> const   M_h;
-      std::size_t M_num_elements;
-    };
+    std::size_t M_num_elements;
+  };
   /*! @}*/
 }
 #endif
