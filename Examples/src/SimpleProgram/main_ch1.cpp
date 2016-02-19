@@ -17,3 +17,4 @@ int main() {
 }
 
 // Note: Using endl prints out a newline and flushes the output buffer.
+// Alternatively you may use "\n".

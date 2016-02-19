@@ -75,6 +75,6 @@ namespace Geometry{
     Domain1D myDomain;
     std::vector<double> myNodes;
   };
-  
+ 
 }
 #endif

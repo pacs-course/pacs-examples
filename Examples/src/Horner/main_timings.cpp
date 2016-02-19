@@ -16,7 +16,7 @@ int main() {
 
   vector<double>a;
   int n;
-  cout<<"dammi il grado del polinomio"<<endl;
+  cout<<"give me polynomial degree"<<endl;
   cout<<"=>";
   cin >>n;
   a.reserve(n+1);
