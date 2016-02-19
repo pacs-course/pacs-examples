@@ -35,10 +35,10 @@ INCLUDES=-I. -I$(PACS_INC_DIR)
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
- export LIBRARY=$(DYNAMIC_LIBFILE)
+ LIBRARY=$(DYNAMIC_LIBFILE)
  LDFLAGS+=-dynamic 
 else
- export LIBRARY=$(STATIC_LIBFILE)
+ LIBRARY=$(STATIC_LIBFILE)
 # LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
 endif
 
@@ -100,10 +100,11 @@ all:
 depend: $(DEPEND)
 
 static:
-	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
+	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC 
+	$(MAKE) exec LIBTYPE=STATIC
+ 
 dynamic:
-	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
+	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
