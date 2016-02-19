@@ -71,7 +71,7 @@ int main(int argc, char** argv)
   // Solution vector
   vector<double> theta(M+1);
   
-  // Gauss Siedel is initialised with a linear vatiation
+  // Gauss Siedel is initialised with a linear variation
   // of T
   
   theta[0]=(To-Te)/Te;       //Condition at x=0

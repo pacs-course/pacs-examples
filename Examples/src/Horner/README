@@ -2,9 +2,16 @@ Example on timing. We show the advantage of Horner rule.
 
 We use the utility chrono and the library libpacs.
 
-You should firse enter the directory Examples/srs/Utilities and then run
+You should firse enter the directory Examples/src/Utilities and then run
 
 make library
 make install
 
 Make sure that Makefile.inc in the root directory is set correctly.
+
+Type
+make DEBUG=no 
+if you want optimized program
+or
+make DEBUG=yes or simply make
+if you want non-optimized program
