@@ -102,10 +102,10 @@ all:
 depend: $(DEPEND)
 
 static:
-	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
+	$(MAKE) library LIBTYPE=STATIC 
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
+	$(MAKE) library LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
