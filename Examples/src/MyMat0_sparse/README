@@ -1,0 +1,6 @@
+Example of matrix that can store objects of arbitrary type (they must be default and copy/move constructible, copy and move assignible).
+
+Use of type traits to disable methods that do not make sense for non-arithmetic types.
+
+Matrix is set to zero when initialized or resized, only for arithmetic
+types.
