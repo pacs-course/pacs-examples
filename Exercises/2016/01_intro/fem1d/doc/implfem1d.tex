@@ -1,0 +1,249 @@
+ %&latex
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{graphicx}
+\usepackage{truncate}
+%%\usepackage{mpmulti}
+\usepackage{times}
+
+\newcommand{\largenameref}[1]{\textbf{\huge{\nameref{#1}}}}
+\newcommand{\largehyperlink}[2]{\textbf{\Large\hyperlink{#1}{#2} }}
+\newcommand{\largehypertarget}[2]{\textbf{\color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Largehypertarget}[2]{\textbf{\Large \color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Int}[2]{\displaystyle{\int\limits_{#1}^{#2}}}      
+\newcommand{\Sum}[2]{\displaystyle{\sum\limits_{#1}^{#2}}}      
+\newcommand{\Myfoilheadskip}[1]{\begin{frame}\frametitle{#1}}
+\newcommand{\trace}[2]{\left. #1 \right\rvert_{_{#2} }  }
+\newcommand{\mtrx}[1]{\mathbf{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\usepackage[english]{babel}
+
+\begin{document}
+\title{Implementation of the Galerkin/Linear Finite Elements Method in 1d}
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Problem Statement}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We want to solve the following boundary value problem:
+\begin{equation}\label{eq:formaforte}
+\left\{
+\begin{array}{l}
+-u^{\prime\prime} = 1 \qquad \mbox{in } (0,1)       \\
+u(0)=u(1)=0       
+\end{array}
+\right.
+\end{equation}
+
+even though we know the exact solution, which is:
+\begin{equation*}
+u(x)=\dfrac{1}{2} x (1-x)
+\end{equation*}
+\begin{center}
+\includegraphics[height=.4\textheight]{uex}
+\end{center}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Weak Formulation}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The weak form of equation \eqref{eq:formaforte} reads:
+\begin{equation}\label{eq:formadebole}
+\left\{
+\begin{array}{l}
+\text{cercare } u\in V=H_{0}^{1}(0,1) t.c.       \\[3mm]
+-\Int{0}{1} u'' \varphi \,dx  = \Int{0}{1} 1 \cdot \varphi \,dx \quad \forall \varphi \in V
+\end{array}
+\right.
+\end{equation}
+
+Using integration by parts we get
+\begin{equation*}
+-\Int{0}{1} u'' \varphi \,dx=\Int{0}{1} u' \varphi' \,dx- \trace{\varphi u'}{0}^{1}=\Int{0}{1} u' \varphi'  \,dx
+\end{equation*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Galerkin Method}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let $V_{h}\subset V$ be a subspace of finite dimension $N_h$
+and let $\{\varphi_{i}\}\subseteq V_{h}$ be a basis of $V_{h}$
+\begin{equation}\label{eq:galerkin}
+\left\{
+\begin{array}{l}
+\text{cercare } u_{h}\in V_{h} t.c.       \\[3mm]
+\Int{0}{1} u_{h}' \varphi_{i}' \,dx  = \Int{0}{1} 1 \cdot \varphi_{i} \,dx \quad \forall \varphi_{i} \in V_{h}
+\end{array}
+\right.
+\end{equation}
+
+We can express $u_{h}$ as a linear combination of basis vectors:
+\begin{equation*}
+u_{h} = \Sum{j=1}{N_h} u_{j}\varphi_{j} \Rightarrow u_{h}'= \Sum{j=1}{N_h} u_{j} \varphi' _{j}
+\end{equation*}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Galerkin Method}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Equation \ref{eq:galerkin}$_{2}$ becomes:
+\begin{equation*}
+\Sum{j=1}{N_h} u_{j} \Int{0}{1} \varphi_{i}'\varphi_{j}' \,dx = \Int{0}{1} \varphi_{i} \,dx \quad i=1,\ldots,N_h
+\end{equation*}
+
+We therefore get a linear algebraic system of the form
+$$
+\mtrx{A} \vect{u} = \vect{f},
+$$
+where
+$$
+A_{ij}=  \Int{0}{1} \varphi_{i}'\varphi_{j}' \,dx, \,\, f_{i}= \Int{0}{1} \varphi_{i} \,dx
+$$
+and the vector of unknowns $\vect{u}$ is formed by the coefficients of the expansion of $u_{h}$ w.r.t. the basis $\{\varphi_{i}\}$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Linear Finite Elements}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let us define a \emph{triangulation} of the interval $(0,1)$
+\begin{center}
+\includegraphics[width=.5\linewidth]{mesh}
+\end{center}
+
+Let as choose as the finite dimensional space $V_{h}$ the
+set of functions that are continuous in $(0,1)$
+and are degree-$1$ polynomials ({\it i.e.}, affine functions) in each subintervall.
+
+the canonical basis for $V_{h}$ is gicen by:
+
+$$
+\{\varphi_{i}\}=\{\varphi_{i} \in V_{h} \, t.c.\, \varphi_{i}(x_{j})=\delta_{ij} \}
+$$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Implementation of the Linear FEM I}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Using the local support property of the Finite Element basis
+$\varphi_{i}(x) \neq 0 $ solo se $x\in(x_{i-1},x_{i+1})$
+we get
+$$
+A_{ij}=\left\{
+\begin{array}{l}
+0 \,\, \mbox{se } \abs{i-j} > 1 \\[2mm]
+\Int{x_{i-1}}{x_{i}} \varphi{'_{i}}^{2} +
+\Int{x_{i}}{x_{i+1}} \varphi{'_{i}}^{2}
+ \,\, \mbox{se } i=j \\[4mm]
+\Int{x_{i-1}}{x_{i}} \varphi'_{i}\varphi'_{i-1} \,\, \mbox{if } j=i-1 \\[4mm]
+\Int{x_{i}}{x_{i+1}} \varphi'_{i}\varphi'_{i+1} \,\, \mbox{if } j=i+1 
+\end{array}
+\right.
+$$
+
+\begin{itemize}
+\only<1>{\item the non zero terms in the matrix are $N_h+2*(N_h-1)$ (the matrix is therefore sparse and tridiagonal)}
+\only<2>{\item each entry in the matrix is given by a sum of (few) integrals each computed on only one subinterval}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Implementation of the Linear FEM II}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To assemble $\mtrx{A}$, we decompose the intervals of $(0,1)$ into integrals on subintervals: 
+$$
+A_{ij}=\Int{0}{1} \varphi'_{i}\varphi' _{j} \,dx= \Sum{k=1}{N_h+1} \Int{x_{k-1}}{x_{k}} \varphi'_{i}\varphi' _{j}\,dx
+$$
+
+We can then use the following algorithm for assembling $\mtrx{A}$:
+
+\begin{enumerate}
+\item Initialize all elements of $\mtrx{A}$ to $0$
+\item Compute integrals on subintervals
+\item Compute entries od $\mtrx{A}$ as sums of the partial integrals
+\end{enumerate}
+
+This is unnecessary for this simple case but has advantages in more complex situations we will
+discuss later:
+\begin{enumerate}
+\item Extension to different bases
+\item Extension to multiple space dimensions
+\item Parallel computing
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Myfoilheadskip{Implementation of the Linear FEM III}%\hypertarget{targ:outline}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In each subinterval $(x_{k-1},x_{k})$ there are four integrals $\neq 0$ which 
+need to be computed, they are usually arranged into a \emph{local matrix}:
+
+$$
+\mtrx{A_{loc}}=
+\left[\begin{array}{cc}
+i=k-1,j=k-1 & i=k-1,j=k \\[.1cm]
+i=k,j=k-1 & i=k,j=k 
+\end{array}\right]
+$$
+
+\null
+
+\noindent 
+$A_{loc_{11}}$ will then be added to $A_{k-1,k-1}$  \\
+$A_{loc_{12}}$ will then be added to $A_{k-1,k}$ etc...
+
+\null
+
+this process is called assembly of the coefficient matrix
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Implementation in {\tt Octave}}
+\tiny
+\only<1>{\lstinputlisting[language=Octave, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d.m}}
+\only<2>{\lstinputlisting[language=Octave, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d.m}}
+\only<3>{\lstinputlisting[language=Octave, firstline=60, firstnumber=60, lastline=95, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d.m}}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Implementazione in {\tt C++}}
+\tiny
+\only<1>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.1/fem1d.cpp}}
+\only<2>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.1/fem1d.cpp}}
+\only<3>{\lstinputlisting[language=C++, firstline=60, firstnumber=60, lastline=95, numbers=left, numberstyle=\tiny\color{gray}]{../v0.1/fem1d.cpp}}
+\only<4>{\lstinputlisting[language=C++, firstline=90, firstnumber=90, lastline=105, numbers=left, numberstyle=\tiny\color{gray}]{../v0.1/fem1d.cpp}}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Compile and run}
+\begin{verbatim}
+$ g++ -std=gnu++11 fem1d.cpp -o fem1d
+$ ./fem1d >> res.txt
+$ octave -q
+>> load res.txt
+>> plot (res)
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+\frametitle{Compile with a Makefile}
+\lstinputlisting[language=make]{../v0.1/Makefile}
+\end{frame}
+
+\end{document}
