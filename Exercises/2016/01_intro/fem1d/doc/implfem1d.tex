@@ -222,7 +222,7 @@ this process is called assembly of the coefficient matrix
 
 
 \begin{frame}[fragile]
-\frametitle{Implementazione in {\tt C++}}
+\frametitle{Implementation in {\tt C++}}
 \tiny
 \only<1>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.1/fem1d.cpp}}
 \only<2>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.1/fem1d.cpp}}
@@ -245,5 +245,39 @@ $ octave -q
 \frametitle{Compile with a Makefile}
 \lstinputlisting[language=make]{../v0.1/Makefile}
 \end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Refactored Implementation in {\tt C++}}
+\only<1-2>{file {\tt v0.2/fem1d.cpp}}
+\only<3>{file {\tt v0.2/config.h}}
+\only<4-6>{file {\tt v0.2/fem1d.h}}
+\tiny
+\only<1>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.cpp}}
+\only<2>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.cpp}}
+\only<3>{\lstinputlisting[language=C++,numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/config.h}}
+\only<4>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
+\only<5>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
+\only<6>{\lstinputlisting[language=C++, firstline=60, firstnumber=60, lastline=95, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Compile and run}
+\lstinputlisting[language=bash, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/build.sh}
+\end{frame}
+
+\begin{frame}
+\frametitle{Compile with a Makefile}
+\lstinputlisting[language=make]{../v0.2/Makefile}
+\end{frame}
+
+
+
+
+
+
+
 
 \end{document}
