@@ -12,8 +12,8 @@ int main ()
   constexpr unsigned int nnodes = 50;
   constexpr unsigned int nels = nnodes - 1;
   constexpr double h = L / static_cast<double> (nels);
-  constexpr unsigned int maxit = 500;
-  constexpr double tol = 1.0e-9;
+  constexpr unsigned int maxit = 10000;
+  constexpr double tol = 1.0e-15;
   
   std::array<double, nnodes> nodes;
   for (unsigned int ii = 0; ii < nnodes; ++ii)
@@ -92,14 +92,19 @@ int main ()
             incrnorm;
           uh[jj] = uh_new;
         }
+
+      std::cerr << ii << " " << "incrnoorm = "<< incrnorm << std::endl; 
       if (incrnorm < tol)
-        break;
+        {
+          std::cerr << "converged!!" << std::endl; 
+          break;
+        }
     }
 
 
   for (unsigned int ii = 0; ii < nnodes; ++ii)
     std::cout << uh[ii] << std:: endl;
-      
+
   return 0;
 };
 
