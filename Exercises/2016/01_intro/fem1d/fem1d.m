@@ -1,7 +1,7 @@
 a = 0; 
 b = 1;
 L = b-a;
-nnodes = 100;
+nnodes = 50;
 nels   = nnodes - 1;
 h      = L / nels;
 nodes  = [0:h:L];
@@ -60,13 +60,13 @@ for iel = 1:nels
     %% compute the integral of the forcing term
     %% times the inode-th test function integrated
     %% on the interval iel 
-    vloc(inode) = h/2;
+    vloc(inode) = h / 2;
     
   end 
 
   %% Assembly:
   for inode = 1:2
-    f(elements(inode, iel)) = ...
+    f(elements(inode, iel)) += ...
     vloc(inode);
   end
 end
@@ -84,4 +84,4 @@ A(end, 1:end-1) = 0;
 uh = A \ f;
 
 %% plot solution
-plot (nodes, uh)
+plot (nodes, uh, nodes, nodes .* (1 - nodes) / 2, 'x')

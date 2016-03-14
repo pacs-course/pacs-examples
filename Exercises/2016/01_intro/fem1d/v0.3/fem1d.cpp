@@ -1,6 +1,4 @@
-#include <iostream>
 #include "fem1d.h"
-#include "config.h"
 
 int main ()
 {
