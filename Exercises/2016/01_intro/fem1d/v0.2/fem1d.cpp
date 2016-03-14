@@ -1,12 +1,13 @@
 #include <iostream>
 #include "fem1d.h"
+#include "config.h"
 
 int main ()
 {
 
-  mesh<nnodes> m (a, b);
+  mesh m (a, b, nnodes);
   
-  std::array<std::array<double, nnodes>, nnodes> A;
+  double A;
   for (unsigned int ii = 0; ii < nnodes; ++ii)
     A[ii].fill (0.0);
   
