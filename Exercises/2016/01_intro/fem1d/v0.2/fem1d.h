@@ -5,45 +5,51 @@
 #include <algorithm>
 #include <cmath>
 
-#include "config.h"
-
-
-template<unsigned int nnodes>
 class mesh
 {
 
 public:
 
+  const unsigned int nnodes;
   const double L;
   const unsigned int nels;
   const double h;
 
-  std::array<double, nnodes> nodes;
-  std::array<std::array<unsigned int, 2>, nnodes - 1> elements;
+  double *nodes;
+  unsigned int (*elements)[2];
 
-  mesh (const double a, const double b) : L (b - a),
-                                          nels (nnodes - 1),
-                                          h (L / double (nels))
+  mesh (const double a, const double b, const unsigned int nnodes_)
+    : L (b - a), nnodes (nnodes_), nels (nnodes - 1), h (L / double (nels))
   {
+    
+    nodes = new double [nnodes];
     for (unsigned int ii = 0; ii < nnodes; ++ii)
       nodes[ii] = static_cast<double>(ii) * h;
 
+    elements = new unsigned int [2][nels];
     for (unsigned int ii = 0; ii < nels; ++ii)
       {
         elements[ii][0] = ii;
         elements[ii][1] = ii+1;
       }
   }
+
+  ~mesh ()
+  {
+    delete [] nodes;
+    delete [] elements;
+  }
   
 };
   
-template<unsigned int nnodes>
 void
-gauss_seidel (const std::array<std::array<double, nnodes>, nnodes> &A,
-              const std::array<double, nnodes> &f,
-              std::array<double, nnodes> &uh,
-              const unsigned int maxit = 500,
-              const double tol = 1.0e-9)
+gauss_seidel
+(const double[][] &A,
+ const double[] &f,
+ double[] &uh,
+ const unsigned int nnodes,
+ const unsigned int maxit = 500,
+ const double tol = 1.0e-9)
 {
   double uh_new = 0;
   double incrnorm = 0;
