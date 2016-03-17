@@ -1,3 +1,4 @@
+OBJS = fem1d.o
 HEADERS = fem1d.h mesh.h gauss_seidel.h config.h
 
 fem1d : fem1d.cpp $(HEADERS)
@@ -7,7 +8,7 @@ fem1d : fem1d.cpp $(HEADERS)
 .PHONY: clean distclean
 
 clean :
-	$(RM) fem1d.o
+	$(RM) $(OBJS)
 
 distclean : clean
 	$(RM) fem1d
