@@ -11,7 +11,7 @@ $(OBJS) : %.o : %.cpp %.h $(HEADERS)
 .PHONY: clean distclean
 
 clean :
-	$(RM) fem1d.o
+	$(RM) $(OBJS)
 
 distclean : clean
 	$(RM) fem1d
