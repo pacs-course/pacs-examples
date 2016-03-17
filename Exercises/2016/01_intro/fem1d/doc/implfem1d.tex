@@ -250,17 +250,21 @@ $ octave -q
 \begin{frame}[fragile]
 \frametitle{Refactored Implementation in {\tt C++}}
 \only<1-2>{file {\tt v0.2/fem1d.cpp}}
-\only<3>{file {\tt v0.2/config.h}}
-\only<4-6>{file {\tt v0.2/fem1d.h}}
+\only<3>{file {\tt v0.2/fem1d.h}}
+\only<4>{file {\tt v0.2/config.h}}
+\only<5>{file {\tt v0.2/mesh.h}}
+\only<6>{file {\tt v0.2/mesh.cpp}}
+\only<7>{file {\tt v0.2/gauss\_seidel.h}}
+\only<8>{file {\tt v0.2/gauss\_seidel.cpp}}
 \tiny
 \only<1>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.cpp}}
 \only<2>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.cpp}}
-\only<3>{\lstinputlisting[language=C++,numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/config.h}}
-\only<4>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
-\only<5>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
-\only<6>{\lstinputlisting[language=C++, firstline=60, firstnumber=60, lastline=95, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
-
-
+\only<3>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/fem1d.h}}
+\only<4>{\lstinputlisting[language=C++,numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/config.h}}
+\only<5>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/mesh.h}}
+\only<6>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/mesh.cpp}}
+\only<7>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/gauss_seidel.h}}
+\only<8>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.2/gauss_seidel.cpp}}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -273,6 +277,31 @@ $ octave -q
 \lstinputlisting[language=make]{../v0.2/Makefile}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Refactored Implementation in {\tt C++} (templates + STL)}
+\only<1-2>{file {\tt v0.3/fem1d.cpp}}
+\only<3>{file {\tt v0.3/fem1d.h}}
+\only<4>{file {\tt v0.3/config.h}}
+\only<5>{file {\tt v0.3/mesh.h}}
+\only<6>{file {\tt v0.3/gauss\_seidel.h}}
+\tiny
+\only<1>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/fem1d.cpp}}
+\only<2>{\lstinputlisting[language=C++, firstline=30, firstnumber=30, lastline=65, numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/fem1d.cpp}}
+\only<3>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/fem1d.h}}
+\only<4>{\lstinputlisting[language=C++,numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/config.h}}
+\only<5>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/mesh.h}}
+\only<6>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/gauss_seidel.h}}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Compile and run}
+\lstinputlisting[language=bash, numbers=left, numberstyle=\tiny\color{gray}]{../v0.3/build.sh}
+\end{frame}
+
+\begin{frame}
+\frametitle{Compile with a Makefile}
+\lstinputlisting[language=make]{../v0.3/Makefile}
+\end{frame}
 
 
 
