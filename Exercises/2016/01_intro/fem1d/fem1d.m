@@ -4,7 +4,7 @@ L = b-a;
 nnodes = 50;
 nels   = nnodes - 1;
 h      = L / nels;
-nodes  = [0:h:L];
+nodes  = [a:h:b];
 elements = [1:nnodes-1; 2:nnodes];
 
 %% Initialize the coefficients matrix
