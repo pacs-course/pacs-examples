@@ -4,7 +4,7 @@
 int main() 
 {
   // call function from other file
-  myprinthellomake_ ();
+  myPrintHelloMake ();
   std::cout << "Hello from C++ as well!"
 	    << std::endl;
   return (0);
