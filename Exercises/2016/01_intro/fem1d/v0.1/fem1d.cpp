@@ -1,6 +1,4 @@
 #include <iostream>
-#include <array>
-#include <algorithm>
 #include <cmath>
 
 int main ()
@@ -15,26 +13,30 @@ int main ()
   constexpr unsigned int maxit = 10000;
   constexpr double tol = 1.0e-15;
   
-  std::array<double, nnodes> nodes;
+  double nodes[nnodes];
   for (unsigned int ii = 0; ii < nnodes; ++ii)
     nodes[ii] = static_cast<double>(ii) * h;
-
-  std::array<std::array<unsigned int, 2>, nels> elements;
+    
+  unsigned int elements[nels][2];
   for (unsigned int ii = 0; ii < nels; ++ii)
     {
       elements[ii][0] = ii;
       elements[ii][1] = ii+1;
     }
 
-  std::array<std::array<double, nnodes>, nnodes> A;
+    
+  double A[nnodes][nnodes];
   for (unsigned int ii = 0; ii < nnodes; ++ii)
-    A[ii].fill (0.0);
+    for (unsigned int jj = 0; jj < nnodes; ++jj)
+      A[ii][jj] = 0.0;
   
   for (unsigned int iel = 0; iel < nels; ++iel)
     {
-      std::array<std::array<double, 2>, 2> mloc;
+
+      double mloc[2][2];
       for (unsigned int ii = 0; ii < 2; ++ii)
-        mloc[ii].fill (0.0);
+        for (unsigned int jj = 0; jj < 2; ++jj)
+          mloc[ii][jj] = 0.0;
       
       for (unsigned int inode = 0; inode < 2; ++inode)
         {
@@ -49,13 +51,16 @@ int main ()
         }
     }
 
-  std::array<double, nnodes> f;
-  f.fill (0.0);
+  double f[nnodes];
+  for (unsigned int ii = 0; ii < nnodes; ++ii)
+    f[ii] = 0.0;
+  
   for (unsigned int iel = 0; iel < nels; ++iel)
     {
-      std::array<double, 2> vloc;
-      vloc.fill (0.0);
-      
+      double vloc[2];
+      for (unsigned int ii = 0; ii < 2; ++ii)
+        vloc[ii] = 0.0;
+        
       for (unsigned int inode = 0; inode < 2; ++inode)
         {
           vloc[inode] = h / 2.0;
@@ -64,15 +69,20 @@ int main ()
     }
 
   f[0] = 0;
-  f.back () = 0;
+  f[nnodes - 1] = 0;
 
   A[0][0] = 1.0;
-  std::fill (&(A[0][1]), A[0].end (), 0.0);
+  for (unsigned int ii = 1; ii < nnodes; ++ii)
+    A[0][ii] = 0.0;
+  
+  A[nnodes-1][nnodes-1] = 1.0;
+  for (unsigned int ii = 0; ii < nnodes-1; ++ii)
+    A[nnodes-1][ii] = 0.0;
 
-  A.back ().back () = 1.0;
-  std::fill (A.back ().begin (), A.back ().end () - 1, 0.0);
-
-  std::array<double, nnodes> uh (f);
+  double uh[nnodes];
+  for (unsigned int ii = 0; ii < nnodes; ++ii)
+    uh[ii] = 0.0;
+      
   double uh_new = 0;
   double incrnorm = 0;
   for (unsigned int ii = 0; ii < maxit; ++ii)
