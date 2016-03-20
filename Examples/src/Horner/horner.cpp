@@ -18,17 +18,18 @@ double  horner(std::vector<double> const & a, double const x){
 //! Evaluates polynomial in a set of points
 void evaluatePoly(std::vector<double> const & points,
 		  std::vector<double> const & a,
-		  std::vector<double>  & result, polyEval method)
+		  std::vector<double>  & result, 
+                  polyEval method)
 {
   
   result.clear();// clean previous results
   result.reserve(points.size()); // make sure there is space
   for(std::vector<double>::const_iterator 
 	i=points.begin();i!=points.end();++i) 
-    result.push_back(method(a,*i));
+    result.emplace_back(method(a,*i));
   // C++11
   /*
-  for(auto i : points)points.push_back(method(a,i));
+  for(auto i : points)points.emplace_back(method(a,i));
   */
 
   return;

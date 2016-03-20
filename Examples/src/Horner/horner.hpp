@@ -21,16 +21,20 @@ double horner(std::vector<double> const & a, double const x);
 
 //This only to show the use of pointers to function.
 //! A pointer to function.
-typedef double (*polyEval)(std::vector<double> const &, double const);
+//
+//typedef double (*polyEval)(std::vector<double> const &, double const);
+// In C++11 is it preferable to do 
+using polyEval=double (*)(std::vector<double> const &, double const);
 
 //! Evaluates polynomial in a set of points.
 /*!
-  @param point   Set of points to compute the polynomial.
+  @param point   Vector of points to compute the polynomial.
   @param a       Polynomial coefficients.
   @param result  As the name says.
   @param method  Method to evaluate the polynomial
  */
 void evaluatePoly(std::vector<double> const & points,
 		  std::vector<double> const & a,
-		  std::vector<double>  & result, polyEval method);
+		  std::vector<double>  & result, 
+                  polyEval method);
 #endif
