@@ -19,7 +19,9 @@ namespace Geometry
   } 
   
   void geometryHolder::setPolygon(Shape shape){
-    this->my_poly=std::move(polyFactory(shape));
+    // I do not need move() since the return value
+    // is a rvalue (a temporary)
+    this->my_poly=polyFactory(shape);
   }
   
   std::ostream &  geometryHolder::showMe(std::ostream & out){
