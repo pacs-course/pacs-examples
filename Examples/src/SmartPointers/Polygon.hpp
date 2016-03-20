@@ -83,8 +83,8 @@ namespace Geometry
   public:
     //! Empty polygon
     AbstractPolygon():vertexes(),isconvex(false){};
-    //! virtual destructor
-    virtual ~AbstractPolygon(){};
+    //! virtual destructor (is a base class)
+    virtual ~AbstractPolygon()=default;
     //! Returns the number of vertices.
     /*!  We return Vertices::size_type and not just int because
       size_type is guaranteed to be the correct type for indexes in
@@ -132,11 +132,9 @@ namespace Geometry
     /*!
       It does nothing.
      */
-    Polygon(){};
+    Polygon()=default;// C++11
     //! Polygon may be constructed giving Vertices;
     Polygon(Vertices const &);
-    //! Destructor
-    virtual ~Polygon(){};
     /*!
       The area is positive if vertices are given in 
       counterclockwise order
@@ -151,8 +149,9 @@ namespace Geometry
   //! A square
   /*!
     The square is a final class derived from polygon.
+    The final keyword has been introduced in C++11 
    */
-  class Square: public AbstractPolygon
+  class Square final : public AbstractPolygon
   {
   public:
     Square(){this->isconvex=true;};
@@ -165,26 +164,29 @@ namespace Geometry
     Square(Point2D origin, double length,double angle=0.0);
     //! Specialised version for squares
     virtual double area() const;
-    virtual ~Square(){std::cout<<"Destroying a square"<<std::endl;};
+    //! Strange destructor to show what happens if you uses smart ptrs
+    ~Square(){std::cout<<"Destroying a square"<<std::endl;};
     //! Specialised version for squares.
     virtual void showMe(ostream & out=cout) const;
   };
   
   //! A triangle
-  class Triangle: public AbstractPolygon
+  class Triangle final : public AbstractPolygon
   {
   public:
     Triangle(){this->isconvex=true;};
     //!Constructor for triangles.
     /*!
-      It uses the general contructor but it verifies if
+      It uses the general copy contructor but it verifies if
       we give 3 points, if not the program exits with exit(1)
       It may be an interesting case to implement exceptions
      */
     Triangle(Vertices const &);
     //! Specialised for Triangles
     virtual double area() const;
-    virtual ~Triangle(){std::cout<<"Destroying a TRiangle"<<std::endl;};
+    //
+    //! Strange destructor to show what happens if you uses smart ptrs
+    ~Triangle(){std::cout<<"Destroying a Triangle"<<std::endl;};
     //! Specialised for Triangles
     virtual void showMe(ostream & out=cout) const;
   };

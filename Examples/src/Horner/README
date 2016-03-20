@@ -15,3 +15,22 @@ if you want optimized program
 or
 make DEBUG=yes or simply make
 if you want non-optimized program
+
+Remember: make clean before you recompile with different optimization
+
+Alternatively you may type
+
+make OPTFLAGS='-O3 -ffast-math'
+
+to compile with optimization.
+
+ATTENTION: the code makes use of the chrono utility in libbacs. So you
+have first to compile te Utility (go in src/Utility). Secondly, if you
+have created libpacs.so the linker will link with the dynamic library
+
+To tell the loader that you need to look in the library directory of
+the course, type
+
+export LD_LIBRARY_PATH+=../../lib
+
+before launching the main program.
