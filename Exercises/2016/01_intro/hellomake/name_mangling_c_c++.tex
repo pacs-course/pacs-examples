@@ -1,0 +1,264 @@
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{graphicx,xcolor}
+\usepackage{times}
+
+\usepackage[english]{babel}
+
+\lstnewenvironment{bashcommand}{\lstset{}}{}
+{%
+    \lstset{%
+        basicstyle=\ttfamily,
+        escapechar=~,
+        morekeywords={gcc,g++},
+        keywordstyle=\bfseries,
+        literate={\$}{\$}1}
+}{}
+\lstnewenvironment{bashoutput}
+    {\lstset{basicstyle=\ttfamily}}
+    {}
+    
+    
+\begin{document}
+\title{Name mangling and \\ linking C objects into C++ code}
+
+\frame{\titlepage}
+
+\begin{frame}\frametitle{example C code}
+\lstinputlisting[language=c]{hellofunc.c}
+\end{frame}
+
+
+\begin{frame}\frametitle{header for {\tt hellofunc.h}}
+\lstinputlisting[language=c]{hellomake.h}
+\begin{itemize}
+\item the preprocessor macro \lstinline[language=c]{__cplusplus} 
+      is defined by default whenever using a C++ compiler
+\item the effect of the \lstinline[language=c]{\#ifdef __cplusplus} conditional
+      can be verified by running the preprocessor       
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{example C++ code}
+\lstinputlisting[language=c]{hellomake.cpp}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{invoking the proprocessor}
+
+using \lstinline[language=bash]{g++} the lines between conditionals
+are included in the output of the preprocessor 
+
+\begin{bashcommand}
+$ g++ -E hellomake.h
+\end{bashcommand}
+
+\begin{bashoutput}
+# 1 "hellomake.h"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "hellomake.h"
+extern "C"{
+void myPrintHelloMake (void);
+}
+\end{bashoutput}
+
+using \lstinline[language=bash]{gcc} the lines between conditionals
+are \emph{not} included in the output of the preprocessor 
+
+\begin{bashcommand}
+$ gcc -E hellomake.h
+\end{bashcommand}
+
+\begin{bashoutput}
+# 1 "hellomake.h"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "hellomake.h"
+void myPrintHelloMake (void);
+\end{bashoutput}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{C vs. C++ linkage}
+
+Why is the \lstinline[language=C++]|extern "C"{...}| needed?
+
+\null
+
+Let us compile \lstinline{hellofunc.c} using the C compiler
+and inspect the symbols in the object file
+\begin{bashcommand}
+$ gcc -c hellofunc.c
+$ nm hellofunc.o | grep myPrintHelloMake
+\end{bashcommand}
+\begin{bashoutput}
+0000000000000000 T _myPrintHelloMake
+\end{bashoutput}
+The name of the compiled function in the object file is (almost) the same
+as defined in the C source code.
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{C vs. C++ linkage}
+
+Why is the \lstinline[language=C++]|extern "C"{...}| needed?
+
+\null
+
+Let us compile \lstinline{hellofunc.c} using the C++ compiler
+and inspect the symbols in the object file
+\begin{bashcommand}
+$ g++ -c hellofunc.c
+$ nm hellofunc.o | grep myPrintHelloMake
+\end{bashcommand}
+\begin{bashoutput}
+0000000000000000 T __Z16myPrintHelloMakev
+\end{bashoutput}
+The name of the compiled function in the object file is surrounded
+by additional unreadable charecters. 
+
+\null 
+
+why?
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{C++ name mangling}
+Functions in C++ are distinguished not only by their name, 
+but also by the type of their input parameters.
+
+\null
+
+The C++ compiler encodes the full signature of the function in the
+name stored in the object file, this is called \emph{name mangling}.
+
+\null
+
+The name can be \emph{demangled} using the \lstinline[language=bash]|c++filt| utility
+\begin{bashcommand}
+$ g++ -c hellofunc.c
+$ nm hellofunc.o | grep myPrintHelloMake | c++filt
+\end{bashcommand}
+\begin{bashoutput}
+0000000000000000 T myPrintHelloMake()
+\end{bashoutput}
+The information that the function requires no input parameters is also stored in the object file!
+
+\null
+
+When invoking a C function in C++ code, the compiler must be told to search for a symbol that has
+C linkage and is given an unmangled label in the object file, this is the purpose of the \lstinline[language=C++]|extern "C"{...}|
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{what happens specifying C linkage?}
+Let us run the compiler on \lstinline[language=bash]|hellomake.cpp|
+
+\begin{bashcommand}
+$ g++ -c hellomake.cpp -I.
+$ nm hellomake.o | grep myPrintHelloMake
+\end{bashcommand}
+\begin{bashoutput}
+                 U _myPrintHelloMake
+\end{bashoutput}
+The object file has an \emph{undefined symbol} with the \emph{unmangled name}.
+This means the linker expects the symbol with the \emph{unmangled name} to exist
+when linking the final binary. 
+If we run the C compiler on  \lstinline[language=bash]|hellofunc.c| this 
+symbol will be defined in \lstinline[language=bash]|hellofunc.o| so we can link the two object files and form an executable
+\begin{bashcommand}
+$ gcc -c hellofunc.c
+$ g++ -c hellomake.cpp -I.
+$ g++ hellomake.o hellofunc.o -o hellomake
+$ ./hellomake 
+\end{bashcommand}
+\begin{bashoutput}
+Hello makefiles!
+Hello from C++ as well!
+\end{bashoutput}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{what happens without specifying C linkage?}
+Let us comment out the lines specifying C linkage in the \lstinline[language=bash]|hellomake.h|
+header 
+\begin{lstlisting}[language=C++]
+//#ifdef __cplusplus
+//extern "C"{
+//#endif
+void myPrintHelloMake (void);
+//#ifdef __cplusplus
+//}
+//#endif
+\end{lstlisting}
+
+and run the compiler on \lstinline[language=bash]|hellomake.cpp|
+
+\begin{bashcommand}
+$ g++ -c hellomake.cpp -I.
+$ nm hellomake.o | grep myPrintHelloMake
+\end{bashcommand}
+\begin{bashoutput}
+                 U __Z16myPrintHelloMakev
+\end{bashoutput}
+The object file has an \emph{undefined symbol} with the \emph{mangled name}.
+This means the linker expects the symbol with the \emph{mangled name} to exist
+when linking the final binary, and will error out if it isn't!
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{what happens without specifying C linkage?}
+Let us try to link the executable
+\begin{bashcommand}
+$ gcc -c hellofunc.c
+$ g++ -c hellomake.cpp -I.
+$ g++ hellofunc.o hellomake.o -o hellomake
+\end{bashcommand}
+\begin{bashoutput}
+Undefined symbols for architecture x86_64:
+  "myPrintHelloMake()", referenced from:
+      _main in hellomake.o
+ld: symbol(s) not found for architecture x86_64
+collect2: error: ld returned 1 exit status
+\end{bashoutput}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{what happens without specifying C linkage?}
+If I had compiled the C file with the C++ compiler linking would have worked
+\begin{bashcommand}
+$ g++ -c hellofunc.c
+$ g++ -c hellomake.cpp -I.
+$ g++ hellofunc.o hellomake.o -o hellomake
+$ ./hellomake 
+\end{bashcommand}
+\begin{bashoutput}
+Hello makefiles!
+Hello from C++ as well!
+\end{bashoutput}
+This cannot always be done (especially if linking to a C library that is not compiled by yourself!)
+\end{frame}
+
+\begin{frame}\frametitle{example F77 code}
+It is (unfortunaley) still common to find numerical libraries written in fortran, 
+so let us consider a simple fortran 77 subroutine
+\lstinputlisting[language=fortran]{hellofunc.f}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{linking fortran objects}
+The situation when linking to fortran77 objects is similar, but has some differnces
+\begin{bashcommand}
+$ nm hellofunc.o | grep -i myPrintHelloMake 
+$ gfortran -c hellofunc.f
+\end{bashcommand}
+\begin{bashoutput}
+0000000000000000 T _myprinthellomake_
+\end{bashoutput}
+\begin{itemize}
+\item fortran is case insensitive
+\item an additional underscore has been added to the object name (this depends on the compiler) 
+\end{itemize}
+To use the f77 subroutine in a C++ program we need to define in the header
+\begin{lstlisting}[language=C++]
+extern "C" { void myprinthellomake_ (void); }
+\end{lstlisting}
+\end{frame}
+\end{document}
