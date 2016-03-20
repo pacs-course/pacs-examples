@@ -73,7 +73,7 @@ install:
 	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion test_toString test_string
+	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion test_toString test_string $(DEPEND)
 
 distclean:
 	$(MAKE) clean
