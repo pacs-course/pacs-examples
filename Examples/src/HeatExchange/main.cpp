@@ -53,30 +53,30 @@ int main(int argc, char** argv)
   // to show a possible  use of references)
   const int&    itermax= param.itermax;   //max number of iteration for Gauss-Siedel
   const double& toler=param.toler;   // Tolerance for stopping criterion
-  const double& L= param.L;  // Bar length
-  const double& a1=param.a1; // First longitudinal dimension
-  const double& a2=param.a2; //  Second longitudinal dimension
-  const double& To=param.To; // Dirichlet condition
-  const double& Te=param.Te; // External temperature (Centigrades)
-  const double& k=param.k;  // Thermal conductivity
-  const double& hc=param.hc; // Convection coefficient
-  const int&    M=param.M; // Number of grid elements
+  // Here I use auto (remember that you need const and & if you want constant references)
+  const auto& L= param.L;  // Bar length
+  const auto& a1=param.a1; // First longitudinal dimension
+  const auto& a2=param.a2; //  Second longitudinal dimension
+  const auto& To=param.To; // Dirichlet condition
+  const auto& Te=param.Te; // External temperature (Centigrades)
+  const auto& k=param.k;  // Thermal conductivity
+  const auto& hc=param.hc; // Convection coefficient
+  const auto&    M=param.M; // Number of grid elements
   
   //! Precomputed coefficient for adimensional form of equation
-  const double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
+  const auto act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
 
   // mesh size
-  const double h=1./M;
+  const auto h=1./M;
   
   // Solution vector
-  vector<double> theta(M+1);
+  std::vector<double> theta(M+1);
   
   // Gauss Siedel is initialised with a linear variation
   // of T
   
-  theta[0]=(To-Te)/Te;       //Condition at x=0
-  for(unsigned int m=1;m <= M;m++)
-    theta[m]=(1.-m*h)*(To-Te)/Te;
+  for(unsigned int m=0;m <= M;++m)
+     theta[m]=(1.-m*h)*(To-Te)/Te;
   
   // Gauss-Seidel
   // epsilon=||x^{k+1}-x^{k}||
