@@ -5,7 +5,7 @@ struct aggr
   double a;
   int b;
 };
-// print arrays
+//! Print arrays. This version takes the dimension as parameter 
 template <class T, std::size_t N>
 std::ostream & operator <<(std::ostream & out,std::array<T,N> const & myarray)
 {
@@ -15,6 +15,19 @@ std::ostream & operator <<(std::ostream & out,std::array<T,N> const & myarray)
   out<<std::endl;
   return out;
 }
+
+//! Prints ths size of an array. 
+/*!
+  It is only to show the capabilities of tuple_size!
+  In this case the size is computed at compile time, dfferently
+  than using size().
+ */
+template <class Array>
+void printSize(const Array & a, std::ostream & out=std::cout)
+{
+  out<<"Array dimension:"<<std::tuple_size<Array>::value<<"\n";
+}
+
 
 // A function that takes a pointer to an array of double
 // Old C and C++98 style
@@ -51,6 +64,7 @@ int main()
   // a constexpr so it is resolved by the compiler!
   cout<<" Array bb size= "<<bb.size()<<endl;
   cout<<" Array aa size= "<<aa.size()<<endl;
+  printSize(aa); // testing the function
   // I can pass the array to a function taking a pointer
   // using data()
   fun(c.data(),c.size());
