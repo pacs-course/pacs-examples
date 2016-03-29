@@ -8,7 +8,7 @@ mesh::mesh
     
     nodes = new double [nnodes];
     for (unsigned int ii = 0; ii < nnodes; ++ii)
-      nodes[ii] = static_cast<double>(ii) * h;
+      nodes[ii] = static_cast<double>(ii) * h + a;
     
     elements = new unsigned int [nels][2];
     for (unsigned int ii = 0; ii < nels; ++ii)
