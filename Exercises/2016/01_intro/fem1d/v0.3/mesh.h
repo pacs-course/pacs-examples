@@ -19,7 +19,7 @@ public:
                                           h (L / double (nels))
   {
     for (unsigned int ii = 0; ii < nnodes; ++ii)
-      nodes[ii] = static_cast<double>(ii) * h;
+      nodes[ii] = static_cast<double>(ii) * h + a;
 
     for (unsigned int ii = 0; ii < nels; ++ii)
       {
