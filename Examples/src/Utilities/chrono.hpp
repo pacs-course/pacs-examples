@@ -35,6 +35,7 @@ namespace Timings{
     friend std::ostream & operator <<(std::ostream &,Chrono const &);
     Chrono();
     //!Explicitly defaulted automatic consts/assignements
+    // Not needed, just to show the use of default!
     Chrono(const Chrono &)=default;
     Chrono(Chrono&&)=default;
     Chrono & operator=(Chrono&&)=default;
@@ -43,9 +44,9 @@ namespace Timings{
     void start();
     //! Stops counting time
     void stop();
-    //!Outputs wall time between last start and stop (in seconds)
+    //!Outputs wall time between last start and stop (in microseconds)
     double wallTime() const;
-    //!Outputs wall time between last start and now! (in seconds)
+    //!Outputs wall time between last start and now! (in microseconds)
     double wallTimeNow() const;
   };
 }
