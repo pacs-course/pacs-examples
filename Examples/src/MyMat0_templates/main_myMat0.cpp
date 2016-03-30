@@ -2,13 +2,14 @@
 #include <vector>
 #include <fstream>
 #include "MyMat0.hpp"
-
+#include "MyMat0_util.hpp"
+#include "chrono.hpp"
 
 int main()
 {
   using namespace LinearAlgebra;
   // I create two matrices
-  MyMat0<COLUMNMAJOR> a;
+  MyMat0<double,COLUMNMAJOR> a;
 
   a.resize(3,4);
   MyMat0<> b(5,5);
@@ -42,6 +43,25 @@ int main()
   std::cout<<*(va.end()-1)<<"]^T =";
   std::cout<<"[";
   for (auto i=res.cbegin();i<res.cend()-1;++i)std::cout<<*i<<", ";
-  std::cout<<*(res.end()-1)<<"]"<<std::endl;
+  std::cout<<*(res.end()-1)<<"]"<<std::endl<<std::endl;
   std::cout<<"Norm1, NOrmInf and NormF of a: "<<a.norm1()<<" "<<a.normInf()<<" "<<a.normF()<<std::endl;
+
+  // Creating 2 big matrices
+  //MyMat0<double,COLUMNMAJOR> A(1000,1000);
+  MyMat0<double,COLUMNMAJOR> A(10,10);
+  A.fillRandom();
+  //  MyMat0<double,COLUMNMAJOR> B(1000,1000);
+  MyMat0<double,COLUMNMAJOR> B(10,10);
+  B.fillRandom();
+  Timings::Chrono watch;
+  std::cout<< "Standard Matrix Moltiplication"<<"\n";
+  watch.start();
+  matMul(A,B);
+  watch.stop();
+  std::cout<<watch<<std::endl;
+  std::cout<< "Optimized Matrix Moltiplication"<<"\n";
+  watch.start();
+  matMulOpt(A,B);
+  watch.stop();
+  std::cout<<watch<<std::endl;
 }
