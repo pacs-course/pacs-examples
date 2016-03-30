@@ -133,6 +133,7 @@ int main(int argc, char** argv)
 	 // \t writes a tab 
          f<<m*h*L<<"\t"<<Te*(1.+theta[m])<<"\t"<<thetaa[m]<<endl;
 	 // An example of use of tie and tuples!
+         
 	 std::tie(coor[m],sol[m],exact[m])=
 	   std::make_tuple(m*h*L,Te*(1.+theta[m]),thetaa[m]);
        }
