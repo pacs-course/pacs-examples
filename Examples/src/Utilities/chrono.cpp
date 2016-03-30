@@ -41,22 +41,25 @@ namespace Timings{
   double Chrono::wallTime() const
   {
     using namespace std::chrono;
-    using duration = std::chrono::duration<double>;
-    duration time_span=duration_cast<duration>(stopTime-startTime);
-    return time_span.count();
+    auto time_span=duration_cast<nanoseconds>(stopTime-startTime);
+    return time_span.count()/1000.;
   }
 
   double Chrono::wallTimeNow() const
   {
     using namespace std::chrono;
-    using duration = std::chrono::duration<double>;
-    duration time_span=duration_cast<duration>(stopTime-steady_clock::now());
-    return time_span.count();
+    auto time_span=duration_cast<nanoseconds>(steady_clock::now()-startTime);
+    return time_span.count()/1000.;
   }
 
   std::ostream & operator <<(std::ostream & out,Chrono const &c)
   {
-    out<<"Elapsed Time= "<<c.wallTime()<<" s"<<std::endl;
+    // A bug in some c++ compiler. They do not define defaultfloat.
+    // The problem is that if I convert to scientific mode then this is a modification
+    // that affects also the returned outstrem. So I will postpone this modification
+    // until the compiler is upgraded.
+    //out<<"Elapsed Time= "<<std::scientific<<c.wallTime()<<std::defaultfloat<<"microsec"<<std::endl;
+    out<<"Elapsed Time= "<<c.wallTime()<<" microsec"<<std::endl;
     return out;
   }
   
