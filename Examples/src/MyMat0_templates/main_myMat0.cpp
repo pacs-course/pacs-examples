@@ -48,21 +48,21 @@ int main()
 
   // Creating 2 big matrices
   //MyMat0<double,COLUMNMAJOR> A(1000,1000);
-  MyMat0<double,COLUMNMAJOR> A(1000,500);
+  MyMat0<double,ROWMAJOR> A(1000,5000);
   A.fillRandom();
   //  MyMat0<double,COLUMNMAJOR> B(1000,1000);
-  MyMat0<double,COLUMNMAJOR> B(500,100);
+  MyMat0<double,ROWMAJOR> B(5000,500);
   B.fillRandom();
   Timings::Chrono watch;
   std::cout<< "Standard Matrix Moltiplication"<<"\n";
   watch.start();
-  matMul(A,B);
+  auto res1=matMul(A,B);
   watch.stop();
   double t1=watch.wallTime();
   std::cout<<watch<<std::endl;
   std::cout<< "Optimized Matrix Moltiplication"<<"\n";
   watch.start();
-  matMulOpt(A,B);
+  auto res2=matMulOpt(A,B);
   watch.stop();
   double t2=watch.wallTime();
   std::cout<<watch<<std::endl;
