@@ -15,7 +15,7 @@ int main ()
   
   double nodes[nnodes];
   for (unsigned int ii = 0; ii < nnodes; ++ii)
-    nodes[ii] = static_cast<double>(ii) * h;
+    nodes[ii] = static_cast<double>(ii) * h + a;
     
   unsigned int elements[nels][2];
   for (unsigned int ii = 0; ii < nels; ++ii)
