@@ -19,4 +19,4 @@ k=0.164
 # Convection coefficient
 hc=200.0e-6
 # Number of elements
-M=101
+M=11
