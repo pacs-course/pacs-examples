@@ -1,2 +1,20 @@
-Una piccola classe di matrice.  E` un esempio introduttivo alle classi e alla gestione di librerie.
+A simple class for full matrices. An example on how to swotch from row major to column major ordering. 
+
+Some utilities are introduced to implement matrix matrix multiplication, in the standard or in a more cache friendly way.
+
+The main uses the utility chrono and links to libpacs in ../../lib. If you use the dynamicl library set
+
+export LD_LIBRARY_PATH+=:../../lib
+
+To compile the libpacs library you need to go in ../Utilities and run
+
+make DEBUG=no
+make install
+
+run_main.sh is a script to run the code (it sets LD_LIRBARY_PATH).
+
+To compile with optimization use
+
+make DEBUG=no
+
 
