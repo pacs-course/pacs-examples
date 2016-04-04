@@ -112,5 +112,24 @@ namespace LinearAlgebra
 
   /*! @}*/
 
+
+  /*!\defgroup matmatblas Optimised for blas (only for T=double)
+    
+    @{*
+
+    Cache friendly computations. Using blas for dot product
+  */
+  
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,ROWMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2);
+
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2);
+
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2);
+
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,ROWMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2);
+
+  /*! @}*/
+
 }
+
 #endif
