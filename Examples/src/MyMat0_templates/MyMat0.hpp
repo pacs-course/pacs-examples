@@ -62,9 +62,9 @@ namespace LinearAlgebra{
      * In alternative I might have used a smart pointer, in particular
      * std::unique_ptr<T>.
      */
+    std::vector<T> data;
     //! The other storage system 
     static constexpr StoragePolicySwitch otherPolicy = storagePolicy == ROWMAJOR? COLUMNMAJOR : ROWMAJOR;
-    std::vector<T> data;
     /*!
       \defgroup getIndex Functions returning index according to ordering
       
@@ -90,12 +90,15 @@ namespace LinearAlgebra{
     /*!
       @}
     */
+  public:
     //! It uses the one selected by the second argument.
+    /*
+      Made public to be able to do faster operations on indexes
+     */
     size_type getIndex(size_type const & i, size_type const & j) const
     {
       return getIndex(i,j,StorageType<storagePolicy>());
     }
-  public:
     //! I expose the type of the elements
     using value_type=T;
     //! It builds a matrix with n rows and m columns.
@@ -138,7 +141,7 @@ namespace LinearAlgebra{
     /*!
       It allows a=m(1,1) on constant matrix m
      */
-    T operator () (const size_type i, const size_type j) const
+    T const & operator () (const size_type i, const size_type j) const
     {
     	return data[getIndex(i,j)];
     }
@@ -176,6 +179,26 @@ namespace LinearAlgebra{
       @param v vector to be multiplied. It must have size()>=nc (no check is made)
      */  
     void vecMultiply(const std::vector<T> &v, std::vector<T> & res) const;
+    //! Iterator to the begin of the internal structure
+    /*! 
+      To be used for fast operation on the data
+     */
+    auto begin() -> decltype(data.begin()) {return data.begin();}
+    //! Iterator to the begin of the internal structure
+    /*! 
+      To be used for fast operation on the data
+     */
+    auto cbegin() const -> decltype(data.cbegin()) {return data.cbegin();}
+    //! Iterator to the end of the internal structure
+    /*! 
+      To be used for fast operation on the data
+     */
+    auto end() -> decltype(data.end()) {return data.end();}
+    //! Iterator to the end of the internal structure
+    /*! 
+      To be used for fast operation on the data
+     */
+    auto cend() const -> decltype(data.cend()) {return data.cend();}
     //! It shows matrix content
     /*!
      *  It pretty prints the matrix
@@ -336,7 +359,7 @@ namespace LinearAlgebra{
 	out<<std::endl;
     }
   }
-
+  
   template<class T, StoragePolicySwitch storagePolicy>
   std::vector<T> operator * (MyMat0<T, storagePolicy> const & m,std::vector<T> const & v)
   {
@@ -344,7 +367,7 @@ namespace LinearAlgebra{
     m.vecMultiply(v,tmp);
     return tmp;
   }
-
+  
 }
 
 
