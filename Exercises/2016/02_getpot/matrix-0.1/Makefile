@@ -4,6 +4,9 @@ HEADERS = matrix.h
 test_matrix_mult : test_matrix_mult.cpp $(HEADERS) $(OBJS)
 	$(CXX) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
+libmatrix.a : matrix.o
+	$(AR) crv libmatrix.a matrix.o
+
 speedup.pdf : run_test.m
 	octave $<
 
@@ -16,4 +19,4 @@ clean :
 	$(RM) $(OBJS)
 
 distclean : clean
-	$(RM) test_matrix_mult speedup.pdf
+	$(RM) test_matrix_mult speedup.pdf libmatrix.a
