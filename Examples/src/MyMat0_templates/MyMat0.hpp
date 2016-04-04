@@ -141,7 +141,7 @@ namespace LinearAlgebra{
     /*!
       It allows a=m(1,1) on constant matrix m
      */
-    T operator () (const size_type i, const size_type j) const
+    T const & operator () (const size_type i, const size_type j) const
     {
     	return data[getIndex(i,j)];
     }
@@ -359,7 +359,7 @@ namespace LinearAlgebra{
 	out<<std::endl;
     }
   }
-
+  
   template<class T, StoragePolicySwitch storagePolicy>
   std::vector<T> operator * (MyMat0<T, storagePolicy> const & m,std::vector<T> const & v)
   {
@@ -367,7 +367,7 @@ namespace LinearAlgebra{
     m.vecMultiply(v,tmp);
     return tmp;
   }
-
+  
 }
 
 

@@ -67,4 +67,13 @@ int main()
   double t2=watch.wallTime();
   std::cout<<watch<<std::endl;
   std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+  std::cout<<"Speedup: "<<t1/t2<<std::endl;
+  std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
+  watch.start();
+  res2=matMulOptBlas(A,B);
+  watch.stop();
+  t2=watch.wallTime();
+  std::cout<<watch<<std::endl;
+  std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+  std::cout<<"Speedup: "<<t1/t2<<std::endl;
 }
