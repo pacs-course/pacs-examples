@@ -1,3 +1,6 @@
+#ifndef HAVE_MATRIX_H
+#define HAVE_MATRIX_H
+
 #include <vector>
 #include <iostream>
 
@@ -77,3 +80,5 @@ public :
 /// matrix x matrix product : C = A * B
 matrix
 operator* (const matrix& A, const matrix& B);
+
+#endif
