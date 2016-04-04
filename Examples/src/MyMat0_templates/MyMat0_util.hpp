@@ -28,7 +28,7 @@ namespace LinearAlgebra
 
    @{*
    
-   Chache friendly computations. I avoid stiding along columns on a ROWMAJOR matrix
+   Chache friendly computations. I avoid striding along columns on a ROWMAJOR matrix
   */
   template <typename T>
   MyMat0<T,ROWMAJOR> matMulOpt(MyMat0<T,ROWMAJOR> const & m1,MyMat0<T,ROWMAJOR> const & m2)
