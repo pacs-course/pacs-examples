@@ -1,6 +1,7 @@
 #ifndef HH_MYMAT0_UTIL__HH
 #define HH_MYMAT0_UTIL__HH
 #include "MyMat0.hpp"
+#include <numeric>
 namespace LinearAlgebra
 {
   //! Classic matrix-matrix multiplication
@@ -45,10 +46,14 @@ namespace LinearAlgebra
           }
         for(size_type i=0; i<m1.nrow();++i)
           {
+            size_type row_starts= m1.getIndex(i,0);
+            res(i,j) = std::inner_product(tmp.begin(),tmp.end(),m1.cbegin()+row_starts,T(0));
+            /*
             for(size_type k=0; k<m2.nrow();++k)
               {
                 res(i,j) += m1(i,k)*tmp[k];
-              }
+                }
+            */
           }
       }
     return res;
@@ -82,10 +87,14 @@ namespace LinearAlgebra
           }
         for(size_type j=0; j<m2.ncol();++j)
           {
-            for(size_type k=0; k<m2.nrow();++k)
+            size_type column_start = m2.gitIndex(0,j);
+            res(i,j) = std::inner_product(tmp.begin(),tmp.end(),m2.cbegin()+column_start,T(0));
+            /*
+              for(size_type k=0; k<m2.nrow();++k)
               {
                 res(i,j) += tmp[k]*m2(k,j);
               }
+            */
           }
       }
     return res;
@@ -103,5 +112,24 @@ namespace LinearAlgebra
 
   /*! @}*/
 
+
+  /*!\defgroup matmatblas Optimised for blas (only for T=double)
+    
+    @{*
+
+    Cache friendly computations. Using blas for dot product
+  */
+  
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,ROWMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2);
+
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2);
+
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2);
+
+  MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,ROWMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2);
+
+  /*! @}*/
+
 }
+
 #endif
