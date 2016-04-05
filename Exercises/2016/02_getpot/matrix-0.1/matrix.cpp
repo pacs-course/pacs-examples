@@ -12,13 +12,16 @@
 extern "C"
 {
   void 
-  dgesv (const int *N, const int *NRHS, const double *A, const int *LDA,
-         int *IPIV, double *B, const int *LDB, int *INFO);
+  dgesv (const int *N, const int *NRHS, const double *A,
+         const int *LDA, int *IPIV, double *B, const int *LDB,
+         int *INFO);
 
   void
-  dgemm (const char *TRANSA, const char *TRANSB, const int *M, const int *N, const int *K,
-         const double *ALPHA, const double *A, const int *LDA, const double *B, const int *LDB,
-         const double *BETA, double *C, const int *LDC);
+  dgemm (const char *TRANSA, const char *TRANSB, const int *M,
+         const int *N, const int *K, const double *ALPHA,
+         const double *A, const int *LDA, const double *B,
+         const int *LDB, const double *BETA, double *C,
+         const int *LDC);
 }
 
 
