@@ -50,6 +50,7 @@ for ii = 1 : 11
           "location", "southoutside")
   xlabel ("matrix size", "FontSize", 18)
   ylabel ("multiply time [ms]", "FontSize", 18)
+  axis tight
   drawnow
 endfor
 
