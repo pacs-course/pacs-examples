@@ -31,7 +31,7 @@ for ii = 1 : 11
   eval (str);
   mm = [mm; multiply_time];
 
-  printf (fmt, 2^ii, "-DMAKE_TMP_TRANSP");
+  printf (fmt, 2^ii, "-DUSE_DGEMM");
   [a, str] = system (sprintf (fmt, 2^ii, "-DUSE_DGEMM"));
   [a, str] = system ('./test_matrix_mult');
   if (a != 0)
