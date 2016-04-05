@@ -1,9 +1,13 @@
 OBJS =  matrix.o
 TEST_OBJS = test_matrix_mult.o test_gauss_seidel.o test_solve.o
 HEADERS = matrix.h
+SHARED_EXT = so
 
-libmatrix.a : matrix.o
-	$(AR) crv libmatrix.a matrix.o
+libmatrix.a : $(OBJS)
+	$(AR) crv libmatrix.a $(OBJS)
+
+libmatrix.$(SHARED_EXT) : $(OBJS)
+	$(CXX) -shared -L. $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 test_matrix_mult : libmatrix.a test_matrix_mult.o 
 	$(CXX) -L. $(LDFLAGS) -o $@  test_matrix_mult.o -lmatrix $(LIBS)
@@ -29,4 +33,5 @@ clean :
 	$(RM) $(OBJS) $(TEST_OBJS)
 
 distclean : clean
-	$(RM) test_matrix_mult test_gauss_seidel test_solve speedup.pdf libmatrix.a
+	$(RM) test_matrix_mult test_gauss_seidel test_solve \
+	speedup.pdf libmatrix.a
