@@ -33,5 +33,6 @@ int main ()
                 << "    b (" << i+1 << ") = " << rhs(i, 0) << ";"
                 << std::endl;
     }
+  return 0;
 }
 

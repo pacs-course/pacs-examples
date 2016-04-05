@@ -19,7 +19,15 @@ private :
   sub2ind (const unsigned int ir,
            const unsigned int jc) const
   { return (ir + jc * rows); };
-  
+
+  double &
+  index (unsigned int irow, unsigned int jcol)
+  { return data[sub2ind (irow, jcol)]; };
+
+  const double &
+  const_index (unsigned int irow, unsigned int jcol) const
+  { return data[sub2ind (irow, jcol)]; };
+
 public :
 
   matrix (unsigned int size)
@@ -38,14 +46,6 @@ public :
 
   unsigned int
   get_cols () const { return cols; }
-
-  double &
-  index (unsigned int irow, unsigned int jcol)
-  { return data[sub2ind (irow, jcol)]; };
-
-  const double &
-  const_index (unsigned int irow, unsigned int jcol) const
-  { return data[sub2ind (irow, jcol)]; };
 
   double &
   operator() (unsigned int irow, unsigned int jcol)
