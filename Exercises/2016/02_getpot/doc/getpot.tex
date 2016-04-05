@@ -1,6 +1,7 @@
  %&latex
 \documentclass[smaller,a4paper]{beamer}
 \usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{verbatim}
 \usepackage{graphicx}
 \usepackage{truncate}
 %%\usepackage{mpmulti}
@@ -12,6 +13,187 @@
 \title{GetPot Example}
 \frame{\titlepage}
 
+\begin{frame}
+
+    \frametitle{GetPot}
+
+    \begin{block}{Intro to}
+        \centering
+        GetPot
+    \end{block}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/GetPotLogo2}
+    \end{figure}
+
+    \begin{block}{Web page}
+        \centering
+        \begin{itemize}
+            \item http://getpot.sourceforge.net/
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+
+\begin{frame}
+
+    \frametitle{GetPot}
+
+    \begin{block}{GetPot}
+        GetPot \emph{header file only} library,
+        to facilitate command line and config file parsing.
+        Useful for changing algorithm parameters without recompiling
+         etc\ldots
+    \end{block}
+
+    \vspace{.2cm}
+
+    \begin{block}{ }
+        GetPot provides a class to parse \texttt{argc} and \texttt{argv} in alternative to POSIX standard getopt (in C).
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Passing parameters on the command line directly}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es1.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+    \vspace{.2cm}
+
+    \begin{block}{ }
+    Parameters are read via the \texttt{()} operator for the \texttt{GetPot} class.
+    It requires the name of the parameter to be read and the default value.
+    The type is deduced from the class of the default value.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+        \begin{block}{Run}
+            \begin{verbatim}
+./main a=10. b=70. nint=100
+./main nitn=100 b=70. a=10.
+./main a=10. b=70.
+./main
+            \end{verbatim}
+        \end{block}
+
+    \begin{block}{ }
+    	Sorting of command line arguments is unimportant    
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Configuration files}
+        \verbatiminput{./examples/data}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{To parse the file in C++ code}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es2.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{To parse the file in C++ code}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es3.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+        \begin{block}{Esecuzione}
+            \begin{verbatim}
+./main
+            \end{verbatim}
+        \end{block}
+
+\end{frame}
+
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Perch\'e non entrambi?}
+        The name of the config file may be passed on the command line
+        
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Command line and config file}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es4.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \begin{block}{Run}
+        \begin{verbatim}
+./main -f data1
+./main --file data1
+./main
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
 
 
 \end{document}
