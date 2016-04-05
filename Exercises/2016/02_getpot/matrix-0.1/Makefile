@@ -1,7 +1,12 @@
 OBJS =  matrix.o
 TEST_OBJS = test_matrix_mult.o test_gauss_seidel.o test_solve.o
+TESTS = test_matrix_mult test_gauss_seidel test_solve
 HEADERS = matrix.h
 SHARED_EXT = so
+
+.PHONY : tests
+
+tests : $(TESTS)
 
 libmatrix.a : $(OBJS)
 	$(AR) crv libmatrix.a $(OBJS)
@@ -9,14 +14,14 @@ libmatrix.a : $(OBJS)
 libmatrix.$(SHARED_EXT) : $(OBJS)
 	$(CXX) -shared -L. $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
-test_matrix_mult : libmatrix.a test_matrix_mult.o 
-	$(CXX) -L. $(LDFLAGS) -o $@  test_matrix_mult.o -lmatrix $(LIBS)
+test_matrix_mult : test_matrix_mult.o libmatrix.a 
+	$(CXX) -L. $(LDFLAGS) -o $@  $< -lmatrix $(LIBS)
 
-test_gauss_seidel : libmatrix.a test_gauss_seidel.o 
-	$(CXX) -L. $(LDFLAGS) -o $@  test_gauss_seidel.o -lmatrix $(LIBS)
+test_gauss_seidel : test_gauss_seidel.o libmatrix.a
+	$(CXX) -L. $(LDFLAGS) -o $@  $< -lmatrix $(LIBS)
 
-test_solve : libmatrix.a test_solve.o 
-	$(CXX) -L. $(LDFLAGS) -o $@  test_solve.o -lmatrix $(LIBS)
+test_solve : test_solve.o libmatrix.a 
+	$(CXX) -L. $(LDFLAGS) -o $@ $< -lmatrix $(LIBS)
 
 speedup.pdf : run_test.m
 	octave $<
@@ -33,5 +38,5 @@ clean :
 	$(RM) $(OBJS) $(TEST_OBJS)
 
 distclean : clean
-	$(RM) test_matrix_mult test_gauss_seidel test_solve \
+	$(RM) $(TESTS) \
 	speedup.pdf libmatrix.a libmatrix.$(SHARED_EXT)
