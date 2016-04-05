@@ -1,0 +1,248 @@
+ %&latex
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{truncate}
+%%\usepackage{mpmulti}
+\usepackage{times}
+\lstset{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\scriptsize,                  % The basic style
+  %backgroundcolor=\color{LightGray},       % Set listing background
+  %keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  %commentstyle=\color{DarkGreen}\itshape,  % Set comment style
+  %stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+}
+\newcommand{\cpp}[1]{\lstinline!#1!}
+\usepackage[english]{babel}
+
+\begin{document}
+\title{The Eigen C++ template library for linear algebra}
+\frame{\titlepage}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}
+
+    \frametitle{Eigen}
+
+    \begin{block}{Introduction to}
+        \centering
+        Eigen 3
+    \end{block}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.2\textwidth]{images/eigen-logo}
+    \end{figure}
+
+    \begin{block}{Useful web links}
+        \centering
+        \begin{itemize}
+            \item \url{http://eigen.tuxfamily.org}
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}
+
+    \frametitle{Eigen}
+
+    \begin{block}{Eigen}
+        The Eigen library is a linear algebra library that works with dense and
+        sparse matrices. With the use of advanced programming techniques it
+        performs algebraic operations with very high efficiency. It provides
+        algorithms for the solution of linear systems, factorizations, and also
+        interfaces to external libraries that perform linear algebra operations.
+    \end{block}
+
+    \vspace{1cm}
+
+    \begin{block}{}
+        It is widely used as a library in many applications, i.e. at Google.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Introduction}
+        \begin{lstlisting}
+#include <iostream>
+#include <Eigen/Dense>
+int main()
+{
+ Eigen::MatrixXd m(2,2);
+ m(0,0) = 3;
+ m(1,0) = 2.5;
+ m(0,1) = -1;
+ m(1,1) = m(1,0) + m(0,1);
+ std::cout << m << std::endl;
+}
+        \end{lstlisting}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+        \begin{block}{Matricies}
+            Generic matrix
+            \begin{lstlisting}
+Matrix<typename Scalar, int RowsAtCompileTime,
+                        int ColsAtCompileTime>
+            \end{lstlisting}
+        \end{block}
+
+        \begin{block}{Special cases}
+            \begin{itemize}
+                \item Matrix with fixed dimensions
+                    \begin{lstlisting}
+typedef Matrix<float, 4, 4> Matrix4f;
+                    \end{lstlisting}
+                \item Matrix with non-fixed dimensions
+                    \begin{lstlisting}
+typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
+                    \end{lstlisting}
+                \item Matrix with only one fixed dimension
+                    \begin{lstlisting}
+typedef Matrix<int, Dynamic, 1> VectorXi;
+                    \end{lstlisting}
+            \end{itemize}
+        \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Initialization}
+        \begin{itemize}
+            \item non-initialized matrix
+            \begin{lstlisting}
+MatrixXd m(2,2);
+            \end{lstlisting}
+            \item initialized matrix
+            \begin{lstlisting}
+Matrix3f m;
+m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+            \end{lstlisting}
+            \item initialized matrix
+            \begin{lstlisting}
+MatrixXf m = MatrixXf::Constant(3, 3, 1.2);
+            \end{lstlisting}
+        \end{itemize}
+
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Arithmetics}
+        Eigen implements all the arithmetic operators, and also
+        \begin{itemize}
+            \item transpose \cpp{a.transpose()}
+            \item conjugate \cpp{a.conjugate()}
+            \item adjoint \cpp{a.adjoint()}
+            \item dot product \cpp{a.dot(b)}
+            \item cross product \cpp{a.cross(b)}
+            \item \ldots
+        \end{itemize}
+
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Expression Templates}
+        the code
+        \begin{lstlisting}
+VectorXf a(50), b(50), c(50), d(50);
+...
+a = 3*b + 4*c + 5*d;
+        \end{lstlisting}
+        is implemented in such a way that it is equivalent to the execution of
+        \begin{lstlisting}
+for(int i = 0; i < 50; ++i)
+  a[i] = 3*b[i] + 4*c[i] + 5*d[i];
+        \end{lstlisting}
+        just like the most performant (and optimizable by the compiler) c code.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{Advantages \& disadvantages}
+        the efficiency of the code greatly improves, but expression of the type
+        \begin{lstlisting}
+a = a.transpose();
+        \end{lstlisting}
+        are not allowed. Furthermore, compile time errors and execution time
+        errors become mostly unreadable.
+    \end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+    \frametitle{Eigen}
+
+    \begin{block}{code}
+        \begin{lstlisting}
+#include <iostream>
+#include <Eigen/Dense>
+int main() {
+  Eigen::Matrix3f m = Eigen::Matrix3f::Random();
+  std::cout << "m =" << std::endl << m ; }
+        \end{lstlisting}
+    \end{block}
+
+    \begin{block}{compilation}
+    Since Eigen is a pure header file library, we need to add its path in the
+    compilation phase with the parameter \verb1-I1
+    \begin{verbatim}
+g++ -I/path/to/eigen/ my_program.cpp -o my_program -O2
+    \end{verbatim}
+    in the virtual machine eigen is available as a module
+    \end{block}
+
+\end{frame}
+
+\begin{frame}\frametitle{Exercises}
+\begin{itemize}
+\item Re-implement the fem1d code using Eigen/Dense
+\end{itemize}
+\end{frame}
+
+\end{document}
