@@ -34,4 +34,4 @@ clean :
 
 distclean : clean
 	$(RM) test_matrix_mult test_gauss_seidel test_solve \
-	speedup.pdf libmatrix.a
+	speedup.pdf libmatrix.a libmatrix.$(SHARED_EXT)
