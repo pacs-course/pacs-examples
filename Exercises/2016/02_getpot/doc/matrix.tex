@@ -94,8 +94,24 @@ in the following way
 \item {\tt run\_test.m} builds {\tt test\_matrix\_mult} with various options and
       compares performance of various implementations\\[3mm]
 \end{itemize}
+\item {\tt fem1d-0.4/fem1d.h}\\[3mm]
+\begin{itemize}
+\item define help text using std::string\\[3mm]
+\item remove config.h\\[3mm]
 \end{itemize}
+\item {\tt fem1d-0.4/fem1d.cpp}\\[3mm]
+\begin{itemize}
+\item define problem/algorithm constants using GetPot methods\\[3mm]
+\item use \lstinline[language=C++]{matrix} objects to define matrices and vectors\\[3mm]
+\end{itemize}
+\item {\tt fem1d-0.4/Makefile}\\[3mm]
+\begin{itemize}
+\item include flags for matrix headers and libraries\\[3mm]
+\end{itemize}
+\end{itemize}
+\end{frame}
 
+\begin{frame}
 \begin{figure}
 \begin{center}
 \includegraphics[width=.9\linewidth]{./images/speedup.pdf}
@@ -106,8 +122,8 @@ is 64 times faster. The comparison was run on MacBook Pro with core2-duo CPU,
 code was compiled with g++ 4.8 and linked to OpenBlas.}
 \end{center}
 \end{figure}
-
 \end{frame}
+
 
 
 \begin{frame}
@@ -209,6 +225,45 @@ code was compiled with g++ 4.8 and linked to OpenBlas.}
        }%
     }
 \end{frame}
+
+\begin{frame}
+\frametitle{fem1d main}
+    \lstset{language=C++,basicstyle=\sffamily\scriptsize}%
+    \foreach \n in {1,25,...,79} {%
+       \only<+>{%
+            \edef\m{\the\numexpr\n+24\relax}%
+            \edef\thesubtitle{{Lines \n--\m\ / 79}}%
+            \expandafter\framesubtitle\thesubtitle
+            \lstinputlisting[numbers=left, numberstyle=\tiny\color{gray},%
+                             firstline=\n,lastline=\m,firstnumber=\n]%
+                             {../fem1d-0.4/fem1d.cpp}%
+       }%
+    }
+\end{frame}
+
+\begin{frame}
+\frametitle{fem1d Header}
+    \lstset{language=C++,basicstyle=\sffamily\scriptsize}%
+	\edef\n{1}
+	\edef\m{24}
+    \edef\thesubtitle{{Lines \n--\m\ / 24}}%
+    \expandafter\framesubtitle\thesubtitle
+    \lstinputlisting[numbers=left, numberstyle=\tiny\color{gray},%
+                     firstline=\n,lastline=\m,firstnumber=\n]%
+                             {../fem1d-0.4/fem1d.h}%
+\end{frame}
+
+
+\begin{frame}
+\frametitle{fem1d Executable Makefile}
+    \lstset{language=make,basicstyle=\sffamily\scriptsize}%
+            \edef\thesubtitle{{Lines 1--20\ / 20}}%
+            \expandafter\framesubtitle\thesubtitle
+            \lstinputlisting[numbers=left, numberstyle=\tiny\color{gray},%
+                             firstline=1,lastline=20,firstnumber=1]%
+                             {../fem1d-0.4/Makefile}%
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Memory hierarchy and Cache Optimized Algorithms}
