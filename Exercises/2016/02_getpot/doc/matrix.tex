@@ -90,9 +90,15 @@ in the following way
 \end{itemize}
 \item {\tt matrix-0.1/test\_*.cpp}\\[3mm]
 \begin{itemize}
-\item for each feature a test to verify consistency and/or performance is provided
+\item for each feature a test to verify consistency and/or performance is provided\\[3mm]
+\item {\tt run\_test.m} builds {\tt test\_matrix\_mult} with various options and
+      compares performance of various implementations\\[3mm]
 \end{itemize}
 \end{itemize}
+
+\begin{figure}
+\end{figure}
+
 \end{frame}
 
 \begin{frame}
@@ -168,14 +174,14 @@ in the following way
 \begin{frame}
 \frametitle{Matrix Class (run\_test.m)}
     \lstset{language=Octave,basicstyle=\sffamily\scriptsize}%
-    \foreach \n in {1,25,...,36} {%
+    \foreach \n in {1,25,...,57} {%
        \only<+>{%
             \edef\m{\the\numexpr\n+24\relax}%
-            \edef\thesubtitle{{Lines \n--\m\ / 36}}%
+            \edef\thesubtitle{{Lines \n--\m\ / 57}}%
             \expandafter\framesubtitle\thesubtitle
             \lstinputlisting[numbers=left, numberstyle=\tiny\color{gray},%
                              firstline=\n,lastline=\m,firstnumber=\n]%
-                             {../matrix-0.1/test_solve.cpp}%
+                             {../matrix-0.1/run_test.m}%
        }%
     }
 \end{frame}
