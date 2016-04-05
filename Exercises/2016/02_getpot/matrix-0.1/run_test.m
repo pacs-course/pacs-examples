@@ -49,7 +49,7 @@ for ii = 1 : 11
   legend ("without transpose", "with transpose", "whith dgemm",
           "location", "southoutside")
   xlabel ("matrix size", "FontSize", 18)
-  ylabel ("multiply time [s]", "FontSize", 18)
+  ylabel ("multiply time [ms]", "FontSize", 18)
   drawnow
 endfor
 
