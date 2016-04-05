@@ -56,8 +56,8 @@ int main (int argc, char **argv)
         }
     }
 
-  f(0, 1) = 0;
-  f(nnodes - 1, 1) = 0;
+  f(0, 0) = 0;
+  f(nnodes - 1, 0) = 0;
 
   A(0,0) = 1.0;
   A(nnodes-1,nnodes-1) = 1.0;
