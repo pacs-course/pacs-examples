@@ -214,8 +214,6 @@ a = a.transpose();
 
 \end{frame}
 
-%---------------------------------------------------------------------------------
-
 \begin{frame}[fragile]
 
     \frametitle{Eigen}
@@ -236,11 +234,15 @@ int main() {
     \begin{verbatim}
 g++ -I/path/to/eigen/ my_program.cpp -o my_program -O2
     \end{verbatim}
-	%%    on the lab machines Eigen can be found in \verb!/opt/eigen!
+    in the virtual machine eigen is available as a module
     \end{block}
 
 \end{frame}
 
-
+\begin{frame}\frametitle{Exercises}
+\begin{itemize}
+\item Re-implement the fem1d code using Eigen/Dense
+\end{itemize}
+\end{frame}
 
 \end{document}
