@@ -31,7 +31,7 @@ public :
     : rows (rows_), cols (cols_)
   { data.resize (rows * cols, 0.0); };
 
-  matrix (const matrix& m);  
+  matrix (matrix const &) = default;  
   
   unsigned int
   get_rows () const { return rows; }
