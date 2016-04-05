@@ -12,21 +12,13 @@
 extern "C"
 {
   void 
-  dgesv (int *N, int *NRHS, double *A, int *LDA,
-         int *IPIV, double *B, int *LDB, int *INFO);
+  dgesv (const int *N, const int *NRHS, const double *A, const int *LDA,
+         int *IPIV, double *B, const int *LDB, int *INFO);
 
   void
-  dgemm (char *TRANSA, char *TRANSB, int *M, int *N, int *K,
-         double *ALPHA, const double *A, int *LDA, const double *B, int *LDB,
-         double *BETA, double *C, int *LDC);
-}
-
-matrix::matrix (const matrix& m) :
-  rows (m.get_rows ()), cols (m.get_cols ())
-{
-  std::copy (m.get_data (),
-             m.get_data () + m.get_cols () *
-             m.get_rows (), data.begin ());
+  dgemm (const char *TRANSA, const char *TRANSB, const int *M, const int *N, const int *K,
+         const double *ALPHA, const double *A, const int *LDA, const double *B, const int *LDB,
+         const double *BETA, double *C, const int *LDC);
 }
 
 
@@ -45,20 +37,23 @@ matrix::transpose () const
 matrix
 operator* (const matrix& A, const matrix& B)
 {
+
   int M = A.get_rows ();
   int N = B.get_cols ();
   int K = A.get_cols ();
+  assert (K == B.get_rows ());
+  
   char ntr = 'n';
   double one = 1.0;
   double zero = 0.0;
-  assert (K == B.get_rows ());
+
   matrix retval (M, N);
-  const double *Adata = A.get_data ();
-  const double *Bdata = B.get_data ();
-  double *Cdata = retval.get_data ();
+  
   dgemm (&ntr, &ntr, &M, &N, &K,
-         &one, Adata, &M, Bdata,
-         &K, &zero, Cdata, &M);
+         &one, A.get_data (), &M,
+         B.get_data (), &K, &zero,
+         retval.get_data (), &M);
+
   return (retval);
 }
 #elif defined (MAKE_TMP_TRANSP)
@@ -96,7 +91,8 @@ matrix::solve (matrix &rhs)
   int NRHS = rhs.get_cols ();
   int LDB = rhs.get_rows ();
   int INFO = 0;
-  dgesv (&N, &NRHS, get_data (), &N,
+  matrix tmp ((*this));
+  dgesv (&N, &NRHS, tmp.get_data (), &N,
          IPIV, rhs.get_data (), &LDB, &INFO);
 };
 
