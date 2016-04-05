@@ -1,5 +1,5 @@
 OBJS =  matrix.o
-TEST_OBJS = test_matrix_mult.o
+TEST_OBJS = test_matrix_mult.o test_gauss_seidel.o test_solve.o
 HEADERS = matrix.h
 
 libmatrix.a : matrix.o
@@ -29,4 +29,4 @@ clean :
 	$(RM) $(OBJS) $(TEST_OBJS)
 
 distclean : clean
-	$(RM) test_matrix_mult speedup.pdf libmatrix.a
+	$(RM) test_matrix_mult test_gauss_seidel test_solve speedup.pdf libmatrix.a
