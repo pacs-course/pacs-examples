@@ -48,10 +48,10 @@ int main()
 
   // Creating 2 big matrices
   //MyMat0<double,COLUMNMAJOR> A(1000,1000);
-  MyMat0<double,ROWMAJOR> A(2048,2048);
+  MyMat0<double,ROWMAJOR> A(1024,2048);
   A.fillRandom();
   //  MyMat0<double,COLUMNMAJOR> B(1000,1000);
-  MyMat0<double,ROWMAJOR> B(2048,2048);
+  MyMat0<double,ROWMAJOR> B(2048,1024);
   B.fillRandom();
   Timings::Chrono watch;
   std::cout<< "Standard Matrix Moltiplication"<<"\n";
