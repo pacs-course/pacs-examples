@@ -97,9 +97,18 @@ in the following way
 \end{itemize}
 
 \begin{figure}
+\begin{center}
+\includegraphics[width=.9\linewidth]{./images/speedup.pdf}
+\caption{Performance of the different implementations of the matrix multiplication: 
+1) standard (blue), 2) with transpose of first factor (black), 3) DGEMM (red). 
+For a matrix of size $2^{11}$ the algorithm 2) is 10 times faster than 1) and algorithm 3) 
+is 64 times faster. The comparison was run on MacBook Pro with core2-duo CPU, 
+code was compiled with g++ 4.8 and linked to OpenBlas.}
+\end{center}
 \end{figure}
 
 \end{frame}
+
 
 \begin{frame}
 \frametitle{Matrix Class (Header)}
@@ -201,5 +210,22 @@ in the following way
     }
 \end{frame}
 
+\begin{frame}
+\frametitle{Memory hierarchy and Cache Optimized Algorithms}
+\end{frame}
+
+\begin{frame}
+\frametitle{Memory hierarchy and Cache Optimized Algorithms}
+insert pages 1-9 of file images/slides.pdf
+\end{frame}
+
+\begin{frame}
+\frametitle{BLAS and LAPACK}
+\end{frame}
+
+\begin{frame}
+\frametitle{BLAS and LAPACK}
+insert pages 10-20 of file images/slides.pdf
+\end{frame}
 
 \end{document}
