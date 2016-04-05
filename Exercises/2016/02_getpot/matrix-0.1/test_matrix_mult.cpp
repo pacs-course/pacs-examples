@@ -19,4 +19,5 @@ int main ()
   matrix C = A * B;
   toc ("multiply_time = ");
 
+  return 0;
 }
