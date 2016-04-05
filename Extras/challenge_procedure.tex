@@ -1,0 +1,69 @@
+ %&latex
+\documentclass[smaller,a4paper,allowframebreaks]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{truncate}
+\usepackage[final]{pdfpages}
+\usepackage{times}
+\usepackage{pgffor}
+\usepackage[english]{babel}
+
+\begin{document}
+\title{Procedure for Uploading Answers to Challenges}
+\frame{\titlepage}
+
+
+\begin{frame}[allowframebreaks,fragile]\frametitle{Procedure for Uploading Answers to Challenges (Initial Setup)}
+Initial Setup\\[3mm]
+\begin{itemize}
+\item Create an account on GitHub (https://github.com/)\\[3mm]
+\begin{itemize}
+\item Use an account name that is easy to recognize, {\it e.g.} \\
+$<$first name$>$\_$<$stdent ID number$>$\\[3mm]
+\end{itemize}
+\item Log in to your GitHub account\\[3mm]
+\item Navigate to the main repository for this course (https://github.com/pacs-course/pacs)\\[3mm]
+\item Push the ``fork'' button\\[3mm]
+\item Navigate to your newly created GitHub fork for the course repo at
+https://github.com/$<$your account name$>$/pacs\\[3mm]
+\item Copy the URL for cloning your fork at the repo\\[3mm]
+\item Clone your repo locally then move into your repo 
+\begin{lstlisting}
+git clone \
+ https://github.com/<your account name>/pacs
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]\frametitle{Procedure for Uploading Answers to Challenges (Before you Publish)}
+Before you publish your answer\\[3mm]
+\begin{itemize}
+\item Keep your local and online repo in sync with the main repo as explained at\\[3mm]
+https://help.github.com/articles/syncing-a-fork/\\[3mm]
+\item Create a new branch in your local repo \\[3mm]
+\begin{lstlisting}
+git checkout -b challenge_<challenge number>
+\end{lstlisting}
+~\\[3mm]
+\item Remember to use the naming scheme \lstinline{challenge_<challenge number>}
+for the branch name\\[3mm]
+\item Make the modifications and commit to the new branch\\[3mm]
+\begin{lstlisting}
+git commit -m"an interesting message"
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]\frametitle{Procedure for Uploading Answers to Challenges (Publishing your Answer)}
+To publish your answer\\[3mm]
+\begin{itemize}
+\item Push the new branch to your online repo as explained here\\[3mm]
+https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes\\
+https://help.github.com/articles/pushing-to-a-remote/
+\item Post a link to your branch in the forum topic on BeeP regarding the challenge
+\end{itemize}
+\end{frame}
+
+
+\end{document}
