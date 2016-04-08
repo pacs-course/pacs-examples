@@ -2,7 +2,7 @@
 #include <vector>
 #include <fstream>
 #include "MyMat0.hpp"
-
+#include "MyMat0_views.hpp"
 struct Foo
 {
   double a;
@@ -57,8 +57,15 @@ int main()
   aInt(0,1)=2;
   aInt(1,0)=3;
   aInt(1,1)=4;
+  aInt.showMe();
   std::cout<<"Norm1, NormInf and NormF of aInt: "<<aInt.norm1()<<" "<<aInt.normInf()<<" "<<aInt.normF()<<std::endl;
+  DiagonalView<MyMat0<int>> aIntT{aInt};
+  std::cout<<"Transpose:"<<std::endl;
+  aIntT.showMe();  
+  std::cout<<"Norm1, NormInf and NormF of aIntT: "<<aIntT.norm1()<<" "<<aIntT.normInf()<<" "<<aIntT.normF()<<std::endl;
   
+  // Just to test that it compiles fine
+  auto res2= aIntT*std::vector<int>{1,2};
   
   // A matrix of Foos
   MyMat0<Foo,ROWMAJOR> fooMat(2,2);
