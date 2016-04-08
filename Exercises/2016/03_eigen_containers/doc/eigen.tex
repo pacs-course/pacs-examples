@@ -99,7 +99,7 @@ int main()
 
     \frametitle{Eigen}
 
-        \begin{block}{Matricies}
+        \begin{block}{(Dense) Matrices}
             Generic matrix
             \begin{lstlisting}
 Matrix<typename Scalar, int RowsAtCompileTime,
@@ -239,9 +239,106 @@ g++ -I/path/to/eigen/ my_program.cpp -o my_program -O2
 
 \end{frame}
 
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Column-major and row-major storage}
+We say that a matrix is stored in row-major order if it is stored row by row. 
+The entire first row is stored first, followed by the entire second row, and so on. Consider for example the matrix. {it E.g.}:
+
+$$
+A =
+\left[\begin{array}{cccc}
+8 & 2 & 2 & 9 \\
+9 & 1 & 4 & 4 \\
+3 & 5 & 4 & 5
+\end{array}\right]
+$$
+
+Column major storage
+$$ [8\ 9\ 3\ 2\ 1\ 5\ 2\ 4\ 4\ 9\ 4\ 5]$$
+
+Row major storage
+$$ [8\ 2\ 2\ 9\ 9\ 1\ 4\ 4\ 3\ 5\ 4\ 5]$$
+
+\newpage
+
+Example:\small
+\begin{lstlisting}
+Matrix<int, 3, 4, ColMajor> Acolmajor;
+Acolmajor << 8, 2, 2, 9,
+             9, 1, 4, 4,
+             3, 5, 4, 5;
+cout << "The matrix A:" << endl;
+cout << Acolmajor << endl << endl; 
+cout << "In memory (column-major):" << endl;
+for (int i = 0; i < Acolmajor.size(); i++)
+  cout << *(Acolmajor.data() + i) << "  ";
+cout << endl << endl;
+Matrix<int, 3, 4, RowMajor> Arowmajor = Acolmajor;
+cout << "In memory (row-major):" << endl;
+for (int i = 0; i < Arowmajor.size(); i++)
+  cout << *(Arowmajor.data() + i) << "  ";
+cout << endl;
+\end{lstlisting}
+\newpage
+Output:
+\begin{lstlisting}
+The matrix A:
+8 2 2 9
+9 1 4 4
+3 5 4 5
+
+In memory (column-major):
+8  9  3  2  1  5  2  4  4  9  4  5  
+
+In memory (row-major):
+8  2  2  9  9  1  4  4  3  5  4  5
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Interfacing with raw buffers: the Map class}
+Eigen allows to work with "raw" C/C++ arrays using the
+ \cpp{Map} class.
+
+A Map object has a type defined by its Eigen equivalent:
+\cpp{Map<Matrix<typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime> >}
+
+\null
+
+\emph{Example}:
+\begin{lstlisting}
+typedef Matrix<float,1,Dynamic> MatrixType;
+typedef Map<MatrixType> MapType;
+typedef Map<const MatrixType> MapTypeConst;   // a read-only map
+const int n_dims = 5;
+  
+MatrixType m1(n_dims), m2(n_dims);
+m1.setRandom();
+m2.setRandom();
+float *p = &m2(0);  // get the address storing the data for m2
+MapType m2map(p,m2.size());   // m2map shares data with m2
+MapTypeConst m2mapconst(p,m2.size());  // a read-only accessor for m2
+cout << "m1: " << m1 << endl;
+cout << "m2: " << m2 << endl;
+cout << "Squared euclidean distance: " << (m1-m2).squaredNorm() << endl;
+cout << "Squared euclidean distance, using map: " <<
+  (m1-m2map).squaredNorm() << endl;
+m2map(3) = 7;   // this will change m2, since they share the same array
+cout << "Updated m2: " << m2 << endl;
+cout << "m2 coefficient 2, constant accessor: " << m2mapconst(2) << endl;
+/* m2mapconst(2) = 5; */   // this yields a compile-time error
+\end{lstlisting}
+
+\end{frame}
+
 \begin{frame}\frametitle{Exercises}
 \begin{itemize}
-\item Re-implement the fem1d code using Eigen/Dense
+\item Re-implement the fem1d code using Eigen/Dense\\[5mm]
+\begin{itemize}
+\item Version 1: use an \cpp{Eigen::Map} object to implement 
+\cpp{matrix::solve} and \cpp{matrix operator* (matrix&, matrix&)}\\[5mm]
+\item version 2: get rid of the \cpp{matrix} class and use \cpp{Eigen::Matrix} instead.
+\end{itemize}
 \end{itemize}
 \end{frame}
 
