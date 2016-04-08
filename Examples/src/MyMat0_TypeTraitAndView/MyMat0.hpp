@@ -15,8 +15,11 @@
  */
 
 //! All functionalities are in this namespace
-namespace LinearAlgebra{
-//! Sets the policy for data storage.
+namespace LinearAlgebra
+{
+  //! Forward declaration
+  template<typename MAT> class DiagonalView;
+  //! Sets the policy for data storage.
 /*!
  *  ROWMAJOR = Matrix is stored by rows
  *  COLUMNMAJOR = Matrix is stored by columns
@@ -42,11 +45,16 @@ namespace LinearAlgebra{
   */
     template<StoragePolicySwitch storagePolicy>
     struct storagePolicyType{};
-    //! A helper class to distinguish treu from false
+    //! A helper class to distinguish true from false
+    /*!
+      I could have obtained a similar result using the standard type traits:
+      template<bool T>
+      using fillSwitch=std::integral_type<bool,T>;
+     */
     template<bool T>
     struct fillSwitch{};
   }
-  //! A simple matrix class of double
+  //! A simple matrix class
   /*!
    * It stores a matrix of double entries, allowing different type of
    * storage through an internal policy. The policy is implemented via
@@ -75,7 +83,8 @@ namespace LinearAlgebra{
       I use enable_if to select the correct one 
     */
     //! Function returning index according to ordering
-    /*! I am using the trick of the book of Alexandrescu
+    /*! 
+      I am using the trick of the book of Alexandrescu
       It can be done also with enable_if:
       
       \code{.cpp}
@@ -88,16 +97,16 @@ namespace LinearAlgebra{
       
       I do not need in this case to define getIndex with only two arguments
     */
-    size_type getIndex(size_type const & i, size_type const & j, Helpers::storagePolicyType<ROWMAJOR>) const
+    size_type getIndex(size_type const i, size_type const j, Helpers::storagePolicyType<ROWMAJOR>) const
     {
       return j + i*nc;
     }
-    size_type getIndex(size_type const & i, size_type const & j, Helpers::storagePolicyType<COLUMNMAJOR>) const
+    size_type getIndex(size_type const i, size_type const j, Helpers::storagePolicyType<COLUMNMAJOR>) const
     {
       return i + j*nr;
     }
     //! The actual function returning the index
-    size_type getIndex(size_type const & i, size_type const & j) const
+    size_type getIndex(size_type const i, size_type const j) const
     {
       return getIndex(i,j,Helpers::storagePolicyType<storagePolicy>());
     }
@@ -145,9 +154,9 @@ namespace LinearAlgebra{
      */
     void resize(size_type const nrow, size_type const ncol);
     //! Number of rows
-    size_type nrow()const {return nr;};
+    size_type nrow()const {return nr;}
     //! Number of columns
-    size_type ncol()const {return nc;};
+    size_type ncol()const {return nc;}
     //! Returns element with no bound check (const version)
     /*!
       It allows a=m(1,1) on constant matrix m
@@ -238,6 +247,9 @@ namespace LinearAlgebra{
      *  @param out The output stream (defaults to cout)
      */
     void showMe(std::ostream  & out=std::cout) const;
+
+    //! Friendship with the view
+    friend class DiagonalView<MyMat0<T, storagePolicy> >;
   };
   //! Matrix times vector via operator *
   /*!
@@ -386,7 +398,8 @@ namespace LinearAlgebra{
   
   
   template<class T, StoragePolicySwitch storagePolicy>
-  void MyMat0<T, storagePolicy>::showMe(std::ostream & out) const{
+  void MyMat0<T, storagePolicy>::showMe(std::ostream & out) const
+  {
     out<<"[";
     for (size_type i=0;i<nr;++i){
       for (size_type j=0;j<nc-1;++j) out<< this->operator()(i,j)<<", ";
@@ -397,7 +410,7 @@ namespace LinearAlgebra{
 	out<<std::endl;
     }
   }
-
+  
   template<class T, StoragePolicySwitch storagePolicy>
   std::vector<T> operator * (MyMat0<T, storagePolicy> const & m,std::vector<T> const & v)
   {
