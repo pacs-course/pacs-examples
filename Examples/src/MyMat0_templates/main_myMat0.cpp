@@ -46,6 +46,7 @@ int main()
   std::cout<<*(res.end()-1)<<"]"<<std::endl<<std::endl;
   std::cout<<"Norm1, NOrmInf and NormF of a: "<<a.norm1()<<" "<<a.normInf()<<" "<<a.normF()<<std::endl;
 
+  // Testing different implementation of matrix/matrix
   // Creating 2 big matrices
   //MyMat0<double,COLUMNMAJOR> A(1000,1000);
   MyMat0<double,ROWMAJOR> A(1024,2048);
