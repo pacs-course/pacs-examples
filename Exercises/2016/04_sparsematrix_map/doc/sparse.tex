@@ -1,0 +1,60 @@
+ %&latex
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{truncate}
+%%\usepackage{mpmulti}
+\usepackage{times}
+\lstset{
+  language=[ISO]C++,                        % The default language
+  basicstyle=\scriptsize,                   % The basic style
+  %backgroundcolor=\color{LightGray},       % Set listing background
+  %keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  %commentstyle=\color{DarkGreen}\itshape,  % Set comment style
+  %stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                        % Allow extended characters
+}
+\newcommand{\cpp}[1]{\lstinline!#1!}
+\usepackage[english]{babel}
+
+\begin{document}
+\title{Using STL Containers to Implement a Sparse Matrix Class}
+\frame{\titlepage}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+\    \frametitle{Sparse Matrices}
+\begin{itemize}
+\item A sparse (square) matrix is a matrix that has a number of non-zero coefficients proportional to $n$ rather than $n^{2}$
+\item It is not convenient to store all entries including zeros
+\item It is not convenient to include zero entries when doing algebra with sparse matrices
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{A Sparse Matrix Class Based on STL Containers}
+\begin{itemize}
+\item Consider the following class:\\[3mm]
+\cpp{class sparse_matrix : public std::vector<std::map<unsigned int, double> >}
+\item What happens if we do:\\[3mm]
+\cpp{A = sparse_matrix (4); auto x = A[2][2] }
+\item What happens if we do:\\[3mm]
+\cpp{A = sparse_matrix (4); A[2][2] = 1.0;}
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Exercises}
+\begin{itemize}
+\item Implement a \cpp{sparse_matrix} class inheriting from \cpp{std::vector<std::map<unsigned int, double> >}
+\item Adapt fem1d to use the new \cpp{sparse_matrix} class 
+\item Replace the \cpp{sparse_matrix} class with \cpp{Eigen::Sparse}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+\end{document}
