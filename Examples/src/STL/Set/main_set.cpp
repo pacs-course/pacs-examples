@@ -29,7 +29,7 @@ int main()
   using namespace std;
   // I create my comparison operator using a lambda
   auto comp=[](int const & a,int const & b){return a>b;};
-  // I have to pass it explicitly since lambda has NO DEFAULT CONSTRUCTOR
+  // I have to pass it explicitly since lambdas has NO DEFAULT CONSTRUCTOR
   set<int,decltype(comp)> s(comp);
   s.insert(10);
   s.insert(11);
@@ -46,5 +46,4 @@ int main()
   set<int,comparison> other={5,6,7,8,9,10,11};
   for (auto i: other) cout<<i<<" ";
   cout<<endl;
-
 }

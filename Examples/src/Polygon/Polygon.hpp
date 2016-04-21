@@ -99,7 +99,7 @@ namespace Geometry
     AbstractPolygon(AbstractPolygon const &)=default;
     //! Move constructor
     AbstractPolygon(AbstractPolygon&&)=default;
-    //! Move constructor
+    //! Move assignement
     AbstractPolygon & operator=(AbstractPolygon&&)=default;
     //! virtual destructor
     virtual ~AbstractPolygon(){};
