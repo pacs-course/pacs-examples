@@ -8,7 +8,7 @@ class Point : public Extensions...
 {
   std::array<Value,N> M_coordinates;
 public:
-  typedef Value value_t;
+  using value_t=value;
   static const std::size_t Dim=N;
   
   Value operator[](std::size_t i) const
@@ -21,7 +21,10 @@ public:
     return M_coordinates[i];
   }
   
-  ////! Complex part: a constructor taking the composites
+  //! Complex part: a constructor taking the composites
+  /* 
+     Skip reading it the first time
+   */
   template<typename D=typename std::enable_if<sizeof...(Extensions)!=0,void>,typename ...T>
     Point(T&& ...ext):Extensions(std::forward<T>(ext))...{};
   //! Since I have defined a constructor I need to indicate the default
