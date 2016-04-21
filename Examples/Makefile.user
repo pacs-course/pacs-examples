@@ -49,6 +49,8 @@ CXX = ${mkCxxCompiler}
 # make has no separate macro for the linker!
 # If you need C to compiler but you still need the c++ linker do
 #CC=your favourite C compiler
+# do
+#LINK.o = $(LINK.cc)
 #LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
 #
 CC=$(CXX)
