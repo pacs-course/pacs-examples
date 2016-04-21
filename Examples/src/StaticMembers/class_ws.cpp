@@ -6,25 +6,25 @@ double WS::sum(0.0);
 int  WS::counter(0);
 
 WS::WS(double value):myValue(value){
-  ++counter;
-  sum+=value;
+  ++WS::counter;
+  WS::sum+=value;
 };
 
 WS::WS(const WS & w):myValue(w.myValue){
-  ++counter;
-  sum+=myValue;
+  ++WS::counter;
+  WS::sum+=myValue;
 };
 
 WS & WS::operator =(WS const & w){
-  sum-=myValue;
+  WS::sum-=myValue;
   myValue=w.myValue;
-  sum+=myValue;
+  WS::sum+=myValue;
   return *this;
 }
 
 WS::~WS(){
-  --counter;
-  sum-=myValue;
+  --WS::counter;
+  WS::sum-=myValue;
 };
 
 

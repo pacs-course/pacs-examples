@@ -16,7 +16,7 @@ struct OddEven{
 
 int main()
 {
-  multiset<int,OddEven> ms={1,2,3,4,5,6,7,8,9,10};
+  multiset<int,OddEven> ms={10,9,1,2,3,4,5,6,7,8,9,10};
   //! A set with the same element and same ordering
   set<int,OddEven> s(ms.begin(),ms.end());
   // print all elements in the multiset
