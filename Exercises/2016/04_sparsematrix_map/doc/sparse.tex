@@ -8,7 +8,7 @@
 \usepackage{times}
 \lstset{
   language=[ISO]C++,                        % The default language
-  basicstyle=\scriptsize,                   % The basic style
+  basicstyle=\small,                   % The basic style
   %backgroundcolor=\color{LightGray},       % Set listing background
   %keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
   %commentstyle=\color{DarkGreen}\itshape,  % Set comment style
@@ -39,17 +39,118 @@
 \item Consider the following class:\\[3mm]
 \cpp{class sparse_matrix : public std::vector<std::map<unsigned int, double> >}
 \item What happens if we do:\\[3mm]
-\cpp{A = sparse_matrix (4); auto x = A[2][2] }
+\cpp{A = sparse_matrix (4); 
+     auto x = A[2][2] }
 \item What happens if we do:\\[3mm]
-\cpp{A = sparse_matrix (4); A[2][2] = 1.0;}
+\cpp{A = sparse_matrix (4); 
+     A[2][2] = 1.0;}
+
+\item Cool! This features make \cpp{class sparse_matrix : public std::vector<std::map<unsigned int, double> >}
+      a great candidate for the implementation of a (row oriented) sparse matrix!
 \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Useful things to know about the \cpp{std::map} container}
+\begin{itemize}
+
+\item \cpp{mapped_type& std::map::operator[] (const key_type& k);}, \\
+A call to this function is equivalent to: \\
+\cpp{(*((this->insert(make_pair(k,mapped_type()))).first)).second}
+
+\item A similar member function, \cpp{std::map::at}, has the same 
+      behavior when an element with the key exists, but throws an 
+      exception when it does not.
+      
+\item \cpp{iterator find (const key_type& k);} \\
+      \cpp{const_iterator find (const key_type& k) const;}\\
+      Searches the container for an element with a key equivalent to \cpp{k} and returns 
+      an iterator to it if found, otherwise it returns an iterator to \cpp{map::end ()}.
+
+\item \cpp{size_type count (const key_type& k) const;} \\
+Searches the container for elements with a key equivalent to k and returns the number of matches.
+Because all elements in a map container are unique, the function can only return 1 (if the element is found) or zero (otherwise).
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{A recap example about inheritance}
+\begin{lstlisting}
+#include <iostream>
+
+class A_t
+{
+public:
+  void 
+  A_m () { std::cout << "calling A_t::A_m" << std::endl; };
+  
+  virtual 
+  void 
+  B_m () { std::cout << "calling A_t::B_m" << std::endl; };
+
+};
+
+class B_t :
+  public A_t
+{
+public:
+  void 
+  B_m () { std::cout << "calling B_t::B_m" << std::endl; };
+
+  void 
+  A_m () { std::cout << "calling B_t::A_m" << std::endl; };
+};
+
+int 
+main (void)
+{
+  B_t b;
+  A_t *a = &b;
+
+  // b is of class B_t, derived from A_t 
+  // therefore it has method A_m definide in B_t
+  // but also the implementation defined in A_m
+  b.A_m ();
+  b.A_t::A_m ();
+
+  // Also A_t::B_m even though it is virtual can be
+  // accessed via a qualifier
+  b.A_t::B_m ();
+
+  // a is a pointer to an object of class  A_t
+  // if I invoke method A_m the compiler chooses
+  // the implementation given in A_t
+  a->A_m ();
+
+  // to access the method B_t::A_m I need to use a cast
+  static_cast<B_t*> (a) -> A_m ();
+
+  // If I invoke method B_m through
+  // the pointer a, instead, the compiler chooses B_t::B_m
+  // instead of A_t::B_m because A_t::B_m is virtual
+  a->B_m ();
+
+  // to access method A_t::A_m I need to add a qualifier
+  a->A_t::A_m ();
+
+  return 0;
+};
+\end{lstlisting}
+
 \end{frame}
 
 \begin{frame}\frametitle{Exercises}
 \begin{itemize}
-\item Implement a \cpp{sparse_matrix} class inheriting from \cpp{std::vector<std::map<unsigned int, double> >}
-\item Adapt fem1d to use the new \cpp{sparse_matrix} class 
-\item Replace the \cpp{sparse_matrix} class with \cpp{Eigen::Sparse}
+\item Implement a libary providing a \cpp{sparse_matrix} class inheriting 
+      from \cpp{std::vector<std::map<unsigned int, double> >}
+\begin{itemize}
+\item A basic implementation is already given as a starting point
+\item Write the makefile
+\item Adapt \cpp{fem1d} to use this class
+\end{itemize}
+\item Create an abstract interface class \cpp{general_matrix} and dervie
+both \cpp{matrix} and \cpp{sparse_matrix} from it
+\item Change \cpp{fem1d} so that the type of matrix can be selected by the user \emph{at run time}.
 \end{itemize}
 
 \end{frame}
