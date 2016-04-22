@@ -1,0 +1,28 @@
+This directory contains an example implementation
+of a sparse matrix class implemented inheriting
+publicly from an STL container, i.e.:
+
+std::vector<std::map<unsigned int, double> >
+
+The directory contains:
+
+sparse.h    :   declaration of the sparse_matrix class
+                and of the overloaded operators for
+                sparse / full matrix product.
+
+sparse.cpp  :   implementation of the methods defined
+                in sparse.h
+
+test_sparse :   demonstration of the use of the
+                sparse_matrix class
+
+A Makefile is NOT provided, it is up to you to create one!
+For this purpose note that :
+
+  * headers and libraries from the matrix class need to
+    be included / linked
+
+  * the matrix class may (depending on the version you
+    decide to use) depend on other libraries.
+
+
