@@ -32,7 +32,7 @@ int main ()
   matrix uh (2, 1);
   A.gauss_seidel (f, uh);
 
-  for (auto ii = 0u; ii < C.get_rows (); ++ii)
+  for (auto ii = 0u; ii < uh.get_rows (); ++ii)
     {
       std::cout << uh(ii, 0) << std::endl;
     }
