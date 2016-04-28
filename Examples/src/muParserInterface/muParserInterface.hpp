@@ -14,13 +14,46 @@ namespace MuParserInterface
     muParserInterface & operator=(muParserInterface const &);
     
     void set_expression(const std::string & e);
-    double operator()(double const t, double const * coord);
+    //! A generic operator
+    /*! Takes as II argument anything that can be addressed
+      as coord[0] and coord[1];
+    */
+    template <typename COORD>
+    double operator()(double const t, COORD const & coord);
+    //! Version that takes x and y
+    double operator()(double const t, double const x, double const y);
   private:
     mu::Parser M_parser;
     double M_t,M_x,M_y;
     std::string M_expr;
   };
-  
+
+  template<typename COORD>
+  double
+  muParserInterface::operator()(double const t, COORD const & coord)
+  {
+    this->M_t=t;
+    this->M_x = coord[0];
+    this->M_y = coord[1];
+    
+    /* OLNY FOR DEBUGGING
+    // Get the map with the variables
+    mu::varmap_type variables = M_parser.GetVar();
+    std::cout << "Number: " << (int)variables.size() << "\n";
+    
+    // Get the number of variables 
+    mu::varmap_type::const_iterator item = variables.begin();
+    
+    // Query the variables
+    for (; item!=variables.end(); ++item)
+      {
+	std::cout << "Name: " << item->first << " Value" << *item->second << "\n";
+      }
+    */
+    
+    return this->M_parser.Eval();
+  }
+
   //! prints message on the standard error
   void printMuException(mu::Parser::exception_type &e);
 }// end namespace
