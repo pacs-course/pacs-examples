@@ -8,7 +8,7 @@
 namespace NumericalIntegration{
   
   //! The type the integrand
-  typedef std::function<double (double const &)> FunPoint;
+  using FunPoint=std::function<double (double const &)>;
   
   
   //! The basis class for all the basic integration rules
