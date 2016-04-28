@@ -22,6 +22,12 @@ namespace MuParserInterface
     this->M_parser.ClearVar();
   }
 
+  double
+  muParserInterface::operator()(double const t,  double const x, double const y)
+  {
+    return this->operator()(t,std::array<double,2>{{x,y}});
+  }
+
   muParserInterface::muParserInterface(muParserInterface const & mpi):
     M_parser(),M_t(mpi.M_t),M_x(mpi.M_x),M_y(mpi.M_y),M_expr(mpi.M_expr)
   {
@@ -54,30 +60,6 @@ namespace MuParserInterface
     this->M_parser.SetExpr(s);
   }
 
-  double
-  muParserInterface::operator()(double const t, double const * coord)
-  {
-    this->M_t=t;
-    this->M_x = coord[0];
-    this->M_y = coord[1];
-    
-    /* OLNY FOR DEBUGGING
-    // Get the map with the variables
-    mu::varmap_type variables = M_parser.GetVar();
-    std::cout << "Number: " << (int)variables.size() << "\n";
-    
-    // Get the number of variables 
-    mu::varmap_type::const_iterator item = variables.begin();
-    
-    // Query the variables
-    for (; item!=variables.end(); ++item)
-      {
-	std::cout << "Name: " << item->first << " Value" << *item->second << "\n";
-      }
-    */
-    
-    return this->M_parser.Eval();
-  }
 
   void printMuException(mu::Parser::exception_type &e)
   {
@@ -90,3 +72,4 @@ namespace MuParserInterface
     cout << "Errc:     " << e.GetCode() << "\n";
   }
 }// end namespace
+

@@ -43,7 +43,7 @@ EXEC=$(exe_sources:.cpp=)
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
  LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
+# LDFLAGS+=-dynamic 
 else
  LIBRARY=$(STATIC_LIBFILE)
 # LDFLAGS+=-static
