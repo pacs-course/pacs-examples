@@ -69,7 +69,7 @@ int main (int argc, char **argv)
 
   
   matrix uh(f);
-  A.gauss_seidel (f, uh);
+  A.solve (uh);
 
   for (unsigned int ii = 0; ii < nnodes; ++ii)
     std::cout << uh(ii, 0) << std:: endl;
