@@ -8,7 +8,7 @@ namespace NumericalIntegration{
       _mesh=rhs._mesh;
       // Resets the current value replacing with the pointer
       // returned by rhs._rule
-      _rule=std::move(rhs._rule->clone());
+      _rule=rhs._rule->clone();
     }
     return *this;
   }
