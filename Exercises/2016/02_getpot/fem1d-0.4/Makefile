@@ -1,5 +1,5 @@
 OBJS = fem1d.o mesh.o
-HEADERS = config.h
+HEADERS = 
 CPPFLAGS ?= -I../matrix-0.1/ -I.
 LDFLAGS ?= -L../matrix-0.1/
 LIBS = 
