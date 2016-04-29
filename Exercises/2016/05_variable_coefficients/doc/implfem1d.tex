@@ -59,7 +59,7 @@ The weak form of equation \eqref{eq:formaforte} reads:
 
 Using integration by parts we get
 \begin{equation*}
--\Int{0}{1} (a(x)\ u')' \varphi \,dx=\Int{0}{1} u' \varphi' \,dx- \trace{\varphi u'}{0}^{1}=\Int{0}{1} u' \varphi'  \,dx
+-\Int{0}{1} (a(x)\ u')' \varphi \,dx=\Int{0}{1} a(x)\ u' \varphi' \,dx- \trace{a(x)\ \varphi u'}{0}^{1}=\Int{0}{1} a(x)\ u' \varphi'  \,dx
 \end{equation*}
 
 \end{frame}
@@ -91,7 +91,7 @@ u_{h} = \Sum{j=1}{N_h} u_{j}\varphi_{j} \Rightarrow u_{h}'= \Sum{j=1}{N_h} u_{j}
 
 Equation \ref{eq:galerkin}$_{2}$ becomes:
 \begin{equation*}
-\Sum{j=1}{N_h} u_{j} \Int{0}{1} \varphi_{i}'\varphi_{j}' \,dx = \Int{0}{1} \varphi_{i} \,dx \quad i=1,\ldots,N_h
+\Sum{j=1}{N_h} u_{j} \Int{0}{1} a(x)\ \varphi_{i}'\varphi_{j}' \,dx = \Int{0}{1}f(x)\ \varphi_{i} \,dx \quad i=1,\ldots,N_h
 \end{equation*}
 
 We therefore get a linear algebraic system of the form
