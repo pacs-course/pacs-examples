@@ -14,14 +14,13 @@
 
 std::string help_text = std::string () +
 "fem1d command line options\n" +
-  "-h, --help              print this text and exit\n" +
-  "-a <value>              first end of interval\n" +
-  "-b <value>              second end of interval\n" +
-  "-d, --diffusion <value> expression to compute diffusion coefficient\n" +
-  "-f, --forcing <value>   expression to compute forcing term coefficient\n" +
-  "-n, --nnodes <value>    number of triangulation nodes\n" +
-  "-m, --maxit <value>     number of iterations\n" +
-  "-t, --tol <value>       tolerance\n";
+  "-h, --help                       print this text and exit\n" +
+  "-a <value>                       first end of interval\n" +
+  "-b <value>                       second end of interval\n" +
+  "-d, --diffusion \"string\"         expression to compute diffusion coefficient\n" +
+  "-f, --forcing \"string\"           expression to compute forcing term coefficient\n" +
+  "-n, --nnodes <value>             number of triangulation nodes\n" +
+  "-q, --quadrature-rule \"string\"   name of the quadrature rule to use\n";
   
 class coeff
 {
