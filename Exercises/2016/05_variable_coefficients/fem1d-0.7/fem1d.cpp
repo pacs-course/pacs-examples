@@ -22,9 +22,30 @@ int main (int argc, char **argv)
   coeff f_coeff (forcing);
   coeff a_coeff (diffusion);
 
+  std::vector<double> qn;
+  std::vector<double> qw;
+  const std::string rule = cl.follow ("trapezoidal", 2, "-q", "--quadrature-rule");
+
+  
+  if (rule == "trapezoidal")
+    {
+      qn.push_back (0.0);
+      qn.push_back (1.0);
+      qw.push_back (0.5);
+      qw.push_back (0.5);
+    }
+  else if (rule == "midpoint")
+    {
+      qn.push_back (0.5);
+      qw.push_back (1.0);
+    }
+  else
+    std::cerr << "unknown quadrature rule" << std::endl;
+
+  
   mesh m (a, b, nnodes);
   Eigen::SparseMatrix<double> A(nnodes, nnodes);
-
+  
   Eigen::Matrix2d mloc;
   mloc << 0, 0, 0, 0;
   for (unsigned int iel = 0; iel < m.nels; ++iel)
@@ -37,9 +58,10 @@ int main (int argc, char **argv)
           for (unsigned int jnode = 0; jnode < 2; ++jnode)
             {
               double jgrad =  (jnode == 0 ? 1.0 / m.h : -1.0 / m.h);
-              mloc(inode,jnode) = igrad * jgrad * m.h *
-                (a_coeff(m.nodes[m.elements[iel][0]]) +
-                 a_coeff(m.nodes[m.elements[iel][1]])) / 2.0;
+              for (unsigned int qnode = 0; qnode < qn.size (); ++qnode)
+                mloc(inode,jnode) += igrad * jgrad * 
+                  (a_coeff(m.nodes[m.elements[iel][0]] + m.h * qn[qnode]) *
+                   m.h * qw[qnode]);
               
               A.coeffRef(m.elements[iel][inode],m.elements[iel][jnode]) += 
                 mloc(inode,jnode);
@@ -59,10 +81,15 @@ int main (int argc, char **argv)
       
       for (unsigned int inode = 0; inode < 2; ++inode)
         {
-          // std::cout << "x = " << m.nodes[m.elements[iel][inode]]
-          //           << ", f(x) = " << f_coeff(m.nodes[m.elements[iel][inode]])
-          //          << std::endl;
-          vloc(inode) = m.h * f_coeff(m.nodes[m.elements[iel][inode]])/ 2.0;
+          for (unsigned int qnode = 0; qnode < qn.size (); ++qnode)
+            vloc(inode) +=
+              (1.0 -
+               fabs (m.nodes[m.elements[iel][inode]] -
+                     (m.nodes[m.elements[iel][0]] +
+                      m.h * qn[qnode])) / m.h ) *
+              (qw[qnode] * m.h *
+               f_coeff(m.nodes[m.elements[iel][0]] + m.h * qn[qnode]));
+
           f(m.elements[iel][inode]) += vloc(inode);
         }
     }
@@ -77,9 +104,6 @@ int main (int argc, char **argv)
       A.coeffRef(0, ii) = 0.0;
       A.coeffRef(nnodes-1, nnodes-1-ii) = 0.0;
     }
-
-  std::cout << A << std::endl << std::endl;
-  std::cout << f << std::endl << std::endl;
     
   Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
   A.makeCompressed ();
@@ -93,6 +117,3 @@ int main (int argc, char **argv)
       
   return 0;
 };
-
-
-
