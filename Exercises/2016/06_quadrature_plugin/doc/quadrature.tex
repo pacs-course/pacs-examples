@@ -36,7 +36,7 @@
 \item adapt the fem1d code to allow the user to specify the quadrature rule as the name of a dynamically loadable object
 \begin{itemize}
 \item the dynamically loadable object should define a function named \cpp{integrate}
-\item \cpp{double integrate (std::function<double(double)> f, double a, double b)}
+\item \cpp{double integrate (double (* f) (double), double a, double b)}
 \end{itemize}
 \item implement plugins for midpoint, trapezoidal an Simpson's rule
 \end{itemize}
