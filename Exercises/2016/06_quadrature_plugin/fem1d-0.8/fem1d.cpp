@@ -31,37 +31,57 @@ int main (int argc, char **argv)
       std::cerr << help_text << std::endl;
       return 0;
     }
-  const double a = cl.follow (0.0, "-a");
-  const double b = cl.follow (1.0, "-b");
-  const unsigned int nnodes = cl.follow (100, 2, "-n", "--nnodes");
-  const std::string diffusion = cl.follow ("1.0", 2, "-d", "--diffusion");
-  const std::string forcing = cl.follow ("1.0", 2, "-f", "--forcing");
+
+  const double a =
+    cl.follow (0.0, "-a");
+
+  const double b =
+    cl.follow (1.0, "-b");
+
+  const unsigned int nnodes =
+    cl.follow (100, 2, "-n", "--nnodes");
+
+  const std::string diffusion =
+    cl.follow ("1.0", 2, "-d", "--diffusion");
+
+  const std::string forcing =
+    cl.follow ("1.0", 2, "-f", "--forcing");
   
   coeff f_coeff (forcing);
   coeff a_coeff (diffusion);
 
-  const std::string quadrature = cl.follow ("adaptive_quadrature.so", 2, "-q", "--quadrature-rule");
-  std::function <double (std::function<double (double)>, double, double)> integrate;
+  const std::string quadrature =
+    cl.follow ("adaptive_quadrature.so",
+               2, "-q", "--quadrature-rule");
+
+  std::function
+    <double (std::function<double (double)>, double, double)>
+    integrate;
   
   void * handle = dlopen (quadrature.c_str (), RTLD_LAZY);
   if (! handle)
     {
-      std::cerr << "fem1d: cannot load dynamic object!" << std::endl;
-      std::cerr << dlerror () << std::endl;
+      std::cerr << "fem1d: cannot load dynamic object!"
+                << std::endl;
+      std::cerr << dlerror ()
+                << std::endl;
       return (-1);
     }
 
   void * sym = dlsym (handle, "integrate");
   if (! sym)
     {
-      std::cerr << "fem1d: cannot load symbol!" << std::endl;
-      std::cerr << dlerror () << std::endl;
+      std::cerr << "fem1d: cannot load symbol!"
+                << std::endl;
+      std::cerr << dlerror ()
+                << std::endl;
       return (-1);
     }
   
   integrate =
     reinterpret_cast
-    <double (*) (std::function<double (double)>, double, double)> (sym);
+    <double (*) (std::function<double (double)>, double, double)>
+    (sym);
   
   mesh m (a, b, nnodes);
   Eigen::SparseMatrix<double> A(nnodes, nnodes);
@@ -98,13 +118,19 @@ int main (int argc, char **argv)
                 };
               
               mloc(inode,jnode) +=
-                integrate ([=, &m, &igrad, &jgrad, &a_coeff] (double x) -> double
-                           { return igrad (x) * jgrad (x) * a_coeff (x); },
+                integrate ([=, &m, &igrad, &jgrad, &a_coeff]
+                           (double x) -> double
+                           {
+                             return (igrad (x) *
+                                     jgrad (x) *
+                                     a_coeff (x));
+                           },
                            m.nodes[m.elements[iel][0]],
                            m.nodes[m.elements[iel][1]]);
 
               
-              A.coeffRef(m.elements[iel][inode],m.elements[iel][jnode]) += 
+              A.coeffRef(m.elements[iel][inode],
+                         m.elements[iel][jnode]) += 
                 mloc(inode,jnode);
               
             }
@@ -134,8 +160,12 @@ int main (int argc, char **argv)
             };
           
             vloc(inode) +=
-              integrate ([=, &m, &ifun, &f_coeff] (double x) -> double
-                         { return ifun (x) * f_coeff (x); },
+              integrate ([=, &m, &ifun, &f_coeff]
+                         (double x) -> double
+                         {
+                           return (ifun (x) *
+                                   f_coeff (x));
+                         },
                          m.nodes[m.elements[iel][0]],
                          m.nodes[m.elements[iel][1]]);
 
@@ -163,7 +193,9 @@ int main (int argc, char **argv)
   Eigen::VectorXd uh = solver.solve (f);
 
   for (unsigned int ii = 0; ii < nnodes; ++ii)
-    std::cout << m.nodes[ii] << " " << uh(ii, 0) << std:: endl;
+    std::cout << m.nodes[ii] << " "
+              << uh(ii, 0)
+              << std:: endl;
       
   return 0;
 };
