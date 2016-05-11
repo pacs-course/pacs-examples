@@ -1,0 +1,45 @@
+ %&latex
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{graphicx}
+\usepackage{truncate}
+%%\usepackage{mpmulti}
+\usepackage{times}
+
+\newcommand{\largenameref}[1]{\textbf{\huge{\nameref{#1}}}}
+\newcommand{\largehyperlink}[2]{\textbf{\Large\hyperlink{#1}{#2} }}
+\newcommand{\largehypertarget}[2]{\textbf{\color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Largehypertarget}[2]{\textbf{\Large \color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Int}[2]{\displaystyle{\int\limits_{#1}^{#2}}}      
+\newcommand{\Sum}[2]{\displaystyle{\sum\limits_{#1}^{#2}}}      
+\newcommand{\Myfoilheadskip}[1]{\begin{frame}\frametitle{#1}}
+\newcommand{\trace}[2]{\left. #1 \right\rvert_{_{#2} }  }
+\newcommand{\mtrx}[1]{\mathbf{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\usepackage[english]{babel}
+\lstset{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\scriptsize,                  % The basic style
+  extendedchars=true                       % Allow extended characters
+}
+\newcommand{\cpp}[1]{\lstinline!#1!}
+
+\begin{document}
+\title{Galerkin/Linear Finite Elements Method in 1d, with generic quadrature}
+\frame{\titlepage}
+
+
+\begin{frame}\frametitle{Exercise}
+\begin{itemize}
+\item adapt the fem1d code to allow the user to specify the quadrature rule as the name of a dynamically loadable object
+\begin{itemize}
+\item the dynamically loadable object should define a function named \cpp{integrate}
+\item \cpp{double integrate (double (* f) (double), double a, double b)}
+\end{itemize}
+\item implement plugins for midpoint, trapezoidal an Simpson's rule
+\end{itemize}
+\end{frame}
+
+\end{document}
