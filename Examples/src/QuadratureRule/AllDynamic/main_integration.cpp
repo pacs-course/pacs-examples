@@ -76,7 +76,12 @@ int main(int argc, char** argv){
       if (rule=="Adaptive") 
         {
           // I need to use a wrapper since setTargetError and setMaxIter are not in the public
-          // interface of a non-adaptive rule!
+          // interface of QuadRule!!
+          // If you do not want to use the wrapper you may use dynamic_cast directly:
+
+          // dynamic_cast<NumericalIntegration::QuadratureRuleAdaptive<RULE>&>(*theRule).setTargetError(targetError);
+          // etc.
+          
           ruleWrapper<QuadratureRuleAdaptive<Simpson>>::setTargetError(*theRule,targetError);
           ruleWrapper<QuadratureRuleAdaptive<Simpson>>::setMaxIter(*theRule,maxIter);
         }

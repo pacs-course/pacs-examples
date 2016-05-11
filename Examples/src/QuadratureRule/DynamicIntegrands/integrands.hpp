@@ -9,5 +9,7 @@ extern "C" {
   double square(double const &);
   double pippo(double const &);
   double one(double const &);
+  double foo(double const &);
+  double toto(double const &);
 }
 #endif
