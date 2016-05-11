@@ -48,7 +48,6 @@ namespace NumericalIntegration{
     //! The method that applies the rule.
     double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
-    QuadratureRuleAdaptive(){};
   private:
     //! Static becouse common to all objects of this class
     static QuadratureRulePlusError<SQR> _therule;
