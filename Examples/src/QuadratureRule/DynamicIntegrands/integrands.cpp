@@ -21,4 +21,7 @@ double square(double const& x)
   }
 
   double one(const double & x){return 1.0;}
+
+  double foo(const double & x){return std::exp(x)*std::sin(x);}
+  double toto(const double & x){return -2.0;}
 }

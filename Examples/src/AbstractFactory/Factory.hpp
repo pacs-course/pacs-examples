@@ -26,13 +26,13 @@ namespace GenericFactory{
   class Factory{
   public:
     //! The container for the rules.
-    typedef  AbstractProduct AbstractProduct_type;
+    using AbstractProduct_type=AbstractProduct;
     //! The identifier.
     /*  
 	We must have an ordering since we use a map with 
 	the identifier as key.
     */
-    typedef  Identifier Identifier_type;
+    using  Identifier_type=Identifier;
     //! The builder type.
     /*
       The default is a function. In C++98 I would have used
@@ -41,7 +41,7 @@ namespace GenericFactory{
       but it is much safer with respect to memory leaks. A simpler version
       may use a bare pointer as return type.
     */
-    typedef  Builder Builder_type;
+    using  Builder_type=Builder;
     //! Method to access the only instance of the factory
     static Factory & Instance();
     //! Get the rule with given name . 
