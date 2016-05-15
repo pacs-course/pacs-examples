@@ -52,7 +52,7 @@ namespace ET
     }
     //! Returns i-th element
     double & operator [](std::size_t i){return M_data[i];}
-    //! Returns i-th element
+    //! Returns i-th element (const version)
     double   operator [](std::size_t i) const {return M_data[i];}
     //! size of the vector
     std::size_t size()const{return M_data.size();}

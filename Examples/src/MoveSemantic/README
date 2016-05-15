@@ -1,9 +1,12 @@
 An example of matrix class using templates as policy for storage order.
 Furthermore, we implement move sematic: a move constructor and
-a move assigment operatos have been defined.
+a move assigment operator have been defined.
 
 make produces two executable, one where move semantic is activated, in
-the other is deactivated.
+the other is deactivated It then run valgring with the massif toolbox
+so you can compare the difference between the versions.
 
-make test run valgring with the massif toolbox so you can compare the
-difference between the versions.
+You must have valgrind installed
+
+I use ms_print to produce a readable output from the file move.out
+produced by valgrind. You may use other, fancier, tools.
