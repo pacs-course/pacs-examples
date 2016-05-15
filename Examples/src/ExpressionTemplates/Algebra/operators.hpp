@@ -29,7 +29,7 @@ namespace ET
     LO const & M_lo;
     RO const & M_ro;
   };
-
+  
   //! Unary operator expression.
   template<class RO, class OP>
   class
@@ -86,7 +86,8 @@ namespace ET
 
   //  THE BASIC OPERATIONS AT ELEMENT LEVEL
   //! The basic Addition
-  /*! Note that we can use directly the functors
+  /*! 
+    Note that we can use directly the functors
     provided by the standard library!
     /code
     using Add = std::add<double>;
@@ -134,7 +135,7 @@ namespace ET
   using ExpExpr= UnaryOperator<RO,ExpOP>;
 
   //  USER LEVEL OPERATORS: THESE ARE THE ONLY ONES THE USER WILL ADOPT
-
+  
   //! Addition of  expression
   template <class LO, class RO>
   inline AddExpr<LO,RO> operator +(LO const & l, RO const & r){return  AddExpr<LO,RO>(l,r);}
