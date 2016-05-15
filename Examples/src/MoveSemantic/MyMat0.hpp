@@ -216,6 +216,7 @@ namespace LinearAlgebra {
   template <StoragePolicySwitch T>
   MyMat0<T>::MyMat0(MyMat0<T>&& m):nr(m.nr),nc(m.nc),data(std::move(m.data))
   {
+    // Setting to zero rows and columns
     m.nr=0;m.nc=0;
   }
 #endif
@@ -238,6 +239,7 @@ namespace LinearAlgebra {
   template <StoragePolicySwitch T>
   MyMat0<T> & MyMat0<T>::operator =(MyMat0<T>&& m){
     // std containers implement move semantic, so I just move
+    // I move nc and nr even if I gain nothing moving int!
     nr=std::move(m.nr);
     nc=std::move(m.nc);
     data=std::move(m.data);
