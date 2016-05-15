@@ -8,7 +8,7 @@ int main()
     using namespace Eigen;
     using namespace Utility;
 
-    int i = 42;
+    constexpr int i = 42;
     std::cout << "mean(7,i):   " << mean(7,i) << std::endl;
     double f1 = 3.4;
     double f2 = -6.7;
