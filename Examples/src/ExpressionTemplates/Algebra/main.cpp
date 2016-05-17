@@ -6,14 +6,18 @@ int main()
   using namespace ET;
   Vector a(10);
   Vector b(a);
-  std::vector<double> & bb=b;
-  for (auto & i : bb) i=1;
-  Vector c(a);
-  c=a+b;
+  std::vector<double> & bb=b;  // conversion by casting
+  double count=1.5;
+  for (auto & i : bb) i=count++;
+  Vector c(10);
+  c=a+bb; // conversion by construction!
   std::cout<<a.size()<<" "<<b.size()<<" "<<c.size()<<std::endl;
   Vector d(a+b+c);
-  //for (auto i : d) std::cout<<i<<" ";
-  //std::cout<<std::endl;
+  std::cout<<" c contains:"<<std::endl;
+  for (auto i : c) std::cout<<i<<" ";
+  std::cout<<" d contains:"<<std::endl;
+  for (auto i : d) std::cout<<i<<" ";
+  std::cout<<std::endl;
   std::vector<double> z(11,3.0);
   Vector zv(z);
   std::vector<double> & zr(zv);
@@ -35,8 +39,12 @@ int main()
 
   // Formula involvind exponent
 
-  a=c+8.0*ET::exp(b);
+  a=c+8.0*ET::exp(d);
   for (auto i : a) std::cout<<i<<" ";
   std::cout<<std::endl;
 
+  // NOw we take the logarithm
+  a=ET::log(a);
+  for (auto i : a) std::cout<<i<<" ";
+  std::cout<<std::endl;
 }

@@ -20,7 +20,7 @@ namespace ET
      
 
      The cast operator enables the use of static polymorphism in a
-     easy way. However is not strictly necessary an alternative is to
+     easy way. However is not strictly necessary: an alternative is to
      use a method.
 
    */
@@ -62,6 +62,13 @@ namespace ET
 
     //!Interrogates the size of the wrapped expression
     std::size_t size() const {return static_cast<const E &>(*this).size();}
+
+    //! Delegaes to the wrapped expression the addressing operator
+    double operator [](std::size_t i) const {
+      // this time a cast the pointer (just to show this alternative)
+      return static_cast<const E *>(this)->operator[](i);
+    }
+
   };
 }
 #endif
