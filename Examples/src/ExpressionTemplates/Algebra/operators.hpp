@@ -116,6 +116,11 @@ namespace ET
   struct ExpOP{
     double operator()(double j)const {return std::exp(j);}
   };
+
+  //! Exponential
+  struct LogOP{
+    double operator()(double j)const {return std::log(j);}
+  };
  
 
   // WRAPPING THE BASE OPERATIONS INTO THE OPERATION CLASSES: ARE JUST TYPEDEFS
@@ -133,6 +138,9 @@ namespace ET
 
   template <class RO>
   using ExpExpr= UnaryOperator<RO,ExpOP>;
+
+  template <class RO>
+  using LogExpr= UnaryOperator<RO,LogOP>;
 
   //  USER LEVEL OPERATORS: THESE ARE THE ONLY ONES THE USER WILL ADOPT
   
@@ -153,5 +161,9 @@ namespace ET
   //! Exponential
   template <class RO>
   inline ExpExpr<RO> exp(RO const & r){return  ExpExpr<RO>(r);}
+
+  //! Exponential
+  template <class RO>
+  inline LogExpr<RO> log(RO const & r){return  LogExpr<RO>(r);}
 }
 #endif

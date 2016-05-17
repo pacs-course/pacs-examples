@@ -28,17 +28,17 @@ struct Pow<X,0>
 namespace implementation
 {
   //! Implementation using constexpr functions
-  /*!
-    This implementation works also if the argument x is not a integral constant.
-    The optimization is up to the compiler since constexpr is only a "suggestion"
-    to the compiler that the expression may be optimized if the argument is a 
-    literal or a constant value.
+  /*!  This implementation works also if the argument x is not a
+    integral constant.  The optimization is up to the compiler since
+    constexpr is only a "suggestion" to the compiler that the
+    expression may be optimized if the argument is a literal or a
+    constant value.
     
     Note the use of integral_constant to select the correct overloaded
     function via tag dispatching.
 
-    This example wants to show that by using the new constexpr construction one may in some cases
-    avoit template metaprogramming.
+    This example wants to show that by using the new constexpr
+    construction one may in some cases avoid template metaprogramming.
     
   */
   template<unsigned int N>
