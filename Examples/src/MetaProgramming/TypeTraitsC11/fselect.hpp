@@ -16,7 +16,8 @@ namespace{
 }
 //! Changes return type and operation according to the type of the argument.
 /*!
-  Implementation is delegated to helper functions in an unnamed namespace.
+  Implementation is delegated to helper functions in an unnamed namespace (tag
+  dispatch).
  */
 template <typename T>
 typename std::remove_pointer<T>::type inv(const T val){
