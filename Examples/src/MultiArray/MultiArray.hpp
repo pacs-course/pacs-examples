@@ -1,25 +1,36 @@
-#ifndef LIFEV_MULTI_ARRAY_HPP
-#define LIFEV_MULTI_ARRAY_HPP
+#ifndef HH_MULTI_ARRAY_HPP
+#define HH_MULTI_ARRAY_HPP
+#include <array>
+#include <memory>
+#include "extendedAssert.hpp"
 
-namespace LifeV
+namespace LinearAlgebra
 {
 
+  /*!
+    Defines an array with arbitrary number of dimensions
+    \param T  the stored type
+    \param N  the number of dimensions
+   */
 template<typename T, int N>
 class MultiArray
 {
 public:
 
-  typedef T*  ptr_Type;
+  //  using ptr_Type=T*;
+  //! Where we store the data
+  using ptr_Type=std::unique_ptr<T[]>;
 
   MultiArray ();
+  //! Gives the dimensions.
   template<typename ...Ints>
   MultiArray (Ints... dims);
   MultiArray (const MultiArray& source);
-  MultiArray (MultiArray&& source);
-  virtual ~MultiArray ();
+  MultiArray (MultiArray&& source)=default;
+  virtual ~MultiArray ()=default;
 
   MultiArray<T,N>& operator= (const MultiArray<T,N>& rhs);
-  MultiArray<T,N>& operator= (MultiArray<T,N>&& rhs);
+  MultiArray<T,N>& operator= (MultiArray<T,N>&& rhs)=default;
 
   template<typename... Ints>
   const T& operator () (Ints... indices) const
@@ -48,14 +59,14 @@ private:
     static int index1d (const std::array<int,N>& strides, const std::array<int,N>& dims, int i)
     {
       static_assert (D==N-1, "Error! Something is wrong with 1d-indexing in MultiArray.\n");
-      ASSERT (i>=0 && i<dims[D], "Error! Index out of bounds.\n");
+      ASSERTM (i>=0 && i<dims[D], "Error! Index out of bounds.\n");
       return strides[i];
     }
 
     template<typename... Ints>
     static int index1d (const std::array<int,N>& strides, const std::array<int,N>& dims, int i, Ints... tail)
     {
-      ASSERT (i>=0 && i<dims[D], "Error! Index out of bounds.\n");
+      ASSERTM (i>=0 && i<dims[D], "Error! Index out of bounds.\n");
       return strides[D]*Helper<D+1>::index1d(strides,dims,tail...);
     }
 
@@ -83,7 +94,7 @@ private:
   void computeStridesAndDims (int dim, Ints... tail);
 
   int                 M_length1d;
-  T*                  M_values;
+  ptr_Type                  M_values;
   std::array<int,N>   M_strides;
   std::array<int,N>   M_dims;
 };
@@ -91,11 +102,11 @@ private:
 // ================================ IMPLEMENTATION ================================ //
 
 template<typename T, int N>
-MultiArray<T,N>::MultiArray ()
+MultiArray<T,N>::MultiArray ():M_values(),M_length1d(0)
 {
   static_assert (N>0, "Error! Cannot create a 0-dimensional array.\n");
-  M_values = nullptr;
-  M_length1d = 0;
+  //M_values = nullptr;
+  //M_length1d = 0;
 }
 
 template<typename T, int N>
@@ -110,35 +121,19 @@ MultiArray<T,N>::MultiArray (Ints... dims)
   for (int i(0); i<N; ++i)
     M_length1d *= M_dims[i];
 
-  M_values = new T[M_length1d];
+  M_values = std::unique_ptr<T[]>(new T[M_length1d]);
 }
 
 template<typename T, int N>
-MultiArray<T,N>::MultiArray (const MultiArray& source)
+MultiArray<T,N>::MultiArray (const MultiArray& source):
+  M_length1d(source.M_length1d),
+  M_values(std::unique_ptr<T[]>(new T[M_length1d])),
+  M_strides(source.M_strides),
+  M_dims(source.M_dims)
 {
-  M_length1d = source.M_length1d;
-  M_strides  = source.M_strides;
-  M_dims     = source.M_dims;
-
-  M_values = new T[M_length1d];
-  std::copy (source.M_values, source.M_values+M_length1d, M_values);
+  std::copy (source.M_values.get(), source.M_values.get()+M_length1d, M_values.get());
 }
 
-template<typename T, int N>
-MultiArray<T,N>::MultiArray (MultiArray&& source)
-{
-  M_length1d = source.M_length1d;
-  M_strides  = std::move(source.M_strides);
-  M_dims     = std::move(source.M_dims);
-
-  M_values = source.M_values;
-  source.M_values = nullptr;
-}
-template<typename T, int N>
-MultiArray<T,N>::~MultiArray ()
-{
-  delete[] M_values;
-}
 
 template<typename T, int N>
 MultiArray<T,N>& MultiArray<T,N>::operator= (const MultiArray<T,N>& rhs)
@@ -150,22 +145,10 @@ MultiArray<T,N>& MultiArray<T,N>::operator= (const MultiArray<T,N>& rhs)
   M_strides  = rhs.M_strides;
   M_dims     = rhs.M_dims;
 
-  M_values = new T[M_length1d];
-  std::copy (rhs.M_values, rhs.M_values+M_length1d, M_values);
+  M_values.reset(new T[M_length1d]);
+  std::copy (rhs.M_values.get(), rhs.M_values.get()+M_length1d, M_values.get());
 }
 
-template<typename T, int N>
-MultiArray<T,N>& MultiArray<T,N>::operator= (MultiArray<T,N>&& rhs)
-{
-  ASSERT (this!=&rhs, "Error! What are you doing?!? Don't tell me rhs is a temporary when it's not, and you reuse it later...\n");
-
-  M_length1d = rhs.M_length1d;
-  M_strides  = std::move(rhs.M_strides);
-  M_dims     = std::move(rhs.M_dims);
-
-  M_values = rhs.M_values;
-  rhs.M_values = nullptr;
-}
 
 template<typename T, int N>
 template<typename... Ints>
@@ -175,10 +158,9 @@ void MultiArray<T,N>::resize(Ints... dims)
   M_length1d = 1;
   for (int i(0); i<N; ++i)
     M_length1d *= M_dims[i];
-
-  delete[] M_values;
+  M_values.release();
 }
 
-} // Namespace LifeV
+} // Namespace LinearAlgebra
 
 #endif // LIFEV_MULTI_ARRAY_HPP

@@ -29,7 +29,7 @@ namespace ET
     LO const & M_lo;
     RO const & M_ro;
   };
-
+  
   //! Unary operator expression.
   template<class RO, class OP>
   class
@@ -86,7 +86,8 @@ namespace ET
 
   //  THE BASIC OPERATIONS AT ELEMENT LEVEL
   //! The basic Addition
-  /*! Note that we can use directly the functors
+  /*! 
+    Note that we can use directly the functors
     provided by the standard library!
     /code
     using Add = std::add<double>;
@@ -115,6 +116,11 @@ namespace ET
   struct ExpOP{
     double operator()(double j)const {return std::exp(j);}
   };
+
+  //! Exponential
+  struct LogOP{
+    double operator()(double j)const {return std::log(j);}
+  };
  
 
   // WRAPPING THE BASE OPERATIONS INTO THE OPERATION CLASSES: ARE JUST TYPEDEFS
@@ -133,8 +139,11 @@ namespace ET
   template <class RO>
   using ExpExpr= UnaryOperator<RO,ExpOP>;
 
-  //  USER LEVEL OPERATORS: THESE ARE THE ONLY ONES THE USER WILL ADOPT
+  template <class RO>
+  using LogExpr= UnaryOperator<RO,LogOP>;
 
+  //  USER LEVEL OPERATORS: THESE ARE THE ONLY ONES THE USER WILL ADOPT
+  
   //! Addition of  expression
   template <class LO, class RO>
   inline AddExpr<LO,RO> operator +(LO const & l, RO const & r){return  AddExpr<LO,RO>(l,r);}
@@ -152,5 +161,9 @@ namespace ET
   //! Exponential
   template <class RO>
   inline ExpExpr<RO> exp(RO const & r){return  ExpExpr<RO>(r);}
+
+  //! Exponential
+  template <class RO>
+  inline LogExpr<RO> log(RO const & r){return  LogExpr<RO>(r);}
 }
 #endif
