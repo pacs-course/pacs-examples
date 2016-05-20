@@ -1,7 +1,7 @@
-integrand=pippo
+integrand=fsincos
 udflib=./libudf.so
 library=./libmyrules.so
-rule=Trapezoidal
+rule=MidPoint
 a=-1
 b=3
 nint=25

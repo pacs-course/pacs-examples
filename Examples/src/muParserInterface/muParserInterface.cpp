@@ -1,4 +1,5 @@
 #include <iostream>
+#include <array>
 #include "muParserInterface.hpp"
 namespace MuParserInterface
 {

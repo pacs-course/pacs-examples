@@ -6,28 +6,34 @@ namespace ET
 {
   //! A wrapper for expressions
   /*! 
-     This class is an example of use of CPRT (curiosly recursive template pattern). Indeed
-     any class that encapsulates an expression should derive from it using
+     This class is an example of use of CPRT (curiosly recursive
+     template pattern). Indeed any class that encapsulates an
+     expression should derive from it using
       
      \code
      class AnyExpression: public Expr<AnyExpression>
      {...};
      \endcode
-     The derived class should contain the address operator [] and the size() method
+
+     The derived class should contain the address operator [] and the
+     size() method
      
 
-     The cast operator enables the use of static polymorphism in a easy way. However is not strictly necessary
-     an alternative is to use a method.
+     The cast operator enables the use of static polymorphism in a
+     easy way. However is not strictly necessary: an alternative is to
+     use a method.
 
    */
   template <class E>
   struct Expr
   {
-
     //! Cast operator to derived class (const version)
     /*!
-      Remember that this class is meant to be used with CRTP technique. So E is derived from Expr<E>!
-      It is never instantiated alone. So this is always a pointer to the derived class -> *this is convertible 
+      Remember that this class is meant to be used with CRTP technique. 
+      So E is derived from Expr<E>!
+      It is never instantiated alone. 
+      So "this" 
+      is always a pointer to the derived class -> *this is convertible 
       to a reference to E!.
     */
     operator const E & () const 
@@ -54,8 +60,15 @@ namespace ET
        \endcode
     */
 
-    //! Not strictly needed. Interrogates the size of the wrapped expression
+    //!Interrogates the size of the wrapped expression
     std::size_t size() const {return static_cast<const E &>(*this).size();}
+
+    //! Delegaes to the wrapped expression the addressing operator
+    double operator [](std::size_t i) const {
+      // this time a cast the pointer (just to show this alternative)
+      return static_cast<const E *>(this)->operator[](i);
+    }
+
   };
 }
 #endif
