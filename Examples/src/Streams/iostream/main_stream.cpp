@@ -20,7 +20,7 @@ int main() {
   // ios_base::scientific is a flag, ios_base::floatfield is a mask
   // The mask is used to ensure that all bit not set in the flag
   // and set in the mask are unset. If
-  // I write just  cout.setf(std::ios_base::scientific) then
+  // If I write just  cout.setf(std::ios_base::scientific) then
   // the bit flag corresponding to ios_base::scientific is set
   // and the other left unchanged 
   cout.setf(std::ios_base::scientific, std::ios_base::floatfield);

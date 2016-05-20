@@ -1,0 +1,35 @@
+In this example we provide a simple C++ interface to the muParser
+library and a simple example to illustrate its basic usage.
+
+First of all you have to install muParser (look on the web). The
+library is composed by a library file (libmuparser.so) and a set of
+header files. You can install either on a standard directory or in a
+directory of your choice. *In the latter case you have to modify the
+entries in the local Makefile.inc*
+
+The makefile produces an executable and two versions of the library
+libMuParserInterface (the static and the shared one).
+
+The executable is called test_Muparser and it is just a simple test of
+the interface (and of muParser).
+
+$make
+Produces the libraries and the executable (in debug mode)
+
+$make DEBUG=no 
+if you want optimised versione
+
+$make static 
+produces only static library (DEBUG=no if you want optimized version)
+
+$make dynamic 
+produces only dynamic library (DEBUG=no if you want optimized version)
+
+$make test_Muparser 
+produces the executable. (DEBUG=No for optimiser).
+
+$make install Installs header files and the libraries in the directory
+used for that purpose: $(PACS_ROOT_DIR)/include and
+$(PACS_ROOT_DIR)/lib. Necessary for other Examples that uses the
+interface.
+
