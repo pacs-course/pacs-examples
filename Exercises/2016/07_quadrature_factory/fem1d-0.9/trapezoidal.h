@@ -12,4 +12,8 @@ trapezoidal_quadrature : public abstract_quadrature
   (std::function<double (double)> f, double a, double b);
 };
 
+extern "C"
+{ void register_rules (); };
+
+
 #endif
