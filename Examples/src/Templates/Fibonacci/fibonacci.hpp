@@ -1,4 +1,4 @@
-b#ifndef  H_FIBONACCI_H
+#ifndef  H_FIBONACCI_H
 #define H_FIBONACCI_H
 // ! Fibonacci class. Compatible with C++98
 template<int N> struct fib{
