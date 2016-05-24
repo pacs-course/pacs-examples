@@ -41,14 +41,24 @@ namespace implementation
     construction one may in some cases avoid template metaprogramming.
     
   */
+  // A class templates parametrized by an int
+  /*
+  template <unsigned int J>
+  struct
+  IntToType{};
+  */
+  // In c++11 I ca use std::integral_constant
   template<unsigned int N>
-  constexpr long int pow(const long int x, std::integral_constant<unsigned int, N>)
+  using IntToType=std::integral_constant<unsigned int,N>;
+
+  template<unsigned int N>
+  constexpr long int pow(const long int x, implementation::IntToType<N>)
   {
-    return pow(x, std::integral_constant<unsigned int, N-1>{} ) * x;
+    return pow(x, IntToType<N-1>{} ) * x;
   }
   //! Overload for N=0
   template<>
-  constexpr long int pow(const long int  x, std::integral_constant<unsigned int, 0>)
+  constexpr long int pow(const long int  x, implementation::IntToType<0>)
   {
     return 1;
   }
@@ -59,7 +69,7 @@ namespace implementation
   template<int N>
   constexpr long int pow(const long int  x)
   {
-    return implementation::pow(x, std::integral_constant<unsigned int, N>{} );
+    return implementation::pow(x, implementation::IntToType<N>{} );
   }
 
 #endif
