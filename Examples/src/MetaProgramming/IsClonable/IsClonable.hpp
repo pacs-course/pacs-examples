@@ -10,7 +10,7 @@
 */
 namespace TypeTraits
 {
-  //! A template that taken anything
+  //! A template that takes anything
   /*!  
     Void<T>::type is always equal to void.  It is used as a way of
     checking that a type has been defined, irrespectively from the
@@ -29,16 +29,17 @@ namespace TypeTraits
   struct has_clone: std::false_type {};
   
   /*!  Specialised version that is activated if T is clonable.
+    
     Indeed, if T is not clonable the second template parameter cannot
     be substituted with a valid type. So SFINAE applies and this
     version is discarded. Note that it inherits from std::true_type.
-
+    
     declval<T&>() allows to test the return type of clone() (the
     result of the test is irrelevant in this case) with no need of
     creating an object of type T. Moreover, we use T& because T may be
     a polymorphic object, and clone() may be defined in the base
     class.
-   */
+  */
   template<typename T>
   struct has_clone<
     T, 
@@ -47,7 +48,7 @@ namespace TypeTraits
       >::type
     >: std::true_type {};
 
-  //! A helper function
+  //! A helper function (maybe the only one the user will actually use!)
   template <class T>
   constexpr bool isClonable() { return has_clone<T>(); }
 
