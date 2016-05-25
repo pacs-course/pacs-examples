@@ -35,5 +35,15 @@ namespace Utility{
     return a + Sum(Args...);
   }
 
+  /*! An example to compute the mean
+    A function that computes the mean. 
+    I want to return at least a double (if all args are integers for instance)
+  */
+  template <typename... Ts>
+  typename std::common_type<double,Ts...>::type Mean(const Ts&... Args)
+  {
+    return Sum(Args...)/static_cast<typename std::common_type<double,Ts...>::type>(sizeof...(Ts));
+  }
+  
 }
 #endif
