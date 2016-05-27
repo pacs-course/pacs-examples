@@ -1,0 +1,68 @@
+ %&latex
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{graphicx}
+\usepackage{truncate}
+%%\usepackage{mpmulti}
+\usepackage{times}
+
+\newcommand{\largenameref}[1]{\textbf{\huge{\nameref{#1}}}}
+\newcommand{\largehyperlink}[2]{\textbf{\Large\hyperlink{#1}{#2} }}
+\newcommand{\largehypertarget}[2]{\textbf{\color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Largehypertarget}[2]{\textbf{\Large \color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Int}[2]{\displaystyle{\int\limits_{#1}^{#2}}}      
+\newcommand{\Sum}[2]{\displaystyle{\sum\limits_{#1}^{#2}}}      
+\newcommand{\Myfoilheadskip}[1]{\begin{frame}\frametitle{#1}}
+\newcommand{\trace}[2]{\left. #1 \right\rvert_{_{#2} }  }
+\newcommand{\mtrx}[1]{\mathbf{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\usepackage[english]{babel}
+\lstset{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\scriptsize,                  % The basic style
+  extendedchars=true                       % Allow extended characters
+}
+\newcommand{\cpp}[1]{\lstinline!#1!}
+
+\begin{document}
+\title{Refactoring and Reorganization of the FEM1D Code}
+\frame{\titlepage}
+
+
+\begin{frame}[fragile]\frametitle{Exercise}
+\begin{itemize}\small
+\item refactor the code by creating a separate class template describing the FEM problem
+\item template parameter defining the type of real numbers:
+\begin{lstlisting}
+template<class prec = double>
+fem_1d { ... }
+\end{lstlisting}
+\item constructor with one argument defining the mesh, store the mesh as a \cpp{unique_ptr}
+\begin{lstlisting}
+fem_1d problem (std::unique_ptr<mesh>(new mesh (...)));
+\end{lstlisting}
+\item methods to set coefficients
+\begin{lstlisting}
+auto diff   = [](auto x) { return x * x; };
+auto source = [](auto x) { return x * x * x; };
+problem.set_diffusion_coefficient (diff);
+problem.set_source_coefficient (source);
+\end{lstlisting}
+\item \cpp{fem_1d::assemble ()} method
+\item \cpp{fem_1d::solve ()} method
+\item methods to set BCs
+\begin{lstlisting}
+problem.set_dirichlet (fem_1d::left_boundary, 1);
+problem.set_dirichlet (fem_1d::right_boundary, 0);
+\end{lstlisting}
+\item methods to access assembled arrays
+\begin{lstlisting}
+auto & A = problem.matrix ();
+auto & b = problem.rhs ();
+auto & c = problem.result ();
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+\end{document}
