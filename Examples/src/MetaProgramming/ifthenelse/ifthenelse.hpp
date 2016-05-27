@@ -27,8 +27,7 @@ struct IfThenElse <false, Ta, Tb>
 template<bool C, class Ta, class Tb>
 using IfThenElse_t = typename  IfThenElse<C,Ta,Tb>::type;
 
-/* A different implementation (I call it If_then_else to differentiate
-  the two, that makes use of inheritance and of an helper template.
+/* A different implementation that makes use of inheritance and of an helper template. (I call it If_then_else to differentiate with the former implementation)
 */
 
 //! A helper template
@@ -53,7 +52,6 @@ template<typename Ta, typename Tb>
 struct If_then_else<false, Ta, Tb> : is_same_type<Tb>
 {
 };
-
 
 
 //
