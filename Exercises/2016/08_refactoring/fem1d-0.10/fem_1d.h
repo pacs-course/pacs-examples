@@ -137,7 +137,7 @@ void
 fem_1d<prec>::set_dirichlet (const bc_side side, prec value)
 {
 
-  if (side ==  left_boundary)
+  if (side == left_boundary)
     {
       f(0) = value;
       A.coeffRef(0,0) = prec (1.0);
@@ -170,7 +170,7 @@ class coeff
 private :
 
   std::string expr;
-  prec var;
+  double var;
   mu::Parser p;
   
 public :
@@ -191,10 +191,10 @@ public :
   prec operator() (prec x)
   {
     prec y;
-    var = x;
+    var = static_cast<double> (x);
     try
       {
-        y = p.Eval ();
+        y = static_cast<prec> (p.Eval ());
       }
     catch (mu::Parser::exception_type &e)
       {
