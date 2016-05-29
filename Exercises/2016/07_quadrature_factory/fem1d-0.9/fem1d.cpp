@@ -2,6 +2,8 @@
 #include "mesh.h"
 #include "GetPot"
 #include <dlfcn.h>
+#include "abstract_quadrature.h"
+
 
 double
 basisfun (double x, double a, double b,
@@ -54,11 +56,9 @@ int main (int argc, char **argv)
     cl.follow ("trapezoidal.so",
                2, "-q", "--quadrature-rule");
 
-  std::function
-    <double (std::function<double (double)>, double, double)>
-    integrate;
+  std::function <void ()> r_r;
   
-  void * handle = dlopen (quadrature.c_str (), RTLD_LAZY);
+  void * handle = dlopen (quadrature.c_str (), RTLD_NOW);
   if (! handle)
     {
       std::cerr << "fem1d: cannot load dynamic object!"
@@ -68,7 +68,7 @@ int main (int argc, char **argv)
       return (-1);
     }
 
-  void * sym = dlsym (handle, "integrate");
+  void * sym = dlsym (handle, "register_rules");
   if (! sym)
     {
       std::cerr << "fem1d: cannot load symbol!"
@@ -77,12 +77,27 @@ int main (int argc, char **argv)
                 << std::endl;
       return (-1);
     }
+
+
+  r_r = reinterpret_cast <void (*) ()> (sym);
+  r_r ();
+  auto & the_factory = quadrature_factory::instance ();
   
-  integrate =
-    reinterpret_cast
-    <double (*) (std::function<double (double)>, double, double)>
-    (sym);
+  // auto & the_factory = quadrature_factory::instance ();
+  // r_r ();
   
+  for (auto ii = the_factory.storage.begin (); ii != the_factory.storage.end (); ++ii)
+    {
+      std::cout << ii->first << std::endl;
+    }
+  
+  auto integrate = the_factory.create ("trapezoidal");
+  if (! integrate)
+    {
+      std::cerr << "rule name unknown" << std::endl;
+      return (-1);
+    }
+    
   mesh m (a, b, nnodes);
   Eigen::SparseMatrix<double> A(nnodes, nnodes);
   
@@ -118,7 +133,7 @@ int main (int argc, char **argv)
                 };
               
               mloc(inode,jnode) +=
-                integrate ([=, &m, &igrad, &jgrad, &a_coeff]
+                (*integrate) ([=, &m, &igrad, &jgrad, &a_coeff]
                            (double x) -> double
                            {
                              return (igrad (x) *
@@ -160,7 +175,7 @@ int main (int argc, char **argv)
             };
           
             vloc(inode) +=
-              integrate ([=, &m, &ifun, &f_coeff]
+              (*integrate) ([=, &m, &ifun, &f_coeff]
                          (double x) -> double
                          {
                            return (ifun (x) *
