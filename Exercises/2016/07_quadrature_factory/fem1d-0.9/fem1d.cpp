@@ -81,16 +81,8 @@ int main (int argc, char **argv)
 
   r_r = reinterpret_cast <void (*) ()> (sym);
   r_r ();
-  auto & the_factory = quadrature_factory::instance ();
-  
-  // auto & the_factory = quadrature_factory::instance ();
-  // r_r ();
-  
-  for (auto ii = the_factory.storage.begin (); ii != the_factory.storage.end (); ++ii)
-    {
-      std::cout << ii->first << std::endl;
-    }
-  
+
+  auto & the_factory = quadrature_factory::instance (); 
   auto integrate = the_factory.create ("trapezoidal");
   if (! integrate)
     {
