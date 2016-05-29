@@ -46,35 +46,4 @@ private :
 
 };
 
-/*
-template<typename factory, typename product>
-class proxy
-{
-public :
-
-  proxy (std::string const &);
-  
-  static quadrature_handle
-  build ()
-  {
-    return quadrature_handle
-      (new product ());
-  };
-  
-private :
-  
-  proxy (proxy const &) = delete; 
-
-  proxy & operator= (proxy const &) = delete;
-
-};
-
-template<typename F, typename C>
-proxy<F,C>::proxy (std::string const & name)
-{
-  F & factory (F::instance ());  
-  factory.add (name, &proxy<F,C>::build);
-}
-*/
-
 #endif

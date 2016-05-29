@@ -19,7 +19,4 @@ register_rules ()
 {
   auto &f = quadrature_factory::instance ();
   f.add ("trapezoidal", trapezoidal_quadrature_builder);
-  
-  for (auto ii = f.storage.begin (); ii != f.storage.end (); ++ii)
-    std::cout << ii->first << std::endl;
 };
