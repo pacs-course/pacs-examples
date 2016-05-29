@@ -3,13 +3,16 @@
 
 all : trapezoidal.so abstract_quadrature.so fem1d 
 
-trapezoidal.so abstract_quadrature.so : %.so : %.cpp %.h abstract_quadrature.h
+abstract_quadrature.so : abstract_quadrature.cpp abstract_quadrature.h
 	$(CXX) $(CPPFLAGS) -fPIC -shared $(CXXFLAGS) $< -o $@
 
-fem1d : fem1d.o mesh.o abstract_quadrature.so
-	$(CXX) $(LDFLAGS) fem1d.o mesh.o abstract_quadrature.so -o $@ $(LIBS)
+trapezoidal.so : trapezoidal.cpp trapezoidal.h abstract_quadrature.h abstract_quadrature.so
+	$(CXX) $(CPPFLAGS) -fPIC -shared $(CXXFLAGS) $< -o $@ abstract_quadrature.so
 
-fem1d.o mesh.o main.o secondary.o : %.o : %.cpp %.h $(HEADERS)
+fem1d : fem1d.o mesh.o abstract_quadrature.so
+	$(CXX) $(LDFLAGS) fem1d.o mesh.o -o $@ $(LIBS) abstract_quadrature.so
+
+fem1d.o mesh.o : %.o : %.cpp %.h $(HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 clean :
