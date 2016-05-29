@@ -1,5 +1,7 @@
 #include "abstract_quadrature.h"
 
+quadrature_factory::container_type quadrature_factory::storage;
+
 quadrature_factory &
 quadrature_factory::instance ()
 {
