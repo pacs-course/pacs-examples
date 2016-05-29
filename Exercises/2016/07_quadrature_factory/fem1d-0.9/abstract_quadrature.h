@@ -27,7 +27,7 @@ public :
   typedef std::map<std::string, builder_type> container_type;  
 
   static quadrature_factory & instance ();
-  container_type storage;
+  static container_type storage;
 
   void
   add (std::string const & id, builder_type const & func);
@@ -46,7 +46,7 @@ private :
 
 };
 
-
+/*
 template<typename factory, typename product>
 class proxy
 {
@@ -75,5 +75,6 @@ proxy<F,C>::proxy (std::string const & name)
   F & factory (F::instance ());  
   factory.add (name, &proxy<F,C>::build);
 }
+*/
 
 #endif
