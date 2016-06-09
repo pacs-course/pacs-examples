@@ -40,10 +40,10 @@ class fem_1d
   
  public :
 
-  const std::unique_ptr<mesh<prec>> m;
+  const mesh<prec> *m;
   enum bc_side {left_boundary, right_boundary};
   
-  fem_1d (std::unique_ptr<mesh<prec>> _m) :
+  fem_1d (mesh<prec> *_m) :
     m(std::move (_m))
   {
     A.resize (m->nnodes, m->nnodes);
