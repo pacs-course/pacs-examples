@@ -16,4 +16,4 @@ clean :
 	$(RM) $(OBJS)
 
 distclean : clean
-	$(RM) fem_1d
+	$(RM) fem1d
