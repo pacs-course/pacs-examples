@@ -1,7 +1,5 @@
 
 
-n_div     = 10;
-n_ovp     = 2;
 mpi_size  = 3;
 
 a       = 0;
@@ -33,9 +31,6 @@ for mpi_rank = 1:mpi_size
     b_loc(mpi_rank) += overlap * h;
     nel_loc(mpi_rank) += overlap;
   end
-
-  u_left(mpi_rank) = 0;
-  u_leftright(mpi_rank) = 0;
 
   ndof_loc(mpi_rank) = nel_loc(mpi_rank) + 1;
   u_loc{mpi_rank} = zeros (ndof_loc(mpi_rank), 1);
