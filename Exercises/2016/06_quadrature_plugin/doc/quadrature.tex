@@ -36,10 +36,31 @@
 \item adapt the fem1d code to allow the user to specify the quadrature rule as the name of a dynamically loadable object
 \begin{itemize}
 \item the dynamically loadable object should define a function named \cpp{integrate}
-\item \cpp{double integrate (double (* f) (double), double a, double b)}
+\item \cpp{double integrate (std::function<double (double)>, double a, double b)}
 \end{itemize}
 \item implement plugins for midpoint, trapezoidal an Simpson's rule
+\item implement a plugin for quadrature with adaptive refinement
 \end{itemize}
 \end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Implementation in {\tt C++} }
+\only<1-2>{file {\tt fem1d.h}}
+\only<3-8>{file {\tt fem1d.cpp}}
+\only<9>{file {\tt adaptive\_quadrature.h}}
+\tiny
+\only<1>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.h}}
+\only<2>{\lstinputlisting[language=C++, firstline=35, firstnumber=35, lastline=70, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.h}}
+\only<3>{\lstinputlisting[language=C++, firstline=1, firstnumber=1, lastline=35, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.cpp}}
+\only<4>{\lstinputlisting[language=C++, firstline=35, firstnumber=35, lastline=70, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.cpp}}
+\only<5>{\lstinputlisting[language=C++, firstline=70, firstnumber=70, lastline=105, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.cpp}}
+\only<6>{\lstinputlisting[language=C++, firstline=105, firstnumber=105, lastline=140, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.cpp}}
+\only<7>{\lstinputlisting[language=C++, firstline=140, firstnumber=140, lastline=175, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.cpp}}
+\only<8>{\lstinputlisting[language=C++, firstline=175, firstnumber=175, lastline=202, numbers=left, numberstyle=\tiny\color{gray}]{../fem1d-0.8/fem1d.cpp}}
+\end{frame}
+
+
 
 \end{document}

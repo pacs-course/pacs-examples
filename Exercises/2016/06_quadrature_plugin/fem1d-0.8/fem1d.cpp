@@ -51,7 +51,7 @@ int main (int argc, char **argv)
   coeff a_coeff (diffusion);
 
   const std::string quadrature =
-    cl.follow ("adaptive_quadrature.so",
+    cl.follow ("trapezoidal.so",
                2, "-q", "--quadrature-rule");
 
   std::function
