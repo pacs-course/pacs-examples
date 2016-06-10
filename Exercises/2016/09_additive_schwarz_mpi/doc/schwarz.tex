@@ -1,0 +1,112 @@
+ %&latex
+\documentclass[smaller,a4paper]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{graphicx}
+\usepackage{truncate}
+%%\usepackage{mpmulti}
+\usepackage{times}
+
+\newcommand{\largenameref}[1]{\textbf{\huge{\nameref{#1}}}}
+\newcommand{\largehyperlink}[2]{\textbf{\Large\hyperlink{#1}{#2} }}
+\newcommand{\largehypertarget}[2]{\textbf{\color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Largehypertarget}[2]{\textbf{\Large \color{red} \hypertarget{#1}{#2} }}
+\newcommand{\Int}[2]{\displaystyle{\int\limits_{#1}^{#2}}}      
+\newcommand{\Sum}[2]{\displaystyle{\sum\limits_{#1}^{#2}}}      
+\newcommand{\Myfoilheadskip}[1]{\begin{frame}\frametitle{#1}}
+\newcommand{\trace}[2]{\left. #1 \right\rvert_{_{#2} }  }
+\newcommand{\mtrx}[1]{\mathbf{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+\usepackage[english]{babel}
+\lstset{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\scriptsize,                  % The basic style
+  extendedchars=true                       % Allow extended characters
+}
+\newcommand{\cpp}[1]{\lstinline!#1!}
+
+\begin{document}
+\title{(Additive) Schwarz Iteration for a 1D FEM Problem}
+\frame{\titlepage}
+
+\begin{frame}\frametitle{Problem Statement}
+
+Find $u$ such that
+$$
+\left\{
+\begin{array}{l}
+- \left( \varepsilon u ^{\prime} \right) ^{\prime} = f \qquad \mbox{in } (a, b) \\[3mm]
+u(a) = u(b) = 0 
+\end{array}
+\right.
+$$
+Decompose the domain $\Omega := (a, b)$ into $\mathrm{N}_{\mathrm{div}}$ partially overlapping subdomains 
+$$\Omega_{\mathrm{iel}} = (a_{\mathrm{iel}}, b_{\mathrm{iel}}) \qquad \mathrm{iel} = 0\ldots \mathrm{N}_{\mathrm{div}} - 1$$
+%
+$$
+\begin{array}{lr}
+a_{0} = x_{0} = a\\
+a_{\mathrm{iel}} = x_{\mathrm{iel}} - \mathrm{overlap} 
+\qquad &\mathrm{iel} = 1\ldots \mathrm{N}_{\mathrm{div}} - 1\\
+b_{\mathrm{iel}} = x_{\mathrm{iel+1}} + \mathrm{overlap} 
+\qquad & \mathrm{iel} = 0\ldots \mathrm{N}_{\mathrm{div}} - 2\\
+b_{\mathrm{N}_{\mathrm{div}} - 1} = x_{\mathrm{N}_{\mathrm{div}}} = b\\
+\end{array}
+$$
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Iteration}
+\begin{lstlisting}
+for (it = 0; it < maxit; ++it){
+  for (iel = 0; iel < Ndiv; ++iel){
+
+    lval[it, iel] = iel == 0 ? 
+                    0.0 : 
+                    u[it-1, iel-1];
+                    
+    rval[it, iel] = iel == Ndiv - 1 ? 
+                    0.0 : 
+                    u[it-1, iel+1];
+                    
+    solve:
+\end{lstlisting}
+    $$
+    \left\{
+    \begin{array}{l}
+    - \left( \varepsilon u[\mathrm{it},\mathrm{iel}] ^{\prime} \right) ^{\prime} = f 
+    \qquad \mbox{in } (a_{\mathrm{iel}}, b_{\mathrm{iel}}) \\[3mm]
+    u[\mathrm{it},\mathrm{iel}](a_{\mathrm{iel}}) = \mathrm{lval}[\mathrm{it},\mathrm{iell}]\\[3mm] 
+    u[\mathrm{it},\mathrm{iel}](b_{\mathrm{iel}}) = \mathrm{rval}[\mathrm{it},\mathrm{iell}]
+    \end{array}
+    \right.
+    $$
+
+\begin{lstlisting}
+                    
+    if (norm (u[it,iel] - u[it-1,iel]) < tol) break; }}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}\frametitle{Domain Partitioning}
+\end{frame}
+
+\begin{frame}\frametitle{Domain Partitioning}
+\end{frame}
+
+\begin{frame}\frametitle{Exercise}
+
+Adapt the fem1d code to implement the iterative Domain Decomposition
+method defined above in parallel
+
+\begin{itemize}
+\item [{\bf 1.}] Use MPI for the parallelization
+\item [{\bf 2.}] Use OpenMP for the parallelization
+\end{itemize}
+
+
+\end{frame}
+
+
+\end{document}
