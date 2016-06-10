@@ -1,10 +1,10 @@
-OBJS = fem_1d.o 
+OBJS = fem1d.o 
 HEADERS = 
 CPPFLAGS ?= -I. -I/opt/local/include/eigen3 -I/opt/muparser/2.2.5/include/
 LDFLAGS ?= 
 LIBS = 
 
-fem_1d : $(OBJS)
+fem1d : $(OBJS)
 	$(CXX) $(LDFLAGS) $(OBJS) -o $@ $(LIBS)
 
 $(OBJS) : %.o : %.cpp %.h $(HEADERS)
