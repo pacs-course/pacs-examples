@@ -67,7 +67,8 @@ int main()
 {
   std::random_device re;
   // We use the knuth engine
-  auto myseed=re();
+  //auto myseed=re();
+  unsigned int myseed=123456789;
   std::cout<<"The seed is "<<myseed<<std::endl;	
   std::knuth_b e(myseed);
   //std::random_device e;

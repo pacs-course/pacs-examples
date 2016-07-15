@@ -2,7 +2,7 @@
 #define __GEO_HH_
 namespace Geometry{
   const int ndim=2;
-  class ShapeVisitor;
+  class ShapeVisitor;// FORWARD DECLARATION
 
   class Shape{
     public:
