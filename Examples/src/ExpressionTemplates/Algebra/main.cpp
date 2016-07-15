@@ -39,12 +39,12 @@ int main()
 
   // Formula involvind exponent
 
-  a=c+8.0*ET::exp(d);
+  a=c+8.0*exp(d);
   for (auto i : a) std::cout<<i<<" ";
   std::cout<<std::endl;
 
   // NOw we take the logarithm
-  a=ET::log(a);
+  a=log(a);
   for (auto i : a) std::cout<<i<<" ";
   std::cout<<std::endl;
 }

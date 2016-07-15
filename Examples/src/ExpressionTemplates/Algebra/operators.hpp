@@ -68,7 +68,7 @@ namespace ET
   //! Specialization for operation by a scalar
   template<class LO, class OP>
   class
-  BinaryOperator<LO,double,OP> : public Expr<BinaryOperator<LO,double,OP> >
+  BinaryOperator<LO,double,OP,> : public Expr<BinaryOperator<LO,double,OP> >
   {
   public:
     using RO=double;
