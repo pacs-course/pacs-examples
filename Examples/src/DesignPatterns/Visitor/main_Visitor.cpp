@@ -35,11 +35,11 @@ int main(){
 	CountShapes counter;
 	ComputeArea evaluateArea;
 
-	for (vector<Shape*>::iterator i=collection.begin();
-			i!=collection.end();++i){
-		(*i)->accept(counter);
-		(*i)->accept(evaluateArea);
-	}
+	for (auto i: collection)
+          {
+            i->accept(counter);
+            i->accept(evaluateArea);
+          }
 /*  This  does not work. Why?
 	for (vector<Shape*>::iterator i=collection.begin();
 			i!=collection.end();++i){
