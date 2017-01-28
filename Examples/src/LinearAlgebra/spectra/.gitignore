@@ -1,0 +1,5 @@
+*.o
+*.out
+include/Eigen/*
+*.bak
+doc/*
