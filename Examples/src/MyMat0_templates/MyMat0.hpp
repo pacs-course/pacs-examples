@@ -90,6 +90,25 @@ namespace LinearAlgebra{
     /*!
       @}
     */
+
+    /*!
+      \defgroup extractors-inserters Functions to extract/insert whole rows/colums
+      
+      I use the argument type deduction to select the one that does the operation more efficiently.
+      @{
+      
+    */
+    std::vector<T> col(size_type i,StorageType<ROWMAJOR>) const;
+    std::vector<T> col(size_type i,StorageType<COLUMNMAJOR>) const;
+    std::vector<T> row(size_type i,StorageType<ROWMAJOR>) const;
+    std::vector<T> row(size_type i,StorageType<COLUMNMAJOR>) const;
+    void replaceCol(size_type i, std::vector<T> const & ,StorageType<ROWMAJOR>);
+    void replaceCol(size_type i, std::vector<T> const & ,StorageType<COLUMNMAJOR>);
+    void replaceRow(size_type i, std::vector<T> const & ,StorageType<ROWMAJOR>);
+    void replaceRow(size_type i, std::vector<T> const & ,StorageType<COLUMNMAJOR>);
+    /*!
+      @}
+    */
   public:
     //! It uses the one selected by the second argument.
     /*
@@ -137,6 +156,30 @@ namespace LinearAlgebra{
     size_type nrow()const {return nr;};
     //! Number of columns
     size_type ncol()const {return nc;};
+    //! Returns the ith column
+    /*!
+      I use tagging technique to implement the best method according
+      to the storage policy
+     */
+    std::vector<T> col(size_type i) const { return col(i,StorageType<storagePolicy>());}
+    //! Returns the ith row
+    /*!
+      I use tagging technique to implement the best method according
+      to the storage policy
+     */
+    std::vector<T> row(size_type i) const { return row(i,StorageType<storagePolicy>());}
+    //! Replaces the ith column
+    /*!
+      I use tagging technique to implement the best method according
+      to the storage policy
+     */
+    void replaceCol(size_type i, std::vector<T> const & v) { return replaceCol(i,v,StorageType<storagePolicy>());}
+    //! Replaces the ith row
+    /*!
+      I use tagging technique to implement the best method according
+      to the storage policy
+     */
+    void replaceRow(size_type i, std::vector<T> const & v){ return replaceRow(i,v,StorageType<storagePolicy>());}
     //! Returns element with no bound check (const version)
     /*!
       It allows a=m(1,1) on constant matrix m
@@ -374,6 +417,68 @@ namespace LinearAlgebra{
     std::vector<double> tmp;
     m.vecMultiply(v,tmp);
     return tmp;
+  }
+
+  template<class T, StoragePolicySwitch storagePolicy>
+  std::vector<T> MyMat0<T, storagePolicy>::col(size_type j,StorageType<ROWMAJOR>) const
+  {
+    // Extracting a column from a matrix stored in row major ordering is not efficient
+    std::vector<T> res;
+    res.reserve(nr);
+    for (size_type i=0;i<nr;++i)res.emplace_back(data[getIndex(i,j)]);
+    return res;
+  }
+
+  template<class T, StoragePolicySwitch storagePolicy>
+  std::vector<T> MyMat0<T, storagePolicy>::col(size_type j,StorageType<COLUMNMAJOR>) const
+  {
+    // I use the assign method and the iterator arithmetic valid for iterators to vectors
+    return std::vector<T>().assign(data.cbegin() + getIndex(0,j), data.cbegin() + getIndex(0,j+1));
+  }
+  
+  template<class T, StoragePolicySwitch storagePolicy>
+  std::vector<T> MyMat0<T, storagePolicy>::row(size_type i,StorageType<ROWMAJOR>) const
+  {
+    // I use the assign method and the iterator arithmetic valid for iterators to vectors
+    return std::vector<T>().assign(data.cbegin() + getIndex(i,0), data.cbegin() + getIndex(i+1,0));
+  }
+  
+  template<class T, StoragePolicySwitch storagePolicy>
+  std::vector<T> MyMat0<T, storagePolicy>::row(size_type i,StorageType<COLUMNMAJOR>) const
+  {
+    // Extracting a row from a matrix stored in column major ordering is not efficient
+    std::vector<T> res;
+    res.reserve(nc);
+    for (size_type j=0;j<nc;++j)res.emplace_back(data[getIndex(i,j)]);
+    return res;
+  }
+
+  template<class T, StoragePolicySwitch storagePolicy>
+  void  MyMat0<T, storagePolicy>::replaceCol(size_type j, std::vector<T> const & c,StorageType<ROWMAJOR>)
+  {
+    for (size_type i=0;i<nr;++i)data[getIndex(i,j)]=c[i];
+  }
+
+  template<class T, StoragePolicySwitch storagePolicy>
+  void  MyMat0<T, storagePolicy>::replaceCol(size_type j, std::vector<T> const & c,StorageType<COLUMNMAJOR>)
+  {
+    // I can trasverse the data in the natural order. The optimizer can exploit cache pre-fetching
+    auto start=data.begin()+getIndex(0,j);
+    for (size_type i=0;i<nr;++i)*(start++)=c[i];
+  }
+  
+  template<class T, StoragePolicySwitch storagePolicy>
+  void  MyMat0<T, storagePolicy>::replaceRow(size_type i, std::vector<T> const & c,StorageType<ROWMAJOR>)
+  {
+    // I can trasverse the data in the natural order. The optimizer can exploit cache pre-fetching
+    auto start=data.begin()+getIndex(i,0);
+    for (size_type i=0;i<nc;++i)*(start++)=c[i];
+  }
+  
+  template<class T, StoragePolicySwitch storagePolicy>
+  void  MyMat0<T, storagePolicy>::replaceRow(size_type i, std::vector<T> const & c,StorageType<COLUMNMAJOR>)
+  {
+    for (size_type j=0;i<nc;++i)data[getIndex(i,j)]=c[i];
   }
   
 }

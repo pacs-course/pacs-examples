@@ -15,15 +15,6 @@
 #endif
 typedef REAL Real;
 using result_type=std::complex<Real>;
-//! Negative discriminant
-/*!
-  An exception that will be trown if the discriminant is negative
- */
-class negativeDiscriminant: public std::exception
-{
-public:
-	virtual const char * what() const throw();
-};
 
 //! Computer the root of a quadratic polynomial using basic rule
 std::pair<result_type,result_type>
