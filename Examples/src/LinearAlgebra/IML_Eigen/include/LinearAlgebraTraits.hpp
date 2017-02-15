@@ -31,7 +31,8 @@ namespace LinearAlgebra
   {
     return a.norm();
   }
-    
+
+  
   // This part is experimental. It is not needed
   // Primary templates
   template< class Vector>

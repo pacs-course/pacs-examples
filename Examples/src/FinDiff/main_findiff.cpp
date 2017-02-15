@@ -7,10 +7,13 @@
 #include <cstdlib>
 #if defined(SINGLE_PRECISION)
 using Real=float;
+std::string filename("single.dat");
 #elif defined(EXTENDED_PRECISION)
 using Real=long double;
+std::string filename("extended.dat");
 #else
 using Real=double;
+std::string filename("double.dat");
 #endif
 const Real a=100.0;
 const Real b=4.0;
@@ -27,7 +30,7 @@ Real dfun (Real const & x)
   return a*b*std::exp(b*x);
 } 
 
-//! Tests accuracy of finite differences
+//! Tests of accuracy of finite differences
 /*!
   It computes \f$ \frac{df}{dx}(x)\f$ at a given point x using second order
   centered finite differences. It outputs the error. The example wants to show that 
@@ -51,29 +54,42 @@ int main()
   std::cout<<" X value "<<x<<std::endl;
   
   std::vector<Real> derNumer;
+  std::vector<Real> der4Numer;
   std::vector<Real> Error;
+  std::vector<Real> Error4;
   std::vector<Real> spacing;
   std::vector<Real> truncationErrorEstimate;
   derNumer.reserve(n);
+  der4Numer.reserve(n);
   Error.reserve(n);
+  Error4.reserve(n);
   spacing.reserve(n);
   truncationErrorEstimate.reserve(n);
   Real constexpr half(0.5);
+  Real constexpr twelvth(static_cast<Real>(1)/static_cast<Real>(12));
+  Real constexpr twothird(static_cast<Real>(2)/static_cast<Real>(3));
+  
   for (int i=0;i<n;++i)
     {
       spacing.push_back(h);
+      // Second order formula
       Real dn = half*(fun(x+h)-fun(x-h))/h;
+      // Fourth order formula
+      Real dn4= (twelvth*fun(x-2*h)-twothird*fun(x-h)-twelvth*fun(x+2*h)+
+                 twothird*fun(x+h))/h;
       Real de = dfun(x);
       derNumer.push_back(dn);
+      der4Numer.push_back(dn4);
       Error.push_back(std::abs(de-dn));
+      Error4.push_back(std::abs(de-dn4));
       truncationErrorEstimate.push_back(u*dfun(x)*x/h); 
       h/=2;
     }
   // Write data
-  std::ofstream file("output.dat");
+  std::ofstream file(filename.c_str());
   for (int i=0;i<n;++i)
     {
-      file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<truncationErrorEstimate[i]<<std::endl;
+      file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<truncationErrorEstimate[i]<<" "<<Error4[i]<<std::endl;
     }
   file.close();
 }
