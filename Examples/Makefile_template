@@ -18,7 +18,7 @@ MAKEFILEH_DIR=../../
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
-#
+# This is optional. If not present is not an error
 -include Makefile.inc
 
 #
@@ -37,7 +37,7 @@ HEADERS=$(wildcard *.hpp)
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
-#========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
+#========================== NEW THE DEFINITION OF THE TARGETS
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all

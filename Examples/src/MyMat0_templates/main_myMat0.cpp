@@ -77,4 +77,8 @@ int main()
   std::cout<<watch<<std::endl;
   std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
   std::cout<<"Speedup: "<<t1/t2<<std::endl;
+  std::vector<double> v(A.nrow(),1.0);
+  A.replaceCol(3,v);
+  auto vv = A.col(3);
+  std::cout<<A(0,3)<<" "<<A(A.nrow()-1,3)<<" "<<vv.front()<<" "<<vv.back()<<std::endl;
 }
