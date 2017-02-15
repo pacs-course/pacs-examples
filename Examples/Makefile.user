@@ -2,32 +2,45 @@
 # This file must be renamed into Makefile.inc in order to work!!
 #
 
-# This is the user defined part of the Makefile
+# *****  This is the user defined part of the Makefile
 #
-# It has been modified so to read from environmental variables.
+#  It is included in almost all Makefiles of the example (a part some particulare cases)
 #
-# Change it to suit your need
+# It has been modified so to read some data from environmental variables
+# and be compatible with the system of modules used at MOX
+#
+# YOU CAN change it to suit your need!!!!
+#
+# Recall that you may also change some options on the fly using
+#
+#   make target OPTION=MY_OPTION
+#
+# for instance if you want to change the compiler to clang on the fly
+#
+# make target CXX=clang++
+#
 
-# The directory where the examples reside
+# The directory where the examples reside (you HAVE to change this)
 PACS_ROOT=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
 # The directory with the Eigen (leave blank if they are in a standard directory)
 EIGEN_DIR=$(mkEigenInc)
 #EIGEN_DIR=/usr/local/include/eigen3/
 
+# If you need extra directories. Leave as it is and chenge the specific Makefile (it is better)
 OTHER_LIB_DIR=
 OTHER_INC_DIR=
 #
-# You need trilinos at least 10.10
+# You need trilinos at least 10.10. You may need to indicate where it is
 #
 TRILINOS_LIBDIR=-L/home/forma/lifev-env/trilinos-install/lib
 TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
 #
-# Some istallations add tilinos_ to the name of the libraries
+# Some istallations add trilinos_ to the name of the libraries
 # i.e. libtrilinos_teuchos.so. In that case set TRILINOS_SUFFIX=trilinos_
 # The
 TRILINOS_SUFFIX=# To make sure there is no space!
 #
-# Mpi directories for library and includes
+# Mpi directories for library and include files
 #
 MPI_LIBDIR=${mkOpenmpiLib}
 MPI_INCDIR=${mkOpenmpiInc}
@@ -38,34 +51,33 @@ MPI_INCDIR=${mkOpenmpiInc}
 LIBRARIES=
 
 #
-# The C++ compiler
+# The C++ compiler (taken from an environmental variable)
 #
 #CXX = g++ 
 #CXX = icc
-CXX = /opt/clang3.5/bin
+#CXX = clang++
 CXX = ${mkCxxCompiler}
 #
-# Since we are only uning c++ I set CC=CXX so that the linker LINK.o is correct
-# make has no separate macro for the linker!
-# If you need C to compiler but you still need the c++ linker do
 #CC=your favourite C compiler
 # do
+# If you need C to compiler but you still need the c++ linker to 
 #LINK.o = $(LINK.cc)
-#LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
+# Since we are only uning c++ I set the linker LINK.o form object files
+# should use the c++ compiler make has no separate macro for the linker!
+LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
 #
-CC=$(CXX)
-#
-# Se CXX=icc for intel compiler
-#
+# If you are using intel compilers
 ifeq ($(findstring icc, $(CXX)),icc)
 inteldir=$(dir $(CXX))
+# Change it for the location of your compiler!
 OTHER_LIB_DIR+=/usr/local/opt/intel/cc/9.0/lib
 endif
 #
-# Se CXX=clang for clang compiler
+# Maybe you have to add the library for the clang compiler
+# if not installed in the standard directories.
 #
 ifeq ($(findstring clang, $(CXX)),clang)
-OTHER_LIB_DIR+=/opt/clang3.5/lib
+OTHER_LIB_DIR+=
 endif
 #
 #  DEFINES: Possible -DXX statements
@@ -73,7 +85,7 @@ endif
 # -DNDEBUG disactivates asserts
 DEFINES=
 #
-#
+#  OPTIMIZATION
 # Warning flags: Level of warning
 #
 WARNFLAGS=-Wall
@@ -86,11 +98,10 @@ WARNFLAGS=-Wall
 # -O       attemp code optimizations
 #
 ifdef RELEASE
-OPTFLAGS = -O3
-DEFINES+=-DNDEBUG
+OPTFLAGS = -O2
 DEBUG=no
 else
-OPTFLAGS = -g
+OPTFLAGS = -g -O0
 DEBUG=yes
 endif
 
@@ -98,20 +109,16 @@ ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
   LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
 else
-  OPTFLAGS=-O3
+  OPTFLAGS=-O2
   CPPFLAGS+=-DNDEBUG
 endif
 
 #
-# Flags for standard
+# Flags for standard 
 #
-ifeq ($(findstring clang, $(CXX)),clang)
-STANDARD=c++11
 # if you want c++14
 #STANDARD=c++14
-else
 STANDARD=c++11
-endif
 export STDFLAGS=-std=$(STANDARD)
 ##
 #  END USER MODIFIABLE PART
