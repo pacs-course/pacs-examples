@@ -57,7 +57,9 @@ main_extended: main_findiff.cpp
 
 run:
 	$(MAKE) all
-	./main_findiff
+	./main_float
+	./main_double
+	./main_extended
 	gnuplot gnuplot.txt
 clean:
 	-\rm -f $(EXEC) $(OBJS) main_float main_double main_extended

@@ -37,6 +37,7 @@ int main(){
       // Beware: this is not safe. If you give in input data
       // not convertible to Reals you get unpredictable result
       // A better implementation uses getline and istringstreams
+      // Or GetPot!
       cin >> a>> b>>c;
       if(cin.fail())
 	{
@@ -68,13 +69,13 @@ int main(){
 	      cout<< " With more stable method:"<<endl;
 	      result=quadraticRoot(a,b,c);
 	      cout<<"x1="<<result.first<<" x2="<<result.second<<endl<<endl;
-	      // Residual is always computed in double precision
+	      // Residual is always computed in extended precision
               printResidual(result.first,result.second,a,b,c);
 	    }
 	  catch (std::runtime_error & error)
 	    {
 	      cerr<<error.what()<<endl;
-	      //exit(1);
+	      goto TryAgain;
 	    }
 	}else
 	{
