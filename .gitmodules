@@ -1,0 +1,3 @@
+[submodule "Examples/src/LinearAlgebra/CppNumericalSolvers"]
+	path = Examples/src/LinearAlgebra/CppNumericalSolvers
+	url = git@github.com:lformaggia/CppNumericalSolvers.git
