@@ -4,3 +4,6 @@
 [submodule "Examples/src/LinearAlgebra/spectra"]
 	path = Examples/src/LinearAlgebra/spectra
 	url = git@github.com:lformaggia/spectra.git
+[submodule "Examples/src/LinearAlgebra/redsvd-h"]
+	path = Examples/src/LinearAlgebra/redsvd-h
+	url = git@github.com:lformaggia/redsvd-h.git
