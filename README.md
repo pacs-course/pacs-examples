@@ -6,7 +6,7 @@ that will be explained during the PACS (Programmazione Avanzata per il Calcolo
 Scientifico - Advanced Programming for Scientific Calculus) course at
 Politecnico di Milano.
 
-The software require a c++11 compiler, i.e. gcc >= 4.6.1 or clang >= 3.1.
+The software require a c++11 compiler, i.e. gcc >= 4.8 or clang >= 3.2.
 Instructions to compile a suitable version of clang for ubuntu can be found in the
 [wiki](https://github.com/pacs-course/pacs/wiki/Instructions-to-install-clang-3.1-on-ubuntu-12.04.1-and-12.10).
 
