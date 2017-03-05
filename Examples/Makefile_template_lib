@@ -92,6 +92,7 @@ all:
 	@echo "make dynamic makes dynamic library and executable"
 	@echo "make depend just makes dependency file"
 	@echo "make clean cleans all but not not library"
+        @echo "make library LIBTYPE=[DYNAMIC|STATIC] makes dyn/stat library"
 	@echo "make distclean cleans all"
 	@echo "make install installs"
 	@echo "macro DEBUG=no  deactivates debugging"
@@ -101,10 +102,10 @@ all:
 depend: $(DEPEND)
 
 static:
-	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
+	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC 
+        $(MAKE) exec LIBTYPE=STATIC 
 dynamic:
-	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
+	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
