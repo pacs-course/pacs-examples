@@ -1,12 +1,9 @@
-CXX=g++
-#CXXFLAGS=-O2 -std=c++11 -Wall
-CXXFLAGS=-g -std=c++11 -Wall
-CPPFLAGS=-I/usr/local/include/eigen3 -I..
-LDFLAGS=-O2
-INCLUDEFILES=../MM_readers.hpp
-LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
+include ../../../../Makefile.inc
+CPPFLAGS+=-I..
 
-all: testMM_readers  testCooWrite testAdjacency
+all: $(DEPEND) testMM_readers  testCooWrite testAdjacency
+
+SRCS=testMM_readers.cpp  testCooWrite.cpp testAdjacency.cpp
 
 testMM_readers:testMM_readers.o
 
@@ -23,4 +20,12 @@ testAdjacency.o: testAdjacency.cpp ../COOExtractor.hpp ../Utilities.hpp
 ../Utilities.o: ../Utilities.cpp ../Utilities.hpp
 
 clean:
-	$(RM) *.o vec_out.mtx mat_out.mtx testMM_readers testCooWrite testAdjacency
+	$(RM) *.o vec_out.mtx mat_out.mtx testMM_readers testCooWrite testAdjacency $(DEPEND)
+
+$(DEPEND): $(SRCS)
+	$(RM) $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
+
+-include $(DEPEND)
