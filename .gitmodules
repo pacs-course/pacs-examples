@@ -1,9 +1,9 @@
 [submodule "Examples/src/LinearAlgebra/CppNumericalSolvers"]
 	path = Examples/src/LinearAlgebra/CppNumericalSolvers
-	url = git@github.com:lformaggia/CppNumericalSolvers.git
+	url = https://github.com/lformaggia/CppNumericalSolvers.git
 [submodule "Examples/src/LinearAlgebra/spectra"]
 	path = Examples/src/LinearAlgebra/spectra
-	url = git@github.com:lformaggia/spectra.git
+	url = https://github.com/lformaggia/spectra.git
 [submodule "Examples/src/LinearAlgebra/redsvd-h"]
 	path = Examples/src/LinearAlgebra/redsvd-h
-	url = git@github.com:lformaggia/redsvd-h.git
+	url = https://github.com/lformaggia/redsvd-h.git
