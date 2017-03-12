@@ -33,7 +33,8 @@ namespace LinearAlgebra
   }
 
   
-  // This part is experimental. It is not needed
+  // This part is experimental. It is not needed and it may be wrong.
+  // Ignore it for the moment
   // Primary templates
   template< class Vector>
   class

@@ -41,7 +41,7 @@ namespace Eigen
   VectorType read_MM_Vector(const std::string& filename);
   
   /* To write Matrices or Vectors in MatrixMarket format use
-     from unsupported/Eigen/SparseExtra
+     from unsupported/Eigen/SparseExtra:
      
      template<typename SparseMatrixType>
      bool saveMarket(const SparseMatrixType& mat, const std::string& filename, int sym = 0)

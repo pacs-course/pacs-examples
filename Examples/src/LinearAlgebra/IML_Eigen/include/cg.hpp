@@ -26,7 +26,7 @@ int
 CG(const Matrix &A, Vector &x, const Vector &b,
    const Preconditioner &M, int &max_iter, typename Vector::Scalar &tol)
 {
-  using Real= typename Vector::Scalar;
+  using Real= typename Matrix::Scalar;
   Real resid;
   Vector p(b.size());
   Vector z(b.size());

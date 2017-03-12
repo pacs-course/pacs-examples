@@ -1,0 +1,12 @@
+
+A Set of utilities for linear algebra.
+
+make static
+make install
+
+installs static libraries
+
+make dynamics
+make install
+
+installs dynamic libraries
