@@ -83,7 +83,7 @@ int main()
       Error.push_back(std::abs(de-dn));
       Error4.push_back(std::abs(de-dn4));
       truncationErrorEstimate.push_back(u*dfun(x)*x/h); 
-      h/=2;
+      h/=2.;
     }
   // Write data
   std::ofstream file(filename.c_str());

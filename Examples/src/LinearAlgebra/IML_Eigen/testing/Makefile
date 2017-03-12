@@ -4,17 +4,24 @@ include ../../../../Makefile.inc
 EIGENDIR=$(EIGEN_DIR)
 MMDIR=../../Utilities
 THISINCDIR=../include
-INCLUDES= -I$(THISINCDIR) -I$(MMDIR) -I$(EIGENDIR)
-OPTFLAGS=-O2 -Wall
+LDLIBS=-lumfpack
+INCLUDES= -I$(THISINCDIR) -I$(MMDIR) -I$(EIGEN_DIR) -I$(UMFPACK_INCDIR)
 CPPFLAGS+=$(INCLUDES)
-CXX=g++
-
 vpath %.h $(INCLUDES)
 vpath %.hpp $(INCLUDES)
 
 EXE=$(patsubst %.cc,%,$(wildcard *.cc))
+SRCS=$(wildcard *.cc) $(wildcard *.cpp)
 
-all: $(EXE)
+all: $(DEPEND) test_all $(EXE) 
 
 clean:
-	-rm -f *.o $(EXE)
+	-rm -f *.o $(EXE) test_all
+
+$(DEPEND): $(SRCS)
+	-\rm $(DEPEND)
+	for f in $(SRCS); do \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	done
+
+

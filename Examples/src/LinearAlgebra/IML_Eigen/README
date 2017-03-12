@@ -1,0 +1,10 @@
+Here we have the routines of the IML++ Library converted to be used with the eigen. You nedd to install the Utilities
+
+Go into ../Utilities and type
+
+make install
+
+In testings you find several tests
+
+in ../MatrixData you have several matrices to test.
+
