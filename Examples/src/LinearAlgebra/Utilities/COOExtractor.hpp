@@ -10,7 +10,7 @@
 
 namespace LinearAlgebra
 {
-  //! An alias to vector to store the indices
+  //! An alias to vector to store a matrix indices
   template<class Index=unsigned int>
   using
   CooIndices=std::vector<std::array<Index,2> >;
@@ -35,7 +35,14 @@ namespace LinearAlgebra
   template<class Index, class Value>
   std::ostream & outputForOctave(std::ostream & out, CooData<Index,Value> const & coo, int rows, int cols);
 
-  //! Version for Eigen Matrices
+  /*! Write in a format readable from Matlab and Octave
+
+     Version for Eigen Matrices
+     
+    \param out output stream (typically a file)
+    \param m An Eigen Matrix
+    \return The stream for concatenation purposes
+   */
   template<class EMat>
   std::ostream & outputForOctave(std::ostream & out, EMat const & m);
 
@@ -48,11 +55,34 @@ namespace LinearAlgebra
   auto extractCooData(SpMat const & mat) ->
     CooData<typename SpMat::Index, typename SpMat::Scalar>;
 
+  /*!
+    Prints the matrix
+    \param out An output stream
+    \param coo the structure containing the matrix as COO data
+    \return The output stream
+   */
   template<class Index, class Value>
   std::ostream & printCooData(std::ostream & out, CooData<Index,Value> const & coo);
   
+  /*!
+    Prints the matrix by calling \ref{printCooData}
+    \param out An output stream
+    \param coo the structure containing the matrix as COO data
+    \return The output stream
+   */
   template<class Index, class Value>
   std::ostream & operator << (std::ostream & out, CooData<Index,Value> const & coo);
+  
+  /*!
+    Creates an Eigen matrix from a CooData structure
+    /param SparseEigenMatrix The type of the sparse Eigen Matrix
+    /param Index the type used to store indices
+    /param cooMat The CooData structure
+    /return An Eigen Matrix
+  */
+  template <class SparseEigenMatrix, class Index,class Value>
+  SparseEigenMatrix make_EigenMatrix(
+                                     CooData<Index,Value> const & cooMat);
 
 
   //   IMPLEMENTATIONS START HERE  
@@ -75,7 +105,7 @@ namespace LinearAlgebra
           values.emplace_back(it.value());
         }
     // it can be optimized by creating the CooData object from the
-    // start.
+    // start!
     return CooData<Index,Scalar>{indices,values};
   };
 
@@ -140,8 +170,12 @@ namespace LinearAlgebra
         res.first=std::max(res.first,i[0]);
         res.second=std::max(res.second,i[1]);
       }
-    res.first++;
-    res.second++;
+    if (not cooMat.first.empty())
+      {
+        // Add one
+        res.first++;
+        res.second++;
+      }
     return res;
   }
 

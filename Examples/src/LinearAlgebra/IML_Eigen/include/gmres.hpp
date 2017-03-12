@@ -2,24 +2,29 @@
 #define HH_GMRES_HH
 
 //*****************************************************************
-// Iterative template routine -- GMRES
+//! Iterative template routine -- GMRES
+//!
+//! GMRES solves the unsymmetric linear system Ax = b using the 
+//! Generalized Minimum Residual method
+//!
+//! GMRES(m) follows the algorithm described on p. 20 of the 
+//! SIAM Templates book.
+//!
+//! The return value indicates convergence within max_iter (input)
+//! iterations (0), or no convergence within max_iter iterations (1).
 //
-// GMRES solves the unsymmetric linear system Ax = b using the 
-// Generalized Minimum Residual method
-//
-// GMRES follows the algorithm described on p. 20 of the 
-// SIAM Templates book.
-//
-// The return value indicates convergence within max_iter (input)
-// iterations (0), or no convergence within max_iter iterations (1).
-//
-// Upon successful return, output arguments have the following values:
-//  
-//        x  --  approximate solution to Ax = b
-// max_iter  --  the number of iterations performed before the
-//               tolerance was reached
-//      tol  --  the residual after the final iteration
-//  
+//! Upon successful return, output arguments have the following values:
+//!
+//!    \param Matrix  An Eigen sparse matrix
+//!    \param Vector  An Eigen vector
+//!    \param Preconditioner Something that obeys the preconditioner concept: It has a method called solve(Vector const&).
+//!    \param b The right hand side
+//!    \param x approximate solution to Ax = b (initial guess at te start)
+//!    \param max_iter the number of iterations performed before the
+//!               tolerance was reached
+//!    \param m  The restart level.
+//!    \param tol the residual after the final iteration
+ 
 //*****************************************************************
 #include <Eigen/Dense>
 #include "gmres_util.hpp"
