@@ -1,6 +1,4 @@
-#ifndef PIPPO
-#define PIPPO
-#endif
+
 
 #ifdef PIPPO
 If pippo is defined this part of text will be contained in

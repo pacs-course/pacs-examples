@@ -11,7 +11,7 @@
 
   b[0] and c[n-1] are not used. a,b and c are any stl compliant sequential container
 
-  @param C type of a stl complieant sequential container. Typically a vector<double>
+  @param C type of a stl compliant sequential container. Typically a vector<double>
   @param a Diagonal terms
   @param b subdiagonal terms
   @param c superdiagonal terms
