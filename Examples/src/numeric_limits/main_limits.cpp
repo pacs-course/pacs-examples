@@ -153,5 +153,6 @@ int main () {
   cout<< " 1 + eps  = "<< one + numeric_limits<double>::epsilon()<<endl;
   cout<< " 1 + eps/2= "<< one + numeric_limits<double>::epsilon()/2.0<<endl;
   cout<< " Is 1+eps/2 equal to 1?:"<<
-    ((one + numeric_limits<double>::epsilon()/2.0) == one)<<endl; 
+    ((one + numeric_limits<double>::epsilon()/2.0) == one)<<endl;
+  cout<<"Max integer plus one"<< numeric_limits<int>::max()+1<<std::endl;
 }
