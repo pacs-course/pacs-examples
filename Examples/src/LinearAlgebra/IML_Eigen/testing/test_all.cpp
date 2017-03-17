@@ -18,7 +18,7 @@ using std::cerr;
 #include <map>
 #include <string>
 //! Select solvers
-enum SolverSwitch {Umfpack, SuperLU, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr};
+enum SolverSwitch {Umfpack, SparseLU, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr};
 //! where to store parameters
 struct TestParameters
 {
@@ -35,7 +35,7 @@ struct TestParameters
 const std::map<std::string,SolverSwitch> getSolver=
   {
     {std::string{"umfpack"},Umfpack},
-    {std::string{"superlu"},SuperLU},
+    {std::string{"sparselu"},SparseLU},
     {std::string{"gmres"},gmres},
     {std::string{"cg"},cg},
     {std::string{"cheby"},cheby},
@@ -143,7 +143,7 @@ main(int argc, char * argv[])
   auto tol  =testParameters.tol; 
   switch(testParameters.solverSwitch)
     {
-    case Umfpack :
+    case SparseLU :
       {
         Eigen::SparseLU<SpMat> SLUsolver;
         SLUsolver.analyzePattern(A);
@@ -154,7 +154,7 @@ main(int argc, char * argv[])
         result=0;
       }
       break;
-    case SuperLU :
+    case  Umfpack:
       {
         Eigen::UmfPackLU<SpMat> UFsolver;
         UFsolver.analyzePattern(A);
