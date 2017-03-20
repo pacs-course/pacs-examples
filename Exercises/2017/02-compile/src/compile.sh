@@ -46,7 +46,7 @@ function do_build_executable {
         g++ -std=c++11 -c -I../include -I$mkEigenInc -I$mkSuitesparseInc test_all.cpp
     fi
 
-    if [[ ! ( -a test_all ) || ( -a test_all && test_all.cpp -nt test_all.o) ]]
+    if [[ ! ( -a test_all ) || ( -a test_all && test_all.o -nt test_all) ]]
     then
         g++ -L$mkSuitesparseLib -lumfpack -L$PWD -llinearalgebra test_all.o -o test_all
     fi
