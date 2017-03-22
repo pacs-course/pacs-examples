@@ -138,7 +138,7 @@ namespace LinearAlgebra
 
     Cache friendly computations. Using blas for dot product
   */
-  
+#ifndef NOBLAS
   MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,ROWMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2);
 
   MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2);
@@ -146,7 +146,7 @@ namespace LinearAlgebra
   MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2);
 
   MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,ROWMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2);
-
+#endif
   /*! @}*/
 
 }
