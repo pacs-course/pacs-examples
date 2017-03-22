@@ -17,4 +17,12 @@ To compile with optimization use
 
 make DEBUG=no
 
+BEWARE: the test uses also the blas library! Correct the local
+Makefile.inc so that it addresses the libblas library installed in
+your system! If you do not have the blas, compile with BLAS=no, for instance compiling with
+
+make DEBUG=no BLAS=no
+
+
+
 
