@@ -49,11 +49,13 @@ int main()
   // Testing different implementation of matrix/matrix
   // Creating 2 big matrices
   //MyMat0<double,COLUMNMAJOR> A(1000,1000);
+  std::cout<<"Creating two big matrices"<<std::endl;
   MyMat0<double,ROWMAJOR> A(1024,2048);
   A.fillRandom();
   //  MyMat0<double,COLUMNMAJOR> B(1000,1000);
   MyMat0<double,ROWMAJOR> B(2048,1024);
   B.fillRandom();
+  std::cout<<"Done"<<std::endl;
   Timings::Chrono watch;
   std::cout<< "Standard Matrix Moltiplication"<<"\n";
   watch.start();
@@ -69,6 +71,7 @@ int main()
   std::cout<<watch<<std::endl;
   std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
   std::cout<<"Speedup: "<<t1/t2<<std::endl;
+#ifndef NOBLAS
   std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
   watch.start();
   res2=matMulOptBlas(A,B);
@@ -77,8 +80,11 @@ int main()
   std::cout<<watch<<std::endl;
   std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
   std::cout<<"Speedup: "<<t1/t2<<std::endl;
+#endif
+  /* Only to test if replaceCol works
   std::vector<double> v(A.nrow(),1.0);
   A.replaceCol(3,v);
   auto vv = A.col(3);
   std::cout<<A(0,3)<<" "<<A(A.nrow()-1,3)<<" "<<vv.front()<<" "<<vv.back()<<std::endl;
+  */
 }
