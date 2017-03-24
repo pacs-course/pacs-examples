@@ -390,6 +390,8 @@ namespace LinearAlgebra{
   template<class T, StoragePolicySwitch storagePolicy>
   void  MyMat0<T, storagePolicy>:: fillRandom(unsigned int seed)
     {
+      // Using the old random stuff.
+      //!\todo porting to C++11
       if (seed==0) seed=std::time(0);
       double rmax=static_cast<double>(RAND_MAX+2.0);
     std::srand(seed);
