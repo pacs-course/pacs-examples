@@ -1,13 +1,8 @@
+#ifndef NOBLAS
 #include "MyMat0_util.hpp"
 #include <cblas.h> // the blas
 namespace LinearAlgebra
 {
-  /*!\defgroup matmat otimized matrix-matrix computation.
-
-   @{*
-   
-   Chache friendly computations. I avoid striding along columns on a ROWMAJOR matrix
-  */
   MyMat0<double,ROWMAJOR> matMulOptBlas(
                                     MyMat0<double,ROWMAJOR> const & m1,
                                     MyMat0<double,ROWMAJOR> const & m2)
@@ -30,8 +25,6 @@ namespace LinearAlgebra
     return res;
   }
 
-  /*! doublehe worst case
-   */
 
   MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,ROWMAJOR> const & m2)
   {
@@ -41,8 +34,6 @@ namespace LinearAlgebra
     return matMulOptBlas(mc1,m2);
   }
 
-  /*! An intermediate case
-   */
   MyMat0<double,ROWMAJOR> matMulOptBlas(MyMat0<double,COLUMNMAJOR> const & m1,MyMat0<double,COLUMNMAJOR> const & m2)
   {
     MyMat0<double,ROWMAJOR> res(m1.nrow(),m2.ncol(),0.);
@@ -80,7 +71,5 @@ namespace LinearAlgebra
     return res;
  
   }
-
-  /*! @}*/
-
 }
+#endif
