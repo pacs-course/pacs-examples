@@ -1,0 +1,35 @@
+ %&latex
+\documentclass[smaller,a4paper,allowframebreaks]{beamer}
+\usepackage{amsmath,amssymb,pdfsync,listings}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{truncate}
+\usepackage[final]{pdfpages}
+\usepackage{times}
+\usepackage{pgffor}
+\usepackage[english]{babel}
+
+\begin{document}
+\title{Newton Method Implementation Using std::function}
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Exercise}
+
+\begin{itemize}
+\item Implement a newton\_solver class using the provided 
+header
+\item Let algorithm parameters be read from the command line using GetPot
+\item Pass function and derivatives as
+\begin{itemize}
+\item lambdas
+\item muparser wrapper
+\item function pointers
+\end{itemize}
+\item Use the solver to solve the equation
+$$ x^{3} + 5 x + 3 = 0$$
+\end{itemize}
+\end{frame}
+
+
+\end{document}
