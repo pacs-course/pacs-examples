@@ -1,11 +1,12 @@
 #include "newton.h"
 #include "muparser_fun.h"
+#include "muParserInterface.hpp"
 #include <GetPot>
 
 int
 main (int argc, char ** argv)
 {
-
+  using namespace MuParserInterface;
   GetPot g (argc, argv);
   int maxit = g ("maxit", 100);
   double funtol = g ("funtol", 1.0e-16);
@@ -13,9 +14,11 @@ main (int argc, char ** argv)
 
   std::string fun_str ("x*x*x+5*x+3");
   std::string prime_str ("3*x*x+5");
-  muparser_fun fun (fun_str),
-    prime (prime_str);
-    
+  //  muparser_fun fun (fun_str),
+  // prime (prime_str);
+  muParserInterface fun (fun_str);
+  muParserInterface  prime (prime_str);
+
   newton_solver n(fun, prime, maxit, funtol, xtol);
   n.solve (0.0);
   std::cout << "x = " << n.get_result () << std::endl;
