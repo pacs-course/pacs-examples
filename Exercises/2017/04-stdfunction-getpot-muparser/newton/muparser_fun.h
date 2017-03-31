@@ -32,6 +32,8 @@ public :
     try
       {
         y = p.Eval ();
+        std::cout << var << std::endl;
+        std::cout << y << std::endl;
       }
     catch (mu::Parser::exception_type &e)
       {
