@@ -14,8 +14,9 @@ main (int argc, char ** argv)
 
   newton_solver n(fun, prime, maxit, funtol, xtol);
   n.solve (0.0);
-  std::cout << "x = " << n.get_result () << std::endl;
-  std::cout << "r = " << n.get_residual () << std::endl;
-  std::cout << "iter = " << n.get_iter () << std::endl;
+  std::cout << "x = "    << n.get_result ()   << std::endl;
+  std::cout << "r = "    << n.get_residual () << std::endl;
+  std::cout << "iter = " << n.get_iter ()     << std::endl;
   return 0;
+
 }
