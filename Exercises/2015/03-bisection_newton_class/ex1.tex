@@ -1,0 +1,34 @@
+\section*{Exercise 1}
+
+\begin{enumerate}
+    \item create the classes \cpp{Bisection} and \cpp{Newton} that provide an
+    implementation of the bisection and Newton algorithms respectively, with an
+    \emph{Object Oriented Programming} approach.
+
+    \item using the data structures that have been introduced in the previous
+    point, create a \cpp{Robust} class that implements the robust algorithm, as
+    discussed in the previous exercise session.
+
+    \item use the classes to compute the zero of the function
+        \begin{equation*}
+            f(x) = e^x (x - 0.6)
+        \end{equation*}
+        in the interval $[0, 1]$.
+
+    \item overload \cpp{operator<<} in the \cpp{Robust} class so that
+    it has a reference to a \cpp{std::ostream} as return type. The stream should
+    print the required tolerance, the number of iterations of the coarse
+    algorithm, the number of iterations of the fine algorithm, the maximum
+    number of iterations and the ratio of tolerances between the two algorithms.
+
+    \item \textbf{HOMEWORK} - the classes \cpp{Bisection}, \cpp{Newton} and
+    \cpp{Robust} have a lot in common among then, that is also shared with
+    other iterative methods that perform the search of a zero, that can possibly
+    be added in the future.
+    Write a base class, called \cpp{IterativeMethod}, that hosts all the
+    common features and rewrite the \cpp{Bisection}, \cpp{Newton} e \cpp{Robust}
+    classes as derived classes. ( \emph{hint}: the constructor for the base
+    class should have as parameters the tolerance, the maximum number of
+    iterations and the convergence control type.)
+
+\end{enumerate}

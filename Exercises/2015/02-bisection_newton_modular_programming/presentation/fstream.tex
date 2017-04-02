@@ -1,0 +1,140 @@
+\documentclass{beamer}
+
+%\pgfpagelayout{2 on 1}[a4paper]
+
+\usepackage[T1]{fontenc}
+\usepackage{beamerthemesplit,bm}
+\usepackage{graphicx}
+% \usepackage{movie15}
+\usepackage{hyperref}
+\usepackage{multimedia}
+\usepackage{subfigure}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{stmaryrd}
+
+\usetheme{Boadilla}
+
+
+%\definecolor{mygreen}{rgb}{0,0.48,0.0}
+
+%\definecolor{myblue}{rgb}{0,0,0.64}
+
+\author{Antonio Cervone}
+\date{October 12 2012}
+\institute{Politecnico di Milano}
+
+\begin{document}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Text file management}
+
+    \begin{block}{Header file to be added}
+        Useful for reading (input) and writing (output).
+        \begin{verbatim}
+#include <fstream>
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Text file management}
+
+    \begin{block}{Declaration and opening of an output file}
+        \begin{verbatim}
+std::fstream fileOut;
+fileOut.open ( fileName.c_str(), std::fstream::out |
+                                 std::fstream::app );
+        \end{verbatim}
+    \end{block}
+
+    \begin{block}{Declaration and opening of an input file}
+        \begin{verbatim}
+std::fstream fileIn;
+fileIn.open ( fileName.c_str(), std::fstream::in );
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Text file management}
+
+    \begin{block}{Check that a file has been properly opened}
+        \begin{verbatim}
+if ( file.is_open() == false )
+{
+    std::cerr << "File not opened" << std::endl;
+    exit(1);
+}
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Text file management}
+
+    \begin{block}{Write to file}
+        \begin{verbatim}
+fileOut << "Hello " << 5.3 << std::endl;
+        \end{verbatim}
+    \end{block}
+
+    \begin{block}{Read from file}
+        \begin{verbatim}
+char name [ 256 ];
+float value;
+fileIn >> value;
+fileIn.getline ( name, 256, '\n' );
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Text file management}
+
+    \begin{block}{Properly close the file}
+        \begin{verbatim}
+file.close();
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{Text file management}
+
+    \begin{block}{Write real numbers to file}
+        In order to print more digits for a real number we must add
+        \begin{verbatim}
+fileOut.precision ( 15 );
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\end{document}
+

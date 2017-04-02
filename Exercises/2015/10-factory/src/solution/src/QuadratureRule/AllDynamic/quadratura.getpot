@@ -1,0 +1,5 @@
+integrand=functor
+udflib='./libmyFunctions.so ./libmyFunctor.so'
+library=./libmyrules.so
+rule=Simpson
+#rule=Trapezoidal

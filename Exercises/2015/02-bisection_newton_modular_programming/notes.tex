@@ -1,0 +1,29 @@
+\subsection*{Notes on loops}
+
+The code proposed to solve the first point uses a \cpp{while} loop.
+In this way the first evaluation of the function must be performed outside the
+loop.
+
+Alternatively we can use a \cpp{for} loop and use the \cpp{break} instruction
+whenthe convergence is obtained before reaching the maximum number of
+iterations.
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\texttt{for} loop with \texttt{break}.,
+    linerange={26-67}]{src/old_file/zerofun-break.cc}
+\lstset{basicstyle=\sf}
+The \texttt{break} instruction is an effective way to impose the exit from the
+loop, but the worsens the readability of the code, sice the exiting instruction
+are not grouoed anymore at the beginning or the end of the cycle. This is a
+reason why the use of \texttt{break} should be limited to manage exceptions.
+
+Another possible way is to use a \cpp{do}/\cpp{while} loop
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\texttt{do\ldots while} loop without \texttt{break}.,
+    linerange={26-47}]{src/old_file/zerofun-dowhile.cc}
+\lstset{basicstyle=\sf}
+In this way the exit condition are clearly visible at the end of the loop, but
+on the other hand we need to perform some useless extra assignements at the last
+iteration. The \texttt{do \ldots while} statement always peforms at least one
+iteration even when the exiting conditions are already satisfied. This can lead
+to non-obvious errors when the code is complex.
+

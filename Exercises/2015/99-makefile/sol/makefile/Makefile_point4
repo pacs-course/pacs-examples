@@ -1,0 +1,57 @@
+# Compiler
+CXX = g++
+
+# Optimize flags
+OPTFLAGS = -O2
+
+# Flags
+CXXFLAGS = $(OPTFLAGS) -Wall
+
+# Executable source
+EXESRCS = main_integration.cpp
+
+# Executable object file
+EXEOBJS = $(EXESRCS:.cpp = .o)
+
+# Executable name
+EXEC = main_integration
+
+# Sources folder
+FOLDER = src/
+
+# External library
+LDLIBS =
+
+# Sources
+SRCS = $(wildcard $(FOLDER)*.cpp)
+
+# Objects
+OBJS = $(SRCS:.cpp=.o)
+
+# Headers
+HEADERS = $(SRCS:.cpp=.hpp)
+
+# Name file of dependences
+DEPEND = make.dep
+
+# Library name
+LIBNAME = libnumint.a
+
+# Add our library
+LDLIBS += -L. -lnumint
+
+.PHONY: all clean
+
+all : $(DEPEND) $(LIBNAME) $(EXEOBJS)
+	$(CXX) -o $(EXEC) $(EXEOBJS) $(LDLIBS)
+
+$(LIBNAME) : $(OBJS)
+	ar rv $(LIBNAME) $(OBJS)
+
+$(DEPEND) : $(SRCS) $(EXESRCS)
+	$(CXX) -MM $(SRCS) $(EXESRCS) -MF $(DEPEND)
+
+-include $(DEPEND)
+
+clean :
+	-rm $(EXEC) $(OBJS)
