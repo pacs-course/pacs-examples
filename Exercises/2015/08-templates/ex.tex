@@ -1,0 +1,49 @@
+\section*{Exercise}
+
+Starting from the solution of a previous exercise session on iterative methods
+to compute a zero of a function
+
+\begin{enumerate}
+
+  \item Templetize the methods so that they can be used with different 
+  floating point number formats.
+  
+  \item Implement a template functor that manages the function and optionally
+  the derivative of the function to be used by the method. Analyze all the
+  possible implementation strategy with their advantages and drawbacks. Take
+  care in converting also the \cpp{apply} method to a template one.
+
+%  \item () Add a template parameter to the whole class hierarchy. The template is
+%  introduced to allow the use of a function or a functor. Also in this case the
+%  implementation details can vary, with advantages and drawbacks.
+
+  \item (optional) Substitute the dynamic polymorphism paradigm with a static polymorphism
+  paradigm.
+\begin{lstlisting}
+// dynamic polymorphism
+class Base
+{
+  virtual void foo() {}
+};
+
+class Derived: public Base
+{
+  void foo() {}
+};
+
+// static polymorphism
+template <typename DerivedT>
+class Base
+{
+  void foo() { static_cast<DerivedT *>(this)->foo(); }
+}
+
+class Derived: public Base<Derived>
+{
+  void foo() {}
+};
+
+\end{lstlisting}
+
+\end{enumerate}
+

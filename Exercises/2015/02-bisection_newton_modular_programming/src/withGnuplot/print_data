@@ -1,0 +1,3 @@
+set terminal png
+set output "graph.png"
+plot "data" with lines

@@ -1,0 +1,237 @@
+\documentclass{beamer}
+
+\usepackage{beamerthemesplit,bm}
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{multimedia}
+\usepackage{subfigure}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{stmaryrd}
+\usepackage{verbatim}
+
+\usepackage{listings}
+% User-defined colors
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.8, .8, .8}
+
+% Settings for listing class
+\lstset{
+  language=[ISO]C++,                       % The default language
+  basicstyle=\scriptsize,                % The basic style
+  backgroundcolor=\color{LightGray},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape,  % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+}
+
+\usetheme{Boadilla}
+
+
+\definecolor{mygreen}{rgb}{0,0.48,0.0}
+
+\definecolor{myblue}{rgb}{0,0,0.64}
+
+\author{Alessio Fumagalli}
+\date{10-11-2011}
+\institute{Politecnico di Milano}
+
+\begin{document}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}
+
+    \frametitle{GetPot}
+
+    \begin{block}{Introduzione a}
+        \centering
+        GetPot
+    \end{block}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/GetPotLogo2}
+    \end{figure}
+
+    \begin{block}{Pagine web utili}
+        \centering
+        \begin{itemize}
+            \item http://getpot.sourceforge.net/
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}
+
+    \frametitle{GetPot}
+
+    \begin{block}{GetPot}
+        GetPot \`e una libreria, costituita da un solo \emph{header file},
+        che permette di fare il parsing di file o dei parametri di input di un
+        codice.
+        \`E molto utile per applicazioni di calcolo scientifico
+        in cui, senza dover ricompilare, si pu\`o cambiare la mesh di calcolo,
+        i parametri costanti che definiscono il problema, la cartella e il nome
+        di dove salvare la soluzione, etc\ldots
+    \end{block}
+
+    \vspace{.2cm}
+
+    \begin{block}{ }
+        GetPot \`e una valida alternativa all'utilizzo di \texttt{argc} e \texttt{argv}.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Parametri passati direttamente}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es1.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+    \vspace{.2cm}
+
+    \begin{block}{ }
+        I parametri vengono letti mediante l'operatore \texttt{()}, associato ad un oggetto
+        di tipo \texttt{GetPot}, in cui specifichiamo il nome dato al parametro e l'eventuale
+        valore di default.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+        \begin{block}{Esecuzione}
+            \begin{verbatim}
+./main a=10. b=70. nint=100
+./main nitn=100 b=70. a=10.
+./main a=10. b=70.
+./main
+            \end{verbatim}
+        \end{block}
+
+    \begin{block}{ }
+        Non conta quindi l'ordine di inserimento dei dati, il tipo del dato
+        associato alla stringa \`e ricavato dal parametro di default.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Parametri letti da file}
+        \verbatiminput{./examples/data}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{All'interno del codice leggo il file}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es2.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{All'interno del codice leggo il file}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es3.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+        \begin{block}{Esecuzione}
+            \begin{verbatim}
+./main
+            \end{verbatim}
+        \end{block}
+
+\end{frame}
+
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Perch\'e non entrambi?}
+        \`E possibile utilizzare sia GetPot sia \texttt{argc} e
+        \texttt{argv} insieme per rendere ancora pi\`u flessibile il codice.
+        In particolare possiamo sfruttare \texttt{argc} e \texttt{argv} per
+        poter specificare il file da cui leggere tutti i dati in ingresso per il problema.
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \frametitle{GetPot}
+
+    \begin{block}{Implementazione congiunta}
+        \lstset{basicstyle=\scriptsize\sf}
+            \lstinputlisting{./examples/es4.cpp}
+        \lstset{basicstyle=\sf}
+    \end{block}
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+
+    \begin{block}{Esecuzione}
+        \begin{verbatim}
+./main -f data1
+./main --file data1
+./main
+        \end{verbatim}
+    \end{block}
+
+\end{frame}
+
+\end{document}

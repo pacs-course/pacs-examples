@@ -1,0 +1,157 @@
+\section*{Solution}
+
+Here follows the listing for the file containing the \cpp{Clustering} class with
+the object type as a template parameter
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\cpp{Clustering} class]
+    {./src/v1/Clustering.hpp}
+\lstset{basicstyle=\sf}
+%
+Note that the implementation of the methods of the class has been done below the
+declaration of the class and not in a separate source file. This is typical with
+template classes, since the methods are still abstract, in the sense that the
+type for the parameters is not yet selected. The methods should therefore be
+available in all the compilation units that use that template class, and this
+approach is an easy way to get it. Another one would be to have a separate
+header file, i.e. \texttt{ClusteringImplementation.hpp}, that stores the
+implementation and that is included at the end of \texttt{Clustering.hpp}. Since
+we are dealing with a small class with few members we adopt the single file
+approach.
+
+The use of a typedef directly at the beginning of the class that defines the
+template parameter makes it very easy to implement the first point of the
+exercise. This is useful also to have the template types available outside the
+class itself. The only other difference is in the definition of the class, of
+course, and in the definition of the methods outside it
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={70-71}]
+    {./src/v1/Clustering.hpp}
+\lstset{basicstyle=\sf}
+%
+that requires the template with all its parameters and the class name, again
+followed by all the template parameters.
+
+For the second point, the random generator is already included for the
+generation of the objects, so it is easy to also have the centroids generated
+randomly in the main function
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={15-23}]
+    {./src/v1/main_clustering.cpp}
+\lstset{basicstyle=\sf}
+%
+Note here the use of the typedef from the specialized \cpp{Clustering} class.
+
+In order to implement the third point, we need to implement a new distance,
+named \cpp{AnisotropicDistance}. The definition of the new class is written in
+\texttt{Distance.hpp} along with \cpp{EuclideanDistance}
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\cpp{EuclideanDistance} and
+                     \cpp{AnisotropicDistance} definition]
+    {./src/v2/Distance.hpp}
+\lstset{basicstyle=\sf}
+%
+while the implementations has been moved to a separate source file, named
+\texttt{Distance.cpp}
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\cpp{EuclideanDistance} and
+                     \cpp{AnisotropicDistance} implementation]
+    {./src/v2/Distance.cpp}
+\lstset{basicstyle=\sf}
+%
+The new class has a member, differently from the other, that is the metric of
+space, in this case a two-by-two matrix. Since it is a private member, there is
+also a setter function named \cpp{setTensor} that allows the user to set it,
+as it is done in the new main function
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=New \cpp{main} function with an anisotropic
+                     distance]
+    {./src/v2/main_clustering.cpp}
+\lstset{basicstyle=\sf}
+%
+The set of the metric requires also a non-const getter of the distance policy
+member of the clustering class.
+
+%
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{fig/cluster00}
+\hfil
+\includegraphics[width=0.5\textwidth]{fig/cluster28}
+\caption{Clustering simulation with 200 random points (crosses) and 4 random
+         centroids (green circles): initial (left) and final (right)
+         configuration. each color represents a different cluster. The distance
+         used in this case is Euclidean.}
+\label{fig:cluster_sim}
+\end{figure}
+%
+The solution of the two-by-two linear system that arises in \eqref{eqn:aniso_bc}
+is performed using the \cpp{inverse} method of the Eigen matrix, since we are
+dealing with a very small matrix. Differently, we could have resort to a linear
+solver. In Fig. \ref{fig:cluster_sim} there is a sample result of a simulation.
+
+In fact, the current implementation is limited, in the sense that inside the
+distance policy classes we have made explicit use of the methods of the
+\texttt{eigen} library, e.g. the \cpp{norm} function, the \cpp{Constant}
+initializer, or the \cpp{inverse} method already mentioned. Our implementation
+is not \emph{generic}, in the sense that it can be applied to different kind of
+types without code duplication. The way to cope with this is to make also the
+distance policy a template class, that is templatized on the type of object.
+The \cpp{Point2D} implementation becomes a (total) specialization of a generic
+class
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\cpp{EuclideanDistance} and
+                     \cpp{AnisotropicDistance} definition and implementation]
+    {./src/v3/Distance.hpp}
+\lstset{basicstyle=\sf}
+%
+The generic implementations are empty for now, so an error would be issued if
+the \cpp{Clustering} class is instantiated with a different type.
+
+In order to use these new templated classes as a template parameter for the
+\cpp{Clustering} class, we need to use the template template class formulation
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={13-16}]
+    {./src/v3/Clustering.hpp}
+\lstset{basicstyle=\sf}
+%
+with a corresponding typedef
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={20-20}]
+    {./src/v3/Clustering.hpp}
+\lstset{basicstyle=\sf}
+%
+In the main function, the typedef of the \cpp{Clustering} class becomes
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={10-10}]
+    {./src/v3/main_clustering.cpp}
+\lstset{basicstyle=\sf}
+%
+where the parameter value for the distance class must not be specified, since it
+is specified already inside the \cpp{Clustering} class definition. Afterwards,
+when using the class \cpp{AnisotropicDistance} by itself, the template value
+must be specified, as in
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={18-18}]
+    {./src/v3/main_clustering.cpp}
+\lstset{basicstyle=\sf}
+%
+
+Finally, the implementation of the quality method can be performed easily using
+the STL algorithms and lambda functions
+%
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[linerange={225-237}]
+    {./src/v3/Clustering.hpp}
+\lstset{basicstyle=\sf}
+%
+

@@ -1,0 +1,26 @@
+\section*{Es.}
+Sono forniti i seguenti
+\begin{itemize}
+	\item \textbf{Triangle}, programma che permette di generare mesh triangolari bidimensionali;
+	\item \textbf{Fekete.*}, libreria \cpp{C} che permette di ottenere regole di quadratura di Fekete su triangoli;
+	\item Le classi \cpp{Point} e \cpp{Triangle} che implementano un punto bidimensionale e un triangolo.
+\end{itemize}	
+Si chiede di implementare un integratore bidimensionale.\\
+Gli step, consigliati, da seguire sono i seguenti
+\begin{itemize}
+	\item utilizzando la classi \cpp{Point} e \cpp{Triangle} e la libreria \textbf{Fekete} fare i seguenti integrali, facendo attenzione alla conversione tra i formati di dati
+		\begin{align*}
+			\int_{\hat{T}}  dx dy = 0.5 \,, \\
+			\int_{T} x \, dx dy = 4\,,
+		\end{align*}
+		dove $\hat{T}$ \`e il triangolo di riferimento di vertici $(0,0)$, $(1,0)$ e $(1,1)$, mentre $T_1$ \`e il triangolo di vertici $(2,2)$, $(3,5)$ e $(1,3)$.
+	\item implementare la classe \cpp{Mesh} che contiene tutti i triangoli della mesh, contenente un metodo che permette di leggere la mesh generata da \textbf{Triangle};
+	\item ispirandosi a quanto fatto nell'esercitazione 5 e 6, creare una classe \cpp{Quadrature} che, sfruttando la libreria \textbf{Fekete}, permette di calcolare integrali bidimensionali;
+	\item calcolare i seguenti integrali
+		\begin{align*}
+			\int_{Q_1} x^2 dx dy \approx 0.333333 \,,\\
+			\int_{L} xy \,  dx dy \approx 0.203125\,,
+		\end{align*}
+		dove $Q_1$ \`e il quadrato unitario, mentre $L$ \`e un insieme a forma di L di vertici $(0,0)$, $(0.5, 0)$, $(0.5, 0.5)$, $(1, 0.5)$, $(1, 1)$ e $(0, 1)$. Per entrambi gli integrali sono fatti con regola di quadratura di Fekete pari a 5, e le mesh associate ai domini sono state generate con i flag \texttt{-q30a.03}.
+		
+\end{itemize}

@@ -1,0 +1,68 @@
+\newpage
+\section*{Soluzione}
+
+Una possibile implementazione dell'algoritmo di Thomas \`e la seguente:
+
+\lstset{basicstyle=\scriptsize\sf}
+\begin{lstlisting}
+//!  Solve with Thomas algorithm
+bool Thomas_solver(const std::vector<double>& a, const std::vector<double>& c,
+                   const std::vector<double>& e, const std::vector<double>& b,
+                   std::vector<double>& uh)
+{
+    size_t n=b.size();
+    vector<double> alpha(n);
+    vector<double> delta(n-1);
+    vector<double> y(n);
+
+    if (a[0]==0) return false;
+    alpha[0]=a[0];
+    for (int i=1; i<n; ++i)
+    {
+        delta[i-1]=e[i-1]/alpha[i-1];
+        alpha[i]=a[i]-delta[i-1]*c[i-1];
+        if (alpha[i]==0) return false;
+    }
+    // Forward substitutions  L y = b
+    y[0]=b[0];
+    for (int i=1; i<n; ++i) y[i]=b[i]-delta[i-1]*y[i-1];
+    // Backwards substitutions U x = y
+    uh[n-1]=y[n-1]/alpha[n-1];
+    for (int i=n-2; i>=0; --i) uh[i]=(y[i]-c[i]*uh[i+1])/alpha[i];
+
+    return true;
+}
+
+int main( )
+{
+  ...
+  // Diagonal vectors:
+  vector<double> d1(M+1,2+pow(h,2)*a);
+  vector<double> d2(M,-1);
+  vector<double> d3(M,-1);
+  vector<double> b(M+1,0);
+  d1[0]=1; d1[M]=1; d2[0]=0; b[0]=T0-Tinf;
+  if(Thomas_solver(d1, d2, d3, b, uh)==false)
+  {
+      cout << "Error: pivotal element is zero" << endl;
+      return 1;
+  }
+  ...
+}
+\end{lstlisting}
+\lstset{basicstyle=\sf}
+
+Il tipo \cpp{size_t} corrisponde al tipo di intero restituito da \cpp{sizeof}; 
+nel C++ standard questo tipo \`e anche \cpp{vector<T>::size_type}, 
+cio\`e quello di interesse. L'uso di \cpp{size_t} permette di scrivere codice
+che sia utilizzabile anche con diverse implementazioni della standard library, su
+architetture differenti, in cui questo tipo potrebbe essere definito in modo differente.
+In ogni caso \`e ovviamente possibile utilizzare anche un tipo \cpp{int},
+senza preoccuparsi che comprenda i limiti di dimensioni del \cpp{vector},
+come \`e mostrato a titolo di esempio nel resto del codice. 
+Il compilatore
+segnaler\`a come \emph{warning} (avverimento) il fatto che la condizione di uscita 
+dai cicli \cpp{for} compari un intero senza segno (di tipo \cpp{size_t}) con uno con segno 
+(di tipo \cpp{int}).
+
+La soluzione proposta non \`e la pi\`u efficiente dal punto di vista computazionale. Si potrebbero infatti ridurre i cicli \cpp{for} da tre a due, eliminare uno dei tre vettori definiti all'interno della funzione e trasformare uno dei due rimanenti in un semplice tipo scalare. 
