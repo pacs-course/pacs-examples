@@ -1,0 +1,67 @@
+
+We would like to intragrate in the program \texttt{AllDynamic} the possibility
+to handle also the integrands with a factory. In particular we would like to
+collect some dynamic libraries with different integrands, using both classes
+functor and free functions. The number of the libraries is unknown and their
+loading still have to be dynamic. The chosen of the integrand is done in the
+data file, handled by GetPot, using the key associated in the registration
+process.  Each library has to be independent from the others one and has to
+resister autonomously their products. In this way the adding of a new library is
+just a modification in the data file, the main program has not to be recompiled.
+
+Modifications on the class \cpp{class Factory} are not allowed.
+In the sequel there are present some useful points that might be followed.
+Beware that each modification of the code might also affect the \texttt{Makefile}.
+
+\begin{enumerate}
+
+    \item Do not use the class \cpp{class udfHandler}, using the new factory
+    instead.
+
+    \item Using the function wrapper \cpp{std::function}, of the standard
+    library, to uniformly register the integrands into the factory.
+
+    \item Create a new proxy class for the registration of the integrands.
+    Discuss why it is useful to split the builder function from the class proxy.
+
+    \item Remove the \cpp{extern "C"} from the header files containing the free
+    functions. Create a new file, or use the corresponding source file,
+    for the registration using the proxy previously introduced.
+
+    \item Introduce also a class functor, in a separate library, and use it.
+
+\end{enumerate}
+
+To increase the robustness of using the quadrature rules with the factory,
+statically check if the template parameter \cpp{ConcreteProduct} inherits
+from \cpp{AbstractProduct_type}, defined into the factory. Furthermore the
+static member \cpp{Build} has to be converted in the corresponding type defined
+into the factory. Use the \cpp{std::traits} and the \cpp{static_assert} for this
+purpose. Statically checked means that these features have to be checked at
+compile time.
+
+\paragraph*{How to use the program}
+The structure of the folder \texttt{exercice} is the following.
+\begin{verbatim}
+.
+`-- src
+    |-- QuadratureRule
+    |   |-- AllDynamic
+    |   |-- baseVersion
+    |   `-- generic_factory
+    `-- Utilities
+        `-- include
+\end{verbatim}
+To use the programm edit the \texttt{Makefile.inc} in the folder
+\texttt{exercice} specifying the absolute path of the folder \texttt{exercice}
+in the variable \texttt{PACS\_ROOT}. Moreover beware the location of your
+compiler, specify it in the variable \texttt{CXX}. Create two empty folder
+called \texttt{include} and \texttt{lib} at the same level of \texttt{src}. Go
+in the directory \texttt{src/Utilities} and type \texttt{make install}. Now go
+in the directory \texttt{src/QuadratureRule/baseVersion} and type \texttt{make
+dynamic; make install}. In the directory
+\texttt{src/QuadratureRule/generic\_factory} type \texttt{make install}. Go in
+the directory \texttt{src/QuadratureRule/AllDynamic} and type \texttt{make
+dynamic; make exec}. Before running the program set the
+\texttt{LD\_LIBRARY\_PATH}. You can use the command \texttt{make} to suggest the
+correct path for the command.

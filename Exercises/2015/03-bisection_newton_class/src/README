@@ -1,0 +1,9 @@
+Tre diverse versioni dello stesso esercizio:
+
+./1 mostra come trasformare il codice del lab. precedente, incentrato
+    sulla programmazione modulare, in programma ad oggetti
+    
+./1.5 Intermedio tra 1 e 2: aggiunto overload dell'operatore << per robust, ma non è ancora stato
+	  definita una classe base per i metodi iterativi
+
+./2   overload opeator<< di robust + classe  iterativeMethod

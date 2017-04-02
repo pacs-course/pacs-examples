@@ -1,0 +1,34 @@
+# Compiler
+CXX = g++
+
+# Optimize flags
+OPTFLAGS = -O2
+
+# Flags
+CXXFLAGS = $(OPTFLAGS) -Wall
+
+# Executable name
+EXEC = main_integration
+
+.PHONY : all clean
+
+all : main_integration.o domain.o mesh.o numerical_rule.o numerical_integration.o
+	$(CXX) -o $(EXEC) main_integration.o domain.o mesh.o numerical_rule.o numerical_integration.o
+
+main_integration.o : main_integration.cpp
+	$(CXX) -c $(CXXFLAGS) main_integration.cpp 
+
+domain.o : src/domain.cpp
+	$(CXX) -c $(CXXFLAGS) src/domain.cpp
+
+mesh.o : src/mesh.cpp src/domain.hpp
+	$(CXX) -c $(CXXFLAGS) src/mesh.cpp
+
+numerical_rule.o : src/numerical_rule.cpp
+	$(CXX) -c $(CXXFLAGS) src/numerical_rule.cpp
+
+numerical_integration.o : src/numerical_integration.cpp src/numerical_rule.hpp src/mesh.hpp
+	$(CXX) -c $(CXXFLAGS) src/numerical_integration.cpp
+
+clean :
+	-rm $(EXEC) *.o
