@@ -1,0 +1,126 @@
+\subsection*{Soluzione}
+
+Riportiamo ed analizziamo le classi coinvolte, partendo da
+quelle pi\`u interne a quelle pi\`u esterne.
+
+Nel listato seguente \`e riportata la classe che implementa
+il concetto di dominio unidimensionale, ovvero di intervallo.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\textit{Header file} contenente la
+        dichiarazione della classe \cpp{Domain1D}]{./es/sol/domain.hpp}
+    \lstinputlisting[caption=\textit{Source file} contenente
+        l'implementazione della classe \cpp{Domain1D}]{./es/sol/domain.cpp}
+\lstset{basicstyle=\sf}
+
+Tale classe risulta molto semplice nell'implementazione, tuttavia \`e
+molto utile in quanto permette di implementare il concetto di dominio
+di calcolo. La lettura dei dati \`e basata sulla libreria \cpp{GetPot}.
+Si pu\`o notare come, grazie alla stringa \cpp{section}, \`e possibile
+rendere autonoma la sezione inerente ai dati del dominio rispetto alle
+sopra-sezioni che la contengono e, eventualmente, anche al nome stesso
+della sezione. Il compito \`e quindi rimandato ad una classe esterna,
+o all'utilizzatore, che, conoscendo la struttura interna del file di
+dati, fornir\`a la corretta sezione. La stringa associata alla sezione
+di nome \cpp{nomesezione} \`e \cpp{nomesezione/}.
+
+Riportiamo qui di seguito la classe che implementa il concetto di mesh
+monodimensionale.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\textit{Header file} contenente la
+        dichiarazione della classe \cpp{Mehs1D}]{./es/sol/mesh.hpp}
+    \lstinputlisting[caption=\textit{Source file} contenente
+        l'implementazione della classe \cpp{Mesh1D}]{./es/sol/mesh.cpp}
+\lstset{basicstyle=\sf}
+
+Un oggetto di classe \cpp{Mesh1D} prende in ingresso, e salva, una
+referenza ad un oggetto di classe \cpp{Domain1D}, ad un oggetto di
+classe \cpp{GetPot}, la stringa associata alla propria sezione e una
+funzione di tipo \cpp{Splitter}. Come nella classe \cpp{Domain1D},
+l'oggetto di tipo \cpp{GetPot} e la stringa \cpp{section} vengono
+utilizzati per leggere i dati da file nella sezione \cpp{section}.
+La funzione \cpp{Splitter} \`e utile per poter generare tutti i nodi
+della mesh. L'unica implementazione, per ora disponibile, \`e associata
+ad una partizione uniforme del dominio. \`E possibile utilizzare tale
+idea per svolgere l'esercizio 2. Il metodo \cpp{h}, ritorna la taglia
+della mesh, ovvero il massimo dalla misura degli intervalli sui cui
+\`e suddivisa la mesh. La sua implementazione sfrutta le funzioni
+della standard library, che saranno oggetto di una prossima lezione,
+e permette di calcolare la taglia anche per mesh non uniformi.
+
+Riportiamo il listato contenente la classe che implementa il concetto
+di regola di quadratura associata all'intervallo di riferimento $[-1,1]$.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\textit{Header file} contenente la
+        dichiarazione della classe \cpp{QuadratureRule}]{./es/sol/numerical_rule.hpp}
+    \lstinputlisting[caption=\textit{Source file} contenente
+        l'implementazione della classe \cpp{QuadratureRule}]{./es/sol/numerical_rule.cpp}
+\lstset{basicstyle=\sf}
+
+L'ereditariet\`a pubblica permette di stabilire il concetto \textit{is-a}
+tra le classi derivate e la classe base. In questo modo, ad esempio,
+la regola di Simpson \textit{is-a} regola di quadratura. Le classi derivate
+non aggiungono alcun metodo, mantenendo cos\`i l'interfaccia coerente con
+la classe base, ma differiscono nell'implementazione dei rispettivi costruttori.
+
+Segue il listato contenente la classe \cpp{Quadrature} che implementa
+l'integrazione di una funzione assegnata su un intervallo generico, utilizzando
+una regola di quadratura.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\textit{Header file} contenente la dichiarazione
+        della classe \cpp{Quadrature}]{./es/sol/numerical_integration.hpp}
+    \lstinputlisting[caption=\textit{Source file} contenente l'implementazione
+        della classe \cpp{Quadrature}]{./es/sol/numerical_integration.cpp}
+\lstset{basicstyle=\sf}
+
+La classe permette di gestire l'integrazione di una funzione, tramite il
+metodo \cpp{apply}, rispetto ad una determinata regola di quadratura, su
+di una mesh. La regola di quadratura e la mesh vengono passate nel
+costruttore come referenze, in questo modo \`e possibile utilizzare il
+polimorfismo e non dover specificare il tipo di regola di quadratura
+all'interno della classe \cpp{Quadrature}.
+L'implementazione del calcolo dell'integrale si basa sulle classi
+\cpp{Mesh1D} e \cpp{QuadratureRule}.
+
+Riportiamo infine la funzione \cpp{main}.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=\textit{Source file} contenente la funzione
+        \cpp{main}]{./es/sol/main_integration.cpp}
+\lstset{basicstyle=\sf}
+
+Le prime righe del \cpp{main} servono per gestire i dati di input del
+programma attraverso la libreria \cpp{GetPot}. Presentiamo anzitutto
+un esempio di file
+
+\verbatiminput{./es/sol/data}
+
+La struttura del file \`e molto semplice, infatti si possono raggruppare
+i dati in sezioni e sottosezioni in modo da mantenere una struttura ordinata
+e coerente del file. In particolare notiamo la sezione principale
+\cpp{integration/} che contiene due sottosezioni \cpp{domain/} e \cpp{mesh/}.
+Per implementare coerentemente si utilizzano i comandi \cpp{[./nomesezione]}
+e \cpp{[../]}, rispettivamente per aprire e chiudere una sezione.
+In riferimento all'esempio di file riportato, \`e possibile accedere ad dato
+\cpp{a} attraverso la stringa \cpp{integration/domain/a}. L'utilizzo della
+stringa \cpp{section} all'interno del main e di tutte le classi che leggono
+i dati da file, facilita l'accesso ai membri della sezione vuota.
+L'utilizzo di sezioni e sottosezioni risulta in programmi complessi.
+Infine l'utilizzo congiunto di \cpp{agrc}, \cpp{argv} e di \cpp{GetPot}
+permette di rendere il codice ancora pi\`u flessibile.
+
+Le regole di quadratura sono gestite tramite il polimorfismo, ovvero un
+puntatore, o una referenza, della classe madre pu\`o puntare ad una delle
+qualsiasi classi. In questo modo tramite il comando \cpp{new} creiamo le
+classi derivate a partire da puntatori della classe madre. Si ricordi di
+associare sempre il corrispettivo \cpp{delete} quando l'oggetto non \`e
+pi\`u utilizzato. oppure un alternativa \`e utilizzare gli \textit{smart pointer}
+della standard template library.
+
+\lstset{basicstyle=\scriptsize\sf}
+    \lstinputlisting[caption=Polimorfismo per la gestione dei metodi di
+        integrazione,linerange={45-49,65-68}]{./es/sol/main_integration.cpp}
+\lstset{basicstyle=\sf}

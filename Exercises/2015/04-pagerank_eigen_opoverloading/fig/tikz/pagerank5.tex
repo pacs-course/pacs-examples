@@ -1,0 +1,36 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+% \usetikzlibrary{backgrounds}
+% \usetikzlibrary{decorations.pathreplacing}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzset{page/.style={draw,circle,thick,minimum size=1cm}}
+\tikzset{link/.style={->,>=latex,thick}}
+
+\node at (0,0)  [page] (1) {1};
+\node at (4,1)  [page] (2) {2};
+\node at (0,-2) [page] (3) {3};
+\node at (5,-1) [page] (4) {4};
+\node at (3,-3) [page] (5) {5};
+
+\draw [link] (1) -- (2);
+\draw [link] (1) -- (5);
+
+\draw [link] (2) -- (3);
+\draw [link] (2) -- (4);
+\draw [link] (2) -- (5);
+
+\draw [link] (3) -- (5);
+
+\draw [link] (4) -- (1);
+\draw [link] (4) to [bend left=15] (5);
+
+\draw [link] (5) to [bend left=15] (4);
+
+\end{tikzpicture}
+\end{document}
+
