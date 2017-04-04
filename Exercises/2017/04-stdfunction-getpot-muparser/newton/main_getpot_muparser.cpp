@@ -9,7 +9,7 @@ main (int argc, char ** argv)
   GetPot g (argc, argv);
   int maxit     = g ("maxit",  100);
   double funtol = g ("funtol", 1.0e-14);
-  double xtol   = g ("funtol", 1.0e-14);
+  double xtol   = g ("xtol", 1.0e-14);
   std::string filename = g ("filename", "data.txt");
 
   GetPot g2 (filename.c_str ());
