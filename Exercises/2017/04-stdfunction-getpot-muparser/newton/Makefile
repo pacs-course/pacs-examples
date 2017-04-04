@@ -19,10 +19,10 @@ $(EXECMP).o : %.o : %.cpp newton.h muparser_fun.h
 	$(CXX) -c $(CPPFLAGS) $(CPPFLAGMP) $(CXXFLAGS) $<
 
 $(EXEC) : % : %.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) -o $@
 
 $(EXECMP) : % : %.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDFLAGMP) $< $(LIBS) $(LIBMP)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDFLAGMP) $< $(LIBS) $(LIBMP) -o $@
 
 clean :
 	$(RM) *.o
