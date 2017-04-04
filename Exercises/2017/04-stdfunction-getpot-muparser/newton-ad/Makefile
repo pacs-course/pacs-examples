@@ -25,9 +25,9 @@ ad_demo : ad_demo.o ad.o
 
 
 clean :
-	$(RM) $(OBJS)
+	$(RM) ad_demo.o main_getpot_ad.o ad.o
 
 distclean : clean
-	$(RM) $(EXEC)
+	$(RM) ad_demo main_getpot_ad
 
 
