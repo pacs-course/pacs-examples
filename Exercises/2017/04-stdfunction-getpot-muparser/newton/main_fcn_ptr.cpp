@@ -15,8 +15,8 @@ main ()
   newton_solver n(fun, prime);
   n.solve (0.0);
 
-  std::cout << "x = "    << n.get_result ()   << std::endl;
-  std::cout << "r = "    << n.get_residual () << std::endl;
+  std::cout << "x =    " << n.get_result ()   << std::endl;
+  std::cout << "r =    " << n.get_residual () << std::endl;
   std::cout << "iter = " << n.get_iter ()     << std::endl;
 
   return 0;
