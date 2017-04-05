@@ -3,8 +3,10 @@
 int
 main ()
 {
-  auto fun   = [] (const double x)  -> double { return std::pow (x, 3) + 5 * x + 3; };
-  auto prime = [] (const double x)  -> double { return 3 * std::pow (x, 2) + 5; };
+  auto fun   = [] (const double x)  -> double
+    { return std::pow (x, 3) + 5 * x + 3; };
+  auto prime = [] (const double x)  -> double
+    { return 3 * std::pow (x, 2) + 5; };
 
   newton_solver n(fun, prime);
   n.solve (0.0);
