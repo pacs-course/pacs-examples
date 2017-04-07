@@ -16,7 +16,7 @@ main (int argc, char ** argv)
   double step  = g ("step",  -1.0e-2);
   
   std::string fun_str = g ("fun", "sin(x)");
-  std::string der_str = g ("fun", "cos(x)");
+  std::string der_str = g ("der", "cos(x)");
 
   muparser_fun fun (fun_str);
   muparser_fun der (der_str);
