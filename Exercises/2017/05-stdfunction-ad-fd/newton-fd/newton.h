@@ -16,15 +16,12 @@ newton_solver
   int    maxit;
   double funtol;
   double xtol;
+  double delta;
+  double dx;
   double x;
   double dfdx;
-  double dx;
   double r;
   int    iter;
-
-  double
-  prime (double y)
-  { return (fun (y + dx/2) - fun (y - dx/2)) / (dx); }
   
  public:
   
@@ -32,10 +29,13 @@ newton_solver
                  const int maxit_ = 100,
                  const double funtol_ = std::numeric_limits<double>::epsilon () * 1000.0,
                  const double xtol_ = std::numeric_limits<double>::epsilon () * 1000.0,
-                 const double dx_ = 10.0 * std::numeric_limits<double>::epsilon ())
-    : fun (fun_), maxit (maxit_), funtol (funtol_), xtol (xtol_)
-  { x = 0; dfdx = 0; dx = 10.0 * xtol; r = 0; iter = 0; }
-    
+                 const double delta_ = 10.0 * std::numeric_limits<double>::epsilon ())
+    : fun (fun_), maxit (maxit_), funtol (funtol_), xtol (xtol_), delta (delta_)
+  { x = 0; dfdx = 0; r = 0; iter = 0; }
+
+  double
+  prime (double y)
+  { return (fun (y + delta/2) - fun (y - delta/2)) / (delta); }
 
   void
   solve (const double x0)
@@ -63,6 +63,7 @@ newton_solver
   int
   get_iter ()
   { return iter; };
+
 
 };
 

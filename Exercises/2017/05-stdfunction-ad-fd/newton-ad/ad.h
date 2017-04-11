@@ -31,6 +31,7 @@ public:
 
 var sin (var X);
 var cos (var X);
+var exp (var X);
 
 var operator* (double a, var X);
 var operator* (var X, double a);
@@ -39,5 +40,13 @@ var operator* (var Y, var X);
 var operator+ (double a, var X);
 var operator+ (var X, double a);
 var operator+ (var Y, var X);
+
+var operator- (double a, var X);
+var operator- (var X, double a);
+var operator- (var Y, var X);
+
+var operator/ (double a, var X);
+var operator/ (var X, double a);
+var operator/ (var Y, var X);
 
 var operator^ (var X, int n);
