@@ -8,10 +8,15 @@ main (void)
 {
   var X, Y;
 
+
+  Y = X / (exp (X) - 1);
+ auto dYdX = [] (double x) -> double
+   { return (1.0 / (exp (x) - 1.0)) * (1.0 - (x / (exp (x) - 1)) * exp (x)) ; };
+
   
-  Y = 3.0 * ( 4.2 * sin (X * cos (X)) * sin (X));
-  auto dYdX = [] (double x) -> double
-    { return 12.6*cos(x*cos(x))*sin(x)*(cos(x)-x*sin(x))+12.6*cos(x)*sin(x*cos(x)); };
+  // Y = 3.0 * ( 4.2 * sin (X * cos (X)) * sin (X));
+  // auto dYdX = [] (double x) -> double
+  //   { return 12.6*cos(x*cos(x))*sin(x)*(cos(x)-x*sin(x))+12.6*cos(x)*sin(x*cos(x)); };
   
 
   // Y = (X^3)*3.0 + X*5.0 + 3.0;

@@ -24,6 +24,17 @@ cos (var X)
   return y;
 };
 
+var
+exp (var X)
+{
+  //  std::cout << "exp (var X)" << std::endl;
+  var y([X] (double x) -> double
+        { return exp (X.eval (x)); },
+        [X] (double x) -> double
+        { return exp (X.eval (x)) * X.eval_der (x); });
+  return y;
+};
+
 
 var
 operator* (double a, var X)
@@ -107,3 +118,25 @@ operator^ (var X, int n)
   var z = var (val, der);
   return (z);
 };
+
+var
+operator- (double a, var X)
+{ return a + ((-1.0) * X); };
+
+var
+operator- (var X, double a)
+{ return X + (-a); };
+
+var
+operator- (var Y, var X)
+{ return Y + ((-1.0) * X); };
+
+var
+operator/ (double a, var X)
+{ return a * (X^(-1)); };
+
+var operator/ (var X, double a)
+{ return (1/a) * X; };
+
+var operator/ (var Y, var X)
+{ return Y * (X^(-1)); };
