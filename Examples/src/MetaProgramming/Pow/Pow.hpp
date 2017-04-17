@@ -47,29 +47,31 @@ namespace implementation
   struct
   IntToType{};
   */
-  // In c++11 I ca use std::integral_constant
-  template<unsigned int N>
-  using IntToType=std::integral_constant<unsigned int,N>;
-
-  template<unsigned int N>
-  constexpr long int pow(const long int x, implementation::IntToType<N>)
-  {
-    return pow(x, IntToType<N-1>{} ) * x;
-  }
+  // In c++11 I can use std::integral_constant
+  template<int N>
+  using IntToType=std::integral_constant<int,N>;
+  
   //! Overload for N=0
-  template<>
-  constexpr long int pow(const long int  x, implementation::IntToType<0>)
+  template<class R>
+  constexpr R pow(const R x, IntToType<0>)
   {
     return 1;
   }
+
+  template<int N, class R>
+  constexpr R pow(const R x, IntToType<N>)
+  {
+    return pow(x, IntToType<N-1>{}) * x;
+  }
+  
   
 }  
 //! the actual function
 
-  template<int N>
-  constexpr long int pow(const long int  x)
-  {
-    return implementation::pow(x, implementation::IntToType<N>{} );
-  }
+template<int N, class R>
+constexpr R pow(const R x)
+{
+  return implementation::pow(x, implementation::IntToType<N>{} );
+}
 
 #endif

@@ -1,7 +1,9 @@
 #ifndef HH_FSELECT_HH__
 #define HH_FSELECT_HH__
 #include <type_traits>
-namespace{
+namespace implementation
+{
+  //! Example of use of remove_pointer, true_type, false_type
   template <typename T>
     typename std::remove_pointer<T>::type inv_impl(const T val, std::true_type)
   {
@@ -16,12 +18,12 @@ namespace{
 }
 //! Changes return type and operation according to the type of the argument.
 /*!
-  Implementation is delegated to helper functions in an unnamed namespace (tag
-  dispatch).
+  Implementation is delegated to helper functions in the implementation namespace, using tag
+  dispatch.
  */
 template <typename T>
 typename std::remove_pointer<T>::type inv(const T val){
-  return inv_impl(val,std::is_pointer<T>());
+  return implementation::inv_impl(val,std::is_pointer<T>());
 }
 
 
