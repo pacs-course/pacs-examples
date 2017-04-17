@@ -19,24 +19,16 @@ template<> struct fib<0>{
 /*!
   Fibonacci template function (only C++11).
   
-  It implements function template specialization and uses
-  the new constexpr keyword to indicate that we are in fact returning
-  a constant expression.
+  It implements a constexpr function. The advantage is that it works
+  also with non constant expression arguments. In that case it is
+  evaluated run time. 
+  
+  While, if the argument is a contant expression the function all is
+  resolved at compile time.
 */
-
-template<unsigned int N>
-constexpr unsigned int Fibonacci(){
-  return Fibonacci<N-1>()+Fibonacci<N-2>();
-}
-
-template<>
-constexpr unsigned int Fibonacci<1>(){
-  return 1;
-}
-
-template<>
-constexpr unsigned int Fibonacci<0>(){
-  return 0;
+constexpr unsigned int Fibonacci(unsigned int n)
+{
+  return n <=2u ? 1u: Fibonacci(n-1)+Fibonacci(n-2);
 }
 
 
