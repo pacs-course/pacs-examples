@@ -24,18 +24,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 namespace Timings{
   
   Chrono::Chrono():
-    startTime(std::chrono::steady_clock::now()),
+    startTime(MyClock::now()),
     stopTime(startTime)
   {}
   
   void Chrono::start()
   {
-    startTime=stopTime=std::chrono::steady_clock::now();
+    startTime=stopTime=MyClock::now();
       }
   
   void Chrono::stop()
   {
-    stopTime=std::chrono::steady_clock::now();
+    stopTime=MyClock::now();
   }
   
   double Chrono::wallTime() const
@@ -48,7 +48,7 @@ namespace Timings{
   double Chrono::wallTimeNow() const
   {
     using namespace std::chrono;
-    auto time_span=duration_cast<nanoseconds>(steady_clock::now()-startTime);
+    auto time_span=duration_cast<nanoseconds>(MyClock::now()-startTime);
     return time_span.count()/1000.;
   }
 
