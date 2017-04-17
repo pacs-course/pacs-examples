@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include<vector>
-#include "isDerived.hpp"
+#include <type_traits>
 #include "fselect.hpp"
 #include "move_swap.hpp"
 class B{
@@ -53,11 +53,12 @@ class E : private B{};
 
 int main(){
 
-  //convertible_t<B,C>(); //ERROR
-  std::cout<<std::boolalpha<<" D derives publicly from B? Answer="<<IsDerived<B,D>::value<<std::endl;
-  std::cout<<std::boolalpha<<" C derives publicly from B? Answer="<<IsDerived<B,C>::value<<std::endl;
-  std::cout<<std::boolalpha<<" E derives publicly from B? Answer="<<IsDerived<B,E>::value<<std::endl;
+  //! Example of use of is_derived
+  std::cout<<std::boolalpha<<" D derives publicly from B? Answer="<<std::is_base_of<B,D>::value<<std::endl;
+  std::cout<<std::boolalpha<<" C derives publicly from B? Answer="<<std::is_base_of<B,C>::value<<std::endl;
+  std::cout<<std::boolalpha<<" E derives publicly from B? Answer="<<std::is_base_of<B,E>::value<<std::endl;
 
+  //! Example of use of return type selected by tagging
   std::vector<double> a{2.,3.,4.};
   double result(0);
   for (auto i : a) result+=inv(i);
@@ -67,12 +68,20 @@ int main(){
   for( auto i=0u; i<a.size();++i,++ap)b.emplace_back(ap);
   result=0;
   for (auto i : b) result+=inv(i);
-  std::cout<<"Resu;t= "<<result<<std::endl;
+  std::cout<<"Result= "<<result<<std::endl;
   B b1,b2;
   D d1,d2;
+  std::cout<<"An example of move semantic using the homemade Swap"<<std::endl;
   // Swapping movable object
   Swap(b1,b2);
   // Swapping non movable objects
   Swap(d1,d2);
+  std::cout<<std::endl<<"But std::swap does the same!"<<std::endl;
+  // Swapping movable object
+  std::swap(b1,b2);
+  // Swapping non movable objects
+  std::swap(d1,d2);
+  
 
+  
 }

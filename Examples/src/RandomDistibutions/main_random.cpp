@@ -66,14 +66,14 @@ void distr (Distr d, Eng & e, const std::string& name)
 int main()
 {
   std::random_device re;
-  // We use the knuth engine
-  //auto myseed=re();
-  unsigned int myseed=123456789;
+  // Try the random engine
+  auto myseed=re();
+  //unsigned int myseed=123456789;
   std::cout<<"The seed is "<<myseed<<std::endl;	
+  // We use the knuth engine
   std::knuth_b e(myseed);
   //std::random_device e;
   
-  // Try the random engine
   
   // Note the <>. It is compulsory, since it is a 
   // full specialization of a class template
