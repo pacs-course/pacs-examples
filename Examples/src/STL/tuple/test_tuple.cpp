@@ -19,7 +19,8 @@ int main()
 {
   // create a four-element tuple
   // - elements are initialized with default value (0 for fundamental types)
-  tuple<string,int,int,complex<double>> t;
+  tuple<string,int,int,complex<double>> t{"paolo",1,2,{1,1}};
+  std::cout<< "t= "<<t<<std::endl;
   
   // create and initialize a tuple explicitly
   tuple<int,float,string> t1(41,6.3,"nico");
