@@ -8,7 +8,7 @@ Some example of use of reference wrappers
 //! A function taking a reference.
 void timesThree(double & r);
 
-//A template function operating on a container.
+//A template function operating on a value
 template <class F, class T>
 void apply(F f, T c)
 {
