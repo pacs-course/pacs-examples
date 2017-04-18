@@ -4,7 +4,7 @@
 namespace Utility{
   //! A simple template for the mean
   /*!
-    I use constexpr so it is more efficient if I pass literals
+    I use constexpr so it is more efficient if I pass constant expressions
   */
   template <class T>
   constexpr T  mean (T const & a, T const & b)
