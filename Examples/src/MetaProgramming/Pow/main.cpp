@@ -17,7 +17,13 @@ int main()
   for (unsigned int i=0;i<ntimes;++i)pow<5>(10.5);
   watch.stop();
   std::cout<<watch<<std::endl; 
- 
+
+  std::cout<<"With the recursive version"<<std::endl;
+  watch.start();
+  for (unsigned int i=0;i<ntimes;++i)POW(10.5,5);
+  watch.stop();
+  std::cout<<watch<<std::endl; 
+
   //  std::cout<< Pow<11l,11>()<<std::endl;
   //std::cout<< pow<11>(11l)<<std::endl;
 }
