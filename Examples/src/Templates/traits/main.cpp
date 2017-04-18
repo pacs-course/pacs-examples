@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <complex>
-//! \file magnutude.hpp
+//! \file magnitude.hpp
 /*!
   A simple example of use of traits.
 
