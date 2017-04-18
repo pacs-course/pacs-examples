@@ -45,7 +45,7 @@ namespace TypeTraits
     T, 
     typename Void<
       decltype( std::declval<T&>().clone() )
-      >::type
+             >::type
     >: std::true_type {};
 
   //! A helper function (maybe the only one the user will actually use!)
