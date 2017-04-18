@@ -12,6 +12,7 @@ struct NC
   int i;
 };
 
+
 int main()
 {
   using namespace TypeTraits;
