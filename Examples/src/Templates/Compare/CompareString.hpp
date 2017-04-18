@@ -10,4 +10,18 @@ bool equal (const std::string & a, const std::string & b){
     return true;}
   else return false;
 }
+//! But we can use functors
+template <class Policy>
+struct CompareString
+{
+  bool operator() (const std::string & a, const std::string & b){
+    if(a.size()==b.size()){
+      for(unsigned int i=0;i<a.size();++i)
+        if (!Policy::eq(a[i],b[i])) return false;
+      return true;}
+    else return false;
+}
+  
+};
+
 #endif
