@@ -29,32 +29,12 @@ namespace Utility
   // Another implementation, which makes use of type tagging
   // and the new constexpr magic
 
-  namespace implementation
-  {
-    template <long unsigned int N>
-    struct
-    IntToType{};
-    
-    template<long unsigned int M>
-    constexpr long unsigned int GCD(IntToType<M>,IntToType<0ul>)
-    {
-      return M;
-    }   
-    
-    template<long unsigned int M, long unsigned int N>
-    constexpr long unsigned int GCD(IntToType<M>,IntToType<N>)
-    {
-      static_assert(M!= 0ul, "gcd between 0 and 0 not allowed");
-      return GCD(IntToType<N>{},IntToType<M%N>{});
-    }   
-  }
+  using int_type=long unsigned int;
   
-  template<long unsigned int M, long unsigned int N>
-  constexpr long unsigned int GCD()
+  constexpr long unsigned int GCD(int_type M,int_type N)
   {
-    return implementation::GCD(implementation::IntToType<M>{},
-                               implementation::IntToType<N>{});
-  }
+    return (N==0)? M: GCD(N,M%N);
+  }   
   
   
   //! If I do not know the values at compile time
