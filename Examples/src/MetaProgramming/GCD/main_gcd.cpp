@@ -9,5 +9,5 @@ int main()
   unsigned long m=120;
   cout<< "Computed with recursive ordinary function: "<<gcd(n,m)<<endl;
 
-  cout<< "Computed with the second implementation: "<<GCD<399,120>()<<endl;
+  cout<< "Computed with the second implementation: "<<GCD(399,120)<<endl;
 }
