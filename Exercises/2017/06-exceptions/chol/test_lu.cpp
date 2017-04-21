@@ -1,4 +1,4 @@
-#include "test_solve.h"
+#include "test_lu.h"
 #include <iostream>
 
 int main ()
