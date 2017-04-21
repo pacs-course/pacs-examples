@@ -45,30 +45,33 @@ namespace ET
     {
       return static_cast<E &>(*this);
     }
-    /* The alternative with a method instead of a cast operator.
+    /*! The alternative with a method instead of a cast operator.
        It is less flexible hoewever.
-       \code
-       const E & asDerived() const 
-       {
-       return static_cast<const E &>(*this);
-       }
-       E  & asDerived() 
-       {
-       return static_cast<E &>(*this);
-       }
-       
-       \endcode
     */
-
+    const E & asDerived() const 
+    {
+      return static_cast<const E &>(*this);
+    }
+    E  & asDerived() 
+    {
+      return static_cast<E &>(*this);
+    }
+    
     //!Interrogates the size of the wrapped expression
-    std::size_t size() const {return static_cast<const E &>(*this).size();}
+    std::size_t size() const {return asDerived().size();}
 
-    //! Delegaes to the wrapped expression the addressing operator
-    double operator [](std::size_t i) const {
-      // this time a cast the pointer (just to show this alternative)
-      return static_cast<const E *>(this)->operator[](i);
+    //! Delegates to the wrapped expression the addressing operator
+    double operator [](std::size_t i) const
+    {
+      return asDerived().operator[](i);
     }
 
+    //! Delegates to the wrapped expression the addressing operator (non const)
+    double & operator [](std::size_t i)
+    {
+      return asDerived().operator[](i);
+    }
+    
   };
 }
 #endif

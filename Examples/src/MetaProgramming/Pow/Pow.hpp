@@ -1,7 +1,8 @@
 #ifndef HH___POW__HH
 #define HH___POW__HH
 #include <type_traits>
-//! Implementation using template structs
+//! A simple example of Pow for integer exponent
+//! Implementation using template structs (it works also on C++98)
 //! Primary template
 template <long int X, unsigned int N>
 struct Pow
@@ -11,7 +12,7 @@ struct Pow
   //! The stored value
   const static value_type value = X * Pow<X,N-1>::value;
   //! Conversion operator
-  constexpr operator value_type()const {return value;}
+  operator value_type()const {return value;}
 };
 
 //! SPecialization for zero power
@@ -20,11 +21,12 @@ struct Pow<X,0>
 {
   using value_type = long int;
   const static value_type value = 1l;
-  constexpr operator value_type()const {return 1l;}
+  operator value_type()const {return 1l;}
 };
 
 
-//! namespace to hide implementation (NOT STRICTLY NECESSARY)
+//! A version that uses constexpr functions (C++11 onwards)
+//! I use a namespace to hide implementation (NOT STRICTLY NECESSARY)
 namespace implementation
 {
   //! Implementation using constexpr functions
@@ -47,29 +49,42 @@ namespace implementation
   struct
   IntToType{};
   */
-  // In c++11 I ca use std::integral_constant
-  template<unsigned int N>
-  using IntToType=std::integral_constant<unsigned int,N>;
-
-  template<unsigned int N>
-  constexpr long int pow(const long int x, implementation::IntToType<N>)
-  {
-    return pow(x, IntToType<N-1>{} ) * x;
-  }
+  // In c++11 I can use std::integral_constant
+  template<int N>
+  using IntToType=std::integral_constant<int,N>;
+  
   //! Overload for N=0
-  template<>
-  constexpr long int pow(const long int  x, implementation::IntToType<0>)
+  template<class R>
+  constexpr R pow(const R x, IntToType<0>)
   {
     return 1;
   }
+
+  template<int N, class R>
+  constexpr R pow(const R x, IntToType<N>)
+  {
+    return pow(x, IntToType<N-1>{}) * x;
+  }
+  
   
 }  
 //! the actual function
 
-  template<int N>
-  constexpr long int pow(const long int  x)
-  {
-    return implementation::pow(x, implementation::IntToType<N>{} );
-  }
+template<int N, class R>
+constexpr R pow(const R x)
+{
+  return implementation::pow(x, implementation::IntToType<N>{} );
+}
+
+//! I can have also a simpler implementation
+
+template<class R>
+constexpr R POW(const R x, const unsigned int N)
+{
+  return (N==1u) ? R(1): x*POW(x,N-1);
+}
+
+
+
 
 #endif
