@@ -112,6 +112,7 @@ void
 matrix::lu (matrix &l, matrix &u, std::vector<int> &p) const
 {
   int N = get_rows ();
+  p.resize (N);
   int *IPIV = &(p[0]);
   int INFO = 0;
   matrix tmp ((*this));
