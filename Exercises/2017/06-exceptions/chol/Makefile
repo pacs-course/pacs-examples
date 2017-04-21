@@ -10,6 +10,8 @@ libmatrix.a : $(OBJS)
 libmatrix.$(SHARED_EXT) : $(OBJS)
 	$(CXX) -shared -L. $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
+test_lu : test_lu.o libmatrix.a 
+	$(CXX) -L. $(LDFLAGS) -o $@ $< -lmatrix $(LIBS)
 
 test_solve : test_solve.o libmatrix.a 
 	$(CXX) -L. $(LDFLAGS) -o $@ $< -lmatrix $(LIBS)
