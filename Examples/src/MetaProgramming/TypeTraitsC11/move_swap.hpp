@@ -7,8 +7,8 @@
   If the class has a move constructor and a move assignment it is 
   used instead of the copy equivalent
   Note the std::swap is now defined this way!
-  @param a lvalue reference of type T
-  @param b lvalue refetence of type T
+  @param a rvalue reference of type T
+  @param b rvalue refetence of type T
 */
 template <class T>
 void Swap (T&& a, T&& b)
