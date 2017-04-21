@@ -111,13 +111,30 @@ matrix::solve (matrix &rhs)
 void
 matrix::lu (matrix &l, matrix &u, std::vector<int> &p) const
 {
-  int N = get_rows ();
+
+  int N = get_rows ();  
   p.resize (N);
+  p.assign (N, 0);
+
   int *IPIV = &(p[0]);
   int INFO = 0;
-  matrix tmp ((*this));
-  dgetrf (&N, &N, tmp.get_data (), &N,
+
+  matrix B ((*this));
+  dgetrf (&N, &N, B.get_data (), &N,
           IPIV, &INFO);
+
+  for (unsigned int i = 0; i < N; ++i)
+    for (unsigned int j = 0; j < N; ++j)
+      {
+        if (i > j)
+          l(i, j) = B(i, j);
+
+        if (i == j)
+          l(i, j) = 1.0;
+
+        if (i <= j)
+          u(i, j) = B(i, j);
+      }
 };
 
 
