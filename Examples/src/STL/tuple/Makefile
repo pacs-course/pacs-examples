@@ -13,7 +13,7 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-MAKEFILEH_DIR=../../
+MAKEFILEH_DIR=../../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
@@ -35,7 +35,7 @@ OBJS = $(SRCS:.cpp=.o)
 HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(SRCS)
-EXEC=$(exe_sources:.cpp=)
+EXEC=test_tuple test_tie test_tuple_cat
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all  clean
