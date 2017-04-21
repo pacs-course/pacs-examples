@@ -25,11 +25,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include<iosfwd>
 
 namespace Timings{
+
   
   class Chrono
-  { 
-    std::chrono::time_point<std::chrono::steady_clock> startTime;
-    std::chrono::time_point<std::chrono::steady_clock> stopTime;
+  {
+  public:
+    using MyClock=std::chrono::high_resolution_clock;
+    using MyTimePoint=std::chrono::time_point<MyClock>;
+  private:
+    MyTimePoint startTime;
+    MyTimePoint stopTime;
   public:
     //! Outputs time from last start and stop
     friend std::ostream & operator <<(std::ostream &,Chrono const &);

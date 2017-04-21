@@ -15,7 +15,7 @@ int main()
   a.resize(3,4);
   MyMat0<> b(5,5);
 
-  b.fillRandom();
+  b.fillRandom(12345);
 
   std::cout<< "Testing copy constructors and move semantic"<<std::endl;
   MyMat0<ROWMAJOR> t(a);
