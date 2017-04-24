@@ -11,8 +11,8 @@ matrix
 private :
   
   std::vector<double> data;
-  const unsigned int rows;
-  const unsigned int cols;
+  unsigned int rows;
+  unsigned int cols;
 
   inline
   unsigned int
@@ -75,14 +75,19 @@ public :
    const unsigned int maxit = 100,
    const double tol = 1.e-9);
 
-  // /// compute cholesky decomposition,
-  // /// raise an exception if decomposition fails
-  // matrix
-  // cholesky () const;
+  /// compute cholesky decomposition,
+  /// raise an exception if decomposition fails
+  matrix
+  chol () const;
 
   /// compute lu decomposition,
   void
   lu (matrix &l, matrix &u, std::vector<int> &p) const;
+
+  /// set all elements to zero
+  void
+  reset ()
+  { data.assign (get_rows () * get_cols (), 0.0); };
 
 };
 

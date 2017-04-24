@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include <cassert>
+#include <exception>
 #include <algorithm>
 #include <ctime>
 #include <cmath>
@@ -137,6 +138,44 @@ matrix::lu (matrix &l, matrix &u, std::vector<int> &p) const
       }
 };
 
+matrix
+matrix::chol () const
+{
+
+  int N = get_rows ();  
+  matrix R (N);
+
+  int i, j;
+  for (i = 0; i < N; ++i)
+    for (j = 0; j <= i; ++j)
+      {
+        if (i > j)
+          {
+            if (R(j, j) == 0)
+              throw (std::invalid_argument ("input matrix was not spd"));
+            R(j, i) = ((*this)(i, j)) / R(j, j);
+            for (int k = 0; (j > 0) && (k < j); ++k)
+              R(j, i) -= R(k, i) * R(k, j) / R (j, j);
+          }
+        
+        else if (i == j)
+          {
+            double arg = (*this)(i, i);
+            for (int k = 0; (i > 0) && (k < i); ++k)
+              arg -= (std::pow (R(k, i), 2));
+            
+            if (arg < 0.0)
+              throw (std::invalid_argument ("input matrix was not spd"));
+            
+            R(i, i) = std::sqrt (arg);
+          }          
+
+      }
+
+  
+
+  return R;
+};
 
 void
 matrix::gauss_seidel
