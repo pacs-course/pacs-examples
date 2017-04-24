@@ -20,10 +20,12 @@
       \begin{itemize}
             \item Store the matrix column-wise in a std::vector<double>             
             \item Attempt Cholesky decomposition
-            \item If decomposition fails fall bacck to LU with pivoting
+            \item If decomposition fails raise an exception
+            \item Catch the exception and fall bacck to LU with pivoting
             \item A reference implementation of LU is provided in Matlab language
-            \item For Cholesky use the following formulas :
-            \center{\includegraphics[width=.4\linewidth]{chol.png}}
+            \item Alternatively use the matrix class from excercise 3 and extend it adding a cholesky method
+            \item For Cholesky use the following formulas :\\[3mm]
+            \center{\includegraphics[width=.75\linewidth]{chol.png}}
       \end{itemize}      
 \end{itemize}
 \end{frame}
