@@ -21,10 +21,9 @@ namespace NumericalIntegration{
   {
   public:
     //! Constructor.
-    /*!
-      It takes compulsorily in input  a standard quad rule and information on the target error. Optionally
-      you may set the total numer of iterations, which limits the number of subintervals used in the adaptive
-      algorithm.
+    /*!  It in input the target error. Optionally you may set the
+      total numer of iterations, which limits the number of
+      subintervals used in the adaptive algorithm.
     */
     QuadratureRuleAdaptive(double targetError=1.e-6,unsigned int maxIter=100);
     
@@ -33,7 +32,7 @@ namespace NumericalIntegration{
       The override qualifier hels to avoid error (C++11): this
       method must override a virtual method of the base class.
      */
-    QuadratureRuleHandler   clone() const override;
+    QuadratureRuleHandler clone() const override;
     //!
     /*!@{*/
     int num_nodes()const {return _therule.num_nodes();}
@@ -49,10 +48,10 @@ namespace NumericalIntegration{
     double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
   private:
-    //! Static becouse common to all objects of this class
+    //! Static because common to all objects of this class
     static QuadratureRulePlusError<SQR> _therule;
     double _targetError;
-     unsigned int _maxIter;
+    unsigned int _maxIter;
    };
 
   template <class SQR>
