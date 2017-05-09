@@ -1,8 +1,9 @@
 #define _GNU_SOURCE 1
 #include "trapfpe.hpp"
 //! Test floating point exceptions
-/*
+/*!
   This function throw an exception if some FPE have been raised
+  \param on if false the function just returns true if a exception has been raised
  */
 bool test_fpe_exception(bool on)
 {
