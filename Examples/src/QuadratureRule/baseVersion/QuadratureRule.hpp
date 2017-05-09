@@ -10,7 +10,11 @@ namespace NumericalIntegration{
   //! The type the integrand
   using FunPoint=std::function<double (double const &)>;
   
-  
+  //! forward declaration
+  class QuadratureRule;
+  //! The type of the object holding the quadrature rule.
+  using QuadratureRuleHandler=std::unique_ptr<QuadratureRule>;
+
   //! The basis class for all the basic integration rules
   /*
     This basis class is the common class for all numerical integration 
@@ -30,7 +34,7 @@ namespace NumericalIntegration{
       and assignment operators for classes that aggregate object of the
       QuadratureRule hierarchy by composition.
     */
-    virtual std::unique_ptr<QuadratureRule> clone() const =0;
+    virtual QuadratureRuleHandler clone() const =0;
     // Applies the rule in the interval (a,b)
     
     virtual double apply(FunPoint const & f, double const &a, 
@@ -38,9 +42,6 @@ namespace NumericalIntegration{
     virtual ~QuadratureRule()=default;
   };
   
-
-  //! The type of the object holding the quadrature rule.
-  using QuadratureRuleHandler=std::unique_ptr<QuadratureRule>;
 
   /*! \brief  A base class for standard quadrature rules.
     
@@ -133,7 +134,9 @@ namespace NumericalIntegration{
     auto fscaled=[&](double x){return f(x*h2+xm);};
     double tmp(0);
     auto np=_n.begin();
-    for (auto wp=_w.begin();wp<_w.end();++wp,++np)tmp+=fscaled(*np)*(*wp);
+    //    for (auto wp=_w.begin();wp<_w.end();++wp,++np)
+    for (auto weight:_w)
+      tmp+=fscaled(*(np++))*weight;
     return h2*tmp;
   }
 

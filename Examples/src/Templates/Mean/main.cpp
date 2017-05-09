@@ -28,7 +28,7 @@ int main()
     std::cout<< "mean('ap','bp'): "<<mean(ap,bp)<<std::endl;
 
     // Now Sum
-    std::cout<<Sum(3,4.5,6.7)<<std::endl;
+    std::cout<<Sum(3,4.5,6.7, 1.0, 8, 9 10)<<std::endl;
     std::string hello{"Hello"};    
     std::string world{"world"};    
     std::string space{" "};
@@ -37,7 +37,7 @@ int main()
     std::complex<double> im(0.,1.0);
     std::complex<double> biz(1.0,1.0);
     std::cout<<Sum(one,im,biz,10.0)<<std::endl;
-    std::cout<<Mean(1.,1.,1.,1.)<<std::endl;
-    std::cout<<Mean(im,biz,one,1.0)<<std::endl;
+    std::cout<<Mean(1.,1.,1.,1)<<std::endl;
+    std::cout<<Mean(im,biz,one,1.0,2.0)<<std::endl;
     
 }

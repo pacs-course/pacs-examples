@@ -8,9 +8,12 @@ namespace NumericalIntegration{
 			    error_level(error_level_def),M_lastError(0),
 			    M_cumulatedError(0),M_iterationsExceeded(false)
   {}
-
-  std::unique_ptr<QuadratureRule> MonteCarlo::clone() const { return std::unique_ptr<QuadratureRule>(new MonteCarlo(*this));}
-
+  
+  std::unique_ptr<QuadratureRule> MonteCarlo::clone() const
+  {
+    return std::unique_ptr<QuadratureRule>(new MonteCarlo(*this));
+  }
+  
   void MonteCarlo::setError(double e){error_level=e;}
   void MonteCarlo::setMiter(unsigned int  m){max_iter=m;}
   
@@ -48,7 +51,7 @@ namespace NumericalIntegration{
 	errore<<" Target error "<< error_level<<std::endl;
     return (b-a)*mean;
   }
-
+  
   void MonteCarlo::resetError()
   {
     M_cumulatedError=0;
