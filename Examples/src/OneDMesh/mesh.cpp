@@ -9,14 +9,6 @@ namespace Geometry{
     myNodes=g();
   };
   
-  Mesh1D::Mesh1D(Domain1D const & d, unsigned int const &n,std::function<double (double const & x)> generatingFunction):
-    myDomain(d)
-  {
-    VariableSize g(d,generatingFunction,n);
-    myNodes=g();
-  };
-  
-  
   double Mesh1D::h() const
   { std::vector<double> tmp(myNodes.size()-1);
     std::adjacent_difference(myNodes.begin(),myNodes.end(),tmp.begin());
