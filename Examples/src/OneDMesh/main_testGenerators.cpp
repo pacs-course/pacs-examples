@@ -18,7 +18,8 @@ int main()
   //auto h = [](double const & x){return 0.01+0.005*x*x;};
   auto h = [pi](double const & x){return (0.05+ 0.1*std::sin(x*pi/10.));};
   //auto h = [pi](double const & x){return (0.05+ 100*x);};
-  Mesh1D variableSizeMesh(domain, 10000, h);
+  Geometry::VariableSize vmg(domain,h,10000);
+  Mesh1D variableSizeMesh(vmg);
 
   std::ofstream out2("variable.dat");
   for (auto i : variableSizeMesh)

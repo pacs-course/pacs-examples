@@ -21,8 +21,8 @@ namespace NumericalIntegration{
     static double error;
     static void reset(){error=0.0;}
   };
-
-  double ExtractError::error(0);
+  //! Definition of the satic member
+  double ExtractError::error(0.0);
   /*!
     \brief Standard quadrature rule plus error.
 

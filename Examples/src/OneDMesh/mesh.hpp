@@ -7,8 +7,7 @@
 namespace Geometry{
   class Mesh1D{
   public:
-    using MeshGenerator=std::function<double (double const & x)>;
-    //! Default constructor is deleted.
+    //! Default constructor is defaulted.
     Mesh1D()=default;
     //! Constructor for an equaly spaced mesh
     /*! \param d  A domain
@@ -16,12 +15,11 @@ namespace Geometry{
     */
     Mesh1D(Domain1D const & d, unsigned int const &n);
     //! Constructor for an variably spaced mesh
-    /*! \param d  A domain
-      \param n  Max number of intervals (not nodes!)
-      \param generatingFunction The function providing the desired spacing. Anything that can be converted
-      to a std::function<double (double const & x)>
+    /*! 
+      \param gf the policy for generating mesh
     */
-    Mesh1D(Domain1D const & d, unsigned int const &n,std::function<double (double const & x)> generatingFunction);
+    Mesh1D(Geometry::OneDMeshGenerator const & gf):
+      myDomain(gf.getDomain()),myNodes(gf()){};
     //! I use the default copy-constructor (C++11)
     /*!
       I explicitely report the default even if not strictly necessary, to 
