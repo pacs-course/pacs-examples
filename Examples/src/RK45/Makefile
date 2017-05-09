@@ -112,6 +112,10 @@ exec: $(EXEC)
 library:  $(LIBRARY)
 
 install:
+	$(MAKE) clean
+	$(MAKE) static
+	$(MAKE) clean
+	$(MAKE) dynamic
 	cp $(LIB_HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:

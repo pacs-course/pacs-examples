@@ -53,6 +53,8 @@ namespace Geometry
   class VariableSize: public OneDMeshGenerator
   {
     public:
+    /*! The spacing function type */
+    using SpacingFunction=std::function<double (double const & x)>;
     /*!
       @brief Constructor
       @param domain A 1D domain
@@ -60,12 +62,12 @@ namespace Geometry
       @param max_num_elements Maximum number of elements
     */
     VariableSize(const Geometry::Domain1D & domain, 
-		 std::function<double (double const & x)> const & h, 
+		 SpacingFunction const & h, 
 		 const unsigned int max_num_elements):
       OneDMeshGenerator(domain),M_h(h),M_num_elements(max_num_elements){}
     MeshNodes operator()() const;
     private:
-    std::function<double (double const & x)> const   M_h;
+    SpacingFunction   M_h;
     std::size_t M_num_elements;
   };
   /*! @}*/
