@@ -7,6 +7,39 @@
 #include <functional>
 
 class
+abstract_integrator
+{
+public :
+  virtual double quad (std::function <double (double)>, double, double) = 0;
+};
+
+class
+trapz : public abstract_integrator
+{
+  double quad (std::function <double (double)>, double, double);
+};
+
+class
+midpoint : public abstract_integrator
+{
+  double quad (std::function <double (double)>, double, double);
+};
+
+class
+factory
+{
+private :
+
+  abstract_integrator *ai;
+  
+public :
+
+  factory (std::string s);
+  double quad (std::function <double (double)>, double, double);
+  
+};
+
+class
 adaptive_quadrature
 {
 private :
@@ -21,15 +54,16 @@ private :
 
   double
   refine (double a, double b, double oldval);
-  
-  double
-  trapz (std::function<double (double)> f, double a, double b);
+
+  factory integrator;
 
 public :
 
   adaptive_quadrature (std::function<double (double)> f_, double start_,
-                       double finish_, double tol_ = 1.0e-12, int maxdepth_ = 40)
-    : f(f_), start (start_), finish (finish_), tol (tol_), maxdepth (maxdepth_)
+                       double finish_, double tol_ = 1.0e-12, int maxdepth_ = 40,
+                       std::string integrator_name_ = "trapz")
+    : f(f_), start (start_), finish (finish_), tol (tol_), maxdepth (maxdepth_),
+      integrator (integrator_name_)
   {};
   
   double
