@@ -6,6 +6,7 @@ abstract
 {
 public :
   virtual double eval (double) = 0;
+  virtual ~abstract () { std::cout << "~abstract ()" << std::endl; };
 };
 
 
@@ -14,6 +15,7 @@ concrete1 : public abstract
 {
 public :
   double eval (double x) {return (2.0 * x);};
+  ~concrete1 () { std::cout << "~concrete1 ()" << std::endl; };
 };
 
 
@@ -22,6 +24,7 @@ concrete2 : public abstract
 {
 public :
   double eval (double x) {return (3.0 * x);};
+  ~concrete2 () { std::cout << "~concrete2 ()" << std::endl; };
 };
 
 class
@@ -39,10 +42,10 @@ public :
     else throw (std::out_of_range ("unexpected option"));
   };
 
-  // ~factory ()
-  // {
-  //   delete myclass;
-  // };
+  ~factory ()
+  {
+    delete myclass;
+  };
 
   double eval (double x) {return myclass->eval (x); };
 };
