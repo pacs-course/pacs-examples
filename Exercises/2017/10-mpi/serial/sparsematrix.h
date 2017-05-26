@@ -17,6 +17,7 @@ public:
     for (int icol = 0; icol < (*this).size (); ++icol)
       for (auto jrow = (*this)[icol].begin (); jrow != (*this)[icol].end (); ++jrow)
         out[(*jrow).first] += (*jrow).second * x[(*jrow).first];
+    return out;
   };
 
   void
