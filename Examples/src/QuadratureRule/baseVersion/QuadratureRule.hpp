@@ -1,48 +1,10 @@
 #ifndef QUADRATURE_RULE_HPP
 #define QUADRATURE_RULE_HPP
 #include <array>
-#include <memory>
 #include <utility>
-#include <functional>
-
+#include "QuadratureRuleBase.hpp"
 namespace NumericalIntegration{
   
-  //! The type the integrand
-  using FunPoint=std::function<double (double const &)>;
-  
-  //! forward declaration
-  class QuadratureRule;
-  //! The type of the object holding the quadrature rule.
-  using QuadratureRuleHandler=std::unique_ptr<QuadratureRule>;
-
-  //! The basis class for all the basic integration rules
-  /*
-    This basis class is the common class for all numerical integration 
-    formulae that approximate the integral \f$ \int_{-1}^{1} f(y) dy\f$.
-    It's a very light class (no variable members) that provides
-    the common interface to all integration rules.
-
-    Constructors and assignement operators
-    are not defined since the synthetic ones are sufficient.
-  */
-  class QuadratureRule
-  {
-  public:
-    //! The class is clonable.
-    /*!
-      Having a clonable class makes it possible to write copy constructors
-      and assignment operators for classes that aggregate object of the
-      QuadratureRule hierarchy by composition.
-    */
-    virtual QuadratureRuleHandler clone() const =0;
-    // Applies the rule in the interval (a,b)
-    
-    virtual double apply(FunPoint const & f, double const &a, 
-			 double const & b)const=0;
-    virtual ~QuadratureRule()=default;
-  };
-  
-
   /*! \brief  A base class for standard quadrature rules.
     
     This class provides the common interface to  a quadrature rule in
@@ -95,12 +57,12 @@ namespace NumericalIntegration{
       return _n[i];
     }
     //! access to the i-th weight
-    inline double weight(const unsigned int i)const
+    double weight(const unsigned int i)const
     {
       return _w[i];
     }
     //! The order of convergence
-    inline unsigned int order()const
+    unsigned int order()const
     {
       return my_order;
     }
@@ -112,7 +74,7 @@ namespace NumericalIntegration{
      */
     virtual QuadratureRuleHandler clone() const =0;
     // Applies the rule in the interval (a,b)
-    double apply(FunPoint const & f, double const &a, double const& b)const;
+    double apply(FunPoint const & f, double const &a, double const& b) const;
     virtual ~StandardQuadratureRule()=default;
 
   protected:

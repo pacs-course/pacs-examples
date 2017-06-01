@@ -33,5 +33,6 @@ namespace NumericalIntegration{
     QuadratureRuleHandler clone()const ;
   };
 
+  
 }
 #endif
