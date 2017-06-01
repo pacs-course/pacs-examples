@@ -3,7 +3,6 @@
 #include <memory>
 #include "GetPot"
 #include "numerical_integration.hpp"
-#include "numerical_rule.hpp"
 #include "udfHandler.hpp"
 #include "ruleProxy.hpp"
 void printHelp(){
@@ -53,6 +52,7 @@ int main(int argc, char** argv){
     exit(1);
   }
 
+   dlclose(dylib);
   // Now get the library with the functions to be integrated
   std::string userdeflib=cl("udflib","libudf.so");
   // Handle the library and get the integrand function
@@ -69,21 +69,14 @@ int main(int argc, char** argv){
   string rule=cl("rule","Simpson");
   // Extract the rule. 
   bool notThere(false);
-  QuadratureRuleHandler theRule;
+  QuadratureRuleHandler theRule; // alias to a unique_prt<QuadratureRule>
   try
     {
       theRule=rulesFactory.create(rule);
       if (rule=="Adaptive") 
         {
-          // I need to use a wrapper since setTargetError and setMaxIter are not in the public
-          // interface of QuadRule!!
-          // If you do not want to use the wrapper you may use dynamic_cast directly:
-
-          // dynamic_cast<NumericalIntegration::QuadratureRuleAdaptive<RULE>&>(*theRule).setTargetError(targetError);
-          // etc.
-          
-          ruleWrapper<QuadratureRuleAdaptive<Simpson>>::setTargetError(*theRule,targetError);
-          ruleWrapper<QuadratureRuleAdaptive<Simpson>>::setMaxIter(*theRule,maxIter);
+          theRule->setTargetError(targetError);
+          theRule->setMaxIter(maxIter);
         }
     }  catch (std::invalid_argument)
     {
@@ -95,8 +88,7 @@ int main(int argc, char** argv){
     }
     auto lista=rulesFactory.registered();
     cout<<" The following rules are registered in "<<quadlib<<endl;
-    for (auto i=lista.begin();
-	 i<lista.end();++i) cout<<*i<<endl;
+    for (auto i : lista) cout<<i<<endl;
     if (notThere) std::exit(2);
     else std::exit(0); // exit without error status
   }
