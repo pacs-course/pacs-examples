@@ -16,7 +16,7 @@ struct NC
 int main()
 {
   using namespace TypeTraits;
-  std::cout<<"C is clonable:  "<<std::boolalpha<<isClonable<C>()<<std::endl;
-  std::cout<<"NC is clonable: "<<std::boolalpha<<isClonable<NC>()<<std::endl;
+  std::cout<<"C is clonable:  "<<std::boolalpha<< isClonable<C>()<<std::endl;
+  std::cout<<"NC is clonable: "<<std::boolalpha<< isClonable<NC>()<<std::endl;
 }
 

@@ -26,7 +26,7 @@ namespace TypeTraits
     a boolean equal to false.
    */
   template<typename T, typename Sfinae = void>
-  struct has_clone: std::false_type {};
+  struct has_clone: public std::false_type {};
   
   /*!  Specialised version that is activated if T is clonable.
     
