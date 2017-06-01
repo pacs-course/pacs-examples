@@ -31,11 +31,11 @@ namespace TheRules
   @endcode
   or declare it static with constructor attribute
  */
-//extern "C"
-//{
+
 
 //! Another alternative. The function is automatically loaded
 /*! No need of -Wl,-E linker option */
+
  __attribute__((constructor))
 static void loadFactoryItems()
   {
@@ -46,4 +46,4 @@ static void loadFactoryItems()
     RuleProxy<MidPoint>("MidPoint");    
     RuleProxy<QuadratureRuleAdaptive<Simpson>>("Adaptive");
   }
-//}
+

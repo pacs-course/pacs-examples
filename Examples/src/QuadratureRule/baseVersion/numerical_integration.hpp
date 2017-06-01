@@ -1,6 +1,6 @@
 #ifndef NUMERICAL_INTEGRATION_HPP
 #define NUMERICAL_INTEGRATION_HPP
-#include "QuadratureRule.hpp"
+#include "QuadratureRuleBase.hpp"
 #include "mesh.hpp"
 namespace NumericalIntegration{
   using namespace Geometry;
