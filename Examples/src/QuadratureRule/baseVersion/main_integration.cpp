@@ -51,7 +51,7 @@ int main(int argc, char** argv){
     std::abs(exactVal-approxmc)<<endl;
   
   //Now the adaptive
-  Quadrature sa(QuadratureRuleAdaptive<Simpson>(targetError),mesh);
+  Quadrature sa(QuadratureRuleAdaptive<Simpson>(targetError,10000),mesh);
   double adaptiveResult=sa.apply(f);
   printout(adaptiveResult,exactVal,targetError,"SImpson Adaptive");
 
