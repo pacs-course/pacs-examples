@@ -1,10 +1,9 @@
 integrand=fsincos
 udflib=./libudf.so
 library=./libmyrules.so
-rule=MidPoint
+#rule=Simpson
 a=-1
 b=3
 nint=25
-#rule=Adaptive
-
+rule=Adaptive
 
