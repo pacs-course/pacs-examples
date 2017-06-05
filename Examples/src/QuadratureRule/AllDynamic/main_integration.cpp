@@ -52,7 +52,7 @@ int main(int argc, char** argv){
     exit(1);
   }
 
-   dlclose(dylib);
+  //   dlclose(dylib);
   // Now get the library with the functions to be integrated
   std::string userdeflib=cl("udflib","libudf.so");
   // Handle the library and get the integrand function
