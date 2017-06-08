@@ -4,6 +4,7 @@
  *  Created on: 03/gen/2011
  *      Author: formaggia
  */
+#include <utility>
 #include "ShapeVisitor.hpp"
 #include "geo.hpp"
 
@@ -33,14 +34,14 @@ double ComputeArea::getTotalArea() const
 
 void Geometry::ComputeArea::visit(Square & s)
 {
-this->totalArea+=s.measure();
+  totalArea+=s.measure();
 }
 
 
 
 void Geometry::CountShapes::visit(Triangle & s)
 {
-	++numTriangles;
+  ++numTriangles;
 }
 
 
@@ -48,7 +49,7 @@ void Geometry::CountShapes::visit(Triangle & s)
 
 
 
-Geometry::ComputeArea::ComputeArea() : totalArea(0)
+Geometry::ComputeArea::ComputeArea() : totalArea(0.0)
 {}
 
 
@@ -84,6 +85,25 @@ void Geometry::CountShapes::visit(Point & s)
 	++numPoints;
 }
 
+void Geometry::swapInvertedShapes::visit(Triangle & s)
+{
+  if(s.measure()<0.0)
+    {
+      auto & points=s.getPoints();
+      std::swap(points[0],points[1]);
+      ++fixedTria;
+    }
+}
+
+void Geometry::swapInvertedShapes::visit(Square & s)
+{
+  if(s.measure()<0.0)
+    {
+      auto & points=s.getPoints();
+      std::swap(points[3],points[1]);
+      ++fixedQuad;
+    }
+}
 
 
 
