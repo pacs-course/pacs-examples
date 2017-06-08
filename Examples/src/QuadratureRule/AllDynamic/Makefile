@@ -19,6 +19,7 @@ MAKEFILEH_DIR=../../..
 LIBNAME=myrules
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
+LIBLIB= -L$(PACS_LIB_DIR) -lquadrules
 
 # Library with composite integration stuff
 LIBNAME2=
@@ -31,7 +32,7 @@ DYNAMIC_LIBFILE3=lib$(LIBNAME3).so
 STATIC_LIBFILE3=lib$(LIBNAME3).a
 
 # Additional librarie
-OTHER_LIBRARIES=-ldl
+OTHER_LIBRARIES=-lquadrature -lMesh1D -ldl 
 
 
 
@@ -65,7 +66,7 @@ else
   LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -Wl,-E
 endif
 #CXX=g++-4.7
-LDLIBS=-L$(PACS_LIB_DIR) -lquadrules -lMesh1D $(OTHER_LIBRARIES)
+LDLIBS=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
 #
 # You may have an include file also in the current directory
 #

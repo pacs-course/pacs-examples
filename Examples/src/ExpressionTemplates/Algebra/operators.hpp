@@ -117,7 +117,7 @@ namespace ET
     double operator()(double j)const {return std::exp(j);}
   };
 
-  //! Exponential
+  //! Logarithm
   struct LogOP{
     double operator()(double j)const {return std::log(j);}
   };

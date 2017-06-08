@@ -1,6 +1,10 @@
 #ifndef HH_BUILDERS__
 #define HH_BUILDERS__
 #include<type_traits>
+#include <memory>
+
+
+
 //! An example of abstract builder base class
 /*!
   It forms the base for builders to be used with 
@@ -22,7 +26,8 @@ class
 BaseBuilder
 {
  public:
-  virtual AbstractProduct * create()=0;
+
+  virtual std::unique_ptr<AbstractProduct>  create()=0;
   virtual ~BaseBuilder(){};
 };
 //! Abstract builder
@@ -39,6 +44,8 @@ public:
  static_assert(
 		    std::is_base_of<AbstractProduct, ConcreteProduct>::value,
 		    "Builder requires that AbstractProduct be a base of ConcreteProduct");
-  ConcreteProduct * create(){return new ConcreteProduct();} 
+  std::unique_ptr<AbstractProduct> create(){return
+      std::unique_ptr<AbstractProduct>(new ConcreteProduct());
+  } 
 };
 #endif
