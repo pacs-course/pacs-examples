@@ -1,20 +1,22 @@
 #ifndef __GEO_HH_
 #define __GEO_HH_
+#include <array>
 namespace Geometry{
   const int ndim=2;
   class ShapeVisitor;// FORWARD DECLARATION
 
   class Shape{
-    public:
-  	  virtual void accept(ShapeVisitor &)=0;
-  	  virtual ~Shape(){};
-  	  virtual double measure() const;
-   };
+  public:
+    Shape()=default;
+    virtual void accept(ShapeVisitor &)=0;
+    virtual ~Shape()=default;
+    virtual double measure() const;
+  };
 
   class Point : public Shape
   {
   public:
-	static int const myDim=0;
+    static int const myDim=0;
     explicit  Point(double x=0, double y=0);// builds a Point
     Point(const Point &);
     Point & operator=(const Point&);
@@ -30,7 +32,7 @@ namespace Geometry{
     friend Point operator*(const double &, const Point &);
     // I need to initialize the constant in-class because
     // we use it to dimension an array member
-    void accept(ShapeVisitor &);
+    void accept(ShapeVisitor &) override;
   private:
     double M_coor[ndim];
   };
@@ -51,46 +53,48 @@ namespace Geometry{
     Point const & operator[](int i) const {return *(M_points[i]);}
     // Can be used ONLY if empty()==false
     Point & operator[](int i){return *(M_points[i]);}
-    double measure() const; // Triangle area
+    std::array<Point*,numVertices>& getPoints(){return M_points;}
+    double measure() const override; // Triangle area
     Point& edgePoint(int edgenum,int endnum); // The point on an edge
     Point const & edgePoint(int edgenum,int endnum) const; // The const version
     //checks if the triangle is empty: M_points contain null pointers
     bool empty()const {return
     		M_points[0]==0||M_points[1]==0||M_points[2]==0;}// inlined function
     static int edge(int edgenum, int endnum); // The edge numbering
-    void accept(ShapeVisitor&);
+    void accept(ShapeVisitor&) override;
   private:
-    Point*  M_points[numVertices];
+    std::array<Point*,numVertices>  M_points;
     static int const M_edge[numSides][2];
   };
-
+  
   class Square: public Shape{
   public:
-	  static int const myDim=2;
-	  static const int numVertices=4;
-	  static const int numSides=4;
-	  Square(); //Constructs an empty triangle
-	  Square(Point&,Point&,Point&,Point&); //Points are given (by reference)
-	  Square(const Square&);
-	  Square & operator=(const Square&);
-	  // We get the points by operator [] (defined in-class for inlining)
-	  Point * changePoint(int i, Point &p);
-	  // Can be used ONLY if empty()==false
-	  Point const & operator[](int i) const {return *(M_points[i]);}
-	  // Can be used ONLY if empty()==false
-	  Point & operator[](int i){return *(M_points[i]);}
-	  double measure() const; // area
-	  Point& edgePoint(int edgenum,int endnum); // The point on an edge
-	  Point const & edgePoint(int edgenum,int endnum) const; // The const version
-	  //checks if the triangle is empty: M_points contain null pointers
-	  bool empty()const {return
-			  M_points[0]==0||M_points[1]==0||
-			  M_points[2]==0||M_points[3]==0;}// inline function
-	  static int edge(int edgenum, int endnum); // The edge numbering
-	  void accept(ShapeVisitor&);
+    static int const myDim=2;
+    static const int numVertices=4;
+    static const int numSides=4;
+    Square(); //Constructs an empty triangle
+    Square(Point&,Point&,Point&,Point&); //Points are given (by reference)
+    Square(const Square&);
+    Square & operator=(const Square&);
+    // We get the points by operator [] (defined in-class for inlining)
+    Point * changePoint(int i, Point &p);
+    // Can be used ONLY if empty()==false
+    Point const & operator[](int i) const {return *(M_points[i]);}
+    // Can be used ONLY if empty()==false
+    Point & operator[](int i){return *(M_points[i]);}
+    std::array<Point*,numVertices>& getPoints(){return M_points;}
+    double measure() const override; // area
+    Point& edgePoint(int edgenum,int endnum); // The point on an edge
+    Point const & edgePoint(int edgenum,int endnum) const; // The const version
+    //checks if the triangle is empty: M_points contain null pointers
+    bool empty()const {return
+        M_points[0]==0||M_points[1]==0||
+        M_points[2]==0||M_points[3]==0;}// inline function
+    static int edge(int edgenum, int endnum); // The edge numbering
+    void accept(ShapeVisitor&) override;
   private:
-	  Point*  M_points[numVertices];
-	  static int const M_edge[numSides][2];
+    std::array<Point*,numVertices>  M_points;
+    static int const M_edge[numSides][2];
   };
-}
+  }
 #endif
