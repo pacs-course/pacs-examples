@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <queue>
 #include <utility>
-//#include <iostream>
+#include <iostream>
 #include "QuadratureRulePlusError.hpp"
 
 namespace NumericalIntegration{
@@ -41,9 +41,9 @@ namespace NumericalIntegration{
     unsigned int order() const{return _therule.order();};
     /*!@}*/
     //! set Target Error
-    void setTargetError(double const t){_targetError=t;};
+    void setTargetError(double const t) override{_targetError=t;};
     //! set Max number of iterations
-    void setMaxIter(unsigned int n){_maxIter=n;};
+    void setMaxIter(unsigned int n) override {_maxIter=n;};
     //! The method that applies the rule.
     double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
@@ -105,8 +105,8 @@ namespace NumericalIntegration{
       }
     }      
     if(counter>=_maxIter) 
-      throw std::runtime_error("Max number iteration exceeded in QuadratureRuleAdaptive");
-    //std::cout<<"Num Iter= "<<counter<<std::endl;    
+      //throw std::runtime_error("Max number iteration exceeded in QuadratureRuleAdaptive");
+    std::clog<<"Max number iteration exceeded in QuadratureRuleAdaptive: "<<counter<<std::endl;    
     return result;
   }
 }

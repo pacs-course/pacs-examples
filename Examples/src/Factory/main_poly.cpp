@@ -4,42 +4,40 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include <functional>
 // A very first example of factories
-// The first part uses pointers to functions
+
 // This normally goes to a separate file
-typedef Geometry::Polygon* (*PolyBuilder)();
-Geometry::Polygon* buildQuad(){return new Geometry::Quadrilateral;}
-Geometry::Polygon* buildTria(){return new Geometry::Triangle;}
-Geometry::Polygon* buildSquare(){return new Geometry::Square;}
+using PolyBuilder=std::function<std::unique_ptr<Geometry::Polygon>()>;
 //
 int main()
 {
   using namespace Geometry;
   using namespace std;
-  auto_ptr<Polygon> test;
   //! the simplest form of a factory
   map<string,PolyBuilder> factory1;
-  typedef map<string,PolyBuilder>::iterator Iterator;
-  // Registering objects on the factory  
-  factory1[string("Quadrilateral")]=&buildQuad;
-  factory1[string("Triangle")]=&buildTria;
-  factory1[string("Square")]=&buildSquare;
+  // Registering builders on the factory
+  // I use lambdas since they are practical
+  factory1[string("Quadrilateral")]=[](){return std::unique_ptr<Polygon>(new Geometry::Quadrilateral);};
+  factory1[string("Triangle")]=[](){return std::unique_ptr<Polygon>(new Geometry::Triangle);};
+  factory1[string("Square")]=[](){return std::unique_ptr<Polygon>(new Geometry::Square);};
   // Try the factory
-  string answer;
   while(true){
-    cout<<"Quadrilateral, Triangle, Square or END?"<<endl;
-    cin>>answer;
+  string answer;
+  cout<<"Quadrilateral, Triangle, Square or END?"<<endl;
+  cin>>answer;
     if(answer=="END")break;
     auto where=factory1.find(answer);
     if(where != factory1.end()){
       // Second entry of where is a pointer to a builder function!
-      Polygon * thePoly=(where->second)();
+      auto thePoly=(where->second)();
       thePoly->showMe(cout);
     }else{
       cout<<"ERROR: this polygon is not registered!"<<endl;
     }
     // WHO IS DELETING THE POLY OBJECT???
   }
+
   
   // Now with the builder class I use unique_pointers to ensure proper
   // memory managemant of builder objects
@@ -50,9 +48,9 @@ int main()
   factory2["Quadrilateral"]=PolyBuilder2(new Builder<Quadrilateral,Polygon>),
   factory2["Triangle"]=PolyBuilder2(new Builder<Triangle,Polygon>);
   factory2["Square"]=PolyBuilder2(new Builder<Square,Polygon>);
-  answer="";
 
   while(true){
+    string answer;
     cout<<"Quadrilateral, Triangle, Square or END?"<<endl;
     cin>>answer;
     if(answer=="END")break;

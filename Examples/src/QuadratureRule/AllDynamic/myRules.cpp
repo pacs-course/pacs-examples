@@ -1,6 +1,12 @@
 #include "numerical_rule.hpp"
 #include "QuadratureRuleAdaptive.hpp"
-#include "ruleProxy.hpp"
+#include "ruleFactory.hpp"
+//#include "ruleProxy.hpp"
+//  NEW SIMPLIFIED VERSION
+/*!\file myrules.cpp
+  In this file I define the quadrature rules that I want to put in the library that loads them into the Factory/
+  
+ */
 //! Registration in the factory I use an unnamed namespace
 /*!
   When I load the library I must be sure that the symbols are loaded
@@ -31,19 +37,19 @@ namespace TheRules
   @endcode
   or declare it static with constructor attribute
  */
-//extern "C"
-//{
+
 
 //! Another alternative. The function is automatically loaded
 /*! No need of -Wl,-E linker option */
+
  __attribute__((constructor))
 static void loadFactoryItems()
   {
     using namespace QuadratureRuleFactory;
     using namespace NumericalIntegration;
-    RuleProxy<Simpson>("Simpson");
-    RuleProxy<Trapezoidal>("Trapezoidal");
-    RuleProxy<MidPoint>("MidPoint");    
-    RuleProxy<QuadratureRuleAdaptive<Simpson>>("Adaptive");
+    addRuleToFactory<Simpson>("Simpson");
+    addRuleToFactory<Trapezoidal>("Trapezoidal");
+    addRuleToFactory<MidPoint>("MidPoint");    
+    addRuleToFactory<QuadratureRuleAdaptive<Simpson>>("Adaptive");
   }
-//}
+
