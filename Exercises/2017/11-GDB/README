@@ -1,0 +1,13 @@
+Example of debugging.
+
+The program 'integer-list' in the directory 'buggy' has:
+
+1) One compile error
+2) One run-time error
+3) One memory leak
+4) A potential memory leak that is not captured in the main
+
+find all the issues and fix them.
+The directory 'fixed' contains the fixed code,
+please don't look at it before trying to solve
+the exercise yourself.
