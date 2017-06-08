@@ -25,7 +25,7 @@ LIBNAME=integrands
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
-EXTRA_LIBS=-L$(PACS_LIB_DIR) -lMesh1D -lquadrules -ldl
+EXTRA_LIBS=-L$(PACS_LIB_DIR) -lMesh1D -lquadrature -lquadrules -ldl
 LDLIBS=$(EXTRA_LIBS)
 
 ifeq ($(LIBTYPE),DYNAMIC)
