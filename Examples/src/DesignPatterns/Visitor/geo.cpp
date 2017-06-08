@@ -161,14 +161,14 @@ namespace Geometry{
      Square & Square::operator =(const Square & t)
      {
      	if (this !=&t){
-     	   	M_points[0]=t.M_points[0];
-     	    M_points[1]=t.M_points[1];
-     	    M_points[2]=t.M_points[2];
-     	    M_points[3]=t.M_points[3];
+          M_points[0]=t.M_points[0];
+          M_points[1]=t.M_points[1];
+          M_points[2]=t.M_points[2];
+          M_points[3]=t.M_points[3];
      	}
      	return *this;
      }
-
+  
      int Square::edge(int i, int j)
      {
          return M_edge[i][j];

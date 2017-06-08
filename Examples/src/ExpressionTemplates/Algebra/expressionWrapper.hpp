@@ -6,7 +6,7 @@ namespace ET
 {
   //! A wrapper for expressions
   /*! 
-     This class is an example of use of CPRT (curiosly recursive
+     This class is an example of use of CRTP (curiosly recursive
      template pattern). Indeed any class that encapsulates an
      expression should derive from it using
       
