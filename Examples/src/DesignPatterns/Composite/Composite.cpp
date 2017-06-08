@@ -18,16 +18,14 @@ Element * Element::clone()const
 
 void Composite::add(Component & c)
 {
-	this->_composite.push_back(*c.clone());
+	this->_composite.emplace_back(c.clone());
 }
 
 
 void Composite::operation() const
 {
 	std::cout<<std::endl<<this->_name<<", which is composed by: "<<std::endl;
-	for (ComponentList::const_iterator i=_composite.begin();
-			i != _composite.end();++i )
-		(*i)->operation();
+	for (auto & i : this->_composite) i->operation();
 }
 
 
@@ -37,18 +35,18 @@ Composite *Composite::clone()const
 }
 
 
-Composite::Composite(const Composite & c):Component(c._name),
-		_composite(c._composite)
+Composite::Composite(const Composite & c):Component(c._name)
 {
+  for (auto & i : c._composite)_composite.emplace_back(i->clone());
 }
 
 Composite & Composite::operator= (const Composite & c)
 {
-	if (&c != this){
-		ComponentList tmp(c._composite);
-		this->_composite.swap(tmp);
-		this->_name=c._name;
-	}
-	return *this;
+  if (&c != this){
+    _composite.clear();
+    for (auto & i : c._composite)_composite.emplace_back(i->clone());
+    this->_name=c._name;
+  }
+  return *this;
 }
 
