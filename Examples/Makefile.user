@@ -107,7 +107,7 @@ endif
 
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
-  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+  LDFLAGS+=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib# If debug we use the local dynamic libraries and avoid ldconfig
 else
   OPTFLAGS=-O2
   CPPFLAGS+=-DNDEBUG
