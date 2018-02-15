@@ -117,8 +117,8 @@ endif
 # Flags for standard 
 #
 # if you want c++14
-#STANDARD=c++14
-STANDARD=c++11
+STANDARD=c++14
+$STANDARD=c++11
 export STDFLAGS=-std=$(STANDARD)
 ##
 #  END USER MODIFIABLE PART

@@ -1,14 +1,15 @@
-#ifndef HH_GMRES_HH
-#define HH_GMRES_HH
+#ifndef HH_FGMRES_HH
+#define HH_FGMRES_HH
 
 //*****************************************************************
-//! Iterative template routine -- GMRES
+//! Iterative template routine -- FGMRES
 //!
-//! GMRES solves the unsymmetric linear system Ax = b using the 
-//! Generalized Minimum Residual method
+//! FGMRES solves the unsymmetric linear system Ax = b using the 
+//! Flexible version for Generalized Minimum Residual method
 //!
-//! GMRES(m) follows the algorithm described on p. 20 of the 
-//! SIAM Templates book.
+//! GMRES(m) follows the algorithm described in
+//! "A flexible inner-outer preconditioned GMRES algorithm"
+//!  by Y. Saad 
 //!
 //! The return value indicates convergence within max_iter (input)
 //! iterations (0), or no convergence within max_iter iterations (1).
@@ -33,7 +34,7 @@
 
 template < class Matrix, class Vector, class Preconditioner>
 int 
-GMRES(const Matrix &A, Vector &x, const Vector &b,
+FGMRES(const Matrix &A, Vector &x, const Vector &b,
       const Preconditioner &M, int &m, int &max_iter,
       typename Vector::Scalar &tol)
 {
@@ -48,35 +49,36 @@ GMRES(const Matrix &A, Vector &x, const Vector &b,
     Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>::Zero(m+1,m);
   //  H.resize(m+1,m,0.0);
   Real normb = norm(M.solve(b));
-  w        = b- A*x;
-  Vector r = M.solve(w);
+  Vector r = b - A * x;
   Real beta = norm(r);
   
-  if (normb == 0.0)
-    normb = 1;
-  resid = norm(w)/normb;
-  if (resid  <= tol) {
-    tol = resid;
-    max_iter = 0;
-    return 0;
-  }
-
-  std::vector<Vector> v(m+1,Vector(b.size()));
+  if (normb == 0.0) normb = 1;
+  resid   = beta/normb;
+  if (resid <= tol)
+    {
+      tol = resid;
+      max_iter = 0;
+      return 0;
+    }
   
+  std::vector<Vector> z(m+1,Vector(b.size()));
+  std::vector<Vector> v(m+1,Vector(b.size()));
+
   while (j <= max_iter) {
-    v[0] = r * (1.0 / beta);    // ??? r / beta
-    s = Vector::Zero(m+1);
+    v[0] = (1.0/beta)*r;
+    s    = Vector::Zero(m+1);
     s(0) = beta;
     
     for (i = 0; i < m && j <= max_iter; i++, j++) {
-      w = M.solve(A * v[i]);
+      z[i] = M.solve(v[i]);    // z
+      w    = A * z[i];
       for (k = 0; k <= i; k++) {
         H(k, i) = dot(w, v[k]);
         w -= H(k, i) * v[k];
       }
       H(i+1, i) = norm(w);
-      v[i+1] = w * (1.0 / H(i+1, i)); // ??? w / H(i+1, i)
-
+      v[i+1] = w * (1.0 / H(i+1, i)); // 
+      
       for (k = 0; k < i; k++)
         ApplyPlaneRotation(H(k,i), H(k+1,i), cs(k), sn(k));
       
@@ -85,24 +87,22 @@ GMRES(const Matrix &A, Vector &x, const Vector &b,
       ApplyPlaneRotation(s(i), s(i+1), cs(i), sn(i));
       
       if ((resid = std::abs(s(i+1)) / normb) < tol) {
-        Update(x, i, H, s, v);
+        Update(x, i, H, s, z);
         tol = resid;
         max_iter = j;
         return 0;
       }
     }
-    Update(x, m - 1, H, s, v);
-    w = b - A * x;
-    r = M.solve(w);
+    Update(x, m - 1, H, s, z);
+    r = b - A * x;
     beta = norm(r);
-    resid = norm(w)/beta;
-    if (resid < tol) {
+    resid = beta/normb;
+    if (resid  < tol) {
       tol = resid;
       max_iter = j;
       return 0;
     }
   }
-  
   tol = resid;
   return 1;
 }

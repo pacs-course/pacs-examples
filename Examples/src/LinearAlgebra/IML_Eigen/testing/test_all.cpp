@@ -18,7 +18,7 @@ using std::cerr;
 #include <map>
 #include <string>
 //! Select solvers
-enum SolverSwitch {Umfpack, SparseLU, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr};
+enum SolverSwitch {Umfpack, SparseLU, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr,fgmres,minres};
 //! where to store parameters
 struct TestParameters
 {
@@ -43,7 +43,9 @@ const std::map<std::string,SolverSwitch> getSolver=
     {std::string{"cgs"},cgs},
     {std::string{"bicg"},bicg},
     {std::string{"ir"},ir},
-    {std::string{"qmr"},qmr}
+    {std::string{"qmr"},qmr},
+    {std::string{"fgmres"},qmr},
+    {std::string{"minres"},qmr}
   }; 
 
 //! Read parameters from getpot object
@@ -171,8 +173,24 @@ main(int argc, char * argv[])
         result = GMRES(A, x, b, D, m, maxit, tol);  // Solve system
         break;
       }
+    case fgmres :
+      {
+        auto m = testParameters.gmres_levels;
+        result = FGMRES(A, x, b, D, m, maxit, tol);  // Solve system
+        break;
+      }
     case cg:
       result = CG(A, x, b, D, maxit, tol);   // Solve system
+      break;
+    case minres:
+      try
+        {
+          result = MINRES(A, x, b, D, maxit, tol);   // Solve system
+        }
+      catch (...)
+        {
+          std::cerr<< "Something wrong"<<std::endl;
+        }
       break;
     case cheby:
       result = CHEBY(A, x, b, D, maxit, tol, testParameters.eigmin, testParameters.eigmax);  // Solve system
