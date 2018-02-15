@@ -14,9 +14,93 @@
 #ifndef HH_EIGEN__MM_READERS_HPP
 #define HH_EIGEN__MM_READERS_HPP
 #include <exception>
-#include <sstream>
-#include <regex>
+#include <type_traits>
 #include "unsupported/Eigen/SparseExtra"
+
+namespace
+{
+  /*!
+    My modification for symmetric matrices
+   */
+  template<typename SparseMatrixType>
+  bool symLoadMarket(SparseMatrixType& mat, const std::string& filename)
+  {
+    typedef typename SparseMatrixType::Scalar Scalar;
+    typedef typename SparseMatrixType::StorageIndex StorageIndex;
+    std::ifstream input(filename.c_str(),std::ios::in);
+    if(!input)
+      throw std::runtime_error(std::string("Error in opening file ")+filename);
+    //    return false;
+    
+    char rdbuffer[4096];
+    input.rdbuf()->pubsetbuf(rdbuffer, 4096);
+    
+    const int maxBuffersize = 2048;
+    char buffer[maxBuffersize];
+    
+    bool readsizes = false;
+    
+    typedef Eigen::Triplet<Scalar,StorageIndex> T;
+    std::vector<T> elements;
+    
+    Eigen::Index M(-1), N(-1), NNZ(-1);
+    Eigen::Index count = 0;
+    while(input.getline(buffer, maxBuffersize))
+      {
+        if(buffer[0]=='%')
+          continue;
+        
+        if(!readsizes)
+          {
+            std::stringstream line(buffer);
+            line >> M >> N >> NNZ;
+            if(M > 0 && N > 0 && NNZ > 0) 
+              {
+                if( N != M) throw std::runtime_error("Symmetric matricies should be square");
+                readsizes = true;
+                mat.resize(M,N);
+                // I store the whole matrix for simplicity
+                // Eigen has tools to view a symmetric matrix that stores
+                // only the upper/lower triangular part, but using this feature
+                // make handling the different cases complicated
+                // Here NNZ is the number of lines to be read in the file
+                mat.reserve(2*NNZ-N);
+              }
+          }
+        else
+          { 
+            StorageIndex i(-1), j(-1);
+            Scalar value; 
+            Eigen::internal::GetMarketLine(buffer, i, j, value);
+            
+            i--;
+            j--;
+            if(i>=0 && j>=0 && i<M && j<N)
+              {
+                ++count;
+                elements.push_back(T(i,j,value));
+                if(i != j) elements.push_back(T(j,i,value));
+              }
+            else
+              {
+                std::cerr << "Invalid read: " << i << "," << j << "\n";
+                throw std::runtime_error("Matrix file incorrectly formatted");
+              }
+          }
+      }
+    
+    mat.setFromTriplets(elements.begin(), elements.end());
+    if(count!=NNZ)
+      {
+        std::cerr << count << "!=" << NNZ << "\n";
+        throw std::runtime_error("Matrix file incorrectly formatted");
+      }
+    
+    input.close();
+    
+    return true;
+  }
+}
 
 namespace Eigen
 {
@@ -56,126 +140,66 @@ namespace Eigen
   SparseMatrixType read_MM_Matrix(const std::string& filename)
   {
     typedef typename SparseMatrixType::Scalar Scalar;
-    typedef typename SparseMatrixType::Index Index;
+    bool iscomplex(false);
+    bool isvector(false);
+    int sym;
     SparseMatrixType mat;
-    bool symmetric=false;
-    std::regex rsym(" symmetric",std::regex_constants::ECMAScript | std::regex_constants::icase);
-    std::ifstream input(filename.c_str(),std::ios::in);
-    if(!input)
-      throw std::runtime_error(std::string("Cannot open file ")+filename);
-    
-    const int maxBuffersize = 2048;
-    char buffer[maxBuffersize];
-    
-    bool readsizes = false;
-    
-    typedef Triplet<Scalar,Index> T;
-    std::vector<T> elements;
-    
-    Index M(-1), N(-1), NNZ(-1);
-    Index count = 0;
-    while(input.getline(buffer, maxBuffersize))
+    bool good=getMarketHeader(filename, sym, iscomplex, isvector);
+    bool symmetric=(sym==Eigen::Symmetric || sym==Eigen::SelfAdjoint);
+#ifdef DEBUG
+    if (symmetric) std::cout<<"Symmetric matrix"<<std::endl;
+    else std::cout<<"Unymmetric matrix"<<std::endl;
+    if (comples) std::cout<<"Complex matrix"<<std::endl;
+    else std::cout<<"Real matrix"<<std::endl;
+#endif
+    if(isvector)
       {
-        // Added by Luca Formaggia: test for symmetric matrices
-        // If the file indicates that the matrix is symmetric
-        // only the upper diagonal (or lower duiagonal) part is actually stored
-        // so we need to double the entries.
-        if(buffer[0]=='%')
-          {
-            symmetric=symmetric || std::regex_search(std::string(buffer),rsym);
-            continue;
-          }
-        
-    std::stringstream line(buffer);
-    
-    if(!readsizes)
+        throw
+          std::runtime_error(std::string("read_MM_Matrix cannot read a vector"));
+      }
+    if (iscomplex)
       {
-        line >> M >> N >> NNZ;
-        int nonZeros;
-        if(symmetric)
+        if (!std::is_same<std::complex<double>,Scalar>::value)
           {
-            if (M != N)
-              {
-                throw std::runtime_error(std::string("Error while reding matrix. A symmetric matrix must be square"));
-              }
-            nonZeros=2*NNZ-M;
+            throw
+              std::runtime_error(std::string("read_MM_Matrix: wrong matrix type: it should store complex"));          
           }
+      }
+      /*
         else
-          {
-            nonZeros=NNZ;
-          }
-        
-        if(M > 0 && N > 0 && NNZ > 0) 
-          {
-            readsizes = true;
-            //std::cout << "sizes: " << M << "," << N << "," << NNZ << "\n";
-            mat.resize(M,N);
-            mat.reserve(nonZeros);
-          }
+        Not neded I will convert double to complex
+        {
+        if (!std::is_same<double,Scalar>::value)
+        {
+        throw
+              std::runtime_error(std::string("read_MM_Matrix: wrong matrix type: it should store double"));          
+        }
+      }      
+      */
+      
+    if(! symmetric)
+      {
+        // use standard reader
+        good=Eigen::loadMarket(mat, filename);
       }
     else
-      { 
-      Index i(-1), j(-1);
-      Scalar value; 
-      if( internal::GetMarketLine(line, M, N, i, j, value) ) 
-        {
-          ++ count;
-          elements.push_back(T(i,j,value));
-          // In the case of symmetric matriced
-          // it'd be better to test if (j,i) is already inserted.
-          // In this case, it is an error since the file should
-          // contain only the upper or lower diagonal
-          if(symmetric && (i!=j))elements.push_back(T(j,i,value));
-        }
-      else
-        {
-          std::ostringstream err;
-          err<<"Invalid read: " << i << "," << j<<" in file "<<filename;
-          throw std::runtime_error(err.str());
-        }
-    }
+      {
+        good=symLoadMarket(mat, filename);
       }
-    mat.setFromTriplets(elements.begin(), elements.end());
-    if(count!=NNZ)
-    {
-      std::ostringstream err;
-      err<<"Wrong number of non zero entries: "<< NNZ << " in file "<<filename;
-      throw std::runtime_error(err.str());
-    }
-    input.close();
+    if(!good)  throw
+        std::runtime_error(std::string("read_MM_Matrix: CANNOT READ MATRIX"));  
     return mat;
   }
-
+  
   template<typename VectorType>
   VectorType read_MM_Vector(const std::string& filename)
   {
-    typedef typename VectorType::Scalar Scalar;
     VectorType vec;
-    std::ifstream in(filename.c_str(), std::ios::in);
-    if(!in)
-      throw std::runtime_error(std::string("Cannot open file ")+filename);;
-    
-    std::string line; 
-    int n(0), col(0); 
-    do 
-      { // Skip comments
-        std::getline(in, line); eigen_assert(in.good());
-      } while (line[0] == '%');
-    std::istringstream newline(line);
-    newline  >> n >> col; 
-    eigen_assert(n>0 && col>0);
-    vec.resize(n);
-    int i = 0; 
-    Scalar value; 
-    while ( std::getline(in, line) && (i < n) ){
-      internal::GetVectorElt(line, value); 
-      vec(i++) = value; 
-    }
-    in.close();
-    if (i!=n){
-      throw std::runtime_error(std::string("Unable to read all elements from file ") + filename);
-    }
+    auto good = Eigen::loadMarketVector(vec,filename);
+    if(!good)
+      throw std::runtime_error(std::string("Cannot read vector ")+filename);;
     return vec;
   }
+  
 }
 #endif
