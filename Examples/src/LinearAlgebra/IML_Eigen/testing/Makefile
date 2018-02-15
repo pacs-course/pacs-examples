@@ -24,4 +24,5 @@ $(DEPEND): $(SRCS)
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
 
+-include $(DEPEND)
 
