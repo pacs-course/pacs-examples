@@ -69,7 +69,7 @@ int main()
   Real constexpr twelvth(static_cast<Real>(1)/static_cast<Real>(12));
   Real constexpr twothird(static_cast<Real>(2)/static_cast<Real>(3));
   
-  for (int i=0;i<n;++i)
+  for (unsigned int i=0;i<n;++i)
     {
       spacing.push_back(h);
       // Second order formula
@@ -87,7 +87,7 @@ int main()
     }
   // Write data
   std::ofstream file(filename.c_str());
-  for (int i=0;i<n;++i)
+  for (unsigned int i=0;i<n;++i)
     {
       file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<truncationErrorEstimate[i]<<" "<<Error4[i]<<std::endl;
     }
