@@ -17,8 +17,10 @@ void printResidual(result_type y1, result_type y2, Real aa, Real bb, Real cc)
   auto c=static_cast<long double>(cc);
   auto x1=std::complex<long double>(static_cast<long double>(y1.real()),static_cast<long double>(y1.imag()));
   auto x2=std::complex<long double>(static_cast<long double>(y2.real()),static_cast<long double>(y2.imag()));
-  std::cout<<"Residuals: "<< a*x1*x1+b*x1+c<<", "<<
-    a*x2*x2+b*x2+c<<std::endl<<std::endl;
+  long double factor1=std::abs(x1)==static_cast<long double>(0.0)?static_cast<long double>(1.0):std::abs(x1);
+  long double factor2=std::abs(x2)==static_cast<long double>(0.0)?static_cast<long double>(1.0):std::abs(x2);
+  std::cout<<"Relative Residuals: "<<std::endl<<"r1= "<< (a*x1*x1+b*x1+c)/factor1<<", r2= "<<
+    (a*x2*x2+b*x2+c)/factor2<<std::endl<<std::endl;
 }
 
 int main(){
@@ -38,7 +40,7 @@ int main(){
       // not convertible to Reals you get unpredictable result
       // A better implementation uses getline and istringstreams
       // Or GetPot!
-      cin >> a>> b>>c;
+      cin >>a>>b>>c;
       if(cin.fail())
 	{
 	  cerr<<"Wrong input: try again"<<endl;

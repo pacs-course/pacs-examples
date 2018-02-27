@@ -20,7 +20,7 @@ quadraticRoot_simple(const Real & a, const Real & b, const Real & c)
   }
   else
     {
-      result_type discriminant{b*b-4*a*c,static_cast<Real>(0.0)};
+      result_type discriminant(b*b-4*a*c);
       discriminant=std::sqrt(discriminant);
       result_type x1=(-b+discriminant)/(2*a);
       result_type x2=(-b-discriminant)/(2*a);
