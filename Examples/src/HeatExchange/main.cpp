@@ -3,7 +3,7 @@
 #include <vector>
 #include <tuple>
 #include "readParameters.hpp"
-#include "GetPot.hpp"
+#include "GetPot.hpp" // for reading parameters
 #include "gnuplot-iostream.hpp"// interface with gnuplot
 /*!
   @file main.cpp
