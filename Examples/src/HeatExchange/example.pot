@@ -1,0 +1,22 @@
+# Max number of grid elements
+MMAX=501
+# max number of iteration for Gauss-Siedel
+itermax=1000000
+# Tolerance for stopping criterion
+toler=1.0e-8
+# Bar length
+L=40.
+# First longitudinal dimension
+a1=4.
+# Second longitudinal dimension
+a2=50.
+# Dirichlet condition
+To=46.
+# External temperature 
+Te=20.
+# Conductivity
+k=0.164
+# Convection coefficient
+hc=200.0e-6
+# Number of elements
+M=21
