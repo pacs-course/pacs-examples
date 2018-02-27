@@ -139,8 +139,8 @@ int main(int argc, char** argv)
        }
      // Using temporary files (another nice use of tie)
      gp<<"plot"<<gp.file1d(std::tie(coor,sol))<<
-       "w lp title 'uh',"<< gp.file1d(std::tie(coor,exact))<<
-       "w l title 'uex'"<<std::endl;
+       "w lp lw 2 title 'uh',"<< gp.file1d(std::tie(coor,exact))<<
+       "w l lw 2 title 'uex'"<<std::endl;
      f.close();
      return status;
 }
