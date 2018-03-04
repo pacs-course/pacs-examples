@@ -62,7 +62,7 @@ $(OBJS): $(SRCS)
 $(DEPEND): $(SRCS)
 	-\rm $(DEPEND)
 	for f in $(SRCS); do \
-	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -MM $$f >> $(DEPEND); \
 	done
 
 -include $(DEPEND)

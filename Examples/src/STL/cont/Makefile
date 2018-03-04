@@ -57,7 +57,7 @@ doc:
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
 
 

@@ -35,7 +35,7 @@ OBJS = $(SRCS:.cpp=.o)
 HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(SRCS)
-EXEC=test_tuple test_tie test_tuple_cat
+EXEC=test_tuple test_tie test_tuple_cat tuple1
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all  clean
@@ -57,7 +57,7 @@ doc:
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ -std=c++0x $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
 
 
