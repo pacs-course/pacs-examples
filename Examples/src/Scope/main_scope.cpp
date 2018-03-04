@@ -27,7 +27,7 @@ int main()
   {
     double f=9.9;// overrides f in the outer scope, which is now inaccessible!
     // While the global f is still accessible using full qualified name
-    cout << "Local f "<<f<<", Global f "<<::f<<" "<<g<<endl;
+    cout << "Local f "<<f<<", Global f "<<::f<<" Very local g"<<g<<endl;
   }
   // for loops variables are in a local scope!
   for (int g=1;g<3;++g) cout<<g<<" ";
