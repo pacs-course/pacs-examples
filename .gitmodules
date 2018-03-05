@@ -7,3 +7,6 @@
 [submodule "Examples/src/LinearAlgebra/redsvd-h"]
 	path = Examples/src/LinearAlgebra/redsvd-h
 	url = git@github.com:lformaggia/redsvd-h.git
+[submodule "Extras/muparser"]
+	path = Extras/muparser
+	url = git@github.com:beltoforion/muparser.git
