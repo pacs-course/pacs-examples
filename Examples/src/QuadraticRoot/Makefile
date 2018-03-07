@@ -40,7 +40,7 @@ EXEC=$(exe_sources:.cpp=)
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .PHONY: all clean distclean doc main_float main_double
 
-.DEFAUL_GOAL = all
+.DEFAULT_GOAL = all
 
 all: $(DEPEND) main_float main_double
 
@@ -70,7 +70,7 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -MM $(SRCS) -MF $(DEPEND)
 
 
 
