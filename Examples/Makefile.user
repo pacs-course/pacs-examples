@@ -53,10 +53,10 @@ LIBRARIES=
 #
 # The C++ compiler (taken from an environmental variable)
 #
-#CXX = g++ 
+CXX = g++ 
 #CXX = icc
 #CXX = clang++
-CXX = ${mkCxxCompiler}
+#CXX = ${mkCxxCompiler}
 #
 #CC=your favourite C compiler
 # do
