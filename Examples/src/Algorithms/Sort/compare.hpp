@@ -17,8 +17,10 @@
  */
 class Ncomp {
 public:
-  bool operator () (std::string const & a, std::string const & b){
-    return a< b;}
+  bool operator () (std::string const & a, std::string const & b)
+  {
+    return a< b;
+  }
 };
 
 //! Compare by ignoring case.
@@ -31,6 +33,7 @@ public:
   bool operator () (std::string const & a, std::string const & b)
   {
     // Lexycografic comparison
+    // Just to show a use of decltype()
     for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
       if (std::toupper(a[i])!= std::toupper(b[i])) 
 	return std::toupper(a[i])<std::toupper(b[i]);
@@ -39,12 +42,16 @@ public:
   }
 };
 
+//! This is a version that uses locale (C++11)
+/*!
+  This version may be used also for different character sets
+ */
 class Nocase_locale {// compare by ignoring case (using locale 
 public:
   Nocase_locale(std::locale const & loc=std::locale()):M_loc(loc){};
   bool operator () (std::string const & a, std::string const & b)
   {
-    // Lexycografic comparison
+    // Lexycografic comparison note the
     for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
       if (std::toupper(a[i],M_loc)!= std::toupper(b[i],M_loc)) 
 	return std::toupper(a[i],M_loc)<std::toupper(b[i],M_loc);
