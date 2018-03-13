@@ -10,16 +10,21 @@ namespace Utility
   typename C::value_type kahanSummation(C const container)
   {
     static_assert(std::is_floating_point<Real>::value," kahanSummation makes sense only for containers of floating point values");
-    long double runningError(0.);
-    Real result(0.);
+    //compensation for lost low-order bits
+    long double runningError(0.0L); 
+    long double result(0.0L);
     for(auto const v : container)
       {
 	long double y = v - runningError;
+        // if result is big low order digits of y are lost
 	long double t = result + y;
+        // (t-result) cancels the high order part of y
+        // subtracting y recovers negative (low part of y)
 	runningError = (t - result) - y;
+        // result accumulates the sum
 	result = t;
       }
-    return result;
+    return static_cast<Real>(result);
   }
   
 } // namespace Utility
