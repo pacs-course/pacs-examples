@@ -1,0 +1,7 @@
+An example of accumulation of roundoff errors in a sum. We use Kahan summation to reduce errors (see Wikipedia...).
+
+COmpile with
+
+make CPPFLAGS=-DREAL=float
+
+if you want floats instead of double
