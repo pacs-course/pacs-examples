@@ -11,13 +11,13 @@ namespace Utility
   {
     static_assert(std::is_floating_point<Real>::value," kahanSummation makes sense only for containers of floating point values");
     //compensation for lost low-order bits
-    long double runningError(0.0L); 
-    long double result(0.0L);
+    Real runningError(0.0L); 
+    Real result(0.0L);
     for(auto const v : container)
       {
-	long double y = v - runningError;
+	Real y = v - runningError;
         // if result is big low order digits of y are lost
-	long double t = result + y;
+	Real t = result + y;
         // (t-result) cancels the high order part of y
         // subtracting y recovers negative (low part of y)
 	runningError = (t - result) - y;
