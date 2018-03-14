@@ -5,3 +5,8 @@ COmpile with
 make CPPFLAGS=-DREAL=float
 
 if you want floats instead of double
+
+If you want long double
+make CPPFLAGS='"-DREAL=long double"'
+
+remember the two quotes!
