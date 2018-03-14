@@ -11,8 +11,8 @@ namespace Utility
   {
     static_assert(std::is_floating_point<Real>::value," kahanSummation makes sense only for containers of floating point values");
     //compensation for lost low-order bits
-    Real runningError(0.0L); 
-    Real result(0.0L);
+    Real runningError(0.0); 
+    Real result(0.0);
     for(auto const v : container)
       {
 	Real y = v - runningError;
