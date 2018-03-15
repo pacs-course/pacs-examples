@@ -2,7 +2,7 @@
 #include <limits>
 #include <set>
 #include <queue>
-#include <algorithm>
+#include <numeric>
   
 void LinearAlgebra::AdjacencyGraph::info(std::ostream & out, bool verbose) const
 {
