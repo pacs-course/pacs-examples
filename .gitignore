@@ -120,3 +120,5 @@ make.dep
 *.ps
 *.bbl
 *.blg
+/Examples/lib/libmuparser.so.2
+/Examples/lib/libmuparser.so.2.2.4
