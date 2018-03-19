@@ -9,4 +9,4 @@
 	url = git@github.com:lformaggia/redsvd-h.git
 [submodule "Extras/muparser"]
 	path = Extras/muparser
-	url = git@github.com:beltoforion/muparser.git
+	url = git@github.com:lformaggia/muparser.git
