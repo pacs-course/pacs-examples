@@ -3368,15 +3368,15 @@ if test "$ac_test_CXXFLAGS" = set; then
   CXXFLAGS=$ac_save_CXXFLAGS
 elif test $ac_cv_prog_cxx_g = yes; then
   if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
+    CXXFLAGS="-g -std=c++11 -O2"
   else
-    CXXFLAGS="-g"
+    CXXFLAGS="-g -std=c++11"
   fi
 else
   if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
+    CXXFLAGS="-O2 -std=c++11"
   else
-    CXXFLAGS=
+    CXXFLAGS="-std=c++11"
   fi
 fi
 ac_ext=cpp
@@ -3550,11 +3550,11 @@ $as_echo "no" >&6; }
 
         if [ "x$DEBUG" = "x1" ]; then
 
-                                                my_CXXFLAGS="$my_CXXFLAGS -g -O0 -Wall -Wundef -Wno-ctor-dtor-privacy"
-        my_CFLAGS="$my_CFLAGS -g -O0 -Wall -Wundef"
+                                                my_CXXFLAGS="$my_CXXFLAGS -std=c++11 -g -O0 -Wall -Wundef -Wno-ctor-dtor-privacy"
+        my_CFLAGS="$my_CFLAGS -std=c++11 -g -O0 -Wall -Wundef"
     else
-        my_CXXFLAGS="$my_CXXFLAGS -O2"
-        my_CFLAGS="$my_CFLAGS -O2"
+        my_CXXFLAGS="$my_CXXFLAGS -O2 -std=c++11"
+        my_CFLAGS="$my_CFLAGS -O2 -std=c++11"
     fi
     # User-supplied CXXFLAGS must always take precedence.
     # This still sucks because using `make CFLAGS=-foobar` kills
