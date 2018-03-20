@@ -7,7 +7,7 @@ namespace Utility
   
   // Version for containers like vectors, array, sets. Does not work with maps
   template <class C,class Real=typename C::value_type>
-  typename C::value_type kahanSummation(C const container)
+  typename C::value_type kahanSummation(C const & container)
   {
     static_assert(std::is_floating_point<Real>::value," kahanSummation makes sense only for containers of floating point values");
     //compensation for lost low-order bits

@@ -3,9 +3,13 @@ library and a simple example to illustrate its basic usage.
 
 First of all you have to install muParser (look on the web). The
 library is composed by a library file (libmuparser.so) and a set of
-header files. You can install either on a standard directory or in a
+header files. You can install either on a standard directory or in the Examples/lib directory or a
 directory of your choice. *In the latter case you have to modify the
 entries in the local Makefile.inc*
+
+For your convenience a copy of muparser is in Extra/muparser and the script install.sh will install it in the correct directories under Examples/
+
+*****  Description of the code in thid directory ****
 
 The makefile produces an executable and two versions of the library
 libMuParserInterface (the static and the shared one).
