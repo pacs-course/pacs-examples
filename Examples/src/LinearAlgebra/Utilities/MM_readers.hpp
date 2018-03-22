@@ -140,6 +140,8 @@ namespace Eigen
   SparseMatrixType read_MM_Matrix(const std::string& filename)
   {
     typedef typename SparseMatrixType::Scalar Scalar;
+    // more C++11 syntax
+    // using Scalar=typename SparseMatrixType::Scalar
     bool iscomplex(false);
     bool isvector(false);
     int sym;
@@ -149,7 +151,7 @@ namespace Eigen
 #ifdef DEBUG
     if (symmetric) std::cout<<"Symmetric matrix"<<std::endl;
     else std::cout<<"Unymmetric matrix"<<std::endl;
-    if (comples) std::cout<<"Complex matrix"<<std::endl;
+    if (iscomplex) std::cout<<"Complex matrix"<<std::endl;
     else std::cout<<"Real matrix"<<std::endl;
 #endif
     if(isvector)
