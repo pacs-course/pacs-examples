@@ -11,5 +11,5 @@ eigmax=1.0
 # File with matrix
 matrixFileName =../../MatrixData/spd/Pres_Poisson.mtx
 # Solver type among {umfpack, sparselu, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr}
-solver=sparselu
+solver=cg
 #solver=umfpack
