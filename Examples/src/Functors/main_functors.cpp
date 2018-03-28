@@ -1,6 +1,7 @@
 #include "functors.hpp"
 #include <iostream>
 #include <algorithm>
+#include <vector>
 int main ()
 {
   using namespace myfunctors; // only to simplify things
