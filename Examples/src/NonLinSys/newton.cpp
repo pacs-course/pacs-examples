@@ -11,24 +11,36 @@ namespace NonLinearSystems{
     double resNorm=res.norm();
     if(resNorm<=opt.minRes) return NewtonStatus{resNorm,0,true};
     // Start Newton iterations
-    unsigned int iter(0);
-    double stepNorm;
+    unsigned int iter{0};
+    double stepNorm{2.0*opt.tolerance};
     do{
       // Get jacobian
       auto J=jac(x);
       //
       // compute step=-J^-1(x) F(x)
-      // A better code would check if the Jacobian is singular
+      // A better code would check if the Jacobian is nearly singular
       // and eventualy regularize it.
       //
       Eigen::VectorXd step=J.fullPivLu().solve(res);
       stepNorm=step.norm();
+      // Start Backtracking 
+      double lambda=1.0;
+      unsigned int backiter{0u};
+      auto resNormB=resNorm;
+      while (
+             // a nice use of the comma operator to save operations 
+             (res=fSys.residual(x+step),resNorm=res.norm()) >=
+             (1.0-lambda*opt.alpha)*resNormB
+             &&
+             (backiter++ < opt.maxback))
+        {
+          step   *= opt.backstep;
+          lambda *= opt.backstep;
+        }// end backtracking
       x  += step;
-      res = fSys.residual(x);
-      resNorm = res.norm();
-      ++iter;
-    }  
-    while(iter<opt.maxIter && resNorm>opt.minRes && stepNorm>opt.tolerance);
+    }
+    // End main loop
+    while(iter++<opt.maxIter && resNorm>opt.minRes && stepNorm>opt.tolerance);
     // Check what happened
     bool converged(stepNorm<=opt.tolerance);
     return NewtonStatus{resNorm,iter,converged};
