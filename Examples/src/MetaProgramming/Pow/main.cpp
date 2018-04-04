@@ -12,7 +12,7 @@ int main()
   for (unsigned int i=0;i<ntimes;++i)std::pow(10.5,5);
   watch.stop();
   std::cout<<watch<<std::endl; 
-  std::cout<<"With optimized pow"<<std::endl;
+  std::cout<<"With optimized pow (template)"<<std::endl;
   watch.start();
   for (unsigned int i=0;i<ntimes;++i)pow<5>(10.5);
   watch.stop();
