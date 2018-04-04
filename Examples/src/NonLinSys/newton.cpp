@@ -29,15 +29,14 @@ namespace NonLinearSystems{
       auto resNormB=resNorm;
       while (
              // a nice use of the comma operator to save operations 
-             (res=fSys.residual(x+step),resNorm=res.norm()) >=
+             (res=fSys.residual(x+lambda*step),resNorm=res.norm()) >=
              (1.0-lambda*opt.alpha)*resNormB
              &&
              (backiter++ < opt.maxback))
         {
-          step   *= opt.backstep;
           lambda *= opt.backstep;
         }// end backtracking
-      x  += step;
+      x  += lambda*step;
     }
     // End main loop
     while(iter++<opt.maxIter && resNorm>opt.minRes && stepNorm>opt.tolerance);
