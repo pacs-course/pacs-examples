@@ -57,11 +57,11 @@ doc:
 
 $(EXEC): $(OBJS)
 
-$(OBJS): $(SRCS)
+$(OBJS): %.o:%.cpp
 
 $(DEPEND): $(SRCS) $(HEADERS)
-	g++ $(CPPFLAGS) -MM $(SRCS) -MF $(DEPEND)
-
+	$(RM) $(DEPEND)
+	g++ $(CPPFLAGS) -MM $(SRCS) > $(DEPEND)
 
 
 -include $(DEPEND)
