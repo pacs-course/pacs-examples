@@ -30,7 +30,7 @@ public:
   //! Implementation of the static function.
   static constexpr int fstatic(){return N;}
 private:
-  static const int N=1;
+  static constexpr int  N=1;
 };
 //!Derived class
 class Derived2: public Base<Derived2>
@@ -41,7 +41,7 @@ public:
   //! Implementation of the static function.
   static constexpr int fstatic(){return N;}
 private:
-  static const int N=2;
+  static constexpr int N=2;
 };
 
 #endif
