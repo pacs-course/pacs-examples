@@ -2,7 +2,7 @@
 # Users have to cahncge this
 #
 
-# Directory where libumfpack is stored, use the syntax -LdirectoryName
-UMFPACK_DIR=# -LDirectoryOfUmfpackLib
+# Directory where libumfpack is stored
+UMFPACK_DIR=${mkSuitesparseLib}
 # Directory where umfpack.h is stored
-UMFPACK_INCDIR=/usr/include/suitesparse
+UMFPACK_INCDIR=${mkSuitesparseInc}

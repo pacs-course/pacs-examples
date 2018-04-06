@@ -4,7 +4,7 @@ include ../../../../Makefile.inc
 EIGENDIR=$(EIGEN_DIR)
 MMDIR=../../Utilities
 THISINCDIR=../include
-LDLIBS=-lumfpack
+LDLIBS=-L${UMFPACK_DIR} -lumfpack
 INCLUDES= -I$(THISINCDIR) -I$(MMDIR) -I$(EIGEN_DIR) -I$(UMFPACK_INCDIR)
 CPPFLAGS+=$(INCLUDES)
 vpath %.h $(INCLUDES)
