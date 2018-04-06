@@ -10,12 +10,18 @@ namespace NonLinearSystems{
   struct NewtonOptions{
     //! @brief Tolerance for two successive iterations.
     /*! @detail The iteration stops if \f$||x_{new}-x_{old}||<tolerance\f$. */
-    double tolerance;
+    double tolerance{1.e-8};
     //! @brief Tolerance on residual.
     /*! @detail The iteration stops if \f$||F(x)||<minRes\f$.*/
-    double minRes;
+    double minRes{1.e-6};
     //! MAx. number of iterations.
-    unsigned int maxIter;
+    unsigned int maxIter{100};
+    //! Sufficient descent parameter (typically 10^-4)
+    double alpha{1e-4};
+    //! Backtracking reduction (in (0,1), typically 0.5);
+    double backstep{0.5};
+    //! Max number of backtracking iter
+    unsigned int maxback{10};
   };
 
   //! Status returned by the function Newton.
