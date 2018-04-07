@@ -26,7 +26,7 @@ namespace NumericalIntegration{
   double Quadrature::apply(FunPoint const & f) const
   {
     double result(0);
-    for(int i=0;i<_mesh.numNodes()-1;++i){
+    for(unsigned int i=0u;i<_mesh.numNodes()-1;++i){
       double a=_mesh[i];
       double b=_mesh[i+1];
       result += _rule->apply(f,a,b);
