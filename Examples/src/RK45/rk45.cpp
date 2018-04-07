@@ -73,7 +73,7 @@ namespace ODE
 	 std::size_t const & maxSteps)
   {
     status=0;
-    const std::size_t maxReduction=maxSteps;
+    //const std::size_t maxReduction=maxSteps;
     // parameters for decreasing/increasing time step
     double const c1=1.0;
     // I need to have a sufficient decrease of the local error
