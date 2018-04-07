@@ -12,7 +12,7 @@ namespace Geometry
     if (n==0) throw std::runtime_error("At least two elements");
     MeshNodes mesh(n+1);
     double h=(b-a)/static_cast<double>(n);
-    for(auto i=0;i<n;++i)mesh[i]=a+h*static_cast<double>(i);
+    for(auto i=0u;i<n;++i)mesh[i]=a+h*static_cast<double>(i);
     mesh[n]=b;
     return mesh;
     
