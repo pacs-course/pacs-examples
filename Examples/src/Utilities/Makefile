@@ -83,7 +83,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-test: test_chrono test_cppversion test_toString test_string
+test: test_chrono test_cppversion test_toString test_string test_clonable
 
 
 $(EXEC): $(OBJS)
