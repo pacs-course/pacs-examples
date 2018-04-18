@@ -13,7 +13,7 @@
 template <typename B,typename D>
 struct clonable
 {
-  //! the clone mehod. It makes a clone of the calling object
+  //! no args (maybe not needed
   std::unique_ptr<B> clone()
   {
     static_assert(std::is_base_of<B,D>::value,"template parameter of clonable must be a base class");
