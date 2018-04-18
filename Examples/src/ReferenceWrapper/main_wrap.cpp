@@ -26,7 +26,7 @@ int main()
   std::vector<std::reference_wrapper<double> >v(l.begin(),l.end());
   // Change the last element of l
   l.back()=150.;
-  // also the last element of v has changes, beig a reference
+  // also the last element of v has changed, being a reference
   // wrapper!
   for (auto i :v) std::cout<<i<<" ";
   std::cout<<std::endl;		      
