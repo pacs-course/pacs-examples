@@ -23,7 +23,7 @@ MAKEFILEH_DIR=../../../
 export DEBUG=yes
 #CXX=g++-4.9
 #CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
-STANDARD=c++11
+STANDARD=c++14
 #
 LIBNAME=mylib
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
@@ -37,8 +37,9 @@ INCLUDES=-I. -I$(PACS_INC_DIR)
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
  export LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
-else
+ LDFLAGS+=-dynamic
+endif
+ifeq ($(LIBTYPE),STATIC)
  export LIBRARY=$(STATIC_LIBFILE)
 # LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
 endif
