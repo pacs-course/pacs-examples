@@ -19,7 +19,7 @@ libconcrete2.so : concrete2.o
 concrete2.o : concrete2.cpp
 	$(CXX) -c -fPIC concrete2.cpp
 
-main : main.o libconcrete2.so libconcrete1.so
+main : main.o 
 	$(CXX) main.o -o main -ldl
 
 
