@@ -6,7 +6,7 @@
 namespace Utility
 {
   //! Primary template. Uses recursion.
-  //! THis version works olso with C++03. No need of c++11
+  //! This version works also with standard older than c++11
   template <long unsigned int M, long unsigned int N>
   struct Gcd
   {
@@ -26,12 +26,11 @@ namespace Utility
     static const long unsigned int value = M;
   };
 
-  // Another implementation, which makes use of type tagging
-  // and the new constexpr magic
-
-  using int_type=long unsigned int;
-  
-  constexpr long unsigned int GCD(int_type M,int_type N)
+ 
+ using int_type=long unsigned int; 
+ //! Another implementation, which makes use of type tagging
+ //! and the new constexpr magic. Needs at least C++11
+ constexpr int_type GCD(int_type const M,int_type const N)
   {
     return (N==0)? M: GCD(N,M%N);
   }   
@@ -43,7 +42,7 @@ namespace Utility
     avoid recursion (unless in metaprogramming) since it is not very
     efficient.  Moreover, if I deal with very big integers maybe I can
     exceed the stack capability for recursive call.
-    Yet, the recurrsive implementation is very elegant, I admit!.
+    Yet, the recursive implementation is very elegant, I admit!.
   */
   long unsigned int gcd(long unsigned int M, long unsigned int N);
   
