@@ -1,1 +1,0 @@
-/usr/bin/c++    -std=c++11    CMakeFiles/main_integration.dir/main_integration.cpp.o  -o main_integration -rdynamic 
