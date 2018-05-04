@@ -34,7 +34,7 @@ public:
   { return (*j).first; }
 
   /// Value stored in non-empty column.
-  virtual double
+  double
   col_val (col_iterator j) = 0;
 
   size_t m; ///< number of nonempty columns.
