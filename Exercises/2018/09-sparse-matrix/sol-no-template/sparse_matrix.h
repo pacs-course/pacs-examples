@@ -57,7 +57,7 @@ public:
   void set_properties ();
 
   /// Default constructor.
-  sparse_matrix_template () {init ();};
+  sparse_matrix () {init ();};
 
   ///
   friend std::ostream
