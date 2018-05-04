@@ -80,7 +80,7 @@ std::vector<std::tuple<int, int, double>>
 \item [CSR] (Compressed Sparse Row) a.k.a. CRS or Yale\\ \tiny
 \begin{lstlisting}[language=C++]
 std::vector<double> V {4.,-1.,-1.,4.,-1.,-1.,4.,-1.,-1.,4.};
-std::vector<int>    CI { 0,  0,  1, 1,  1,  2, 2,  2,  3, 3};
+std::vector<int>    CI { 0,  1,  0, 1,  2,  1, 2,  3,  2, 3};
 std::vector<int>    RP { 0,  2,  5, 8,  10};
 \end{lstlisting} 
 \end{itemize}
