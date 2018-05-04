@@ -46,7 +46,7 @@ namespace ET
       return static_cast<E &>(*this);
     }
     /*! The alternative with a method instead of a cast operator.
-       It is less flexible hoewever.
+       It is less flexible however, but maybe clearer!
     */
     const E & asDerived() const 
     {
