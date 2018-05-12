@@ -1,4 +1,4 @@
-#include <sparse_matrix.h>
+#include <sparse_matrix_simplified.h>
 
 constexpr int msize = 6;
 
