@@ -5,6 +5,20 @@
 non_local_t non_local;
 
 int
+conn (int inode, int iel)
+{
+  int res = 0;
+  int elcol, elrow;
+  elcol = iel / 4;
+  elrow = iel - elcol * 4;
+  res = elcol * 5 + elrow;
+  if (inode == 1) res += 1;
+  if (inode == 2) res += 5;
+  if (inode == 3) res += 6;
+  return (res);
+};
+
+int
 main (int argc, char *argv[])
 {
   MPI_Init (&argc, &argv);
@@ -13,30 +27,48 @@ main (int argc, char *argv[])
   MPI_Comm_rank (MPI_COMM_WORLD, &rank);
   MPI_Comm_size (MPI_COMM_WORLD, &size);
 
-  int is, ie;
+  int is, ie, is_elems, ie_elems;
   sparse_matrix A;
-
-  build_matrix (rank, size, is, ie, A);
-  int nloc = ie - is;
-
-    /*
-      for (auto irank = 0; irank < size; ++irank)
-      {
-      if (irank == rank)
-      {
-      std::cout << A << std::endl;
-      }
-      MPI_Barrier (MPI_COMM_WORLD);
-      }
-  
-      
-      MPI_Finalize ();
-      return 0;
-    */
-  
   std::vector<int> row_ptr, col_ind;
   std::vector<double> value;
   
+  A.resize (55);
+  
+  if (rank == 0 || size == 1)
+    {
+      is_elems = 0;
+      ie_elems = 20;
+      is = 0;
+      ie = 28;
+    }
+
+   if (rank == 1 || size == 1)
+     {
+      is_elems = 20;
+      ie_elems = 40;
+      is = 28;
+      ie = 55;
+     }
+
+   std::cout << "is " << is << " ie " << ie << " is_elems " << is_elems << "  ie_elems " << ie_elems << std::endl;  
+     
+   if (size == 1)
+     { std::cout << "runing serially\n" ; is_elems = 0; ie_elems = 40; is = 0; ie = 55; }
+   
+   std::vector<std::vector<double>> locmatrix =
+     {{2,-1,-1,0}, {-1,2,0,-1},{-1,0,2,-1},{0,-1,-1,2}};
+
+   double tmp;
+   for (int iel = is_elems; iel < ie_elems; ++iel)
+     for (int inode = 0; inode < 4; ++inode)
+       for (int jnode = 0; jnode < 4; ++jnode)
+         {
+           tmp = locmatrix[inode][jnode];
+           if (tmp != 0.)
+             A[conn (inode,iel)][conn (jnode,iel)] +=
+               tmp;
+         }
+       
   /// Gather ranges
   std::vector<int> ranges (size + 1, 0);
   MPI_Allgather (&ie, 1, MPI_INT, &(ranges[1]), 1, MPI_INT, MPI_COMM_WORLD);
@@ -48,7 +80,7 @@ main (int argc, char *argv[])
     rank_nnz[ii] = non_local.row_ptr[ranges[ii+1]] - non_local.row_ptr[ranges[ii]];
   MPI_Alltoall (MPI_IN_PLACE, 1, MPI_INT, &(rank_nnz[0]), 1, MPI_INT, MPI_COMM_WORLD);
 
-      
+ 
   /// Allocate buffers
   std::map<int, std::vector<int>> row_buffers;
   std::map<int, std::vector<int>> col_buffers;
@@ -152,7 +184,6 @@ main (int argc, char *argv[])
 
   A.csr (value, col_ind, row_ptr, 0);
   
-
   for (int ii = 0; ii < size; ++ii)
     {
       if (ii == rank)
@@ -187,7 +218,7 @@ main (int argc, char *argv[])
             std::cout << ii << " ";
           std::cout << "];\n\n";
 
-
+          
           for (auto ii : row_buffers)
             {
               std::cout << "row_buffers (" << ii.first << ") = [";
@@ -211,7 +242,7 @@ main (int argc, char *argv[])
                   std::cout << jj << " ";
               std::cout << "];\n";
             }
-          
+
         }
 
       MPI_Barrier (MPI_COMM_WORLD);
