@@ -28,8 +28,8 @@ namespace Utility
 
  
  using int_type=long unsigned int; 
- //! Another implementation, which makes use of type tagging
- //! and the new constexpr magic. Needs at least C++11
+ //! Another implementation, it makes use of the
+ //! new constexpr magic. Needs at least C++11
  constexpr int_type GCD(int_type const M,int_type const N)
   {
     return (N==0)? M: GCD(N,M%N);
