@@ -11,11 +11,11 @@ int main()
   cout<< "Computed with recursive ordinary function: "<<gcd(n,m)<<endl;
 
   cout<< "Computed with the second implementation: "<<GCD(n,m)<<endl;
-  cout<< "give me two integers"<<std::endl;
-  unsigned long int a,b;
-  std::cin>>a>>b;
+  //  cout<< "give me two integers"<<std::endl;
+  //unsigned long int a,b;
+  //std::cin>>a>>b;
   //! It works also if the arguments are not constant expressions
-  cout<< "Computed with the second implementation: "<<GCD(a,b)<<endl;
+  //cout<< "Computed with the second implementation: "<<GCD(a,b)<<endl;
   
 
 }
