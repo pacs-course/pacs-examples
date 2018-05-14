@@ -162,7 +162,7 @@ namespace ET
   template <class RO>
   inline ExpExpr<RO> exp(RO const & r){return  ExpExpr<RO>(r);}
 
-  //! Exponential
+  //! Logarithm
   template <class RO>
   inline LogExpr<RO> log(RO const & r){return  LogExpr<RO>(r);}
 }
