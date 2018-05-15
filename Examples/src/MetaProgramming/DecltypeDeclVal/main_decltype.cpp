@@ -9,6 +9,7 @@ class NotDefaultConstructible
 public:
   NotDefaultConstructible(int i):i(i){}
   int get_i() const {return this->i;}
+  static const int j{10};
 private:
   int i;
 };
@@ -20,9 +21,13 @@ public:
   DefaultConstructible(double i):i(i){}
   double get_i() const {return this->i;}
   void set_i(double x){this->i=x;}
+  static const double j;
 private:
   double i;
 };
+// A non integral static member cannot be initialised in class, not even in c++14, unless declared constexpr!
+// I have to do it out of class (in general in a cpp file).
+const double DefaultConstructible::j=40.0;
 // A template function where I want to interrogate the type of get_i(). 
 template<class T>
 void fun(T const & a)
@@ -35,6 +40,9 @@ void fun(T const & a)
   decltype(std::declval<T>().get_i()) b;
   // Which tye is a?, now to write it out I need typeid
   std::cout<<"get_i() returns a "<<typeid(b).name()<<std::endl;
+  // I do not need declval to interrogate static members since I do not need to 
+  std::cout<<"Static member j is of type "<<
+    typeid(decltype(T::j)).name()<<std::endl;
 }
 
 int main()
@@ -45,4 +53,5 @@ int main()
   fun(nd);
   std::cout<<std::endl<<"calling fun(DefaultConstructible) "<<std::endl;
   fun(d);
+  
 }
