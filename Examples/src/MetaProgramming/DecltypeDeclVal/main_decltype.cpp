@@ -38,7 +38,7 @@ void fun(T const & a)
   std::cout<<" Constructible from an int? "<<std::is_constructible<T, int>::value<<std::endl;
   // To interrogate the return get I do not need to create an object of type T!
   decltype(std::declval<T>().get_i()) b;
-  // Which tye is a?, now to write it out I need typeid
+  // Which tye is b?, now to write it out I need typeid
   std::cout<<"get_i() returns a "<<typeid(b).name()<<std::endl;
   // I do not need declval to interrogate static members since I do not need to 
   std::cout<<"Static member j is of type "<<
