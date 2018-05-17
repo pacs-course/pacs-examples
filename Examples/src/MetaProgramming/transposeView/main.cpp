@@ -4,12 +4,15 @@
 
 //I need to specialize for a matrix of fleat since
 //the value_type in this case is float and not the default value of double!
-template <>
-struct LinearAlgebra::Matrix_Traits<Eigen::Matrix3f>
+namespace LinearAlgebra
 {
-  using value_type=float;
-  using size_type=std::size_t;
-};
+  template <>
+  struct Matrix_Traits<Eigen::Matrix3f>
+  {
+    using value_type=float;
+    using size_type=std::size_t;
+  };
+}
 
 int main()
 {
@@ -23,13 +26,13 @@ int main()
 
   LinearAlgebra::transposed_view<Eigen::Matrix3f> mt(m);
 
-  mt(0,0)=100.f;
+  //mt(0,0)=100.f;
   
-  for (auto i=0;i<3;++i)
-    for (auto j=0;j<3;++j)
-      {
-        std::cout<<"("<<i<<", "<<j<<")= "<<mt(i,j)<<std::endl;
-      }
+  //  for (auto i=0;i<3;++i)
+  //for (auto j=0;j<3;++j)
+  //  {
+  //    std::cout<<"("<<i<<", "<<j<<")= "<<mt(i,j)<<std::endl;
+  //  }
 
   // and now the const version
   std::cout<<std::endl;
@@ -40,7 +43,7 @@ int main()
       {
         std::cout<<"("<<i<<", "<<j<<")= "<<mtc(i,j)<<std::endl;
       }
-  //  mtc(0,1)=10.f; //Error ive if mtc is not constant the stored matrix is
+  //   mtc(0,1)=10.f; //Error ive if mtc is not constant the stored matrix is
   //  constant.
   
 }
