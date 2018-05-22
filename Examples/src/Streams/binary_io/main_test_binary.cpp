@@ -25,13 +25,13 @@ int main()
   ofstream asciifile ("file.txt");
   // The array
   double * pippo=new double[DIM];
-  for (int i=0 ;i<DIM; ++i) pippo[i]=static_cast<double>(rand());
+  for (auto i=0u ;i<DIM; ++i) pippo[i]=static_cast<double>(rand());
 
   Timings::Chrono tempo;
 
   cout<<"Writing formatted file"<<endl;
   tempo.start();
-  for (int i=0 ;i<DIM; ++i) asciifile<<pippo[i]<<endl;
+  for (auto i=0u ;i<DIM; ++i) asciifile<<pippo[i]<<endl;
   asciifile.flush(); // I want to make sure that everithing is written
   asciifile.close();
   tempo.stop();
@@ -49,7 +49,7 @@ int main()
   ifstream asciifile2 ("file.txt");
   cout<<"Reading formatted file"<<endl;
   tempo.start();
-  for (int i=0 ;i<DIM; ++i) asciifile2>>pippo[i];
+  for (auto i=0u ;i<DIM; ++i) asciifile2>>pippo[i];
   asciifile2.close();
   tempo.stop();
   cout<<"Reading done: "<<tempo<<endl;
