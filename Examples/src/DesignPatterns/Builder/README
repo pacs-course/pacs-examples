@@ -1,0 +1,3 @@
+An example of builder design pattern.
+Two different builders for graphs have been set depending whether we want directed or undirected graphs.
+in the case of undirected graphs the edges are repeated with ends exchanged
