@@ -33,11 +33,12 @@ int main() {
   cout.setf(ios_base::uppercase);
   cout << pi << " with 4 digits, Scientific format, Uppercase E"<<endl;
   auto oldwidth=cout.width(); // store current width
-  // Set minumum output width
-  cout.width(25);
-  cout.precision(15);
   cout.setf(ios_base::left, ios_base::adjustfield);        // adjust to left
-  cout << pi << " Width 25 precision 15"<<endl;
+  // Set minumum output width
+  cout.precision(3);
+  cout.width(25);
+  cout<<" Width 25 precision 3:"<<endl;
+  cout << pi <<cout.width()<< std::endl;
   bool a=true;
   cout<<a<<" This is a bool"<<endl;
   // I want true/false
@@ -83,7 +84,7 @@ int main() {
   // I like uppercase E
   cout << std::uppercase<< pi << " with 4 digits, Scientific format, Uppercase E"<<endl;
   // 
-  cout << std::setw(25)<<std::setprecision(15)<<std::left<< pi << " Width 25 precision 15"<<endl;
+  cout << std::setw(25)<<std::setprecision(15)<<std::left<< pi << 123<<" Width 25 precision 15"<<endl;
   cout<<a<<" This is a bool"<<endl;
   cout<<std::boolalpha;
   cout<<a<<" This is again a  bool"<<endl;
