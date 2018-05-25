@@ -1,4 +1,5 @@
 /*
+
   Copyright (C) 2011 Carlo de Falco, http://mox.polimi.it/~carlo
 
   Copyright (C) 2006-2009 Evgenii Rudnyi, http://MatrixProgramming.com
@@ -8,6 +9,7 @@
 
   This software is a copyrighted work licensed under the terms, described
   in the file "FREE_LICENSE". 
+
 */
 
 #define F77_COMM_WORLD -987654
@@ -43,10 +45,10 @@ int main (int argc, char **argv)
 {	
 
   // 0) Init MPI
-  MPI::Init (argc, argv);
-  int 
-    rank = MPI::COMM_WORLD.Get_rank (),
-    size = MPI::COMM_WORLD.Get_size ();
+  MPI_Init (&argc, &argv);
+  int rank, size;
+  MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+  MPI_Comm_size (MPI_COMM_WORLD, &size);
 
   ostringstream outfilename;
   outfilename << "outfile."  << rank << ".txt";
@@ -67,7 +69,7 @@ int main (int argc, char **argv)
   if (!in)
     {
       cerr << "cannot open file " << matfile.str ().c_str () << endl;
-      MPI::Finalize ();      return 2;
+      MPI_Finalize ();      return 2;
     }
   
   outfile << "process " << rank << " reading matrix from file: " <<  matfile.str ().c_str () << endl;
@@ -75,16 +77,20 @@ int main (int argc, char **argv)
   
   // if you know that you matrix is positive definite, IsSymmetric should be 1, then it is faster
   IsSymmetric = mat.IsSymmetric ? 2 : 0;
-  MPI::COMM_WORLD.Barrier ();
+  
+  
+  MPI_Barrier (MPI_COMM_WORLD);
   if (rank == 0) tread.write ("Reading matrix");
 
-  MPI::COMM_WORLD.Bcast (&IsSymmetric, 1, MPI::INT, 0);
+  MPI_Bcast (&IsSymmetric, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   // 1a) setting up MUMPS parameters and initialize it
   DMUMPS_STRUC_C id;
   id.job          = JOB_INIT; 
   id.par          = 1;  
-  id.sym          = IsSymmetric;
+  //id.sym          = IsSymmetric;
+  id.sym          = 1; // SPD matrix
+  id.cntl[0]      = 0.0; // setting id.cntl[0] = 0.0 will disble pivoting
   id.comm_fortran = F77_COMM_WORLD;
   dmumps_c(&id);
 
@@ -113,13 +119,13 @@ int main (int argc, char **argv)
   //id.icntl[10] = 1;
   
   //ordering AMD (0), or metis (5), or pord (4), or AMF (2), or QAMD (6), or let MUMPS decide (7)	
-  //id.icntl[6] = 0;
+  id.icntl[6] = 7;
 
   //parallel ordering 0 = let MUMPS decide, 1 = NO, 2 = YES
-  id.icntl[27] = 2;
+  id.icntl[27] = 0;
   
   //parallel ordering 0 = let MUMPS decide, 1 = PT-SCOTCH, 2 = PARMETIS
-  id.icntl[28] = 1;
+  id.icntl[28] = 0;
   
   //file where to dump matrix
   //sprintf (id.write_problem, "matdump");
@@ -152,7 +158,7 @@ int main (int argc, char **argv)
   id.a_loc   = &*a.begin ();
 
   mat.clearMemory();
-  MPI::COMM_WORLD.Barrier ();
+  MPI_Barrier (MPI_COMM_WORLD);
   if (rank == 0) t0.write ("converting matrix to the MUMPS representation");
 
     
@@ -166,7 +172,7 @@ int main (int argc, char **argv)
       if (!in2)
         {
           cerr << "cannot open file " << argv[2] << endl;
-          MPI::Finalize ();      return 4;
+          MPI_Finalize ();      return 4;
         }
 
       outfile << "reading rhs from file: " << argv[2] << endl;
@@ -177,26 +183,26 @@ int main (int argc, char **argv)
       id.lrhs = id.n;
       t0.write ("Reading RHS and set up MUMPS");
     }
-  MPI::COMM_WORLD.Barrier ();
+  MPI_Barrier (MPI_COMM_WORLD);
 
   // 4) Solve system once
  
   Timing ta;
-  id.job = 1;  MPI::COMM_WORLD.Barrier ();  dmumps_c (&id);  
+  id.job = 1;  MPI_Barrier (MPI_COMM_WORLD);  dmumps_c (&id);  
   if (rank == 0) ta.write ("Analysis ");
 
   outfile << " after job = 1 on cpu " << rank << " INFO(1) = " <<  id.info[0] 
           << " INFO(2) = " <<  id.info[1] << endl;
   
   Timing tf1;  
-  id.job = 2;  MPI::COMM_WORLD.Barrier ();  dmumps_c (&id);  
+  id.job = 2;  MPI_Barrier (MPI_COMM_WORLD);  dmumps_c (&id);  
   if (rank == 0) tf1.write ("Factorization(1) ");
 
   outfile << " after job = 2 on cpu " << rank << " INFO(1) = " <<  id.info[0] 
           << " INFO(2) = " <<  id.info[1] << endl;
     
   Timing ts1;  id.job = 3; 
-  MPI::COMM_WORLD.Barrier ();  dmumps_c (&id);
+  MPI_Barrier (MPI_COMM_WORLD);  dmumps_c (&id);
   if (rank == 0) ts1.write ("Solve(1) ");
 
   outfile << " after job = 3 on cpu " << rank << " INFO(1) = " <<  id.info[0] 
@@ -205,7 +211,7 @@ int main (int argc, char **argv)
   // 4) Solve system twice
 
   Timing tf2;
-  id.job = 2;  MPI::COMM_WORLD.Barrier ();  dmumps_c (&id);
+  id.job = 2;  MPI_Barrier (MPI_COMM_WORLD);  dmumps_c (&id);
   if (rank == 0)
     {
       Timing t0;
@@ -213,7 +219,7 @@ int main (int argc, char **argv)
       if (!in2)
         {
           cerr << "cannot open file " << argv[2] << endl;
-          MPI::Finalize ();      return 4;
+          MPI_Finalize ();      return 4;
         }
       
       outfile << "reading rhs from file: " << argv[2] << endl;
@@ -221,14 +227,14 @@ int main (int argc, char **argv)
       
       t0.write ("Reading RHS and set up MUMPS");
     }
-  MPI::COMM_WORLD.Barrier ();
+  MPI_Barrier (MPI_COMM_WORLD);
 
   if (rank == 0) tf2.write ("Factorization(2) ");
   outfile << " after job = 2 on cpu " << rank << " INFO(1) = " <<  id.info[0] 
           << " INFO(2) = " <<  id.info[1] << endl;
   
   Timing ts2;
-  id.job = 3;  MPI::COMM_WORLD.Barrier ();  dmumps_c (&id);  
+  id.job = 3;  MPI_Barrier (MPI_COMM_WORLD);  dmumps_c (&id);  
   if (rank == 0) ts2.write ("Solve(2) ");
 
   outfile << " after job = 3 on cpu " << rank << " INFO(1) = " <<  id.info[0] 
@@ -251,16 +257,16 @@ int main (int argc, char **argv)
       rhs.write(outf);
       t0.write ("writing solution to file");
     }
-  MPI::COMM_WORLD.Barrier ();
+  MPI_Barrier (MPI_COMM_WORLD);
   
   // 6) clean up
   Timing t2;
-  MPI::COMM_WORLD.Barrier ();  id.job = JOB_END;   dmumps_c (&id);  
+  MPI_Barrier (MPI_COMM_WORLD);  id.job = JOB_END;   dmumps_c (&id);  
   if (rank == 0) t2.write ("freeing memorly");
 
   outfile << " after job =-2 on cpu " << rank << " INFO(1) = " <<  id.info[0] 
           << " INFO(2) = " <<  id.info[1] << endl;
   
-  MPI::Finalize ();  return 0;	
+  MPI_Finalize ();  return 0;	
 }
 
