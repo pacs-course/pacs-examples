@@ -85,11 +85,16 @@ leak:
 --demangle=yes --log-file=leak.log ./leak
 
 profile:
-	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
-#	g++ -std=c++11 -pg -g esempio.cpp chrono.cpp -o esempio0
+#	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
+	echo " With no optimization"
+	g++ -std=c++11 -pg -O0 esempio.cpp chrono.cpp -o esempio0
 	./esempio0 -i dati
+	gprof --line ./esempio0 gmon.out >Profiling_nopt.txt
+	echo " With optimization"
+	g++ -std=c++11 -pg -O2 esempio.cpp chrono.cpp -o esempio0
+	./esempio0 -i dati
+	gprof --line ./esempio0 gmon.out >Profiling_opt.txt
 #	gprof --line --annotated-source ./esempio0 gmon.out >file.txt # works only with -g
-#	gprof --line ./esempio0 gmon.out >file.txt
 
 massif:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -g provamassif.cpp -o  provamassif
