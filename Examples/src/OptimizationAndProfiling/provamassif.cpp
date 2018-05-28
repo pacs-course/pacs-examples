@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
+// A stupid program to test the massif tool of valgrind
 int main()
 {
   vector<double>a;
@@ -19,7 +20,8 @@ int main()
 
   cout <<"clearing all"<<endl;
   a.clear();
-  vector<double>().swap(a);
+  //  vector<double>().swap(a);
+  a.shrink_to_fit(); // Since C++11
   cout<<" Creating 50000 ints:"<<50*sizeof(int)<<" Kbytes"<<endl;
   b.resize(50000);
   cout<<" Allocating other 10000 doubles: 80KBytes"<<endl;

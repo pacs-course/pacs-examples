@@ -29,17 +29,22 @@ using namespace std; // Non occorre usare std::
    In programmi piu` complessi l' uso di variabili globali per
    definire dei parametri non e` consigliato. E` meglio definire una classe o un struct
    apposita.
+   Al limite un namespace!
 */
-constexpr int   MMAX=501,itermax=1000000;
-constexpr double  toler=1e-8;
-constexpr double L=40.,a1=4.,a2=50.;
-constexpr double To=46., Te=20.;
-constexpr double k=0.164, hc=1.e-6*200.;
-constexpr double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
+namespace constants
+{
+  constexpr int   MMAX=501,itermax=1000000;
+  constexpr double  toler=1e-8;
+  constexpr double L=40.,a1=4.,a2=50.;
+  constexpr double To=46., Te=20.;
+  constexpr double k=0.164, hc=1.e-6*200.;
+  constexpr double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
+}
 
 void solve(int const itermax, int const  M, double const & h, vector<double> & theta);
 
 void computeAnalytic(double const & h, std::vector<double>& thetaa){
+  using namespace constants;
   for(auto m=0u; m<thetaa.size();++m)
     thetaa[m]=Te+(To-Te)*cosh(sqrt(act)*(1-m*h))/cosh(sqrt(act));
 }
@@ -55,6 +60,7 @@ printOut(const std::string & filename, double const & h,
 	 const std::vector<double>& theta,
 	 const std::vector<double>& thetaa)
 {
+  using namespace constants;
   // Scrittura su file dei risultati nel formato
   // x_i u_h(x_i) u(x_i)
   
@@ -67,6 +73,7 @@ printOut(const std::string & filename, double const & h,
 
 int main( int argc, char**argv)
 {
+  using namespace constants;
   Timings::Chrono myclock;
   GetPot cl(argc, argv);
   myclock.start();
@@ -115,7 +122,7 @@ int main( int argc, char**argv)
 
 void solve(int const itermax, int const  M, double const & h, vector<double> & theta)
 {
-  
+  using namespace constants;
   int iter=0;
   double epsilon(0);
   do
@@ -134,13 +141,13 @@ void solve(int const itermax, int const  M, double const & h, vector<double> & t
       epsilon += (xnew-theta[M])*(xnew-theta[M]);
       theta[M]=  xnew; 
       
-      iter=iter+1;     
+      iter++;
     }while((sqrt(epsilon) > toler) && (iter < itermax) );
   
   if(iter<itermax)
-    cout << "M="<<M<<"  Convergenza in "<<iter<<" iterationi"<<endl;
+    cout << "M="<<M<<"  Converging in "<<iter<<" iterations"<<endl;
   else
-    cout << "NON CONVERGE. "<<itermax<<" iterazioni "<<
+    cout << "NOT CONVERGING IN "<<itermax<<" ITERATIONS "<<
       "||dx||="<<sqrt(epsilon)<<endl;
   
 }
