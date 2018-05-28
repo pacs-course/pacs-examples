@@ -22,7 +22,7 @@ int main()
   while (!file.eof() && ! file.fail())
     {
       file>>be[0]>>be[1];
-      if (!file.eof() && ! file.fail())
+      if (! file.fail())
         gb->buildEdges(be,edgeid++);
     }
   Graph & g = gb->get_graph();
