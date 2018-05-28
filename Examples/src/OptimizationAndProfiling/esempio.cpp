@@ -19,6 +19,7 @@
 #include <vector> // Vettori della STL
 #include<string>
 #include "chrono.hpp"
+#include "GetPot"
 
 using namespace std; // Non occorre usare std::
 
@@ -29,18 +30,24 @@ using namespace std; // Non occorre usare std::
    definire dei parametri non e` consigliato. E` meglio definire una classe o un struct
    apposita.
 */
-const int   MMAX=501,itermax=1000000;
-const double  toler=1e-8;
-const double L=40.,a1=4.,a2=50.;
-const double To=46., Te=20.;
-const double k=0.164, hc=1.e-6*200.;
-const double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
+constexpr int   MMAX=501,itermax=1000000;
+constexpr double  toler=1e-8;
+constexpr double L=40.,a1=4.,a2=50.;
+constexpr double To=46., Te=20.;
+constexpr double k=0.164, hc=1.e-6*200.;
+constexpr double act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
 
 void solve(int const itermax, int const  M, double const & h, vector<double> & theta);
 
 void computeAnalytic(double const & h, std::vector<double>& thetaa){
   for(auto m=0u; m<thetaa.size();++m)
     thetaa[m]=Te+(To-Te)*cosh(sqrt(act)*(1-m*h))/cosh(sqrt(act));
+}
+void initialize(std::vector<double> & theta, double To, double Te, int M, double h)
+{
+  theta[0]=(To-Te)/Te;       //condizione a x=0
+  for(int m=1;m <= M;++m)
+    theta[m]=(1.-m*h)*(To-Te)/Te;
 }
 
 void 
@@ -58,14 +65,18 @@ printOut(const std::string & filename, double const & h,
   f.close();
 }
 
-int main( )
+int main( int argc, char**argv)
 {
   Timings::Chrono myclock;
+  GetPot cl(argc, argv);
   myclock.start();
   // Construzione della griglia
 
+  
   int M;
-  std::ifstream ifile("dati");
+  const std::string infile
+    = cl.follow("dati", 2, "-i","--file");
+  std::ifstream ifile(infile);
   ifile  >> M;
   ifile.close();
   
@@ -81,10 +92,8 @@ int main( )
   //vector<double> theta(M+1); 
   
   // Inizializzazione di Gauss Siedel dist. lineare
-  
-  theta[0]=(To-Te)/Te;       //condizione a x=0
-  for(int m=1;m <= M;m++)
-    theta[m]=(1.-m*h)*(To-Te)/Te;
+
+  initialize(theta, To, Te, M, h);
   
   // Gauss-Seidel
   // epsilon=||x^{k+1}-x^{k}||
