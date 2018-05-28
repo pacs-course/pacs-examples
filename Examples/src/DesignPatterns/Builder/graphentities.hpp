@@ -48,8 +48,10 @@ namespace Graphs
 }
 // COmparison operators
 // in namespace std, so I have to take out Graphs
+namespace std
+{
 template <>
-struct std::less<Graphs::node>
+struct less<Graphs::node>
 { 
   bool operator()(const Graphs::node & a, const Graphs::node & b)
   {
@@ -58,13 +60,14 @@ struct std::less<Graphs::node>
 };
 
 template <>
-struct std::less<Graphs::edge>
+struct less<Graphs::edge>
 { 
   bool operator()( const Graphs::edge & a, const Graphs::edge & b)
   {
     return a.get_element()<b.get_element();  
   }
 };
+}
 
 namespace Graphs
 {

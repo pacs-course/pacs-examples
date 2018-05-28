@@ -8,16 +8,13 @@ make esempioExtAss: produces an example of use of the extendedAssert
      It may be modified to assess the activation of the assertions
      (try a zero denominator).
 
-make unroll Tests the -funroll-loops. It creates the assembly code of
-a simple program.
-
-make optimize It shows the effect of different optimization level on
+     make optimize shows the effect of different optimization level on
 the CPU time to solve a simple fem program. In the file dati you
 should write the number of elements you want. Suggested: 300.
 
 make debug. Produces two executable esempio0_debug and
 esempio1_debug. The latter contains an error. You should try to use
-the debugger
+the debugger use ulimit -c unlimited to do static debugging
 
 make leak. An example of use of valgrind to find a memory leak. You should have valgrind installed
 
@@ -25,4 +22,7 @@ make profile. An example of use of gprof profiler. The --annotated-source option
 	 on my computer. Try it on yours.
 
 
-make massif. An example of use of massif to analyze memory usage. 
+make massif. An example of use of massif to analyze memory usage.
+
+make aliasing: a code that may produce wrong results
+because of aliasing

@@ -41,6 +41,8 @@ OPTFLAGS = -g
 # -OX      attemp code optimizations at level X
 
 #
+LDFLAGS+=$(OPTFLAGS)
+CXXFLAGS+=$(OPTFLAGS)
 DEPEND=make.dep
 EXEC=esempioExtAss
 
@@ -48,24 +50,18 @@ EXEC=esempioExtAss
 
 all: $(EXEC)
 
-esempioExtAss: esempioExtAss.o rational.o
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g $(LDFLAGS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -DNDEBUG $(LDFLAGS) $(LDLIBS) esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
+esempioExtAss:
+	$(CXX) $(CPPFLAGS) -g  esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
+	$(CXX) $(CPPFLAGS) -O2 -DNDEBUG esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
 
-unroll: chrono.o
-	$(CXX) -S -O0 unroll1.cpp
-	mv unroll1.s unroll1_nounroll.s	
-	$(CXX) -o unroll1_nounroll  -O unroll1.cpp chrono.o
-	$(CXX) -S -O0 -funroll-loops  unroll1.cpp
-	mv unroll1.s unroll1_unroll.s
-	$(CXX) -o  unroll1_unroll -O -funroll-loops unroll1.cpp  chrono.o
-
+aliasing: aliasing.o
 
 clean:
-	$(RM) -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat 
+	$(RM) -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat aliasing
 	$(RM) -f esempioExtAss_debug  esempioExtAss_release *.txt unroll1_nounroll unroll1_unroll
 
 distclean: clean
+	$(RM) core *.log gmon.out
 
 optimize: chrono.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp chrono.o
@@ -90,9 +86,10 @@ leak:
 
 profile:
 	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
-	./esempio0<dati
-#	gprof --line --annotated-source ./esempio0 gmon.out >file.txt # currently not working!
-	gprof --line ./esempio0 gmon.out >file.txt
+#	g++ -std=c++11 -pg -g esempio.cpp chrono.cpp -o esempio0
+	./esempio0 -i dati
+#	gprof --line --annotated-source ./esempio0 gmon.out >file.txt # works only with -g
+#	gprof --line ./esempio0 gmon.out >file.txt
 
 massif:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -g provamassif.cpp -o  provamassif
