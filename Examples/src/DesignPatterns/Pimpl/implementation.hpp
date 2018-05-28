@@ -22,7 +22,7 @@ namespace internal
   private:
     double M_a{0.0};
     int M_b{0};
-    std::array<double,2> A{0.0,0.0};
+    std::array<double,2> A{{0.0,0.0}};
   };
 }// end internal
 #endif
