@@ -1,0 +1,1 @@
+double get_epoch ();
