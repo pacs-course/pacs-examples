@@ -22,7 +22,7 @@ template<class FUN>
 auto
 diff (const FUN& fun)
   {
-    auto f = [fun] (double x) { return diff (fun, x); }; 
+    auto f = [fun] (const double x) { return diff (fun, x); }; 
     return f;
   }
 
