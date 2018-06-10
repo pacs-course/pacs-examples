@@ -1,10 +1,8 @@
 #ifndef HAVE_COMPLEX_STEP_H
 #define HAVE_COMPLEX_STEP_H
 
-#include <iostream>
 #include <cmath>
 #include <complex>
-#include <limits>
 
 template<class FUN>
 double
