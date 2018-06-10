@@ -1,4 +1,5 @@
 #include "polyFactory.hpp"
+#include "enable_shared.hpp"
 #include <iostream>
 //! An example of smart pointers.
 /*!
@@ -17,9 +18,6 @@ int main(){
   a.setPolygon(Shape::Square);
   a.showMe();
 
-  // This works only of compiled with g++ or with clang with newest version 
-  // of the standard library (that shipped with gcc 4.7)
-  // I have a patch
   std::shared_ptr<AbstractPolygon> apoly(polyFactory(Shape::Triangle).release());
   std::shared_ptr<AbstractPolygon> bpoly(apoly);
   cout<<"there are "<<bpoly.use_count()<<" shared pointers owning a polygon"<<endl;
@@ -34,4 +32,16 @@ int main(){
   // (but more efficient)
   //  shared_ptr<double> ptr_res1(new double(5.0));
   // In C++14 we also have make_unique for unique_ptr
+
+  std::cout<<"Trying the enable_shared facility\n";
+  auto tp1=make_shared<Try>();
+  tp1->set(5.0);
+  cout<< "I have "<<tp1.use_count()<<" pointers to Try objects\n";
+  cout<< "with value "<<tp1->get()<<std::endl;
+  auto tp2 = tp1->shared_from_this();
+  // As alternative I can do
+  //  std::shared_ptr<Try> tp2(tp1);
+  // but in this case I cannot use auto
+  cout<< "I have "<<tp1.use_count()<<" pointers to Try objects\n";
+  cout<< "with value "<<tp1->get()<<" and "<<tp2->get()<<std::endl;
 }
