@@ -7,13 +7,13 @@ namespace Geometry
     switch (t){
 #if __cplusplus > 201103L
       //C++14
-    case Shape::Triangle : return make_unique<Triangle>();
-    case Shape::Square : return make_unique<Square>();
-    default: return unique_ptr<AbstractPolygon>();
+    case Shape::Triangle : return std::make_unique<Triangle>();
+    case Shape::Square : return std::make_unique<Square>();
+    default: return std::unique_ptr<AbstractPolygon>();
 #else
-    case Shape::Triangle : return unique_ptr<AbstractPolygon>(new Triangle);
-    case Shape::Square : return unique_ptr<AbstractPolygon>(new Square);
-    default: return unique_ptr<AbstractPolygon>();
+    case Shape::Triangle : return std::unique_ptr<AbstractPolygon>(new Triangle);
+    case Shape::Square : return std::unique_ptr<AbstractPolygon>(new Square);
+    default: return std::unique_ptr<AbstractPolygon>();
 #endif
     }
   } 
