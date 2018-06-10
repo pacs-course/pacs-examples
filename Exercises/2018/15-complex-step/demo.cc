@@ -1,12 +1,13 @@
 #include <complex-step.h>
 #include <iomanip>
 
-auto SinCos = [] (auto x) { return std::sin (std::cos (x)); };
+
 
 int
 main ()
 {
-  
+
+  auto SinCos = [] (auto x) { return std::sin (std::cos (x)); };
   auto d_SinCos_d_x = diff (SinCos);
   
   for (double x = 0.0; x < 2.0 * M_PI; x += 0.001)
