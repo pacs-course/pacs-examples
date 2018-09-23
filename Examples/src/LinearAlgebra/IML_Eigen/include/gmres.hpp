@@ -5,7 +5,7 @@
 //! Iterative template routine -- GMRES
 //!
 //! GMRES solves the unsymmetric linear system Ax = b using the 
-//! Generalized Minimum Residual method
+//! Generalized Minimum Residual method preconditioned with a left preconditioner
 //!
 //! GMRES(m) follows the algorithm described on p. 20 of the 
 //! SIAM Templates book.
