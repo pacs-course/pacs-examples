@@ -48,7 +48,8 @@ FGMRES(const Matrix &A, Vector &x, const Vector &b,
   Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> H=
     Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>::Zero(m+1,m);
   //  H.resize(m+1,m,0.0);
-  Real normb = norm(M.solve(b));
+  //  Real normb = norm(M.solve(b));
+  Real normb = norm(b);
   Vector r = b - A * x;
   Real beta = norm(r);
   
