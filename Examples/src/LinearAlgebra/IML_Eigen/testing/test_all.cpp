@@ -18,7 +18,7 @@ using std::cerr;
 #include <map>
 #include <string>
 //! Select solvers
-enum SolverSwitch {Umfpack, SparseLU, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr,fgmres,minres};
+enum SolverSwitch {Umfpack, SparseLU, gmres, gmresr, cg, cheby, bicgstab, cgs,bicg,ir,qmr,fgmres,minres};
 //! where to store parameters
 struct TestParameters
 {
@@ -37,6 +37,7 @@ const std::map<std::string,SolverSwitch> getSolver=
     {std::string{"umfpack"},Umfpack},
     {std::string{"sparselu"},SparseLU},
     {std::string{"gmres"},gmres},
+    {std::string{"gmresr"},gmresr},
     {std::string{"cg"},cg},
     {std::string{"cheby"},cheby},
     {std::string{"bicgstab"},bicgstab},
@@ -44,8 +45,8 @@ const std::map<std::string,SolverSwitch> getSolver=
     {std::string{"bicg"},bicg},
     {std::string{"ir"},ir},
     {std::string{"qmr"},qmr},
-    {std::string{"fgmres"},qmr},
-    {std::string{"minres"},qmr}
+    {std::string{"fgmres"},fgmres},
+    {std::string{"minres"},minres}
   }; 
 
 //! Read parameters from getpot object
@@ -138,9 +139,9 @@ main(int argc, char * argv[])
   x=0*x;// Start from 0.
 
   // Status
-  int result;
+  int result{0};
 
-  // Only to save typing I create an alias to testParameters
+ // Only to save typing I create an alias to testParameters
   auto maxit=testParameters.max_iter;
   auto tol  =testParameters.tol; 
   switch(testParameters.solverSwitch)
@@ -171,6 +172,12 @@ main(int argc, char * argv[])
       {
         auto m = testParameters.gmres_levels;
         result = GMRES(A, x, b, D, m, maxit, tol);  // Solve system
+        break;
+      }
+    case gmresr :
+      {
+        auto m = testParameters.gmres_levels;
+        result = GMRESR(A, x, b, D, m, maxit, tol);  // Solve system
         break;
       }
     case fgmres :
