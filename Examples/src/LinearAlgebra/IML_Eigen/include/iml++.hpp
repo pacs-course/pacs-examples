@@ -7,6 +7,7 @@
 #include "bicgstab.hpp"
 #include "cgs.hpp"
 #include "gmres.hpp"
+#include "gmresr.hpp"
 #include "fgmres.hpp"
 #include "minres.hpp"
 #include "ir.hpp"
