@@ -10,3 +10,6 @@
 [submodule "Extras/muparser"]
 	path = Extras/muparser
 	url = git@github.com:lformaggia/muparser.git
+[submodule "Extras/muparserx"]
+	path = Extras/muparserx
+	url = git@github.com:beltoforion/muparserx.git
