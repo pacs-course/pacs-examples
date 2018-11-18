@@ -1,9 +1,9 @@
 include ../../../../Makefile.inc
 CPPFLAGS+=-I..
 
-all: $(DEPEND) testMM_readers  testCooWrite testAdjacency
+all: $(DEPEND) testMM_readers  testCooWrite testAdjacency testRotatingVector
 
-SRCS=testMM_readers.cpp  testCooWrite.cpp testAdjacency.cpp
+SRCS=testMM_readers.cpp  testCooWrite.cpp testAdjacency.cpp testRotatingVector.cpp
 
 testMM_readers:testMM_readers.o
 
@@ -17,10 +17,12 @@ testAdjacency: testAdjacency.o ../Utilities.o
 
 testAdjacency.o: testAdjacency.cpp ../COOExtractor.hpp ../Utilities.hpp
 
+testRotatingVector.o: testRotatingVector.cpp ../RotatingVector.hpp
+
 ../Utilities.o: ../Utilities.cpp ../Utilities.hpp
 
 clean:
-	$(RM) *.o vec_out.mtx mat_out.mtx testMM_readers testCooWrite testAdjacency $(DEPEND)
+	$(RM) *.o vec_out.mtx mat_out.mtx testMM_readers testCooWrite testRotatingVector testAdjacency $(DEPEND)
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)
