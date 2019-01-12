@@ -1,7 +1,7 @@
 #include "fixedPoint.hpp"
 namespace NonLinearSystems{
   FixedPointStatus fixedPoint(NonLinSys const & fSys,
-		      argumentType & x,
+		      NonLinSys::argumentType & x,
 		      const FixedPointOptions opt)
   {
     if(fSys.numEq()!=x.size()) return  FixedPointStatus{0,0,false};
