@@ -14,15 +14,15 @@ namespace LinearAlgebra
 {
   //! This class represent a vector that rotates cyclically the components
   /*!
-   *
+   *  Useful if you need to keep track of just the last N elements
    */
 template <class T, std::size_t N>
 class RotatingVector
 {
 public:
-  //! Returns the underlying vector
+  //! Returns the underlying container
   auto  getVector()const {return M_vec;}
-  //! Returns the underlying vector
+  //! Returns the underlying container
   auto& getVector(){return M_vec;}
   //! Returns i-th stored item
   T  operator[](std::size_t i)const {return M_vec[i];}
@@ -30,21 +30,21 @@ public:
   T& operator[](std::size_t i){return M_vec[i];}
   //! The current size
   auto  size()const {return M_size;}
-  //! Reserves space. Useful if T is of big size
-  /*!
-   * Reserving avoids the use of automatic reallocation
-   */
-  void  reserve(std::size_t n)
-  {
-    M_vec.reserve(n);
-  }
+  //! The last element
+  auto & back(){return M_vec[M_size];}
+  //! The last element
+  auto  back()const {return M_vec[M_size];}
+  //! true if all elements are filled up
+  bool full()const {return M_size==N;}
+  //! true if empty
+  bool empty()const {return M_size==0u;}
   //! Add an element to the end of the vector by callint T(args)
   template <class... Args>
   void emplace_back (Args&&... args)
   {
     if (M_size < N)
       {
-        M_vec.emplace_back(std::forward<Args>(args)...);
+        M_vec[M_size]= T(std::forward<Args>(args)...);
         M_size++;
       }
     else
@@ -58,7 +58,7 @@ public:
   {
     if (M_vec.size() < M_size)
       {
-        M_vec.push_back(args);
+        M_vec[M_size]=args;
         M_size++;
       }
     else
@@ -69,7 +69,7 @@ public:
   }
 private:
   unsigned int M_size=0u;
-  std::vector<T> M_vec;
+  std::array<T,N> M_vec;
 };
 
 }

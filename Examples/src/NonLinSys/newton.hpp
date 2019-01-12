@@ -33,7 +33,7 @@ namespace NonLinearSystems{
     //! @brief Converged flag.
     /*! @detail true if two successive iterations smaller
      than given tolerance*/
-    bool converged;
+    bool converged=false;
   };
   
   //! Function implementing Newton method for zero of non-linear systems.
