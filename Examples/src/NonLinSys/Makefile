@@ -61,7 +61,7 @@ $(OBJS): %.o:%.cpp
 
 $(DEPEND): $(SRCS) $(HEADERS)
 	$(RM) $(DEPEND)
-	g++ $(CPPFLAGS) -MM $(SRCS) > $(DEPEND)
+	g++ $(CPPFLAGS) $(CXXFLAGS) -MM $(SRCS) > $(DEPEND)
 
 
 -include $(DEPEND)
