@@ -6,6 +6,8 @@ namespace NonLinearSystems{
   //! The type of a jacobian
   typedef Eigen::MatrixXd jacobianType;
   //! This is a base class for Jacobian computations
+  using argumentType=NonLinSys::argumentType;
+  using returnType=NonLinSys::returnType;
   class Jacobian{
   public:
     virtual jacobianType operator()(argumentType const & x) const=0;
