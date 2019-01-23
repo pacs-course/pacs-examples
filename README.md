@@ -6,21 +6,34 @@ that will be explained during the PACS (Programmazione Avanzata per il Calcolo
 Scientifico - Advanced Programming for Scientific Calculus) course at
 Politecnico di Milano.
 
-The software require a c++11 compiler, i.e. gcc >= 4.8 or clang >= 3.2.
-Instructions to compile a suitable version of clang for ubuntu can be found in the
-[wiki](https://github.com/pacs-course/pacs/wiki/Instructions-to-install-clang-3.1-on-ubuntu-12.04.1-and-12.10).
+The software require a c++11 compiler, i.e. gcc >= 5.0 or clang >= 5.
+gcc 7.0 is the one you find in the module system provided. But you may
+check the version of you compiler with the option -v
 
-All the files are free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+This directory contains some utilities:
 
-The files are distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
+**  load_modules
+If you use the module, typing
 
-You should have received a copy of the GNU General Public
-License along with this file; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+source load_modules
+or
+. load_modules.sh
+
+will load the main modules used in the examples, a part hdf5 wich is used only on the example on iostreams (binary file).
+
+**  install_modules.sh
+
+If you do not have used --recursive when cloning this repo and you want to use
+the submodules containing third party software type:
+
+./install_modules
+
+The file submodule_commands.txt contains some reminder of useful git commands for operating with submodules
+
+
+** change_submodules_url.sh
+Change the protocol of the submodules to https. You should not need it!
+
+** change_submodules_url_ssh.sh
+Change the protocol of the submodules to ssh. You should not need it!
 
