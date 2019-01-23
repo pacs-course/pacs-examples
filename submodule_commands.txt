@@ -2,11 +2,9 @@
 git clone --recursive <repoURL>
 # Initialize submodules if repo has been cloned without --recursive
 git submodule update --init --recursive
-# Get submodule updated after a change in the submodule
-git submodule update --recursive --merge
-# Get submodules updated with the version in the remote
-git submodule update --remote --recursive --merge
+# Get submodules updated with the version in the remote repo
+git submodule update --remote --recursive --rebase
 # See submodules status
 git submodule status --recursive
-# Remember to commit a modified submodule in the superproject!
+
 
