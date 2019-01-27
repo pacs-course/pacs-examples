@@ -98,10 +98,8 @@ WARNFLAGS=-Wall
 # -O       attemp code optimizations
 #
 ifdef RELEASE
-OPTFLAGS = -O2
 DEBUG=no
 else
-OPTFLAGS = -g -O0
 DEBUG=yes
 endif
 
@@ -110,7 +108,7 @@ ifeq ($(DEBUG),yes)
   LDFLAGS+=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib# If debug we use the local dynamic libraries and avoid ldconfig
 else
   OPTFLAGS=-O2
-  CPPFLAGS+=-DNDEBUG
+  DEFINES+=-DNDEBUG
 endif
 
 #
@@ -175,4 +173,8 @@ export CCFLAGS=$(CXXFLAGS)
 export LDFLAGS+=$(OPTFLAGS) 
 #export LDLIBS=$(LIBRARIES)
 export DEPEND=make.dep
+# Rule to generate pdf from latex files
+%.pdf:%.tex
+	pdflatex $<
+
 
