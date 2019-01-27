@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+This directory contains a set of ulility to define parametric models.
+The chosen paradigm is that of having a collection of simple classes that may be composed to 
+create the different types of models and solution procedures.
+To this purpose generic programming via templates it is of advantage because it allows to create only loosely reltated classes, contrary to 
+polymorphism that requires a precise definition of class hyerarchy and careful design of the interface.
+
+In particular, we have investigated polynomial univariate regression, as an example of models of the form
+\begin{equation}
+m(x;\boldsymbol{\beta})=\sum_{i=0}^{N-1} \beta_i\phi_i(x)
+\end{equation}
+where the $\beta_i$ are the parameters, and $\phi_i$ basis functions.
+
+In the case of polynomial regression we have chosen $\phi_i=x^i$, but other choices may be possible.
+
+In this frame, the model il linear with respect to the parameters.
+
+We have also created a class for cost functions, at the moment we have implemented only the mean least square error (MSE)
+
+\begin{equation}
+J(\mathbf{x};\mathbf{y},\boldsymbol{\beta})=\dfrac{1}{2n}\sum_{j=0}^{n-1}\vert m(x_j;\boldsymbol{\beta})-y_j\vert^2
+\end{equation}
+
+If we use a model based linear w.r.t. the parameters we can find the parameters that minimize $J$ give a set of training points $\{\mathbf{x},\mathbf{y}\}$
+using QR factorization. This is very effective if the number of parameters is not too high, let say $\le 100$.
+
+One builds
+\[
+A=\begin{bmatrix}
+\phi_0(x_0)&\ldots&\phi_{N-1}(x_{0})\\
+&\cdots &\\
+\phi_0(x_{n-1})&\ldots&\phi_{N-1}(x_{n-1})\\
+\end{bmatrix},
+\]
+computes its (thin) $QR$ factorization; $A=QR$ and solves the triangular system
+\[
+R\boldsymbol{\beta}=Q^T\mathbf{y}.
+\]
+
+For the QR factorization we have used the tools available in the \texttt{Eigen} library.
+
+But one may also think to minimize the cost function using an optimization algorithms.
+We have also implemented that choiche usining the \texttt{CppNumericalSolvers} library. It is available as a git submodule, so if you have not installed the submodules
+do
+\begin{verbatim}
+git submodule update --init --recursive
+\end{verbatim}
+
+After having downloaded the submodule, you have first to go into \texttt{Examples/src/LinearAlgebra/CppNumericalSolvers} and do
+\begin{verbatim}
+make
+\end{verbatim}
+
+To interface the code with the \texttt{CppNumericalSolvers} library, we have crated a Proxy to a \texttt{CostFunction} class, so that it provides the right interface.
+
+\paragraph{A note:} If you compile the code without specifying the option \texttt{RELEASE=yes} or \texttt{DEBUG=no} you compiler the code without optimization and with the \texttt{-g} flag
+activated to enable possible debugging. In this situation the code produces a verbose output if you use the \texttt{CppNumericalSolver} optimizers. The vrebose output is not generated if you
+do
+\begin{verbatim}
+make RELEASE=yes
+\end{verbatim}
+or
+\begin{verbatim}
+make DEBUG=no
+\end{verbatim}
+
+
+
+\end{document}
