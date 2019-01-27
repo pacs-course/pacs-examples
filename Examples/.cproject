@@ -29,7 +29,7 @@
             			
             <storageModule moduleId="cdtBuildSystem" version="4.0.0">
                 				
-                <configuration buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.649036794" name="Default" optionalBuildProperties="" parent="org.eclipse.cdt.build.core.emptycfg">
+                <configuration artifactName="${ProjName}" buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.649036794" name="Default" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=" parent="org.eclipse.cdt.build.core.emptycfg">
                     					
                     <folderInfo id="cdt.managedbuild.toolchain.gnu.base.649036794.661244846" name="/" resourcePath="">
                         						
@@ -253,6 +253,8 @@
                 				
                 <buildCommand>make</buildCommand>
                 				
+                <buildArguments/>
+                				
                 <buildTarget>main</buildTarget>
                 				
                 <stopOnError>true</stopOnError>
@@ -266,6 +268,8 @@
             <target name="all" path="src/NonLinSys" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
                 				
                 <buildCommand>make</buildCommand>
+                				
+                <buildArguments/>
                 				
                 <buildTarget>all</buildTarget>
                 				
@@ -281,8 +285,6 @@
                 				
                 <buildCommand>make</buildCommand>
                 				
-                <buildArguments/>
-                				
                 <buildTarget>all</buildTarget>
                 				
                 <stopOnError>true</stopOnError>
@@ -297,6 +299,8 @@
                 				
                 <buildCommand>make</buildCommand>
                 				
+                <buildArguments/>
+                				
                 <buildTarget>all</buildTarget>
                 				
                 <stopOnError>true</stopOnError>
@@ -307,11 +311,25 @@
                 			
             </target>
             			
-            <target name="all" path="src/Algorithms/Accumulate" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+            <target name="optimized" path="src/Regression" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
                 				
                 <buildCommand>make</buildCommand>
                 				
-                <buildArguments/>
+                <buildArguments>DEBUG=no</buildArguments>
+                				
+                <buildTarget>all</buildTarget>
+                				
+                <stopOnError>true</stopOnError>
+                				
+                <useDefaultCommand>false</useDefaultCommand>
+                				
+                <runAllBuilders>true</runAllBuilders>
+                			
+            </target>
+            			
+            <target name="all" path="src/Algorithms/Accumulate" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+                				
+                <buildCommand>make</buildCommand>
                 				
                 <buildTarget>all</buildTarget>
                 				
@@ -326,8 +344,6 @@
             <target name="all" path="src/AbstractFactory" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
                 				
                 <buildCommand>make</buildCommand>
-                				
-                <buildArguments/>
                 				
                 <buildTarget>all</buildTarget>
                 				
