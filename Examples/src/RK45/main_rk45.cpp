@@ -33,10 +33,11 @@ int main()
   std::cout<<std::endl;
 
   // Now with the new version!
-  //ODE::RKF<ODE::RK45_t> solver{ODE::RK45,fun};
+  ODE::RKF<ODE::RK45_t> solver{ODE::RK45,fun};
+  auto solution = solver(t0,T, y0, h_init, errorDesired);
+  //ODE::RKF<ODE::RK23_t> solver{ODE::RK23,fun};
   //auto solution = solver(t0,T, y0, h_init, errorDesired);
-  ODE::RKF<ODE::RK23_t> solver{ODE::RK23,fun};
-  auto solution = solver(t0,T, y0, h_init, errorDesired); ofstream file2("result2.dat");
+  ofstream file2("result2.dat");
   file2<<solution;
 
 
