@@ -89,15 +89,12 @@ template<class B>
   // to check if a step has been rejected
   bool rejected(false);
   // fraction of time step if error greater/lower than tolerance
-  double constexpr reductionFactor=1./2.;
+  double constexpr reductionFactor=0.85;
   double constexpr expansionFactor=2.;
   // Now I need a factor to specify when I can enlarge the time step
   // to avoid reducing and expanding the time step repeatedly
   // I need to take into account the order of the scheme if >2
-  double okExpand=1./expansionFactor;
-  for (unsigned int i=2;i<ButcherTable.order;++i)okExpand*=1./expansionFactor;
-  // slightly smaller since I am at the limit
-  okExpand*=0.9;
+  double factor = 1./(ButcherTable.order-1);
   // Iteration counter
   unsigned int iter=0;
   // I want to check that the time step does not go ridiculosly small
@@ -105,17 +102,18 @@ template<class B>
   double h=std::max(hInit,hmin);
   double t=T0;
   double ycurr=y0;
-  double errorPerTimeStep=tol/expectedSteps;
 
   while (t<T && iter<=maxSteps)
     {
       ++iter;
       double ylow;
       double yhigh;
+      double errorPerTimeStep=tol*h;
       // Check if new time step will cross the final time step
       if(t+h>T)h=T-t;
       std::tie(ylow,yhigh)=RKFstep(t,ycurr,h);
       double currentError=std::abs(ylow-yhigh);
+      double mu=std::pow(errorPerTimeStep/currentError,factor);
       if(currentError<=errorPerTimeStep)
         {
           //fine set new point!
@@ -125,19 +123,14 @@ template<class B>
           ycurr=yhigh;
           estimatedError+=currentError;
           // Expand next step if error very small, step not previously rejected and I am not at the end
-          if((currentError<errorPerTimeStep*okExpand) && !rejected && (t<T))
-            {
-              h*=expansionFactor;
-              errorPerTimeStep*=expansionFactor;
-            }
+          if((mu>=expansionFactor) && !rejected && (t<T)) h*=expansionFactor;
           rejected=false;
         }
       else
         {
           rejected=true;
-          h*=reductionFactor;
+          h*=mu*reductionFactor;// a little more to be sure
           h= h<=hmin? hmin: h;
-          errorPerTimeStep*=reductionFactor;
         }
     }
   if(iter>maxSteps) failed=true;
