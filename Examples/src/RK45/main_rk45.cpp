@@ -1,19 +1,19 @@
 #include "rk45.hpp"
 #include<iostream>
 #include <fstream>
-
+#include "RKF.hpp"
 #include <cmath>
 int main()
 {
   using namespace std;
   using namespace ODE;
-  //  auto fun = [](double const & t, double const & y){return -10*y;};
-  auto fun = [](double const & t, double const & y){return -std::sin(t);};
+  auto fun = [](double const & t, double const & y){return -10*y;};
+  //auto fun = [](double const & t, double const & y){return -std::sin(t);};
   double t0=0;
   double y0=1;
   double T=100;
   double h_init=0.2;
-  double errorDesired=1.e-7;
+  double errorDesired=1.e-6;
   int status;
   auto result= 
     rk45(fun,t0,T,y0,h_init,(T-t0)/4.,errorDesired,status,10000);
@@ -23,12 +23,21 @@ int main()
   file.close();
 
   // Only if I know the exact solution
-  //auto exact=[](double const &t){return std::exp(-10.*t);}
-  auto exact=[](double const &t){return std::cos(t);};
+  auto exact=[](double const &t){return std::exp(-10.*t);};
+  //auto exact=[](double const &t){return std::cos(t);};
   double max_error(0);
   for (auto i : result)
     max_error=std::max(max_error,std::abs(exact(i.first)-i.second));
   std::cout.setf(std::ios::scientific);
   std::cout<<"Max error "<<max_error<<" Desired max error "<<errorDesired;
   std::cout<<std::endl;
+
+  // Now with the new version!
+  //ODE::RKF<ODE::RK45_t> solver{ODE::RK45,fun};
+  //auto solution = solver(t0,T, y0, h_init, errorDesired);
+  ODE::RKF<ODE::RK23_t> solver{ODE::RK23,fun};
+  auto solution = solver(t0,T, y0, h_init, errorDesired); ofstream file2("result2.dat");
+  file2<<solution;
+
+
 }
