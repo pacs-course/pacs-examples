@@ -81,7 +81,7 @@ constexpr R pow(const R x)
 template<class R>
 constexpr R POW(const R x, const unsigned int N)
 {
-  return (N==1u) ? R(1): x*POW(x,N-1);
+  return (N==0u) ? R(1): x*POW(x,N-1);
 }
 
 
