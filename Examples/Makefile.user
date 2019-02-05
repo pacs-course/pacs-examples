@@ -174,7 +174,7 @@ export LDFLAGS+=$(OPTFLAGS)
 #export LDLIBS=$(LIBRARIES)
 export DEPEND=make.dep
 # to avoid nasty warnings
-export ARFLAGS=-rsU
+export ARFLAGS=rsU
 # Rule to generate pdf from latex files
 %.pdf:%.tex
 	pdflatex $<
