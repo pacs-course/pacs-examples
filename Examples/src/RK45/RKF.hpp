@@ -23,9 +23,13 @@ namespace ODE
     //!values
     std::vector<double> y;
     //! estimated error
-    double estimatedError;
+    double estimatedError{0.0};
     //! Failure
     bool failed{false};
+    //! Number of time step expansions
+    int expansions{0};
+    //! Number of time step contractions
+    int contractions{0};
   };
 
   template<class B>
@@ -75,6 +79,8 @@ template<class B>
   // Useful alias to simplify typing
   std::vector<double> & time=res.time;
   std::vector<double> & y=res.y;
+  auto & expansions=res.expansions;
+  auto & contractions=res.contractions;
   auto & estimatedError=res.estimatedError;
   estimatedError=0.0; // set initial error to zero
   auto & failed=res.failed;
@@ -89,7 +95,8 @@ template<class B>
   // to check if a step has been rejected
   bool rejected(false);
   // fraction of time step if error greater/lower than tolerance
-  double constexpr reductionFactor=0.85;
+  double constexpr reductionFactor=0.90;
+  // I expand at most doubling h, for safety
   double constexpr expansionFactor=2.;
   // Now I need a factor to specify when I can enlarge the time step
   // to avoid reducing and expanding the time step repeatedly
@@ -102,13 +109,13 @@ template<class B>
   double h=std::max(hInit,hmin);
   double t=T0;
   double ycurr=y0;
-
+  double delta=T-T0;
   while (t<T && iter<=maxSteps)
     {
       ++iter;
       double ylow;
       double yhigh;
-      double errorPerTimeStep=tol*h;
+      double errorPerTimeStep=tol*h/delta;
       // Check if new time step will cross the final time step
       if(t+h>T)h=T-t;
       std::tie(ylow,yhigh)=RKFstep(t,ycurr,h);
@@ -123,13 +130,18 @@ template<class B>
           ycurr=yhigh;
           estimatedError+=currentError;
           // Expand next step if error very small, step not previously rejected and I am not at the end
-          if((mu>=expansionFactor) && !rejected && (t<T)) h*=expansionFactor;
+          if((mu>=expansionFactor) && !rejected && (t<T))
+            {
+              h*=expansionFactor;
+              ++expansions;
+            }
           rejected=false;
         }
       else
         {
           rejected=true;
           h*=mu*reductionFactor;// a little more to be sure
+          ++contractions;
           h= h<=hmin? hmin: h;
         }
     }
