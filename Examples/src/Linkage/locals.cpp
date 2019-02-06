@@ -1,9 +1,5 @@
 #include "globals.hpp"
 #include "locals.hpp"
-#ifdef NOGLOBAL
-//! It has local linkage
-static int globalValue;
-#endif
 //! This funcaion has local linkage
 /*!
   It is not seen outside this compilation unit!
@@ -12,7 +8,7 @@ namespace
 {
   double fun2(double x)
   {
-    //! I use a global variable!
+    //! I can use a global variable!
     return globalValue*x;
   }
 }
@@ -29,10 +25,16 @@ static double fun3(double x)
 //! External linkage (default)
 double fun (double y)
 {
-  // I can use fu2 and fun3 here since it is the 
+  // I can use fun2 and fun3 here since thet are in the 
   // same translation unit
-  double value=fun2(y)*fun3(y)*globalParameters.g2;
-  if (globalParameters.negate)
+  // I also use the namespace global struct
+  double value=fun2(y)*fun3(y)*Globals::globalParameters.g2;
+  if (Globals::globalParameters.negate)
     value=-value;
   return value;
 }
+
+//! If you wish you can use :: to specify the global scope (i.e. the
+//! more external scope )
+void zeroGlobal(){ ::globalValue=0;}
+
