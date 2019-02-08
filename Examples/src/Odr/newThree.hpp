@@ -3,6 +3,6 @@
 template<class T>
 double three(T const & x)
 {
-  return 3.0/x;
+  return x/3.0;
 }
 #endif
