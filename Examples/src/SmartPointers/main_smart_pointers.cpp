@@ -2,10 +2,6 @@
 #include "enable_shared.hpp"
 #include <iostream>
 //! An example of smart pointers.
-/*!
-  @note beware. With clang 3.1 compiled over g++ 4.6 there is a problem of
-  incompatibility of the standard library shipped with g++ 4.6!
- */
 int main(){
   using namespace Geometry;
   using namespace std;
@@ -31,7 +27,6 @@ int main(){
   // ptr_res1 is a shared_ptr<double> and the istruction is equivalent to
   // (but more efficient)
   //  shared_ptr<double> ptr_res1(new double(5.0));
-  // In C++14 we also have make_unique for unique_ptr
 
   std::cout<<"Trying the enable_shared facility\n";
   auto tp1=make_shared<Try>();
