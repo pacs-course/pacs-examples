@@ -5,22 +5,13 @@ namespace Geometry
   polyFactory(Shape t){
     using std::unique_ptr;
     switch (t){
-#if __cplusplus > 201103L
-      //C++14
     case Shape::Triangle : return std::make_unique<Triangle>();
     case Shape::Square : return std::make_unique<Square>();
     default: return std::unique_ptr<AbstractPolygon>();
-#else
-    case Shape::Triangle : return std::unique_ptr<AbstractPolygon>(new Triangle);
-    case Shape::Square : return std::unique_ptr<AbstractPolygon>(new Square);
-    default: return std::unique_ptr<AbstractPolygon>();
-#endif
     }
   } 
   
   void geometryHolder::setPolygon(Shape shape){
-    // I do not need move() since the return value
-    // is a rvalue (a temporary)
     this->my_poly=polyFactory(shape);
   }
   
