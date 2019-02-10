@@ -28,10 +28,10 @@
 
 namespace FEM {
 
-  //! The type
-  enum BCType { Dirichlet=1, Neumann=2, Robin=3, Generic=4, Other=5};
+  //! The type. None means no type yet assigned
+  enum BCType { Dirichlet=1, Neumann=2, Robin=3, Other=4, None=99};
   //! The name used to identify a boundary condition.
-  typedef std::string BCName;
+  using BCName=std::string;
   //! The type of the function  which imposes the bc (C++11 only).
   using BCFun=std::function<double (double const t, double const * coord)>;
 
@@ -40,25 +40,30 @@ namespace FEM {
 
   //! The one function.
   extern BCFun onefun;
-  
-  //! A helper function that translates an int into a BCName.
-  BCName intToBCName(int i);
+
+  //! A helper function that translates a sting into a BCType.
+  BCType stringToBCType(BCName const & s);
   
   //! Type of the identifiers holding the index of the objects where the bc is imposed
   using Id=std::size_t;
   
 
   //! A class for holding BConditions
-  /*!This is a concrete base class to implement boundary conditions in a
+  /*!
+   * This is a concrete base class to implement boundary conditions in a
    * finite element code. A boundary condition is identified by a type,
    * which is an enum and gives the code the indication on how the bc is applied,
    * a name, which is a string chosen by the user, for instance "wall".
    * A BCBase is uniquely identified by the type and the name.
    * A BCBase contains a vector of indices to "entities", which are tipically
-   * the geometry entities to which the bc applies. For a Neumann and Robin
-   * boundary contition it will be a list of faces/edges, for a Dirichlet boundary condition a
-   * list of nodes. Since the BCBase will be stored in a set we need to make
+   * the geometry entities to which the bc applies.
+   *
+   * For a Neumann and Robin boundary condition it will be a list of faces/edges,
+   * for a Dirichlet boundary condition a list of nodes.
+   * Since the BCBase will eventually be stored in a set we need to make
    * those entities writable on constant objects! So they are declared mutable.
+   * Of course the ordering operator used for the set does not depend on the entities,
+   * that's why we can do this safely.
    *
    * A function is recalled by the apply() method, and it implements
    * the boundary condition the function ha as argument the time and the
@@ -68,7 +73,7 @@ namespace FEM {
   {
   public:
     //! Constructor using string as names
-    explicit  BCBase(BCType t=Dirichlet,
+    explicit  BCBase(BCType t=None,
 		     BCName n = BCName("Homogeneous"),
 		     BCFun fun = zerofun):
       M_t(t),

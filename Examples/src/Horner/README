@@ -22,9 +22,9 @@ Alternatively you may type
 
 make OPTFLAGS='-O3 -ffast-math'
 
-to compile with optimization.
+to compile with maximal optimization.
 
-ATTENTION: the code makes use of the chrono utility in libbacs. So you
+ATTENTION: the code makes use of the chrono utility in libpacs. So you
 have first to compile te Utility (go in src/Utility). Secondly, if you
 have created libpacs.so the linker will link with the dynamic library
 

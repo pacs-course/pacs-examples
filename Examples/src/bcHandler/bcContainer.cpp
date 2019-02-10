@@ -28,10 +28,11 @@ namespace FEM
     return tmp;
   }
  
-  void addToBCContainer(BCType const & type, BCName const & name, 
+  BCBase & addToBCContainer(BCType const & type, BCName const & name,
 			BCFun const & f, BCContainer & bcContainer)
   {
     bcContainer.emplace_back(type,name,f);
+    return bcContainer.back();
   }
 
 }
