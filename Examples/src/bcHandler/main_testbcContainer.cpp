@@ -42,12 +42,20 @@ int main()
   bc1.set_entities(std::vector<unsigned int>{0,4,8});
   bcContainer.push_back(bc1);
   // I can use the helper function to ass a b cond
-  addToBCContainer(Neumann,"Far Field 1",myfun,bcContainer);
+  {
+    auto & bc2=addToBCContainer(Neumann,"Far Field 1",myfun,bcContainer);
+    bc2.set_entities( std::vector<unsigned int>{1,2,3} );
+    // bc2 is now eliminated. I prefer it because the container data may be reallocated
+  }
   addToBCContainer(Dirichlet,"Inflow",inflow,bcContainer);
+  bcContainer.back().set_entities(std::vector<unsigned int>{9,10,11});
   addToBCContainer(Neumann,"Far Field 1",myfun,bcContainer);
+  bcContainer.back().set_entities(std::vector<unsigned int>{12,13,14});
   setValue ten(10.0);
   addToBCContainer(Dirichlet,"Outflow",ten,bcContainer);
+  bcContainer.back().set_entities(std::vector<unsigned int>{15,16});
   addToBCContainer(Dirichlet,"back", MuParserInterface::muParserInterface("x+t"),bcContainer);
+  bcContainer.back().set_entities(std::vector<unsigned int>{20});
   double t=10;
   std::array<double,2> point{{0.,3.}};
   std::cout<<"Content of bc container organized by type"<<std::endl;
