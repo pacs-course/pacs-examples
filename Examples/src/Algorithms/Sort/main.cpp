@@ -88,7 +88,7 @@ int main(){
     }
     return (a.size()<b.size());
   };
-  std::sort(s.begin(),s.end(),nocomp);
+  std::sort(s.begin(),s.end(),nocomp2);
   cout<<" Sorted ignoring case"<<endl;
   for (vector<std::string>::iterator i=s.begin();i<s.end();++i)
     cout<<*i<<" ";

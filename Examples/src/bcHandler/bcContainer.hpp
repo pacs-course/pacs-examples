@@ -20,7 +20,10 @@ namespace FEM{
   std::vector<BCContainer::const_iterator> extractBCWithName(BCContainer const & bcCOntainer,BCName const & name);
   
   //! Utility to add a bc to the container
-  void addToBCContainer( BCType const & type, BCName const & name,
+  /*!
+   * @return a reference to the added container
+   */
+  BCBase& addToBCContainer( BCType const & type, BCName const & name,
 			BCFun const & f, BCContainer & bcContainer);
 }
   
