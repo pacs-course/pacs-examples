@@ -1,0 +1,5 @@
+An abstract factory, based on a simplified version of that of the book
+of Alexandrescu.
+
+We also give a generic proxy that may be used to
+register objects  in the Factory

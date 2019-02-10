@@ -130,16 +130,6 @@ main_testbcContainer: $(LIBRARY) main_testbcContainer.o
 
 main_testbcContainer.o: main_testbcContainer.cpp
 
-main_testMuParser: main_testMuParser.o
-	$(CXX) $(CXXFLAGS) main_testMuParser.o $(LDFLAGS) -dynamic -lmuparser -o $@
-
-main_testMuParser.o: main_testMuParser.cpp
-#$(EXEC_OBJS): $(EXEC_SRCS)
-#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $?
-
-#$(OTHER_OBJS): $(OTHER_SRCS)
-#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $?
-
 $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 #	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
