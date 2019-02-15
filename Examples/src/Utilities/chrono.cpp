@@ -54,12 +54,7 @@ namespace Timings{
 
   std::ostream & operator <<(std::ostream & out,Chrono const &c)
   {
-    // A bug in some c++ compiler. They do not define defaultfloat.
-    // The problem is that if I convert to scientific mode then this is a modification
-    // that affects also the returned outstrem. So I will postpone this modification
-    // until the compiler is upgraded.
-    //out<<"Elapsed Time= "<<std::scientific<<c.wallTime()<<std::defaultfloat<<"microsec"<<std::endl;
-    out<<"Elapsed Time= "<<c.wallTime()<<" microsec"<<std::endl;
+    out<<"Elapsed Time= "<<std::scientific<<c.wallTime()<<std::defaultfloat<<" microsec"<<std::endl;
     return out;
   }
   
