@@ -7,22 +7,22 @@
 #include "AbstractEnemyFactory.hpp"
 
 
-Enemy *AbstractEnemyFactory::MakeSoldier()
+std::unique_ptr<Enemy> AbstractEnemyFactory::MakeSoldier()
 {
-	return 0;
+  return std::unique_ptr<Enemy>();
 }
 
 
 
-Enemy *AbstractEnemyFactory::MakeMonster()
+std::unique_ptr<Enemy> AbstractEnemyFactory::MakeMonster()
 {
-	return 0;
+  return std::unique_ptr<Enemy>();
 }
 
 
 
-Enemy *AbstractEnemyFactory::MakeSuperMonster()
+std::unique_ptr<Enemy> AbstractEnemyFactory::MakeSuperMonster()
 {
-	return 0;
+  return std::unique_ptr<Enemy>();
 }
 
