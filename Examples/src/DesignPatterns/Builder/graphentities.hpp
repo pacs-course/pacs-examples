@@ -5,10 +5,10 @@
 #include <set>
 namespace Graphs
 {
-  // A simple example of classes storing a graph
-  // Only to show the build pattern!
+  //! A simple example of classes storing a graph
+  //! Only to show the build pattern!
 
-  //! Indicated a non set identifier
+  //! Indicates an unset identifier
   constexpr unsigned int nullID=std::numeric_limits<unsigned int>::max();
 
   using basic_edge=std::array<unsigned int,2>;
@@ -46,12 +46,10 @@ namespace Graphs
     basic_edge M_edge;
   };
 }
-// COmparison operators
-// in namespace std, so I have to take out Graphs
-namespace std
-{
+
+//! Comparison operators implemented by specialization of std::less
 template <>
-struct less<Graphs::node>
+struct std::less<Graphs::node>
 { 
   bool operator()(const Graphs::node & a, const Graphs::node & b)
   {
@@ -60,14 +58,13 @@ struct less<Graphs::node>
 };
 
 template <>
-struct less<Graphs::edge>
+struct std::less<Graphs::edge>
 { 
   bool operator()( const Graphs::edge & a, const Graphs::edge & b)
   {
     return a.get_element()<b.get_element();  
   }
 };
-}
 
 namespace Graphs
 {
@@ -77,6 +74,7 @@ namespace Graphs
     std::set<edge> edges;
   };
   
+  //! Base class
   class GraphBuilder
   {
   public:
@@ -89,20 +87,24 @@ namespace Graphs
     // In general I can use a pointer if I have a polymorphic family of graphs
     Graph G;
   };
-  
+
+  //! To build undirected graph
   class UndirectedGraphBuilder: public GraphBuilder
   {
   public:
     void buildNode(unsigned int) override;
     //! I give nodes id eand edge id
     void buildEdges(basic_edge, unsigned int) override;
+    virtual ~UndirectedGraphBuilder()=default;
   };
   
+  //! To build directed graphs
   class DirectedGraphBuilder: public GraphBuilder
   {
   public:
     void buildNode(unsigned int) override;
     void buildEdges(basic_edge, unsigned int) override;
+    virtual ~DirectedGraphBuilder()=default;
   };
 
   

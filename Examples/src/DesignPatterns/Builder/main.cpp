@@ -11,10 +11,12 @@ int main()
   int ris;
   std::cin>>ris;
   std::unique_ptr<GraphBuilder> gb;
+
   if (ris==0)
-    gb.reset(new DirectedGraphBuilder());
+    gb=std::make_unique<DirectedGraphBuilder>();
   else
-    gb.reset(new UndirectedGraphBuilder());
+    gb=std::make_unique<UndirectedGraphBuilder>();
+  
   std::ifstream file("graph.dat");
   // I just read edges for simplicity otherwise I need to parse the file
   basic_edge be;
@@ -27,7 +29,7 @@ int main()
     }
   Graph & g = gb->get_graph();
   std::cout<<" Nodes: \n";
-  for (auto const & n:g.nodes) std::cout<<n.get_id()<<" "<<n.get_element()<<std::endl;
+  for (auto const & n:g.nodes) std::cout<<" Node n. "<<n.get_id()<<", Id:"<<n.get_element()<<std::endl;
   std::cout<<" Edges: \n";
-  for (auto const & n:g.edges) std::cout<<n.get_id()<<" "<<n.get_element()[0]<<" "<<n.get_element()[1]<<std::endl;
+  for (auto const & n:g.edges) std::cout<<"Edge n. "<<n.get_id()<<",  Node Id: "<<n.get_element()[0]<<" "<<n.get_element()[1]<<std::endl;
 }
