@@ -1,6 +1,6 @@
 #Assembly code
-CXX=g++
-CXXFLAGS=-O3 -std=c++11
+include ../../Makefile.inc
+CXXFLAGS=-O3 -std=c++14
 OUTPUT=mainConstexprFunction mainNormalFunction mainConstexprFunction2
 all : $(OUTPUT)
 mainConstexprFunction: mainConstexprFunction.cpp
