@@ -1,0 +1,1 @@
+CXXFLAGS+=-Wstrict-aliasing -fstrict-aliasing
