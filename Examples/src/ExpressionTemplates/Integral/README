@@ -1,0 +1,3 @@
+Example of use of expression tempaltes to create efficient code for
+numerical integration. The drawback: the integrand must be known at
+compile time, since the compiler has to resolve the expression.
