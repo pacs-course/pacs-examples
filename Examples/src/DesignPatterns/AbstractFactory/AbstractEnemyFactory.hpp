@@ -11,9 +11,9 @@
 #include <memory>
 class AbstractEnemyFactory{
 public:
-	 virtual Enemy * MakeSoldier()=0;
-	 virtual Enemy * MakeMonster();
-	 virtual Enemy * MakeSuperMonster();
+	 virtual std::unique_ptr<Enemy> MakeSoldier()=0;
+	 virtual std::unique_ptr<Enemy> MakeMonster()=0;
+	 virtual std::unique_ptr<Enemy> MakeSuperMonster()=0;
 };
 
 typedef std::unique_ptr<AbstractEnemyFactory> (*BuildEnemyFactory)();

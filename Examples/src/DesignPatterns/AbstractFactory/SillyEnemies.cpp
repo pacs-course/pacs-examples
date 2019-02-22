@@ -26,23 +26,23 @@ void SillySoldier::speak()
 	std::cout<<" I am a Silly Soldier and I'll kill you (or at least I try)"<<std::endl;
 }
 
-Enemy *EasyLevelEnemyFactory::MakeSuperMonster()
+std::unique_ptr<Enemy> EasyLevelEnemyFactory::MakeSuperMonster()
 {
-	return new SillySuperMonster;
+	return std::make_unique<SillySuperMonster>();
 }
 
 
 
-Enemy *EasyLevelEnemyFactory::MakeMonster()
+std::unique_ptr<Enemy> EasyLevelEnemyFactory::MakeMonster()
 {
-	return new SillyMonster;
+	return std::make_unique<SillyMonster>();
 }
 
 
 
-Enemy *EasyLevelEnemyFactory::MakeSoldier()
+std::unique_ptr<Enemy> EasyLevelEnemyFactory::MakeSoldier()
 {
-	return new SillySoldier;
+	return std::make_unique<SillySoldier>();
 }
 
 std::unique_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory(){
