@@ -143,5 +143,6 @@ namespace FEM {
   private:
     BCName name_;
   };
+
 }
 #endif /* BOUND_COND_HPP_ */
