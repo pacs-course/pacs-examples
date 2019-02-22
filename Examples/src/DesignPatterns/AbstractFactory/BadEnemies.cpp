@@ -26,23 +26,23 @@ void BadSoldier::speak()
 	std::cout<<" I am a Bad Soldier and I'll kill you"<<std::endl;
 }
 
-Enemy *AdvancedLevelEnemyFactory::MakeMonster()
+std::unique_ptr<Enemy> AdvancedLevelEnemyFactory::MakeMonster()
 {
-	return new BadMonster;
+	return std::make_unique<BadMonster>();
 }
 
 
 
-Enemy *AdvancedLevelEnemyFactory::MakeSuperMonster()
+std::unique_ptr<Enemy> AdvancedLevelEnemyFactory::MakeSuperMonster()
 {
-	return new BadSuperMonster;
+	return std::make_unique<BadSuperMonster>();
 }
 
 
 
-Enemy *AdvancedLevelEnemyFactory::MakeSoldier()
+std::unique_ptr<Enemy> AdvancedLevelEnemyFactory::MakeSoldier()
 {
-	return new BadSoldier;
+	return std::make_unique<BadSoldier>();
 }
 
 std::unique_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory(){
