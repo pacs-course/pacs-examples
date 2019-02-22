@@ -41,7 +41,7 @@ public:
 template <class PointExt1, class PointExt2>
 typename PointExt1::value_t dot(PointExt1 const &a, PointExt2 const & b)
 {
-  static_assert(std::is_same<typename PointExt1::value_t,typename PointExt2::value_t>::Value,
+  static_assert(std::is_same<typename PointExt1::value_t,typename PointExt2::value_t>::value,
 		"dot error: Types must be the same");
   
   static_assert(PointExt1::Dim==PointExt2::Dim,

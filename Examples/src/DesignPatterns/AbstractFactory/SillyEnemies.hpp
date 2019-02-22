@@ -12,25 +12,29 @@
 class SillySoldier: public Soldier
 {
 public:
-	void speak();
+	void speak() override;
+	virtual ~SillySoldier()=default;
 };
 class SillyMonster: public Monster
 {
 public:
-	void speak();
+	void speak() override;
+	virtual ~SillyMonster()=default;
 };
 class SillySuperMonster: public SuperMonster
 {
 public:
-	void speak();
+	void speak() override;
+	virtual ~SillySuperMonster()=default;
 };
 
 class EasyLevelEnemyFactory : public AbstractEnemyFactory
 {
 public:
-	 Enemy * MakeSoldier();
-	 Enemy * MakeMonster();
-	 Enemy * MakeSuperMonster();
+  std::unique_ptr<Enemy> MakeSoldier() override;
+  std::unique_ptr<Enemy> MakeMonster() override;
+  std::unique_ptr<Enemy> MakeSuperMonster() override;
+  virtual ~EasyLevelEnemyFactory()=default;
 };
 
 std::unique_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory();
