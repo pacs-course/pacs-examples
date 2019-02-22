@@ -5,7 +5,6 @@
 /*!
   A simple example of use of traits.
 
-  We want to control how comparison is made
 */
 
 //! The basic template

@@ -20,9 +20,10 @@ class Square;
     virtual void visit(Triangle&)=0;
     virtual void visit(Square&)=0;
     virtual void visit(Point&)=0;
-    virtual ~ShapeVisitor(){};
+    virtual ~ShapeVisitor()=default;
   };
-  //! counts how many diffrente shapes we have
+
+  //! counts how many differen shapes we have
   class CountShapes: public ShapeVisitor{
   public:
     CountShapes();
@@ -38,7 +39,7 @@ class Square;
     int numPoints;
   };
   
-  //! COmpute and accumulate shape area
+  //! Compute and accumulate shape area
   class ComputeArea: public ShapeVisitor{
   public:
     ComputeArea();
