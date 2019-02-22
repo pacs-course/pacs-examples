@@ -13,7 +13,7 @@ check the version of you compiler with the option -v
 This directory contains some utilities:
 
 **  load_modules
-If you use the module, typing
+If you use the module system, typing
 
 source load_modules
 or
@@ -24,7 +24,7 @@ will load the main modules used in the examples, a part hdf5 wich is used only o
 **  install_modules.sh
 
 If you do not have used --recursive when cloning this repo and you want to use
-the submodules containing third party software type:
+the git submodules containing third party software type:
 
 ./install_modules
 
