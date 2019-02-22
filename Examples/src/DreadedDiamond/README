@@ -1,0 +1,19 @@
+A very simple example that explain virtual inheritance.
+
+Class D inherits from C and B, which have both a common base, class A.
+
+If we do not derive virtually we have duplication of the variable
+members of A, which is probably not what we wanted.
+
+Thry to see the difference between virtual and normal inheritance by changing
+
+class B: virtual public A{
+
+in
+
+class B: public A{
+
+and the same for class C.
+
+
+*Suggestion: avoid this type of situation!

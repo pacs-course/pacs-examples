@@ -13,12 +13,12 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-MAKEFILEH_DIR=../../../
+MAKEFILEH_DIR=../../..
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
-#
+# This is optional. If not present is not an error
 -include Makefile.inc
 
 #
@@ -31,13 +31,13 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
-# get all headers in the working directory
-HEADERS=$(wildcard *.hpp)
+# get all headers in the include directory
+HEADERS=$(wildcard include/*.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
-#========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
+#========================== NEW THE DEFINITION OF THE TARGETS
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
@@ -45,7 +45,7 @@ EXEC=$(exe_sources:.cpp=)
 all: $(DEPEND) $(EXEC)
 
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
@@ -60,7 +60,7 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
