@@ -10,8 +10,8 @@ namespace MuParserInterface
   /*! An interface to MuParserX to define a function
  
     It define a functor representing a function \f$ R^N \f$ to \f$ R\f$
-    The input variables are defined as x[0] x[1] etc and one can use the muparserX
-    syntax to create the string.
+    The input variables are defined as x[0] x[1] etc and one can use the 
+    muparserX syntax to create the string.
     I assume that at compile time we know the size of the argument of the function 
     and I keep the return value as template parameter. By default both input and 
     output are arrays.
@@ -32,7 +32,7 @@ namespace MuParserInterface
     {
       M_parser.DefineVar("x",mup::Variable(&M_value));
     }
-    //! Construtor that takes a muParserX expression.
+    //! Constructor that takes a muParserX expression.
     /*!
      * Beware, the input variables are indicated by x[]. 
      * example of a valid expression: sin(x[0])+x[1]*x[2]
