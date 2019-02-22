@@ -1,6 +1,8 @@
 #include<map>
 #include<vector>
 #include <iostream>
+#include <string>
+#include <fstream>
 using namespace std;
 using vec=vector<double>;
 //! A function taking vectors a and b and const references.
@@ -36,6 +38,13 @@ void fun2(vec const & a, vec const & b, vec & c)
     }
 }
 
+//! This function has a side effect, it modifies the argument passed as reference
+double seven (double & x)
+{
+  x=7.0;
+  return 7.0;
+}
+
 int main()
 {
   vec a={1.,2.,3.};
@@ -63,4 +72,13 @@ int main()
   cout<<"a= ";
   for (auto i : a) cout<<i<<" ";
   cout<<endl;
+
+  // Now a different (and more dangerous) type of aliasing
+
+  double z{0};// a variable initialised by zero
+  auto y = seven(z)+ 3*z;
+  // The order of operation in the previous experssion is undefined
+  // the result may depend on the compiler and on the optimization level
+  std::cout <<"y = "<<y<<std::endl;
+  
 }
