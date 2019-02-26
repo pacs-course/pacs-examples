@@ -85,19 +85,19 @@ namespace LinearAlgebra{
       The advantage with respect to the solution with a pointer to function is that now the
       method can be inlined, with greater efficiency if it is called many times (as it normally
       would be...).
-     */
+    */
     inline size_type getIndex (size_type const , 
 			       size_type const) const;
-	inline size_type getIndexHelper(size_type const,
-	                                size_type const,
-	                                PolicyType<ROWMAJOR>) const;
-	inline size_type getIndexHelper(size_type const,
-	                                size_type const,
-	                                PolicyType<COLUMNMAJOR>) const;
-	void vecMultiplyHelper(const std::vector<R> &v, std::vector<R> & res,
-	                       PolicyType<ROWMAJOR>) const;
-	void vecMultiplyHelper(const std::vector<R> &v, std::vector<R> & res,
-	                       PolicyType<COLUMNMAJOR>) const;
+    inline size_type getIndexHelper(size_type const,
+                                    size_type const,
+                                    PolicyType<ROWMAJOR>) const;
+    inline size_type getIndexHelper(size_type const,
+                                    size_type const,
+                                    PolicyType<COLUMNMAJOR>) const;
+    void vecMultiplyHelper(const std::vector<R> &v, std::vector<R> & res,
+                           PolicyType<ROWMAJOR>) const;
+    void vecMultiplyHelper(const std::vector<R> &v, std::vector<R> & res,
+                           PolicyType<COLUMNMAJOR>) const;
   public:
     //! It builds a matrix with n rows and m columns.
     /*!
@@ -114,7 +114,7 @@ namespace LinearAlgebra{
     //! Another copy constructor.
     /*!
       It accepts also a matrix with different storage order.
-     */
+    */
     template <StoragePolicySwitch S>
     MyMat0(MyMat0<R,S> const & m);
 #ifndef NOMOVE
