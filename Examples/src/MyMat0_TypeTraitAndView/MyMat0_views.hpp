@@ -25,16 +25,24 @@ namespace LinearAlgebra{
     using value_type = typename MAT::value_type;
     using size_type  = typename MAT::size_type;
   private:
+    //! an example of use of type_traits
+    /*!
+     * If MAT is a constant matrix I will return values,
+     * if not I will return a reference, so that we can modify
+     * values stored in the "viewed" matrix
+     */
     using rtype = typename std::conditional<
     std::is_const<MAT>::value,
-    value_type const &, 
+    value_type,
     value_type &>::type;
   public:
     explicit DiagonalView(MAT & m):M_mat(m){}
-    void fillZero(Helpers::fillSwitch<true>){return M_mat.fillZero();}
+    //! It will give an error if the viewed matrix is constant
+    void fillZero(){M_mat.fillZero();}
     //! Resizing the matrix
     /*!
      * I resize the reference, exchanging rows with cols
+     * It will give an error if the viewed matrix is constant.
      */
     void resize(size_type const nrow, size_type const ncol){M_mat.resize(ncol,nrow);}
     //! Number of rows
@@ -80,7 +88,7 @@ namespace LinearAlgebra{
       @endcode
       but you need to activate c++14 support (or later). 
 
-      I present here the technique that works also in c++11. 
+      For completeness, I present here the technique that works also in c++11.
       Unfortunately,
       @code
       auto normInf() const -> decltype(M_mat.norm1())
@@ -92,7 +100,7 @@ namespace LinearAlgebra{
       auto normInf() const -> decltype(MAT().norm1());
       @endcode
 
-      yet this requires that the matrix MAT have a default constructor.
+      yet this requires that the matrix MAT have a default constructor (and why should I contruct
 
       If you want to be be able to extract the type returned by a method, in this case
       norm1() without requiring any contructors you need to use the declval magic:
@@ -106,17 +114,17 @@ namespace LinearAlgebra{
       little else.
     */
     
-    auto normInf() const -> decltype(std::declval<MAT>().norm1())
+    auto normInf() const //-> decltype(std::declval<MAT>().norm1())
     {
       return M_mat.norm1();
     }
 
-    auto norm1() const -> decltype(std::declval<MAT>().normInf())
+    auto norm1() const //-> decltype(std::declval<MAT>().normInf())
     {
       return M_mat.normInf();
     }
 
-    auto normF() const -> decltype(std::declval<MAT>().normF())
+    auto normF() const //-> decltype(std::declval<MAT>().normF())
     {
       return M_mat.normF();
     }

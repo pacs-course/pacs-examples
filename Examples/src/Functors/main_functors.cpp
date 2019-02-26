@@ -2,18 +2,23 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <iomanip>
 int main ()
 {
   using namespace myfunctors; // only to simplify things
   //! Creating an object
   Sqrt5 sqrt5;
   // comput fifth root of five
-  std::cout<<"sqrt5(5)="<<sqrt5(5)<<std::endl;
-  // you may change tolernace
+  std::cout<<std::setprecision(15)<<"sqrt5(5)="<<sqrt5(5)<<std::endl;
+  // we have set a larger precision to see more digits. The setting
+  // can be brought back to the default by 
+  // std::cout<<std::defaultfloat;
+
+  // you may change tolerance
   sqrt5.tolerance=1.e-5;
-  std::cout<<"sqrt5(5)="<<sqrt5(5)<<std::endl;
+  std::cout<<"sqrt5(5)="<<sqrt5(5)<<" with tol=1e-5"<<std::endl;
   // you may also create the object on the fly and call the operator!
-  std::cout<<"sqrt5(5)="<<Sqrt5(1e-2, 50, 1.2)(5)<<std::endl;
+  std::cout<<"sqrt5(5)="<<Sqrt5(1e-2, 50, 1.2)(5)<<" with tol=1e-2"<<std::endl;
   Isgreater ig(5.0);
   std::vector<int> v={1,2,3,4,6,7,8,18,25};
   auto found=std::find_if(v.begin(),v.end(),ig);
