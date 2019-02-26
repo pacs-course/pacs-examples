@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <ctime>
+#include <type_traits>
 /*!
   @file MyMat0.hpp
   @author Luca Formaggia
@@ -23,13 +24,15 @@ namespace LinearAlgebra{
   enum StoragePolicySwitch {ROWMAJOR,COLUMNMAJOR};
 
   //! An empty class that transform an enum into a type
-  /*!
-    Used to switch to different implementations
-    
+  /*!  Used to switch as a tag to switch betwee different
+    implementations
+    If you want to be more fancy you can specialize the type trait
+    std::integral_constant, instead. But for the use done here it is not necessary
+
    */
-  
   template< StoragePolicySwitch S>
   struct StorageType{};
+
 
   //! Type to hold indexex.
   /*!  
@@ -289,7 +292,7 @@ namespace LinearAlgebra{
   }
   
   
-  // This in case you want to implement the different access with specialization
+  // This in case you want to implement the different access with specialization instead of type tag
   //! Specialization for row major ordering
   /*!
    Note: important to declare it inline. Otherwise it should go to a cpp file! And it will be less

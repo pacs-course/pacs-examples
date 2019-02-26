@@ -41,16 +41,19 @@ namespace LinearAlgebra{
   {
   //! A Helper class that allow to distinguish row and column ordering
   /*! It ia a nice trick by Alexandrescu. I convert an enumerator to a type
-    so that I can apply overloading
+    so that I can apply overloading (its called type tag)
   */
     template<StoragePolicySwitch storagePolicy>
     struct storagePolicyType{};
-    //! A helper class to distinguish treu from false
+    //! A helper class to distinguish true from false
     template<bool T>
     struct fillSwitch{};
+
     using size_type=std::vector<double>::size_type;
-    using Indices=std::array<2,size_type>;
-    using orderingFunction=std::function<bool (const Indices & a, const Indices & b)> ;
+    using Indices=std::array<2,size_type>; // @suppress("Invalid template argument")
+    using orderingFunction=std::function<bool (const Indices & a, const Indices & b)> ; // @suppress("Invalid template argument")
+
+
     orderingFunction rowMajorOrdering=
       [](const Indices & a, const Indices & b)
     {
@@ -63,7 +66,9 @@ namespace LinearAlgebra{
       return a[1]==b[1]?a[0]<b[0]:a[1]<b[1];
     };
     
-    template <StoragePolicySwitch storagePolicy> theOrderingFunction;
+    template <StoragePolicySwitch storagePolicy> theOrderingFunction
+    {
+    };
     template <> theOrderingFunction<ROWMAJOR>
     {
       static const orderingFunction;

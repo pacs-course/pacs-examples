@@ -17,7 +17,7 @@ namespace myfunctors
 {
   //! A function/functor that takes a single argument is also called a
   //! unary function/functor.
-  /*!  It is good practice to inherit (C++11 onward) from std::unary
+  /*!  It is good practice to inherit from std::unary
     function, so that it complies with the unary functors in the
     standard library (It is not compulsory though)
   */
@@ -43,15 +43,16 @@ namespace myfunctors
   };
   //! A predicate is a function or functor that defines a call operator
   //! returning a bool.
-  /*!
-    Here I show why the state can be useful. Here I have a functor that returns
-    true if the value passed is greater than a value that may be changed run time.
+  /*!  Here I show why the state can be useful. Here I have a functor
+    that returns true if the value passed is greater than a value that
+    may be changed run time.
     
-    Since all methods are simple I will define them in class (no need of
-    cpp file) It is a unary function so I inherit from the corresponding
-    std class (not strictly needed, but it makes it complient with the stl rules).
-    Inheriting publicly from unary_function provides two typedef members
-    argument_type and result_type
+    Since all methods are simple I will define them in class (no need
+    of cpp file) It is a unary function so I inherit from the
+    corresponding std class (not strictly needed, but it makes it
+    complient with the stl rules).  Inheriting publicly from
+    unary_function provides two typedef members argument_type and
+    result_type
     
   */
   class Isgreater : public std::unary_function<double,bool>
@@ -72,17 +73,19 @@ namespace myfunctors
     double my_value;
   };
   //! A binary function takes 2 arguments.
-  /*! A comparison operator is a binary function that returns a bool.
-    If you inherit publicly for binary_function (not strictly necessary)
-    you inherit three typedefs first_argument_type, second_argument_type
-    and result_type.
+  /*! A comparison operator is a binary function that returns a bool and
+    is consistent with an ordering relation.
+    If you inherit publicly for binary_function (not strictly
+    necessary) you inherit three typedefs first_argument_type,
+    second_argument_type and result_type.
   */
   struct LessModulo10 : public std::binary_function<int,int,bool>
   {
     //! the call operator implementing the operation
     /*!  Definition in-class (thus in the header file) because it is a
-      very short function and may be inlined (in-class methods are implicitely
-      declared inline, you do not need to specify the inline keyword.
+      very short function and may be inlined (in-class methods are
+      implicitely declared inline, you do not need to specify the
+      inline keyword).
     */
     bool operator()(int a, int b)const{ return a %10 < b %10;}
     /*
@@ -97,13 +100,15 @@ namespace myfunctors
     */
   };
   //! A more complex functor: cross product
-  /*!
-    To show that you may have functors with more, overloaded, call operators
-    and operators that takes more than 2 arguments.
-    It is only an example.
+  /*!  
+
+     To show that you may have functors with more, overloaded, call
+    operators and operators that takes more than 2 arguments.  It is
+    only an example.
     
-    \note A note, all those operators could have been declared static since
-    they do not use non-statice member variables (indeed there are no member variables!). 
+    \note A note, all those operators could have been declared static
+    since they do not use non-statice member variables (indeed there
+    are no member variables!).
 
   */
   struct Cross{
@@ -113,7 +118,7 @@ namespace myfunctors
     using Vector3D=std::array<double,3>;
     //! Computes cross products of 2D Vectors
     double operator()(Vector2D const & a, Vector2D const & b)const;
-    //! Computes cross products of 2D Vectors
+    //! Computes cross products of 3D Vectors
     Vector3D operator()(Vector3D const & a, Vector3D const & b)const;
     //! Computes  \f$ a\cdot b\times c\f$
     double operator()(Vector3D const & a, Vector3D const & b,Vector3D const & c)const;
