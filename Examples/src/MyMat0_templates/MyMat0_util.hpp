@@ -64,7 +64,7 @@ namespace LinearAlgebra
   template <typename T>
   MyMat0<T,ROWMAJOR> matMulOpt(MyMat0<T,COLUMNMAJOR> const & m1,MyMat0<T,ROWMAJOR> const & m2)
   {
-    // I need a temporary matrix. This is very costly memoriwise
+    // I need a temporary matrix. This is very costly memory-wise
     // but I do not have alternatives here
     auto mc1=MyMat0<T,ROWMAJOR>(m1);
     return matMulOpt(mc1,m2);
