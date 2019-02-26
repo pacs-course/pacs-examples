@@ -137,3 +137,7 @@ make.dep
 /Examples/src/Utilities/test_string
 /Examples/src/Utilities/test_toString
 /Examples/src/muParserInterface/test_Muparser
+/Examples/src/Functors/main_functors
+/Examples/src/MyMat0_generic/main_myMat0
+/Examples/src/MyMat0_generic/move_report.txt
+/Examples/src/MyMat0_generic/no_move_report.txt
