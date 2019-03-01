@@ -1,0 +1,14 @@
+Exercise
+--------
+
+Build the library liblinearalgebra.so from source file
+Utilities.cpp compile the executable from test_all.cpp
+and link it to liblinearalgebra.so
+
+- Code structure
+
+Local includes : ../include
+System includes : $mkEigenInc $mkSuitesparseInc
+Library sources : Utilities.cpp
+Dependence libraries : $mkSuitesparseLib/libumfpack
+Executable sources : test_all.cpp
