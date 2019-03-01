@@ -1,0 +1,54 @@
+Exercise on creating a class and library for full matrices
+
+** BUILD **
+
+Use the command
+
+  make libmatrix.a
+
+To build the static libary, or 
+
+  make SHARED_EXT=so libmatrix.so
+
+to build a shared library.
+To build the tests use the command
+
+  make tests
+
+To run a set of tests in order to assess the efficiency
+of the matrix-matrix product options use the command
+
+  make speedup.pdf
+
+The different implementations of the matrix-matrix
+multiplication method can be selected by setting the
+following C++ precompiler options
+
+MAKE_TMP_TRANSP
+            use built-in implementation of
+            matrix-matrix multiplication but 
+            transpose the first factor before multiply
+            to optimize cache alignment
+
+The Makefile allows to set the following variables for customization:
+
+CXX         C++ compiler command
+CXXFLAGS    C++ compiler flags
+LIBS        libraries to pass to the linker, e.g. -l<library>
+CPPFLAGS    C++ preprocessor flags, e.g. -I<include dir> if
+            you have headers in a nonstandard directory <include dir>
+LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
+            nonstandard directory <lib dir>
+SHARED_EXT  file extension for shared libraries, e.g. "so"
+            on GNU/Linux or "dylib" on OSX
+
+
+** TESTS **
+
+The following unit tests for the main class methods are provided
+
+test_gauss_seidel  test the iterative gauss-seidel solver method
+test_solve         test the direct solver method based on LAPACK
+                   subroutine DGESV
+test_matrix_mult   test the matrix-matrix multiplication method
+                   and output timing info
