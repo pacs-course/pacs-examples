@@ -1,6 +1,6 @@
 #include "globals.hpp"
 #include "locals.hpp"
-//! This funcaion has local linkage
+//! This function has local linkage
 /*!
   It is not seen outside this compilation unit!
  */
@@ -8,8 +8,8 @@ namespace
 {
   double fun2(double x)
   {
-    //! I can use a global variable!
-    return globalValue*x;
+    // I can use a global variable!
+    return Globals::globalValue*x;
   }
 }
 
@@ -34,7 +34,5 @@ double fun (double y)
   return value;
 }
 
-//! If you wish you can use :: to specify the global scope (i.e. the
-//! more external scope )
-void zeroGlobal(){ ::globalValue=0;}
+void zeroGlobal(){ Globals::globalValue=0;}
 

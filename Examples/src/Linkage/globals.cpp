@@ -1,3 +1,4 @@
 #include "globals.hpp"
-int globalValue{10}; // initialize global
+// initialize global
+int Globals::globalValue{10}; 
 Globals::GlobalParameters Globals::globalParameters{false,45.0};
