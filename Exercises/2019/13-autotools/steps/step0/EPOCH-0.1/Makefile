@@ -1,0 +1,16 @@
+CC=clang
+
+all : src
+
+.PHONY : src
+
+src :
+	$(MAKE) -C src
+
+clean :
+	$(MAKE) -C src clean
+
+distclean :
+	$(MAKE) -C src distclean
+
+
