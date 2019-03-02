@@ -31,6 +31,12 @@ int main () {
   //   2  towards infinity
   //   3  towards negative infinity
   //
+  //   Round error: it is indeed linked to the rounding style. It is
+  //   the largest possible rounding error (relative0 expressed in
+  //   round-off units u.
+  //   If rounding style is 1 the round error is 0.5, since the maximim
+  //   possible rounding error is 0.5u. 
+  //
   // Signalling and non signalling NaN
   //
   // Depending on the architecture the occurrence of a NaN may raise
@@ -115,7 +121,7 @@ int main () {
        << numeric_limits<double>::quiet_NaN() << '\n';
   cout << "machine epsilon        = " 
        << numeric_limits<double>::epsilon() << '\n';
-  cout << "round off              = " 
+  cout << "round error              = " 
        << numeric_limits<double>::round_error() << '\n';
   cout << "rounding style         = " 
        << numeric_limits<double>::round_style << '\n';
@@ -151,7 +157,7 @@ int main () {
        << numeric_limits<long double>::quiet_NaN() << '\n';
   cout << "machine epsilon        = " 
        << numeric_limits<long double>::epsilon() << '\n';
-  cout << "round off              = " 
+  cout << "round error              = " 
        << numeric_limits<long double>::round_error() << '\n';
   cout << "rounding style         = " 
        << numeric_limits<long double>::round_style << '\n';
