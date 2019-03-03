@@ -142,3 +142,6 @@ make.dep
 /Examples/src/MyMat0_generic/move_report.txt
 /Examples/src/MyMat0_generic/no_move_report.txt
 /Examples/.cproject
+/Examples/src/FinDiff/main_double
+/Examples/src/FinDiff/main_extended
+/Examples/src/FinDiff/main_float
