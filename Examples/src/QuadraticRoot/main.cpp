@@ -19,8 +19,8 @@ void printResidual(result_type y1, result_type y2, Real aa, Real bb, Real cc)
   auto x2=std::complex<long double>(static_cast<long double>(y2.real()),static_cast<long double>(y2.imag()));
   long double factor1=std::abs(x1)==static_cast<long double>(0.0)?static_cast<long double>(1.0):std::abs(x1);
   long double factor2=std::abs(x2)==static_cast<long double>(0.0)?static_cast<long double>(1.0):std::abs(x2);
-  std::cout<<"Relative Residuals: "<<std::endl<<"r1= "<< (a*x1*x1+b*x1+c)/factor1<<", r2= "<<
-    (a*x2*x2+b*x2+c)/factor2<<std::endl<<std::endl;
+  std::cout<<"Relative Residuals: "<<std::endl<<"r1= "<< std::abs(a*x1*x1+b*x1+c)/factor1<<", r2= "<<
+    std::abs(a*x2*x2+b*x2+c)/factor2<<std::endl<<std::endl;
 }
 
 int main(){
