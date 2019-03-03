@@ -1,6 +1,6 @@
 #initial spacing
 h=0.1
 #Number of sampling points h^{i+}=h^{i}/2
-n=25
+n=30
 #Point where derivative is evaluated.
 x=1.0
