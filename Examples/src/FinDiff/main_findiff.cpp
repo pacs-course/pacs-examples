@@ -5,6 +5,7 @@
 #include <limits>
 #include "GetPot"
 #include <cstdlib>
+#include <complex>
 #if defined(SINGLE_PRECISION)
 using Real=float;
 std::string filename("single.dat");
@@ -15,17 +16,21 @@ std::string filename("extended.dat");
 using Real=double;
 std::string filename("double.dat");
 #endif
-const Real a=100.0;
-const Real b=4.0;
+
+// Global values (are outside any scope)
+constexpr Real a=100.0;
+constexpr Real b=4.0;
 
 //! \f$ a e^{bx}\f$
-Real fun (Real const & x)
+template <class T>
+T funct (T const & x)
 {
   return a*std::exp(b*x);
 } 
 
 //! Derivative of \f$ a e^{bx}\f$
-Real dfun (Real const & x)
+template<class T>
+T dfunct (T const & x)
 {
   return a*b*std::exp(b*x);
 } 
@@ -38,6 +43,10 @@ Real dfun (Real const & x)
  */
 int main()
 {
+  // get the actual function
+  auto fun=funct<Real>;
+  auto dfun=dfunct<Real>;
+  auto funcx=funct<std::complex<Real>>;
   // Get roundoff unit
   const Real u=0.5*std::numeric_limits<Real>::epsilon();
   std::cout<<"Roundoff unit="<<u<<std::endl;
@@ -55,14 +64,18 @@ int main()
   
   std::vector<Real> derNumer;
   std::vector<Real> der4Numer;
+  std::vector<Real> dercxNumer;
   std::vector<Real> Error;
   std::vector<Real> Error4;
+  std::vector<Real> Errorcx;
   std::vector<Real> spacing;
   std::vector<Real> truncationErrorEstimate;
   derNumer.reserve(n);
   der4Numer.reserve(n);
+  dercxNumer.reserve(n);
   Error.reserve(n);
   Error4.reserve(n);
+  Errorcx.reserve(n);
   spacing.reserve(n);
   truncationErrorEstimate.reserve(n);
   Real constexpr half(0.5);
@@ -77,19 +90,25 @@ int main()
       // Fourth order formula
       Real dn4= (twelvth*fun(x-2*h)-twothird*fun(x-h)-twelvth*fun(x+2*h)+
                  twothird*fun(x+h))/h;
+      // with(out) a difference! 
+      Real dncx = std::imag(funcx({x,h}))/h;
+      // Exact value
       Real de = dfun(x);
+      // Save results
       derNumer.push_back(dn);
       der4Numer.push_back(dn4);
+      dercxNumer.push_back(dncx);
       Error.push_back(std::abs(de-dn));
       Error4.push_back(std::abs(de-dn4));
-      truncationErrorEstimate.push_back(u*dfun(x)*x/h); 
+      Errorcx.push_back(std::abs(de-dncx));
+      truncationErrorEstimate.push_back(std::abs(u*dfun(x)*x/h)); 
       h/=2.;
     }
   // Write data
   std::ofstream file(filename.c_str());
   for (unsigned int i=0;i<n;++i)
     {
-      file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<truncationErrorEstimate[i]<<" "<<Error4[i]<<std::endl;
+      file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<truncationErrorEstimate[i]<<" "<<Error4[i]<<" "<<Errorcx[i]<<std::endl;
     }
   file.close();
 }
