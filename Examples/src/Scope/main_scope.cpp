@@ -4,7 +4,7 @@
 Are you able to guess what will be printed on the terminal?
 */
 
- // Global variables
+ // Global variables (in the global scope)
 int g=10;
 int f=30;
 // Namespace variable
