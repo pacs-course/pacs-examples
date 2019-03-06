@@ -18,7 +18,7 @@ int main() {
 
 // Note: Using endl prints out a newline and flushes the output buffer.
 // Alternatively you may use "\n".
-// We have used the uniform initialization of C++11 for sum
+// We have used the uniform initialization for sum
 // Alternatively you may use:
 // int sum(0); // old style initialization (but still perfectly valid)
 // int sum = 0;// Equivalent to int sum(0);
