@@ -60,7 +60,7 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
