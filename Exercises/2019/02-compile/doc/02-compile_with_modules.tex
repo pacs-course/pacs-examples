@@ -17,7 +17,7 @@
 \begin{document}
 
 \title{Linking to shared libraries distributed with the environmental modules system}
-\date{17.03.2017}
+\date{08.03.2019}
 
 \begin{frame}
 \maketitle
@@ -277,7 +277,12 @@ the \texttt{-static} linker option.
 \end{itemize}
 \end{frame}
 \begin{frame}{How to build a shared library?}
-We will dedicate another lecture to this issue, where we will also show how to handle shared libraries and symbols dynamically.
+  We will dedicate another lecture to this issue, where we will also show how to handle shared libraries and symbols dynamically.
+  For the moment we need to know only the following :
+  \begin{itemize}
+  \item When building a shared library we need to pass the option \texttt{-shared} to the linker
+  \item Object code used in a shared library must be \emph{position independent} (compiler option \texttt{-fPIC})
+    \end{itemize}
 \end{frame}
 
 \section{Toolchains, Environmental Modules, Shared Libraries and Headers}
