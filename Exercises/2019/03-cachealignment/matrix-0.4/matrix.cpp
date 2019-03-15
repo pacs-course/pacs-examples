@@ -4,6 +4,21 @@
 #include <ctime>
 
 
+#if defined (USE_DGEMM)
+#define dgemm dgemm_
+#define DGEMM dgemm_
+
+extern "C"
+{
+  void
+  dgemm (const char *TRANSA, const char *TRANSB, const int *M,
+         const int *N, const int *K, const double *ALPHA,
+         const double *A, const int *LDA, const double *B,
+         const int *LDB, const double *BETA, double *C,
+         const int *LDC);
+}
+#endif
+
 matrix
 matrix::transpose () const
 {
@@ -27,6 +42,51 @@ operator* (const matrix& A, const matrix& B)
     for (j = 0; j < retval.get_cols (); ++j)
       for (k = 0; k < A.get_cols (); ++k)
         retval(i,j) += tmp(k,i) * B(k,j);
+  return (retval);
+}
+#elif defined (USE_EIGEN_MAP_PROD)
+#include <Eigen/Dense>
+matrix
+operator* (const matrix& A, const matrix& B)
+{
+  assert (A.get_cols () == B.get_rows ());
+
+  Eigen::Map<const Eigen::MatrixXd>
+    eigen_A (A.get_data (), A.get_rows (), A.get_cols ());
+
+  Eigen::Map<const Eigen::MatrixXd>
+    eigen_B (B.get_data (), B.get_rows (), B.get_cols ());
+
+  matrix retval (A.get_rows (), B.get_cols ());
+
+  Eigen::Map<Eigen::MatrixXd>
+    eigen_retval (retval.get_data (), A.get_rows (), B.get_cols ());
+
+  eigen_retval = eigen_A * eigen_B;
+    
+  return (retval);
+}
+#elif defined (USE_DGEMM)
+matrix
+operator* (const matrix& A, const matrix& B)
+{
+
+  int M = A.get_rows ();
+  int N = B.get_cols ();
+  int K = A.get_cols ();
+  assert (K == B.get_rows ());
+  
+  char ntr = 'n';
+  double one = 1.0;
+  double zero = 0.0;
+
+  matrix retval (M, N);
+  
+  dgemm (&ntr, &ntr, &M, &N, &K,
+         &one, A.get_data (), &M,
+         B.get_data (), &K, &zero,
+         retval.get_data (), &M);
+
   return (retval);
 }
 #else

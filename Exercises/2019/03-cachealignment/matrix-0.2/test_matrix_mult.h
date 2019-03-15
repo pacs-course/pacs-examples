@@ -2,7 +2,7 @@
 #define HAVE_TEST_MATRIX_MULT_H
 
 #ifndef msize
-#define msize 3000
+#define msize 1000
 #endif
 
 static clock_t c_start, c_diff;
