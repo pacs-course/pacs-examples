@@ -9,8 +9,8 @@ matrix::transpose () const
 {
   matrix retval (get_cols (), get_rows ());
   unsigned int i, j;
-  for (i = 0; i < rows; ++i)
-    for (j = 0; j < cols; ++j)
+  for (i = 0; i < retval.get_rows (); ++i)
+    for (j = 0; j <  retval.get_cols (); ++j)
       retval (i, j) = const_index (j, i);
   return (retval);
 }

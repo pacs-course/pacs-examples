@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <ctime>
 
-
 matrix
 matrix::transpose () const
 {
@@ -27,6 +26,28 @@ operator* (const matrix& A, const matrix& B)
     for (j = 0; j < retval.get_cols (); ++j)
       for (k = 0; k < A.get_cols (); ++k)
         retval(i,j) += tmp(k,i) * B(k,j);
+  return (retval);
+}
+#elif defined (USE_EIGEN_MAP_PROD)
+#include <Eigen/Dense>
+matrix
+operator* (const matrix& A, const matrix& B)
+{
+  assert (A.get_cols () == B.get_rows ());
+
+  Eigen::Map<const Eigen::MatrixXd>
+    eigen_A (A.get_data (), A.get_rows (), A.get_cols ());
+
+  Eigen::Map<const Eigen::MatrixXd>
+    eigen_B (B.get_data (), B.get_rows (), B.get_cols ());
+
+  matrix retval (A.get_rows (), B.get_cols ());
+
+  Eigen::Map<Eigen::MatrixXd>
+    eigen_retval (retval.get_data (), A.get_rows (), B.get_cols ());
+
+  eigen_retval = eigen_A * eigen_B;
+    
   return (retval);
 }
 #else
