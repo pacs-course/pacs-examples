@@ -8,7 +8,7 @@ BLAS_LIBDIR=/usr/lib
 CPPFLAGS=-std=c++14 -I$(SUITESPARSE_INCDIR)
 # If I use static libraries I need to know all dependencies of libumfpack!
 static:
-	$(MAKE) main "LDLIBS=-L$(SUITESPARSE_LIBDIR) -lumfpack -lsuitesparseconfig -lamd -lcholmod -lcolamd -L$(BLAS_LIBDIR) -lblas" "LDFLAGS=-static"
+	$(MAKE) main "LDLIBS=-L$(SUITESPARSE_LIBDIR) -lumfpack -lsuitesparseconfig -lamd -lcholmod -lcolamd  -lblas -L/home/forma/lib -lmetis" "LDFLAGS=-static"
 
 # If I use the (default) shared library evetithing is simpler!
 shared:
