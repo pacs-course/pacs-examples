@@ -48,7 +48,7 @@ namespace ODE
     @param final_error Desired error at t=T
     @param status: 0=Ok 1=initial step too small; 2 number of steps exceeded; 
                    3 hmin reached, cannot guarantee error
-    @return the solution as pairs t,y
+    @return the solution as a vector of pairs (t,y)
    */
   std::vector<std::pair<double,double>> 
     rk45(std::function<double (double const &, double const &)> const & dy,

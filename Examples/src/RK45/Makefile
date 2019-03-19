@@ -50,6 +50,7 @@ endif
 else
   OPTFLAGS=-O3
   CPPFLAGS+=-DNDEBUG
+#  LDFLAGS+=-Wl,-rpath=.# Uncoment if you want it also for dynamic lib
 endif
 ifeq ($(FPEABORT),yes)
  EXEC_CPPFLAGS=-DFPE_ABORT
