@@ -36,8 +36,8 @@ namespace ODE
   class RKF
   {
   public:
-    //! f(t,y)
-    using Function= std::function<double (double const &, double const &)>;
+    //! The forcing term \f$f(t,y)\f$ is wrapped in a std::function
+    using Function= std::function<double (double const & t, double const & x)>;
     //! Constructor passing butcher table and forcing function
     RKF(B const & bt, Function const & f):M_f(f),ButcherTable(bt){};
     //! Default constructor
@@ -59,7 +59,8 @@ namespace ODE
   private:
     Function M_f;
     B ButcherTable;
-    /*!
+    /*! Function for a single step. It is private since is used only internally.
+     *
      * @param tstart start time
      * @param y0 value at tstart
      * @param h time step
@@ -153,16 +154,16 @@ template<class B>
   std::pair<double, double>
   ODE::RKF<B>::RKFstep (const double& tstart, const double & y0, const double& h) const
   {
-    auto constexpr Nstep=B::Nstep;
-    std::array<double,Nstep> K;
+    auto constexpr Nstages=B::Nstages();
+    std::array<double,Nstages> K;
     // I use references to simplify typing
     typename B::Atable const & A=ButcherTable.A;
-    std::array<double,Nstep> const & c{ButcherTable.c};
-    std::array<double,Nstep> const & b1{ButcherTable.b1};
-    std::array<double,Nstep> const & b2{ButcherTable.b2};
+    std::array<double,Nstages> const & c{ButcherTable.c};
+    std::array<double,Nstages> const & b1{ButcherTable.b1};
+    std::array<double,Nstages> const & b2{ButcherTable.b2};
     //! The first step is always an Euler step
     K[0]=M_f(tstart,y0)*h;
-    for (unsigned int i=1;i<Nstep;++i)
+    for (unsigned int i=1;i<Nstages;++i)
       {
         double time=tstart+c[i]*h;
         double value=y0;
@@ -171,7 +172,7 @@ template<class B>
       }
     double v1=y0;
     double v2=y0;
-    for (unsigned int i=0; i<Nstep;++i)
+    for (unsigned int i=0; i<Nstages;++i)
       {
         v1+=K[i]*b1[i];
         v2+=K[i]*b2[i];

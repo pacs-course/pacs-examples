@@ -4,9 +4,10 @@ int main()
 {
   double a;
   std::cin >>a;
-  // Here the compiler cannot guess the value of a function will be
-  // inlined (since it is very simple) but not resolved at compile
-  // time
+  // Here the compiler cannot know the value passed as argument to the
+  // function. The function  will be
+  // inlined (since constexpr implies inline) but not completely
+  // resolved at compile time
   double x=cubeconst(a);
 }
 

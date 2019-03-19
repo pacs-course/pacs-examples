@@ -1,6 +1,6 @@
 #Assembly code
 include ../../Makefile.inc
-CXXFLAGS=-O3 -std=c++14
+CXXFLAGS=-O -std=c++14
 OUTPUT=mainConstexprFunction mainNormalFunction mainConstexprFunction2
 all : $(OUTPUT)
 mainConstexprFunction: mainConstexprFunction.cpp
@@ -9,3 +9,5 @@ mainNormalFunction: mainNormalFunction.cpp twoFunctions.o
 examine:
 clean:
 	$(RM) $(OUTPUT) *.o 
+distclean: clean
+
