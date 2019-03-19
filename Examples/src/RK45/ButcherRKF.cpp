@@ -1,6 +1,7 @@
 #include "ButcherRKF.hpp"
 namespace ODE
 {
+  // With C++14 I can avoid some {} and I will get only a warning
   ButcherArray<6> RK45(
       {{
         {{0.,0.,0.,0.,0.,0.}},

@@ -10,40 +10,57 @@
 #include<array>
 namespace ODE
 {
-//! The class containing the prototype of a Butcher array for RKF methods
-template<unsigned int NSTEP>
+//! The class containing the prototype of a Butcher table for RKF methods
+  /*!
+   * A Butcher table (or Buttcher array) for an embedded Runge Kutta method is defined by a matrix A
+   * and two vectors b1 and b2. Another vector, called c is required but it may be computed as the row sum
+   * of A
+   *
+   * \tpar NSTAGES The total number of stages
+   */
+template<unsigned int NSTAGES>
 struct ButcherArray{
-  using Atable=std::array<std::array<double,NSTEP>,NSTEP>;
+  //! The actual Butcher array A
+  using Atable=std::array<std::array<double,NSTAGES>,NSTAGES>;
+  //! The constructor
+  /*
+   * @param a The array A
+   * @param b1 The array b1 (lower order)
+   * @param b2 The array b2 (higher order)
+   * @param ord The order of the method (the highest one!).
+   */
   ButcherArray(Atable const &a,
-               std::array<double,NSTEP> const & b1,
-               std::array<double,NSTEP> const & b2,
+               std::array<double,NSTAGES> const & b1,
+               std::array<double,NSTAGES> const & b2,
                double ord):
     A(a),b1(b1),b2(b2),order(ord)
   {
     c.fill(0.0);
     // loop over rows of A
-    for (std::size_t i=1;i<NSTEP;++i)
+    for (std::size_t i=1;i<NSTAGES;++i)
       // Loop over cols of A
       for (auto const & v: A[i]) c[i]+=v;
   }
-/*! I store the full array even if only the part below the main diagonal is
+/* I store the full array even if only the part below the main diagonal is
  * different from zero. For simplicity
  */
   Atable A;
   //! The b1 coefficient of the Butcher array (lower order)
-  std::array<double,NSTEP> b1;
+  std::array<double,NSTAGES> b1;
   //! The b2 coefficients of the Butcher array (higher order)
-  std::array<double,NSTEP> b2;
+  std::array<double,NSTAGES> b2;
   //! The c coefficient of the butcher array
-  std::array<double,NSTEP> c;
+  std::array<double,NSTAGES> c;
   //! I need the order to control time steps
   int order;
-  //! For simplicity.
+  //! The number of steps.
   /*!
-   * Not necessary since I could estract this information from the array
-   * using tuple_size()
+   * As a constexpr function since I need it to be resolved at compile time!
+   * It is static becouse is a method of the class, not of a specific object
+   * so I may call it with ButcherArray<N>::Nstages() without creating an object of
+   * type ButcherArray
    */
-  static constexpr unsigned int Nstep=NSTEP;
+  static constexpr unsigned int Nstages(){ return NSTAGES;}
 };
 
 // SOME COMMON RK embedded schemes
