@@ -3,7 +3,6 @@ namespace Geometry
 {
   std::unique_ptr<AbstractPolygon> 
   polyFactory(Shape t){
-    using std::unique_ptr;
     switch (t){
     case Shape::Triangle : return std::make_unique<Triangle>();
     case Shape::Square : return std::make_unique<Square>();
