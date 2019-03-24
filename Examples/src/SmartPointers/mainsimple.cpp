@@ -28,7 +28,7 @@ public:
     std::cout<<"Destroying a Derived1"<<std::endl;
   }
 private:
-  virtual void dummy(){}; // To make it abstract
+  virtual void dummy(){};
   double aDouble;
 };
 
@@ -68,7 +68,9 @@ public:
     std::cout<<"Destroying a Container"<<std::endl;
   }
   void changeObject(Select s){
-    my_data=std::move(buildAbstractBase(s));
+    // Assignement is here possible
+    // it trasfers ownership
+    my_data=buildAbstractBase(s);
   }
 private:
   std::unique_ptr<AbstractBase> my_data;
