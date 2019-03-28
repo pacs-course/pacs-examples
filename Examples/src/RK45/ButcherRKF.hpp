@@ -32,7 +32,7 @@ struct ButcherArray{
   ButcherArray(Atable const &a,
                std::array<double,NSTAGES> const & b1,
                std::array<double,NSTAGES> const & b2,
-               double ord):
+               int ord):
     A(a),b1(b1),b2(b2),order(ord)
   {
     c.fill(0.0);
