@@ -41,7 +41,7 @@ namespace NonLinearSystems{
     double getTol()const {return M_tol;}
     //! Computes the Jacobian using finite diffrences.
     jacobianType operator()(argumentType const & x)const;
-    //! Default destructor (C++11).
+    //! Default destructor.
     ~DiscreteJacobian()=default;
   private:
     //! The non-linear system, stored as a pointer.
