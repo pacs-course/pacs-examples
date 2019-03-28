@@ -79,7 +79,7 @@ namespace myfunctors
     necessary) you inherit three typedefs first_argument_type,
     second_argument_type and result_type.
   */
-  struct LessModulo10 : public std::binary_function<int,int,bool>
+  struct LessModulo10// : public std::binary_function<int,int,bool>
   {
     //! the call operator implementing the operation
     /*!  Definition in-class (thus in the header file) because it is a

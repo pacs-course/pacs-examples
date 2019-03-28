@@ -37,7 +37,7 @@ namespace ODE
   {
   public:
     //! The forcing term \f$f(t,y)\f$ is wrapped in a std::function
-    using Function= std::function<double (double const & t, double const & x)>;
+    using Function= std::function<double (double const & t, double const & y)>;
     //! Constructor passing butcher table and forcing function
     RKF(B const & bt, Function const & f):M_f(f),ButcherTable(bt){};
     //! Default constructor
@@ -71,7 +71,7 @@ namespace ODE
 } //end namespace
 
 template<class B>
-  inline ODE::RKFResult
+  ODE::RKFResult
   ODE::RKF<B>::operator () (const double& T0, const double& T,
                             const double & y0, const double& hInit, const double& tol,
                             int maxSteps) const
