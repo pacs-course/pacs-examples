@@ -3,6 +3,8 @@
  *
  *  Created on: Nov 10, 2018
  *      Author: forma
+ *  THIS IS STILL A WORKING VERSION. USE nonLinSys.[hc]pp!
+ *
  */
 
 #ifndef SRC_NONLINSYS_NONLINEARSYSTEM_HPP_
@@ -14,13 +16,14 @@
 
 namespace NonLinearSystems
 {
-  //! Templated container for a non linear system
+  //! Templated container for a non linear system \f$ f(x): R^N\to R^N\f$
   /*!
     Compared to NonLinSys it stores the functions in a
     std::array and it does not allow to dynamically add functions.
     If the actual system contains less than N user added functions the
     remaining functions are set to zero automatically. So the system does
     in fact always contains N functions.
+    /tpar N dymension of the system
    */
   template <unsigned int N>
   class NonLinearSystem
@@ -44,7 +47,9 @@ namespace NonLinearSystems
     //! Returns \f$ ||f(x)|| \f$
     double norm(argumentType const & x) const;
   private:
+    //! The functions
     std::array<N,funType> M_Funs;
+    //! The actual number of equations. The last N-len equations are set to zero
     unsigned int len{0u};
   };
 

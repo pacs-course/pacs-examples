@@ -22,11 +22,6 @@ namespace NonLinearSystems{
     M_funs.push_back(f);
   }
 
-  unsigned int
-  NonLinSys::numEq()const{
-    return M_funs.size();
-  }
-
   double
   NonLinSys::norm(argumentType const & x) const
   {
