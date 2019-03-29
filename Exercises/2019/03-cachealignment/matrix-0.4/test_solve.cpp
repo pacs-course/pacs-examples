@@ -24,11 +24,16 @@ int main ()
 
   matrix uh = rhs;
   matrix LU = A;
-  
+
+  tic ();
   LU.solve (uh);
-  
+  toc ("Solve ");
+
+  tic ();
   matrix f = A * uh;
-  
+  toc ("Multiply ");
+
+  /*
   for (unsigned int i = 0; i < n; ++i)
     {
       std::cout << "x (" << i+1 << ") = " << uh(i, 0) << ";"        
@@ -36,6 +41,7 @@ int main ()
                 << "    b (" << i+1 << ") = " << rhs(i, 0) << ";"
                 << std::endl;
     }
+  */
   return 0;
 }
 
