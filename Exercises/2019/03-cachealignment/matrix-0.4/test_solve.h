@@ -4,6 +4,6 @@
 #include "matrix.h"
 #include <iostream>
 
-constexpr int n = 10;
+constexpr int n = 1500;
 
 #endif
