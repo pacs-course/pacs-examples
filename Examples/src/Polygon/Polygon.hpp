@@ -102,7 +102,7 @@ namespace Geometry
     //! Move assignement
     AbstractPolygon & operator=(AbstractPolygon&&)=default;
     //! virtual destructor
-    virtual ~AbstractPolygon(){};
+    virtual ~AbstractPolygon()=default;
     //! Returns the number of vertices.
     /*!  We return Vertices::size_type and not just int because
       size_type is guaranteed to be the correct type for indexes in

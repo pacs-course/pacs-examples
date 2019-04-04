@@ -30,7 +30,7 @@ int main()
   // I create my comparison operator using a lambda
   auto comp=[](int const & a,int const & b){return a>b;};
   // I have to pass it explicitly since lambdas has NO DEFAULT CONSTRUCTOR
-  set<int,decltype(comp)> s(comp);
+  set<int,decltype(comp)> s{comp};
   s.insert(10);
   s.insert(11);
   for (auto i: s) cout<<i<<" ";
