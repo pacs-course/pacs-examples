@@ -43,7 +43,7 @@ int main(){
   argumentType x(2);
   x<<1.0,3.1; // Eigen initialization
   auto res=F(x);
-  cout<<" Residual at ("<<x<<")=("<<res<<")"<<endl;
+  cout<<" Value of the functions at ("<<x<<")=("<<res<<")"<<endl;
   cout<<" Jacobian at ("<<x<<")=["<<endl;
   cout<< DiscreteJacobian(&F)(x)<<"]"<<endl;
   /// Another non linear system
