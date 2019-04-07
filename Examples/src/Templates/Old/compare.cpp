@@ -18,7 +18,7 @@ public:
 };
 */
 
-class Nocase {                                 // compare by ignoring case 
+class NoCaseCompare {                                 // compare by ignoring case 
 public:
   bool operator () (std::string const & a, std::string const & b)
   {
@@ -32,7 +32,7 @@ public:
   }
 };
 
-class Ncomp {                                 // Normal compare
+class CaseCompare {                                 // Normal compare
 public:
   bool operator () (std::string const & a, std::string const & b)
   {
@@ -63,13 +63,13 @@ int main(){
 
   vector<string> s1(s);
 
-  std::sort(s.begin(),s.end(),Ncomp());
+  std::sort(s.begin(),s.end(),CaseCompare());
   cout<<" Normal sort"<<endl;
   for (vector<std::string>::iterator i=s.begin();i<s.end();++i)
     cout<<*i<<" ";
   cout<<endl;
   
-  std::sort(s1.begin(),s1.end(),Nocase());
+  std::sort(s1.begin(),s1.end(),NoCaseCompare());
   cout<<" Sorted ignoring case"<<endl;
   for (vector<std::string>::iterator i=s1.begin();i<s1.end();++i)
     cout<<*i<<" ";

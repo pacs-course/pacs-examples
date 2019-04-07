@@ -7,10 +7,10 @@
 
 #ifndef SRC_REGRESSION_COSTFUNCTIONPROXYCPPNUMSOLVER_HPP_
 #define SRC_REGRESSION_COSTFUNCTIONPROXYCPPNUMSOLVER_HPP_
-#include "cppoptlib/problem.h" // from CppNumerical Sovlers
-#include "CostFunction.hpp"
+#include "cppoptlib/problem.h" // from CppNumerical Solvers
 #include <iostream>
 #include <iomanip>
+#include "MSECostFunction.hpp"
 
 namespace LinearAlgebra
 {
@@ -25,10 +25,11 @@ namespace LinearAlgebra
    * In this way, all relevant files are copied in the include/ directory
    * used for the PACS Examples.
    * Note that CppNumericalSolvers is in fact a submodule. If you have not
-   * already downloaded it, type
+   * already got it, just type
    *
    * git submodule update --init --recursive
-   *
+   */
+  /*!
    * This class defines a proxy for a Cost function so you may use it with any optimization
    * technique provided in that library.
    */
