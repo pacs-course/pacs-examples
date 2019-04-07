@@ -8,10 +8,11 @@
 #ifndef SRC_REGRESSION_REGRESSIONSOLVER_HPP_
 #define SRC_REGRESSION_REGRESSIONSOLVER_HPP_
 #include <utility>
-#include "Evaluators.hpp"
-#include "CostFunction.hpp"
 #include "Eigen/Core"
 #include "Eigen/QR"
+
+#include "MSECostFunction.hpp"
+#include "PolynomialRegressionEvaluator.hpp"
 namespace LinearAlgebra
 {
   //! Computes the parameters that fit a set of data

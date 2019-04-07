@@ -16,7 +16,7 @@ int main(){
   
   // useless : it is the default!!
   cout<<" Normal sort (case sensitive)"<<endl;
-  std::sort(s.begin(),s.end(),Ncomp());
+  std::sort(s.begin(),s.end(),CaseCompare());
   for (vector<std::string>::iterator i=s.begin();i<s.end();++i)
     cout<<*i<<" ";
   cout<<endl;

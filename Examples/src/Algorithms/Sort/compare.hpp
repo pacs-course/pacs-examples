@@ -15,7 +15,7 @@
   It is here only for example, since there is no need to use it as
   case sensitive sort is the default behaviour.
  */
-class Ncomp {
+class CaseCompare {
 public:
   bool operator () (std::string const & a, std::string const & b)
   {
@@ -28,7 +28,7 @@ public:
   standard provides a new toupper() function which support
   internationalization, i.e. font encoding different form ascii.
  */
-class Nocase {                                 // compare by ignoring case 
+class NoCaseCompare {                                 // compare by ignoring case 
 public:
   bool operator () (std::string const & a, std::string const & b)
   {
