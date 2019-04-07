@@ -5,12 +5,13 @@
  *      Author: forma
  */
 
-#ifndef SRC_REGRESSION_COSTFUNCTION_HPP_
-#define SRC_REGRESSION_COSTFUNCTION_HPP_
+#ifndef SRC_REGRESSION_MSECOSTFUNCTION_HPP_
+#define SRC_REGRESSION_MSECOSTFUNCTION_HPP_
 #include <utility>
 #include "RegressionTraits.hpp"
-#include "Evaluators.hpp"
 #include <utility>
+
+#include "PolynomialRegressionEvaluator.hpp"
 namespace LinearAlgebra
 {
   //! Mean Square Error Cost function
@@ -110,4 +111,4 @@ namespace LinearAlgebra
 
 
 
-#endif /* SRC_REGRESSION_COSTFUNCTION_HPP_ */
+#endif /* SRC_REGRESSION_MSECOSTFUNCTION_HPP_ */

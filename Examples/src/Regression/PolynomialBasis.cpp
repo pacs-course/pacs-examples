@@ -4,7 +4,7 @@
  *  Created on: Jan 24, 2019
  *      Author: forma
  */
-#include "ModelBasis.hpp"
+#include <PolynomialBasis.hpp>
 
 //! this is used only internally so I use a special namespace
 /*!
