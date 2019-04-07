@@ -5,11 +5,12 @@
  *      Author: forma
  */
 
-#ifndef SRC_REGRESSION_EVALUATORS_HPP_
-#define SRC_REGRESSION_EVALUATORS_HPP_
+#ifndef SRC_REGRESSION_POLYNOMIALREGRESSIONEVALUATOR_HPP_
+#define SRC_REGRESSION_POLYNOMIALREGRESSIONEVALUATOR_HPP_
 #include "RegressionTraits.hpp"
-#include "ModelBasis.hpp"
 #include <utility>
+
+#include "PolynomialBasis.hpp"
 namespace LinearAlgebra
 {
   //! This class implements the evaluation of a model
@@ -78,4 +79,4 @@ namespace LinearAlgebra
 
 
 
-#endif /* SRC_REGRESSION_EVALUATORS_HPP_ */
+#endif /* SRC_REGRESSION_POLYNOMIALREGRESSIONEVALUATOR_HPP_ */

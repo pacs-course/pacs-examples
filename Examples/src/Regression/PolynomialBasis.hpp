@@ -5,8 +5,8 @@
  *      Author: forma
  */
 
-#ifndef SRC_REGRESSION_MODELBASIS_HPP_
-#define SRC_REGRESSION_MODELBASIS_HPP_
+#ifndef SRC_REGRESSION_POLYNOMIALBASIS_HPP_
+#define SRC_REGRESSION_POLYNOMIALBASIS_HPP_
 #include "RegressionTraits.hpp"
 #include <functional>
 #include <vector>
@@ -50,4 +50,4 @@ namespace LinearAlgebra
 
 
 
-#endif /* SRC_REGRESSION_MODELBASIS_HPP_ */
+#endif /* SRC_REGRESSION_POLYNOMIALBASIS_HPP_ */
