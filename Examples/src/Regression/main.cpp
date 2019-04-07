@@ -4,9 +4,9 @@
  *  Created on: Jan 24, 2019
  *      Author: forma
  */
-#include "Evaluators.hpp"
+#include <MSECostFunction.hpp>
+#include <PolynomialRegressionEvaluator.hpp>
 #include "RegressionSolver.hpp"
-#include "CostFunction.hpp"
 // If I have CppNumericalSolvers installed
 #ifndef NOCPPSOLVER
 #include "cppoptlib/meta.h"
