@@ -2,11 +2,11 @@
 #define HH_MATRIXPROXY_HH
 // A much more complex example of CRTP
 // Suppose want to create different matrix classes, each of them
-// providing the operator ()(i,j) di address the element in
+// providing the operator ()(i,j) to address the element in
 // row i and column j. This is fine, but I would like also to be
 // able to do the same with m[i][j] syntax, like in a "C-style" matrix
-// defined as double **. Moreover the matrix may stora any type of
-// elements, nit just double.
+// defined as double **. Moreover the matrix may store any type of
+// elements, not just double.
 // This is a nice trik (from Discovering Modern C++).
 
 // A proxy that stores the information to extract the row.
@@ -22,7 +22,7 @@ public:
 private:
   // A reference to the matrix!
   Matrix & A;
-  //! the row
+  //! the row index
   std::size_t r;
 };
 
