@@ -1,19 +1,22 @@
 #ifndef _HH_BC_HH_
 #define _HH_BC_HH_
 //! A class holding boundary conditions
-enum class BcType{Neumann,Dirichlet,Robin};
-
-class Bc
+namespace BoundaryConditions
 {
-  BcType M_type;
-public:
-  BcType getBcType() const
+  enum class BcType{Neumann,Dirichlet,Robin};
+  class Bc
   {
-    return M_type;
-  }
-  void setBcType(BcType type)
-  {
-    M_type=type;
-  }
-};
+  protected:
+    BcType M_type;
+  public:
+    BcType getBcType() const
+    {
+      return M_type;
+    }
+    void setBcType(BcType type)
+    {
+      M_type=type;
+    }
+  };
+}// end namespace
 #endif
