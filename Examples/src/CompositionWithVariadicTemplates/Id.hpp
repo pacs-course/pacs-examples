@@ -3,13 +3,14 @@
 #include<limits>
 namespace Identifier
 {
+  //! Since c++17 I could have used std::optional 
   const unsigned int notAnId=std::numeric_limits<unsigned int>::max();
   class Id
   {
+  protected:
     unsigned int M_id;
   public:
-    Id(): M_id(notAnId){};
-    Id(unsigned int i):M_id(i){};
+    Id(unsigned int i=notAnId):M_id(i){};
     void setId(unsigned int const & i)
     {
       M_id=i;
