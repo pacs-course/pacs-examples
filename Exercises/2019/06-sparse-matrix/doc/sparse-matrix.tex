@@ -1,0 +1,331 @@
+\documentclass{beamer}
+\usetheme{default}
+\setbeamercovered{transparent}
+\AtBeginSubsection[\inserttocsection]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\usepackage[]{listings}
+\lstset{language=C++,
+basicstyle=\ttfamily,
+keywordstyle=\color{blue}\ttfamily,
+stringstyle=\color{red}\ttfamily,
+commentstyle=\color{green}\ttfamily,
+morecomment=[l][\color{magenta}]{\#}}
+
+\begin{document}
+
+
+\title{A Sparse Matrix Class Based on STL Containers}
+\date{04.05.2018}
+
+\begin{frame}
+\maketitle
+\end{frame}
+
+\section{Sparse Matrices}
+
+\begin{frame}
+\frametitle{What is a Sparse Matrix}
+\begin{itemize}
+\item A (square) sparse matrix is a matrix whose number of non-zero elements $N_{nz}$ is $O(N)$, 
+$N$ being the size of the matrix. \\[3mm]
+\item The average number $m$ of non-zero elements per row (or column)
+is constant w.r.t. the matrix size. \\[3mm]
+\item If the majority of matrix entries is $0$,{\it i.e.} if $m \ll N$ it is convenient 
+to store only the non-zero elements.\\[3mm]
+\item The matrix-vector product (which is the basic ingredient of Krylov solvers) is $O(N)$ rather than $O(N^{2})$.\\[3mm]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Some Examples of Sparse Matrix Formats}
+Some (slightly revisited) classical data structures for sparse matrices
+
+$$
+A = 
+\left[
+\begin{array}{cccc}
+4  & -1 & 0  & 0\\
+-1 &  4 & -1 & 0\\
+0  & -1 &  4 & -1\\
+0  &  0 &  -1& 4
+\end{array}
+\right]
+$$
+
+\begin{itemize}
+\item [COO] a.k.a AIJ :\\ \tiny
+\begin{lstlisting}[language=C++]
+std::vector<double> A {4.,-1.,-1.,4.,-1.,-1.,4.,-1.,-1.,4.};
+std::vector<int>    I { 0,  0,  1, 1,  1,  2, 2,  2,  3, 3};
+std::vector<int>    J { 0,  1,  0, 1,  2,  1, 2,  3,  2, 3};
+\end{lstlisting} \normalsize
+\item [triplet] :\\ \tiny
+\begin{lstlisting}[language=C++]
+std::vector<std::tuple<int, int, double>> 
+{{0,0,4.},{0,1,-1.},{1,0,-1.},{1,1,4.},{1,2,-1.},{2,1,-1.},
+{2,2,4},{2,3,-1.},{3,2,-1.},{3,3,4},{3,4,-1.},{4,3,-1.},{4,4,4.}};                                           
+\end{lstlisting} \normalsize
+\item [CSR] (Compressed Sparse Row) a.k.a. CRS or Yale\\ \tiny
+\begin{lstlisting}[language=C++]
+std::vector<double> V {4.,-1.,-1.,4.,-1.,-1.,4.,-1.,-1.,4.};
+std::vector<int>    CI { 0,  1,  0, 1,  2,  1, 2,  3,  2, 3};
+std::vector<int>    RP { 0,  2,  5, 8,  10};
+\end{lstlisting} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Typical Operations With Sparse Matrices} 
+\begin{itemize}
+\item insertion \\
+\lstinline|A[i][j] = x;|
+\item deletion \\
+\lstinline|A[i].erase (j);|
+\item random access \\
+\lstinline|x = A[i][j]; A[i][j] += y;|
+\item sequential traversing \\
+\small\begin{lstlisting}
+for (row : A) {
+  for (column : row)
+  	std::cout << column << " ";
+  std::cout << std::endl;
+}
+\end{lstlisting}\normalsize
+\item Matrix $\times$ vector\\
+\lstinline|std::vector<double> y = A * x;|
+\end{itemize}
+\end{frame}
+
+\section{STL Containers and Polymorphism}
+\begin{frame}[fragile]
+\frametitle{Why not inherit from STL containers}
+\begin{itemize}
+\item The C++ standard leaves lot of freedom for implementation of containers
+\item STL containers have non-virtual destructors
+\item \href{http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines\#Rc-dtor-virtual}{\textcolor{blue}{C.35: A base class destructor should be either public and virtual, or protected and nonvirtual}}\\
+\small\begin{lstlisting}[language=C++]
+class D : public B {
+public :
+ mycomplextype member;
+ ~D { member.dostuff (); ...}
+}
+
+class B {
+ public :
+ ~B { dosomething}; // non virtual
+}
+
+B* var = new D;
+delete var;
+\end{lstlisting}\normalsize
+\end{itemize}
+\end{frame}
+
+
+
+\section{Sparse Matrices and STL Containers}
+
+\begin{frame}[fragile]
+\frametitle{Exercise : Use STL Containers to Build A Sparse Matrix Class}
+\begin{itemize}
+\item Implement a C++ class for sparse matrix based on STL containers
+\item Simplify random access, allocation, entry increment, sequential traversal
+\item Suggestion \small
+\begin{lstlisting}[language=C++]
+class 
+sparse_matrix 
+   : public std::vector<std::map<int,double>>
+\end{lstlisting}\normalsize
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Exercise : Sparse Matrix Class}
+\tiny Implement the following methods :
+\begin{itemize}
+
+\item 
+\tiny\begin{lstlisting}
+/// Convert row-oriented sparse matrix to CRS format.
+  void
+  csr (std::vector<double> &a,
+       std::vector<int> &col_ind,
+       std::vector<int> &row_ptr);
+\end{lstlisting} \normalsize
+
+\item 
+\tiny\begin{lstlisting}
+/// Update the entries of a sparse matrix in CSR format.
+  void
+  csr_update (std::vector<double> &a,
+              const std::vector<int> &col_ind,
+              const std::vector<int> &row_ptr);
+\end{lstlisting} \normalsize
+
+\item 
+\tiny\begin{lstlisting}
+/// Output in Matlab language.
+std::ostream & operator<< (std::ostream &stream,
+                           sparse_matrix &sp)
+\end{lstlisting} \normalsize
+
+\item 
+\tiny\begin{lstlisting}
+  /// Sparse matrix increment. Automatically allocates additional entries.
+  void 
+  sparse_matrix::operator+= (sparse_matrix &adm)
+\end{lstlisting} \normalsize
+
+\item 
+\tiny\begin{lstlisting}
+  /// Compute matrix-vector product.
+  friend std::vector<double>
+  operator * (sparse_matrix& M, const std::vector<double>& x);
+\end{lstlisting} \normalsize
+
+\end{itemize}
+\end{frame}
+
+\section{Exercise Solution}
+
+\begin{frame}[fragile]
+\frametitle{CSR}\tiny
+\begin{lstlisting}
+void
+csr (std::vector<double> &a,
+     std::vector<int> &col_ind,
+     std::vector<int> &row_ptr)
+{     
+  this->set_properties ();
+  a.resize (nnz); col_ind.resize (nnz);
+  row_ptr.resize (this->rows () + 1);
+  int idx = 0;
+  int idr = 0;
+  typename sparse_matrix::col_iterator jj;
+
+  for (size_t ii = 0; ii < this->size (); ++ii)
+    {
+      row_ptr[idr] = idx;
+      if ((*this)[ii].size () > 0)
+        {
+          for (jj  = (*this)[ii].begin (); jj != (*this)[ii].end (); ++jj)
+            {
+              col_ind[idx] = this->col_idx (jj);
+              a[idx] = this->col_val (jj);
+              idx++;
+            }
+        }
+      idr++;
+    }
+  std::fill (row_ptr.begin () + idr, row_ptr.end (), nnz);
+ } 
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{CSR UPDATE}\small
+\begin{lstlisting}
+void
+csr_update (std::vector<double> &a,
+            const std::vector<int> &col_ind,
+            const std::vector<int> &row_ptr)
+{
+  size_t ni = row_ptr.size ();
+  size_t nj = col_ind.size ();
+  a.clear ();
+  a.reserve (nj);
+
+  std::cout << " ni = " << ni << std::endl;
+  for (size_t in = 0; in < ni - 1; ++in)
+    for (size_t jn = row_ptr[in]; 
+         jn < row_ptr[in+1]; ++jn)
+      a.push_back 
+      (col_val (((*this)[in]).find (col_ind[jn])));
+
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{STREAM OPERATOR}\tiny
+\begin{lstlisting}
+std::ostream & operator<< (std::ostream &stream,
+                           sparse_matrix &sp)
+{
+  typename sparse_matrix::col_iterator j;
+
+  sp.set_properties ();
+  stream << "nrows = " << sp.rows () << "; ncols = " << sp.cols ();
+  stream << "; nnz = " << sp.nnz << ";" << std::endl;
+  stream << "mat = spconvert ([" ;
+  for (size_t i = 0; i < sp.size (); ++i)
+    {
+      if (sp[i].size ())
+        for (j = sp[i].begin (); j != sp[i].end (); ++j)
+          {
+            stream << i+1 << ", " << sp.col_idx (j) + 1 << ", ";
+            stream  << std::setprecision (17)
+                    << sp.col_val (j) << ";" << std::endl;
+          }
+    }
+  stream << "]);" << std::endl ;
+  return stream;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{INCREMENT OPERATOR}\tiny
+\begin{lstlisting}
+/// Sparse matrix increment. Automatically allocates additional entries.
+  void 
+  sparse_matrix::operator+= (sparse_matrix &adm)
+  {
+  
+    assert (this->rows () == adm.rows ());
+    assert (this->cols () == adm.cols ());
+
+    col_iterator jj;
+    for (size_t ii = 0; ii < adm.size (); ++ii)
+      if (adm[ii].size ())
+        for (jj  = adm[ii].begin (); jj != adm[ii].end (); ++jj)
+          (*this)[ii][jj->first] += adm.col_val (jj);
+  
+  }
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{MATRIX $\times$ VECTOR PRODUCT}\tiny
+\begin{lstlisting}
+std::vector<double>
+operator * (sparse_matrix& M, const std::vector<double>& x)
+{
+  std::vector<double> y (M.rows (), 0.0);
+  sparse_matrix::col_iterator j;
+  for (unsigned int i = 0; i < M.size (); ++i)
+    if (M[i].size ())
+      for (j = M[i].begin (); j != M[i].end (); ++j)
+        y[i] += M.col_val (j) * x[M.col_idx (j)];
+
+  return y;
+}
+\end{lstlisting}
+\end{frame}
+
+  
+\end{document}
