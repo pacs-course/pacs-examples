@@ -55,10 +55,6 @@ public:
   /// Default constructor.
   sparse_matrix () {init ();};
 
-  ///
-  friend std::ostream
-  &operator<< (std::ostream &, sparse_matrix&);
-
   /// Convert row-oriented sparse matrix to AIJ format, with shift.
   void
   aij (std::vector<double> &a,
@@ -128,5 +124,9 @@ public:
   operator* (sparse_matrix& M, const std::vector<double>& x);
 
 };
+
+///
+std::ostream
+&operator<< (std::ostream &, sparse_matrix&);
 
 #endif
