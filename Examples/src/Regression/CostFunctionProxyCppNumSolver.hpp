@@ -14,7 +14,7 @@
 
 namespace LinearAlgebra
 {
-  /*!
+  /*! \file
    * This utility is a front end to the software in CppNumericalSolvers,
    * which provides tools for minimization of univariate and multivatiate
    * functions.
@@ -29,15 +29,20 @@ namespace LinearAlgebra
    *
    * git submodule update --init --recursive
    */
+  
   /*!
-   * This class defines a proxy for a Cost function so you may use it with any optimization
-   * technique provided in that library.
+   * \brief This class defines a proxy for a Cost function so you may use it 
+   with any optimization technique provided in that library.
+   
+   \tpar CostFunction A cost function. It should have a method called eval 
+   taking the points and the value of the parameters.
    */
   template <class CostFunction>
   class CostFunctionProxyCppSolver : public cppoptlib::Problem<double>
   {
   public:
-    //! Luckily CppNumericalSolvers uses the same type for the argument of the cost function
+    // Luckily CppNumericalSolvers uses the
+    // same type for the argument of the cost function
     /*!
      * @note As long as Parameters and Vector are both aliases to Eigen::VectorXd
      */
@@ -48,7 +53,12 @@ namespace LinearAlgebra
      * I need to pass everything needed to evaluate the cost function
      * Internally all arguments are stored by reference, so there is no waste of
      * memory
+     * \param c The cost function
+     * \param X The vector of independent variables
+     * \param Y The corresponding values
+     * 
      */
+    template<class C, class V>
     CostFunctionProxyCppSolver(CostFunction const & c, Vector const & X, Vector const & Y):
       M_cost{c}, M_X{X}, M_Y{Y}
       {}
