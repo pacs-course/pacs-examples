@@ -173,9 +173,9 @@ namespace Geometry
     Square & operator=(const Square &)=default;
     Square & operator=(Square &&)=default;
     //! Specialised version for squares
-    double area() const;
+    double area() const override;
     //! Specialised version for squares.
-    void showMe(std::ostream & out=std::cout) const;
+    void showMe(std::ostream & out=std::cout) const override;
   };
   
   //! A triangle
@@ -188,9 +188,9 @@ namespace Geometry
     Triangle & operator=(const Triangle &)=default;
     Triangle & operator=(Triangle &&)=default;
     //! Specialised for Triangles
-    virtual double area() const;
+    virtual double area() const override;
     //! Specialised for Triangles
-    virtual void showMe(std::ostream & out=std::cout) const;
+    virtual void showMe(std::ostream & out=std::cout) const override;
   };
   
 }
