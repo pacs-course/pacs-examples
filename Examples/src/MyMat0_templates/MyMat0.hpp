@@ -176,13 +176,13 @@ namespace LinearAlgebra{
       I use tagging technique to implement the best method according
       to the storage policy
      */
-    void replaceCol(size_type i, std::vector<T> const & v) { return replaceCol(i,v,StorageType<storagePolicy>());}
+    void replaceCol(size_type i, std::vector<T> const & v) {replaceCol(i,v,StorageType<storagePolicy>());}
     //! Replaces the ith row
     /*!
       I use tagging technique to implement the best method according
       to the storage policy
      */
-    void replaceRow(size_type i, std::vector<T> const & v){ return replaceRow(i,v,StorageType<storagePolicy>());}
+    void replaceRow(size_type i, std::vector<T> const & v){replaceRow(i,v,StorageType<storagePolicy>());}
     //! Returns element with no bound check (const version)
     /*!
       It allows a=m(1,1) on constant matrix m
