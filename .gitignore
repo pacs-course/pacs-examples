@@ -145,3 +145,5 @@ make.dep
 /Examples/src/FinDiff/main_double
 /Examples/src/FinDiff/main_extended
 /Examples/src/FinDiff/main_float
+/Examples/src/MoveSemantic/move_report.txt
+/Examples/src/MoveSemantic/no_move_report.txt
