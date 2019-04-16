@@ -39,11 +39,14 @@ void distr (Distr d, Eng & e, const std::string& name,bool file=false)
   // typedef typename Distr::result_type distr_result_type;
   // Remember to use typename since we have template parameter dependent types
   //
+  // Number of samples
+  constexpr int N=20000;
   std::ofstream outfile;
   if (file)
     {
       std::string filename=name + std::string(".dat");
       outfile.open(filename);
+      outfile<<N<<"\n";
     }
   // print min, max and four example values
   std::cout << name << ":" << std::endl;
@@ -55,12 +58,12 @@ void distr (Distr d, Eng & e, const std::string& name,bool file=false)
   // Make an istogram of the generated values
   // For simplicity we convert them to integers
   // As key we use long long to account for big numbers
-  std::map<long long,int> valuecounter;
-  for (int i=0; i<200000; ++i)
+  std::map<long long,unsigned int> valuecounter;
+  for (int i=0; i<N; ++i)
     {
         auto value = d(e);
-        if(file)outfile<<d(e)<<"\n";
-        valuecounter[value]++;
+        if(file)outfile<<value<<"\n";
+        valuecounter[value]++;// this works!
     }
   // close file stream
   if(file)outfile.close();
