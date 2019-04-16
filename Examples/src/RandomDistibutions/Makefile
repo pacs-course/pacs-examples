@@ -28,15 +28,18 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 #
 
 # get all files *.cpp
-SRCS=$(wildcard *.cpp)
+tmp=$(wildcard *.cpp)
+exe_sources=$(filter main%.cpp,$(tmp))
+# take out second executable
+UTILITY=main_writeDensityFunction.cpp#
+SRCS=$(filter-out $(UTILITY),$(tmp))
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
-exe_sources=$(filter main%.cpp,$(SRCS))
+#exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
-
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
