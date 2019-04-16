@@ -23,7 +23,7 @@ template<> struct fib<0>{
   also with non constant expression arguments. In that case it is
   evaluated run time. 
   
-  While, if the argument is a contant expression the function all is
+  While, if the argument is a constant expression the function all is
   resolved at compile time.
 */
 constexpr unsigned int Fibonacci(unsigned int n)
