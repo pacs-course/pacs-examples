@@ -33,7 +33,8 @@ int main()
   /* A different use of a string stream.
      I want to read from a file where data 
      is written as
-     # Comment: A file that contains some data
+
+     #Comment: A file that contains some data
       Point1:  0.3 0.4 # acomment
       Point2:  0.5 0.8
   */
@@ -44,16 +45,18 @@ int main()
   // Until I reach end of file
   while (!file.fail() && !file.eof()){
     std::string s;
-    getline(file,s); // read the the whole line
-    if(s.empty()) continue; // empty line
+    getline(file,s); // read a whole line (up to next carriage return)
+    if(s.empty()) continue; // empty line: skip
     //std::string::size_type posc=s.find('#'); // find #
     auto posc=s.find('#'); // find #
     if (posc==0) continue;// a comment line
     //std::string::size_type posd=s.find(':'); // find :
     auto posd=s.find(':');
-    if(posd==std::string::npos)continue; // not found :
-    std::string s2(s.substr(posd+1,posc)); // estract substring
-    if(s2.empty())continue;
+    if(posd==std::string::npos)continue; // : not found : skip
+    // extract substring from posd to posc
+    // I am using { } for the copy constructor
+    std::string s2{s.substr(posd+1,posc)};
+    if(s2.empty())continue; // No numbers: skip
     std::istringstream tmp(s2); // build an input sstream.
     tmp>>x1>>y1; // read from the input stream
     if(!tmp.fail()){
