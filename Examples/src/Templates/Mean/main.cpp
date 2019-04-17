@@ -26,9 +26,14 @@ int main()
     double * ap=new double(5.0);
     double * bp=new double(6.0);
     std::cout<< "mean('ap','bp'): "<<mean(ap,bp)<<std::endl;
-
+    std::cout<<" Now with vectors of int"<<std::endl;
+    std::vector<int> v1{1,2,3};
+    std::vector<int> v2{1,1,1};
+    auto vres = mean(v1,v2);
+    for (auto i:vres)std::cout<<i<<" ";
+    std::cout<<std::endl;
     // Now Sum
-    std::cout<<Sum(3,4.5,6.7, 1.0, 8, 9 10)<<std::endl;
+    std::cout<<Sum(3,4.5,6.7, 1.0, 8, 9, 10)<<std::endl;
     std::string hello{"Hello"};    
     std::string world{"world"};    
     std::string space{" "};
@@ -40,4 +45,5 @@ int main()
     std::cout<<Mean(1.,1.,1.,1)<<std::endl;
     std::cout<<Mean(im,biz,one,1.0,2.0)<<std::endl;
     
+
 }
