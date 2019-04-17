@@ -9,12 +9,15 @@ int main()
   fun(b);
   int i(0);
   fun(i);
-  long int z(0l);
+  const long int z(0l);
   fun(z);
   fun(&z);
   float ff(0.);
   fun(ff);
+  std::cout<<" Now calling funct\n";
   funct(b);
   funct(fun2(3.0));
-   
+  funct(3.5);
+  const long double c=9.0l;
+  funct(c);
 }
