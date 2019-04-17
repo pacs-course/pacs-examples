@@ -17,18 +17,21 @@ template<> struct fib<0>{
 
 
 /*!
-  Fibonacci template function (only C++11).
+  @brief Fibonacci template function (since C++11).
   
-  It implements a constexpr function. The advantage is that it works
+  @detail It implements a constexpr function. The advantage is that it works
   also with non constant expression arguments. In that case it is
   evaluated run time. 
   
   While, if the argument is a constant expression the function all is
   resolved at compile time.
+
+  @note beware of integer underflow if you use unsigned int. Here there is no problem
+  but in general make sure that you will never compute 0u -1
 */
-constexpr unsigned int Fibonacci(unsigned int n)
+constexpr unsigned int Fibonacci(unsigned int N)
 {
-  return n <=2u ? 1u: Fibonacci(n-1)+Fibonacci(n-2);
+  return N <=2u ? 1u: Fibonacci(N-1)+Fibonacci(N-2);
 }
 
 
