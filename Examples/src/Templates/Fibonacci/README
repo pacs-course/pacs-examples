@@ -1,0 +1,7 @@
+A first example of template metarogramming to compute run time the Nth Fibonacci number (of course N should
+be known at compile time).
+
+We show two options, one using template class specialization, compatible with c++98, the second, much more flexible (and simple)
+that uses a recursive constexpr function. The latter has also the advantage that it works also if N is not given at compile time but
+at run time. In the latter case, it resolves as an ordinary recursive function. Il N is a constant expression the result is evaluated
+at compile time!
