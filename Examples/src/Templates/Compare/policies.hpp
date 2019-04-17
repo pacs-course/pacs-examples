@@ -4,7 +4,8 @@
 #include <algorithm>
 //! Normal compare (case sensitive)
 class CaseCompare {
-public:  // I rely on the existing operator
+public:
+  //! I rely on the existing operator
   static bool eq(char const & a, char const & b)
   { return a==b;}
 };
@@ -26,11 +27,17 @@ public:  // I rely on the existing operator
 */
 class NoCaseCompare {
 public:
+  //! equality operator that ignore case of characters
   static bool eq(char const  & a, char const & b)
   { return std::toupper(a)==std::toupper(b);}
 };
 
-//! The hash function for noCaseCompare. If I want to use an unordered associative container.
+//! The hash function for string for case insensitive comparison.
+/*!
+ * I need to define it if I want to use an unordered associative container.
+ * It will be passed as hash function. It is implemented-in-term-of the standard
+ * hash for strings.
+ */
 
 struct HashNoCase
 {
