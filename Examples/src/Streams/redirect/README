@@ -1,0 +1,1 @@
+A simple example of redirection of a stream. Note also the use of getline to read a whole line in one go.
