@@ -1,0 +1,5 @@
+An example about explicit instantiation of templates. Explicit instantiation allows to precompile instances of class templates
+for values of the template parameter that are considered most common. 
+
+In general the object code containing the instances is then stored in a library. Here, for simplicity, we have avoided to 
+create a library.

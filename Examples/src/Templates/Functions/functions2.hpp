@@ -2,17 +2,23 @@
 #define HH_FUNCTIONS2_HPP
 #include <iostream>
 #include <typeinfo>
-/*template <class T>
+// Try to comment some of the definitions to see what happens!
+template<class T>
+void funct(T & x)
+{
+  std::cout<<" Calling funct(T&) with argument type "<<typeid(T).name()<<"\n";
+}
+
+template <class T>
 void funct(T const & x)
 {
-  std::cout<<" Calling fun with argument type "<<typeid(x).name()<<"\n";
+  std::cout<<" Calling funct(T const &) with argument type "<<typeid(T).name()<<"\n";
 }
-*/
 
 template <class T>
 void funct(T&& x)
 {
-  std::cout<<" Calling fun with rvalue ref to type "<<typeid(x).name()<<"\n";
+  std::cout<<" Calling funct(T&&) with argument type "<<typeid(x).name()<<"\n";
 }
 
 #endif
