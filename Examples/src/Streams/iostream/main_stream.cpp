@@ -22,7 +22,7 @@ int main() {
   // and set in the mask are unset. If
   // If I write just  cout.setf(std::ios_base::scientific) then
   // the bit flag corresponding to ios_base::scientific is set
-  // and the other left unchanged 
+  // and the other left unchanged. Choose what you need!
   cout.setf(std::ios_base::scientific, std::ios_base::floatfield);
   cout.precision(std::numeric_limits<double>::digits10);
   double pi=std::atan(1.0)*4.0;
@@ -30,6 +30,10 @@ int main() {
   cout.precision(4);
   cout << pi << " with 4 digits, Scientific format"<<endl;
   // I like uppercase E
+  // If I use
+  // cout.setf(ios_base::uppercase,ios_base::floatfield);
+  // I will also clear the ios::scientific flag
+
   cout.setf(ios_base::uppercase);
   cout << pi << " with 4 digits, Scientific format, Uppercase E"<<endl;
   auto oldwidth=cout.width(); // store current width
