@@ -1,0 +1,6 @@
+Two utilities that simplifies compusition with polymorfic object.
+
+The first class defines a pointer-like object that performs deep copy of the
+(polymorphic) resource by means of the method clone().
+
+The second allows to create clonable classes by inheritance. 
