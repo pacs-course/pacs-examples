@@ -59,6 +59,9 @@ $(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
+install:
+	cp *.hpp $(PACS_INC_DIR)
+
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
