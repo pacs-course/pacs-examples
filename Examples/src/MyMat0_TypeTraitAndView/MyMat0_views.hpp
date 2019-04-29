@@ -19,7 +19,7 @@ namespace LinearAlgebra{
     A view for the transpose of a Matix.
    */
   template<typename MAT>
-  class DiagonalView
+  class TransposeView
   {
   public:
     using value_type = typename MAT::value_type;
@@ -31,12 +31,8 @@ namespace LinearAlgebra{
      * if not I will return a reference, so that we can modify
      * values stored in the "viewed" matrix
      */
-    using rtype = typename std::conditional<
-    std::is_const<MAT>::value,
-    value_type,
-    value_type &>::type;
   public:
-    explicit DiagonalView(MAT & m):M_mat(m){}
+    explicit TransposeView(MAT & m):M_mat(m){}
     //! It will give an error if the viewed matrix is constant
     void fillZero(){M_mat.fillZero();}
     //! Resizing the matrix
@@ -48,19 +44,21 @@ namespace LinearAlgebra{
     //! Number of rows
     size_type nrow()const {return M_mat.ncol();}
     //! Number of columns
-    size_type ncol()const {return M_mat.ncol();}
+    size_type ncol()const {return M_mat.nrow();}
     //! Returns element with no bound check (non-const version)
     /*!
-      The return type differs depending if MAT is a const MyMat0 or
-      not. This avoids errors if I call the operator on a diagonal view
-      of a constant matrix!
+      The version that returns a reference, and thus allows to modify
+      the underline matrix, is activated only if the underlying matrix is not const
+      This avoids errors if I call the operator on a transpose view of a constant matrix!
+      Note the trick of a default template parameter to allow enable_if to work
      */
-    rtype operator () (const size_type i, const size_type j) const
+    template<typename T=MAT>
+    std::enable_if_t<!std::is_const<T>::value,value_type &> operator () (const size_type i, const size_type j)
     {
       return M_mat(j,i);
     }
-    //! Returns element with no bound check (const version)
-    value_type  operator () (const size_type i, const size_type j)
+    //! this is always present
+    value_type  operator () (const size_type i, const size_type j) const
     {
       return M_mat(j,i);
     }
@@ -114,24 +112,24 @@ namespace LinearAlgebra{
       little else.
     */
     
-    auto normInf() const //-> decltype(std::declval<MAT>().norm1())
+    auto normInf() const 
     {
       return M_mat.norm1();
     }
 
-    auto norm1() const //-> decltype(std::declval<MAT>().normInf())
+    auto norm1() const 
     {
       return M_mat.normInf();
     }
 
-    auto normF() const //-> decltype(std::declval<MAT>().normF())
+    auto normF() const 
     {
       return M_mat.normF();
     }
     //! 
     void vecMultiply(const std::vector<value_type> &v, std::vector<value_type> & res) const;
     
-    auto fillRandom(unsigned int seed=0) -> decltype (std::declval<MAT>().fillRandom())
+    auto fillRandom(unsigned int seed=0)
     {
       return M_mat.fillRandom(seed);
     }
@@ -143,7 +141,7 @@ namespace LinearAlgebra{
   };
 
   template<typename MAT>
-  void DiagonalView<MAT>::vecMultiply(const std::vector<value_type> &v, std::vector<value_type> & res) const
+  void TransposeView<MAT>::vecMultiply(const std::vector<value_type> &v, std::vector<value_type> & res) const
   {
     if(v.size() != M_mat.nc)
       {
@@ -167,7 +165,7 @@ namespace LinearAlgebra{
   }
 
   template<typename MAT>
-  void DiagonalView<MAT>::showMe(std::ostream  & out) const
+  void TransposeView<MAT>::showMe(std::ostream  & out) const
   {
     auto nc = M_mat.nc;
     auto nr = M_mat.nr;
@@ -184,7 +182,7 @@ namespace LinearAlgebra{
   }
   
   template<class T, StoragePolicySwitch storagePolicy>
-  std::vector<T> operator * (DiagonalView<MyMat0<T, storagePolicy> > const & m,std::vector<T> const & v)
+  std::vector<T> operator * (TransposeView<MyMat0<T, storagePolicy> > const & m,std::vector<T> const & v)
   {
     std::vector<T> tmp;
     m.vecMultiply(v,tmp);

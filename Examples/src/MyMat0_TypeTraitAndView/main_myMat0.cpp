@@ -59,9 +59,13 @@ int main()
   aInt(1,1)=4;
   aInt.showMe();
   std::cout<<"Norm1, NormInf and NormF of aInt: "<<aInt.norm1()<<" "<<aInt.normInf()<<" "<<aInt.normF()<<std::endl;
-  DiagonalView<MyMat0<int>> aIntT{aInt};
+  TransposeView<MyMat0<int>> aIntT{aInt};
   std::cout<<"Transpose:"<<std::endl;
-  aIntT.showMe();  
+  aIntT.showMe();
+  aInt(0,0)=10;
+  TransposeView<const MyMat0<int>> c_aIntT{aInt};
+  auto z = c_aIntT(0,1);
+
   std::cout<<"Norm1, NormInf and NormF of aIntT: "<<aIntT.norm1()<<" "<<aIntT.normInf()<<" "<<aIntT.normF()<<std::endl;
   
   // Just to test that it compiles fine
