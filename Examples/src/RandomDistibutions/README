@@ -11,7 +11,7 @@ gnuplot> plot "filename" using 1:2
 
 for plotting the PDF or 
 
-gnuplot> plot "filename" using 1:2 
+gnuplot> plot "filename" using 1:3 
 
 for plotting the cumulative probability
 
