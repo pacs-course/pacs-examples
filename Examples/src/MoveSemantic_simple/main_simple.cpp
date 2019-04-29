@@ -75,6 +75,16 @@ int main()
   std::cout<<"\nCalling Foo foo5=std::move(foo4)"<<std::endl;
   Foo foo5=std::move(foo4);
   std::cout<<" Move constructor is called: it is an inizialization NOT an assignement"<<std::endl;
-
-    }
+  std::cout<< "**************** Now function bindings "<<std::endl;
+  std::cout<< " Creating a constant Foo object called cFoo\n";
+  const Foo cfoo;
+  std::cout<< " f(cfoo)\n";
+  f(cfoo);
+  std::cout<< " f(foo5):\n";
+  f(foo5);
+  std::cout<< " f(std::move(foo5)):\n";
+  f(std::move(foo5));
+  std::cout<< " f(createFoo()):\n";
+  f(createFoo());
+ }
 
