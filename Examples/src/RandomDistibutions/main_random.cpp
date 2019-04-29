@@ -28,12 +28,12 @@
  *  values.
  *  By default it does not produce any file
  *  \param d  a distribution
- *  \param name A neme for output and file
+ *  \param name A name for output and file
  *  \param file true is you want a file with generated numbers (def. false)
  *  \param hist true if you want a poor man histogram on the screen (true)
  */
 template <typename Distr, typename Eng>
-void distr (Distr d, Eng & e, const std::string& name,bool file=false, bool hist=true)
+void distr (Distr & d, Eng & e, const std::string& name,bool file=false, bool hist=true)
 {
   // The engine produce integer numbers whose width depends on the
   // engine (and possibly the chosen engine template argummnts)
@@ -83,9 +83,9 @@ void distr (Distr d, Eng & e, const std::string& name,bool file=false, bool hist
         std::cout << std::setw(3) << elem.first << ": "
                   << elem.second << std::endl;
       }
-      std::cout << "====" << std::endl;
-      std::cout << std::endl;
     }
+  std::cout << "====" << std::endl;
+  std::cout << std::endl;
 }
 //! Example printing several distributions.
 /*!
@@ -137,4 +137,10 @@ int main()
   //so I am not printing on the scrren
   std::student_t_distribution<> sd;
   distr(sd,e,"student_t_distribution",true,false);
+  // Now a discrete distribution. The constructor
+  // may take different forms, in this case we give the
+  // weights for the values
+  std::discrete_distribution<int> ddist{1.,3.,6.,1.,1.,10.};
+  distr(ddist,e,"discrete_distribution",true,true);
+  
 }
