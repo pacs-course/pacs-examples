@@ -69,10 +69,10 @@ int main(int argc, char * argv[])
     std::vector<DistData> dist;
     dist.reserve(N);
     auto res = values.begin();
-    // Compute the probability function
+    // Compute the cumulative probability function
     for (auto v:values)
       {
-        // Very complicated, it can be done in a simpler way using a set
+        // Very complicated, it can be done in a simpler way using a multiset
         // but it is a good reminder of useful algorithms.
         res = std::find_if(res,values.end(),[&v](const double & x){return x>v;});
         double distValue=std::distance(values.begin(),res)/static_cast<double>(N);
@@ -81,8 +81,8 @@ int main(int argc, char * argv[])
     // I have to eliminate repetitions in dist
     // remember that unique moves the repeated elements at the end
     // and returns the iterator to the end of the range without repetitions
-    // I need a predicate since the test is mede only on the data value not on the value of the
-    // distribution function
+    // I need a predicate since the test is made only on the data value
+    // not on the value of the distribution function
     auto newEnd = std::unique(dist.begin(),dist.end(),[](const DistData & x, const DistData & y){return x.first==y.first;});
     std::ofstream outFileStream(outFile);
     if (outFileStream.fail())
