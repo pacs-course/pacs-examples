@@ -18,7 +18,7 @@
 namespace LinearAlgebra
 {
   //! Forward declaration
-  template<typename MAT> class DiagonalView;
+  template<typename MAT> class TransposeView;
   //! Sets the policy for data storage.
 /*!
  *  ROWMAJOR = Matrix is stored by rows
@@ -249,7 +249,7 @@ namespace LinearAlgebra
     void showMe(std::ostream  & out=std::cout) const;
 
     //! Friendship with the view
-    friend class DiagonalView<MyMat0<T, storagePolicy> >;
+    friend class TransposeView<MyMat0<T, storagePolicy> >;
   };
   //! Matrix times vector via operator *
   /*!
