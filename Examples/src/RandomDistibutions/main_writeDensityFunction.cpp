@@ -92,12 +92,22 @@ int main(int argc, char * argv[])
       }
 // The probability density function is the derivative, which I compute with centered
 // finite differences
-    for(auto i=dist.begin()+1;i<newEnd-1;++i)
+    auto start = dist.begin();
+    auto next  = dist.begin()+1;
+    // first point
+    outFileStream<<start->first<<" "<<(next->second-start->second)/
+    (next->first-start->first)<<" "<<start->second<<"\n";
+                                                                                    for(auto i=dist.begin()+1;i<newEnd-1;++i)
       {
         auto delta   = (i+1)->second-(i-1)->second;
         auto h       = (i+1)->first- (i-1)->first;
-        outFileStream<< i->first <<" "<<delta/h<<" "<<i->second<<"\n";
+        outFileStream<< i->first <<" "<<delta/(2.*h)<<" "<<i->second<<"\n";
       }
+    start=newEnd-2;
+    next =newEnd-1;                                                                 // last point
+    outFileStream<<next->first<<" "<<(next->second-start->second)/
+    (next->first-start->first)<<" "<<next->second<<"\n";
+     
     outFileStream.close();
 }
 
