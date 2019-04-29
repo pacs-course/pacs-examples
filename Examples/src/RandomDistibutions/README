@@ -11,7 +11,7 @@ gnuplot> plot "filename" using 1:2
 
 for plotting the PDF or 
 
-gnuplot> plot "filename" using 1:2 
+gnuplot> plot "filename" using 1:3 
 
 for plotting the cumulative probability
 
@@ -26,5 +26,8 @@ number of samples.  You can use this trick, at the glupolt prompt
 gnuplot> set key autotitle columnhead
 gnuplot> plot "filename" w p title "samples"
 
+Or
+
+gnuplot>plot "filename"  every ::1
 
 
