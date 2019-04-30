@@ -101,7 +101,7 @@ int main(int argc, char * argv[])
       {
         auto delta   = (i+1)->second-(i-1)->second;
         auto h       = (i+1)->first- (i-1)->first;
-        outFileStream<< i->first <<" "<<delta/(2.*h)<<" "<<i->second<<"\n";
+        outFileStream<< i->first <<" "<<delta/h<<" "<<i->second<<"\n";
       }
     start=newEnd-2;
     next =newEnd-1;                                                                 // last point
