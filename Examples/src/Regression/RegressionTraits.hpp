@@ -14,8 +14,12 @@
 
 namespace LinearAlgebra
 {
-  //! Structure containing basic type definition
-  struct RegressionTraitsDefault
+  //! The basic type definition. The primary template uses Eigen classes
+  /*!
+   * /tparam T Used to select the appropriate trait
+   */
+  template<class T=void>
+  struct RegressionTraits
   {
     using Function = std::function<double (double const &)>;// @suppress("Symbol is not resolved") @suppress("Type cannot be resolved")
     using BasisFunctions = std::vector<Function>; // @suppress("Invalid template argument")
@@ -26,6 +30,8 @@ namespace LinearAlgebra
     // Also the const function is internally wrapped into a std::function
     using CostFunction=Function;
   };
+  //! The default trait
+  using RegressionTraitsDefault=RegressionTraits<>;
 }
 
 
