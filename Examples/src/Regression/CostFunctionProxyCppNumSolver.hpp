@@ -58,7 +58,7 @@ namespace LinearAlgebra
      * \param Y The corresponding values
      * 
      */
-    template<class C, class V>
+    template<class Vector>
     CostFunctionProxyCppSolver(CostFunction const & c, Vector const & X, Vector const & Y):
       M_cost{c}, M_X{X}, M_Y{Y}
       {}

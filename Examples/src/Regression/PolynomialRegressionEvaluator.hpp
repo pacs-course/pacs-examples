@@ -25,10 +25,13 @@ namespace LinearAlgebra
     using Parameters=LinearAlgebra::RegressionTraitsDefault::Parameters;
     using Vector=LinearAlgebra::RegressionTraitsDefault::Vector;
     //! The constructor that takes a well formed ModelBasis object
-    PolynomialRegressionEvaluator(ModelBasis const & modelbase):M_basis(modelbase){}
-    //! Maybe we want to move
-    PolynomialRegressionEvaluator(ModelBasis && modelbase):M_basis(std::move(modelbase)){}
-
+    /*
+     * I use std::forward and the Universal Reference trick so that
+     * if the argument can be moved it will be moved.
+     */
+    template<typename M=ModelBasis>
+    PolynomialRegressionEvaluator(M&& modelbasis):
+    M_basis{std::forward<M>(modelbasis)}{}
     //! Default constuctor
     PolynomialRegressionEvaluator()=default;
 
