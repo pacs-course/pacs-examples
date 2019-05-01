@@ -12,7 +12,7 @@
 #include <vector>
 namespace LinearAlgebra
 {
-  //
+  //! A class that contains classic monomial basis function
   class PolynomialMonomialBasisFunction
   {
   public:
@@ -24,7 +24,7 @@ namespace LinearAlgebra
     using Vector = Trait::Vector;
     //! Construct the basis function for a polynomial space
     PolynomialMonomialBasisFunction(std::size_t n=0u);
-    //! Construct the basis functions on an existing object
+    //! Sets the basis functions on an existing object
     void setFunctions(std::size_t n);
     //! Returns the ith basis function
     auto getFunction(std::size_t i){return this->M_basisFunctions[i];}
@@ -37,7 +37,7 @@ namespace LinearAlgebra
     //! If I want to know the degree of a the polynomial I am using
     int degree()const {return this->size()-1;}
   private:
-    //! Here I store the basis function for my model
+    //! Here I store the basis functions for my model
     BasisFunctions M_basisFunctions;
     //! Derivatives are needed only if I use a gradient scheme
     /*! For the version that uses QR are useless, but I compute them

@@ -10,7 +10,6 @@
 #include <utility>
 #include "RegressionTraits.hpp"
 #include <utility>
-
 #include "PolynomialRegressionEvaluator.hpp"
 namespace LinearAlgebra
 {
@@ -18,7 +17,7 @@ namespace LinearAlgebra
   /*
    * Defines the basic  interface of a class that implements a cost function
    * based on Mean Square error
-   * @tpar ModelEvaluator a class that evaluates a model
+   * \tparam ModelEvaluator A class that evaluates a model
    */
   template<class ModelEvaluator>
   class MSECostFunction
