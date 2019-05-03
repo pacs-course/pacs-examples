@@ -5,7 +5,7 @@
  *      Author: forma
  */
 #include<iostream>
-#include "../WrapperForCloning/wrapper.hpp"
+#include "../CloningUtilities/CloningUtilities.hpp"
 
 using namespace Utility;
 /*
@@ -83,8 +83,10 @@ int main()
     Derived a;
     a.setN(35.0);
     ca.compose(a);
-    // Now I can delete a safely
-    // it has been cloned into ca
+    /* Now I can delete a safely
+     it has been cloned into ca
+     I could have also made ca.compose(std::move(a));
+    */
   }
   ca.print();
 // But I can just create the object
@@ -94,7 +96,6 @@ int main()
   cb.print();
   Composer cc(cb);
   cc.print();
-
 }
 
 
