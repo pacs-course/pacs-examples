@@ -82,10 +82,10 @@ main (int argc, char **argv)
 
  
       std::vector<double> aa(10, 79.1234);  
-      std::vector<unsigned char> saa = serialize::write (a);
-      int n = sa.size ();
+      std::vector<unsigned char> saa = serialize::write (aa);
+      int n = saa.size ();
       MPI_Send (&n, 1, MPI_INT, 1, 0, MPI_COMM_WORLD);
-      MPI_Send (&(sa[0]), n, MPI_CHAR, 1, 1, MPI_COMM_WORLD);
+      MPI_Send (&(saa[0]), n, MPI_CHAR, 1, 1, MPI_COMM_WORLD);
     }
   else if (rank == 1)
     {
