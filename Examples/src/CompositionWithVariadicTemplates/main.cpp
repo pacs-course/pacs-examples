@@ -26,12 +26,13 @@ int main()
   auto res=dot(a,b);
   /// auto res2=dot(a,e); ERROR dimension differs!!!
   Id ident(5);
-  // I am passing the constructor for the Id!
-  Poin2dWithId pwi(ident);
+  // I am passing the point and the constructor for the Id!
+  std::array<double,2> praw=std::array<double,2>{0.,1.5};
+  Poin2dWithId pwi{praw,ident};
   std::cout<<pwi.getId()<<std::endl;
   Poin2dWithId z=pwi;
   std::cout<<z.getId()<<std::endl;
-  Poin2dWithId K(3);
+  Poin2dWithId K(std::array<double,2>{0.,2.},3);
   std::cout<<K.getId()<<std::endl;
 
 }
