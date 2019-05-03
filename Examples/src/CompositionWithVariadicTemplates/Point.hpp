@@ -27,26 +27,27 @@ namespace Geometry
     {
       return M_coordinates[i];
     }
+
+
+    Point(Point const &)=default;
   
-    //! Complex part: a constructor taking the composites
+    //! Complex part: a constructor taking the point coordinates and composites objects
     /* 
        Skip reading it the first time
-
-       @todo if Point has a constructor taking arguments this part
-       has to be rewritten. Moreover it can be a case where to try
-       std::ignore.
+       enable_if is necessary because if I use point with zero or 1 argument this
+       definition will fail.
     */
-    template<typename D=typename std::enable_if<sizeof...(Extensions)!=0,void>,typename ...T>
-      Point(T&& ...ext):Extensions(std::forward<T>(ext))...{};
-    //! Since I have defined a constructor I need to indicate the default
-    /*!
-      @todo In fact maybe I can recover the default constructor if I do
-      Point(T&& ...ext):Point{},Extensions(std::forward<T>(ext))...{};
-      but then how to handle enable_if? It is simpler to declare the default 
-      constructor directly.
-     */
+    template<typename COO, typename... T, typename std::enable_if_t<sizeof...(T)!=0,int> =0>
+      Point(COO&& c, T&& ...ext):Extensions(std::forward<T>(ext))...,
+      M_coordinates(std::forward<COO>(c))
+      {};
+    //! This if I want to pass just the coordinates (or if the point is simple)!
+    Point(std::array<Value,N> const & c):M_coordinates{c}{};
+
+    //! Since I have defined constructors I need to indicate the default
     Point()=default;
-  };
+
+ };
 
 
   //! A function for a Point
