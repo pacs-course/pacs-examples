@@ -33,7 +33,10 @@ int main() {
   // If I use
   // cout.setf(ios_base::uppercase,ios_base::floatfield);
   // I will also clear the ios::scientific flag
-
+  // A note: if I want to set both flags in one single command
+  // I can use the bitwise or operator:
+  // cout.setf(ios_base::uppercase|ios_base::scientific,ios_base::floatfield);
+  //
   cout.setf(ios_base::uppercase);
   cout << pi << " with 4 digits, Scientific format, Uppercase E"<<endl;
   auto oldwidth=cout.width(); // store current width
