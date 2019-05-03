@@ -1,0 +1,99 @@
+\documentclass{beamer}
+\usetheme{default}
+
+\setbeamercovered{transparent}
+\AtBeginSubsection[\inserttocsection]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\usepackage[]{listings}
+\lstset{language=C++,
+basicstyle=\ttfamily,
+keywordstyle=\color{blue}\ttfamily,
+stringstyle=\color{red}\ttfamily,
+commentstyle=\color{green}\ttfamily,
+morecomment=[l][\color{magenta}]{\#}}
+
+\usecolortheme{default}
+\begin{document}
+
+
+\title{Serialization of STL Containers}
+\date{\today}
+
+\begin{frame}
+\maketitle
+\end{frame}
+
+\begin{frame}
+\frametitle{Serialization}
+
+\begin{itemize}
+\item \alert{Serialization}is the process of translating data structures or object state into a format that can be 
+\begin{itemize} 
+\item \alert{stored}, for example, in a file or memory buffer.
+\item \alert{transmitted}, for example, across a network connection link
+\item \alert{reconstructed} possibly in a different computer environment.
+\end{itemize}
+\item When the resulting series of bits is reread according to the serialization format, it can be used to create a semantically identical clone of the original object
+\item For many complex objects this process is not straightforward
+\item Serialization of object-oriented objects does not include any of their associated methods
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Doxygen}
+
+\begin{itemize}
+\item \alert{Doxygen} is the \textit{de facto} standard tool for generating documentation from annotated C++ sources. 
+\item Doxygen can:
+\begin{itemize}
+\item generate an on-line documentation browser (in HTML) and/or an off-line reference manual (in $\mbox{\LaTeX}$) from a set of documented source files. 
+\item extract the code structure from undocumented source files. This is very useful to quickly find your way in large source distributions. Doxygen can also \alert{visualize} the relations between the various elements.
+\item create normal documentation (as I did for the doxygen user manual and web-site).
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Doxygen}
+Use the \texttt{doxygen} command to:
+\begin{enumerate}
+\item generate a template configuration file:\\
+    \verb|doxygen [-s] -g [configName]|
+
+\item generate documentation using an existing configuration file:\\
+    \verb|doxygen [configName]|
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Exercise}
+\begin{enumerate}
+\item Create functions (actually function templates) to read and write 
+\begin{enumerate}
+\item \lstinline{std::vector<T>}, where \lstinline{T} is a trivial type
+\item \lstinline{std::map<F,S>}, where \lstinline{F}, \lstinline{S} are trivial types
+\item \lstinline{std::vector<std::map<F,S>>}, where \lstinline{F}, \lstinline{S} are trivial types
+\end{enumerate}
+\item T is \alert{trivial type} if it is a scalar type, 
+a trivially copyable class with a trivial default constructor, 
+or array of such type/class
+\item \lstinline{type_traits} defines a compile-time template-based interface to query or modify the properties of types
+\item Use doxygen to get a description of the function templates headers to implement
+\end{enumerate}
+\end{frame}
+
+\end{document}
