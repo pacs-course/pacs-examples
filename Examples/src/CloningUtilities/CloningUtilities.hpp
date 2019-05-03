@@ -4,6 +4,54 @@
 #include <type_traits>
 namespace Utility
 {
+  namespace TypeTraits
+  {
+    //! A template that takes anything
+    /*!
+      Void<T>::type is always equal to void.  It is used as a way of
+      checking that a type has been defined, irrespectively from the
+      actual type.
+    */
+    template<typename> struct Void { using type=void; };
+  }
+    /*!  Primary template for a class that checks if a clss has the method clone
+
+      The second argument is used to
+      activate SFINAE.  It inherits from false_type, so it
+      represent "false" Remember that std::false_type is convertible to
+      a boolean equal to false.
+     */
+    template<typename T, typename Sfinae = void>
+    struct has_clone: public std::false_type {};
+
+    /*!  Specialised version that is activated if T is clonable.
+
+      Indeed, if T is not clonable the second template parameter cannot
+      be substituted with a valid type. So SFINAE applies and this
+      version is discarded. Note that it inherits from std::true_type.
+
+      declval<T&>() allows to test the return type of clone() (the
+      result of the test is irrelevant in this case) with no need of
+      creating an object of type T. Moreover, we use T& because T may be
+      a polymorphic object, and clone() may be defined in the base
+      class.
+    */
+    template<typename T>
+    struct has_clone<
+      T,
+      typename TypeTraits::Void<
+        decltype( std::declval<T&>().clone() )
+               >::type
+      >: std::true_type {};
+
+    //! A helper function
+    /*!
+     *  It returns true if the class is clonable
+     *  \tparam T the type to check
+     */
+    template <class T>
+    constexpr bool isClonable() { return has_clone<T>(); }
+
 /*! A smart pointer that handles cloning for compusing with polymorphic objects
  *
   This class implements a generic wrapper around a unique pointer useful to
@@ -107,6 +155,8 @@ template< class T>
 class Wrapper
 {
 public:
+  //! Check if clone is present
+  static_assert(isClonable<T>(),"template parameter of Wrapper must be a clonable class");
   // The type of the stored pointer
   using Ptr_t=std::unique_ptr<T>;
   //! The default constructor
@@ -233,8 +283,7 @@ private:
   const D & asDerived() const{ return static_cast<const D &>(*this);}
 };
 
-
-}// end namespace
+}// end namespace Utility
 #endif
 /*
  *
