@@ -149,3 +149,4 @@ make.dep
 /Examples/src/MoveSemantic/no_move_report.txt
 /Examples/src/MoveSemantic_simple/main_simple
 /Examples/src/RandomDistibutions/main_writeDensityFunction
+/Examples/src/Streams/binary_io/file.txt
