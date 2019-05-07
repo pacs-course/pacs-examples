@@ -20,32 +20,29 @@ MAKEFILEH_DIR=../../
 -include Makefile.inc
 
 # Say no if you want full optimization
-export DEBUG=yes
+DEBUG=yes
 #CXX=g++-4.9
 #CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
-STANDARD=c++11
 #
 LIBNAME=Mesh
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
 include $(MAKEFILEH_DIR)/Makefile.inc
-LIBRARIES+=-L. -l$(LIBNAME)
-LDLIBS+=$(LIBRARIES)
-INCLUDES=-I. -I(
+LIBRARIES=-L. -l$(LIBNAME)
+LDLIBS=$(LIBRARIES)
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
  export LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
 else
  export LIBRARY=$(STATIC_LIBFILE)
- LDFLAGS+=-static
+ LDFLAGS=-static
 endif
 
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
-  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+  LDFLAGS=-Wl,-rpath=.# If debug we use the local dynamic libraries
 else
   OPTFLAGS=-O3
   CPPFLAGS+=-DNDEBUG
@@ -103,7 +100,7 @@ static:
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
 	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
+	$(MAKE) $(EXEC) LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
@@ -113,18 +110,19 @@ install:
 	cp $(LIB_HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	-\rm -f $(EXEC) $(OBJS)
+	$(RM) $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(DEPEND) 2>/dev/null
-	-\rm *.out *.bak *~ 2>/dev/null
+	$(RM) -r  ./doc
+	$(RM) $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(DEPEND)
+	$(RM) *.out *.bak *~ 2>/dev/null
 
 doc:
 	doxygen $(DOXYFILE)
 
 $(EXEC): $(LIBRARY) $(EXEC_OBJS) $(OTHER_OBJS)
-#	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
+	$(CXX) $(OPTFLAGS)  $(EXEC_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
 
 #$(EXEC_OBJS): $(EXEC_SRCS)
 #	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $?
@@ -142,7 +140,7 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done

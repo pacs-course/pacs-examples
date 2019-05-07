@@ -6,7 +6,10 @@
 namespace Utility
 {
   //! Primary template. Uses recursion.
-  //! This version works also with standard older than c++11
+  /*!
+   * Gdc<M,N> returns the greatest common divisor between N and M
+   * This version works also with standard older than c++11
+   */
   template <long unsigned int M, long unsigned int N>
   struct Gcd
   {
@@ -14,16 +17,14 @@ namespace Utility
                   M>=N,
                   " First template argument cannot be smaller than the second"
                   );
-    static const long unsigned int  value = Gcd<N,M%N>::value;
-    
+    static constexpr long unsigned int  value = Gcd<N,M%N>::value;
   };
   //! Specialization to close recursion
-  //! Primary template. Uses recursion.
   template <long unsigned int M>
   struct Gcd<M,0ul>
   {
     static_assert(M!= 0ul, "gcd between 0 and 0 not allowed");
-    static const long unsigned int value = M;
+    static constexpr long unsigned int value = M;
   };
 
  

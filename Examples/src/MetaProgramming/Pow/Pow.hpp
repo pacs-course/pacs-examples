@@ -76,15 +76,17 @@ constexpr R pow(const R x)
   return implementation::pow(x, implementation::IntToType<N>{} );
 }
 
-//! In C++11 can have also a simpler implementation
+//! In C++11 can have also a even simpler implementation
+/*!
+ *  But beware that constexpr functions are tricky. They work only on
+ *  constant expressions. So the previous version (pow) is better!
+ */
 
 template<class R>
-constexpr R POW(const R x, const unsigned int N)
+constexpr R POW(const R  x, const unsigned int N)
 {
   return (N==0u) ? R(1): x*POW(x,N-1);
 }
-
-
 
 
 #endif
