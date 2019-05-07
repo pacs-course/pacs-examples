@@ -14,7 +14,7 @@ int main()
   //  cout<< "give me two integers"<<std::endl;
   //unsigned long int a,b;
   //std::cin>>a>>b;
-  //! It works also if the arguments are not constant expressions
+  //! It works also if the arguments are not constant expressions!
   //cout<< "Computed with the second implementation: "<<GCD(a,b)<<endl;
   
 
