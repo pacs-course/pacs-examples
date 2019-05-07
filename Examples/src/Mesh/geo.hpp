@@ -12,7 +12,7 @@ namespace Geometry{
   {
   public:
     //! The intrinsic dimension of a Point
-    static int const myDim=0;
+    static constexpr int  myDim=0;
     /*! \defgroup COnstructors Constructors and assigmement*/
     //! @{
     //! Builds a point from coordinates
@@ -20,18 +20,7 @@ namespace Geometry{
       It serves also ad default constructor
     */
     explicit  Point(double x=0, double y=0):M_coor{{x,y}}{}; //C+11
-    //! Copy constructor is defaulted
-    Point(const Point &)=default; 
-    //!Copy Assignment constructor is defaulted
-    Point & operator=(const Point&)=default; 
-    //!Move constructor constructor is defaulted
-    /*!
-      The move operator here is useless since a std::array is always copied.
-      It is set only for completeness
-     */
-    Point(Point &&)=default;
-    //! Move assignement operator is defaulted
-    Point & operator=(Point&&)=default;
+
     /*!@}*/
     //! Destructor is virtual since I may want to use polymorphism
     virtual ~Point(){};

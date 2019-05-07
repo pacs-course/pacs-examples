@@ -1,6 +1,12 @@
-Two utilities that simplifies compusition with polymorfic object.
+A few utilities that simplifies composition with polymorfic object.
 
-The first class defines a pointer-like object that performs deep copy of the
+A first utility checks if a class has the clone() method. It uses some
+interesting metaprogramming techniques. It is complemented by a simple
+static predicate, isClonable, that returns trur is the tempalte
+argument is of a clonable class.
+
+The second class defines a pointer-like object that performs deep copy of the
 (polymorphic) resource by means of the method clone().
 
-The second allows to create clonable classes by inheritance. 
+The third allows to create clonable classes by inheritance. It uses
+the CRTP paradigm.
