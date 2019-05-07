@@ -32,9 +32,11 @@ struct Value_Trait<std::complex<T> >
 
 //! A function using traits. It computes the inner product.
 /*!
- * We need a trait to identify the correct return type, which should be
- * a T if T is a POD, and C if T is a complex::<C>. We need a policy (stored
- * in the same trait) do operate on each element of the array
+ * We need a trait to identify the correct return type, which should
+ * be a T if T is a POD, and C if T is a complex::<C>. We need a
+ * policy (stored in the same trait) to operate on each element of the
+ * array, since the operation is different for complex than for other
+ * types.
  *
  * @param x an array of values
  * @param y an array of values
@@ -44,15 +46,17 @@ template <typename T, std::size_t N>
 auto // C++11 onwards
 inline innerProduct(const std::array<T,N>& x, const std::array<T,N> & y)
 {
+  // Here I use the trait!
     using valueType=typename Value_Trait<T>::type;
     valueType res{0};// 0 is convertible to any POD
     for (std::size_t i=0u;i<N;++i)
       {
+        // Here I use the trait!
         res+=Value_Trait<T>::prod(x[i],y[i]);
       }
     return res;
 }
-//! a function with automatic deduction of return type
+//! A function with automatic deduction of return type
 /*
  *  It works with double, float, but also std::complex!
  *

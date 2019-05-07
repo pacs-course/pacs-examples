@@ -14,6 +14,15 @@ int main() {
   std::cout<<" Now with the constexpr function"<<std::endl;
   std::cout << " f3 = " << Fibonacci(3) << '\n';
   std::cout << " f9 = " << Fibonacci(9) << '\n';
-  std::cout << " f10= " << Fibonacci(10) << '\n';
+  std::cout << " f20= " << Fibonacci(20) << '\n';
+  unsigned long l=999ul;
+  while (true)
+    {
+      std::cout << "Give me the index of the Fibonacci number you want (0=exit)"<<std::endl;
+      std::cin>>l;
+      if(l==0ul)break;
+      std::cout << " f"<<l<<"= " << Fibonacci(l) << '\n';
+    }
+  
   return 0;
 }
