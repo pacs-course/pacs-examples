@@ -33,6 +33,7 @@ int main(){
   tp1->set(5.0);
   cout<< "I have "<<tp1.use_count()<<" pointers to Try objects\n";
   cout<< "with value "<<tp1->get()<<std::endl;
+  // The shared_from_this feature
   auto tp2 = tp1->shared_from_this();
   // As alternative I can do
   //  std::shared_ptr<Try> tp2(tp1);

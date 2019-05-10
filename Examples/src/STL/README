@@ -2,5 +2,10 @@ The code examples in this directory are taken from the book
 "The C++ Standard Library - A Tutorial and Reference, 2nd Edition"
 by Nicolai M. Josuttis, Addison-Wesley, 2012
 
-in cont/ examples on containers
- 
+in 
+
+cont/ examples on containers
+set/  use of sets with different comparison operators
+SetEdge/ An esample of set of Edges that describe a graph where different comparison operators enable directed (Edges may be repeated if they have  different orientation) or
+         undirected graphs.
+tuple/ several examples of the use of tuples and tie   

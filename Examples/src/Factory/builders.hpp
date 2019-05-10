@@ -32,8 +32,8 @@ BaseBuilder
 };
 //! Abstract builder
 /*!
-  It relies on the defualt constructor
-  \pre ConcreteProduct must be defualt constructible
+  It relies on the default constructor
+  \pre ConcreteProduct must be default constructible
   \pre ConcreteProduct must derive from AbstractProduct
  */
 template<class ConcreteProduct, class AbstractProduct>
@@ -45,7 +45,7 @@ public:
 		    std::is_base_of<AbstractProduct, ConcreteProduct>::value,
 		    "Builder requires that AbstractProduct be a base of ConcreteProduct");
   std::unique_ptr<AbstractProduct> create(){return
-      std::unique_ptr<AbstractProduct>(new ConcreteProduct());
+      std::make_unique<ConcreteProduct>();
   } 
 };
 #endif

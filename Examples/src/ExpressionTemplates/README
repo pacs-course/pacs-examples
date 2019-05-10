@@ -1,0 +1,7 @@
+Two examples oof use of expression templates
+
+Algebra. a class of vectors where algebraic operation are optimized by using expression templates
+Integral: an example of quadrature rule made more efficient by expression templates. Note however that they are "static", less flexible and general
+  the classes in QuadratureRule 
+
+Note: remember that you may gain efficiency with expression template only if you compile with optimization!
