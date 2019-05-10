@@ -23,3 +23,11 @@ make distclean
 make dynamic DEBUG=no  (to disable debugging)
 make install
 make distclean
+
+This software provides a class to store a simple 1D mesh of a one dimensional domain represented by an interval. It uses a policy, 
+that derives from OneDMeshGenerator, to implement the actual mesh generation process. We provide two policies: one for uniform mesh generation, the other that allows to prescribe
+a variable mesh spacing. The latter needs to integrate a ordinary differential equation to locate the mesh nodes; to this purpose it uses one of the  runge kutta adaptive schemes
+provided in the directory rk45/
+
+main_TestGenerator ia a simple application to test the sofware and run_test_generator.sh is a script that runs the code and lauches gnuplot.
+

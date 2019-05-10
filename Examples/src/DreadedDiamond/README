@@ -16,4 +16,4 @@ class B: public A{
 and the same for class C.
 
 
-*Suggestion: avoid this type of situation!
+*Suggestion: avoid this type of situations!

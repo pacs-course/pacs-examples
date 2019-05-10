@@ -1,0 +1,11 @@
+An example of use of reference wrappers.
+
+First we show the use of std::ref() to be able to pass a reference to a function instantiated from a template of the form
+
+template <class T>
+double fun(T x);
+
+There is no way pass by reference unless you use std::ref() or std::cref()
+
+Then we show the use of reference_wrapper<T> to store objects that behaves as reference in a std::vector<> (I recall that you cannot store references
+in a vector<T> directly).
