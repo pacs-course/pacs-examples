@@ -46,7 +46,7 @@ int main(int argc, char** argv){
   // Load library with the rules
   string quadlib=cl("library","libmyrules.so");
   void * dylib=dlopen(quadlib.c_str(),RTLD_NOW);
-  if (!dylib){
+  if (dylib==nullptr){
     cout<< "cannot find library" << quadlib <<endl;
     cout<< dlerror();
     exit(1);
