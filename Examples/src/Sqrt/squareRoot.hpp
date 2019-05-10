@@ -40,7 +40,7 @@ template <typename T>
 std::complex<T> squareRootC(const T& x)
 {
   static_assert(std::is_floating_point<T>::value,"You must pass a floating point");
-  if (x < static_cast<T>(0.0))
+  if (x < 0.0)
     return {0,squareRoot(-x)};
   else
     return {squareRoot(x),0};

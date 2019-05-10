@@ -70,7 +70,7 @@ public:
   void changeObject(Select s){
     // Assignement is here possible
     // it trasfers ownership
-    my_data=buildAbstractBase(s);
+    my_data=buildAbstractBase(s);// this is a move assignement!
   }
 private:
   std::unique_ptr<AbstractBase> my_data;

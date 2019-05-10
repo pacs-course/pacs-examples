@@ -1,1 +1,5 @@
 Some examples of algorithms of the standard library
+
+Accumulate/  Shows the use of different ways of summing a vector of double to reduce truncation error. 
+Sort/        Sorting strings using different comparison operators
+
