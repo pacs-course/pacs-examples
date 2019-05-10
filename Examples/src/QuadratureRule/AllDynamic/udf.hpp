@@ -5,5 +5,7 @@ extern "C"{
  double pippo(double const &);
  double pluto(double const &);
  double myfun(double const &);
+ double irregular(double const &);
+
 }
 #endif
