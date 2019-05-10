@@ -32,13 +32,17 @@ namespace Geometry
   public:
     //! Constructor giving coordinates.
     Point2D(double xx=0.0, double yy=0.0):coor{xx,yy}{} //C++11 syntax
-    //! Constructor with a pair.
-    Point2D(pair<double,double> c):coor{c} {}
+    //! Constructor for anything that may be moved of copied into a pair
+    template<class C>
+    Point2D(C&& c):coor{std::forward<C>(c)} {}
     //! Returns coordinates in a pair<double>.
     std::pair<double,double> get() const { return coor;}
     //! Sets point coordinates
     void set(double const &xx, double const &yy){
       coor=std::make_pair(xx,yy);}
+    //! A setter that takes anything that can by copy- or moved-assigned to a pair
+    template <class C>
+    void set(C&& c){coor=std::forward<C>(c);}
     //! x coordinate
     double x() const {return coor.first;}
     //! y coordinate
@@ -57,8 +61,8 @@ namespace Geometry
     inline.
   */
   inline Point2D operator - (Point2D const & a, Point2D const & b){
-    return Point2D(a.coor.first-b.coor.first,
-                   a.coor.second-b.coor.second);
+    return Point2D(std::make_pair(a.coor.first-b.coor.first,
+                   a.coor.second-b.coor.second));
   }
 
   //! Addition operator.
@@ -67,8 +71,8 @@ namespace Geometry
     inline.
   */
   inline Point2D operator + (Point2D const & a, Point2D const & b){
-    return Point2D(a.coor.first+b.coor.first,
-                   a.coor.second+b.coor.second);
+    return Point2D(std::make_pair(a.coor.first+b.coor.first,
+                   a.coor.second+b.coor.second));
   }
 
   //! Distance between points
@@ -111,7 +115,7 @@ namespace Geometry
     /* 
        This constructor is kept protected because it is not part of
        the interface of AbstractPolygon, yet some derived classes may
-       make use of it
+       make use of it.
     */
     AbstractPolygon(Vertices const & v);
     Vertices vertexes;

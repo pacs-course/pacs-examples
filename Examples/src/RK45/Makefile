@@ -36,7 +36,6 @@ INCLUDES=-I. -I$(PACS_INC_DIR)
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
  LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
 else
  LIBRARY=$(STATIC_LIBFILE)
 # LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
@@ -114,9 +113,9 @@ library:  $(LIBRARY)
 
 install:
 	$(MAKE) clean
-	$(MAKE) static
+	$(MAKE) static DEBUG=no
 	$(MAKE) clean
-	$(MAKE) dynamic
+	$(MAKE) dynamic DEBUG=no
 	cp $(LIB_HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:

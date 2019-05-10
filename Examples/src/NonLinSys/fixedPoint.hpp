@@ -59,8 +59,9 @@ namespace NonLinearSystems{
 
   /*! It implements the fixed point operator g=x-F(x)
    * @tparam NLS A non linear system
-   *
+   *  @note this is only an experiment. I have commented it away
    */
+  /*
   template <class NLS>
   class FixedPoint
   {
@@ -68,7 +69,7 @@ namespace NonLinearSystems{
     static_assert(std::is_convertible<typename NLS::argumentType,typename NLS::returnType>::value,"argument and return type must be convertible");
 
     template<typename N>
-    FixedPoint(N&& nls=NLS()):M_nls(std::forward<N>(nls)){}; /*!<constructor with possible move */
+    FixedPoint(N&& nls=NLS()):M_nls(std::forward<N>(nls)){}; //!<constructor with possible move
 
     FixedPoint &
     operator =(FixedPoint<NLS> const &)=default;
@@ -77,7 +78,7 @@ namespace NonLinearSystems{
     operator =(FixedPoint<NLS> &&)=default;
 
     template <class N>
-    void setNonLinearSystem(N&& nls) /*< move if possible*/
+    void setNonLinearSystem(N&& nls) //!< move if possible
     {
       this->M_nls=std::forward<N>(nls);
     }
@@ -91,5 +92,6 @@ namespace NonLinearSystems{
   private:
     NLS M_nls;
   };
+*/
 }
 #endif

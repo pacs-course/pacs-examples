@@ -76,8 +76,8 @@ int main()
   // Now a different (and more dangerous) type of aliasing
 
   double z{0};// a variable initialised by zero
-  auto y = seven(z)+ 3*z;
-  // The order of operation in the previous experssion is undefined
+  auto y = seven(z)+ 3*z; // which is the value returned by 3*z? 0 or 21?
+  // The order of operation in the previous expression is undefined
   // the result may depend on the compiler and on the optimization level
   std::cout <<"y = "<<y<<std::endl;
   
