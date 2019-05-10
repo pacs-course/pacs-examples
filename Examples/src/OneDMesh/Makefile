@@ -37,17 +37,16 @@ INCLUDES=-I. -I$(PACS_INC_DIR)
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
  export LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
+ LDFLAGS+=-dynamic -Wl,-rpath=$(PACS_LIB_DIR)
 else
  export LIBRARY=$(STATIC_LIBFILE)
-  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
 # LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
 endif
 
 ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
 ifeq ($(LIBTYPE),DYNAMIC)
-  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
+ # LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
 endif
 else
   OPTFLAGS=-O3
@@ -139,7 +138,7 @@ $(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
 #	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
 
 $(DYNAMIC_LIBFILE): $(LIB_OBJS)
-	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE)
+	$(CXX) -shared $(LDFLAGS) $(LIB_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE)
 
 #$(LIB_OBJS): $(LIB_SRCS)
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
