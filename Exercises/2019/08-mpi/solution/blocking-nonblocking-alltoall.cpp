@@ -41,17 +41,17 @@ main (int argc, char *argv[])
     MPI_Waitall (numreq, &(reqs[0]), MPI_STATUSES_IGNORE);
   }
 
-  // This is much simpler!
+  // MPI_Alltoall is much simpler!
   if (0) {
-    recvbuff.assign (recvbuff.size (), rank);
-    MPI_Alltoall (MPI_IN_PLACE, 1, MPI_INT, &(recvbuff[0]), 1, MPI_INT, MPI_COMM_WORLD);
-    }
+    MPI_Alltoall(MPI_IN_PLACE, 0, 0, &(recvbuff[0]), 1,
+                 MPI_INT, MPI_COMM_WORLD);
+  }
 
-   // This is much simpler!
+   // MPI_Allgather is much simpler!
   if (1) {
-    sendbuff = rank;
-    MPI_Allgather (&sendbuff, 1, MPI_INT, &(recvbuff[0]), 1, MPI_INT, MPI_COMM_WORLD);
-    }
+    MPI_Allgather(&sendbuff, 1, MPI_INT, &(recvbuff[0]), 1,
+                  MPI_INT, MPI_COMM_WORLD);
+  }
   
   for (int irank = 0; irank < size; ++irank) {
     if (rank == irank) {
