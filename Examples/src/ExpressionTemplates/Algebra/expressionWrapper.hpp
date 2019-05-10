@@ -19,8 +19,8 @@ namespace ET
      size() method
      
 
-     The cast operator enables the use of static polymorphism in a
-     easy way. However is not strictly necessary: an alternative is to
+     The cast operator (also called conversion operator) enables the implementation
+     of static polymorphism in a easier way. However, it is not strictly necessary: an alternative is to
      use a method.
 
    */
@@ -32,9 +32,8 @@ namespace ET
       Remember that this class is meant to be used with CRTP technique. 
       So E is derived from Expr<E>!
       It is never instantiated alone. 
-      So "this" 
-      is always a pointer to the derived class -> *this is convertible 
-      to a reference to E!.
+      So "this" is always a pointer to an object of the derived class (which is E!)
+      -> *this is convertible to a reference to E!.
     */
     operator const E & () const 
     {

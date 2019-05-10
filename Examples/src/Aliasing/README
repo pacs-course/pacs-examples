@@ -1,1 +1,6 @@
 An example of argument aliasing. 
+
+The implemantation of an aliasing safe function, like fun2, is normally less efficient and/or uses up more memory. So, often to increase efficiency
+one makes functions which are not alias safe, that is they would return a wrong result if an argument is repeated.
+
+Nothing wrong with it, but beware!

@@ -11,6 +11,8 @@ namespace Utility
       Void<T>::type is always equal to void.  It is used as a way of
       checking that a type has been defined, irrespectively from the
       actual type.
+      Note that typename is not followed by the neme of the parameter.
+      It is 
     */
     template<typename> struct Void { using type=void; };
   }
@@ -156,7 +158,7 @@ class Wrapper
 {
 public:
   //! Check if clone is present
-  static_assert(isClonable<T>(),"template parameter of Wrapper must be a clonable class");
+  static_assert(isClonable<T>(),"template parameter of Wrapper must be a clonable class. clone() should return a unique_ptr");
   // The type of the stored pointer
   using Ptr_t=std::unique_ptr<T>;
   //! The default constructor
