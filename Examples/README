@@ -1,8 +1,23 @@
+# Course on Advanced programming for scientific computing Politecnico
+# di Milano Copyright Luca Formaggia 2012-2019
+
+### Changes AA 18019
+
+# To semplify linking of dynamic libraries now I use in all cases the
+# option -Wl-rpath=$(PACS_LIB_DIR), so that shared libs and
+# executables that load dynamic libraries created by the Examples do
+# not need to set LD_LIBRARY_PATH to work. Remember however that in
+# general this is not the standard situation, dynamic libraries should
+# be loaded following the loader rules explained in the lecture about
+# static and dynamic libraries.
+
+# Note: maybe some examples still follow the previous rule,
+# where compiling with make target DEBUG=no(optimization activated)
+# did not activate the -Wl,-rpath option above.
 #
-# Course on Advanced programming for scientific computing
-# Politecnico di Milano
-# Copyright Luca Formaggia 2012
-#
+### end Changes AA18-19
+
+##  DOCUMENTATION
 
 Here you find the examples given in the course
 
