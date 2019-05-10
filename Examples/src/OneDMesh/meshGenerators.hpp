@@ -34,7 +34,7 @@ namespace Geometry
     /*!
       @param meshNodes a mesh of nodes
     */
-    MeshNodes operator()() const;
+    MeshNodes operator()() const override;
   private:
     std::size_t M_num_elements;
   };
@@ -65,7 +65,7 @@ namespace Geometry
 		 SpacingFunction const & h, 
 		 const unsigned int max_num_elements):
       OneDMeshGenerator(domain),M_h(h),M_num_elements(max_num_elements){}
-    MeshNodes operator()() const;
+    MeshNodes operator()() const override;
     private:
     SpacingFunction   M_h;
     std::size_t M_num_elements;

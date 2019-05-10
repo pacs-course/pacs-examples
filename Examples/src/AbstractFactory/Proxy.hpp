@@ -35,18 +35,19 @@ namespace GenericFactory {
     //! The builder. Must comply with the signature.
     /*!
       Actually you do not need to use the proxy to define the builder, you may do it in a simpler way.
-      I assume that the builder is type that can be constructed from a function with signature
-      Result_type () and that Result_type can be constructed with a pointer ot the concrete product.
-      
-      \todo add a static assert with type trait is_same to test if the builder defined in the
-      factory complies with this. 
+      I assume that the builder is type that returns Result_type
+      and that Result_type can be constructed with a pointer the
+      concrete product. I also assume that Result_type takes
+      care of memory handling (i.e. is a unique_ptr or something
+      that behaves like a unique_prt.
      */
     static Result_type Build()
     {
       return Result_type(new ConcreteProduct());
     }
+    //! This is a more explicit version
     //    static std::unique_ptr<AbstractProduct_type> Build(){
-    //return std::unique_ptr<AbstractProduct_type>(new ConcreteProduct());
+    //return std::make_unique<ConcreteProduct>();
     //}
     
   private:

@@ -1,0 +1,2 @@
+A class that stores a double, counts how many objects have been created and is able to access the average of the
+   value of all elements of the class. It is an example of static members.
