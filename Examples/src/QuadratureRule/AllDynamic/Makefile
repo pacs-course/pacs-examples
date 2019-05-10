@@ -111,6 +111,7 @@ all:
 	@echo "make dynamic makes dynamic library"
 	@echo "make exec compiles executable"
 	@echo "make depend just makes dependency file"
+	@echo "make alllib makes all libraries"
 	@echo "make clean cleans all not library"
 	@echo "make distclean cleans all"
 #	@echo "make install installs in the root directory"
@@ -124,11 +125,11 @@ all:
 depend: $(DEPEND)
 
 static:
-	$(RM) -f *.o
+#	$(RM) -f *.o
 	$(MAKE) library LIBTYPE=STATIC
 #	$(MAKE) exec LIBTYPE=STATIC
 dynamic:
-	$(RM) -f *.o
+#	$(RM) -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
 #	$(MAKE) exec LIBTYPE=DYNAMIC
 
@@ -147,6 +148,11 @@ distclean:
 	$(RM) -r -f ./doc *.a *.so
 	$(RM) -f *.out *.bak *~ $(DEPEND)
 
+alllib:
+	$(MAKE) clean
+	$(MAKE) static DEBUG=no
+	$(MAKE) clean
+	$(MAKE) dynamic DEBUG=no
 doc:
 	doxygen $(DOXYFILE)
 
