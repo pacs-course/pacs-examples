@@ -21,6 +21,12 @@ extern "C"
   {
     return 1;
   };
+
+  // a square wave =1 in (0.5, 0.5). Zero otherwise.
+  double irregular(double const & x)
+  {
+    return (x>=-0.5 && x<=0.5)?1.0:0.0;
+  }
 }
 
 
