@@ -14,19 +14,21 @@ make install
 Data read from quadratura.getpot (a getpot file)
 
 To compile the libraries
-make dynamic
+make dynamic [DEBUG=no]
 
 to compile the executable
 
-make exec
+make exec [DEBUG=no]
 
-library binding is local unless DEBUG=no is indicated
+library load binding is local unless DEBUG=no is indicated **changed since
+AA 18-19, now library binding is made also to libraries in
+$(PACS_LIB_DIR), to simplify things
 
 if you use the macro DEBUG=no (es: make exec DEBUG=no)
 you compile with -O3 
 
 
 The linking is always made against libraries in Examples/lib a part
-for the local library  used to
-register rules in the factory and the library with the integrands.
+for the local library used to register rules in the factory and the
+library with the integrands.
 
