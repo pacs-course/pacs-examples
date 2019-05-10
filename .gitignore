@@ -150,3 +150,7 @@ make.dep
 /Examples/src/MoveSemantic_simple/main_simple
 /Examples/src/RandomDistibutions/main_writeDensityFunction
 /Examples/src/Streams/binary_io/file.txt
+/Examples/src/Mesh/main_geo
+/Examples/src/MetaProgramming/GCD/main_gcd
+/Examples/src/Polynomials/main_polynomials
+/Examples/src/Templates/Fibonacci/main_fibonacci
