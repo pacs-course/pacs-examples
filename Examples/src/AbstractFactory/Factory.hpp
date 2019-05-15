@@ -47,9 +47,13 @@ namespace GenericFactory{
     //! Get the rule with given name . 
     /*!
       The pointer is null if no rule is present.
-      @todo use variadic templates to make it more general
+      \tparam Args Automatically deduced parameter pack, it is the
+      list of types of the builder arguments. It may be empty.
+      \param name The identifier
+      \param args  The arguments pack to be passed to the builder. It may be empty 
     */
-    std::unique_ptr<AbstractProduct> create(Identifier const & name) const;
+    template<typename... Args>
+    std::unique_ptr<AbstractProduct> create(Identifier const & name, Args&&... args) const;
     //! Register the given rule.
     void add(Identifier const &, Builder_type const &);
     //! Returns a list of registered rules.
@@ -116,8 +120,9 @@ namespace GenericFactory{
     typename Identifier,
     typename Builder
     >
-  std::unique_ptr<AbstractProduct> 
-  Factory<AbstractProduct,Identifier,Builder>::create(Identifier const & name) 
+  template<typename... Args>
+std::unique_ptr<AbstractProduct>
+    Factory<AbstractProduct,Identifier,Builder>::create(Identifier const & name, Args&&... args) 
     const {
     auto f = _storage.find(name); //C++11
     if (f == _storage.end())
@@ -128,7 +133,7 @@ namespace GenericFactory{
       }
     else
       {
-	return std::unique_ptr<AbstractProduct>(f->second());
+	return std::unique_ptr<AbstractProduct>(f->second(std::forward<Args>(args)...));
       }
     //Old version:
     //return (f == _storage.end()) ? std::unique_ptr<AbstractProduct>(): 
