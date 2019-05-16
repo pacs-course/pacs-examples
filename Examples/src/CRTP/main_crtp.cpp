@@ -4,7 +4,7 @@
 #include "MyMat0.hpp"
 // A function that calls Base<T>.fun
 template <class T>
-double callFun5(T const & a)
+double callFun5(Base<T> const & a)
 {
   return a.fun(5.0);
 }
@@ -12,10 +12,10 @@ int main()
 {
   using std::cout;
   using std::endl;
-  Base<Derived1> d1;
-  Base<Derived2> d2;
-  cout<<"Derived"<< Base<Derived1>::fstatic()<<" fun(5.0)="<<callFun5(d1)<<endl;
-  cout<<"Derived"<< Base<Derived2>::fstatic()<<" fun(5.0)="<<callFun5(d2)<<endl;
+  Derived1 d1;
+  Derived2 d2;
+  cout<<"Derived"<< d1.fstatic()<<" Derived1::fun(5.0)="<<callFun5(d1)<<endl;
+  cout<<"Derived"<< d2.fstatic()<<" Derived2::fun(5.0)="<<callFun5(d2)<<endl;
 
   // now a point
   Point<3> a{{1.0,2.0,3.0}};
