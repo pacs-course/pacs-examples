@@ -6,6 +6,7 @@
 
 
 #include <bim_sparse_distributed.h>
+#include <mpi_alltoallv2.h>
 
 void
 distributed_sparse_matrix::set_ranges (int is_, int ie_)
@@ -111,59 +112,37 @@ distributed_sparse_matrix::remap ()
 
 
   /// Communicate overlap regions
-
+  void * sendbuf[mpisize];
+  int sendcnts[mpisize];
+  void * recvbuf[mpisize];
+  int recvcnts[mpisize];
+  
   /// 1) communicate row_ptr
-  std::vector<MPI_Request> reqs;
   for (int ii = 0; ii < mpisize; ++ii)
     {
-      if (ii == mpirank) continue; // No communication to self!
-      if (rank_nnz[ii] > 0) // we must receive something from rank ii
-        {
-          int recv_tag = ii   + mpisize * mpirank;
-          reqs.resize (reqs.size () + 1);
-          MPI_Irecv (&(row_buffers[ii][0]), row_buffers[ii].size (),
-                     MPI_INT, ii, recv_tag, comm, &(reqs.back ()));
-        }
-      int rank_nnz_snd_ii = non_local.prc_ptr[ii+1]
-        - non_local.prc_ptr[ii];
-      if (rank_nnz_snd_ii > 0) // we must send something to rank ii
-        {
-          int send_tag = mpirank + mpisize * ii;
-          reqs.resize (reqs.size () + 1);
-          MPI_Isend (&(non_local.row_ind[non_local.prc_ptr[ii]]),
-                     rank_nnz_snd_ii, MPI_INT, ii, send_tag, comm,
-                     &(reqs.back ()));
-        }
+      recvbuf[ii]  = &(row_buffers[ii][0]);
+      recvcnts[ii] =   row_buffers[ii].size ();
+      sendbuf[ii]  = &(non_local.row_ind[non_local.prc_ptr[ii]]);
+      sendcnts[ii] =   non_local.prc_ptr[ii+1] -
+        non_local.prc_ptr[ii];
     }
 
-  MPI_Waitall (reqs.size (), &(reqs[0]), MPI_STATUSES_IGNORE);
-  reqs.clear ();
+  MPI_Alltoallv2 (sendbuf, sendcnts, MPI_INT,
+                  recvbuf, recvcnts, MPI_INT, comm);
 
   /// 2) communicate col_ind
   for (int ii = 0; ii < mpisize; ++ii)
     {
-      if (ii == mpirank) continue; // No communication to self!
-      if (rank_nnz[ii] > 0) // we must receive something from rank ii
-        {
-          int recv_tag = ii   + mpisize * mpirank;
-          reqs.resize (reqs.size () + 1);
-          MPI_Irecv (&(col_buffers[ii][0]), col_buffers[ii].size (),
-                     MPI_INT, ii, recv_tag, comm, &(reqs.back ()));
-        }
-      int rank_nnz_snd_ii = non_local.prc_ptr[ii+1]
-        - non_local.prc_ptr[ii];
-      if (rank_nnz_snd_ii > 0) // we must send something to rank ii
-        {
-          int send_tag = mpirank + mpisize * ii;
-          reqs.resize (reqs.size () + 1);
-          MPI_Isend (&(non_local.col_ind[non_local.prc_ptr[ii]]),
-                     rank_nnz_snd_ii, MPI_INT, ii, send_tag, comm,
-                     &(reqs.back ()));
-        }
+      recvbuf[ii]  = &(col_buffers[ii][0]);
+      recvcnts[ii] =   col_buffers[ii].size ();
+      sendbuf[ii]  = &(non_local.col_ind[non_local.prc_ptr[ii]]);
+      sendcnts[ii] =   non_local.prc_ptr[ii+1] -
+        non_local.prc_ptr[ii];
     }
-  MPI_Waitall (reqs.size (), &(reqs[0]), MPI_STATUSES_IGNORE);
-  reqs.clear ();
 
+  MPI_Alltoallv2 (sendbuf, sendcnts, MPI_INT,
+                  recvbuf, recvcnts, MPI_INT, comm);
+  
   mapped = true;
 }
 
@@ -176,31 +155,22 @@ distributed_sparse_matrix::assemble ()
     remap ();
 
   /// 3) communicate values
-  std::vector<MPI_Request> reqs;
-  for (int ii = 0; ii < mpisize; ++ii)
-    {
-      if (ii == mpirank) continue; // No communication to self!
-      if (rank_nnz[ii] > 0) // we must receive something from rank ii
-        {
-          int recv_tag = ii   + mpisize * mpirank;
-          reqs.resize (reqs.size () + 1);
-          MPI_Irecv (&(val_buffers[ii][0]), val_buffers[ii].size (),
-                     MPI_DOUBLE, ii, recv_tag, comm, &(reqs.back ()));
-        }
-      int rank_nnz_snd_ii = non_local.prc_ptr[ii+1]
-        - non_local.prc_ptr[ii];
-      if (rank_nnz_snd_ii > 0) // we must send something to rank ii
-        {
-          int send_tag = mpirank + mpisize * ii;
-          reqs.resize (reqs.size () + 1);
-          MPI_Isend (&(non_local.a[non_local.prc_ptr[ii]]),
-                     rank_nnz_snd_ii, MPI_DOUBLE, ii, send_tag, comm,
-                     &(reqs.back ()));
-        }
-    }
-  MPI_Waitall (reqs.size (), &(reqs[0]), MPI_STATUSES_IGNORE);
-  reqs.clear ();
+  void * sendbuf[mpisize];
+  int sendcnts[mpisize];
+  void * recvbuf[mpisize];
+  int recvcnts[mpisize];
 
+   for (int ii = 0; ii < mpisize; ++ii)
+    {
+      recvbuf[ii]  = &(val_buffers[ii][0]);
+      recvcnts[ii] =   val_buffers[ii].size ();
+      sendbuf[ii]  = &(non_local.a[non_local.prc_ptr[ii]]);
+      sendcnts[ii] =   non_local.prc_ptr[ii+1] -
+        non_local.prc_ptr[ii];
+    }
+
+  MPI_Alltoallv2 (sendbuf, sendcnts, MPI_DOUBLE,
+                  recvbuf, recvcnts, MPI_DOUBLE, comm);
 
   /// 4) insert communicated values into sparse_matrix
   for (int ii = 0; ii < mpisize; ++ii) // loop over ranks
