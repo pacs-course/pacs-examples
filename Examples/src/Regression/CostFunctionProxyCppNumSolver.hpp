@@ -11,6 +11,7 @@
 #include <iostream>
 #include <iomanip>
 #include "MSECostFunction.hpp"
+#include <type_traits>
 
 namespace LinearAlgebra
 {
@@ -41,13 +42,17 @@ namespace LinearAlgebra
   class CostFunctionProxyCppSolver : public cppoptlib::Problem<double>
   {
   public:
+    using Trait=typename CostFunction::Trait;
+    using correctTrait=LinearAlgebra::RegressionTraits<LinearAlgebra::EIGEN>;
+    // cpp colvers use Eigen so I cannot use anything else
+    static_assert(std::is_same<Trait,correctTrait>::value,"The cost function for CppSolver must use Eigen library");
     // Luckily CppNumericalSolvers uses the
     // same type for the argument of the cost function
     /*!
      * @note As long as Parameters and Vector are both aliases to Eigen::VectorXd
      */
-    using Parameters=LinearAlgebra::RegressionTraitsDefault::Parameters;
-    using Vector=LinearAlgebra::RegressionTraitsDefault::Vector;
+    using Parameters=typename correctTrait::Parameters;
+    using Vector=typename correctTrait::Vector;
     //! This is a proxy. It is build on top of an existing CostFunction object.
     /*!
      * I need to pass everything needed to evaluate the cost function

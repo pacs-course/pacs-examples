@@ -4,6 +4,13 @@
  *  Created on: Jan 24, 2019
  *      Author: forma
  */
+#ifndef HH_POLINOMIALBASIS_IMPL_HH
+#define HH_POLINOMIALBASIS_IMPL_HH
+
+// This include is not needed. But is is useful to check syntax when using IDE
+// like eclipse (if not it will find lots of false errors!)
+// It is safe because of the header guard in PolynomialBasis.hpp
+//
 #include <PolynomialBasis.hpp>
 
 //! this is used only internally so I use a special namespace
@@ -20,18 +27,23 @@ namespace internal
   //! Derivative of \f$ x^N \f$
   inline double POWDer(const double &x, const unsigned int N)
   {
-    return static_cast<double>(N)*POW(x,N-1);
+    if (N==0u)
+      return 0.0;
+      else
+        return N*POW(x,N-1);
   }
 }
 
-LinearAlgebra::PolynomialMonomialBasisFunction::PolynomialMonomialBasisFunction (
+template<LinearAlgebra::LinearAlgebraLibrary L>
+LinearAlgebra::PolynomialMonomialBasisFunction<L>::PolynomialMonomialBasisFunction (
     std::size_t n)
 {
   this->setFunctions(n);
 }
 
-LinearAlgebra::PolynomialMonomialBasisFunction::Vector
-LinearAlgebra::PolynomialMonomialBasisFunction::eval (const double& x) const
+template<LinearAlgebra::LinearAlgebraLibrary L>
+typename LinearAlgebra::PolynomialMonomialBasisFunction<L>::Vector
+LinearAlgebra::PolynomialMonomialBasisFunction<L>::eval (const double& x) const
 {
   Vector a;
   a.resize(this->size());
@@ -41,8 +53,9 @@ LinearAlgebra::PolynomialMonomialBasisFunction::eval (const double& x) const
   return a;
 }
 
+template<LinearAlgebra::LinearAlgebraLibrary L>
 void
-LinearAlgebra::PolynomialMonomialBasisFunction::setFunctions (std::size_t n)
+LinearAlgebra::PolynomialMonomialBasisFunction<L>::setFunctions (std::size_t n)
 {
   this->M_basisFunctions.resize(n+1);
   this->M_derivatives.resize(n+1);
@@ -55,8 +68,9 @@ LinearAlgebra::PolynomialMonomialBasisFunction::setFunctions (std::size_t n)
 }
 
 // @todo There is a duplication of code with eval. It can be done better.
-LinearAlgebra::PolynomialMonomialBasisFunction::Vector
-LinearAlgebra::PolynomialMonomialBasisFunction::derivatives (
+template<LinearAlgebra::LinearAlgebraLibrary L>
+typename LinearAlgebra::PolynomialMonomialBasisFunction<L>::Vector
+LinearAlgebra::PolynomialMonomialBasisFunction<L>::derivatives (
     const double& x) const
 {
   Vector a;
@@ -66,3 +80,4 @@ LinearAlgebra::PolynomialMonomialBasisFunction::derivatives (
   for (auto f:this->M_derivatives) a(i++,0)=f(x);
   return a;
 }
+#endif

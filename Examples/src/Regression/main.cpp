@@ -21,12 +21,20 @@
 int main()
 {
   using namespace LinearAlgebra;
+  // The libary for linear algebra to use. At the moment only EIGEN is implemented
+  // You need to use constexpr since we need to pass it as tempalte argument and
+  // a template valued argument must be a constant expression
+  // NOTE however thaat, for compatibility with previous versions of C++
+  // it is possible to just declare libraryToUse const. And it can be passed
+  // as tempalte argument all the same.
+
+  constexpr LinearAlgebra::LinearAlgebraLibrary libraryToUse=LinearAlgebra::EIGEN;
+  // I use polynomials of degree 5.
   std::size_t n=5;
-  PolynomialMonomialBasisFunction modelBasis{n};
-  // some alisa to reduce typing and have a more readable code
-  using Model=PolynomialRegressionEvaluator<PolynomialMonomialBasisFunction> ;
+  PolynomialMonomialBasisFunction<libraryToUse> modelBasis{n};
+  using Model=PolynomialRegressionEvaluator< PolynomialMonomialBasisFunction<libraryToUse> > ;
   Model model(modelBasis);
-  using Vector = RegressionTraitsDefault::Vector;
+  using Vector = LinearAlgebra::RegressionTraits<libraryToUse>::Vector;
   Vector trainx(6);
   Vector trainy(6);
   Vector testx(2);

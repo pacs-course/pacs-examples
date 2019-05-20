@@ -23,8 +23,10 @@ namespace LinearAlgebra
   class MSECostFunction
   {
   public:
-    using Parameters=LinearAlgebra::RegressionTraitsDefault::Parameters;
-    using Vector=LinearAlgebra::RegressionTraitsDefault::Vector;
+    // I am using the same trait of modelEvalutor
+    using Trait = typename ModelEvaluator::Trait;
+    using Parameters=typename Trait::Parameters;
+    using Vector=typename Trait::Vector;
     //! Constructor that takes a ModelEvaluator in input
     //
     MSECostFunction(ModelEvaluator const & m):M_model(m){}
