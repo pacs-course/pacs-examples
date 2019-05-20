@@ -83,6 +83,6 @@ int main ()
     std::array<std::complex<double>,2> yc={{{6.,7.},{0.0,1.0}}};
 
     cout << "innerproduct of vectors = " << innerProduct(xr, yr) << '\n';
-    cout << "innerproduct of complex vectors = " << innerProduct(xc, yc) << '\n';
+    cout << "innerproduct of ectors of complex= " << innerProduct(xc, yc) << '\n';
     cout << "argmax("<<xc[0]<<","<<yc[0]<<")="<<max_modulo(xc[0],yc[0])<<"\n";
 }
