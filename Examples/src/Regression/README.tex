@@ -1,13 +1,92 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
-\begin{document}
-This directory contains a set of ulility to define parametric models.
-The chosen paradigm is that of having a collection of simple classes that may be composed to 
-create the different types of models and solution procedures.
-To this purpose generic programming via templates it is of advantage because it allows to create only loosely reltated classes, contrary to 
-polymorphism that requires a precise definition of class hyerarchy and careful design of the interface.
+\RequirePackage{listings}
+\RequirePackage{color}
+\RequirePackage{graphicx}
+% User-defined colors
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
 
-In particular, we have investigated polynomial univariate regression, as an example of models of the form
+% Settings for listing class
+\lstset{  
+  language=[ISO]C++,                       % The default language
+  basicstyle=\sf,                          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  lineskip=0ex, %  frame=single
+}
+
+\author{Luca Formaggia}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\color{red}}
+\newcommand{\black}{\color{black}}
+\newcommand{\darkred}{\color{darkred}}
+\newcommand{\darkgreen}{\color{darkgreen}}
+\newcommand{\til}{{$\tilde\null\,\,$}}
+\newcommand{\li}{\lstinline}
+\newcommand{\Exampledir}{run:./../Material/Examples}
+\newcommand{\program}[1]{run:./../Material/Examples/src/#1}
+\newcommand{\programname}[1]{./../Material/Examples/src/#1}
+\newcommand{\onlyprogramname}[1]{Material/Examples/src/#1}
+\usepackage{a4wide}
+\title{Some tools for parameter fitting}
+\begin{document}
+\maketitle
+
+The directory \onlyprogramname{Regression} contains a set of ulility
+for fitting simple parametric models.  The chosen paradigm is that of having a
+collection of simple classes that may be composed to create the
+different types of models and solution procedures.  To this purpose
+generic programming via templates it is of advantage because it allows
+to create only loosely related classes, contrary to polymorphism that
+requires a precise definition of class hierarchy and careful design of
+the interface.  I will use a terminology which is not perfectly
+standard but exemplifies the different components that make up a
+simple univariate parametric fitting.
+
+\paragraph{\textbf{Data}.} We indicate with $y=y(x)$ a datum, function of a variable $x\in I$, which represent a stochastic variable with an underlying statistical
+  distribution, for instance $y=N(\bar{y},\sigma)$. With vectors $(\mathbf{X},\mathbf{Y})$ we indicate some sample (experimental) data.
+\paragraph{\textbf{Model}}. With model we indicate here the
+  quantity $m(x;\boldsymbol{\theta})$ that, given the parameters $\boldsymbol{\theta}$, for any $x\in I$ returns a feature
+  of the data $y$. Typically, $m(x;\boldsymbol{\theta})$ may want to
+  represent the expected value of $y$ at $x$. 
+\paragraph{\textbf{Cost function.}} A measure $J$ of the discrepancy of
+  the measured feature of the sample data and that provided by the model
+  given a value $\boldsymbol{\theta}$ for the parameters. Typically it is based on some a-priori
+  assumption of the probabilistic distribution of the data, $p_m(y|x)$. For instance $J(\boldsymbol{\theta})=-E(\log(p_m(y|x;\boldsymbol{\theta}))$,
+  where the expected value is calculated on the empirical distribution stemming
+  from the data,
+  uses the log-likelihood estimation to build the cost function. It means that
+  \[
+   J(\boldsymbol{\theta})=-\frac{1}{n}\sum_{i=1}^n \log p_m(Y_i|X_i;\boldsymbol{\theta})).
+ \]
+ We can, and we will, neglect $1/n$ since irrelevant for the minimization of $J$.
+ If $m$ represents the expected value and we consider a constant variance we have
+   \[
+   J(\boldsymbol{\theta})=-\frac{1}{n}\sum_{i=1}^n \log N(Y_i,m(X_i,\boldsymbol{\theta}),1)
+ \]
+ and it is well known that this is equivalent to look for the mean least-square
+ error. That is, in this case we can replace the $J$ above with
+ \[
+   J_{MSE}=\sum_1^n(Y_i-  m(X_i,\boldsymbol{\theta}))^2.
+ \]
+
+ \section{Overview}
+In particular, we have implemented polynomial univariate regression, as an example of models of the form
 \begin{equation}
 m(x;\boldsymbol{\beta})=\sum_{i=0}^{N-1} \beta_i\phi_i(x)
 \end{equation}
@@ -18,10 +97,6 @@ In the case of polynomial regression we have chosen $\phi_i=x^i$, but other choi
 In this frame, the model il linear with respect to the parameters.
 
 We have also created a class for cost functions, at the moment we have implemented only the mean least square error (MSE)
-
-\begin{equation}
-J(\mathbf{x};\mathbf{y},\boldsymbol{\beta})=\dfrac{1}{2n}\sum_{j=0}^{n-1}\vert m(x_j;\boldsymbol{\beta})-y_j\vert^2
-\end{equation}
 
 If we use a model based linear w.r.t. the parameters we can find the parameters that minimize $J$ give a set of training points $\{\mathbf{x},\mathbf{y}\}$
 using QR factorization. This is very effective if the number of parameters is not too high, let say $\le 100$.
@@ -42,13 +117,15 @@ R\boldsymbol{\beta}=Q^T\mathbf{y}.
 For the QR factorization we have used the tools available in the \texttt{Eigen} library.
 
 But one may also think to minimize the cost function using an optimization algorithms.
-We have also implemented that choiche usining the \texttt{CppNumericalSolvers} library. It is available as a git submodule, so if you have not installed the submodules
+We have also implemented that choice using the \texttt{CppNumericalSolvers} library. It is available as a git submodule, so if you have not installed the submodules
 do
 \begin{verbatim}
 git submodule update --init --recursive
 \end{verbatim}
 
-After having downloaded the submodule, you have first to go into \texttt{Examples/src/LinearAlgebra/CppNumericalSolvers} and do
+After having downloaded the submodule, you have first to go into
+
+\texttt{Examples/src/LinearAlgebra/CppNumericalSolvers} and do
 \begin{verbatim}
 make
 \end{verbatim}
@@ -65,7 +142,319 @@ or
 \begin{verbatim}
 make DEBUG=no
 \end{verbatim}
+\section{Details on the code}
+\subsection{Traits}
+In \texttt{RegressionTraits.hpp} I give an example of use of traits.
+Traits are classes (typically \li!struct!) that encapsulates a set of types and functions necessary for template classes and template functions to manipulate objects of types for which they are instantiated.
 
+The idea is that traits classes are instances of templates, and are used to carry extra information—especially information that other templates can use—about the types on which the traits template is instantiated.
 
+They are rather useful because they allow to encapsulate the main
+types used in a program in a single place, and possibly change the
+types according to the value of a template parameter. For instance, in
+this code I choose to use the Eigen library to provide vector,
+matrices and basic linear algebra methods. But maybe in the future I
+might want to use other libraries, for instance Armadillo, and I may
+even want to choose which library to use when I write my application
+that makes use of the Regression tools I am creating.
 
+This is not an easy task, and indeed I have so far implemented only the Eigen interface, and traits are meant to simplify the conversion. So, even if I use just the Eigen, I wanted to show an example of traits. Here a snipped of the code
+\begin{lstlisting}[title={RegressionTraits.hpp}]
+namespace LinearAlgebra
+{
+  enum LinearAlgebraLibrary {EIGEN, ARMADILLO};
+
+  template <LinearAlgebraLibrary>
+  struct
+  RegressionTraits{};
+
+  //!The specialization for Eigen classes
+  template<>
+  struct RegressionTraits<EIGEN>
+  {
+    using Function = std::function<double (double const &)>;
+    using BasisFunctions = std::vector<Function>; 
+    using Vector=Eigen::VectorXd;
+    using Matrix=Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
+    // I store the parameters in a Vector
+    using Parameters=Vector;
+    // The const function is internally wrapped into a std::function
+    using CostFunction=Function;
+  };
+}
+\end{lstlisting}
+I use an enum to specify the linrar algebra library I want. I define a empty template struct since I will use only the specialization and the
+specialization for Eigen, the only one at the moment,
+defines the various types I will use in the code.  Sometimes traits
+may also define methods that are used to interface with the library,
+since different libraries may have different name for methods and different
+functionalities. In that case the traits operate also as a policy.
+\subsection{The monomials}
+Since I want a polynomial model first I define the monomials as basis function (not the only choice, yo may want to use Lagrangian interpolation).
+The content of the class \li!PolinomialMonomialBasisFunction! has been split into two file, the second containing the implementation. Let's look at the first, containing the declaration of the class
+
+\begin{lstlisting}[title={PolynomialBasis.hpp}]
+namespace LinearAlgebra
+{
+ //! A class that contains classic monomial basis functions
+ template<LinearAlgebraLibrary L=LinearAlgebra::EIGEN>
+ class PolynomialMonomialBasisFunction
+ {
+ public:
+  using Trait=RegressionTraits<L>;
+  //! The type for BasisFuncrions
+   using BasisFunctions = typename Trait::BasisFunctions;
+   //! The type for a Vector
+   using Vector = typename Trait::Vector;
+   //! Construct the basis function for a polynomial space
+   PolynomialMonomialBasisFunction(std::size_t n=0u);
+   //! Sets the basis functions on an existing object
+   void setFunctions(std::size_t n);
+   //! Returns the ith basis function
+   auto getFunction(std::size_t i){return this->M_basisFunctions[i];}
+   //! Evaluation at a point
+   Vector eval(const double & x)const;
+   //! Evaluation of the derivatives at a point
+   Vector derivatives(const double & x)const;
+   //! The number of basis functions, i.e the capacity of the model
+   std::size_t size()const {return M_basisFunctions.size();}
+   //! If I want to know the degree of a the polynomial I am using
+   int degree()const {return this->size()-1;}
+ private:
+   //! Here I store the basis functions for my model
+   BasisFunctions M_basisFunctions;
+   //! Derivatives are needed only if I use a gradient scheme
+   BasisFunctions M_derivatives;
+  };
+}
+\end{lstlisting}
+You may note the use of traits.
+
+The main methods are \li!eval()! and \li!derivative()! that compute
+the evaluation of the monomial and its derivative at a point. These
+methods \textcolor{red}{are the main interface of the class} since
+they will be used by the classes that make up the polynomial
+interpolation. It means that any other possible class that implements
+basis functions must have those methods with the same signature!
+Remember, we are not using polymorphism but templates, consistency of
+the interface is up to the user!
+
+In \texttt{PolynomialBasis\_impl.hpp} you have the implementation.
+You may note in the file the use of some helper function that compute the monomials using recursion:
+\begin{lstlisting}[title={The function for computing a monomial}]
+  namespace internal
+{
+ //! For standard monomial basis
+ inline double POW(const double & x, const unsigned int N)
+   {
+     return (N==0u) ? 1.0: x*POW(x,N-1);
+   }
+ //! Derivative of \f$ x^N \f$
+ inline double POWDer(const double &x, const unsigned int N)
+ {
+   if (N==0u)
+     return 0.0;
+     else
+       return N*POW(x,N-1);
+ }
+}
+\end{lstlisting}
+
+\subsection{Evaluation of the model}
+We have implemented only polynomial model, so we have only one class
+that is implemented in terms of the basis functions:
+\begin{lstlisting}[title={PolynomialRegressionEvaluator.hpp}]
+  #include "PolynomialBasis.hpp"
+namespace LinearAlgebra
+{
+  //! This class implements the evaluation of a model
+  /*
+   *  This version assumes that the model is a linear combination
+   *  of basis function.
+   */
+  template <class ModelBasis>
+  class PolynomialRegressionEvaluator
+  {
+  public:
+    using Trait=typename ModelBasis::Trait;
+    using Parameters=typename Trait::Parameters;
+    using Vector=typename Trait::Vector;
+    template<typename M=ModelBasis>
+    PolynomialRegressionEvaluator(M&& modelbasis):
+    M_basis{std::forward<M>(modelbasis)}{}
+    PolynomialRegressionEvaluator()=default;
+    double eval(double const & x, Parameters const & parameters) const
+    {
+      // dot is a method of Eigen vectors so model.eval()
+      // and parameters should be Eigen vectors
+      return parameters.dot(M_basis.eval(x));
+    }
+    double evalDerx(double const & x, Parameters const & parameters) const
+     {
+       return parameters.dot(M_basis.derivatives(x));
+     }
+
+     Vector evalDerPar(double const & x, Parameters const & parameters) const
+     {
+       return M_basis.eval(x);;
+     }
+    ModelBasis getModelBasis() const {return M_basis;}
+    ModelBasis & getModelBasis(){return M_basis;}
+    std::size_t size()const {return M_basis.size();}
+  private:
+    ModelBasis M_basis;
+  };
+}
+\end{lstlisting}
+You may note that the tempalte parameter should be a class that
+implements basis function (for instance the one seen in the previous
+section) and that I ``inherit'' the types from it, so I am sure to be
+consistent.
+
+Note that the method \li!dot! is that of the Eigen. If I want to be able to change the linear algebra library without rewriting the class, I will need to wrap \li!dot! into a method passes via the trait.
+\subsection{The cost function}
+At the moment I have implemented only MSE. In general a cost function
+will be a class template that takes as argument the a class that evaluates the model at a point for given parameters, like the one
+presented in the revious section.  Again, I will ``inherit'' the
+trait from the model evaluator, so I am sure to be consistent.
+I am not reporting the definition of the methods, you can find them in the code.
+\begin{lstlisting}[title={MSECostFunction.hpp}]
+  namespace LinearAlgebra
+{
+ template<class ModelEvaluator>
+ class MSECostFunction
+ {
+ public:
+   using Trait = typename ModelEvaluator::Trait;
+   using Parameters=typename Trait::Parameters;
+   using Vector=typename Trait::Vector;
+   MSECostFunction(ModelEvaluator const & m):M_model(m){}
+   //! Constructor thet moves a ModelEvaluator
+   MSECostFunction(ModelEvaluator&& m):M_model(std::move(m)){}
+   MSECostFunction()=default;
+   //! To set a model
+   template<class M>
+       void setModel(M&& m){M_model=std::forward<M>(m);}
+   //! Get the model evaluator
+   auto get_model()const {return M_model;}
+   //! Computes the cost function
+   double eval(Vector const & X, Vector const & Y, Parameters const & parameters) const;
+   //! Gradient w.r.t. parameters
+   Vector evalDerPar(Vector const & X, Vector const & Y, Parameters const & parameters) const;
+
+//Other less important methods.
+   
+   private:
+   ModelEvaluator M_model;
+ };
+}
+\end{lstlisting}
+\subsection{The solvers}
+I have implemented two solvers, one use the QR factorization and is
+implemented in \texttt{RegressionSolver.hpp}. I do not report the code
+here since it is rather simple. The main method in \li!solve()! that
+does the real job. Eigen provides different flavor of QR
+factorization. I have chosen the one based on Householder rotations
+since it is normally more stable. I do not need rank revealing
+factorization since I assume that the matrix build from the data has
+full rank.
+
+What is more interesting is the use of the library \texttt{cppNumSolver}, for which I have written a wrapper class
+so that I have the same  public interface (at least for the main methods) as \texttt{RegressionSolver.hpp}. In this way, in my application I can use them interchangeably.
+\subsubsection{Interfacing with cppNumSolver library}
+Again, I do not give all details of the methods. The class template takes as argument a \li!CostFunction!, for instance the MSE cost function seen before, and the linear algebra library we wish to use.
+The only requirement is to have methods for computing the cost function
+and its derivative for given set of data and parameters.
+
+It derives from \li!cppoptlib::Problem<double>!, the generic
+class for optimization methods in the cppNumSolver library and has to
+provide the methods \li!value()! and \li!gradient()! that return
+value and gradient of the cost function. Optionally, it may define
+a \li!callback()! function that prints some statistics of the
+iterations. I have implemented it in such a way that it is  deactivated when \li!NDEBUG! is set.
+
+Notable things: the use of \li!static_cast! and the type-trait
+\li!std::is_same! to verify
+that we are using Eigen, since the cppNumSolver library uses Eigen.
+
+\begin{lstlisting}[title={CostFunctionProxyCppNumSolver.hpp}]
+namespace LinearAlgebra
+{
+ /*!
+ * This class defines a proxy for a Cost function so you
+ may use it with any optimization technique provided in
+ that library.
+ template <class CostFunction>
+ class CostFunctionProxyCppSolver :
+      public cppoptlib::Problem<double>
+ {
+ public:
+   using Trait=typename CostFunction::Trait;
+   using CorrectTrait=
+   LinearAlgebra::RegressionTraits<LinearAlgebra::EIGEN>;
+   // cppNumsolvers uses Eigen so I cannot use anything else
+   static_assert(std::is_same<Trait,correctTrait>::value,
+   "The cost function for CppSolver must use Eigen library");
+   // Luckily CppNumericalSolvers uses the
+   // same type for the argument of the cost function
+   using Parameters=typename correctTrait::Parameters;
+   using Vector=typename correctTrait::Vector;
+   //! This is a proxy. It is build on top of an
+   //  existing CostFunction object.
+   /*!
+    * I need to pass everything needed to evaluate the cost function
+    * Internally all arguments are stored by reference,
+    * so there is no waste of
+    * memory
+    * c The cost function
+    * X The vector of independent variables
+    * Y The corresponding values
+    */
+   template<class Vector>
+   CostFunctionProxyCppSolver(
+   CostFunction const & c, Vector const & X, Vector const & Y
+   ):M_cost{c}, M_X{X}, M_Y{Y}{}
+    double value(Parameters const & p) override
+   {
+       return M_cost.eval(M_X,M_Y,p);
+   }
+      //! The gradient of f is returned through the non const reference
+     /*!
+      * @param p the variable w.r.t. which we are optimizing. In this ase the parameters of the more.
+      * @param grad the gradient
+      */
+     void gradient(Parameters const & p, Vector & grad) override
+     {
+       grad=M_cost.evalDerPar(M_X,M_Y,p);
+     }
+     
+#ifndef NDEBUG
+    bool callback(const cppoptlib::Criteria<double> &state,
+       const Vector &x) override
+    {
+       std::cout << "(" << std::setw(2) << state.iterations << ")"
+       << " ||dx|| = " << std::fixed << std::setw(8) <<
+       std::setprecision(4) << state.gradNorm
+       << " ||x|| = "  << std::setw(6) << x.norm()
+       << " f(x) = "   << std::setw(8) << value(x)
+       << " x = [" << std::setprecision(8) << x.transpose()
+       << "]" << std::endl;
+       return true;
+     }
+#endif
+ private:
+    CostFunction const & M_cost;
+    Vector const & M_X;
+    Vector const & M_Y;
+  };
+\end{lstlisting}
+\section{The main}
+In the main I build some data and I test the code. You can look at it
+for details. Among all solvers of cppNumLib I am using
+\li!BfgsSolver! that implements BFGS.
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

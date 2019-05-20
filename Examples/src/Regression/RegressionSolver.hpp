@@ -38,9 +38,10 @@ namespace LinearAlgebra
   class LinearRegressionSolverMSE
   {
   public:
-    using Vector = RegressionTraitsDefault::Vector;
-    using Parameters = RegressionTraitsDefault::Parameters;
-    using Matrix = RegressionTraitsDefault::Matrix;
+    using Trait = typename Model::Trait;
+    using Vector = typename Trait::Vector;
+    using Parameters = typename Trait::Parameters;
+    using Matrix = typename Trait::Matrix;
     //! A can take a ModelEvaluator as input
     LinearRegressionSolverMSE(const Model& m):M_model(m){}
     //! A constructor that moves the mode (if possible)

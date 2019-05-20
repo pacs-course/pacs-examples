@@ -12,16 +12,17 @@
 #include <vector>
 namespace LinearAlgebra
 {
-  //! A class that contains classic monomial basis function
+  //! A class that contains classic monomial basis functions
+  template<LinearAlgebraLibrary L=LinearAlgebra::EIGEN>
   class PolynomialMonomialBasisFunction
   {
   public:
     //! Should be passed as template parameter, but here I simplify things
-    using Trait=RegressionTraitsDefault;
+    using Trait=RegressionTraits<L>;
     //! The type for BasisFuncrions
-    using BasisFunctions = Trait::BasisFunctions;
+    using BasisFunctions = typename Trait::BasisFunctions;
     //! The type for a Vector
-    using Vector = Trait::Vector;
+    using Vector = typename Trait::Vector;
     //! Construct the basis function for a polynomial space
     PolynomialMonomialBasisFunction(std::size_t n=0u);
     //! Sets the basis functions on an existing object
@@ -46,8 +47,7 @@ namespace LinearAlgebra
     BasisFunctions M_derivatives;
   };
 }
-
-
-
-
 #endif /* SRC_REGRESSION_POLYNOMIALBASIS_HPP_ */
+// Include implementation. The header file with the implementation has its own
+// header guard, so I can include it after the include guard of this file.
+#include "PolynomialBasis_impl.hpp"
