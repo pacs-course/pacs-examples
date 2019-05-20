@@ -22,8 +22,10 @@ namespace LinearAlgebra
   class PolynomialRegressionEvaluator
   {
   public:
-    using Parameters=LinearAlgebra::RegressionTraitsDefault::Parameters;
-    using Vector=LinearAlgebra::RegressionTraitsDefault::Vector;
+    // I use the same Linear Algebra Library of the ModelBasis
+    using Trait=typename ModelBasis::Trait;
+    using Parameters=typename Trait::Parameters;
+    using Vector=typename Trait::Vector;
     //! The constructor that takes a well formed ModelBasis object
     /*
      * I use std::forward and the Universal Reference trick so that
