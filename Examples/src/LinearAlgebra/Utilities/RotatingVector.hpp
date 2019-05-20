@@ -15,12 +15,20 @@ namespace LinearAlgebra
   //! This class represent a vector that rotates cyclically the components
   /*!
    *  Useful if you need to keep track of just the last N elements
+   *  It is a thin extension of an std::array, where I redefine emplace_back and push_back,
+   *  and back methods. The array is composed in the class.
    */
 template <class T, std::size_t N>
 class RotatingVector
 {
 public:
+  //!Default constructor
+  RotatingVector()=default;
+  // An array-type object can be converted to a RotatingVector
+  template<typename A>
+  RotatingVector(A&& a):M_size{a.size()},M_vec{std::forward<A>(a)} {}
   //! Returns the underlying container
+  //! This way I have access also to all other methods of std::array
   auto  getVector()const {return M_vec;}
   //! Returns the underlying container
   auto& getVector(){return M_vec;}
@@ -30,6 +38,8 @@ public:
   T& operator[](std::size_t i){return M_vec[i];}
   //! The current size
   auto  size()const {return M_size;}
+  //! The max number of elements
+  auto constexpr max_size(){return N;}
   //! The last element
   auto & back(){return M_vec[M_size];}
   //! The last element
