@@ -42,7 +42,7 @@ int main()
     std::complex<double> im(0.,1.0);
     std::complex<double> biz(1.0,1.0);
     std::cout<<Sum(one,im,biz,10.0)<<std::endl;
-    std::cout<<Mean(1.,1.,1.,1)<<std::endl;
+    std::cout<<Mean(1.5,1.,1.,1)<<std::endl;
     std::cout<<Mean(im,biz,one,1.0,2.0)<<std::endl;
     
 
