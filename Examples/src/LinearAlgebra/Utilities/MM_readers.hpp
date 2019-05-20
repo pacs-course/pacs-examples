@@ -197,7 +197,7 @@ namespace
   bool symLoadMarket(SparseMatrixType& mat, const std::string& filename)
   {
     typedef typename SparseMatrixType::Scalar Scalar;
-    typedef typename SparseMatrixType::StorageIndex StorageIndex;
+    typedef typename SparseMatrixType::Index StorageIndex;
     std::ifstream input(filename.c_str(),std::ios::in);
     if(!input)
       throw std::runtime_error(std::string("Error in opening file ")+filename);
@@ -242,16 +242,13 @@ namespace
           { 
             StorageIndex i(-1), j(-1);
             Scalar value; 
-            Eigen::internal::GetMarketLine(buffer, i, j, value);
-            
-            i--;
-            j--;
-            if(i>=0 && j>=0 && i<M && j<N)
-              {
-                ++count;
-                elements.push_back(T(i,j,value));
-                if(i != j) elements.push_back(T(j,i,value));
-              }
+            std::stringstream line(buffer);
+            if(Eigen::internal::GetMarketLine(line, M,N,i, j, value) )
+            {
+              ++count;
+              elements.push_back(T(i,j,value));
+              if(i != j) elements.push_back(T(j,i,value));
+            }
             else
               {
                 std::cerr << "Invalid read: " << i << "," << j << "\n";
