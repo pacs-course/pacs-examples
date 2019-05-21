@@ -84,7 +84,20 @@ simple univariate parametric fitting.
  \[
    J_{MSE}=\sum_1^n(Y_i-  m(X_i,\boldsymbol{\theta}))^2.
  \]
+ \paragraph{\textbf{Solver}} The solver, or optimizer, is the tools that computes
+ \[
+   \boldsymbol{\theta}_{opt}=\operatorname{argmin}_{\boldsymbol{\theta}}J(\boldsymbol{\theta})
+ \]
+ In the case of MSE cost function and a model linear in the parameter (linear regression) you may use QR factorization of the matrix of the normal problem.
+ In general, you may use any optimization method, like gradient, Newton-Rapson, BFGS, trust region methods etc etc.
 
+ \subsection{Putting it together}
+ We have a clear functional hierarchy: the solver needs the cost function, which in turn needs a model, and, finally, we need to define the type of data
+ the model operates on. This is a classical situation where composition
+ works well and we want to give flexibility by specifying the composed class via
+ a template parameter.
+ 
+ 
  \section{Overview}
 In particular, we have implemented polynomial univariate regression, as an example of models of the form
 \begin{equation}
