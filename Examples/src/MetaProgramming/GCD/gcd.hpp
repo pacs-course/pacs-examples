@@ -43,7 +43,6 @@ namespace Utility
     avoid recursion (unless in metaprogramming) since it is not very
     efficient.  Moreover, if I deal with very big integers maybe I can
     exceed the stack capability for recursive call.
-    Yet, the recursive implementation is very elegant, I admit!.
   */
   long unsigned int gcd(long unsigned int M, long unsigned int N);
   
