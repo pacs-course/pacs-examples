@@ -19,7 +19,7 @@ int main() {
   clock.start();
   std::cout << " f40= " << Fibonacci(40) << '\n';
   clock.stop();
-  std::cout<<"Time to evaluate F(40) with constexpr argument:"<<clock<<std::endl;
+  std::cout<<"Time to evaluate F(40) with recursion and constexpr argument:"<<clock<<std::endl;
   unsigned long l=999ul;
   while (true)
     {
@@ -29,7 +29,11 @@ int main() {
       clock.start();
       std::cout << " f"<<l<<"= " << Fibonacci(l) << '\n';
       clock.stop();
-      std::cout<<"Time to evaluate F("<<l<<") with non constexpr argument:"<<clock<<std::endl;
-    }
+      std::cout<<"Time to evaluate F("<<l<<") with non constexpr argument and recursion:"<<clock<<std::endl;
+      clock.start();
+      std::cout << " f"<<l<<"= " << FibonacciNR(l) << '\n';
+      clock.stop();
+      std::cout<<"Time to evaluate F("<<l<<") with non recursive function:"<<clock<<std::endl;
+ }
   return 0;
 }
