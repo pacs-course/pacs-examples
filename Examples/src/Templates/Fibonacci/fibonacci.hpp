@@ -29,10 +29,12 @@ template<> struct fib<0>{
   @note beware of integer underflow if you use unsigned int. Here there is no problem
   but in general make sure that you will never compute 0u -1
 */
-constexpr unsigned long int Fibonacci(unsigned long int const N)
+constexpr unsigned long int Fibonacci(unsigned int const N)
 {
   return N <=2ul ? 1ul: Fibonacci(N-1)+Fibonacci(N-2);
 }
-
+//! The recursive version is heavy for "large" N So here I have a non recursive version
+//! Definition in the cpp file
+unsigned long int FibonacciNR(unsigned int const N);
 
 #endif
