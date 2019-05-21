@@ -1,6 +1,8 @@
 #ifndef HH_PICOMPUTE_HH
 #define HH_PICOMPUTE_HH
 // Metaprogramming trick to compute Pi
+
+//! This namespace introduces helper functions that are used only locally
 namespace internals
 {
   template<unsigned long B, unsigned long int E>
@@ -15,6 +17,10 @@ namespace internals
     static constexpr unsigned long int value=1ul;
   };
 
+  //! Use a trucnated series to compute PI
+  /*!
+   * @tparam R Has to be a floating point type (double or float etc.)
+   */
   template<class R, unsigned long int N>
   struct
   computePi
@@ -28,6 +34,7 @@ namespace internals
       + computePi<R,N-1>::value;
   };
 
+  //! The class to close recursion
   template<class R>
   struct
   computePi<R,0ul>
