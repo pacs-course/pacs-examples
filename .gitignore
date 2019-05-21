@@ -163,3 +163,4 @@ make.dep
 /Examples/src/Templates/Interpolation/main_interpolation
 /Examples/src/MetaProgramming/DecltypeDeclVal/main_decltype
 /Examples/src/MetaProgramming/Trivial/main_trivial
+/Examples/src/FPExceptions/main_fpe
