@@ -161,3 +161,5 @@ make.dep
 /Examples/src/Regression/README.pdf
 /Examples/src/Regression/auto/README.el
 /Examples/src/Templates/Interpolation/main_interpolation
+/Examples/src/MetaProgramming/DecltypeDeclVal/main_decltype
+/Examples/src/MetaProgramming/Trivial/main_trivial
