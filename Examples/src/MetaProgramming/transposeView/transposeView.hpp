@@ -29,10 +29,9 @@ namespace LinearAlgebra {
 
     
   template <typename Matrix>
-  class transposed_view
+  class TransposedView
   {
   public:
-    //    using value_type= typename Matrix_Traits<Matrix>::value_type;
     using size_type=  typename Matrix_Traits<Matrix>::size_type;
 
     using value_type= typename Matrix_Traits<Matrix>::value_type;
@@ -45,12 +44,19 @@ namespace LinearAlgebra {
       >::type>::type;
     */
   private:
+    //! I have to handle the situation when a non const TransposedView stores a const matrix
+    //!
+    //! In this case also the non-const version of the call operator
+    //! used to fetch the Matrix element returns a const value. So it cannot
+    //! be used in a rvalue context. Another possibility is to use
+    //! enable_if and simply delete the non const version in the case of const Matrix
+
     using vref_type=
       typename std::conditional<std::is_const<Matrix>::value,
                                 const value_type,
                                 value_type&>::type;
   public:
-    explicit transposed_view(Matrix& A) : ref(A) {}
+    explicit TransposedView(Matrix& A) : ref(A) {}
     
     /*! The non const version is enabled only if the viewed matrix
       is non-const
@@ -70,10 +76,11 @@ namespace LinearAlgebra {
     Matrix& ref;
   };
   
+  //! This returns the transposed view of a matrix
   template <typename Matrix>
-  transposed_view<Matrix> inline trans(Matrix& A)
+  TransposedView<Matrix> inline trans(Matrix& A)
   {
-    return transposed_view<Matrix>(A);
+    return TransposedView<Matrix>(A);
   }
 }// end namespace
 
