@@ -3,6 +3,17 @@
 #include <string>
 #include <type_traits>
 #include <cstring>
+extern "C"
+{
+  //  c declarations
+  struct MyStruct
+  {
+    int m_a;
+    double m_b;
+  };
+
+  void fillMyStruct(struct MyStruct * s);
+}
 //! A trivial 
 struct Trivial{
   Trivial()=default; // or you can jut omit it
@@ -49,6 +60,11 @@ int main()
   StandardLayout s2=* (reinterpret_cast<StandardLayout*>(psl));
   std::cout<<sl.m_a<<" "<<sl.m_b<<std::endl;
   std::cout<<s2.m_a<<" "<<s2.m_b<<std::endl;
+
+  //! I use a C function
+  fillMyStruct(reinterpret_cast<MyStruct*>(&sl));
+  std::cout<<"After calling function"<<std::endl;
+  std::cout<<sl.m_a<<" "<<sl.m_b<<std::endl;
 
   // A trivially copyable item can be serialised
   TriviallyCopyable tc{7,8.9};

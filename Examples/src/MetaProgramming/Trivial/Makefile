@@ -28,7 +28,7 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 #
 
 # get all files *.cpp
-SRCS=$(wildcard *.cpp)
+SRCS=$(wildcard *.cpp) Cfun.o
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # get all headers in the working directory
