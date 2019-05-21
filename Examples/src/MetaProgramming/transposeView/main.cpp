@@ -9,8 +9,8 @@ namespace LinearAlgebra
   template <>
   struct Matrix_Traits<Eigen::Matrix3f>
   {
-    using value_type=float;
-    using size_type=std::size_t;
+    using value_type=Eigen::Matrix3f::Scalar;
+    using size_type=Eigen::Matrix3f::Index;
   };
 }
 
@@ -24,7 +24,7 @@ int main()
   std::cout<<m<<std::endl;
   std::cout<<" Now the transpose"<<std::endl;
 
-  LinearAlgebra::transposed_view<Eigen::Matrix3f> mt(m);
+  LinearAlgebra::TransposedView<Eigen::Matrix3f> mt(m);
 
   //mt(0,0)=100.f;
   

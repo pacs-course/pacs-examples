@@ -14,6 +14,9 @@
   The class can be further generalised.
 
 */
+//! namespace to hide this helper functions
+namespace internals
+{
 template<std::size_t M>
 struct metaDot
 {
@@ -33,12 +36,12 @@ template<> struct metaDot<1>
     return a[0]*b[0];
   }
 };
-
-//! Operator overloading: this is what will be used.
+}
+//! Operator overloading: this is what will be actually used.
 template<std::size_t N,typename T>
 inline T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
 {
-  return metaDot<N>::apply(a,b);
+  return internals::metaDot<N>::apply(a,b);
 }
 
 #endif
