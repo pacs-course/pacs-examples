@@ -40,7 +40,8 @@ void fun(T const & a)
   decltype(std::declval<T>().get_i()) b;
   // Which tye is b?, now to write it out I need typeid
   std::cout<<"get_i() returns a "<<typeid(b).name()<<std::endl;
-  // I do not need declval to interrogate static members since I do not need to 
+  // I do not need declval to interrogate static members since I do not need
+  // to create an object 
   std::cout<<"Static member j is of type "<<
     typeid(decltype(T::j)).name()<<std::endl;
 }
