@@ -26,10 +26,11 @@
 #include "matrices.h"
 #include "auxiliary.h"
 
-extern "C"
-{
 #include "dmumps_c.h"
-}
+
+extern "C"
+{ void open_stream_ (int* num, char name[]); }
+
 
 #include <mpi.h>
 
@@ -42,6 +43,10 @@ int main (int argc, char **argv)
   MPI_Comm_rank (MPI_COMM_WORLD, &rank);
   MPI_Comm_size (MPI_COMM_WORLD, &size);
 
+  char stream_name[256]; int stream_num = 11 + rank;
+  sprintf (stream_name, "mumps_log.%d.txt", rank);
+  open_stream_ (&stream_num, stream_name);
+  
   for (int ii=0; ii < size; ++ii)
     {
       if (ii == rank)
@@ -86,10 +91,10 @@ int main (int argc, char **argv)
   dmumps_c(&id);
 
   //streams    
-  id.icntl[0] =  -6; 
-  id.icntl[1] =  -6; 
-  id.icntl[2] =  -6; 
-  id.icntl[3] =  -1;
+  id.icntl[0] =   stream_num; 
+  id.icntl[1] =   stream_num; 
+  id.icntl[2] =   stream_num; 
+  id.icntl[3] =   4;
 
  //centralized RHS and solution
   id.icntl[21] = 0;
