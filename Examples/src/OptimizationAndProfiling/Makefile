@@ -57,8 +57,10 @@ esempioExtAss:
 aliasing: aliasing.o
 
 clean:
-	$(RM) -f *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat aliasing
-	$(RM) -f esempioExtAss_debug  esempioExtAss_release *.txt unroll1_nounroll unroll1_unroll
+	$(RM)  *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat aliasing *.gcov *.gcda *.gcno esempio
+	$(RM)  esempioExtAss_debug  esempioExtAss_release *.txt unroll1_nounroll unroll1_unroll coverage.info
+	$(RM) -r html/
+
 
 distclean: clean
 	$(RM) core *.log gmon.out
@@ -101,3 +103,16 @@ massif:
 	valgrind --tool=massif --demangle=yes --log-file=provamassif.log --massif-out-file=massif.out\
         ./provamassif
 	ms_print massif.out > massif.txt
+
+coverage:
+	$(CXX) -g -fprofile-arcs -ftest-coverage chrono.cpp esempio.cpp -o esempio
+	./esempio -i dati
+	gcov ./esempio > summary.txt
+
+lcoverage:
+	$(CXX) -g -fprofile-arcs -ftest-coverage chrono.cpp esempio.cpp -o esempio
+	./esempio -i dati
+	lcov --capture --directory . --output-file coverage.info
+	genhtml coverage.info --output-directory html
+
+
