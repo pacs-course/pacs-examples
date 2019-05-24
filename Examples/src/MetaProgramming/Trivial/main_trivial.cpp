@@ -85,6 +85,7 @@ int main()
   // Read from binary file
   std::ifstream pluto("a.dat",std::ios::binary);
   TriviallyCopyable d;
+  // read into d directly
   pluto.read(reinterpret_cast<char *>(&d),m);
   std::cout<<tc.m_a<<" "<<tc.m_b<<std::endl;
   std::cout<<d.m_a<<" "<<d.m_b<<std::endl;
