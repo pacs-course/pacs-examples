@@ -24,6 +24,9 @@ make massif. An example of use of massif to analyze memory usage.
 
 make aliasing: a code that may produce wrong results because of aliasing
 
+make coverage : use of gcov to to the coverage of a program. It produces a lot
+     of files, but you can clean it up using make clean
+     
 Other examples:
 namemangling,cpp does not create any executable. is only to test namemangling. You should do
     g++ -c namemangling.cpp
