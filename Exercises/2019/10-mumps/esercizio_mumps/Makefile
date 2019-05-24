@@ -27,7 +27,7 @@ LIBMUMPS = -L$(MUMPSDIR)/PORD/lib/ -lpord -L$(LIBLOC) -ldmumps -L$(mkScotchLib) 
 all: run_mumps_par run_mumps_par_distributed
 
 run_mumps_par : run_mumps_par.o matrices.o
-	$(CPP) $(LIBF) -o $@ $@.o matrices.o $(LIBMUMPS)  $(LIBBLAS)
+	$(CPP) $(LIBF) -o $@ $@.o matrices.o open_stream.o $(LIBMUMPS)  $(LIBBLAS)
 
 run_mumps_par.o: run_mumps_par.cpp auxiliary.h matrices.h
 	$(CPP) $(FLAGS) -I. -I$(INCLOC) -I$(MPIINCDIR) -c run_mumps_par.cpp
