@@ -44,13 +44,12 @@ namespace LinearAlgebra {
       >::type>::type;
     */
   private:
-    //! I have to handle the situation when a non const TransposedView stores a const matrix
-    //!
-    //! In this case also the non-const version of the call operator
-    //! used to fetch the Matrix element returns a const value. So it cannot
-    //! be used in a rvalue context. Another possibility is to use
-    //! enable_if and simply delete the non const version in the case of const Matrix
-
+    //! A type dependent on the type of the matrix
+    /*
+      If the stored matrix is constant this statement define a
+      const type for the contained values. I am not using it, but
+      is an example of use of conditional.
+     */
     using vref_type=
       typename std::conditional<std::is_const<Matrix>::value,
                                 const value_type,
@@ -58,10 +57,16 @@ namespace LinearAlgebra {
   public:
     explicit TransposedView(Matrix& A) : ref(A) {}
     
-    /*! The non const version is enabled only if the viewed matrix
-      is non-const
+
+    //! I have to handle the situation when a non const TransposedView stores a const matrix
+    /*! 
+     The non const version is enabled only if the viewed matrix
+      is non-const. I could have used the vref_type defined above
+      as return type and I would have obtained my objective.
+      But here I show a usage of enable_if
     */
-    vref_type
+    template<typename T=Matrix>
+    std::enable_if_t<!std::is_const<T>::value,value_type &>
     operator()(size_type r, size_type c)
     {
       return ref(c, r);
