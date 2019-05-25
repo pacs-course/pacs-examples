@@ -394,9 +394,10 @@ that we are using Eigen, since the cppNumSolver library uses Eigen.
 namespace LinearAlgebra
 {
  /*!
- * This class defines a proxy for a Cost function so you
+ This class defines a proxy for a Cost function so you
  may use it with any optimization technique provided in
  that library.
+*/
  template <class CostFunction>
  class CostFunctionProxyCppSolver :
       public cppoptlib::Problem<double>
