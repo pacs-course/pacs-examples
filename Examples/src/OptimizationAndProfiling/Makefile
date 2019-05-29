@@ -48,7 +48,16 @@ EXEC=esempioExtAss
 
 .phony+= unroll optimize debug massif leak profile
 
-all: $(EXEC)
+all:
+	@echo "Possible Targets:"
+	@echo "esempioExtAss Use of some extended assert facilities"
+	@echo "aliasing An example of argument aliasing"
+	@echo "optimize Compare an optimized and an not optimized version"
+	@echo "leak Find a memory leak in a program with valgrind"
+	@echo "profile Program profiling with gprof"
+	@echo "massif Memory usage using valgrind"
+	@echo "coverage Program coverage with gcov"
+	@echo "lcoverage Program coverage with lcov"
 
 esempioExtAss:
 	$(CXX) $(CPPFLAGS) -g  esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
