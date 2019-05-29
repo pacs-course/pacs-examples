@@ -1,10 +1,11 @@
-#define _GNU_SOURCE 1
-#include "trapfpe.hpp"
-//! Test floating point exceptions
-/*!
-  This function throw an exception if some FPE have been raised
-  \param on if false the function just returns true if a exception has been raised
- */
+#include "fpeUtilities.hpp"
+#include <cfenv>
+// The C++11 standard requires this pragma to be activated
+// Only some compilers have this feature however.
+// Ignore possible warnings
+#pragma STDC FENV_ACCESS ON
+
+// Test floating point exceptions
 bool test_fpe_exception(bool on)
 {
   using namespace std;
