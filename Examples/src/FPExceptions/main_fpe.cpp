@@ -2,6 +2,7 @@
 #include <cmath>
 #include <string>
 #include "trapfpe.hpp"
+#include "fpeUtilities.hpp"
 double f1 (double);
 double f2 (double);
 int main()
