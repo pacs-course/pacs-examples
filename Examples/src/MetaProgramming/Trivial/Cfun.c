@@ -4,11 +4,7 @@
  *  Created on: May 21, 2019
  *      Author: forma
  */
-struct MyStruct
-{
-  int m_a;
-  double m_b;
-};
+#include "Cfun.h"
 
 void fillMyStruct(struct MyStruct * s)
 {
