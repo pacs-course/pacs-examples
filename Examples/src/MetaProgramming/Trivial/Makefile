@@ -28,9 +28,9 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 #
 
 # get all files *.cpp
-SRCS=$(wildcard *.cpp) Cfun.o
+SRCS=$(wildcard *.cpp) 
 # get the corresponding object file
-OBJS = $(SRCS:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o) 
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -55,11 +55,11 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(OBJS)
+$(EXEC): $(OBJS) Cfun.o
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS)
+$(DEPEND): $(wildcard *.cpp)
 	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \

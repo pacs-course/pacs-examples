@@ -56,6 +56,7 @@ all:
 	@echo "leak Find a memory leak in a program with valgrind"
 	@echo "profile Program profiling with gprof"
 	@echo "massif Memory usage using valgrind"
+	@echo "debug Example for debugging"
 	@echo "coverage Program coverage with gcov"
 	@echo "lcoverage Program coverage with lcov"
 
