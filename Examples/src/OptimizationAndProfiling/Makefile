@@ -46,7 +46,7 @@ CXXFLAGS+=$(OPTFLAGS)
 DEPEND=make.dep
 EXEC=esempioExtAss
 
-.phony+= unroll optimize debug massif leak profile
+.phony+= unroll optimize debug massif leak profile aliasing
 
 all:
 	@echo "Possible Targets:"
@@ -63,8 +63,8 @@ esempioExtAss:
 	$(CXX) $(CPPFLAGS) -g  esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
 	$(CXX) $(CPPFLAGS) -O2 -DNDEBUG esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
 
-aliasing: aliasing.o
-
+aliasing: aliasing.cpp
+	$(CXX) $(CPPFLAGS) -std=c++14 -O3 -o aliasing aliasing.cpp
 clean:
 	$(RM)  *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat aliasing *.gcov *.gcda *.gcno esempio
 	$(RM)  esempioExtAss_debug  esempioExtAss_release *.txt unroll1_nounroll unroll1_unroll coverage.info
