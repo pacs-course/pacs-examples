@@ -3,26 +3,32 @@
 #include <vector>
 #include <iostream>
 
+// This is in fact an example of traits!
+
 class Point
 {
 public:
   using BoundaryType=void;
+  using BoundaryBoundaryType=void;
 };
 
 class Edge 
 {
 public:
   using BoundaryType=Point;  
+  using BoundaryBoundaryType=BoundaryType::BoundaryType;
 };
 
 class Triangle{
 public:
   using BoundaryType=Edge;
+  using BoundaryBoundaryType=BoundaryType::BoundaryType;
 };
 
 class Tetra{
 public:
   using BoundaryType=Triangle;
+  using BoundaryBoundaryType=BoundaryType::BoundaryType;
 };
 
 //! May be build with  T=Edges or T=Triangle or T=Tetra
