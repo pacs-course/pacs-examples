@@ -7,6 +7,13 @@
 */
 
 //! primary template: assumes the the boolean is true
+/*!
+ * @note the third template parameter is not indicated becouse not
+ * used. It is needed only to have a proper priamary template for the
+ * specialization. Indeed I could have also written template<bool C,
+ * typename Ta, typename Tb> but there is no need to indicate Tb since
+ * the primary tempalte does not use it
+ */
 template<bool C, typename Ta, typename>
 struct IfThenElse
 {
@@ -27,13 +34,17 @@ struct IfThenElse <false, Ta, Tb>
 template<bool C, class Ta, class Tb>
 using IfThenElse_t = typename  IfThenElse<C,Ta,Tb>::type;
 
-/* A different implementation that makes use of inheritance and of an helper template. (I call it If_then_else to differentiate with the former implementation)
+/* A different implementation that makes use of inheritance and of an
+   helper template. (I call it If_then_else to differentiate with the
+   former implementation)
 */
 
-//! A helper template
-/*! 
-  It returns the type of the template argument
-  c++11 provides std::is_same
+//! A helper class template
+/*!  
+  It returns the type of the template argument 
+  It may seem a useless toy, but...it is in fact a map
+  type -> type. 
+
  */
 template<class T>
 struct is_same_type
