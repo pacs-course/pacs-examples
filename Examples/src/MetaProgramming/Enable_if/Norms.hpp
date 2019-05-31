@@ -1,4 +1,3 @@
-#include <cmath>
 #include <type_traits>
 #include <vector>
 #include <complex>
@@ -12,6 +11,12 @@
   here if C is neither a vector<double> nor a vector<complex<double>>
   we have a compile time error, so it may be safer.
   Take it however just as an example of enable_if
+
+  In this case the SFINAE paradigm is activated on the return type of the
+  function.
+  
+  \pre A callable object of type Norm2 works only if the argument is
+  a vector<double> or vector<complex<double>>.
  */
 struct Norm2
 {
@@ -23,9 +28,10 @@ struct Norm2
   {
     double tmp{0.0};
     for (auto i:c) tmp+=i*i;
-    return sqrt(tmp);
+    return std::sqrt(tmp);
   }
-  //! For vector<double>
+
+  //! For vector<complex<double>>
   template<class C>
   typename std::enable_if<std::is_same<C,std::vector<std::complex<double>> >::value,
                           double>::type
@@ -33,8 +39,8 @@ struct Norm2
   {
     double tmp{0.0};
     // norm returns the square of the magnitude
-    for (auto const & i:c) tmp+=norm(i);
-    return sqrt(tmp);
+    for (auto const & i:c) tmp+=std::norm(i);
+    return std::sqrt(tmp);
   }
 };
 
