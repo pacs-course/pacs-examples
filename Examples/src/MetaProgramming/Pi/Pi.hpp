@@ -17,7 +17,9 @@ namespace internals
     static constexpr unsigned long int value=1ul;
   };
 
-  //! Use a trucnated series to compute PI
+  //! Use a truncated series to compute PI. N+1 is the number of terms
+  //! of the series that are being used. A nice use of static resolution
+  //! of recursion (N not too high)
   /*!
    * @tparam R Has to be a floating point type (double or float etc.)
    */
