@@ -33,8 +33,7 @@ public:
   bool operator () (std::string const & a, std::string const & b)
   {
     // Lexycografic comparison
-    // Just to show a use of decltype()
-    for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
+    for(std::size_t i=0;i<std::min(a.size(),b.size()); ++i){
       if (std::toupper(a[i])!= std::toupper(b[i])) 
 	return std::toupper(a[i])<std::toupper(b[i]);
     }
@@ -42,7 +41,7 @@ public:
   }
 };
 
-//! This is a version that uses locale (C++11)
+//! This is a version that uses locale (sinceC++11)
 /*!
   This version may be used also for different character sets
  */
@@ -52,7 +51,7 @@ public:
   bool operator () (std::string const & a, std::string const & b)
   {
     // Lexycografic comparison note the
-    for(decltype(a.size()) i=0;i<std::min(a.size(),b.size()); ++i){
+    for(std::size_t i=0;i<std::min(a.size(),b.size()); ++i){
       if (std::toupper(a[i],M_loc)!= std::toupper(b[i],M_loc)) 
 	return std::toupper(a[i],M_loc)<std::toupper(b[i],M_loc);
     }
