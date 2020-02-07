@@ -33,18 +33,11 @@ namespace Timings{
     using MyClock=std::chrono::high_resolution_clock;
     using MyTimePoint=std::chrono::time_point<MyClock>;
   private:
-    MyTimePoint startTime;
-    MyTimePoint stopTime;
+    MyTimePoint startTime{MyClock::now()};
+    MyTimePoint stopTime{MyClock::now()};
   public:
     //! Outputs time from last start and stop
     friend std::ostream & operator <<(std::ostream &,Chrono const &);
-    Chrono();
-    //!Explicitly defaulted automatic consts/assignements
-    // Not needed, just to show the use of default!
-    Chrono(const Chrono &)=default;
-    Chrono(Chrono&&)=default;
-    Chrono & operator=(Chrono&&)=default;
-    Chrono & operator=(const Chrono&)=default;
     //! Starts/reset  counting time
     void start();
     //! Stops counting time
