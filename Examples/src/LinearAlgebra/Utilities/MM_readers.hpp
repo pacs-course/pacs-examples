@@ -23,8 +23,6 @@
 #include "unsupported/Eigen/SparseExtra"
 // This is for version 3.3.3 or less only
 #if (EIGEN_MINOR_VERSION <= 3)
-#include <sstream>
-#include <regex>
 namespace Eigen
 {
   /*!
@@ -122,9 +120,9 @@ namespace Eigen
       }
     else
       { 
-      Index i(-1), j(-1);
-      Scalar value; 
-      if( internal::GetMarketLine(line, M, N, i, j, value) ) 
+        Index i(-1), j(-1);
+        Scalar value; 
+        if( internal::GetMarketLine(line, M, N, i, j, value) ) 
         {
           ++ count;
           elements.push_back(T(i,j,value));

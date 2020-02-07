@@ -1,4 +1,5 @@
 An example of accumulation of roundoff errors in a sum. We use Kahan summation to reduce errors (see Wikipedia...).
+We show also how appropriate ordering couls also reduce round-off errors
 
 COmpile with
 
