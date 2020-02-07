@@ -16,6 +16,7 @@ namespace Graphs
   {
     G.nodes.emplace(id);
   }
+  
   void UndirectedGraphBuilder::buildEdges(basic_edge e, unsigned int id)
   {
     G.edges.emplace(e,id);
