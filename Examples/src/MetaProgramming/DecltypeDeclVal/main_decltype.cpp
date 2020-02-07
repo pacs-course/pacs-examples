@@ -49,7 +49,7 @@ void fun(T const & a)
 int main()
 {
   NotDefaultConstructible nd{5};
-  DefaultConstructible d(5);
+  DefaultConstructible d;
   std::cout<<"calling fun(NotDefaultConstructible) "<<std::endl;
   fun(nd);
   std::cout<<std::endl<<"calling fun(DefaultConstructible) "<<std::endl;

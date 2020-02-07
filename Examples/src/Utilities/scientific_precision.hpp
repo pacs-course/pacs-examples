@@ -1,18 +1,42 @@
 #include <iostream>
-#include <numeric_limits>
+#include <limits>
 /*!
- \file Set scientific precision to a stream
+ \file scientific_precision.hpp 
+ Set scientific precision to a stream
  
- The role of this example is just to remember how to do it!
+ In the form of a function and stream manipulator
 */
-
 namespace PACS_Utilities
 {
+  /*!
+   * A function that modifies a stream to set scientific precision and 
+   * maximum number of digits for a floating point type
+   * \tpar T a floating point type
+   * \par out An output stream
+   */
   template<typename T>
-  void setMaximalPrecison(std::ostream & out)
+  void setMaximalPrecision(std::ostream & out)
   {
-    auto maxprec=std::numeric_limits<T>::digits10;
-    out.setf(ios::scientific);
+    auto constexpr maxprec=std::numeric_limits<T>::digits10;
+    out.setf(std::ios_base::scientific, std::ios_base::floatfield);
     out.precision(maxprec+1);
+  }
+  //! A stream manipulator that set scientific and max precision for float
+  std::ostream & maxPrecFloat(std::ostream & out)
+  {
+    setMaximalPrecision<float>(out);
+    return out;
+  }
+  //! A stream manipulator that set scientific and max precision for double
+  std::ostream & maxPrecDouble(std::ostream & out)
+  {
+    setMaximalPrecision<double>(out);
+    return out;
+  }
+  //! A stream manipulator that set scientific and max precision for long double
+  std::ostream & maxPrecLong(std::ostream & out)
+  {
+    setMaximalPrecision<long double>(out);
+    return out;
   }
 }
