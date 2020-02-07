@@ -11,14 +11,24 @@ void Element::operation() const
 	std::cout<<this->_name<<", ";
 }
 
-Element * Element::clone()const
+Component::pComponent Element::clone()const
 {
-	return new Element(*this);
+  return std::make_unique<Element>(*this);
 }
 
 void Composite::add(Component & c)
 {
 	this->_composite.emplace_back(c.clone());
+}
+
+void Composite::add(Component::pComponent const & p)
+{
+	this->_composite.emplace_back(p->clone());
+}
+
+void Composite::add(Component::pComponent&& p)
+{
+  this->_composite.emplace_back(std::move(p));
 }
 
 
@@ -29,9 +39,9 @@ void Composite::operation() const
 }
 
 
-Composite *Composite::clone()const
+Composite::pComponent Composite::clone()const
 {
-	return new Composite(*this);
+  return std::make_unique<Composite>(*this);
 }
 
 

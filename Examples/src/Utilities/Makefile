@@ -73,7 +73,7 @@ install:
 	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion test_toString test_string $(DEPEND)
+	 $(RM) $(EXEC) $(OBJS) test_chrono test_cppversion test_toString test_string test_scientific_precision $(DEPEND)
 
 distclean:
 	$(MAKE) clean
@@ -83,7 +83,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-test: test_chrono test_cppversion test_toString test_string test_clonable
+test: test_chrono test_cppversion test_toString test_string test_clonable test_scientific_precision
 
 
 $(EXEC): $(OBJS)
@@ -103,7 +103,7 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 	$(CXX) -shared $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
 
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done

@@ -133,11 +133,9 @@ std::unique_ptr<AbstractProduct>
       }
     else
       {
+        // Use of std::forward to forward arguments to the constructor
 	return std::unique_ptr<AbstractProduct>(f->second(std::forward<Args>(args)...));
       }
-    //Old version:
-    //return (f == _storage.end()) ? std::unique_ptr<AbstractProduct>(): 
-    //std::unique_ptr<AbstractProduct>(f->second());
   }
   
   template

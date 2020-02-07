@@ -27,9 +27,9 @@ int main()
       if (! file.fail())
         gb->buildEdges(be,edgeid++);
     }
-  Graph & g = gb->get_graph();
+  Graph & g = gb->getGraph();
   std::cout<<" Nodes: \n";
-  for (auto const & n:g.nodes) std::cout<<" Node n. "<<n.get_id()<<", Id:"<<n.get_element()<<std::endl;
+  for (auto const & n:g.nodes) std::cout<<" Node Id: "<<n.getId()<<"\n";
   std::cout<<" Edges: \n";
-  for (auto const & n:g.edges) std::cout<<"Edge n. "<<n.get_id()<<",  Node Id: "<<n.get_element()[0]<<" "<<n.get_element()[1]<<std::endl;
+  for (auto const & n:g.edges) std::cout<<"Edge Id. "<<n.getId()<<", ("<<n.getEdgeNodes()[0]<<", "<<n.getEdgeNodes()[1]<<")"<<std::endl;
 }
