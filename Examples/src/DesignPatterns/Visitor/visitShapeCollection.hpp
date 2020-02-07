@@ -4,7 +4,7 @@
 #include "ShapeVisitor.hpp"
 /*! A function that visits a collection of shapes stored as 
 pointer in a container
-  The contained can be any container
+  The container can be any container
 */
 template <typename C>
 void visitShapeCollection(C & collection,

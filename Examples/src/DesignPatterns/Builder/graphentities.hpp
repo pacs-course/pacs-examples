@@ -9,16 +9,20 @@ namespace Graphs
   //! Only to show the build pattern!
 
   //! Indicates an unset identifier
+  /*!
+    in c++17 we could use std::optional
+   */
   constexpr unsigned int nullID=std::numeric_limits<unsigned int>::max();
 
+  //! A basic edge is identified by the id of the two ends
   using basic_edge=std::array<unsigned int,2>;
   
   class element
   {
   public:
     element(unsigned int i=nullID):id{i}{}
-    unsigned int get_id()const {return id;}
-    void set_id(unsigned int r){id=r;}
+    unsigned int getId()const {return id;}
+    void setId(unsigned int r){id=r;}
     virtual ~element()=default; 
   protected:
     unsigned int id;
@@ -28,9 +32,6 @@ namespace Graphs
   {
   public:
     node (unsigned int const & i=nullID):element{i}{};
-    // Returns node id if node
-    unsigned int get_element() const {return id;};
-    void set_element(unsigned int const & a) {id=a;};
   };
   
   class edge: public element
@@ -40,12 +41,12 @@ namespace Graphs
     edge(basic_edge const & e={nullID,nullID},unsigned int i=nullID):
       element{i},M_edge{e}{}
     // Returns ids of edges ends
-    basic_edge get_element() const {return M_edge;};
-    void set_element(basic_edge const & a) {M_edge=a;};
+    basic_edge getEdgeNodes() const {return M_edge;};
+    void setEdgeNodes(basic_edge const & a) {M_edge=a;};
   private:
     basic_edge M_edge;
   };
-}
+} // end namespace Graph
 
 //! Comparison operators implemented by specialization of std::less
 template <>
@@ -53,21 +54,32 @@ struct std::less<Graphs::node>
 { 
   bool operator()(const Graphs::node & a, const Graphs::node & b)
   {
-    return a.get_element()<b.get_element();  
+    return a.getId()<b.getId();  
   }
 };
 
+//! Comparison operation for edges
+/*
+  It relies on the lexicografic comparison implemented in basic_edge.
+  Note that with this implementation edge (a,b) is different than edge (b,a) 
+  (directed graph)
+ */
 template <>
 struct std::less<Graphs::edge>
 { 
   bool operator()( const Graphs::edge & a, const Graphs::edge & b)
   {
-    return a.get_element()<b.get_element();  
+    return a.getEdgeNodes()<b.getEdgeNodes();  
   }
 };
 
 namespace Graphs
 {
+  //! A simple struct to hold a graph
+  /*!
+    It can be converted to a class with the appropriate getters and setters.
+    But for this example a simple struct is enough.
+   */
   struct Graph
   {
     std::set<node> nodes;
@@ -80,7 +92,7 @@ namespace Graphs
   public:
     virtual void buildNode(unsigned int id)=0;
     virtual void buildEdges(basic_edge e, unsigned int id)=0;
-    Graph & get_graph(){return G;}
+    Graph & getGraph(){return G;}
     virtual ~GraphBuilder()=default;
   protected:
     // Here I use an object since I have just one type of graphs
@@ -95,7 +107,6 @@ namespace Graphs
     void buildNode(unsigned int) override;
     //! I give nodes id eand edge id
     void buildEdges(basic_edge, unsigned int) override;
-    virtual ~UndirectedGraphBuilder()=default;
   };
   
   //! To build directed graphs
@@ -104,7 +115,6 @@ namespace Graphs
   public:
     void buildNode(unsigned int) override;
     void buildEdges(basic_edge, unsigned int) override;
-    virtual ~DirectedGraphBuilder()=default;
   };
 
   

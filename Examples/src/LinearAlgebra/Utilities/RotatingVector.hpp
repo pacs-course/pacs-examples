@@ -12,21 +12,22 @@
 
 namespace LinearAlgebra
 {
-  //! This class represent a vector that rotates cyclically the components
+  //! This class represents a vector that keeps only the latest insertions
   /*!
-   *  Useful if you need to keep track of just the last N elements
-   *  It is a thin extension of an std::array, where I redefine emplace_back and push_back,
-   *  and back methods. The array is composed in the class.
+   *  Useful if you need to keep track of just the last inserted
+   *  elements, up to a maximal number, when a newly inserted element
+   *  causes the elimination of the front element, a shift to the left
+   *  by one, and the addition at the back. It is a thin wrapper around
+   *  an std::array, where I redefine emplace_back and push_back, and
+   *  back methods. The array is composed in the class.  
+      
+      /tparam T the type stored in the rotating vector 
+      /tparam N the maximal number of elements in the rotating vector
    */
 template <class T, std::size_t N>
 class RotatingVector
 {
 public:
-  //!Default constructor
-  RotatingVector()=default;
-  // An array-type object can be converted to a RotatingVector
-  template<typename A>
-  RotatingVector(A&& a):M_size{a.size()},M_vec{std::forward<A>(a)} {}
   //! Returns the underlying container
   //! This way I have access also to all other methods of std::array
   auto  getVector()const {return M_vec;}
@@ -78,11 +79,97 @@ public:
       }
   }
 private:
-  unsigned int M_size=0u;
+  std::size_t M_size=0u;
   std::array<T,N> M_vec;
 };
 
-}
+  //! A variant of RotatingVector<T,N> where the maximal number of elements can by set run time
+  /*!
+   *  Useful if you need to keep track of just the last inserted
+   *  elements, up to a maximal number. When max size id reached, A newly inserted element will
+   *  cause the elimination of the front element, a shift to the left
+   *  by one, and the addition at the back. It is a thin wrapper around
+   *  an std::vector, where I redefine emplace_back and push_back, and
+   *  back methods. The vector is composed in the class.  
+      /tparam T the type stored in the rotating vector 
+   */
+  template <class T>
+  class RotatingVectorXd
+  {
+  public:
+    //!Default constructor
+    RotatingVectorXd()=default;
+    //! Specify max size
+    RotatingVectorXd(std::size_t n):M_N{n}{M_vec.reserve(n);}
+    //! Returns the underlying container
+    //! This way I have access also to all other methods of std::vector
+    auto  getVector()const {return M_vec;}
+    //! Returns the underlying container
+    auto& getVector(){return M_vec;}
+    //! Returns i-th stored item
+    T  operator[](std::size_t i)const {return M_vec[i];}
+    //! Returns i-th stored item
+    T& operator[](std::size_t i){return M_vec[i];}
+    //! The current size
+    auto  size()const {return M_vec.size();}
+    //! Set a new maximal size
+    void setMaxSize(std::size_t m)
+    {
+      if(m<M_N)
+        {
+          // I have to save the last elements up to m: If I shrink I want to keep the last elements!
+          std::vector<T> tmp{M_vec.begin()+std::max(std::size_t(0), M_vec.size()-m), M_vec.end()};
+          M_vec=std::move(tmp);// to spare useless temporaries
+        }
+      M_N=m;
+    }
+    //! The max number of elements
+    auto constexpr max_size(){return M_N;}
+    //! The last element
+    auto & back(){return M_vec.back();}
+    //! The last element
+    auto  back()const {return M_vec.back();}
+    //! true if all elements are filled up
+    bool full()const {return this->size()=M_N;}
+    //! true if empty
+    bool empty()const {return M_vec.empty();}
+    //! true if no max size has been set
+    bool unallocated()const {return M_N==0u;}
+    //! Add an element to the end of the vector by calling T(args)
+    /*!
+      \note No check is made to test that the max size >0. You will get a runtime error
+    */
+    template <class... Args>
+    void emplace_back (Args&&... args)
+    {
+      if (M_vec.size() < M_N)
+        {
+          M_vec.emplace_back(std::forward<Args>(args)...);
+        }
+      else
+        {
+          std::rotate(M_vec.begin(),M_vec.begin()+1,M_vec.end());
+          M_vec.back()= T(std::forward<Args>(args)...);
+        }
+    }
+    //! Add an element to the end of the vector
+    void push_back (const T& args)
+    {
+      if (M_vec.size() < M_N)
+        {
+          M_vec.push_back(args);
+        }
+      else
+        {
+          std::rotate(M_vec.begin(),M_vec.begin()+1,M_vec.end());
+          M_vec.back()=args;
+        }
+    }
+  private:
+    std::size_t M_N=0u;
+    std::vector<T> M_vec;
+  };
+}//end namespace apsc
 
 
 
