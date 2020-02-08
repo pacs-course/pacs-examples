@@ -166,3 +166,5 @@ make.dep
 /Examples/src/FPExceptions/main_fpe
 /Examples/src/MetaProgramming/Enable_if/main_norms
 /Examples/src/MetaProgramming/ifthenelse/main_ifthenelse
+/Examples/src/Algorithms/Accumulate/main_summation
+/Examples/src/IntegerOverflow/mainItOver

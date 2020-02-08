@@ -18,7 +18,7 @@ MAKEFILEH_DIR=../../
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
-#
+# This is optional. If not present is not an error
 -include Makefile.inc
 
 #
@@ -31,77 +31,36 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
-# object file for a library if needed
-LIB_OBJS=$(filter-out main%.o test%.o,$(OBJS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
-HEADERS+=GetPot
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
-exe_sources+=$(filter test%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
-ifeq ($(LIBTYPE),DYNAMIC)
- CXXFLAGS+=-fPIC
- LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
-else
- LIBRARY=$(STATIC_LIBFILE)
-# LDFLAGS+=-static
-endif
+#========================== NEW THE DEFINITION OF THE TARGETS
+.phony= all clean distclean doc
 
-ifeq ($(DEBUG),yes)
-  OPTFLAGS=-g
-ifeq ($(LIBTYPE),DYNAMIC)
-  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
-endif
-else
-  OPTFLAGS=-O3
-  CPPFLAGS+=-DNDEBUG
-endif
+.DEFAULT_GOAL = all
 
-#========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc library install test
+all: $(DEPEND) $(EXEC)
 
-all: $(DEPEND) library test
-
-library:
-	make static
-	make clean
-	make dynamic
-
-install:
-	cp $(HEADERS) $(PACS_INC_DIR)
-	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	 $(RM) $(EXEC) $(OBJS) $(DEPEND)
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	$(RM) -r ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE)
+	$(RM) -f ./doc $(DEPEND)
 	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
 
-test: $(EXEC)
-
-
-#$(EXEC):
+$(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
-static: $(STATIC_LIBFILE)
-	make $(STATIC_LIBFILE) LIBTYPE=STATIC
-
-$(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
-	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
-
-dynamic: 
-	make $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
-
-$(DYNAMIC_LIBFILE): $(LIB_OBJS)
-	$(CXX) -shared $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
+install:
+	cp *.hpp $(PACS_INC_DIR)
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)
