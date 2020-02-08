@@ -1,4 +1,0 @@
-A function template that computes the square root of a floating point number by using Newton's method.
-
-Note the use of type_traits to verify if we are passing a floating point and a special version that returns a complex number, so it can compute also the square
-of negative numbers
