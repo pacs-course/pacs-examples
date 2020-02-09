@@ -16,8 +16,9 @@ int main()
     auto t2 = std::tuple_cat(t1, std::make_pair("Foo", "bar"), t1, std::tie(n));
     // Now t2 is a tuple<int,string,float,string,string,int,string.float,int&>!!!!!
     std::cout<<"t2= "<<t2<<std::endl;
-    // Beware tie ties references!
+    // Remember: tie ties references!
     n = 10;
+    // The value of n has changed
     std::cout<<"t2= "<<t2<<std::endl;
     
 }

@@ -5,6 +5,13 @@ struct aggr
   double a;
   int b;
 };
+// Since C++17 aggregates can have base classes
+#if __cplusplus >= 201703L
+struct aggr2 : aggr
+{
+  int c;
+};
+#endif
 //! Print arrays. This version takes the dimension as parameter 
 template <class T, std::size_t N>
 std::ostream & operator <<(std::ostream & out,std::array<T,N> const & myarray)
@@ -77,4 +84,12 @@ int main()
   // I can pass the array to a function taking a pointer
   // using data()
   fun(c.data(),c.size());
+  //
+  // C++17 extension for derived aggregates
+#if __cplusplus >= 201703L
+  std::array<aggr2,3> ss{bb[0],10,bb[1],20,bb[2],30};
+  cout<<" Array ss size= "<<ss.size()<<endl;
+  auto& xa = ss[0];
+  std::cout<<"first elements of ss:"<<xa.a<<" "<<xa.b<<" "<<xa.c<<std::endl;
+#endif
 }
