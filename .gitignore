@@ -168,3 +168,15 @@ make.dep
 /Examples/src/MetaProgramming/ifthenelse/main_ifthenelse
 /Examples/src/Algorithms/Accumulate/main_summation
 /Examples/src/IntegerOverflow/mainItOver
+/Examples/src/STL/Set/main_set
+/Examples/src/STL/cont/deque1
+/Examples/src/STL/cont/multimap1
+/Examples/src/STL/cont/multiset1
+/Examples/src/STL/cont/oddeven
+/Examples/src/STL/cont/ostream_iterator
+/Examples/src/STL/cont/set1
+/Examples/src/STL/cont/setcmp1
+/Examples/src/STL/cont/unordset1
+/Examples/src/STL/tuple/test_tie
+/Examples/src/STL/tuple/test_tuple
+/Examples/src/STL/tuple/test_tuple_cat
