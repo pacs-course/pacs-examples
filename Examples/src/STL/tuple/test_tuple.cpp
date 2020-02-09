@@ -14,6 +14,11 @@
 #include <string>
 #include "printtuple.hpp" 
 using namespace std;
+// A function returning a tuple
+auto fun(double const & a)
+{
+  return std::make_tuple("Values: ",a*a,a*a*a);
+};
 
 int main()
 {
@@ -63,5 +68,8 @@ int main()
   int i;
   std::tie(i,x,std::ignore)=t1;
   std::cout<<"i= "<<i<<" x= "<<x<<std::endl;
-  
+  // In C++17 you can use structured bindings
+  auto [message,xSquare,xCube]= fun(3.0);
+  std::cout<< message<<" "<<xSquare<<" "<<xCube<<std::endl;
+
 }
