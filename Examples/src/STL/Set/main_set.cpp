@@ -29,8 +29,10 @@ int main()
   using namespace std;
   // I create my comparison operator using a lambda
   auto comp=[](int const & a,int const & b){return a>b;};
-  // I have to pass it explicitly since lambdas has NO DEFAULT CONSTRUCTOR
+  // I have to pass it explicitly since I need to give the type of
+  // the comparison operator. So I have to use decltype
   set<int,decltype(comp)> s{comp};
+  
   s.insert(10);
   s.insert(11);
   for (auto i: s) cout<<i<<" ";

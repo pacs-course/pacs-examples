@@ -29,13 +29,28 @@ int main()
   std::set<S> set_of_s; // S is LessThanComparable!
   
   S value{42, "Test", 3.14};
-  std::set<S>::iterator iter;
   bool inserted;
   
   // unpacks the return value of insert into iter and inserted
-  // tia works also with std::pairs!
-  std::tie(iter, inserted) = set_of_s.insert(value);
+  // tie works also with std::pairs!
+  // I use std::ignore since the first term in the pair is
+  // not used
+  std::tie(std::ignore, inserted) = set_of_s.insert(value);
   
   if (inserted)
     std::cout << "Value was inserted successfully\n";
+  else
+            std::cout << "Value was not inserted\n";
+
+  // But since C++17 things are even nicer using initilized if
+  // and structured  bindings!
+  // you will have a warning since it is not used. But with
+  // structured bindings you cannot use std::ignore.
+  
+  if(auto [it,ins]=set_of_s.insert(value);ins)
+        std::cout << "Value was inserted successfully\n";
+  else
+            std::cout << "Value was not inserted\n";
+
+
 }
