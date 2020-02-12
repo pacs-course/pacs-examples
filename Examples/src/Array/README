@@ -1,4 +1,0 @@
-List initialization of arrays. We show also the simplification
-introduced by C++14. However, the compiler will still give a warning,
-becouse braces around initialization of subobject are still suggested,
-even if not compulsory since C++14.
