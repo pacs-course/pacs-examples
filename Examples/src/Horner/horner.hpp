@@ -8,7 +8,7 @@
   @param a vector containing the coefficients from lowest to highest order.
   @param x evaluation point.
  */
-double eval(std::vector<double> const & a, double const x);
+double eval(std::vector<double> const & a, double const & x);
 
 //! It evaluates a polynomial using horner rule
 /*!
@@ -17,24 +17,23 @@ double eval(std::vector<double> const & a, double const x);
     @param a vector containing the coefficients from lowest to highest order.
     @param x evaluation point.
 */
-double horner(std::vector<double> const & a, double const x);
+double horner(std::vector<double> const & a, double const & x);
 
 //This only to show the use of pointers to function.
 //! A pointer to function.
 //
 //typedef double (*polyEval)(std::vector<double> const &, double const);
 // In C++11 is it preferable to do 
-using polyEval=double (*)(std::vector<double> const &, double const);
+using polyEval=double (*)(std::vector<double> const &, double const&);
 
 //! Evaluates polynomial in a set of points.
 /*!
   @param point   Vector of points to compute the polynomial.
   @param a       Polynomial coefficients.
-  @param result  As the name says.
+  @result        A vector with the evaluated points
   @param method  Method to evaluate the polynomial
  */
-void evaluatePoly(std::vector<double> const & points,
+std::vector<double> evaluatePoly(std::vector<double> const & points,
 		  std::vector<double> const & a,
-		  std::vector<double>  & result, 
                   polyEval method);
 #endif
