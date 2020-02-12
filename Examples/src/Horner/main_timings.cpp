@@ -43,12 +43,9 @@ int main() {
   points.reserve(numinterval+1);
   double x=startx;
   for (int i=0; i <= numinterval; ++i,x+=interval)points.push_back(x);
-  // to make the game fair I fill the vector results
-  // so both methods start in thw same situation
-  vector<double> result(points.size());
   Chrono temporizzatore;
   temporizzatore.start();
-  evaluatePoly(points,a,result,&eval);
+  evaluatePoly(points,a,&eval);
   cout<<endl;
   temporizzatore.stop();
   
@@ -57,7 +54,7 @@ int main() {
   cout<<"Computing "<<numinterval<<" evaluation of the polynomial with"
       <<" Horner's rule"<<endl;
   temporizzatore.start();
-  evaluatePoly(points,a,result,&horner);
+  evaluatePoly(points,a,&horner);
   cout<<endl;
   temporizzatore.stop();
   cout<<temporizzatore<<endl;

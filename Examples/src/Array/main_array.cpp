@@ -11,6 +11,16 @@ struct aggr2 : aggr
 {
   int c;
 };
+// Since c++17 we can use structured bindings on arrays and on
+// aggregates!
+auto anAggregate()
+{
+  return aggr{3.1415,7};
+}
+auto anArray2()
+{
+  return std::array<int,2>{1,2};
+}
 #endif
 //! Print arrays. This version takes the dimension as parameter 
 template <class T, std::size_t N>
@@ -91,5 +101,10 @@ int main()
   cout<<" Array ss size= "<<ss.size()<<endl;
   auto& xa = ss[0];
   std::cout<<"first elements of ss:"<<xa.a<<" "<<xa.b<<" "<<xa.c<<std::endl;
+  // structured bindings
+  auto [a1,a2]=anAggregate();
+  std::cout<<"The aggregate contains:"<<a1<<" "<<a2<<std::endl;
+  auto [v1,v2]=anArray2();
+  std::cout<<"The array contains:"<<v1<<" "<<v2<<std::endl;
 #endif
 }
