@@ -48,7 +48,7 @@ void  gvect(T&& x)
 {
   T v(std::forward<T>(x));
   std::cout<<"using void gvect<T>(T&&) with std::forward" <<
-      " v size is "<<v.size()<<std::endl;
+    " created vector size is "<<v.size()<<" Input vector size is now "<<x.size()<< std::endl;
 }
 
 
@@ -87,7 +87,7 @@ int main()
   std::cout<<"\n\n NOW SOMETHING MORE INTERESTING\n\n";
   Vector v(100,3.0); // a vector containing 3 of size 100
 
-  std::cout<<"calling gvect(v) (v is a Vector)"<<std::endl;
+  std::cout<<"calling gvect(v) (v is a vector)"<<std::endl;
   gvect(v);
   std::cout<< "The size of v after the call is: "<<v.size()<<std::endl;
 
@@ -95,5 +95,6 @@ int main()
   gvect(std::move(v));
   std::cout<< "The size of v after the call is: "<<v.size()<<std::endl;
 
-  
+  std::cout<<"I pass a vector created on the fly: gvect(vector<double>(10))"<<std::endl;
+  gvect(std::vector<double>(10));
 }
