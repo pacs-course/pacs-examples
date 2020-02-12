@@ -26,7 +26,7 @@ namespace Utility
         // result accumulates the sum
 	result = t;
       }
-    return static_cast<Real>(result);
+    return result;
   }
   
 } // namespace Utility
