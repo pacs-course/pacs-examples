@@ -1,0 +1,113 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+This document presents two examples where floating point round-off error may lead to completely wrong results. These are clearly degenerate, specially crafted,  cases. Yet, they should indicate you that floating point operations may need care.
+
+\section{Rump example}
+The example considers the function
+\[
+  r(x,y)=Ay^6+x^2(Bx^2y^2-y^6-Cy^4-D)+Ey^8+\frac{x}{Dy}
+\]
+ with
+  $A=333.75$, $B=11$, $C=121$, $D=2$ and $E=5.5$.
+  
+  The function is very badly conditioned at $(x,y)=(77617,33096)$.
+  Taking the first $6$ significant digits, we have
+  $r(77617,33096)=-0.827396$ (you may verify it using a symbolic
+  computation tool). However, the condition number, estimated by
+  $\vert r^\prime\vert/\vert r\vert$, is of the order of $10^{32}$ at
+  that point. Consequently, floating point errors may be amplified
+  strongly, and indeed the computed value using floating point
+  arithmetic differs from the exact one by orders of magnitude, even
+  with the extended precision given by \texttt{long double}.
+
+  The reason is that the powers of $x$ and $y$ causes the computed
+  value to loose significant digits, and the cancellation error due to
+  the subtraction is finally amplified. This is clearly a specially
+  crafted example, however it shows the danger of loosing significant
+  digits when computing powers. Interesting, the actual result may
+  differ when running the code on different architectures, or
+  compiling with different compiler options, because of possible differences
+  on the implementation of floating point arithmetic, or different
+  optimization steps carried out be the compiler.
+
+  Unfortunately, in this example there is little we can do to
+  ameliorate the situation. 
+  
+\section{Wrongly converging sequence}.
+We define a sequence $x_n,\, n=0,1,\ldots$ as
+\[
+  \begin{array}{l}
+    x_0=2,\\
+    x_1=-4,\\
+    x_{n+1}=111-1130x_n^{-1}+3000x^{-1}_{n-1}x^{-1}_{n},\ n=2,3,\ldots.
+  \end{array}
+\]
+    It can be easily found, by looking at the roots of the polynomial
+    \[
+    x^3-111+1130x^2-3000,
+    \]
+    that if the sequence converges it converges necessarily to either
+    $5$, $6$, or $100$.
+    
+    By performing the limit via symbolic computations, it may be
+    assessed that indeed $\lim_{n\to\infty} x_n=6$.
+
+    However, we now consider the fixed point problem governed by the
+    iteration function $\phi:\,\mathbb{R}^2\to\mathbb{R}^2$ given by
+    \[
+      \begin{bmatrix}
+        y_1\\y_2 \end{bmatrix}=\mathbf{y}=\phi(\mathbf{y})=\begin{bmatrix}
+        y_2\\
+        111-1130y^{-1}_1+3000y^{-1}_{1}y^{-1}_{2}
+        \end{bmatrix}
+    \]
+    It can be noted that the iterate
+    $\mathbf{y}_{n+1}=\phi(\mathbf{y}_{n}),\, n=0,\ldots$, with
+    $\mathbf{y}_0=[2,-4]^T$, provides values that corresponds to the
+    given sequence, more precisely $x_n=y_{2,n-1}$ for $n>2$. Indeed,
+    the limit of the given sequence (in exact arithmetic) corresponds
+    to the fixed point $(6,6)=\phi(6,6)$.
+    
+    It may be verified that also $(5,5)$ and $(100,100)$ are fixed
+    points of $\phi$. However, we have that
+    $\Vert\nabla\phi(6,6)\Vert>>1$, while
+    $\Vert\nabla\phi(100,100)\Vert<1$ (and
+    $\Vert\nabla\phi(5,5)\Vert>>1$). Thus, even if $6$ is the exact
+    limit point of the given sequence, the iteration function $\phi$
+    in $(6,6)$ is not a contraction. It means that in general the
+    fixed point iteration $\mathbf{y}_{n+1}=\phi(\mathbf{y}_n)$, for a
+    given initial condition $\mathbf{y}_0$, is \emph{not convergent} to that
+    point.  In \emph{exact arithmetic} it may converge to $(6,6)$ only
+    for special isolated values of the initial condition, for instance
+    the one given by $\mathbf{y}_0=(2,-4)$.  While, $\phi$ is a
+    contraction in the neighborhood of $(100,100)$, thus there is a
+    whole interval of possible initial values for which the fixed
+    point iteration converges to $(100,100)$.
+
+    As a consequence of these considerations, $6$ is an unstable limit
+    point, in the sense that any small perturbations will lead the
+    iteration to move away from it and finally towards the ``stable''
+    point $100$. The ``perturbation'' is, on our case, induced by
+    round-off errors. And, indeed, the sequence computed numerically
+    in floating point arithmetic eventually converges to $100$, even
+    when using extended precision.
+
+    Running the given code, you may note that in the first few
+    iterations the sequence is in fact approaching $6$. However, as
+    soon as round-off error accumulates, the iterate enters the basin
+    of attraction of $x=100$ and very rapidly converges to that
+    (wrong) value. In extended precision, from iteration $35$ we get
+    $100$ with all significant digits.
+
+    If you change in the code \texttt{long double} with
+    \texttt{double} in the template argument of
+    \texttt{Pathologic\_Sequence}, you may note that the deviation
+    from the convergence to $6$ appears earlier, because of the larger
+    round-off errors.
+ 
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
