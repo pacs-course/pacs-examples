@@ -1,4 +1,4 @@
-/* A sample program to illustrate some basic features of C++. It adds all
+/* A simple program to illustrate some basic features of C++. It adds all
    integers between two given integers and outputs the sum to the screen.      */
 
 #include <iostream> // include a standard library for input/output
@@ -22,4 +22,4 @@ int main() {
 // Alternatively you may use:
 // int sum(0); // old style initialization (but still perfectly valid)
 // int sum = 0;// Equivalent to int sum(0);
-// 
+

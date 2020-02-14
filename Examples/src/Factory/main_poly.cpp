@@ -29,7 +29,8 @@ int main()
     if(answer=="END")break;
     auto where=factory1.find(answer);
     if(where != factory1.end()){
-      // Second entry of where is a pointer to a builder function!
+      // Second entry of *where is the builder function!
+      // I dereference it and I call the () operator: I get a Polygon
       auto thePoly=(where->second)();
       thePoly->showMe(cout);
     }else{

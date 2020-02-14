@@ -1,6 +1,0 @@
-This version of the example does not use the wrapper class I had adopted since unique_ptr were not yet in the standard.
-
-This version used unique_ptr directly.
-
-PLEASE not how the use of the prototype pattern (clone) simplify
-things when writing the copy constructor and assignement of COmposite.

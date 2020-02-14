@@ -33,9 +33,18 @@ int main()
 
     // check convergence of the midpoint rule wrt an analytical solution
     double analyticalValue = exp (1.) - exp (0.);
+    std::cout<<"Midpoint:"<<std::endl;
     for ( int n = 10; n < 100; n *= 2 )
     {
         double intValue = Integrate::midPoint ( exp (x), 0., 1., n );
+        double error = std::fabs ( intValue - analyticalValue );
+        std::cout << "error with " << n << " intervals: " << error << std::endl;
+    }
+
+    std::cout<<"Simpson:"<<std::endl;
+    for ( int n = 10; n < 100; n *= 2 )
+    {
+        double intValue = Integrate::simpson ( exp (x), 0., 1., n );
         double error = std::fabs ( intValue - analyticalValue );
         std::cout << "error with " << n << " intervals: " << error << std::endl;
     }
