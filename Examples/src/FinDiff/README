@@ -1,9 +1,0 @@
-A simple test of forward error analysis for the computation of the derivative of a function via centered finite differences.
-It shows the relevance of the truncation error as the step h gets smaller
-
-make run runs the test
-
-The file data.pot may change some of the parameters
-
-NEW VERSION: it computes the derivative also with the special formula that does
-not takes differences, so it is not subject to cancellation errors
