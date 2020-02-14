@@ -1,0 +1,16 @@
+# A little finite element code #
+
+An example of a program that computes the temperature in a bar solving
+the 1D heat equation with a Gauss-Siedel iteration.
+
+Taken and heavily adapted from *"Simulation numerique an C++" of I. Danaila,
+   F. Hecht e O. Pironneau, 2005*
+
+Calling ``./plot.sh`` you are able to visualize the results.  Or you can
+launch gnuplot and then at the gnuplot prompt type
+
+``
+gnuplot> plot "result.dat" u 1:2 w lp lw 2 title "uh", "result.dat" u 1:3 w l lw 2title "uex"
+``
+
+``make heat_exchange.pdf`` produce a file with the description of the example.
