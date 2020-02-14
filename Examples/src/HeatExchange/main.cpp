@@ -46,6 +46,11 @@ int main(int argc, char** argv)
   // Get file with parameter values
   string filename = cl.follow("parameters.pot","-p");
   cout<<"Reading parameters from "<<filename<<std::endl;
+  #if __cplusplus< 201703L
+  // This version is perfectly fine and
+  // works also if you compile with C++17, but with C++17 you
+  // may make things simpler
+
   // read parameters
   const parameters param=readParameters(filename,verbose);
   // Transfer parameters to local variables
@@ -61,7 +66,13 @@ int main(int argc, char** argv)
   const auto& Te=param.Te; // External temperature (Centigrades)
   const auto& k=param.k;  // Thermal conductivity
   const auto& hc=param.hc; // Convection coefficient
-  const auto&    M=param.M; // Number of grid elements
+  const auto& M=param.M; // Number of grid elements
+  #else
+  // C++17 onwards version. This version works only with at least C++17
+  // A oneliner!
+  const auto [itermax,toler,L,a1,a2,To,Te,k,hc,M] = readParameters(filename,verbose);
+  #endif
+
   
   //! Precomputed coefficient for adimensional form of equation
   const auto act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
@@ -75,7 +86,7 @@ int main(int argc, char** argv)
   // Gauss Siedel is initialised with a linear variation
   // of T
   
-  for(unsigned int m=0;m <= M;++m)
+  for(int m=0;m <= M;++m)
      theta[m]=(1.-m*h)*(To-Te)/Te;
   
   // Gauss-Seidel

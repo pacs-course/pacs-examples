@@ -4,38 +4,26 @@
 struct parameters
 {
   //! max number of iteration for Gauss-Siedel
-  int   itermax;
+  int   itermax=1000000;
   //! Tolerance for stopping criterion
-  double  toler;
+  double  toler=1.e-8;
   //! Bar length
-   double L;
+   double L=40.0;
   //! First longitudinal dimension
-  double a1;
+  double a1=4.0;
  //! Second longitudinal dimension
-  double a2;
+  double a2=50.;
   //! Dirichlet condition
-  double To;
+  double To=46.;
   //! External temperature 
-  double Te;
+  double Te=20.;
   //! Conductivity
-  double k;
+  double k=0.164;
   //! Convection coefficient
-  double hc;
+  double hc=200e-6;
   //! Number of elements
-  int M;
+  int M=100;
   //! Constructor takes default values
-  parameters():
-    itermax(1000000),
-    toler(1e-8),
-    L(40.),
-    a1(4.),
-    a2(50.),
-    To(46.),
-    Te(20.),
-    k(0.164),
-    hc(1.e-6*200.),
-    M(100)
-  {}
 };
 //! Prints parameters
 std::ostream & operator << (std::ostream &,const parameters &);
