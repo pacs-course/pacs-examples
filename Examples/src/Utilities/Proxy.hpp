@@ -1,1 +1,1 @@
-../AbstractFactory/Proxy.hpp
+../GenericFactory/Proxy.hpp
