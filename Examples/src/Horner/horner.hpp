@@ -36,4 +36,11 @@ using polyEval=double (*)(std::vector<double> const &, double const&);
 std::vector<double> evaluatePoly(std::vector<double> const & points,
 		  std::vector<double> const & a,
                   polyEval method);
+
+/* Not yet working since g++7 and g++8 do not implement yet parallel algor.
+//! PARALLEL VERSION
+std::vector<double> evaluatePoly_par(std::vector<double> const & points,
+		  std::vector<double> const & a,
+                  polyEval method);
+*/
 #endif

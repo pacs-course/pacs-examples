@@ -107,7 +107,7 @@ ifeq ($(DEBUG),yes)
   OPTFLAGS=-g
 # If debugging we use the local dynamic libraries and avoid ldconfig -d
 # or setting LD_LIBRARY_PATH
-  LDFLAGS+=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib# 
+  LDFLAGS=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib# 
 else
   # Since aa 18-19 I have decided to indicate the libraries even if DEBUG=no.
   # Remember however that normally release code does not contain the directories
@@ -115,7 +115,7 @@ else
   # you take the responsibility of installing them in the right place.
   # But here I want to avoid students messing around with LD_LIBRARY_PATH
   # or ldconfig.
-  LDFLAGS+=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib#
+  LDFLAGS=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib#
   OPTFLAGS=-O2 #maybe you want -O3
   DEFINES+=-DNDEBUG
 endif

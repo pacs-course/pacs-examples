@@ -53,11 +53,9 @@ export DEBUG
 ifeq ($(DEBUG),no)
   OPTFLAGS=-O3
   LIBRARIES=-L. -L$(PACS_LIB_DIR)  -l$(LIBNAME2) -l$(LIBNAME)  -l$(LIBNAME3) $(EXTRA_LIBS)
-  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
 else
   OPTFLAGS=-g -O0
   LIBRARIES=-L.  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3) -L$(PACS_LIB_DIR) $(EXTRA_LIBS)
-  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
 endif
 
 LDLIBS=$(LIBRARIES)
@@ -94,11 +92,12 @@ EXEC=$(exe_sources:.cpp=)
 EXEC_OBJS=$(exe_sources:.cpp=.o)
 EXEC_SRCS:=$(exe_sources)
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc static dynamic depend install library
+.phony= all clean distclean doc static dynamic depend install library alllibs
 
 .DEFAULT_GOAL = all
 
 all:
+	@echo "make alllibs makes static and dynamic library"
 	@echo "make static makes static library"
 	@echo "make dynamic makes dynamic library"
 	@echo "make exec compiles executable"
@@ -115,11 +114,13 @@ all:
 
 depend: $(DEPEND)
 
+alllibs: static dynamic
+
 static:
-	-rm -f *.o
+	$(RM) *.o
 	$(MAKE) library LIBTYPE=STATIC 
 dynamic:
-	-rm -f *.o
+	$(RM) *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
@@ -158,13 +159,13 @@ $(STATIC_LIBFILE2): $(STATIC_LIBFILE2)($(LIB2_OBJS))
 #	ar -r $(STATIC_LIBFILE3) $(LIB3_OBJS)
 
 $(DYNAMIC_LIBFILE): $(LIB_OBJS)
-	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS)  -o $(DYNAMIC_LIBFILE)
+	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LDFLAGS)  -o $(DYNAMIC_LIBFILE)
 
 $(DYNAMIC_LIBFILE2): $(DYNAMIC_LIBFILE) $(LIB2_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIB2_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE2)
+	$(CXX) -shared $(OPTFLAGS) $(LIB2_OBJS) $(LIBD) $(LDFLAGS) -o $(DYNAMIC_LIBFILE2)
 
 $(DYNAMIC_LIBFILE3): $(LIB3_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIB3_OBJS) -o $(DYNAMIC_LIBFILE3)
+	$(CXX) -shared $(OPTFLAGS) $(LIB3_OBJS) $(LDFLAGS) -o $(DYNAMIC_LIBFILE3)
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)
