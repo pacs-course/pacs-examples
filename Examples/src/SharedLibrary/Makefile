@@ -42,19 +42,17 @@ EXEC=$(exe_sources:.cpp=)
 
 .DEFAULT_GOAL = all
 
-all: lib0 $(EXEC)
+all: lib0 lib1 $(EXEC)
 
 lib0:
 	$(CXX) -Wall -O3 -fPIC -c smalllib.cpp
 	$(CXX) -shared -Wl,-soname=libsmall.so.1 -o libsmall.so.1.0 smalllib.o
-	ln -f -s libsmall.so.1.0 libsmall.so
-	ln -f -s libsmall.so.1.0 libsmall.so.1
+	ln -s libsmall.so.1.0 libsmall.so
+	ln -s libsmall.so.1.0 libsmall.so.1
 	$(RM) -f smalllib.o
 lib1:
 	$(CXX) -Wall -fPIC -c smalllib2.cpp
 	$(CXX) -shared -Wl,-soname=libsmall.so.1 -o libsmall.so.1.1 smalllib2.o
-	ln -f -s libsmall.so.1.1 libsmall.so
-	ln -f -s libsmall.so.1.1 libsmall.so.1
 	$(RM) -f smalllib2.o
 
 main.o: main.cpp
