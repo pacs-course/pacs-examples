@@ -1,2 +1,0 @@
-A class for matrices. It stores the elements as unique_ptr and access them via the () operator rowwise or columnwise according to a policy that can be determined run time. The policy is implemented as a pointer to member function.
-. SInce I want a deep copy, I had to define copy and move operators explicitely 

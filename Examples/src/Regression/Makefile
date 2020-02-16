@@ -65,6 +65,11 @@ $(DEPEND): $(SRCS)
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
 
+%.pdf:%.tex
+	$(RM) $*.aux $*.log $*.vrb $*.out
+	pdflatex $<
+	pdflatex $<
+
 -include $(DEPEND)
 
 

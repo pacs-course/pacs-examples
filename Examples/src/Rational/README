@@ -1,5 +1,0 @@
-An example of use of operator overloading.
-
-A class that stores two integers to represent a Rational. 
-
-I have overloaded all arithmetic operators and I also provide a conversion operator to double.
