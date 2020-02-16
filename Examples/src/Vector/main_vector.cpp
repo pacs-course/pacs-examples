@@ -83,7 +83,19 @@ int main()
   cout<<"*********** Vector has been shrunk to fit size  *****"<<endl;
   printinfo(a,"a");
 
+  // Uniform initialization
+  vector<double> kv{5., 6. ,7., 8}; // a vector with 4 components
+  cout<<"*********** Vector initialised with uniform initialization syntax  *****"<<endl;
+  printinfo(kv,"kv");
+  
+  vector<double> ku{1., 2. ,3., 4}; // a vector with 4 components
 
+  // Swapping vectors
+
+  ku.swap(kv); // now ku and kv are swapped
+  // you may also use std::swap(ku,kv)
+  cout<<"*********** After swap with another vector"<<endl;
+  printinfo(kv,"kv");
   
 
 }
