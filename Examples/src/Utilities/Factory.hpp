@@ -1,1 +1,1 @@
-../AbstractFactory/Factory.hpp
+../GenericFactory/Factory.hpp
