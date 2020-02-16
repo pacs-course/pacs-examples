@@ -42,7 +42,7 @@ void gvect(Vector&& x)
   std::cout<<"using void gvect(T&&), v size is "<<v.size()<<std::endl;
 }
 */
-// Now the std:;forward magic: all in one!
+//! Now the std:;forward magic: all in one!
 template<class T>
 void  gvect(T&& x)
 {

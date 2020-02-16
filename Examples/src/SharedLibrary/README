@@ -1,6 +1,0 @@
-A very simple example of the use of dynamic libraries
-The command exec.sh runs the example
-
-Try with
-export LD_DEBUG=files
-
