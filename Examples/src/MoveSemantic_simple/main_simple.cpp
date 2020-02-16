@@ -5,32 +5,36 @@ class Foo
 public:
   Foo()
   {
-    std::cout<<" Calling default constructor"<<std::endl;
+    std::cout<<" Calling default constructor of Foo"<<std::endl;
   }
   Foo(const Foo & f):M_x{f.M_x}
   {
-    std::cout<<" Calling copy constructor"<<std::endl;
+    std::cout<<" Calling copy constructor of Foo"<<std::endl;
   }
                    
   Foo(const Foo&& f):M_x{std::move(f.M_x)}
   {
-    std::cout<<" Calling move constructor"<<std::endl;
+    std::cout<<" Calling move constructor of Foo"<<std::endl;
   }
 
   Foo & operator =(const Foo & f)
   {
-    std::cout<<" Calling copy assignement"<<std::endl;
+    std::cout<<" Calling copy assignement of Foo"<<std::endl;
     M_x=f.M_x;
     return *this;
   }
 
   Foo & operator =(Foo&& f)
   {
-    std::cout<<" Calling move assignement"<<std::endl;
+    std::cout<<" Calling move assignement of Foo"<<std::endl;
     M_x=std::move(f.M_x);
     return *this;
   }
-  
+
+  ~Foo()
+  {
+    std::cout<<" Destroying a Foo object"<<std::endl;    
+  }
   // in class initialization of member variable
   double M_x{0.0};
 };

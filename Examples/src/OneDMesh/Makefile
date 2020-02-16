@@ -88,6 +88,7 @@ EXEC_SRCS:=$(exe_sources)
 .DEFAULT_GOAL = all
 
 all:
+	@echo "make alllibs  makes static and dynamic library"
 	@echo "make static makes static library and executable"
 	@echo "make dynamic makes dynamic library and executable"
 	@echo "make depend just makes dependency file"
@@ -100,10 +101,14 @@ all:
 
 depend: $(DEPEND)
 
+alllibs: static dynamic
+
 static:
+	$(MAKE) clean
 	$(MAKE) library LIBTYPE=STATIC 
 	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
+	$(MAKE) clean
 	$(MAKE) library LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 

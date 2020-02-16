@@ -1,5 +1,5 @@
 #include <iosfwd>
-#include <ratio> // c++11 only!
+#include <ratio> // from c++11 only!
 //! A simple class that represent a rational number
 class Rational
 {

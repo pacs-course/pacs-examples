@@ -1,8 +1,0 @@
-A simple example about scoping rules. A scope is nomally opened and closed by { and  } and can be nested. Names defined in an outer scope will be imported in the inner scope. 
-But if they are redefined in the inner scope they hide the imported ones. A scope is said to be a named scope if it has a name: named scopes are those introduced by namespace or by a
-class/struct.  The most external scope (the one outside any {} ) is called global scope.
-
-A variable defined in an scope (a part the global scope) exixts only within the scope, they are destroyed when the code exit the scope in which they are defined.
-A name defined in a named scope and hidden in an enclosing scope may still be accessed by the scope resolution operator :: (i.e. by using ther full qualified name).
-Name in the global scope may be recalled even if they have been hidden by using again the scope resolution operator without specifying anyting on the left: ::g is a
-global variable, i.e. a variable in the global scope).
