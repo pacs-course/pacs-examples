@@ -180,3 +180,9 @@ make.dep
 /Examples/src/STL/tuple/test_tie
 /Examples/src/STL/tuple/test_tuple
 /Examples/src/STL/tuple/test_tuple_cat
+/Examples/src/Accumulate/main_summation
+/Examples/src/Odr/main2
+/Examples/src/SharedLibrary/libsmall.so.1
+/Examples/src/SharedLibrary/libsmall.so.1.0
+/Examples/src/Utilities/test_Factory
+/Examples/src/Utilities/test_scientific_precision

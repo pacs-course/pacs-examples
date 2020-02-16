@@ -78,9 +78,7 @@ namespace Geometry{
       all points are set to the null pointers
      */
     Triangle():M_points{nullptr,nullptr,nullptr}{};
-    //!Points are given (by reference)
-    /*!
-      Beware: do not pass rvalues, we need to take the address
+    //!Points are given (by reference or pointers)
     */
     /*!\defgroup Constructors Constructors and assignement ops
       @{
@@ -90,7 +88,7 @@ namespace Geometry{
     //! 
     /*!
       If a copy a triangle I copy the pointers to Point
-      Beware!
+      Beware! It is a shallow copy! To 
      */
     Triangle(const Triangle&)=default;
     //! If I assign a triangle i copy the pointers to Poit, beware.

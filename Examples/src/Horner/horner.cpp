@@ -1,5 +1,9 @@
 #include <cmath>
 #include "horner.hpp"
+#include <algorithm>
+/*
+ #include <execution> // for paralle algor.
+*/
 //! My function for power
 /*!
  Since std::pow() is very expensive I create my version for integer
@@ -33,11 +37,23 @@ evaluatePoly(std::vector<double> const & points,
 		  std::vector<double> const & a,
                   polyEval method)
 {
-  std::vector<double> result; 
-  result.reserve(points.size()); // make sure there is space
-  for(auto i : points)result.push_back(method(a,i));
+  std::vector<double> result(points.size());
+  auto compute=[&a,&method] (double const & x){return method(a,x);};
+  std::transform(points.begin(),points.end(),result.begin(),compute);
   return result;
 }
 
-
+/* NOT WORKING UNTIL IMPLEMENTED IN THE COMPILER
+//! Evaluates polynomial in a set of points (parallel version)
+std::vector<double>
+evaluatePoly_par(std::vector<double> const & points,
+		  std::vector<double> const & a,
+                  polyEval method)
+{
+  std::vector<double> result(points.size());
+  auto compute=[&a,&method] (double const & x){return method(a,x);};
+  std::transform(std::execution::par, points.begin(),points.end(),result.begin(),compute);
+  return result;
+}
+*/
 

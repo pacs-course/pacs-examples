@@ -49,21 +49,22 @@ namespace NumericalIntegration{
       QuadratureRule classes are Clonable (that is they contain a
       clone() method). So, I can safely pass also a reference to a
       QuadratureRule base class.  If QuadratureRule where not clonable
-      it had be better not to pass a reference but an object.  The
-      implementation would be different and I could only pass concrete
-      object types (not the abstract class!): 
-      \code template <class T>
-      Quadrature(const T rule, Mesh1D& mesh):
-      Quadrature(QuadratureRuleHandler(new T(rule)),mesh){} 
-      \endcode
+      it would not work.
 
-      \param rule A unique_ptr storing the rule.
+      \param rule The rule.
       \param mesh The 1D mesh
      */ 
     template <typename MESH> 
     Quadrature(const QuadratureRule & rule, MESH&& mesh):
       _rule(rule.clone()),_mesh(std::forward<MESH>(mesh)){}
     //! Copy constructor.
+    /*!
+      \todo I could have used the Wrapper class in cloningUtilities.hpp and save
+      the need of building copy/move and assignement operator. I could have
+      used the synthetic ones. Since instead I am storing a unique_ptr, 
+      if I want to make the class copiable/movable with a deep copy, I need
+      to write the operators myself, exploiting clone().
+     */
     Quadrature(Quadrature const & rhs): _rule(rhs._rule->clone()),  _mesh(rhs._mesh){}
     //! Move constructor.
     Quadrature(Quadrature&& rhs): _rule(std::move(rhs._rule)), _mesh(std::move(rhs._mesh)){}

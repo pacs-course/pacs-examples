@@ -78,7 +78,7 @@ int main(int argc, char** argv){
           theRule->setTargetError(targetError);
           theRule->setMaxIter(maxIter);
         }
-    }  catch (std::invalid_argument)
+    }  catch (std::invalid_argument &)
     {
       notThere = true;
     }
