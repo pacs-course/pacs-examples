@@ -7,7 +7,7 @@ Scientifico - Advanced Programming for Scientific Calculus) course at
 Politecnico di Milano.
 
 The software require a c++11 compiler, i.e. gcc >= 5.0 or clang >= 5.
-gcc 7.0 is the one you find in the module system provided. But you may
+gcc 9.2 is the one you find in the module system provided. But you may
 check the version of you compiler with the option -v
 
 This directory contains some utilities:
