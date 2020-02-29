@@ -1,4 +1,11 @@
-#Function for Runge Kutta adaptive time integration#
+#THIS IS AN OLD VERSION. LOOK AT THE ONE IN RKF DIRECTORY INSTEAD#
+
+
+
+
+
+
+##Function for Runge Kutta adaptive time integration##
 
 For scalar ODE of the form dy/dt = f(y,t)
 (extension to vectorial problems is not difficult)
