@@ -69,7 +69,3 @@ $(DEPEND): $(SRCS)
 	done
 
 -include $(DEPEND)
-
-
-
-

@@ -186,3 +186,5 @@ make.dep
 /Examples/src/SharedLibrary/libsmall.so.1.0
 /Examples/src/Utilities/test_Factory
 /Examples/src/Utilities/test_scientific_precision
+/Examples/src/SharedLibrary/libsmall.so.1.1
+/Examples/src/ReferenceWrapper/main_wrap
