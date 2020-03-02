@@ -119,12 +119,16 @@ else
   OPTFLAGS=-O2 #maybe you want -O3
   DEFINES+=-DNDEBUG
 endif
+# Add verbosity if needed
+ifeq ($(VERBOSE),yes)
+  VERBOSITY=-DVERBOSE
+endif
 
 #
 # Flags for standard 
 #
 # if you want c++14
-STANDARD=c++14
+STANDARD=c++17
 $STANDARD=c++11
 export STDFLAGS=-std=$(STANDARD)
 ##
@@ -169,7 +173,7 @@ LIBD := $(foreach lib,$(ALL_LIB_DIR),-L$(lib) )
 #
 # Set make macros
 #
-export CPPFLAGS=$(INCLS) $(DEFINES)
+export CPPFLAGS=$(INCLS) $(DEFINES) $(VERBOSITY)
 export CXXFLAGS=$(OPTFLAGS) $(STDFLAGS) $(WARNFLAGS)
 #
 # For C Programs 
