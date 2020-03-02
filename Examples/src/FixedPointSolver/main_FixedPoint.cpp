@@ -40,8 +40,8 @@ int main()
     // if |lambda| =1 the fixed point (0,0.739085) is unstable. In general, we do not converge.
     // if |lambda| >1 we have two fixed points, one of which is with  y=0 and is unstable, the other is stable
     //                and we converge to the second one
-    // Try to chenge lambda and see what happens
-    double lambda=0.9;
+    // Try to change lambda and see what happens
+    double lambda=0.5;
     phi=[lambda](FixedPointIterator::ArgumentType const & x){return std::vector<double>{lambda*std::sin(x[0]),std::cos(x[1])}; };
     
     FixedPointIterator iterate{phi};
@@ -49,7 +49,7 @@ int main()
     std::cout<<"*** WITH BASIC METHOD:\n";
     print_result(iterate.compute(startingPoint));
     // Now with acceleration and Eigen
-    using FixedPointIterator2=apsc::FixedPointIteration<FixedPointArgumentType::EIGEN,ASecantAccelerator>;
+    using   FixedPointIterator2=apsc::FixedPointIteration<FixedPointArgumentType::EIGEN,ASecantAccelerator>;
     using IterationFunction2=FixedPointIterator2::IterationFunction;
     IterationFunction2 phi2;
     phi2 = [lambda](FixedPointIterator2::ArgumentType const & x)
