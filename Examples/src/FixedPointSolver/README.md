@@ -17,3 +17,9 @@ with the following features
     An accelerator takes as input the last iterate and returns a corrected value which hopefully
     provides a better convergent sequence.
 * Test of convergence based on the distance of two consecutive iterates.
+
+**Note** If you want to have a more verbose output compile with
+
+```
+make VERBOSE=yes
+```
