@@ -35,11 +35,7 @@ namespace apsc
     using IterationFunction=typename FixedPointTraits<ARG>::IterationFunction;
     NoAccelerator(IterationFunction const & I):M_I{I}{};//!< Does nothing
     //! Call operator that returns the accelerated iterate
-    ArgumentType operator()(ArgumentType const &x){return M_I(x);}
-    /*!! A different call operator, which takes two arguments,
-     *	since some accelaration techniques are based on two sequences.
-     */
-    ArgumentType operator()(ArgumentType const & x,ArgumentType const &){return M_I(x);}
+    ArgumentType operator()(ArgumentType const & x){return M_I(x);}
     //! Puts the accelerator to the original setting
     void reset(){};
     //! Returns the identifier of the accelerator. Useful to implement different choices run-rime
@@ -125,10 +121,6 @@ namespace apsc
     ASecantAccelerator(IterationFunction const & I):M_I{I}{};//!< Does nothing
     //! Call operator that returns the accelerated iterate
     ArgumentType operator()(ArgumentType const &x);
-    /*!! A different call operator, which takes two arguments,
-     *	since some accelaration techniques are based on two sequences.
-     */
-    ArgumentType operator()(ArgumentType const & x,ArgumentType const &){return this->operator()(x);}
     //! Put back the accelerator to initial setting
     void reset()
     {

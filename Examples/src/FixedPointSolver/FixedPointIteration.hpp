@@ -12,6 +12,11 @@
 #include <cmath>
 #include <memory>
 #include <limits>
+#ifdef VERBOSE
+// If I want verbosity I need to compile with -DVERBOSE
+// use make CPPFLAGS+=-DVERBOSE
+#include <iostream>
+#endif
 namespace apsc
 {
 //! Options for fixed point iteration
@@ -74,10 +79,16 @@ struct FixedPointOptions
       ArgumentType previous=x0;
       while(iter<options.maxIter && currentDistance >options.tolerance)
         {
-          current = this->accelerator(current,previous);
+          current = this->accelerator(previous);
           currentDistance=this->distance(current,previous);
           previous=current;
           ++iter;
+#ifdef VERBOSE
+          std::cout<<"Iteration:"<<iter<<" Values:(";
+          for (auto j=0;j<current.size();++j)
+            std::cout<<current[j]<<", ";
+          std::cout<<std::endl;
+#endif
         }
       this->accelerator.reset();
       return std::make_tuple(current,iter,currentDistance,(iter<options.maxIter));
@@ -96,5 +107,8 @@ struct FixedPointOptions
   };
 
 }
+
+
+
 
 #endif /* SRC_NONLINSYSSOLVER_FIXEDPOINTITERATION_HPP_ */

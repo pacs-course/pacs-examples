@@ -13,7 +13,7 @@ int main()
   // results, and it is undetected!
   unsigned int uintmin=0;
   // Now I subtract 1
-  uintmin -=1;
-  std::cout<<"Unsigned underflow= "<<uintmin<<std::endl;
+  uintmin -=1u;
+  std::cout<<"Unsigned underflow= 0u-1u "<<uintmin<<std::endl;
   
 }
