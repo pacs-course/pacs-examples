@@ -14,48 +14,12 @@
 # the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../
+#
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
-#
+# This is optional. If not present is not an error
 -include Makefile.inc
-
-# Say no if you want full optimization
-export DEBUG=yes
-#CXX=g++-4.9
-#CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
-STANDARD=c++17
-#
-DYNAMIC_LIBFILE=lib$(LIBNAME).so
-STATIC_LIBFILE=lib$(LIBNAME).a
-
-LIBRARIES+=-L. -l$(LIBNAME)
-LDLIBS+=$(LIBRARIES)
-INCLUDES=-I. -I$(PACS_INC_DIR)
-
-ifeq ($(LIBTYPE),DYNAMIC)
- CXXFLAGS+=-fPIC
- export LIBRARY=$(DYNAMIC_LIBFILE)
- LDFLAGS+=-dynamic 
-else
- export LIBRARY=$(STATIC_LIBFILE)
-# LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
-endif
-
-ifeq ($(DEBUG),yes)
-  OPTFLAGS=-g
-ifeq ($(LIBTYPE),DYNAMIC)
-  LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
-endif
-else
-  OPTFLAGS=-O3
-  CPPFLAGS+=-DNDEBUG
-endif
-ifeq ($(FPEABORT),yes)
- EXEC_CPPFLAGS=-DFPE_ABORT
-else
- EXEC_CPPFLAGS=
-endif
 
 #
 # The general setting is as follows:
@@ -67,102 +31,41 @@ endif
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
-# object file for a library if needed
-LIB_SRCS=$(filter-out main%.cpp,$(SRCS))
-LIB_OBJS=$(LIB_SRCS:.cpp=.o)
-LIB_HEADERS=$(LIB_SRCS:.cpp=.hpp)
-OTHER_OBJS=
-OTHER_SRCS=
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
-EXEC_OBJS=$(exe_sources:.cpp=.o)
-EXEC_SRCS:=$(exe_sources)
 
-#========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.PHONY: all clean distclean doc static dynamic depend install exec library
+#========================== NEW THE DEFINITION OF THE TARGETS
+.phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
 
-all:
-	@echo "make static makes static library and executable"
-	@echo "make dynamic makes dynamic library and executable"
-	@echo "make depend just makes dependency file"
-	@echo "make clean cleans all but not not library"
-	@echo "make library LIBTYPE=[DYNAMIC|STATIC] makes dyn/stat library"
-	@echo "make alllibs makes both dynamic and static library"
-	@echo "make exec makes the executable (once libraries are present)"
-	@echo "make distclean cleans all"
-	@echo "make install installs"
-	@echo "macro DEBUG=no  deactivates debugging"
-	@echo "macro FPEABORT=yes  activates abort on FPE (if implemented)"
-	@echo "Default debug setting:" $(DEBUG)
+all: $(DEPEND) $(EXEC)
 
-alllibs:
-	$(MAKE) depend
-	$(MAKE) clean
-	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC 
-	$(MAKE) clean
-	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
-
-depend: $(DEPEND)
-
-static:
-	$(MAKE) depend
-	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
-
-dynamic:
-	$(MAKE) depend
-	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
-
-exec: $(EXEC)
-
-library:  $(LIBRARY)
-
-install:
-	cp $(HEADERS) $(PACS_INC_DIR)
-	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
-	$(RM) -r -f  ./doc $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(DEPEND) 2>/dev/null
-	$(RM) *.out *.bak *~ 2>/dev/null
+	$(RM) -f ./doc $(DEPEND)
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(LIBRARY) $(EXEC_OBJS) $(OTHER_OBJS)
-#	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
+$(EXEC): $(OBJS)
 
-#$(EXEC_OBJS): $(EXEC_SRCS)
-#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(EXEC_CPPFLAGS) -c $?
+$(OBJS): $(SRCS)
 
-#$(OTHER_OBJS): $(OTHER_SRCS)
-#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $?
-
-$(STATIC_LIBFILE): $(STATIC_LIBFILE)($(LIB_OBJS))
-#	ar -r $(STATIC_LIBFILE) $(LIB_OBJS)
-
-$(DYNAMIC_LIBFILE): $(LIB_OBJS)
-	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE)
-
-#$(LIB_OBJS): $(LIB_SRCS)
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
+install:
+	cp *.hpp $(PACS_INC_DIR)
 
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
 
 -include $(DEPEND)
-
-
-
-
