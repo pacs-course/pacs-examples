@@ -8,8 +8,6 @@ int main()
   // Just to show constexpr
   constexpr unsigned long n=399;
   constexpr unsigned long m=120;
-  cout<< "Computed with recursive ordinary function: "<<gcd(n,m)<<endl;
-
   cout<< "Computed with the second implementation: "<<GCD(n,m)<<endl;
   //  cout<< "give me two integers"<<std::endl;
   //unsigned long int a,b;
