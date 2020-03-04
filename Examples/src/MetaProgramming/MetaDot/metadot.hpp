@@ -39,7 +39,7 @@ template<> struct metaDot<1>
 }
 //! Operator overloading: this is what will be actually used.
 template<std::size_t N,typename T>
-inline T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
+T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
 {
   return internals::metaDot<N>::apply(a,b);
 }
