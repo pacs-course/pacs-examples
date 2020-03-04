@@ -5,6 +5,7 @@
 //! This namespace introduces helper functions that are used only locally
 namespace internals
 {
+  //! A template recursion for Pow. I do not want to call std::pow
   template<unsigned long B, unsigned long int E>
   struct Pow
   {
@@ -46,6 +47,7 @@ namespace internals
   
   
 }
+//! Some useful approximations of pi
 namespace MathConstants
 {
   constexpr double Pi = internals::computePi<double,10ul>::value;
