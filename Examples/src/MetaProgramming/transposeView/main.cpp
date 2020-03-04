@@ -39,10 +39,13 @@ int main()
   const Eigen::Matrix3f mc(m);
   auto mtc=LinearAlgebra::trans(mc);
   for (auto i=0;i<3;++i)
+    {
     for (auto j=0;j<3;++j)
       {
-        std::cout<<"("<<i<<", "<<j<<")= "<<mtc(i,j)<<std::endl;
+        std::cout<<mtc(i,j)<<" ";
       }
+    std::cout<<std::endl;
+    }
   //   mtc(0,1)=10.f; //Error ive if mtc is not constant the stored matrix is
   //  constant.
   

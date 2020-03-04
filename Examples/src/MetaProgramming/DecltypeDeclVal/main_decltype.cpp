@@ -20,15 +20,18 @@ public:
   DefaultConstructible()=default;
   DefaultConstructible(double i):i(i){}
   double get_i() const {return this->i;}
-  void set_i(double x){this->i=x;}
-  static const double j;
+  void set_i(double x){this->i=x;};
+  // A non integral static member cannot be initialised in class, not even in c++14, unless constexpr or
+  // or (since c++17) inline
+  inline static const double j=40.0;
 private:
-  double i;
+  double i=10.0;
 };
-// A non integral static member cannot be initialised in class, not even in c++14, unless declared constexpr!
-// I have to do it out of class (in general in a cpp file).
-const double DefaultConstructible::j=40.0;
-// A template function where I want to interrogate the type of get_i(). 
+// Before c++17  non integral static member could not be initialised in class, unless constexpr!
+// You  have to do it out of class (in general in a cpp file):
+// const double DefaultConstructible::j=40.0;
+
+//! A template function where I want to interrogate the type of get_i().
 template<class T>
 void fun(T const & a)
 {
