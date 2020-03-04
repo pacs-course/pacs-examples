@@ -1,5 +1,6 @@
 #ifndef HH_GCDXXX_HH
 #define HH_GCDXXX_HH
+#include <type_traits>
 /*!
   @file gcd.hpp  greatest common divisor
  */
@@ -30,21 +31,13 @@ namespace Utility
  
  using int_type=long unsigned int; 
  //! Another implementation, it makes use of the
- //! new constexpr magic. Needs at least C++11
- constexpr int_type GCD(int_type const M,int_type const N)
+ //! new constexpr magic adn works with any integer types!. Needs at least C++11
+ //! @note In c++17 you can simplify a little the syntax (or use std::gcd() directly!)
+ template <class M, class N>
+ auto constexpr  GCD(const M m , const N n) -> typename std::common_type<M,N>::type
   {
-    return (N==0)? M: GCD(N,M%N);
+    return (n==0) ? m : GCD(n,m%n);
   }   
-  
-  
-  //! If I do not know the values at compile time
-  /*!  
-    Implemented via recursion. However I suggest in general to
-    avoid recursion (unless in metaprogramming) since it is not very
-    efficient.  Moreover, if I deal with very big integers maybe I can
-    exceed the stack capability for recursive call.
-  */
-  long unsigned int gcd(long unsigned int M, long unsigned int N);
   
 }
 
