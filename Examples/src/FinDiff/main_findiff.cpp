@@ -17,7 +17,8 @@ using Real=double;
 std::string filename("double.dat");
 #endif
 
-// Global values (are outside any scope)
+// Global values (are outside any scope so I can change them in
+// funct and dfunct in just one go)
 constexpr Real a=100.0;
 constexpr Real b=4.0;
 
@@ -39,7 +40,7 @@ T dfunct (T const & x)
 /*!
   It computes \f$ \frac{df}{dx}(x)\f$ at a given point x using second order
   centered finite differences. It outputs the error. The example wants to show that 
-  floating point truncation error finally dominates.
+  floating point round-off error finally dominates.
  */
 int main()
 {
@@ -69,7 +70,7 @@ int main()
   std::vector<Real> Error4;
   std::vector<Real> Errorcx;
   std::vector<Real> spacing;
-  std::vector<Real> truncationErrorEstimate;
+  std::vector<Real> roundoffErrorEstimate;
   derNumer.reserve(n);
   der4Numer.reserve(n);
   dercxNumer.reserve(n);
@@ -77,14 +78,15 @@ int main()
   Error4.reserve(n);
   Errorcx.reserve(n);
   spacing.reserve(n);
-  truncationErrorEstimate.reserve(n);
+  roundoffErrorEstimate.reserve(n);
+  
   Real constexpr half(0.5);
-  Real constexpr twelvth(static_cast<Real>(1)/static_cast<Real>(12));
-  Real constexpr twothird(static_cast<Real>(2)/static_cast<Real>(3));
+  Real constexpr twelvth(1./12.);
+  Real constexpr twothird(2./3);
   
   for (unsigned int i=0;i<n;++i)
     {
-      spacing.push_back(h);
+      spacing.emplace_back(h);
       // Second order formula
       Real dn = half*(fun(x+h)-fun(x-h))/h;
       // Fourth order formula
@@ -95,20 +97,20 @@ int main()
       // Exact value
       Real de = dfun(x);
       // Save results
-      derNumer.push_back(dn);
-      der4Numer.push_back(dn4);
-      dercxNumer.push_back(dncx);
-      Error.push_back(std::abs(de-dn));
-      Error4.push_back(std::abs(de-dn4));
-      Errorcx.push_back(std::abs(de-dncx));
-      truncationErrorEstimate.push_back(std::abs(u*dfun(x)*x/h)); 
+      derNumer.emplace_back(dn);
+      der4Numer.emplace_back(dn4);
+      dercxNumer.emplace_back(dncx);
+      Error.emplace_back(std::abs(de-dn));
+      Error4.emplace_back(std::abs(de-dn4));
+      Errorcx.emplace_back(std::abs(de-dncx));
+      roundoffErrorEstimate.emplace_back(std::abs(u*dfun(x)*x/h)); 
       h/=2.;
     }
   // Write data
   std::ofstream file(filename.c_str());
   for (unsigned int i=0;i<n;++i)
     {
-      file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<truncationErrorEstimate[i]<<" "<<Error4[i]<<" "<<Errorcx[i]<<std::endl;
+      file<<spacing[i]<<" "<<derNumer[i]<<" "<<Error[i]<<" "<<roundoffErrorEstimate[i]<<" "<<Error4[i]<<" "<<Errorcx[i]<<std::endl;
     }
   file.close();
 }

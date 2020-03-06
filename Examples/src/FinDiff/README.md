@@ -8,7 +8,7 @@ the relevance of the truncation error as the step h gets smaller
     *Change file data.pot may to modify some of the parameters
 
 With just `make` you make three versions for different type of
-floats. Each oen produce a file that can be viewed with gnuplot (or
+floats. Each one produce a file that can be viewed with gnuplot (or
 loaded in matlab). The script ``plot_results.sh`` launches gnuplot and
 shows the results after you have launched the three version of the
 program. You may have a look at it.
