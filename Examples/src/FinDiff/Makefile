@@ -1,4 +1,4 @@
-############################################################
+###########################################################
 #
 # An example of Makefile for the course on 
 # Advanced Programming for Scientific Computing
@@ -45,14 +45,14 @@ EXEC=$(exe_sources:.cpp=)
 all: $(DEPEND) main_float main_double main_extended
 
 main_float: main_findiff.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(STDFLAGS) -DSINGLE_PRECISION -o $@ $<
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -DSINGLE_PRECISION -o $@ $<
 
 
 main_double: main_findiff.cpp
-	$(CXX) $(CPPFLAGS)  $(CXXFLAGS) $(STDFLAGS)  -o $@ $<
+	$(CXX) $(CPPFLAGS)  $(CXXFLAGS)   -o $@ $<
 
 main_extended: main_findiff.cpp
-	$(CXX) $(CPPFLAGS)  $(CXXFLAGS) $(STDFLAGS) -DEXTENDED_PRECISION -o $@ $<
+	$(CXX) $(CPPFLAGS)  $(CXXFLAGS)  -DEXTENDED_PRECISION -o $@ $<
 
 
 run:
@@ -62,12 +62,12 @@ run:
 	./main_extended
 	gnuplot gnuplot.txt
 clean:
-	-\rm -f $(EXEC) $(OBJS) main_float main_double main_extended
+	$(RM) -f $(EXEC) $(OBJS) main_float main_double main_extended
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm *.out *.bak *~
+	$(RM) -r -f ./doc
+	$(RM) *.dat *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)

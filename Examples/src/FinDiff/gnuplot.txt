@@ -7,9 +7,9 @@ set style line 2 lc 2 ps 2
 set style line 4 lc 3 ps 1
 set format y "%3.1e"
 set format x "%3.1e"
-plot "single.dat" using 1:3 title "Error float 2" ls 1 with line, "single.dat" using 1:4 title "Truncation error" ls 2 with points, "single.dat" using 1:5 title "Error float 4" ls 3 with points, "single.dat" using 1:6 title "Error float wd" ls 4 with points
+plot "single.dat" using 1:3 title "Error float 2" ls 1 with line, "single.dat" using 1:4 title "Roundoff error" ls 2 with points, "single.dat" using 1:5 title "Error float 4" ls 3 with points, "single.dat" using 1:6 title "Error float wd" ls 4 with points
 pause mouse
-plot "double.dat" using 1:3 title "Error double 2" ls 1 with line, "double.dat" using 1:4 title "Truncation error" ls 2 with points, "double.dat" using 1:5 title "Error double 4" ls 3 with points, "double.dat" using 1:6 title "Error double wd" ls 4 with points
+plot "double.dat" using 1:3 title "Error double 2" ls 1 with line, "double.dat" using 1:4 title "Roundoff error" ls 2 with points, "double.dat" using 1:5 title "Error double 4" ls 3 with points, "double.dat" using 1:6 title "Error double wd" ls 4 with points
 pause mouse
-plot "extended.dat" using 1:3 title "Error extended 2" ls 1 with line, "extended.dat" using 1:4 title "Truncation error" ls 2 with points, "extended.dat" using 1:5 title "Error extended 4" ls 3 with points, "extended.dat" using 1:6 title "Error ext. wd" ls 4 with points
+plot "extended.dat" using 1:3 title "Error extended 2" ls 1 with line, "extended.dat" using 1:4 title "Roundoff error" ls 2 with points, "extended.dat" using 1:5 title "Error extended 4" ls 3 with points, "extended.dat" using 1:6 title "Error ext. wd" ls 4 with points
 pause mouse
