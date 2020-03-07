@@ -23,7 +23,6 @@ struct parameters
   double hc=200e-6;
   //! Number of elements
   int M=100;
-  //! Constructor takes default values
 };
 //! Prints parameters
 std::ostream & operator << (std::ostream &,const parameters &);
