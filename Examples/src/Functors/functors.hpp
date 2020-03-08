@@ -36,14 +36,14 @@ namespace myfunctors
     //! max number of iterations
     unsigned int maxiter;
     //! Absolute tolerance 
-    //! defined in class
     double tolerance;
     //! Initial value. 
     double x0;
   };
   //! A predicate is a function or functor that defines a call operator
   //! returning a bool.
-  /*!  Here I show why the state can be useful. Here I have a functor
+  /*!  
+    Here I show why the state can be useful. Here I have a functor
     that returns true if the value passed is greater than a value that
     may be changed run time.
     
@@ -107,7 +107,7 @@ namespace myfunctors
     only an example.
     
     \note A note, all those operators could have been declared static
-    since they do not use non-statice member variables (indeed there
+    since they do not use non-static member variables (indeed there
     are no member variables!).
 
   */
