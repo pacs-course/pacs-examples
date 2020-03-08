@@ -1,6 +1,7 @@
 #include <cmath>
 #include "horner.hpp"
 #include <algorithm>
+#include <cmath>
 /*
  #include <execution> // for paralle algor.
 */
@@ -20,6 +21,11 @@ double eval (std::vector<double> const & a, double const & x){
   double sum = a[0];
   for (std::vector<double>::size_type k = 1; k<a.size(); ++k){ 
     sum += a[k]*integerPow(x,k);// Pow is VERY expensive
+    // If you want to test with the standard pow comment the
+    // previous statement and uncomment the next one
+    //sum += a[k]*std::pow(x,k);// Pow is VERY expensive
+    
+    
   }
   return sum;
 }
