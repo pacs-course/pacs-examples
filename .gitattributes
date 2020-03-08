@@ -5,3 +5,5 @@
 *.jpg binary
 *.pdf binary
 *.dll binary
+*.odt binary
+
