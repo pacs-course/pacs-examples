@@ -6,6 +6,8 @@ A class that stores a double, counts how many objects of that class
    of non constant static members to monitor something related to all
    objects of the class.
    
-More often, static member of a class are const (or even constexpr,
-constexpr implies static) and represent quantities common to all
-members of the class. 
+Often, static member of a class are const variable (or even constexpr,
+constexpr implies static) that represent quantities common to all
+members of the class.  For instance, a class of a `Polygon` family may
+have as static member variable the number of vertices of specific
+Polygons: for `Triangle` is 3, for a `Square` is 4 ...
