@@ -91,8 +91,9 @@ EXEC_SRCS:=$(exe_sources)
 .DEFAULT_GOAL = all
 
 all:
-	@echo "make static makes static library and executable"
-	@echo "make dynamic makes dynamic library and executable"
+	@echo "make alllibs makes static and dynamic libraries"
+	@echo "make static makes static library"
+	@echo "make dynamic makes dynamic library"
 	@echo "make depend just makes dependency file"
 	@echo "make clean cleans all but not not library"
 	@echo "make distclean cleans all"
@@ -101,6 +102,10 @@ all:
 	@echo "macro FPEABORT=yes  activates abort on FPE"
 	@echo "Default debug setting:" $(DEBUG)
 
+alllibs:
+	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC
+	$(MAKE) clean
+	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
 depend: $(DEPEND)
 
 static:
@@ -118,9 +123,9 @@ install:
 	$(MAKE) DEBUG=no static
 	$(MAKE) clean
 	$(MAKE) DEBUG=no dynamic
-	cp $(LIB_HEADERS) $(PACS_INC_DIR)
-	-cp $(STATIC_LIBFILE) $(PACS_LIB_DIR)
-	-cp $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
+	cp $(HEADERS) $(PACS_INC_DIR)
+	cp $(STATIC_LIBFILE) $(PACS_LIB_DIR)
+	cp $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
 
