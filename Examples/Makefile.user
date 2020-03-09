@@ -23,8 +23,8 @@
 # The directory where the examples reside (you HAVE to change this)
 PACS_ROOT=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
 # The directory with the Eigen (leave blank if they are in a standard directory)
+mkEigenInc?=/usr/local/include/eigen3/
 EIGEN_DIR=$(mkEigenInc)
-#EIGEN_DIR=/usr/local/include/eigen3/
 
 # If you need extra directories. Leave as it is and chenge the specific Makefile (it is better)
 OTHER_LIB_DIR=

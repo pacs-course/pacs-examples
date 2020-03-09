@@ -2,15 +2,15 @@
 #include "horner.hpp"
 #include <algorithm>
 #include <cmath>
-// PARALLEL EXECUTION NOT WORKING YET IN MY COMPUTER
-// EVEN WITH GCC 9!
-// SO I COMMENTED OUT THIS STUFF!
-//#if defined(__GNUC__) &&  (__GNUC__ >= 9)
-//#define PARALLELEXEC  
-//Include execution policies
-//#include<execution>
-//#endif
-
+// Comment/uncomment next line if you dont want/want parallelization
+// Test if I am compiling with g++ version >=9
+#ifdef PARALLELEXEC
+#if defined(__GNUC__) &&  (__GNUC__ >= 9)
+#include<execution>
+#else
+#undef PARALLELEXEC
+#endif
+#endif
 
 //! My function for power
 /*!
@@ -49,7 +49,7 @@ double  horner(std::vector<double> const & a, double const & x){
 // NOT WORKING UNTIL IMPLEMENTED IN THE COMPILER
 //! Evaluates polynomial in a set of points (parallel version)
 std::vector<double>
-evaluatePoly_par(std::vector<double> const & points,
+evaluatePoly(std::vector<double> const & points,
 		  std::vector<double> const & a,
                   polyEval method)
 {

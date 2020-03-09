@@ -54,11 +54,20 @@ TestParameters read_parameters(GetPot const & ifl)
 {
   TestParameters r;
   r.tol            = ifl("tol", 1.0e-6);
+  std::cout<<" Tolerance ="<<r.tol<<std::endl;
   r.max_iter       = ifl("max_iter", 100);
+  std::cout<<" Max Iter ="<<r.max_iter<<std::endl;
   r.gmres_levels   = ifl("gmres_levels", 20);
+  std::cout<<" Gmres levels ="<<r.gmres_levels<<std::endl;
   r.eigmin         = ifl("eigmin",1.0);
   r.eigmax         = ifl("eigmax",1.0);
-  r.matrixFileName = ifl("matrixFileName","../../MatrixData/spd/Pres_Poisson.mtx");
+  r.matrixFileName = ifl("matrixname","NONE");
+  if(r.matrixFileName == "NONE")
+    {
+      std::cerr<<" You have to give a good file name in the field\n";
+      std::cerr<<" matrixFileName in the GetPot file\n";
+      std::exit(1);
+    }
   std::string  solver=ifl("solver","cg");
   auto pos         = ::getSolver.find(solver); //:: is not necessary
   if (pos==::getSolver.end())
@@ -227,7 +236,7 @@ main(int argc, char * argv[])
   cout << "Solver flag = " << result << endl;
   cout << "iterations performed: " << maxit << endl;
   cout << "tolerance achieved  : " << tol << endl;
-  cout << "Error:                " << (x-e).norm()<<std::endl;
+  cout << "Error:                " << (x-e).norm()/e.norm()<<std::endl;
 
   return result;
 }

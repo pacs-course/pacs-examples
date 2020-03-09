@@ -31,7 +31,8 @@ CG(const Matrix &A, Vector &x, const Vector &b,
   Vector p(b.size());
   Vector z(b.size());
   Vector q(b.size());
-  Real alpha, beta, rho, rho_1;
+  Real alpha, beta, rho;
+  Real rho_1(0.0);
 
   Real normb = b.norm();
   Vector r = b - A*x;
