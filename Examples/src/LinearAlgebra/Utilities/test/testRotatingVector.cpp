@@ -9,7 +9,8 @@
 #include <array>
 #include "../RotatingVector.hpp"
 
-void printRV(auto const & rv)
+template<class T>
+void printRV(const T& rv)
 {
   std::cout<<" Size ="<<rv.size()<<std::endl;
   for (unsigned int i=0;i<rv.size();++i)
@@ -27,7 +28,7 @@ void printRV(auto const & rv)
 int main()
 {
   using namespace std;
-  using namespace LinearAlgebra;
+  using namespace apsc;
   std::cout<<"I create a rotatingvector of size 3 of arrays of size 3"<<std::endl;
   RotatingVector<array<double,3>,3> rv;
   std::cout<<" adding (1,1,1) "<<std::endl;
