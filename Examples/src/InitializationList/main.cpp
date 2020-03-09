@@ -5,6 +5,7 @@
 #include <array>
 #include <tuple>
 #include <iostream>
+#include <complex>
 //! This file illustrate uniform parameter listi initialization.
 /*!
   With the C++11 standard we can initialize all sort of objects using the same
@@ -86,4 +87,31 @@ int main(){
   std::cout<<"d3.z is equal to "<<d3.z<<std::endl;
   // But, to simplify further C++17 allows me to do
   Derived d4{8,9.0,7.0};
+  // Beware of the use of brackets to indicate the initialization of 
+  // aggregates elements of a container (an std::complex is an aggregate).
+  //This vector contains 3+4i and 5+6i 
+  std::vector<std::complex<double>> vc1={{3.,4.},{5.,6.}};
+  std::cout<<"vc1=";
+  for (auto i:vc1)std::cout<<i;
+  std::cout<<std::endl;
+  //This vector contains 3+0i and 5+0i 
+  std::vector<std::complex<double>> vc2={{3},{5.}};
+  std::cout<<"vc2=";
+  for (auto i:vc2)std::cout<<i;
+  std::cout<<std::endl;
+  // BUT ALSO this vector contains 3+0i and 5_0i
+  std::vector<std::complex<double>> vc3={3,5.};
+  std::cout<<"vc3=";
+  for (auto i:vc3)std::cout<<i;
+  std::cout<<std::endl;
+  // While here I have only 3 + 5i
+  std::vector<std::complex<double>> vc4={{3,5.}};
+  std::cout<<"vc4=";
+  for (auto i:vc4)std::cout<<i;
+  std::cout<<std::endl;
+  // My advice, use always the internal brackets
+  // in the case of containers of aggregates and specify
+  // all aggregate members. Otherwise the result is not
+  // always what you think!
+  
 }

@@ -12,6 +12,8 @@
 # Makefile.h file, where other important variables are also set.
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
+# compile with optimization on
+RELEASE=yes
 
 MAKEFILEH_DIR=../../
 #
@@ -20,7 +22,6 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 # You may have an include file also in the current directory
 #
 -include Makefile.inc
-
 #
 # The general setting is as follows:
 # mains are identified bt main_XX.cpp
@@ -44,6 +45,8 @@ EXEC=$(exe_sources:.cpp=)
 
 all: $(DEPEND) $(EXEC)
 
+parallel:
+	$(MAKE) all CPPFLAGS+=-DPARALLELEXEC
 clean:
 	-\rm -f $(EXEC) $(OBJS)
 

@@ -1372,7 +1372,7 @@ GetPot::operator()(const char* VarName, int Default) const
     // (*) recording of requested variables happens in '__find_variable()'
     const variable*  sv = __find_variable(VarName);
     if( sv == 0 ) return Default;
-    std::cerr << "## original = " << sv->original << "\n";
+    //std::cerr << "## original = " << sv->original << "\n";
     return __convert_to_type(sv->original, Default);
 }
 

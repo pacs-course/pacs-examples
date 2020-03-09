@@ -34,7 +34,7 @@ int main() {
   */
   double startx=0.00;
   double endx=1.00;
-  double interval=1.0e-6;
+  double interval=0.5e-6;
   int numinterval=int((endx-startx)/interval);
   cout<<"Computing "<<numinterval<<" evaluation of polynomial"
       <<" with standard formula"<<endl;
