@@ -9,29 +9,57 @@ make library
 make install
 ``
 
-Make sure that ``Makefile.inc`` in the root directory is set correctly.
+Make sure that ``Makefile.inc`` in the PACS root directory is set correctly.
 
-Then type
-``make DEBUG=no`` 
-if you want optimized program
-or
-``make DEBUG=yes`` or simply ``make`` if you want non-optimized program
+## New: Parallel version##
+This new version exploits also a parallel version of an algorithm
+(``std::transform``) of the standard library. However the
+implementation of concurrency is not yet fully supported by all
+compilers and architecture. If you use gnu compilers, you must have
+`g++` at least version 9. And, on intel or intel-compatible
+architecture you need a recent version of the `tbb` libraries.
 
-*Remember: make clean before you recompile with different optimization*
+To have the system correctly set for the parallel version, you need to set up correctly
+some variable in the **local** `Makefile.inc` file (or create tcorresponding environment variables)
 
-Alternatively you may type
+* `mkTbbLib` should contain the directory where `libtbb.so`
+resides. If you have a standard istallation you may put `/usr/lib`, If
+you use the module system for the PACS course this value is set
+through an envoronmental variable.
 
-``make OPTFLAGS='-O3 -ffast-math'``
+* `mkTbbLib` should contain the directory where the header files of
+the `tbb` library resides. If you have installed the `libtbb` package
+of a Linux distribution (like Ubuntu or Debian), make sure to have
+installed also the development version (normally called `libtbb_dev`),
+otherwise you do not have the header files.  If you have a standard
+istallation you may put `/usr/include`, If you use the module system
+for the PACS course the value of `mkTbbInc` is set through an
+envoronmental variable.
 
-to compile with maximal optimization.
+If you want to compile the parallel version of the example d
 
-To tell the loader that you need to look in the library directory of
-the course, type
+    make parallel
+    
+while simple
 
-``export LD_LIBRARY_PATH+=../../lib``
+    make 
+    
+produces the scalar version.  Here the paralellelization is trivial,
+the code evaluates a polynomial in a large number of points, and those
+evaluations are made in parallel in the parallel version. Evaluation
+is made with the standard rule (expensive) and the Horner rule (more
+efficient). You may note that the advantage of parallelization is
+larger in the standard rule, since each evaluation is more costly. But
+the Horner implementation is always faster that the standard one, both
+in the scalar and in the parallel version. The advantage of Horner
+increases as the polynomial degree increases. 
 
-before launching the main program. *It should not be necessary now
-because I have changed the Makefiles to use the ``-Wl,-rpath`` option.*
+
+The Makefile has been set so that you always compile with optimization
+activated.
+
+
+
 
 **Note 1:** Since ``std::pow(x,n)`` may be very expensive (since it
 treats also non-enteger exponents), I have implemented in
@@ -40,11 +68,8 @@ exponents that just perfoms the required multiplications. This makes
 the comparison between standard and Horner algorithms fairer (Horner's
 algorithm does not need ``pow`` ). However, since c++17 there is an
 overloading of ``pow`` for integer exponents, so maybe there is no
-need of the specialised user-defined version anymore.
+need of the specialised user-defined version anymore (but so far the
+implementations of the standard library do not exploit the
+specialization).
 
-**Note 2:** I have also implemented a parallel version that exploits
-parallel ``std::tansform`` algorithm. But few compiler support parallelization
-yet, so it has been commented out. You may uncomment it and change the
-test to see how much you gain with parallelization, if you have a very
-recent compiler (g++ version 9 should work, but read the instructions
-on the web since other components of your OS may need upgrading.)
+**Note 2:**  To get significant timings use a high degree polinomial, at least 20.
