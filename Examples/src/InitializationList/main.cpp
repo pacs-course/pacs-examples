@@ -4,6 +4,7 @@
 #include <set>
 #include <array>
 #include <tuple>
+#include <iostream>
 //! This file illustrate uniform parameter listi initialization.
 /*!
   With the C++11 standard we can initialize all sort of objects using the same
@@ -22,6 +23,12 @@ public:
 private:
   int i;
   double j;
+};
+//! Since C+=17!
+//! A class that derives from m
+struct Derived: m // for struct inheritance is public by default
+{
+  double z=10.;
 };
 
 // To avoid useless warnings for this example.
@@ -61,8 +68,22 @@ int main(){
     {2,8.0},
     {3,10.0}
     }};
-  // but if the array stores plain old data you con just to
+  // but if the array stores plain old data you can just to
   std::array<int,4> intArray1{1,2,3,4};
   // and also
   std::array<int,4> intArray2={-1,-2,-3,-4};
+  // Now the new C++17 extensione
+  // An aggregate which derives publicly from an aggregate is an aggregate
+  // and can be initialised as
+  Derived d={{3,4.0}}; 
+  // Here I have initialized only the variable inherited from the base class
+  // since the one added in Derived has a default value
+  std::cout<<"d.z is equal to "<<d.z<<std::endl;
+  // But I can also avoid the double brackets
+  Derived d2={5,6.0};
+  // or specify Derived::z directly
+  Derived d3{{8,9.0},7.0};
+  std::cout<<"d3.z is equal to "<<d3.z<<std::endl;
+  // But, to simplify further C++17 allows me to do
+  Derived d4{8,9.0,7.0};
 }
