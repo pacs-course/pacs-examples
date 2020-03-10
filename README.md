@@ -6,9 +6,9 @@ that will be explained during the PACS (Programmazione Avanzata per il Calcolo
 Scientifico - Advanced Programming for Scientific Calculus) course at
 Politecnico di Milano.
 
-The software require a c++11 compiler, i.e. gcc >= 5.0 or clang >= 5.
+The software require a c++ compiler, i.e. gcc >= 5.0 or clang >= 5.
 gcc 9.2 is the one you find in the module system provided. But you may
-check the version of you compiler with the option -v
+check the version of you compiler with the option -v Some examples have now been ported to c++17
 
 This directory contains some utilities:
 
