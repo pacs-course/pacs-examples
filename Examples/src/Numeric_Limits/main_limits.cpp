@@ -185,6 +185,10 @@ int main () {
     ((one + numeric_limits<double>::epsilon()/2.0) == one)<<endl;
   cout<<"What happens if an int overflows?\n";
   cout<<"Max integer plus one= "<< numeric_limits<int>::max()+1<<std::endl;
+  cout<<"What happens if an unsigned int underflows?\n";
+  unsigned int zero=0u;
+  unsigned int under = zero - 1u;
+  cout<<"0u-1u as unsigned integers= "<< under<<std::endl;
   cout<<"You can test if a number is NaN:\n";
   double y=0./0.;
   cout<<" Is 0./0. a NaN?: "<<std::isnan(y)<<std::endl;
