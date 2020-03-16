@@ -132,6 +132,8 @@ int main()
   D.chooseResource(2);
   std::cout<<"The resource in D is: ";
   D.resource().whoAmI();
+
+
 }
 
                
