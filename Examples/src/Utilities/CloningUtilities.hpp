@@ -253,7 +253,20 @@ namespace apsc
     /*! The Wrapper works like a pointer to T*/
     const T* const operator->() const{ return DataPtr.get();}
     T*             operator->(){ return DataPtr.get();}
-    
+    /*! This class imitates that of the uniqe pointer so it exposes the same member types*/
+    using pointer= typename Ptr_t::pointer;
+    using element_type =T;
+    using deleter_type = typename Ptr_t::deleter_type;
+    /* The method release */
+    auto release(){return DataPtr.release();}
+    /*! reset. You can pass directly a pointer */
+    void reset(pointer ptr = pointer()){DataPtr.reset(ptr);}
+    /*! swap wrappers */
+    void swap(Wrapper<T>& other) noexcept {DataPtr.swap(other.DataPtr);}
+    /*! get the pointer */
+    pointer get() const noexcept { return DataPtr.get();}
+    /*! conversion to bool */
+    explicit operator bool() const noexcept {return static_cast<bool>(DataPtr);}
   private:
     Ptr_t DataPtr;
   };
