@@ -22,19 +22,20 @@ namespace Geometry{
     if (check) this->checkConvexity();
   }
   
-  void AbstractPolygon::showMe(std::ostream & out)const
+  std::ostream &  AbstractPolygon::showMe(std::ostream & out)const
   {
     if (this->size()==0){
       out<< "empty polygon" << std::endl;
     }
     else {
       out<<"Vertices:"<<std::endl;
-      out<<"    X     " << "   Y    "<<std::endl;
+      out<<"X\t" << " Y"<<std::endl;
       for (auto const & i : this->vertexes)
-	out<<i.x()<<" " << i.y()<<std::endl;
+	out<<i.x()<<"\t " << i.y()<<std::endl;
     }
-    if(this->isconvex) std::cout<<" Polygon is convex"<<std::endl;
-    else std::cout<<" Polygon is not convex"<<std::endl;
+    if(this->isconvex) out<<" Polygon is convex"<<std::endl;
+    else out<<" Polygon is not convex"<<std::endl;
+    return out;
   }
   
   void AbstractPolygon::checkConvexity()
@@ -86,9 +87,6 @@ namespace Geometry{
   
   // ****   POLYGON
   
-  Polygon::Polygon(Vertices const & v): AbstractPolygon(v) {}
-  
-  
   //! To compute the area of a polygon we use the divergence theorem.
   /*!
     \f$ int_P d\Omega = 1/2 \int{\partial P} xn_x d\gamma\f$
@@ -114,10 +112,10 @@ namespace Geometry{
     return 0.5*result;
   }
   
-  void Polygon::showMe(std::ostream & out)const
+  std::ostream & Polygon::showMe(std::ostream & out)const
   {
     std::cout<<" A Generic Polygon"<<std::endl;
-    AbstractPolygon::showMe(out);
+    return AbstractPolygon::showMe(out);
   }
 
   // ********************* SQUARE **********************
@@ -135,7 +133,8 @@ namespace Geometry{
       throw std::runtime_error("Vertexes do not define a square");
   }
 
-  Square::Square(Point2D origin, double length, double angle){
+  Square::Square(Point2D origin, double length, double angle)
+  {
     this->isconvex=true;
     this->vertexes.reserve(4);
     vertexes.push_back(origin);
@@ -149,7 +148,8 @@ namespace Geometry{
 			       origin.y()+length*c));
   }
   
-  double Square::area() const{
+  double Square::area() const
+  {
     if(this->size()==0) return 0.0;
     // I want the area with sign, positive if the quad is 
     // oriented counterclockwise. So the easiest thing is to use the 
@@ -160,16 +160,17 @@ namespace Geometry{
     return v.x()*w.y()-v.y()*w.x();
     ;}
   
-  void Square::showMe(std::ostream & out) const
+  std::ostream & Square::showMe(std::ostream & out) const
   {
     out<<"A Square"<<std::endl;
-    AbstractPolygon::showMe(out);
+    return AbstractPolygon::showMe(out);
   }
   
   
   //********************* TRIANGLE **********************
   
-  Triangle::Triangle(Vertices const & v):AbstractPolygon(v,false){
+  Triangle::Triangle(Vertices const & v):AbstractPolygon(v,false)
+  {
     this->isconvex=true;    
     // Check if we give 3 vertices
     // We may use assert, in this case we would disable the control
@@ -191,8 +192,8 @@ namespace Geometry{
     return 0.5*(v.x()*w.y()-v.y()*w.x());
     ;}
   
-  void Triangle::showMe(std::ostream & out) const{
+  std::ostream &  Triangle::showMe(std::ostream & out) const{
     out<<"A Triangle"<<std::endl;
-    AbstractPolygon::showMe(out);
+    return AbstractPolygon::showMe(out);
   }
 }

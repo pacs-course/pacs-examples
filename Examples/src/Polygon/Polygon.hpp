@@ -10,7 +10,7 @@
   represents poligonal object.
 
   @detail This module is wrapped in the namespace `Geometry`. It
-  represent a first example of class hyerarchy with public
+  represent a first example of class hierarchy with public
   inheritance. The class `AbstractPolygon` defines the general public
   interface of all other classes representing polygonal objects.
   
@@ -20,7 +20,6 @@
 namespace Geometry
 {
   
-
   //! A class that holds 2D points
   /*! It also represents a vector in R2
    */
@@ -117,7 +116,7 @@ namespace Geometry
     //! Returns the vertices (read only)
     Vertices const & theVertices()const {return vertexes;}
     //! Outputs some info on the polygon
-    virtual void showMe(std::ostream & out=std::cout) const;
+    virtual std::ostream & showMe(std::ostream & out=std::cout) const;
     //! The area of the polygon (with sign!).
     /*!
       It is a pure virtual function.
@@ -126,7 +125,7 @@ namespace Geometry
     virtual double area() const=0;
   protected:
     Vertices vertexes;
-    bool isconvex;
+    bool isconvex=false;
     //! Test convexity of the polygon
     void checkConvexity();
   };
@@ -141,7 +140,7 @@ namespace Geometry
   public:
     //! Default constructor.
     //! Polygon may be constructed giving Vertices;
-    Polygon(Vertices const & v);
+    Polygon(Vertices const & v):AbstractPolygon(v, false){}
     //! Destructor
     virtual ~Polygon(){};
     /*!
@@ -150,7 +149,7 @@ namespace Geometry
     */
     virtual double area() const;
     //! Specialised version for generic polygons.
-    virtual void showMe(std::ostream & out=std::cout) const;
+    virtual std::ostream & showMe(std::ostream & out=std::cout) const;
   };
 
   //! A square
@@ -175,7 +174,7 @@ namespace Geometry
     //! Specialised version for squares
     double area() const override;
     //! Specialised version for squares.
-    void showMe(std::ostream & out=std::cout) const override;
+    std::ostream & showMe(std::ostream & out=std::cout) const override;
   };
   
   //! A triangle
@@ -190,7 +189,7 @@ namespace Geometry
     //! Specialised for Triangles
     virtual double area() const override;
     //! Specialised for Triangles
-    virtual void showMe(std::ostream & out=std::cout) const override;
+    virtual std::ostream & showMe(std::ostream & out=std::cout) const override;
   };
   
 }
