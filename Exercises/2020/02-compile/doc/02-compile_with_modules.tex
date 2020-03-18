@@ -7,7 +7,6 @@
 }
 
 \begin{document}
-    
     \title{Using \texttt{mk}\\
         Linking against shared libraries}
     \date{20/03/2020}
@@ -397,17 +396,17 @@ The code is available here: \url{https://github.com/pacs-course/pacs/tree/master
 
 \begin{frame}[fragile]{Exercise 1: solution}
 \begin{verbatim}
-$ g++ -std=c++17 -c -I../include -I$mkEigenInc \
+$ g++ -c -I../include -I$mkEigenInc \
 -fPIC Utilities.cpp
 
 $ g++ -shared -Wl,-soname,liblinearalgebra.so \
 Utilities.o -o liblinearalgebra.so
 
-$ g++ -std=c++17 -c -I../include -I$mkEigenInc \
--I$mkSuitesparseInc test_all.cpp
+$ g++ -c -I../include -I$mkEigenInc \
+-I$mkSuitesparseInc test.cpp
 
 $ g++ -L$mkSuitesparseLib -lumfpack -L$PWD \
--llinearalgebra test_all.o -o test_all
+-llinearalgebra -Wl,-rpath=$PWD test.o -o test
 
 \end{verbatim}
 
@@ -426,17 +425,17 @@ Create a simple bash script to build the library and executable of Exercise 1 wi
 
 set -x
 
-g++ -std=c++17 -c -I../include -I$mkEigenInc \
+g++ -c -I../include -I$mkEigenInc \
 -fPIC Utilities.cpp
 
 g++ -shared -Wl,-soname,liblinearalgebra.so Utilities.o \
 -o liblinearalgebra.so
 
-g++ -std=c++17 -c -I../include -I$mkEigenInc \
--I$mkSuitesparseInc test_all.cpp
+g++ -c -I../include -I$mkEigenInc \
+-I$mkSuitesparseInc test.cpp
 
 g++ -L$mkSuitesparseLib -lumfpack -L$PWD -llinearalgebra \
-test_all.o -o test_all
+-Wl,-rpath=$PWD test.o -o test
 
 set +x
 \end{verbatim}
@@ -458,14 +457,14 @@ function do_distclean {
 
     do_clean
 
-    if [[ -a test_all ]]
+    if [[ -a test ]]
     then
-        rm -rf ./*.o ./*.so test_all
+        rm -rf ./*.o ./*.so test
     fi
 }
 
 function do_clean {
-    if [[ -a Utilities.o  || -a test_all.o
+    if [[ -a Utilities.o  || -a test.o
           || -a liblinearalgebra.so ]]
     then
         rm -rf ./*.o ./*.so 
@@ -476,7 +475,7 @@ function do_build_library {
     if [[ ! ( -a Utilities.o ) || ( -a Utilities.o 
           && Utilities.cpp -nt Utilities.o) ]]
     then
-        g++ -std=c++17 -c -I../include -I$mkEigenInc \
+        g++ -c -I../include -I$mkEigenInc \
             -fPIC Utilities.cpp
     fi
 
@@ -484,7 +483,8 @@ function do_build_library {
           || ( -a liblinearalgebra.so
           && Utilities.o -nt liblinearalgebra.so) ]]
     then
-        g++ -shared -Wl,-soname,liblinearalgebra.so Utilities.o -o liblinearalgebra.so
+        g++ -shared -Wl,-soname,liblinearalgebra.so \
+             Utilities.o -o liblinearalgebra.so
     fi
 }
 
@@ -495,18 +495,19 @@ function do_build_executable {
         do_build_library
     fi
        
-    if [[ ! ( -a test_all.o ) || ( -a test_all.o
-          && test_all.cpp -nt test_all.o) ]]
+    if [[ ! ( -a test.o ) || ( -a test.o
+          && test.cpp -nt test.o) ]]
     then
-        g++ -std=c++17 -c -I../include -I$mkEigenInc \
-            -I$mkSuitesparseInc test_all.cpp
+        g++ -c -I../include -I$mkEigenInc \
+            -I$mkSuitesparseInc test.cpp
     fi
 
-    if [[ ! ( -a test_all ) || ( -a test_all
-          && test_all.o -nt test_all) ]]
+    if [[ ! ( -a test ) || ( -a test
+          && test.o -nt test) ]]
     then
         g++ -L$mkSuitesparseLib -lumfpack -L$(PWD) \
-            -llinearalgebra test_all.o -o test_all
+             -Wl,-rpath=$PWD -llinearalgebra \
+             test.o -o test
     fi
 }
 
@@ -538,18 +539,18 @@ Create a Makefile that works as the bash script in Exercise 3
 CXXFLAGS = -std=c++17 -O2 -fPIC
 CPPFLAGS = -DNDEBUG -I$(mkSuitesparseInc) \
            -I$(mkEigenInc) -I../include
-LDFLAGS = -L. -L$(mkSuitesparseLib)
+LDFLAGS = -L. -L$(mkSuitesparseLib) -Wl,-rpath=$(PWD)
 LIBS = -lumfpack -llinearalgebra
 
 .PHONY: all clean distclean
 
-all: test_all
+all: test
 
-test_all: test_all.o liblinearalgebra.so
-        $(CXX) $(LDFLAGS) test_all.o -o test_all $(LIBS)
+test: test.o liblinearalgebra.so
+        $(CXX) $(LDFLAGS) test.o -o test $(LIBS)
 
-test_all.o: test_all.cpp
-        $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c test_all.cpp
+test.o: test.cpp
+        $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c test.cpp
 
 liblinearalgebra.so: Utilities.o
         $(CXX) $(LDFLAGS) -shared \
@@ -563,7 +564,7 @@ clean :
         $(RM) *.o 
 
 distclean: clean
-        $(RM) liblinearalgebra.so test_all
+        $(RM) liblinearalgebra.so test
 \end{verbatim}
 \end{frame}
 \end{document}
