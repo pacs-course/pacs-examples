@@ -397,17 +397,17 @@ The code is available here: \url{https://github.com/pacs-course/pacs/tree/master
 
 \begin{frame}[fragile]{Exercise 1: solution}
 \begin{verbatim}
-$ g++ -std=c++17 -c -I../include -I$mkEigenInc \
+$ g++ -c -I../include -I$mkEigenInc \
 -fPIC Utilities.cpp
 
 $ g++ -shared -Wl,-soname,liblinearalgebra.so \
 Utilities.o -o liblinearalgebra.so
 
-$ g++ -std=c++17 -c -I../include -I$mkEigenInc \
+$ g++ -c -I../include -I$mkEigenInc \
 -I$mkSuitesparseInc test_all.cpp
 
 $ g++ -L$mkSuitesparseLib -lumfpack -L$PWD \
--llinearalgebra test_all.o -o test_all
+-llinearalgebra -Wl,-rpath=$PWD test_all.o -o test_all
 
 \end{verbatim}
 
@@ -426,17 +426,17 @@ Create a simple bash script to build the library and executable of Exercise 1 wi
 
 set -x
 
-g++ -std=c++17 -c -I../include -I$mkEigenInc \
+g++ -c -I../include -I$mkEigenInc \
 -fPIC Utilities.cpp
 
 g++ -shared -Wl,-soname,liblinearalgebra.so Utilities.o \
 -o liblinearalgebra.so
 
-g++ -std=c++17 -c -I../include -I$mkEigenInc \
+g++ -c -I../include -I$mkEigenInc \
 -I$mkSuitesparseInc test_all.cpp
 
 g++ -L$mkSuitesparseLib -lumfpack -L$PWD -llinearalgebra \
-test_all.o -o test_all
+-Wl,-rpath=$PWD test_all.o -o test_all
 
 set +x
 \end{verbatim}
@@ -476,7 +476,7 @@ function do_build_library {
     if [[ ! ( -a Utilities.o ) || ( -a Utilities.o 
           && Utilities.cpp -nt Utilities.o) ]]
     then
-        g++ -std=c++17 -c -I../include -I$mkEigenInc \
+        g++ -c -I../include -I$mkEigenInc \
             -fPIC Utilities.cpp
     fi
 
@@ -484,7 +484,8 @@ function do_build_library {
           || ( -a liblinearalgebra.so
           && Utilities.o -nt liblinearalgebra.so) ]]
     then
-        g++ -shared -Wl,-soname,liblinearalgebra.so Utilities.o -o liblinearalgebra.so
+        g++ -shared -Wl,-soname,liblinearalgebra.so \
+             Utilities.o -o liblinearalgebra.so
     fi
 }
 
@@ -498,7 +499,7 @@ function do_build_executable {
     if [[ ! ( -a test_all.o ) || ( -a test_all.o
           && test_all.cpp -nt test_all.o) ]]
     then
-        g++ -std=c++17 -c -I../include -I$mkEigenInc \
+        g++ -c -I../include -I$mkEigenInc \
             -I$mkSuitesparseInc test_all.cpp
     fi
 
@@ -506,7 +507,8 @@ function do_build_executable {
           && test_all.o -nt test_all) ]]
     then
         g++ -L$mkSuitesparseLib -lumfpack -L$(PWD) \
-            -llinearalgebra test_all.o -o test_all
+             -Wl,-rpath=$PWD -llinearalgebra \
+             test_all.o -o test_all
     fi
 }
 
@@ -538,7 +540,7 @@ Create a Makefile that works as the bash script in Exercise 3
 CXXFLAGS = -std=c++17 -O2 -fPIC
 CPPFLAGS = -DNDEBUG -I$(mkSuitesparseInc) \
            -I$(mkEigenInc) -I../include
-LDFLAGS = -L. -L$(mkSuitesparseLib)
+LDFLAGS = -L. -L$(mkSuitesparseLib) -Wl,-rpath=$(PWD)
 LIBS = -lumfpack -llinearalgebra
 
 .PHONY: all clean distclean
