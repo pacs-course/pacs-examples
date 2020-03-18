@@ -13,6 +13,7 @@ using std::cerr;
 #include <Eigen/SparseCore>
 #include <Eigen/IterativeLinearSolvers>
 #include "MM_readers.hpp"
+#include "Utilities.hpp"
 #include "iml++.hpp"                          // All IML++
 #include <GetPot>
 #include <map>
@@ -118,6 +119,11 @@ main(int argc, char * argv[])
   std::cout<<"Non zero entries:"<<A.nonZeros()<<std::endl;
   SpMat B = SpMat(A.transpose()) - A;
   std::cout<<"Norm of A-A.t: "<<B.norm()<<std::endl;
+  //
+  // Compute adjacency graph and print info.
+  //
+  LinearAlgebra::AdjacencyGraph graph(LinearAlgebra::extractCooData(A));
+  graph.info(std::cout, false);
   //
   // Create the right hand side so that the solution is a vector of 1s
   //
