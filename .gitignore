@@ -120,6 +120,7 @@ make.dep
 *.ps
 *.bbl
 *.blg
+*.synctex.gz
 /Examples/lib/libmuparser.so.2
 /Examples/lib/libmuparser.so.2.2.4
 /Examples/.settings/org.eclipse.ltk.core.refactoring.prefs
@@ -188,3 +189,4 @@ make.dep
 /Examples/src/Utilities/test_scientific_precision
 /Examples/src/SharedLibrary/libsmall.so.1.1
 /Examples/src/ReferenceWrapper/main_wrap
+/Exercises/2020/**/*.pdf
