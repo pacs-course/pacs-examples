@@ -212,7 +212,7 @@ For example:
 \begin{verbatim}
 $ ldd $mkOctavePrefix/lib/octave/5.2.0/liboctave.so
 ...
-libfftw3.so.3 => (...)/libfftw3.so.3
+libfftw3.so.3 => /full/path/to/libfftw3.so.3
 ...
 \end{verbatim}
 It means that the version of octave I have has been linked (by its
@@ -226,7 +226,7 @@ directories (we will discuss about it later) and has indeed found
 Which release? Well, lets take a closer look at the file
 \begin{verbatim}
 $ ls -l $mkFftwLib/libfftw3.so.3
-(...)/libfftw3.so.3 -> libfftw3.so.3.3.8
+/full/path/to/libfftw3.so.3 -> libfftw3.so.3.3.8
 \end{verbatim}
 I am in fact using release \texttt{3.8} of version \texttt{3}.
 \end{frame}
@@ -308,7 +308,7 @@ executable. Instead, it inserts the information about the
 
 \begin{verbatim}
 $ ldd main
-libfftw3.so.3 => (...)/libfftw3.so.3
+libfftw3.so.3 => /full/path/to/libfftw3.so.3
 \end{verbatim}
 \smallskip
 The loader can then do its job now!
@@ -352,16 +352,15 @@ instance with the \texttt{sudo} command.
 it contains a comma-separated list of directory names the
 loader will first look for libraries on these directories.
 \begin{verbatim}
-export LD\_LIBRARY\_PATH+=:dir1:dir2
+export LD_LIBRARY_PATH+=:dir1:dir2
 \end{verbatim}
 \item With the special flag \texttt{-Wl,-rpath=directory}
 during the compilation of the executable, for instance
 \begin{verbatim}
-g++ main.cpp -o main\_dev -Wl,-rpath=/opt/lib  -L. -lsmall
+g++ main.cpp -o main -Wl,-rpath=/opt/lib  -L. -lsmall
 \end{verbatim}
 Here the loader will look in \texttt{/opt/lib} before the standard directories. You can use also relative paths.
 \item Launching the command \texttt{sudo ldconfig -n directory} which adds \texttt{directory} to the loader search path (you need to have superuser privileges). This addition remains valid until the next reboot of the computer. \textbf{Note}: prefer the other alternatives!
-
 \end{itemize}
 \end{frame}
 
