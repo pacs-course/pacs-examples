@@ -6,7 +6,6 @@ using std::cin;
 using std::cout;
 using std::cerr;
 
-
 #include <iostream>                      // 
 #include <Eigen/SparseCore>
 #include <Eigen/SparseLU>
