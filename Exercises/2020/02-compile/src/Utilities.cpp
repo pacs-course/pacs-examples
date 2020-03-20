@@ -3,9 +3,13 @@
 #include <set>
 #include <queue>
 #include <numeric>
-  
+#include <vector>
+
+
 void LinearAlgebra::AdjacencyGraph::info(std::ostream & out, bool verbose) const
 {
+  std::vector<double> xx;
+
   out<<"Graph has "<<M_degree.size()<<" Nodes"<<std::endl;
   // COmpute bandwidth of each row
   // We are assuming that Index is a POD type (which is resonable)
