@@ -18,21 +18,21 @@ public:
     write r + Rational(1) explicitly (or use static_cast<Rational>).
    */
   explicit Rational(int n=0, int d=1);
-  //! Constructor from a constant rational (C++11 only).
+  //! Constructor from a constant rational (since C++11).
   /*! Also using a constructor of the class in the initialization list
     is C++11 only. The argument is dummy, we do not need it.
   */
   template <std::intmax_t N, std::intmax_t D>
   Rational(std::ratio<N,D> const &):Rational(N,D){};
-  // Copy constructor not needed.
-  /*! 
-    In C+11 one may declare explicitely that the default
-    (automatic) copy constructor is what we want by writing
+  // Copy/move operators not needed: automatica ones are fine.
+  /* 
+    We might declare explicitely that the automatic 
+    copy constructor is what we want by writing
     @code  
     Rational(Rational const &)=default;
     @endcode
+    and so for the other copy/move operators
   */
-  Rational(Rational const &)=default;
   //! Returns the numerator.
   int numerator()const { return M_n;};
   //! Returns the denominator.
