@@ -6,12 +6,7 @@
 #include "extendedAssert.hpp"
 #include "rational.hpp"
 
-Rational::Rational(int n, int d): M_n(n),M_d(d) {this->M_normalize();}
-
-
-// Not needed
-//Rational::Rational(Rational const & r):M_n(r.M_n),M_d(r.M_d)
-//{this->M_normalize();}
+Rational::Rational(int n, int d): M_n{n},M_d{d} {this->M_normalize();}
 
 Rational::operator  double() const
 {
@@ -20,7 +15,7 @@ return static_cast<double>(M_n)/static_cast<double>(M_d);
 
 Rational Rational::operator-()const // unary minus overloading
 {
-  return Rational(-this->M_n,this->M_d);
+  return Rational{-this->M_n,this->M_d};
 }
 
 Rational Rational::operator+()const // unary Plus overloading
@@ -50,7 +45,7 @@ Rational & Rational::operator --()
 
 Rational  Rational::operator --(int i)
 {
-  Rational temp(*this);
+  Rational temp{*this};
   this->operator--();
   return temp;
 }
@@ -67,7 +62,7 @@ Rational::operator +=(Rational const & r)
 
 Rational operator +(Rational const &l, Rational const & r)
 {
-  Rational temp(l);
+  Rational temp{l};
   temp+=r;
   return temp;
 }
@@ -84,7 +79,7 @@ Rational::operator -=(Rational const & r)
 
 Rational operator -(Rational const &l, Rational const & r)
 {
-  Rational temp(l);
+  Rational temp{l};
   temp-=r;
   return temp;
 }
@@ -100,7 +95,7 @@ Rational::operator *=(Rational const & r)
 
 Rational operator *(Rational const &l, Rational const & r)
 {
-  Rational temp(l);
+  Rational temp{l};
   temp*=r;
   return temp;
 }
@@ -116,7 +111,7 @@ Rational::operator /=(Rational const & r)
 
 Rational operator /(Rational const &l, Rational const & r)
 {
-  Rational temp(l);
+  Rational temp{l};
   temp/=r;
   return temp;
 }
