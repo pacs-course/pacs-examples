@@ -18,11 +18,6 @@ Rational Rational::operator-()const // unary minus overloading
   return Rational{-this->M_n,this->M_d};
 }
 
-Rational Rational::operator+()const // unary Plus overloading
-{
-  return *this;
-}
-
 
 Rational & Rational::operator ++()
 {
@@ -114,30 +109,6 @@ Rational operator /(Rational const &l, Rational const & r)
   Rational temp{l};
   temp/=r;
   return temp;
-}
-
-bool operator<(Rational const& l, Rational const & r)
-{
-  auto al=l.M_n*r.M_d;
-  auto ar=r.M_n*l.M_d;
-  return al < ar;
-}
-bool operator<=(Rational const& l, Rational const & r)
-{
-  auto al=l.M_n*r.M_d;
-  auto ar=r.M_n*l.M_d;
-  return al <= ar;
-}
-bool operator>(Rational const& l , Rational const & r){
-  return ! (l<=r);
-}
-bool operator>=(Rational const& l, Rational const & r)
-{
-  return !(l<r);
-}
-bool operator==(Rational const& l, Rational const & r)
-{
-  return !(l<r) && ! (r<l);
 }
 
 
@@ -236,5 +207,4 @@ void Rational::M_normalize()
   // Get back the right sign
   if (negative) M_n=-M_n;
 }
-
 
