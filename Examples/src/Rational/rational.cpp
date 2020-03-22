@@ -6,6 +6,7 @@
 #include "extendedAssert.hpp"
 #include "rational.hpp"
 
+namespace apsc{
 Rational::Rational(int n, int d): M_n{n},M_d{d} {this->M_normalize();}
 
 Rational::operator  double() const
@@ -207,4 +208,4 @@ void Rational::M_normalize()
   // Get back the right sign
   if (negative) M_n=-M_n;
 }
-
+}// end namespace
