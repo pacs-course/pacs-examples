@@ -46,7 +46,7 @@ public:
   Rational &operator /=(Rational const &);
   Rational &operator *=(Rational const &);
   Rational operator-() const;
-  Rational operator+() const;
+  Rational operator+() const {return *this;}
   Rational & operator++();
   Rational operator++(int);
   Rational & operator--();
@@ -59,10 +59,6 @@ public:
   friend Rational operator*(Rational const &,Rational const &);
   friend Rational operator/(Rational const &,Rational const &);
   friend bool operator<(Rational const&, Rational const &);
-  friend bool operator<=(Rational const&, Rational const &);
-  friend bool operator>(Rational const&, Rational const &);
-  friend bool operator>=(Rational const&, Rational const &);
-  friend bool operator==(Rational const&, Rational const &);
   //@}
   //! Streaming operator to output rationals in a nice way.
   friend std::ostream & operator << (std::ostream &, Rational const &);
@@ -73,3 +69,35 @@ private:
   //! Helper function to normalize the internal rational.
   void M_normalize();
 };
+
+//* Logical operator definition (inlined for efficiency)
+//! The less-than operator
+inline bool operator<(Rational const& l, Rational const & r)
+{
+  return (l.M_n*r.M_d) < (r.M_n*l.M_d);
+}
+
+//! Defined in terms of <
+/*!
+  @note For the Rational this is not necessary since the equality operator
+  can easily be trasformed in equality between integers. It is only to stress
+  that this is the general rule for equality operators.
+*/
+inline bool operator==(Rational const& l, Rational const & r)
+{
+  return !(l<r) && ! (r<l);
+}
+//! Defined in term of < and ==
+inline bool operator<=(Rational const& l, Rational const & r)
+{
+  return (l<r) || (l==r);
+}
+//! defined in terms of <=
+inline bool operator>(Rational const& l , Rational const & r){
+  return ! (l<=r);
+}
+//! defined in terms of <
+inline bool operator>=(Rational const& l, Rational const & r)
+{
+  return !(l<r);
+}
