@@ -5,6 +5,7 @@
 int main()
 {
   using namespace std;
+  using namespace apsc; // my namespace
   cout <<"Size of a Rational="<<sizeof(Rational)<<" bytes"<<endl;
   Rational a(-15,6);
   Rational b(6);
