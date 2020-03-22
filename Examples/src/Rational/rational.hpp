@@ -1,5 +1,7 @@
 #include <iosfwd>
 #include <ratio> // from c++11 only!
+namespace apsc
+{
 //! A simple class that represent a rational number
 class Rational
 {
@@ -101,3 +103,4 @@ inline bool operator>=(Rational const& l, Rational const & r)
 {
   return !(l<r);
 }
+}// end namespace
