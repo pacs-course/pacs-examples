@@ -5,7 +5,7 @@
 #include <array>
 #include <utility>
 
-/*!  @file Polygon.hpp 
+/*!  @file Polygon.hpp
   @brief This is an example of class hierarchy that
   represents poligonal object.
 
@@ -13,13 +13,13 @@
   represent a first example of class hierarchy with public
   inheritance. The class `AbstractPolygon` defines the general public
   interface of all other classes representing polygonal objects.
-  
+
   We make use of some syntax of the C++11 new standard so you need to
   compile with *-std=c++11*
    */
 namespace Geometry
 {
-  
+
   //! A class that holds 2D points
   /*! It also represents a vector in R2
    */
@@ -53,7 +53,7 @@ namespace Geometry
   using R2Vector=Point2D;
 
   //! subtraction operator.
-  /*!  
+  /*!
     It is defined in the header file because I want it to be
     inline.
   */
@@ -63,7 +63,7 @@ namespace Geometry
   }
 
   //! Addition operator.
-  /*!  
+  /*!
     It is defined in the header file because I want it to be
     inline.
   */
@@ -74,7 +74,7 @@ namespace Geometry
 
   //! Distance between points
   double distance(Point2D const & a, Point2D const & b);
- 
+
   //! Polygon vertices are just vectors of points.
   using Vertices=std::vector<Point2D>;
 
@@ -82,41 +82,23 @@ namespace Geometry
   class AbstractPolygon
   {
   public:
-    //! Constructor taking vertices
-    /*! 
-      It checks convexity if check=true
-     */
-    AbstractPolygon(Vertices const & v, bool check=true);
-    //! Default constructor is defaulted
-    /*! 
-      It is up to the derived classes to fill the vertexex and other info correctly
-    */
-    AbstractPolygon()=default;
-    //! Assignment
-    AbstractPolygon & operator=(AbstractPolygon const&)=default;
-    //! Copy constructor
-    AbstractPolygon(AbstractPolygon const &)=default;
-    //! Move constructor
-    AbstractPolygon(AbstractPolygon&&)=default;
-    //! Move assignement
-    AbstractPolygon & operator=(AbstractPolygon&&)=default;
-    //! virtual destructor
+
     virtual ~AbstractPolygon()=default;
     //! Returns the number of vertices.
-    /*!  We return Vertices::size_type and not just int because
-      size_type is guaranteed to be the correct type for indexes in
-      stl vectors. Its actual type may be implementation dependent.
+    /*!  We return Vertices::size_t since it is guaranteed to be the correct
+      type for indexes in stl vectors. Its actual type may be implementation
+      dependent.
       In this case, however, int would have been fine (size_type is
       guaranteed to be an integral type, more precisely
       a type convertible to unsigned int).
     */
-    Vertices::size_type size() const {return vertexes.size();}
+    std::size_t size() const=0;
     //! Is the polygon convex?
     bool isConvex() const {return isconvex;}
-    //! Returns the vertices (read only)
-    Vertices const & theVertices()const {return vertexes;}
+    //! Returns the ith vertex
+    Point2D vertex(size_t i) const=0
     //! Outputs some info on the polygon
-    virtual std::ostream & showMe(std::ostream & out=std::cout) const;
+    virtual std::ostream & showMe(std::ostream & out=std::cout) const=0;
     //! The area of the polygon (with sign!).
     /*!
       It is a pure virtual function.
@@ -124,10 +106,7 @@ namespace Geometry
     */
     virtual double area() const=0;
   protected:
-    Vertices vertexes;
     bool isconvex=false;
-    //! Test convexity of the polygon
-    void checkConvexity();
   };
 
   //! Class for a generic Polygon
@@ -140,16 +119,23 @@ namespace Geometry
   public:
     //! Default constructor.
     //! Polygon may be constructed giving Vertices;
-    Polygon(Vertices const & v):AbstractPolygon(v, false){}
+    Polygon(Vertices const & v, bool check=true):vertexes{v}
+    {
+      if (check) checkConvexity();
+    }
+    std::size_t size() const override {return vertexes.size();}
     //! Destructor
     virtual ~Polygon(){};
     /*!
-      The area is positive if vertices are given in 
+      The area is positive if vertices are given in
       counterclockwise order
     */
     virtual double area() const;
     //! Specialised version for generic polygons.
     virtual std::ostream & showMe(std::ostream & out=std::cout) const;
+  protected:
+    Vertices vertexes;
+    void checkConvexity();
   };
 
   //! A square
@@ -164,7 +150,7 @@ namespace Geometry
     /*!
       /param origin Point which gives the first vertex of the square.
       /param length The length of the side.
-      /param angle In radians, tells how the square is  rotated. 
+      /param angle In radians, tells how the square is  rotated.
      */
     Square(Point2D origin, double length,double angle=0.0);
     Square(Square const &)=default;
@@ -176,7 +162,7 @@ namespace Geometry
     //! Specialised version for squares.
     std::ostream & showMe(std::ostream & out=std::cout) const override;
   };
-  
+
   //! A triangle
   class Triangle final: public AbstractPolygon
   {
@@ -191,7 +177,7 @@ namespace Geometry
     //! Specialised for Triangles
     virtual std::ostream & showMe(std::ostream & out=std::cout) const override;
   };
-  
+
 }
 
 #endif
