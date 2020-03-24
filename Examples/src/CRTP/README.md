@@ -10,12 +10,16 @@ This allows to implement what is often calls "static polymorphism". A
 form of polymorphism much less flexible than the standard one
 (everything must be resolved at compile time), but particularly
 efficient if methods of the class are used many times in the
-program. Indeed, the call to a virtual method introduces some
-overhead.
+program. Indeed, with this technique we avoid the call to a virtual
+method, which introduces some overhead. 
+
+Being a "compile-time" (static) technique, however, it does not have
+the same flexibility as traditional style polymorphism via virtual
+methods.
 
 
-It is used extensively by the EIGEN library. Indeed it is the base for
-an efficient implementation of Expression Templates
+It is used by the EIGEN library extensively. Indeed, it is the base for
+an efficient implementation of Expression Templates.
 
 
 
