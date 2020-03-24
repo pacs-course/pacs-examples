@@ -59,7 +59,7 @@ evaluatePoly(std::vector<double> const & points,
   return result;
 }
 #else
-#warning "Using sequentisl implementation of std::transform"
+#warning "Using sequential implementation of std::transform"
 //! Evaluates polynomial in a set of points
 std::vector<double>
 evaluatePoly(std::vector<double> const & points,
