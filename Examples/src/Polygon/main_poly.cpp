@@ -7,8 +7,7 @@ int main()
 
   //! five vertices
   Vertices v(5);
-
-  v[0]={0.5,0.5}; //C++11 sintax!
+  v[0]={0.5,0.5};
   v[1]={0.5,0.8};
   v[2]={0.0,0.0};
   v[3]={0.0,-1.0};
@@ -19,21 +18,26 @@ int main()
   std::cout<<"Area: "<<aPolygon.area()<<std::endl;
   // A triangle built with the first 3 vertices
   Triangle aTriangle(Vertices(v.begin(),v.begin()+3));
+  // testing polymorphism
   AbstractPolygon * p_ab=&aTriangle;
 
   p_ab->showMe();
   std::cout<<"Area: "<<aTriangle.area()<<std::endl;
   //! Unit Square
-  //C++11 syntax. I expoit the fact that the is an implicit conversion
-  //between initializer lists with two double and a Point2d, since the latter has a  constructor taking two doubles
-  //as argument 
-  // In C++98 I would have written
-  //Square aSquare(Point2D(0.0,0.0),1.0); 
   Square aSquare({0.0,0.0},1.0);
   Square s2(aSquare); 
   AbstractPolygon & r_ab=s2;
   r_ab.showMe();
   std::cout<<"Area: "<<r_ab.area()<<std::endl;
+
+  // You can also do like this
+  Triangle pippo{Vertices{{0.,1},{1.,0.},{0.,0.}}};
+  std::cout<<"Area of unitary triangle: "<<pippo.area()<<std::endl;
+  std::cout<<"Triangle vertices: "<<std::endl;
+  for (auto k: pippo)std::cout<<k;
+  
+
+  
 }
   
 
