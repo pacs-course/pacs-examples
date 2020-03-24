@@ -117,7 +117,7 @@ namespace Geometry
       In this case, however, int would have been fine (size_type is
       guaranteed to be an unsigned integral type).
     */
-    std::size_t size() const {return vertexes.size();}
+    virtual std::size_t size() const {return vertexes.size();}
     //! Is the polygon convex?
     /*!
       If you are changing vertices you need first to run checkConvexity()
@@ -181,7 +181,7 @@ namespace Geometry
   class Square final: public AbstractPolygon
   {
   public:
-    // A square is always convex.
+    // A square is always convex. And the number of vertices is 4
     Square(Vertices const & v);
     //
     Square(): AbstractPolygon{4}{isconvex=true;}
@@ -192,6 +192,8 @@ namespace Geometry
       /param angle In radians, tells how the square is  rotated.
      */
     Square(Point2D origin, double length,double angle=0.0);
+    // Specialised version for square
+    std::size_t size() const {return nVertices;}
     //! specialised version for Square
     bool checkConvexity() override {return isconvex=true;}
     //! Specialised version for squares
@@ -200,6 +202,8 @@ namespace Geometry
     void setVertexes(Vertices const & v) override;
     //! Specialised version for squares.
     std::ostream & showMe(std::ostream & out=std::cout) const override;
+    //! Just to show the use of a static constexpr
+    static size_t constexpr nVertices=4;
   private:
     //! It throws an exception if it is not a square
     void checkSquare();
@@ -212,6 +216,8 @@ namespace Geometry
     Triangle(Vertices const &);
     //! Specialised for Triangles
     Triangle():AbstractPolygon{3}{isconvex=true;}
+    // Specialised version for triangle
+    std::size_t size() const {return nVertices;}
     //! specialised version for Triangle
     bool checkConvexity() override{ return isconvex=true;};
     double area() const override;//! Specialised for Triangles
@@ -219,8 +225,10 @@ namespace Geometry
     void setVertexes(Vertices const & v) override;
     //! Specialised for Triangles
     std::ostream & showMe(std::ostream & out=std::cout) const override;
+    //! Just to show the use of a static constexpr
+    static size_t constexpr nVertices=3;
   private:
-    //! Throw if not a triangle
+    //! Throws if not a triangle
     void checkTriangle();
   };
 
