@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <utility>
+#include <memory>
 
 /*!  @file Polygon.hpp
   @brief This is an example of class hierarchy that
@@ -149,6 +150,8 @@ namespace Geometry
     */
     virtual double area() const=0;
   protected:
+    //! make it clonable
+    virtual std::unique_ptr<AbstractPolygon> clone()=0;
     Vertices vertexes;
     bool isconvex=false;
   };
@@ -172,6 +175,11 @@ namespace Geometry
     double area() const override;
     //! Specialised version for generic polygons.
     std::ostream & showMe(std::ostream & out=std::cout) const override;
+  protected:
+    //! make it clonable
+    std::unique_ptr<AbstractPolygon> clone() override{
+      return std::make_unique<Polygon>(*this);
+    }
   };
 
   //! A square
@@ -204,6 +212,11 @@ namespace Geometry
     std::ostream & showMe(std::ostream & out=std::cout) const override;
     //! Just to show the use of a static constexpr
     static size_t constexpr nVertices=4;
+  protected:
+    //! make it clonable
+    std::unique_ptr<AbstractPolygon> clone() override{
+      return std::make_unique<Square>(*this);
+    }
   private:
     //! It throws an exception if it is not a square
     void checkSquare();
@@ -227,6 +240,12 @@ namespace Geometry
     std::ostream & showMe(std::ostream & out=std::cout) const override;
     //! Just to show the use of a static constexpr
     static size_t constexpr nVertices=3;
+  protected:
+    //! make it clonable
+    std::unique_ptr<AbstractPolygon> clone() override{
+      return std::make_unique<Triangle>(*this);
+    }
+
   private:
     //! Throws if not a triangle
     void checkTriangle();
