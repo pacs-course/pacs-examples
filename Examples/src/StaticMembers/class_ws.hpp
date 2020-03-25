@@ -24,20 +24,6 @@ public:
     static variables. Definition in the cpp file
   */
   ~WS();
-  //! Move constructor
-  /*!  If I do not define the move constructor I do not have any,
-    becouse of the rules for synthetic methods. However it will not be
-    a problem, the copy version will be used. Here, having a move
-    constructor is not very useful, since moving a double (the only
-    member variable of this class) is in fact equivalent to copy.
-    However, only to show a move constructor I am defining one.
-   */
-  WS(WS&& w);
-  //! Move assignement
-  /*!
-    The same considerations made for move constructor apply here.
-   */
-  WS & operator=(WS&& w);
   //! Return the stored value.
   double getValue() const{return myValue;};
   //! Returns the average value.
@@ -61,13 +47,13 @@ private:
     may be initialised in-class
     Initialization in the cpp file
    */
-  static int counter; 
+  inline static int counter=0; 
   //! Stores the sum of the values.
   /*!
      Cannot be initialised in class since it is not const and it is not an 
      int. (so even if it was const we could not initilize it in class).
    */
-  static double sum;
+  inline static double sum=0.0;
   //! The object value.
   /*!
     It could be initialised in class, but since the constructor
