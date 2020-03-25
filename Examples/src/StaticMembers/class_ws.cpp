@@ -14,9 +14,12 @@ WS::WS(const WS & w):myValue(w.myValue){
 
 
 WS & WS::operator =(WS const & w){
-  WS::sum-=myValue;
-  myValue=w.myValue;
-  WS::sum+=myValue;
+  if(this != &w)
+    {
+      WS::sum-=myValue;
+      myValue=w.myValue;
+      WS::sum+=myValue;
+    }
   return *this;
 }
 
