@@ -23,7 +23,7 @@ int main(){
   std::cout<<" N. of WS: "<<WS::howmany()<<std::endl;
   // since now we have objects I may also use it as a normal method
   std::cout<<" Average value: "<<aWS.average()<<std::endl;
-  //! I destroy the last one explicitely!
+  //! I destroy the last one explicitely. Only to see what happens
   aWS.~WS();
   std::cout<<" N. of WS: "<<WS::howmany()<<std::endl;
   std::cout<<" Average value: "<<WS::average()<<std::endl;
