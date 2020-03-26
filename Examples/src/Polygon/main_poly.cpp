@@ -1,4 +1,5 @@
 #include "Polygon.hpp"
+#include "PolygonUtilities.hpp"
 #include <iostream>
 //! Main program
 int main()
@@ -36,7 +37,12 @@ int main()
   std::cout<<"Triangle vertices: "<<std::endl;
   for (auto k: pippo)std::cout<<k;
   
+  // testing the factory
 
+  auto ppoly = createPolygon("Polygon",v);
+  ppoly->showMe();
+  std::cout<<"Area: "<<ppoly->area()<<std::endl;
+  
   
 }
   
