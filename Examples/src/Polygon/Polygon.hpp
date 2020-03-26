@@ -28,7 +28,7 @@ namespace Geometry
   {
   public:
     //! Constructor giving coordinates.
-    Point2D(double xx=0.0, double yy=0.0):coor{{xx,yy}}{}
+    Point2D(double xx=0.0, double yy=0.0):coor{xx,yy}{}
     //! Copy constructor
     Point2D(const Point2D&)=default;
     //! Returns coordinates in a array<double>.
@@ -81,7 +81,7 @@ namespace Geometry
   //! Point2D may be used also ad "vector" in 2D so it makes sense to compute
   //! the norm, which is the distance from the origin
   double norm(Point2D const & a);
-  //! Return the sin of the angle betwee two Point2d interpreted as vectors.
+  //! Return the sin of the angle between two Point2d interpreted as vectors.
   double sinAngle (Point2D const & u, Point2D const & v );
   //! Polygon vertices are just vectors of points.
   using Vertices=std::vector<Point2D>;
