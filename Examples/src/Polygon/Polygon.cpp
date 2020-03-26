@@ -31,7 +31,7 @@ namespace Geometry{
   }
   // ********************* BASE CLASS **********************
   
-  AbstractPolygon::AbstractPolygon(Vertices const & v, bool check):vertexes(v)
+  AbstractPolygon::AbstractPolygon(Vertices const & v, bool check):vertexes{v}
   {
     if (check) this->checkConvexity();
   }
@@ -111,7 +111,7 @@ namespace Geometry{
 
   //! To compute the area of a genericpolygon we use the divergence theorem.
   /*!
-    \f$ int_P d\Omega = 1/2 \int{\partial P} xn_x d\gamma\f$
+    \f$ int_P d\Omega = 1/2 \int{\partial P} x n_x d\gamma\f$
     The integral is computed by using trapezoidal rule on the polygon sides.
   */
   double Polygon::area() const
