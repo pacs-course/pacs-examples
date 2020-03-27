@@ -26,7 +26,7 @@ eval_horner(const std::vector<double> &a, const double &x);
 //! A pointer to function.
 //
 // typedef double (*eval_method)(const std::vector<double> &, const
-// double &); In C++11 it is preferable to do
+// double); In C++11 it is preferable to do
 using eval_method = double (*)(const std::vector<double> &,
                                const double &);
 
