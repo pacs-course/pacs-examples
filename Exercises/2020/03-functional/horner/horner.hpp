@@ -26,17 +26,20 @@ eval_horner(const std::vector<double> &a, const double &x);
 //! A pointer to function.
 //
 // typedef double (*eval_method)(const std::vector<double> &, const
-// double &); In C++11 is it preferable to do
+// double &); In C++11 it is preferable to do
 using eval_method = double (*)(const std::vector<double> &,
                                const double &);
 
 //! Evaluates polynomial in a set of points.
 /*!
-  @param point   Vector of points to compute the polynomial.
+  @param points  Vector of points to compute the polynomial.
   @param a       Polynomial coefficients.
   @result        A vector with the evaluated points
   @param method  Method to evaluate the polynomial
  */
-/* ... */
+std::vector<double>
+evaluate_poly(const std::vector<double> &points,
+              const std::vector<double> &a,
+              eval_method                method);
 
 #endif
