@@ -65,9 +65,10 @@ private:
   std::function<double(const double &)> fun;
   std::function<double(const double &)> prime;
 
-  int    n_max_it;
-  double tol_fun;
-  double tol_x;
+  const int    n_max_it;
+  const double tol_fun;
+  const double tol_x;
+
   double x;
   double dfdx;
   double dx;
