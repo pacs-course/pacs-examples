@@ -38,7 +38,6 @@ int main()
   for (auto k: pippo)std::cout<<k;
   
   // testing the factory
-
   auto ppoly = createPolygon("Polygon",v);
   ppoly->showMe();
   std::cout<<"Area: "<<ppoly->area()<<std::endl;
