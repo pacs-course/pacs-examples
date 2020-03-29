@@ -3,7 +3,7 @@ CXX ?= g++
 
 all: integer-list
 
-integer-list.o: integer-list.h integer-list.cpp
+integer-list.o: integer-list.hpp integer-list.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -c integer-list.cpp
 
 integer-list: integer-list.o
