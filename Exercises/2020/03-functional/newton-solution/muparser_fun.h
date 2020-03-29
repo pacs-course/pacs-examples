@@ -1,4 +1,3 @@
-
 #include <muParser.h>
 
 #include <memory>
@@ -31,6 +30,7 @@ public:
   {
     double y;
     var = x;
+
     try
       {
         y = p.Eval();
@@ -39,7 +39,8 @@ public:
       {
         std::cerr << e.GetMsg() << std::endl;
       }
-    return (y);
+
+    return y;
   };
 
 private:
