@@ -43,7 +43,7 @@ int main (int argc, char** argv)
   // erase this node
   t->erase ();
 
-  // find the node with value 5
+  // find the node with value 8
   Node* tt = start.find (8);
   
   // erase this node

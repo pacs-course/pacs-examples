@@ -97,7 +97,7 @@ public:
     previous->setNext (replacement);
     next->setPrevious (replacement);
     replacement->setNext (next);
-    replacement->setPrevious (next);
+    replacement->setPrevious (previous);
     next = nullptr;
     delete this;
   }
