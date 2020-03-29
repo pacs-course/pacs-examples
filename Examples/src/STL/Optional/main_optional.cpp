@@ -1,7 +1,9 @@
 #include<optional>
 #include<vector>
 #include<iostream>
+#include<fstream>
 #include<algorithm>
+#include "readOptional.hpp"
 
 //! function templates that counts valid optionals in a vector an prints the valid values 
 //!
@@ -51,7 +53,17 @@ int main()
   // You can reset a value to "unset"
   v[2].reset();
   if(v[2].has_value())
+    {
     std::cout<<"v[2] stores "<<v[2].value()<<std::endl;
+    }
   else
-    std::cout<<"v[2] stores no value"<<std::endl;  
+    {
+    std::cout<<"v[2] stores no value"<<std::endl;
+    }
+  std::cout<<" Now reading from file\n";
+    using namespace apsc::optionalExample;
+    std::ifstream file("data.txt");
+    auto values = apsc::optionalExample::readValues(file);
+    std::cout<<values;
+
 }
