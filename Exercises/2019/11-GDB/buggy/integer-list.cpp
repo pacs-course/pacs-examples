@@ -1,6 +1,6 @@
 // [form and print a list of integers]
 #include <iostream>
-#include "integer-list.h"
+#include "integer-list.hpp"
 
 int main (int argc, char** argv)
 {
