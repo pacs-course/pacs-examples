@@ -1,4 +1,4 @@
-default: test_move test_nomove
+test: test_move test_nomove
 test_move:
 	echo "Testing move semantic"
 	make clean
