@@ -14,3 +14,5 @@
 techniques, *among which one that uses variadic templates*.
 
 * `traits/`  An example of the usage of traits (which are in fact also policies).
+
+* `VariadicTemplates` Some use of variadic templates and fold operators
