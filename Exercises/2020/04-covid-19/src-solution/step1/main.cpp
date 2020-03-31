@@ -3,9 +3,7 @@
 int
 main(int argc, char **argv)
 {
-  ContagionParameters params;
-
-  Contagion contagion(params);
+  Contagion contagion;
   contagion.simulate();
 
   return 0;
