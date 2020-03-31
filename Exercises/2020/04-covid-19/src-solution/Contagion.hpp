@@ -7,18 +7,20 @@
 #include "Parameters.hpp"
 #include "Person.hpp"
 
+#include <memory>
 #include <vector>
 
 class Contagion
 {
 public:
-  Contagion();
+  Contagion(const std::shared_ptr<const ContagionParameters>
+              &params_contagion_);
 
   void
   simulate();
 
 protected:
-  ContagionParameters params;
+  std::shared_ptr<const ContagionParameters> params_contagion;
 
   std::vector<Person> people;
 
