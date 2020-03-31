@@ -1,6 +1,8 @@
 #include "Person.hpp"
 
+#include <algorithm>
 #include <chrono>
+#include <execution>
 #include <limits>
 
 Person::Person(const Status &initial_status)
@@ -155,15 +157,21 @@ Person::update_contagion(std::vector<Person> &people)
 
   if (is_infected)
     {
-      for (auto &other : people)
-        {
+      std::transform(
+        std::execution::par_unseq,
+        people.begin(),
+        people.end(),
+        people.begin(),
+        [this](auto &p) {
+          Person other(p);
+
           double x_dist = x - other.x;
           double y_dist = y - other.y;
           double r = std::sqrt(x_dist * x_dist + y_dist * y_dist);
 
           // If "other" is me.
           if (r <= std::numeric_limits<double>::epsilon())
-            continue;
+            return other;
 
           bool other_met = (r <= params.r_infection);
 
@@ -174,6 +182,8 @@ Person::update_contagion(std::vector<Person> &people)
             {
               other.is_infected = true;
             }
-        }
+
+          return other;
+        });
     }
 }
