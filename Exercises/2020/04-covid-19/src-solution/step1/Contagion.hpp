@@ -53,16 +53,16 @@ public:
 class Contagion
 {
 public:
-  Contagion(const ContagionParameters &params_);
+  Contagion();
 
   void
   simulate();
 
-private:
+protected:
   ContagionParameters params;
 
   // Random numbers generators.
-  std::default_random_engine                  engine;
+  std::random_device                          engine;
   std::uniform_real_distribution<double>      rand;
   std::uniform_int_distribution<unsigned int> randi;
 
