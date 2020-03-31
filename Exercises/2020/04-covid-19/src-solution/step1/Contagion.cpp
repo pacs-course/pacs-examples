@@ -8,9 +8,8 @@
 #include <iostream>
 #include <utility>
 
-Contagion::Contagion(const ContagionParameters &params_)
-  : params(params_)
-  , rand(0, 1)
+Contagion::Contagion()
+  : rand(0, 1)
   , randi(1, params.n_timesteps_go_to_market)
 {
   x.resize(params.n_people);
@@ -117,15 +116,17 @@ Contagion::simulate()
                       std::cout << "Day " << day[step] << ": person "
                                 << p << " stays at market."
                                 << std::endl;
-
-                      next_move = "stay";
                     }
-                  else
+
+                  next_move = "stay";
+                }
+              else
+                {
+                  if (params.verbose)
                     {
-                      if (params.verbose)
-                        std::cout
-                          << "Day " << day[step] << ": person " << p
-                          << " returns from the market." << std::endl;
+                      std::cout << "Day " << day[step] << ": person "
+                                << p << " returns from the market."
+                                << std::endl;
                     }
 
                   next_move = "return_from_market";
