@@ -3,10 +3,11 @@
 
 #include "Parameters.hpp"
 
+#include <memory>
 #include <random>
 #include <vector>
 
-enum class Status
+enum class State
 {
   Susceptible,
   Infected,
@@ -16,7 +17,9 @@ enum class Status
 class Person
 {
 public:
-  Person(const Status &initial_status = Status::Susceptible);
+  Person(const std::shared_ptr<const ContagionParameters>
+           &          params_contagion,
+         const State &initial_status = State::Susceptible);
 
   void
   move();
@@ -43,7 +46,7 @@ public:
   }
 
 protected:
-  PersonParameters params;
+  const PersonParameters params;
 
   // Random numbers generators.
   std::default_random_engine                  engine;
