@@ -1,30 +1,26 @@
 CXX      ?= g++
-CXXFLAGS ?= -std=c++17 -Wall -pedantic
-LINK.o   := $(LINK.cc) # Use C++ linker.
+CXXFLAGS ?= -std=c++17
+CPPFLAGS ?= -O3 -Wall -pedantic -I. -isystem../../../../Examples/include \
+            -isystem$(mkBoostInc) -isystem$(mkTbbInc)
 
-CPPFLAGS += -O3 -I. -isystem../../../../Examples/include -isystem$(mkBoostInc) -isystem$(mkTbbInc)
-LDLIBS   += -L$(mkBoostLib) -lboost_iostreams -lboost_system -lboost_filesystem -L$(mkTbbLib) -ltbb
+EXEC     = main
+LDFLAGS ?= -L$(mkBoostLib) -L$(mkTbbLib)
+LIBS    ?= -lboost_iostreams -lboost_system -lboost_filesystem -ltbb
 
 SRCS=$(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
-HEADERS=$(wildcard *.hpp)
-
-exe_sources=$(filter main%.cpp,$(SRCS))
-EXEC=$(exe_sources:.cpp=)
-
-.phony= all clean distclean
-
-.DEFAULT_GOAL = all
 
 all: $(EXEC)
 
-$(EXEC): $(OBJS)
+%.o: %.cpp Parameters.hpp | %.hpp
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $<
 
-$(OBJS): $(SRCS) $(HEADERS)
+$(EXEC): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	$(RM) -f $(OBJS)
+	$(RM) *.o
 
 distclean: clean
-	$(RM) -f $(EXEC)
+	$(RM) $(EXEC)
 	$(RM) *.csv *.out *.bak *~

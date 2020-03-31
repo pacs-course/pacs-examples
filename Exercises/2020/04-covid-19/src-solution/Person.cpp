@@ -2,18 +2,22 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <execution>
 #include <limits>
 
-Person::Person(const Status &initial_status)
-  : engine(
+Person::Person(
+  const std::shared_ptr<const ContagionParameters> &params_contagion,
+  const State &                                     initial_status)
+  : params(params_contagion)
+  , engine(
       std::chrono::system_clock::now().time_since_epoch().count())
   , rand(0, 1)
   , randi(1, params.n_timesteps_go_to_market)
   , does_sd(false)
-  , is_susceptible(initial_status == Status::Susceptible)
-  , is_infected(initial_status == Status::Infected)
-  , is_recovered(initial_status == Status::Recovered)
+  , is_susceptible(initial_status == State::Susceptible)
+  , is_infected(initial_status == State::Infected)
+  , is_recovered(initial_status == State::Recovered)
   , t_infected(0)
   , t_at_market(0)
   , is_at_market(false)
@@ -25,7 +29,7 @@ Person::Person(const Status &initial_status)
   dx    = params.dr * std::sin(alpha);
   dy    = params.dr * std::cos(alpha);
 
-  if (rand(engine) < params.frac_sd)
+  if (rand(engine) < params.params_contagion->frac_sd)
     does_sd = true;
 
   t_go_to_market = randi(engine);
@@ -118,9 +122,11 @@ Person::move()
     }
   else if (next_move == "go_to_market")
     {
-      x = params.market_x + rand(engine) * params.market_size;
+      x = params.params_contagion->market_x +
+          rand(engine) * params.params_contagion->market_size;
 
-      y = params.market_y + rand(engine) * params.market_size;
+      y = params.params_contagion->market_y +
+          rand(engine) * params.params_contagion->market_size;
 
       t_go_to_market = -1;
       is_at_market   = true;
@@ -157,23 +163,21 @@ Person::update_contagion(std::vector<Person> &people)
 
   if (is_infected)
     {
-      std::transform(
+      std::for_each(
         std::execution::par_unseq,
         people.begin(),
         people.end(),
-        people.begin(),
-        [this](auto &p) {
-          Person other(p);
-
+        [this](Person &other) {
           double x_dist = x - other.x;
           double y_dist = y - other.y;
           double r = std::sqrt(x_dist * x_dist + y_dist * y_dist);
 
           // If "other" is me.
           if (r <= std::numeric_limits<double>::epsilon())
-            return other;
+            return;
 
-          bool other_met = (r <= params.r_infection);
+          bool other_met =
+            (r <= params.params_contagion->r_infection);
 
           bool other_is_home =
             ((other.x == other.x_bak) && (other.y == other.y_bak));
@@ -183,7 +187,10 @@ Person::update_contagion(std::vector<Person> &people)
               other.is_infected = true;
             }
 
-          return other;
+          return;
         });
     }
+
+  if (is_infected || is_recovered)
+    is_susceptible = false;
 }
