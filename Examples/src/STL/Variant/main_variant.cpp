@@ -3,7 +3,7 @@
 #include<string>
 #include<vector>
 #include <type_traits>
-//! A function returning eiter a string or an int
+//! A function returning either a string or an int
 //! \param i according to which we return one or the other
 std::variant<std::string,int>
 fun(int const & value)
