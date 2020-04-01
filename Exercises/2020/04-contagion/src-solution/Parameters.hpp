@@ -2,41 +2,45 @@
 #define PARAMETERS_HPP
 
 #include <memory>
+#include <string>
 
 class ContagionParameters
 {
 public:
-  ContagionParameters() = default;
+  ContagionParameters(const std::string &filename);
 
   // Number of people.
-  unsigned int n_people = 200;
+  unsigned int n_people;
+
+  // Domain is [0, domain_size] x [0, domain_size].
+  double domain_size;
 
   // Number of timesteps per day.
-  unsigned int n_timesteps_per_day = 5;
+  unsigned int n_timesteps_per_day;
 
   // Simulation duration.
-  unsigned int n_timesteps = 150;
+  unsigned int n_timesteps;
 
   // Fraction of people who practice social distancing.
-  double frac_sd = 0.75;
+  double frac_sd;
 
-  // People get infected when an already infected is closer than
-  // r_infection.
-  double r_infection = 0.04;
+  // People get infected when another infected
+  // gets closer than r_infection.
+  double r_infection;
 
   // Market size and location.
-  double market_size = 0.1;
+  double market_size;
 
-  double market_x = 0.5;
-  double market_y = 0.5;
+  double market_x;
+  double market_y;
 };
 
 class PersonParameters
 {
 public:
-  PersonParameters(const std::shared_ptr<const ContagionParameters>
-                     &params_contagion_)
-    : params_contagion(params_contagion_){};
+  PersonParameters(const std::string &filename,
+                   const std::shared_ptr<const ContagionParameters>
+                     &params_contagion_);
 
   std::shared_ptr<const ContagionParameters> params_contagion;
 
@@ -45,15 +49,15 @@ public:
   unsigned int n_timesteps_go_to_market =
     5 * params_contagion->n_timesteps_per_day;
 
-  // Number of time steps spent at market.
-  unsigned int n_timesteps_at_market = 1;
+  // Number of timesteps spent at market.
+  unsigned int n_timesteps_at_market = 2;
 
   // People recover after n_timesteps_recover timesteps.
   unsigned int n_timesteps_recover =
     10 * params_contagion->n_timesteps_per_day;
 
-  // Step length per time step.
-  double dr = 0.02;
+  // Step length per timestep.
+  double dr = 0.01;
 };
 
 #endif /* PARAMETERS_HPP */

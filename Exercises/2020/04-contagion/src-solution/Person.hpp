@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <random>
+#include <utility>
 #include <vector>
 
 enum class State
@@ -14,12 +15,18 @@ enum class State
   Recovered
 };
 
+enum class Move
+{
+  Walk,
+  Stay,
+  Go_To_Market,
+  Return_From_Market
+};
+
 class Person
 {
 public:
-  Person(const std::shared_ptr<const ContagionParameters>
-           &          params_contagion,
-         const State &initial_status = State::Susceptible);
+  Person(const State &initial_state, const PersonParameters &params);
 
   void
   move();
@@ -30,22 +37,26 @@ public:
   inline bool
   susceptible() const
   {
-    return is_susceptible;
+    return (state == State::Susceptible);
   }
 
   inline bool
   infected() const
   {
-    return is_infected;
+    return (state == State::Infected);
   }
 
   inline bool
   recovered() const
   {
-    return is_recovered;
+    return (state == State::Recovered);
   }
 
 protected:
+  // Generate new random direction.
+  std::pair<double, double>
+  generate_direction();
+
   const PersonParameters params;
 
   // Random numbers generators.
@@ -53,34 +64,29 @@ protected:
   std::uniform_real_distribution<double>      rand;
   std::uniform_int_distribution<unsigned int> randi;
 
-  // Position.
+  // Position and backup.
   double x;
   double y;
-  double alpha;
-  double dx;
-  double dy;
-
-  // Position backup.
   double x_bak;
   double y_bak;
 
-  // Who does social distancing (sd)?
+  // Does social distancing?
   bool does_sd;
 
   // Health status.
-  bool is_susceptible;
-  bool is_infected;
-  bool is_recovered;
+  State state;
 
-  double t_infected;
+  // Infection duration.
+  double t_infection;
 
-  // Market.
-  int t_go_to_market; // Time until next shopping trip.
+  // Shopping time?
+  bool is_at_market;
 
-  unsigned int t_at_market; // Time spent at the market.
-  bool         is_at_market;
+  // Timesteps until next shopping trip.
+  int t_go_to_market;
 
-private:
+  // Timesteps spent at the market.
+  unsigned int t_spent_at_market;
 };
 
 #endif /* PERSON_HPP */
