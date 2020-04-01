@@ -3,23 +3,24 @@
 #include "gnuplot-iostream.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <execution>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <utility>
 
-Contagion::Contagion(
-  const std::shared_ptr<const ContagionParameters> &params_contagion_)
-  : params_contagion(params_contagion_)
-  , day(params_contagion->n_timesteps)
-  , n_infected(params_contagion->n_timesteps)
-  , n_recovered(params_contagion->n_timesteps)
-  , n_susceptible(params_contagion->n_timesteps)
+Contagion::Contagion(const std::string &filename)
+  : params_contagion(
+      std::make_shared<const ContagionParameters>(filename))
+  , day(params_contagion->n_timesteps + 1)
+  , n_infected(params_contagion->n_timesteps + 1)
+  , n_recovered(params_contagion->n_timesteps + 1)
+  , n_susceptible(params_contagion->n_timesteps + 1)
 {
   people.reserve(params_contagion->n_people);
 
-  PersonParameters params("params.pot", params_contagion);
+  PersonParameters params(filename, params_contagion);
 
   for (size_t p = 0; p < people.capacity() - 1; ++p)
     {
@@ -30,14 +31,28 @@ Contagion::Contagion(
 }
 
 void
+Contagion::run()
+{
+  simulate();
+  output_results();
+}
+
+void
 Contagion::simulate()
 {
-  std::cout << "Running... ";
+  day[0] = 0;
 
-  for (unsigned int step = 0; step < params_contagion->n_timesteps;
+  n_susceptible[0] = params_contagion->n_people - 1;
+  n_infected[0]    = 1;
+  n_recovered[0]   = 0;
+
+  for (unsigned int step = 1; step <= params_contagion->n_timesteps;
        ++step)
     {
-      day[step] = static_cast<double>(step + 1) /
+      std::cout << "Timestep " << step << " / "
+                << params_contagion->n_timesteps << "\r";
+
+      day[step] = static_cast<double>(step) /
                   params_contagion->n_timesteps_per_day;
 
       std::for_each(people.begin(), people.end(), [this](Person &p) {
@@ -66,8 +81,28 @@ Contagion::simulate()
                       [](const Person &p) { return p.recovered(); });
     }
 
-  // Export output.
-  std::ofstream file("output.csv");
+  std::cout << std::endl;
+
+  // Find peak.
+  auto max_n_infected =
+    std::max_element(n_infected.begin(), n_infected.end());
+  auto timestep_peak =
+    std::distance(n_infected.begin(), max_n_infected);
+
+  std::cout << "Peak of " << *max_n_infected << " infected ("
+            << static_cast<double>(*max_n_infected) /
+                 params_contagion->n_people * 100
+            << "%) reached after "
+            << std::ceil(static_cast<double>(timestep_peak) /
+                         params_contagion->n_timesteps_per_day)
+            << " days." << std::endl;
+}
+
+void
+Contagion::output_results() const
+{
+  // Output results to CSV file.
+  std::ofstream file("output.csv", std::ofstream::out);
   file << "day, n_infected, n_recovered, n_susceptible" << std::endl;
 
   for (unsigned int step = 0; step < params_contagion->n_timesteps;
@@ -79,6 +114,7 @@ Contagion::simulate()
     }
   file.close();
 
+  // Plot results.
   Gnuplot gp;
   gp
     << "set xlabel 'Day'; set ylabel 'No. of people'; set key center "
@@ -89,6 +125,4 @@ Contagion::simulate()
     << "with line linewidth 2 title 'Recovered',"
     << gp.file1d(std::tie(day, n_susceptible))
     << "with line linewidth 2 title 'Susceptible'" << std::endl;
-
-  std::cout << "Done!" << std::endl;
 }
