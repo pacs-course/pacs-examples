@@ -92,10 +92,12 @@ Person::move()
       double x_new = x + dx;
       double y_new = y + dy;
 
-      // If a wall is hit, try a random new direction, until
-      // no walls is hit.
+      // If a wall is hit, try new random directions.
       bool wall_hit =
-        ((x_new > 1) || (x_new < 0) || (y_new > 1) || (y_new < 0));
+        ((x_new < 0) ||
+         (x_new > params.params_contagion->domain_size) ||
+         (y_new < 0) ||
+         (y_new > params.params_contagion->domain_size));
 
       unsigned int n_tries      = 0;
       bool         still_trying = true;
@@ -107,8 +109,11 @@ Person::move()
           x_new = x + dx;
           y_new = y + dy;
 
-          wall_hit = ((x_new > 1) || (x_new < 0) || (y_new > 1) ||
-                      (y_new < 0));
+          wall_hit =
+            ((x_new < 0) ||
+             (x_new > params.params_contagion->domain_size) ||
+             (y_new < 0) ||
+             (y_new > params.params_contagion->domain_size));
 
           if ((++n_tries) >= 1000)
             {
