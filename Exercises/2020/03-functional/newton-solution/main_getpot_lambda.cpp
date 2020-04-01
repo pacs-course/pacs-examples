@@ -5,10 +5,10 @@
 int
 main(int argc, char **argv)
 {
-  GetPot g(argc, argv);
-  int    n_max_it = g("n_max_it", 100);
-  double tol_fun  = g("tol_fun", 1.0e-16);
-  double tol_x    = g("tol_x", 1.0e-16);
+  GetPot command_line(argc, argv);
+  int    n_max_it = command_line("n_max_it", 100);
+  double tol_fun  = command_line("tol_fun", 1.0e-16);
+  double tol_x    = command_line("tol_x", 1.0e-16);
 
   auto fun = [](const double &x) -> double {
     return std::pow(x, 3) + 5 * x + 3;
