@@ -1,6 +1,6 @@
 \documentclass[10pt]{beamer}
 \usetheme{default}
-\setbeamercovered{transparent}
+\setbeamercovered{invisible}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}{
     \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
@@ -42,7 +42,7 @@
     \author{Pasquale Claudio Africa}
     \date{27/03/2020}
 
-\begin{frame}
+\begin{frame}[plain, noframenumbering]
     \maketitle
 \end{frame}
 
@@ -77,7 +77,7 @@
 
 \begin{frame}[fragile]{Passing parameters on the command line directly}
 
-    \lstinputlisting{./examples/es1.cpp}
+    \lstinputlisting{./examples/ex1.cpp}
 
     Parameters are read via the call operator \texttt{()} for the \texttt{GetPot} class.
     It requires the name of the parameter to be read and the default value.
@@ -111,13 +111,13 @@
 %---------------------------------------------------------------------------------
 
 \begin{frame}[fragile]{How to parse from C++}
-    \lstinputlisting{./examples/es2.cpp}
+    \lstinputlisting{./examples/ex2.cpp}
 \end{frame}
 
 %---------------------------------------------------------------------------------
 
 \begin{frame}[fragile]{How to parse from C++}
-    \lstinputlisting{./examples/es3.cpp}
+    \lstinputlisting{./examples/ex3.cpp}
 \end{frame}
 
 %---------------------------------------------------------------------------------
@@ -125,7 +125,7 @@
 \begin{frame}[fragile]{Why not both?}
     The name of the config file may be passed on the command line
         
-    \lstinputlisting{./examples/es4.cpp}
+    \lstinputlisting{./examples/ex4.cpp}
 \end{frame}
 
 %---------------------------------------------------------------------------------
