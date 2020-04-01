@@ -5,18 +5,24 @@
 #include "Person.hpp"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 class Contagion
 {
 public:
-  Contagion(const std::shared_ptr<const ContagionParameters>
-              &params_contagion_);
+  Contagion(const std::string &filename);
 
+  void
+  run();
+
+protected:
   void
   simulate();
 
-protected:
+  void
+  output_results() const;
+
   std::shared_ptr<const ContagionParameters> params_contagion;
 
   std::vector<Person> people;
