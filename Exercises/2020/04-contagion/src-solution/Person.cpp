@@ -126,10 +126,10 @@ Person::move()
   else if (next_move == Move::Go_To_Market)
     {
       x = params.params_contagion->market_x +
-          rand(engine) * params.params_contagion->market_size;
+          (rand(engine) - 0.5) * params.params_contagion->market_size;
 
       y = params.params_contagion->market_y +
-          rand(engine) * params.params_contagion->market_size;
+          (rand(engine) - 0.5) * params.params_contagion->market_size;
 
       t_go_to_market = -1;
       is_at_market   = true;
