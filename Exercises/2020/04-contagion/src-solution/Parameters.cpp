@@ -49,4 +49,4 @@ PersonParameters::PersonParameters(
          10 * int(params_contagion->n_timesteps_per_day));
 
   dr = file((subsection + "dr").data(), 0.01);
-};
+}
