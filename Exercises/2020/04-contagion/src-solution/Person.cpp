@@ -6,33 +6,37 @@
 #include <execution>
 #include <limits>
 
-Person::Person(
-  const std::shared_ptr<const ContagionParameters> &params_contagion,
-  const State &                                     initial_status)
-  : params(params_contagion)
+Person::Person(const State &           initial_state,
+               const PersonParameters &params)
+  : params(params)
   , engine(
       std::chrono::system_clock::now().time_since_epoch().count())
-  , rand(0, 1)
+  , rand(0, params.params_contagion->domain_size)
   , randi(1, params.n_timesteps_go_to_market)
   , does_sd(false)
-  , is_susceptible(initial_status == State::Susceptible)
-  , is_infected(initial_status == State::Infected)
-  , is_recovered(initial_status == State::Recovered)
-  , t_infected(0)
-  , t_at_market(0)
+  , state(initial_state)
+  , t_infection(0)
   , is_at_market(false)
+  , t_spent_at_market(0)
 {
   x = rand(engine);
   y = rand(engine);
-
-  alpha = 2 * M_PI * rand(engine);
-  dx    = params.dr * std::sin(alpha);
-  dy    = params.dr * std::cos(alpha);
 
   if (rand(engine) < params.params_contagion->frac_sd)
     does_sd = true;
 
   t_go_to_market = randi(engine);
+}
+
+std::pair<double, double>
+Person::generate_direction()
+{
+  double alpha = 2 * M_PI * rand(engine);
+
+  double dx = params.dr * std::sin(alpha);
+  double dy = params.dr * std::cos(alpha);
+
+  return std::make_pair(dx, dy);
 }
 
 void
@@ -43,7 +47,7 @@ Person::move()
 
   if (is_at_market)
     {
-      t_at_market += 1;
+      t_spent_at_market += 1;
     }
   else
     {
@@ -51,36 +55,40 @@ Person::move()
       y_bak = y;
     }
 
-  std::string next_move;
+  Move next_move;
   if (t_go_to_market > 0)
     {
       if (!does_sd)
         {
-          next_move = "walk";
+          next_move = Move::Walk;
         }
       else
         {
-          next_move = "stay";
+          next_move = Move::Stay;
         }
     }
   else if (is_at_market)
     {
-      if (t_at_market < params.n_timesteps_at_market)
+      if (t_spent_at_market < params.n_timesteps_at_market)
         {
-          next_move = "stay";
+          next_move = Move::Stay;
         }
       else
         {
-          next_move = "return_from_market";
+          next_move = Move::Return_From_Market;
         }
     }
   else // if (t_go_to_market == 0)
     {
-      next_move = "go_to_market";
+      next_move = Move::Go_To_Market;
     }
 
-  if (next_move == "walk")
+  if (next_move == Move::Walk)
     {
+      double dx, dy;
+
+      std::tie(dx, dy) = generate_direction();
+
       double x_new = x + dx;
       double y_new = y + dy;
 
@@ -94,10 +102,7 @@ Person::move()
 
       while (wall_hit && still_trying)
         {
-          // Choose random new direction and update position.
-          alpha = 2 * M_PI * rand(engine);
-          dx    = params.dr * std::sin(alpha);
-          dy    = params.dr * std::cos(alpha);
+          std::tie(dx, dy) = generate_direction();
 
           x_new = x + dx;
           y_new = y + dy;
@@ -105,9 +110,7 @@ Person::move()
           wall_hit = ((x_new > 1) || (x_new < 0) || (y_new > 1) ||
                       (y_new < 0));
 
-          n_tries += 1;
-
-          if (n_tries >= 1000)
+          if ((++n_tries) >= 1000)
             {
               // Don't move at all.
               x_new = x;
@@ -120,7 +123,7 @@ Person::move()
       x = x_new;
       y = y_new;
     }
-  else if (next_move == "go_to_market")
+  else if (next_move == Move::Go_To_Market)
     {
       x = params.params_contagion->market_x +
           rand(engine) * params.params_contagion->market_size;
@@ -131,16 +134,16 @@ Person::move()
       t_go_to_market = -1;
       is_at_market   = true;
     }
-  else if (next_move == "return_from_market")
+  else if (next_move == Move::Return_From_Market)
     {
       x = x_bak;
       y = y_bak;
 
-      t_go_to_market = params.n_timesteps_go_to_market;
-      t_at_market    = 0;
-      is_at_market   = false;
+      t_go_to_market    = params.n_timesteps_go_to_market;
+      t_spent_at_market = 0;
+      is_at_market      = false;
     }
-  else // if (next_move == "stay")
+  else // if (next_move == Move::Stay)
     {
       // Do nothing.
     }
@@ -150,18 +153,17 @@ void
 Person::update_contagion(std::vector<Person> &people)
 {
   // Update contagion.
-  if (is_infected)
+  if (state == State::Infected)
     {
-      t_infected += 1;
+      t_infection += 1;
 
-      if (t_infected > params.n_timesteps_recover)
+      if (t_infection > params.n_timesteps_recover)
         {
-          is_infected  = false;
-          is_recovered = true;
+          state = State::Recovered;
         }
     }
 
-  if (is_infected)
+  if (state == State::Infected)
     {
       std::for_each(
         std::execution::par_unseq,
@@ -182,15 +184,12 @@ Person::update_contagion(std::vector<Person> &people)
           bool other_is_home =
             ((other.x == other.x_bak) && (other.y == other.y_bak));
 
-          if (other_met && !other.is_recovered && !other_is_home)
+          if (other_met && !other.recovered() && !other_is_home)
             {
-              other.is_infected = true;
+              other.state = State::Infected;
             }
 
           return;
         });
     }
-
-  if (is_infected || is_recovered)
-    is_susceptible = false;
 }

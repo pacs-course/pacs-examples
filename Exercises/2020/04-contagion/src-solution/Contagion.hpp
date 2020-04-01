@@ -1,6 +1,3 @@
-// Re-adapted from:
-// https://github.com/seismotologist/coronaVirusContagion.
-
 #ifndef CONTAGION_HPP
 #define CONTAGION_HPP
 

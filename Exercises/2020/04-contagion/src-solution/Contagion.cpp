@@ -19,12 +19,14 @@ Contagion::Contagion(
 {
   people.reserve(params_contagion->n_people);
 
+  PersonParameters params("params.pot", params_contagion);
+
   for (size_t p = 0; p < people.capacity() - 1; ++p)
     {
-      people.emplace_back(params_contagion);
+      people.emplace_back(State::Susceptible, params);
     }
 
-  people.emplace_back(params_contagion, State::Infected);
+  people.emplace_back(State::Infected, params);
 }
 
 void
@@ -78,13 +80,15 @@ Contagion::simulate()
   file.close();
 
   Gnuplot gp;
-  gp << "set xlabel 'Day'; set ylabel 'No. of people'; plot"
-     << gp.file1d(std::tie(day, n_infected))
-     << "with line linewidth 2 title 'Infected',"
-     << gp.file1d(std::tie(day, n_recovered))
-     << "with line linewidth 2 title 'Recovered',"
-     << gp.file1d(std::tie(day, n_susceptible))
-     << "with line linewidth 2 title 'Susceptible'" << std::endl;
+  gp
+    << "set xlabel 'Day'; set ylabel 'No. of people'; set key center "
+       "right; plot "
+    << gp.file1d(std::tie(day, n_infected))
+    << "with line linewidth 2 title 'Infected',"
+    << gp.file1d(std::tie(day, n_recovered))
+    << "with line linewidth 2 title 'Recovered',"
+    << gp.file1d(std::tie(day, n_susceptible))
+    << "with line linewidth 2 title 'Susceptible'" << std::endl;
 
   std::cout << "Done!" << std::endl;
 }
