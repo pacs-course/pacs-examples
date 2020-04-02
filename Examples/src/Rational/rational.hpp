@@ -53,7 +53,18 @@ public:
   Rational operator++(int);
   Rational & operator--();
   Rational operator--(int);
-  //@}
+   //@}
+  //! Addressing operator
+  //!
+  //! Not really needed, only to show their use.
+  //! I provide only the const version since the non-const version
+  //! should return a reference, to allow modifications. But, I cannot
+  //! expose the numerator or denominator for changes, since
+  //! I would then need to normalize the rational afterwards.
+  //!
+  //! @param i the index
+  //! @result Numerator if i==0, Denominator otherwise.
+   int operator[](unsigned int i)const { return i==0u?M_n:M_d;}
   /** Arithmetic operators (friend classes) */
   //@{
   friend Rational operator+(Rational const &,Rational const &);
