@@ -4,7 +4,7 @@
 namespace Identifier
 {
   //! Since c++17 I could have used std::optional 
-  const unsigned int notAnId=std::numeric_limits<unsigned int>::max();
+  constexpr unsigned int notAnId=std::numeric_limits<unsigned int>::max();
   class Id
   {
   protected:
