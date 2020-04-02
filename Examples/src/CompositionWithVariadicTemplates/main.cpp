@@ -30,7 +30,7 @@ int main()
   std::array<double,2> praw=std::array<double,2>{0.,1.5};
   Poin2dWithId pwi{praw,ident};
   std::cout<<pwi.getId()<<std::endl;
-  Poin2dWithId z=pwi;
+  Poin2dWithId z;
   std::cout<<z.getId()<<std::endl;
   Poin2dWithId K(std::array<double,2>{0.,2.},3);
   std::cout<<K.getId()<<std::endl;

@@ -30,4 +30,5 @@ int main()
   cout<<" Element (2,3)="<<M(2,3)<<" Element [2][3]="<<M[2][3]<<endl;
   M[2][3]=1234.56;
   cout<<" Element (2,3)="<<M(2,3)<<" Element [2][3]="<<M[2][3]<<endl;
+  
 }
