@@ -107,14 +107,14 @@ namespace LinearAlgebra{
      */
     void resize(size_type const nrow, size_type const ncol);
     //! Number of rows
-    inline  size_type nrow()const {return nr;};
+    size_type nrow()const {return nr;};
     //! Number of columns
-    inline  size_type ncol()const {return nc;};
+    size_type ncol()const {return nc;};
     //! Returns element with no bound check (const version)
     /*!
       It allows a=m(1,1) on constant matrix m
      */
-    inline double operator () (const size_type i, const size_type j) const
+    double operator () (const size_type i, const size_type j) const
     {
     	return data[(this->*getIndex)(i,j)];
     }
@@ -122,7 +122,7 @@ namespace LinearAlgebra{
     /*!
       It allows m(1,1)=1 on non-constant matrix m
      */
-    inline double & operator () (const size_type i, const size_type j)
+    double & operator () (const size_type i, const size_type j)
     {
     	return data[(this->*getIndex)(i,j)];
     }
@@ -137,7 +137,7 @@ namespace LinearAlgebra{
     void setValue(const size_type i, const size_type j, double const & val);
 
     //! Get storage policy
-    inline StoragePolicySwitch getStoragePolicy()const {
+    StoragePolicySwitch getStoragePolicy()const {
     	return myPolicy;}
     //! Computes \f$ ||A||_\infty \f$
     double normInf() const;

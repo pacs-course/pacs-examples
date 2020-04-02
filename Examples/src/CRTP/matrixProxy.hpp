@@ -36,9 +36,13 @@ public:
   //! Returns a proxy to the row
   proxy operator[](std::size_t r)
   {
-    // I use brace initialization...
+    // I use list initialization syntax
+    // If you prefer, or find less cryptic:
+    // return proxy{static_cast<Matrix &>(*this),r};
+    //
     return {static_cast<Matrix &>(*this),r};
   }
+  
   const_proxy operator[](std::size_t r) const
   {
     // I use brace initialization...
