@@ -11,7 +11,7 @@ Person::Person(const State &           initial_state,
   : params(params)
   , engine(
       std::chrono::system_clock::now().time_since_epoch().count())
-  , rand(0, params.params_contagion->domain_size)
+  , rand(0, 1)
   , randi(1, params.n_timesteps_go_to_market)
   , does_sd(false)
   , state(initial_state)
@@ -19,8 +19,8 @@ Person::Person(const State &           initial_state,
   , is_at_market(false)
   , t_spent_at_market(0)
 {
-  x = rand(engine);
-  y = rand(engine);
+  x = rand(engine) * params.params_contagion->domain_size;
+  y = rand(engine) * params.params_contagion->domain_size;
 
   if (rand(engine) < params.params_contagion->frac_sd)
     does_sd = true;
