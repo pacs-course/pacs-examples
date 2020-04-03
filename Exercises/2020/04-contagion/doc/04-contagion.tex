@@ -19,7 +19,7 @@
 \url{https://www.washingtonpost.com/graphics/2020/world/corona-simulator/} and \\
 \url{https://github.com/seismotologist/coronaVirusContagion}.}}
 
-Consider a discrete population of particles living in a 2D rectangular domain.
+Consider a discrete population of people living in a 2D square domain.
 
 \begin{figure}
     \includegraphics[width=0.75\textwidth]{contagion.png}
@@ -27,21 +27,21 @@ Consider a discrete population of particles living in a 2D rectangular domain.
 \end{frame}
 
 \begin{frame}{Contagion}
-The population evolves according to simple rules:
+Starting from random initial positions, the population evolves according to the following rules:
 
 \begin{itemize}
-    \item each person can be either infected by a virus, recovered or susceptible;
-    \item at each timestep people move randomly of a specified step length;
-    \item a prescribed percentage of people does \textbf{social distancing}, \textit{i.e.} does not move except for the following rule;
+    \item each person can be either Susceptible to a virus, Infected or Recovered;
+    \item at each timestep people move randomly of a given step length;
+    \item a prescribed percentage of people does \textbf{social distancing}, \textit{i.e.} does not move, excepted the following rule;
     \item each person (\textit{i.e.} including those who do social distancing) goes to a market placed at the center of the domain once every a fixed number of time steps;
-    \item a person is infected when closer to another infected person and recovers after a specified number of time steps.
+    \item a person is infected when close to another infected person and recovers after a fixed number of time steps.
 \end{itemize}
 \pause
 Implement a \texttt{C++} program that
 \begin{enumerate}
     \item reads all the parameters from an input file;
     \item performs the simulation;
-    \item exports the total number of susceptible, infected and recovered at each timestep to a \texttt{.csv} file;
+    \item exports the total number of susceptible, infected and recovered people at each timestep to a \texttt{.csv} file;
     \item plots the solution using \texttt{gnuplot-iostream} (requires \texttt{Boost}).
 \end{enumerate}
 \end{frame}
