@@ -77,7 +77,7 @@ protected:
   State state;
 
   // Infection duration.
-  double t_infection;
+  unsigned int t_infection;
 
   // Shopping time?
   bool is_at_market;

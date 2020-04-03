@@ -28,9 +28,9 @@ protected:
   std::vector<Person> people;
 
   std::vector<double>       day;
+  std::vector<unsigned int> n_susceptible;
   std::vector<unsigned int> n_infected;
   std::vector<unsigned int> n_recovered;
-  std::vector<unsigned int> n_susceptible;
 };
 
 #endif /* CONTAGION_HPP */
