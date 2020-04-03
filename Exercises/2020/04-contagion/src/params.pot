@@ -1,0 +1,41 @@
+[contagion]
+  # Number of people.
+  n_people = 200
+
+  # Domain is [0, domain_size] x [0, domain_size].
+  domain_size = 1
+
+  # Number of timesteps per day.
+  n_timesteps_per_day = 24
+
+  # Simulation duration
+  # (= #days * n_timesteps_per_day).
+  n_timesteps = 1440
+
+  # Fraction of people who practice social distancing.
+  frac_sd = 0.75
+
+  # People get infected when another infected gets closer than r_infection.
+  r_infection = 0.04
+
+  # Market size and location.
+  market_size = 0.1
+
+  market_x = 0.5
+  market_y = 0.5
+  [../]
+
+[person]
+  # People go to the market once every n_timesteps_go_to_market timesteps
+  # (= #days * n_timesteps_per_day).
+  n_timesteps_go_to_market = 120
+
+  # Number of timesteps spent at market.
+  n_timesteps_at_market = 2
+
+  # People recover after n_timesteps_recover timesteps
+  # (= #days * n_timesteps_per_day).
+  n_timesteps_recover = 240
+
+  # Step length per timestep.
+  dr = 0.01
