@@ -14,9 +14,9 @@ Contagion::Contagion(const std::string &filename)
   : params_contagion(
       std::make_shared<const ContagionParameters>(filename))
   , day(params_contagion->n_timesteps + 1)
+  , n_susceptible(params_contagion->n_timesteps + 1)
   , n_infected(params_contagion->n_timesteps + 1)
   , n_recovered(params_contagion->n_timesteps + 1)
-  , n_susceptible(params_contagion->n_timesteps + 1)
 {
   people.reserve(params_contagion->n_people);
 
@@ -55,10 +55,14 @@ Contagion::simulate()
       day[step] = static_cast<double>(step) /
                   params_contagion->n_timesteps_per_day;
 
-      std::for_each(people.begin(), people.end(), [this](Person &p) {
-        p.move();
-        p.update_contagion(people);
-      });
+      // This loop can not be parallelized.
+      std::for_each(std::execution::seq,
+                    people.begin(),
+                    people.end(),
+                    [this](Person &p) {
+                      p.move();
+                      p.update_contagion(people);
+                    });
 
       // Update people count.
       n_susceptible[step] = std::count_if(std::execution::par_unseq,
@@ -103,13 +107,13 @@ Contagion::output_results() const
 {
   // Output results to CSV file.
   std::ofstream file("output.csv", std::ofstream::out);
-  file << "day, n_infected, n_recovered, n_susceptible" << std::endl;
+  file << "day, n_susceptible, n_infected, n_recovered" << std::endl;
 
-  for (unsigned int step = 0; step < params_contagion->n_timesteps;
+  for (unsigned int step = 0; step <= params_contagion->n_timesteps;
        ++step)
     {
-      file << day[step] << ", " << n_infected[step] << ", "
-           << n_recovered[step] << ", " << n_susceptible[step]
+      file << day[step] << ", " << n_susceptible[step] << ", "
+           << n_infected[step] << ", " << n_recovered[step]
            << std::endl;
     }
   file.close();
@@ -119,10 +123,10 @@ Contagion::output_results() const
   gp
     << "set xlabel 'Day'; set ylabel 'No. of people'; set key center "
        "right; plot "
+    << gp.file1d(std::tie(day, n_susceptible))
+    << "with line linewidth 2 title 'Susceptible',"
     << gp.file1d(std::tie(day, n_infected))
     << "with line linewidth 2 title 'Infected',"
     << gp.file1d(std::tie(day, n_recovered))
-    << "with line linewidth 2 title 'Recovered',"
-    << gp.file1d(std::tie(day, n_susceptible))
-    << "with line linewidth 2 title 'Susceptible'" << std::endl;
+    << "with line linewidth 2 title 'Recovered'" << std::endl;
 }
