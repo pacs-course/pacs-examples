@@ -20,6 +20,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include "sampling.hpp"
 
 //! A helper function to print the distribution
 /*!
@@ -142,5 +143,34 @@ int main()
   // weights for the values
   std::discrete_distribution<int> ddist{1.,3.,6.,1.,1.,10.};
   distr(ddist,e,"discrete_distribution",true,true);
+  //
+  // **************** THE SHUFFLING PART
+  // To show it works on any container I usa a map
+  std::map<int,std::string> dict={
+      {1,"Mario"},
+      {2,"Giulio"},
+      {3,"Maria"},
+      {4,"John"},
+      {5,"Matilde"},
+      {6,"Paola"},
+      {7,"Anna"},
+      {9,"Giovanni"},
+      {10,"Beatrice"},
+      {11,"Juliette"}
+  };
+  // Extract 5 at random
+  auto sampled = apsc::sampleContainer(dict,5);
+  std::cout<<"Extracted sample\n";
+  for (auto & i: sampled) std::cout<<"("<<i.first<<", "<<i.second<<"); ";
+  std::cout<<std::endl;
+  // now shuffle
+  // It is a map! Element are not swappable
+  // Move to a vector
+  std::vector<std::pair<int,std::string>> sampleVec{sampled.begin(),sampled.end()};
+  //! We can move it, we do not need it afterwards
+  auto shuffled = apsc::shuffleContainer(std::move(sampleVec));
+  std::cout<<"Shuffled sample\n";
+  for (auto & i: shuffled) std::cout<<"("<<i.first<<", "<<i.second<<"); ";
+  std::cout<<std::endl;
   
 }
