@@ -26,3 +26,7 @@ type-safe C++ extension of a union. It allows to have variables that
 may hold different types. Useful if you have to read from a file where
 the content may be interpreted as belonging to different types.
 It contins also an example of use of `std::visit()`.
+
+* `Filesystem/` Utilities to examine the file system.
+
+* `Reduce/` Two new stl parallel algorithms

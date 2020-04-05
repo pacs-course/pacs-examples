@@ -199,3 +199,6 @@ make.dep
 /Examples/src/Derivatives/main_Derivatives
 /Examples/src/Templates/VariadicTemplates/mainVariadic
 /Examples/src/STL/Optional/main_optional
+/Examples/src/STL/Reduce/mainReduce
+/Examples/src/STL/Reduce/mainReduce
+/Examples/src/STL/FileSystem/mainFSystem
