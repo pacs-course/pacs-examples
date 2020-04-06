@@ -28,7 +28,7 @@ void goo(const int& a)
 
 using Vector=std::vector<double>; // to save typing
 
-// Now the interesting stuff, an anticipation of move semantic
+
 /*
 // Standard way, comment if you want to use the the std::forward magic
 void gvect(const Vector& v)
@@ -43,6 +43,7 @@ void gvect(Vector&& x)
 }
 */
 //! Now the std:;forward magic: all in one!
+//! Comment if you want standard overloading (and uncomment code above)
 template<class T>
 void  gvect(T&& x)
 {
