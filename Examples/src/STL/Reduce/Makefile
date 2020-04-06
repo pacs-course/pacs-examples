@@ -14,12 +14,12 @@
 # the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../..
+-include Makefile.inc
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
 #
--include Makefile.inc
 
 #
 # The general setting is as follows:
