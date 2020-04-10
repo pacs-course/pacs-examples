@@ -5,10 +5,7 @@
 class Edge
 {
 public:
-  //! Constructor taked the point Id
-  /*!
-    This class has NO default constructor
-   */
+  //! Constructor taking the point Id
   Edge(const unsigned & a, const unsigned & b):M_pointId{{a,b}}{}
   //!Estracts the id of the Ith point
   unsigned int operator[](unsigned int i)const
