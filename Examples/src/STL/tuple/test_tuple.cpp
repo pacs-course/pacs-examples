@@ -28,7 +28,7 @@ int main()
   std::cout<< "t= "<<t<<std::endl;
   
   // create and initialize a tuple explicitly
-  tuple<int,float,string> t1(41,6.3,"nico");
+  tuple<int,float,string> t1{41,6.3,"nico"};
   
   // "iterate" over elements:
   cout << get<0>(t1) << " ";
