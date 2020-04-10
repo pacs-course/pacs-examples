@@ -39,7 +39,7 @@ int main()
     cout << endl;
 
     // print all values for key "smart"
-    string word("smart");
+    string word{"smart"};
     cout << word << ": " << endl;
     for (auto pos = dict.lower_bound(word);
          pos != dict.upper_bound(word);
@@ -48,11 +48,7 @@ int main()
     }
 
     // print all keys for value "raffiniert"
-    // Note the parenthesis to be sure that the
-    // literal is converted to a string.
-    // If you want to be explicit you do
-    // word=string("raffiniert");
-    word = ("raffiniert");
+    word = "raffiniert";
     cout << word << ": " << endl;
     /* The classic way
        for (const auto& elem : dict) {
@@ -66,5 +62,37 @@ int main()
 		   [&word](pair<string,string>const & i){return i.second==word;});
     if(f != dict.end())cout << "    " << f->first << endl;
       
-       
+    // Splicing with a map
+    // to show that splicing can be made also with
+    // another associative container of the same "general type"
+    
+    map<string,string> dict2{{"fool","crazy"},{"light","frivolous"},
+                                                {"smart","cool"}};
+    // I want to take out "car" form disct and insert it in dict2
+    // without useless memory operation
+    word="smart";
+    auto node = dict.extract(word);
+    if (node.empty())
+      {
+        std::cout<<"Key: "<<word<<" not present in dict"<<std::endl;
+      }
+    else
+      {
+        std::cout<<"Extracted node handler with (key, value)= (" <<node.key()<<", "<<node.mapped()<<")\n";
+        // full control (remember std::move!)
+        auto [pos,found,nodeDest] = dict2.insert(std::move(node));
+        if (!found)
+          {
+            //! if insertion fails the node is returned
+            std::cout<<"insertion of node handle failed:\n"
+                     <<"tried to insert (key,value)=("<<nodeDest.key()
+                     <<", "<<nodeDest.mapped()<<")\n"
+                     <<"but key exists already, with value "<<pos->second
+                     <<std::endl;
+          }
+        else
+          std::cout<<"insertion succeded!"<<std::endl;
+      }
+
+    
 }
