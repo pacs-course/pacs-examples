@@ -8,7 +8,8 @@ using namespace std;
   Even numbers are "smaller" than odd numbers
  */
 struct OddEven{
-  bool operator()(int const & i, int const & j)
+  //! must be either const or static
+  bool operator()(int const & i, int const & j) const
   {
     return i %2 < j %2;
   }
@@ -18,7 +19,7 @@ int main()
 {
   multiset<int,OddEven> ms={10,9,1,2,3,4,5,6,7,8,9,10};
   //! A set with the same element and same ordering
-  set<int,OddEven> s(ms.begin(),ms.end());
+  set<int,OddEven> s{10,9,1,2,3,4,5,6,7,8,9,10};
   // print all elements in the multiset
   for (int elem : ms) {
     cout << elem << ' ';
