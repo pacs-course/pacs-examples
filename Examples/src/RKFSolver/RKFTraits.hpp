@@ -14,7 +14,7 @@
 namespace apsc
 {
   //! The two kinds of RK solver for scalar or vector differential probelms
-  enum class RKFKind {SCALAR=0,VECTOR=1};
+  enum class RKFKind {SCALAR=0,VECTOR=1,MATRIX=2};
   //! I hide this part since not of general use
   //!@{
   //! Primary template
@@ -38,7 +38,14 @@ namespace apsc
     using ForcingTermType=std::function<VariableType (double const &, VariableType const &)>;
     static double norm(VariableType const & x){return x.norm();}
   };
-  //@}
+  //! Specialization for marices
+  template <>
+  struct RKFTraits<RKFKind::MATRIX>
+  {
+    using VariableType=Eigen::MatrixXd;
+    using ForcingTermType=std::function<VariableType (double const &, VariableType const &)>;
+    static double norm(VariableType const & x){return x.norm();}
+  };  //@}
 }
 
 
