@@ -7,10 +7,9 @@
 
 #ifndef EXAMPLES_SRC_MULTICITY_MULTICITYEPIDEMIC_HPP_
 #define EXAMPLES_SRC_MULTICITY_MULTICITYEPIDEMIC_HPP_
-#include "Eigen/Dense"
 #include <array>
-#include <functional>
 #include <iostream>
+#include "MultiCitiesModelTraits.hpp"
 namespace apsc
 {
   namespace multicity
@@ -28,13 +27,11 @@ namespace apsc
     struct MultiCityEpidemicVariables
     {
       //! The type of variables for the RK solver
-      using VariableType=Eigen::Matrix<double,2*NumCities,NumCities>;
-      //! The forcing term type
-      using ForcingTermType=std::function<VariableType (double const &, VariableType const &)>;
+      using VariableType=typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
       //! The type of S and I
-      using BlockType = Eigen::Matrix<double,NumCities,NumCities>;
+      using BlockType = typename MultiCityModelTraits<NumCities>::BlockType;
       //! The type for a Vector
-      using VectorType = Eigen::Matrix<double,NumCities,1>;
+      using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
       //! @defgroup mainvariables Functions returning the main variables S and I
       //! @{
       decltype(auto) S(){return SI.template block<NumCities,NumCities>(0,0);}
