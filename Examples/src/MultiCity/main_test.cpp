@@ -5,8 +5,9 @@
  *      Author: forma
  */
 
-#include "MultiCity.hpp"
 #include <iostream>
+
+#include "MultiCityEpidemic.hpp"
 int main()
 {
   using namespace apsc::multicity;
