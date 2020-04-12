@@ -7,8 +7,8 @@
 
 #ifndef EXAMPLES_SRC_MULTICITY_MULTICITYPOPULATION_HPP_
 #define EXAMPLES_SRC_MULTICITY_MULTICITYPOPULATION_HPP_
-#include "Eigen/Dense"
 #include <array>
+#include "MultiCitiesModelTraits.hpp"
 namespace apsc
 {
   namespace multicity
@@ -17,11 +17,9 @@ namespace apsc
         struct MultiCityPopulationVariables
         {
           //! The type of variables for the RK solver
-          using VariableType=Eigen::Matrix<double,NumCities,NumCities>;
-          //! The forcing term type
-          using ForcingTermType=std::function<VariableType (double const &, VariableType const &)>;
+          using VariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
           //! The type for a Vector
-          using VectorType = Eigen::Matrix<double,NumCities,1>;
+          using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
           //! Adjourn current population in each city
           void computeNp()
           {
@@ -32,6 +30,7 @@ namespace apsc
            */
           void initializeN(){
             N = Eigen::DiagonalMatrix<double,NumCities,NumCities>(Nr);
+            computeNp();
           }
           /*!
            * compute total population (for check)
@@ -46,6 +45,21 @@ namespace apsc
           VectorType Np;
           VectorType Nr;
         };
+    //! A general template for initialization`
+      template<int NumCities>
+      struct InitializePopulation
+      {
+	static void initialize(MultiCityPopulationVariables<NumCities> &);
+      };
+      //! The two city case of the article
+      struct initialize2Cities: public InitializePopulation<2>
+      {
+	static void initialize(MultiCityPopulationVariables<2> & p)
+	{
+	  p.Nr<<2500,2500;
+	  p.initializeN();
+	}
+      };
   }
 }
 
