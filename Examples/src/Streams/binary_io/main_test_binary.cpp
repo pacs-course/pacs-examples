@@ -5,6 +5,7 @@
 #undef H5_USE_16_API
 #include "hdf5.h"
 #include "extendedAssert.hpp"
+#include <filesystem>
 
 /*!
   @brief Test for comparing formatted and unformatted io.
@@ -19,8 +20,19 @@ int main()
   // Dimension of the array to be stored
   unsigned int const  DIM=10000000;
   // I call system to remove old files
-  system("/bin/rm -r -f file.dat");
-  system("/bin/rm -r -f file.txt");
+  std::filesystem::path datafile="./file.dat";
+  if(!datafile.empty())
+    {
+      std::filesystem::remove(datafile);
+      std::cout<<"Erasing "<<datafile<<std::endl;
+    }
+  datafile.assign("./file.txt");
+  if(!datafile.empty())
+     {
+       std::filesystem::remove(datafile);
+       std::cout<<"Erasing "<<datafile<<std::endl;
+     }
+
   ofstream binfile ("file.dat",ios::binary);
   ofstream asciifile ("file.txt");
   // The array

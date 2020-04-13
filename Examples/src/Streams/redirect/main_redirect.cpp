@@ -9,7 +9,7 @@ int main()
   auto cout_buff=std::cout.rdbuf();
   // a file stream
   std::ofstream file;
-  std::string line("Hello World");
+  std::string line{"Hello World"};
   int input=-1;
   do
     {
