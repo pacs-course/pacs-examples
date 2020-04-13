@@ -9,7 +9,7 @@
  */
 int main()
 {
-  std::ofstream file("data.txt");
+  std::ofstream file{"data.txt"};
   if (file.fail()){
     std::cerr<<" Cannot open output file"<<std::endl;
     std::exit(1);
