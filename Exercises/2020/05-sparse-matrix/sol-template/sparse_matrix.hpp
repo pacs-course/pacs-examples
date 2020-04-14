@@ -22,14 +22,14 @@ public:
 
   /// Index of non-empty column.
   inline int
-  col_idx(col_iterator j) const
+  col_idx(const col_iterator &j) const
   {
     return (*j).first;
   }
 
   /// Value stored in non-empty column.
   virtual double
-  col_val(col_iterator j) = 0;
+  col_val(const col_iterator &j) = 0;
 
   size_t m;   ///< number of nonempty columns.
   size_t nnz; ///< number of nonzero elements.
@@ -54,7 +54,7 @@ public:
 
   /// Recompute sparse matrix properties.
   void
-  set_properties();
+  update_properties();
 
   /// Default constructor.
   sparse_matrix_template()
@@ -65,7 +65,7 @@ public:
   /// Stream operator.
   template <class U>
   friend std::ostream &
-  operator<<(std::ostream &, sparse_matrix_template<U> &);
+  operator<<(std::ostream &stream, sparse_matrix_template<U> &M);
 
   /// Convert row-oriented sparse matrix to AIJ format, with shift.
   void
@@ -80,7 +80,7 @@ public:
       std::vector<int> &   i,
       std::vector<int> &   j)
   {
-    this->aij(a, i, j, 0);
+    aij(a, i, j, 0);
   };
 
   /// Update the entries of a sparse matrix in AIJ format, with shift.
@@ -96,7 +96,7 @@ public:
              const std::vector<int> &i,
              const std::vector<int> &j)
   {
-    this->aij_update(a, i, j, 0);
+    aij_update(a, i, j, 0);
   };
 
   /// Convert row-oriented sparse matrix to CRS format with shift.
@@ -112,7 +112,7 @@ public:
       std::vector<int> &   col_ind,
       std::vector<int> &   row_ptr)
   {
-    this->csr(a, col_ind, row_ptr, 0);
+    csr(a, col_ind, row_ptr, 0);
   };
 
   /// Update the entries of a sparse matrix in CSR format, with shift.
@@ -128,23 +128,23 @@ public:
              const std::vector<int> &col_ind,
              const std::vector<int> &row_ptr)
   {
-    this->csr_update(a, col_ind, row_ptr, 0);
+    csr_update(a, col_ind, row_ptr, 0);
   };
 };
 
-template <class Y>
+template <class T>
 void
-sparse_matrix_template<Y>::init()
+sparse_matrix_template<T>::init()
 {
   nnz = 0;
   m   = 0;
 }
 
-template <class Y>
+template <class T>
 void
-sparse_matrix_template<Y>::set_properties()
+sparse_matrix_template<T>::update_properties()
 {
-  typename sparse_matrix_template<Y>::col_iterator j;
+  typename sparse_matrix_template<T>::col_iterator j;
   nnz = 0;
   m   = 0;
   for (size_t i = 0; i < this->size(); ++i)
@@ -159,27 +159,27 @@ sparse_matrix_template<Y>::set_properties()
 }
 
 
-template <class Y>
+template <class T>
 std::ostream &
-operator<<(std::ostream &stream, sparse_matrix_template<Y> &sp)
+operator<<(std::ostream &stream, sparse_matrix_template<T> &M)
 {
-  typename sparse_matrix_template<Y>::col_iterator j;
+  typename sparse_matrix_template<T>::col_iterator j;
 
-  sp.set_properties();
-  stream << "nrows = " << sp.rows() << "; ncols = " << sp.cols();
-  stream << "; nnz = " << sp.nnz << ";" << std::endl;
-  stream << "mat = spconvert ([";
-  for (size_t i = 0; i < sp.size(); ++i)
+  M.update_properties();
+  stream << "nrows = " << M.rows() << "; ncols = " << M.cols();
+  stream << "; nnz = " << M.nnz << ";" << std::endl;
+  stream << "mat = [";
+  for (size_t i = 0; i < M.size(); ++i)
     {
-      if (sp[i].size())
-        for (j = sp[i].begin(); j != sp[i].end(); ++j)
+      if (M[i].size())
+        for (j = M[i].begin(); j != M[i].end(); ++j)
           {
-            stream << i + 1 << ", " << sp.col_idx(j) + 1 << ", ";
-            stream << std::setprecision(17) << sp.col_val(j) << ";"
+            stream << i + 1 << ", " << M.col_idx(j) + 1 << ", ";
+            stream << std::setprecision(17) << M.col_val(j) << ";"
                    << std::endl;
           }
     }
-  stream << "]);" << std::endl;
+  stream << "];" << std::endl;
   return stream;
 }
 
@@ -190,7 +190,7 @@ sparse_matrix_template<T>::aij(std::vector<double> &a,
                                std::vector<int> &   j,
                                int                  base)
 {
-  this->set_properties();
+  update_properties();
   a.resize(nnz);
   i.resize(nnz);
   j.resize(nnz);
@@ -202,9 +202,9 @@ sparse_matrix_template<T>::aij(std::vector<double> &a,
       for (jj = (*this)[ii].begin(); jj != (*this)[ii].end(); ++jj)
         {
           i[idx] = ii + base;
-          j[idx] = this->col_idx(jj) + base;
-          a[idx] = this->col_val(jj);
-          idx++;
+          j[idx] = col_idx(jj) + base;
+          a[idx] = col_val(jj);
+          ++idx;
         }
 }
 
@@ -220,7 +220,7 @@ sparse_matrix_template<T>::aij_update(std::vector<double> &   a,
   a.resize(n);
 
   for (size_t ii = 0; ii < n; ++ii)
-    a[ii] = this->col_val(((*this)[i[ii] - base]).find(j[ii] - base));
+    a[ii] = col_val(((*this)[i[ii] - base]).find(j[ii] - base));
 }
 
 template <class T>
@@ -230,10 +230,10 @@ sparse_matrix_template<T>::csr(std::vector<double> &a,
                                std::vector<int> &   row_ptr,
                                int                  base)
 {
-  this->set_properties();
+  update_properties();
   a.resize(nnz);
   col_ind.resize(nnz);
-  row_ptr.resize(this->rows() + 1);
+  row_ptr.resize(rows() + 1);
   int                                              idx = 0;
   int                                              idr = 0;
   typename sparse_matrix_template<T>::col_iterator jj;
@@ -246,12 +246,12 @@ sparse_matrix_template<T>::csr(std::vector<double> &a,
           for (jj = (*this)[ii].begin(); jj != (*this)[ii].end();
                ++jj)
             {
-              col_ind[idx] = this->col_idx(jj) + base;
-              a[idx]       = this->col_val(jj);
-              idx++;
+              col_ind[idx] = col_idx(jj) + base;
+              a[idx]       = col_val(jj);
+              ++idx;
             }
         }
-      idr++;
+      ++idr;
     }
   std::fill(row_ptr.begin() + idr, row_ptr.end(), nnz + base);
 }
@@ -284,7 +284,7 @@ class p_sparse_matrix : public double_p_sparse_matrix
 {
 public:
   double
-  col_val(double_p_sparse_matrix::col_iterator j)
+  col_val(const double_p_sparse_matrix::col_iterator &j)
   {
     return *((*j).second);
   }
@@ -295,7 +295,7 @@ class sparse_matrix : public double_sparse_matrix
 {
 public:
   double
-  col_val(double_sparse_matrix::col_iterator j)
+  col_val(const double_sparse_matrix::col_iterator &j)
   {
     return (*j).second;
   }
@@ -317,11 +317,11 @@ public:
   void
   reset();
 
-  /// Sparse matrix increment. Automatically allocates additional
-  /// entries.
+  /// Sparse matrix increment.
+  /// Automatically allocates additional entries.
   template <class T>
   void
-  operator+=(T &adm);
+  operator+=(T &other);
 
   /// Compute matrix-vector product.
   friend std::vector<double> operator*(sparse_matrix &            M,
@@ -330,16 +330,16 @@ public:
 
 template <class T>
 void
-sparse_matrix::operator+=(T &adm)
+sparse_matrix::operator+=(T &other)
 {
-  assert(this->rows() == adm.rows());
-  assert(this->cols() == adm.cols());
+  assert(rows() == other.rows());
+  assert(cols() == other.cols());
 
   col_iterator jj;
-  for (size_t ii = 0; ii < adm.size(); ++ii)
-    if (adm[ii].size())
-      for (jj = adm[ii].begin(); jj != adm[ii].end(); ++jj)
-        (*this)[ii][jj->first] += adm.col_val(jj);
+  for (size_t ii = 0; ii < other.size(); ++ii)
+    if (other[ii].size())
+      for (jj = other[ii].begin(); jj != other[ii].end(); ++jj)
+        (*this)[ii][jj->first] += other.col_val(jj);
 }
 
 #endif /* SPARSE_MATRIX_HPP */
