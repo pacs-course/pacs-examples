@@ -1,4 +1,4 @@
-#include "sparse_matrix_simplified.hpp"
+#include "sparse_matrix.hpp"
 
 void
 sparse_matrix::init()
@@ -8,12 +8,12 @@ sparse_matrix::init()
 }
 
 void
-sparse_matrix::set_properties()
+sparse_matrix::update_properties()
 {
   sparse_matrix::col_iterator j;
   nnz = 0;
   m   = 0;
-  for (size_t i = 0; i < this->size(); ++i)
+  for (size_t i = 0; i < size(); ++i)
     {
       nnz += (*this)[i].size();
       for (j = (*this)[i].begin(); j != (*this)[i].end(); ++j)
@@ -26,25 +26,25 @@ sparse_matrix::set_properties()
 
 
 std::ostream &
-operator<<(std::ostream &stream, sparse_matrix &sp)
+operator<<(std::ostream &stream, sparse_matrix &M)
 {
   sparse_matrix::col_iterator j;
 
-  sp.set_properties();
-  stream << "nrows = " << sp.rows() << "; ncols = " << sp.cols();
-  stream << "; nnz = " << sp.nnz << ";" << std::endl;
-  stream << "mat = spconvert ([";
-  for (size_t i = 0; i < sp.size(); ++i)
+  M.update_properties();
+  stream << "n_rows = " << M.rows() << "; n_cols = " << M.cols();
+  stream << "; nnz = " << M.nnz << ";" << std::endl;
+  stream << "mat = [";
+  for (size_t i = 0; i < M.size(); ++i)
     {
-      if (sp[i].size())
-        for (j = sp[i].begin(); j != sp[i].end(); ++j)
+      if (M[i].size())
+        for (j = M[i].begin(); j != M[i].end(); ++j)
           {
-            stream << i + 1 << ", " << sp.col_idx(j) + 1 << ", ";
-            stream << std::setprecision(17) << sp.col_val(j) << ";"
+            stream << i + 1 << ", " << M.col_idx(j) + 1 << ", ";
+            stream << std::setprecision(17) << M.col_val(j) << ";"
                    << std::endl;
           }
     }
-  stream << "]);" << std::endl;
+  stream << "];" << std::endl;
   return stream;
 }
 
@@ -55,21 +55,21 @@ sparse_matrix::aij(std::vector<double> &a,
                    std::vector<int> &   j,
                    int                  base)
 {
-  this->set_properties();
+  update_properties();
   a.resize(nnz);
   i.resize(nnz);
   j.resize(nnz);
   int                         idx = 0;
   sparse_matrix::col_iterator jj;
 
-  for (size_t ii = 0; ii < this->size(); ++ii)
+  for (size_t ii = 0; ii < size(); ++ii)
     if ((*this)[ii].size())
       for (jj = (*this)[ii].begin(); jj != (*this)[ii].end(); ++jj)
         {
           i[idx] = ii + base;
-          j[idx] = this->col_idx(jj) + base;
-          a[idx] = this->col_val(jj);
-          idx++;
+          j[idx] = col_idx(jj) + base;
+          a[idx] = col_val(jj);
+          ++idx;
         }
 }
 
@@ -85,7 +85,7 @@ sparse_matrix::aij_update(std::vector<double> &   a,
   a.resize(n);
 
   for (size_t ii = 0; ii < n; ++ii)
-    a[ii] = this->col_val(((*this)[i[ii] - base]).find(j[ii] - base));
+    a[ii] = col_val(((*this)[i[ii] - base]).find(j[ii] - base));
 }
 
 
@@ -95,15 +95,15 @@ sparse_matrix::csr(std::vector<double> &a,
                    std::vector<int> &   row_ptr,
                    int                  base)
 {
-  this->set_properties();
+  update_properties();
   a.resize(nnz);
   col_ind.resize(nnz);
-  row_ptr.resize(this->rows() + 1);
+  row_ptr.resize(rows() + 1);
   int                         idx = 0;
   int                         idr = 0;
   sparse_matrix::col_iterator jj;
 
-  for (size_t ii = 0; ii < this->size(); ++ii)
+  for (size_t ii = 0; ii < size(); ++ii)
     {
       row_ptr[idr] = idx + base;
       if ((*this)[ii].size() > 0)
@@ -111,12 +111,12 @@ sparse_matrix::csr(std::vector<double> &a,
           for (jj = (*this)[ii].begin(); jj != (*this)[ii].end();
                ++jj)
             {
-              col_ind[idx] = this->col_idx(jj) + base;
-              a[idx]       = this->col_val(jj);
-              idx++;
+              col_ind[idx] = col_idx(jj) + base;
+              a[idx]       = col_val(jj);
+              ++idx;
             }
         }
-      idr++;
+      ++idr;
     }
   std::fill(row_ptr.begin() + idr, row_ptr.end(), nnz + base);
 }
@@ -142,16 +142,16 @@ sparse_matrix::csr_update(std::vector<double> &   a,
 
 
 void
-sparse_matrix::operator+=(sparse_matrix &adm)
+sparse_matrix::operator+=(sparse_matrix &other)
 {
-  assert(this->rows() == adm.rows());
-  assert(this->cols() == adm.cols());
+  assert(rows() == other.rows());
+  assert(cols() == other.cols());
 
   col_iterator jj;
-  for (size_t ii = 0; ii < adm.size(); ++ii)
-    if (adm[ii].size())
-      for (jj = adm[ii].begin(); jj != adm[ii].end(); ++jj)
-        (*this)[ii][jj->first] += adm.col_val(jj);
+  for (size_t ii = 0; ii < other.size(); ++ii)
+    if (other[ii].size())
+      for (jj = other[ii].begin(); jj != other[ii].end(); ++jj)
+        (*this)[ii][jj->first] += other.col_val(jj);
 }
 
 void
@@ -159,7 +159,7 @@ sparse_matrix::reset()
 {
   sparse_matrix::row_iterator ii;
   sparse_matrix::col_iterator jj;
-  for (ii = this->begin(); ii != this->end(); ++ii)
+  for (ii = begin(); ii != end(); ++ii)
     for (jj = (*ii).begin(); jj != (*ii).end(); ++jj)
       (*jj).second = 0.0;
 }
@@ -167,7 +167,8 @@ sparse_matrix::reset()
 std::vector<double> operator*(sparse_matrix &            M,
                               const std::vector<double> &x)
 {
-  std::vector<double>         y(M.rows(), 0.0);
+  std::vector<double> y(M.rows(), 0.0);
+
   sparse_matrix::col_iterator j;
   for (unsigned int i = 0; i < M.size(); ++i)
     if (M[i].size())

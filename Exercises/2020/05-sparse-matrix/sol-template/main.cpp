@@ -26,38 +26,16 @@ main()
       A[ii][ii] = 4;
     }
 
-  std::cout << "Loop through matrix entries:" << std::endl;
-  for (int ii = 0; ii < n; ++ii)
-    for (auto const &[key, val] : A[ii])
-      std::cout << "A[" << ii << "][" << key << "] = " << val
-                << std::endl;
-  std::cout << std::endl << std::endl;
+  std::cout << "A:" << std::endl << A << std::endl;
 
-  std::cout << "Stream operator:" << std::endl;
-  std::cout << A;
-  std::cout << std::endl;
+  p_sparse_matrix A_ptr;
+  A.extract_block_pointer({0, 1, 2, 3, 4}, {0, 2, 4}, A_ptr);
+  std::cout << "A_ptr:" << std::endl << A_ptr << std::endl;
 
-  std::vector<int>    irow, jcol;
-  std::vector<double> v;
+  p_sparse_matrix A_ptr2;
+  A.extract_block_pointer_keep_cols({0, 1, 2, 3, 4},
+                                    {0, 2, 4},
+                                    A_ptr2);
 
-  A.csr(v, jcol, irow);
-
-  std::cout << "CSR vectors:" << std::endl;
-  for (auto ii : irow)
-    std::cout << ii << " ";
-  std::cout << std::endl;
-
-  for (auto ii : jcol)
-    std::cout << ii << " ";
-  std::cout << std::endl;
-
-  for (auto ii : v)
-    std::cout << ii << " ";
-  std::cout << std::endl << std::endl;
-
-  std::cout << "Matrix entries from CSR:" << std::endl;
-  for (int ii = 0; ii < n; ++ii)
-    for (int jj = irow[ii]; jj < irow[ii + 1]; ++jj)
-      std::cout << "A[" << ii << "][" << jcol[jj] << "] = " << v[jj]
-                << std::endl;
+  std::cout << "A_ptr2:" << std::endl << A_ptr2 << std::endl;
 }
