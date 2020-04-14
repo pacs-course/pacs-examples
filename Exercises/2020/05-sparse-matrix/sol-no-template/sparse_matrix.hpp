@@ -1,5 +1,5 @@
-#ifndef SPARSE_MATRIX_SIMPLIFIED_HPP
-#define SPARSE_MATRIX_SIMPLIFIED_HPP
+#ifndef SPARSE_MATRIX_HPP
+#define SPARSE_MATRIX_HPP
 
 #include <cassert>
 #include <iomanip>
@@ -21,14 +21,14 @@ public:
 
   /// Index of non-empty column.
   inline int
-  col_idx(col_iterator j) const
+  col_idx(const col_iterator &j) const
   {
     return (*j).first;
   }
 
   /// Value stored in non-empty column.
   double
-  col_val(col_iterator j) const
+  col_val(const col_iterator &j) const
   {
     return (*j).second;
   }
@@ -40,7 +40,7 @@ public:
   inline const size_t
   rows() const
   {
-    return this->size();
+    return size();
   }
 
   /// Number of columns.
@@ -56,7 +56,7 @@ public:
 
   /// Recompute sparse matrix properties.
   void
-  set_properties();
+  update_properties();
 
   /// Default constructor.
   sparse_matrix()
@@ -77,7 +77,7 @@ public:
       std::vector<int> &   i,
       std::vector<int> &   j)
   {
-    this->aij(a, i, j, 0);
+    aij(a, i, j, 0);
   };
 
   /// Update the entries of a sparse matrix in AIJ format, with shift.
@@ -93,7 +93,7 @@ public:
              const std::vector<int> &i,
              const std::vector<int> &j)
   {
-    this->aij_update(a, i, j, 0);
+    aij_update(a, i, j, 0);
   };
 
   /// Convert row-oriented sparse matrix to CSR format with shift.
@@ -109,7 +109,7 @@ public:
       std::vector<int> &   col_ind,
       std::vector<int> &   row_ptr)
   {
-    this->csr(a, col_ind, row_ptr, 0);
+    csr(a, col_ind, row_ptr, 0);
   };
 
   /// Update the entries of a sparse matrix in CSR format, with shift.
@@ -125,25 +125,25 @@ public:
              const std::vector<int> &col_ind,
              const std::vector<int> &row_ptr)
   {
-    this->csr_update(a, col_ind, row_ptr, 0);
+    csr_update(a, col_ind, row_ptr, 0);
   };
 
   /// Set all entries to 0 preserving storage structure.
   void
   reset();
 
-  /// Sparse matrix increment. Automatically allocates additional
-  /// entries.
+  /// Sparse matrix increment.
+  /// Automatically allocates additional entries.
   void
-  operator+=(sparse_matrix &adm);
+  operator+=(sparse_matrix &other);
 
   /// Compute matrix-vector product.
   friend std::vector<double> operator*(sparse_matrix &            M,
                                        const std::vector<double> &x);
+
+  /// Stream operator.
+  friend std::ostream &
+  operator<<(std::ostream &stream, sparse_matrix &M);
 };
 
-/// Stream operator.
-std::ostream &
-operator<<(std::ostream &, sparse_matrix &);
-
-#endif /* SPARSE_MATRIX_SIMPLIFIED_HPP */
+#endif /* SPARSE_MATRIX_HPP */

@@ -1,4 +1,4 @@
-#include "sparse_matrix_simplified.hpp"
+#include "sparse_matrix.hpp"
 
 #include <iomanip>
 #include <iostream>
@@ -28,7 +28,7 @@ main()
 
   std::cout << "Loop through matrix entries:" << std::endl;
   for (int ii = 0; ii < n; ++ii)
-    for (auto const &[key, val] : A[ii])
+    for (const auto &[key, val] : A[ii])
       std::cout << "A[" << ii << "][" << key << "] = " << val
                 << std::endl;
   std::cout << std::endl << std::endl;
