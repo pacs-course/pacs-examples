@@ -12,7 +12,7 @@ sparse_matrix::extract_block_pointer(const std::vector<int> &rows,
 
   // copy the vector with the
   // list of columns into a map to
-  // reduce the complexit of searches.
+  // reduce the complexity of searches.
   // with this format the complexity
   // should be:
   // cols.size () * log (cols.size ())
@@ -38,12 +38,12 @@ sparse_matrix::extract_block_pointer(const std::vector<int> &rows,
               // list of selected columns (complexity: log (cols.size
               // ()))
               if (ordcol.count(jcol))
-                // insert a poiter to this entry in the output
+                // insert a pointer to this entry in the output
                 out[ii][ordcol.at(jcol)] = &((*irow)[jcol]);
             }
       }
 
-  out.set_properties();
+  out.update_properties();
 }
 
 void
@@ -80,7 +80,7 @@ sparse_matrix::extract_block_pointer_keep_cols(
             }
       }
 
-  out.set_properties();
+  out.update_properties();
 }
 
 void
@@ -88,7 +88,7 @@ sparse_matrix::reset()
 {
   double_sparse_matrix::row_iterator ii;
   double_sparse_matrix::col_iterator jj;
-  for (ii = this->begin(); ii != this->end(); ++ii)
+  for (ii = begin(); ii != end(); ++ii)
     for (jj = (*ii).begin(); jj != (*ii).end(); ++jj)
       (*jj).second = 0.0;
 }
@@ -96,7 +96,8 @@ sparse_matrix::reset()
 std::vector<double> operator*(sparse_matrix &            M,
                               const std::vector<double> &x)
 {
-  std::vector<double>         y(M.rows(), 0.0);
+  std::vector<double> y(M.rows(), 0.0);
+
   sparse_matrix::col_iterator j;
   for (unsigned int i = 0; i < M.size(); ++i)
     if (M[i].size())
