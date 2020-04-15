@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <functional>
 #include<array>
-#include<vector>
 #include <type_traits>
 namespace apsc{
   /*! A general piecewise-linear interpolator
@@ -90,30 +89,7 @@ namespace apsc{
     return valueLeft*coeffLeft + valueRight*coeffRight;
   }
 
-  //
-  /*! Implementation for vector<T> where T behaves like an array with 2 components (key value).
-   *
-   * @tparam CompOper Comparison operator
-   * @tparam T the type stores in the array. it should behave as an array of 2 components. The first is the key, the second is the value
-   * @param v a vector
-   * @param keyVal the point to be interpolates
-   * @param comp Comparison operator, defaults to less<T>
-   * @return
-   */
-  template <typename A, typename CompOper=std::less<double>>
-  inline double interp1D(std::vector<A> const & v, double const & keyVal,CompOper const & comp=std::less<double>())
-  {
 
-    return interp1D(
-	v.cbegin(),
-	v.cend(),
-	keyVal,
-	[](A const & x){return x[0];},
-	[](A const & x){return x[1];},
-	comp
-    );
-
-  }
 }
 
 
