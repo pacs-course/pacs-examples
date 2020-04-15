@@ -23,7 +23,7 @@ namespace apsc
    * @return
    */
   template <typename A, typename CompOper=std::less<double>>
-      inline double interp1D(std::vector<A> const & v, double const & keyVal,CompOper const & comp=std::less<double>{})
+      double interp1D(std::vector<A> const & v, double const & keyVal,CompOper const & comp=std::less<double>{})
   {
 
     return interp1D(
@@ -97,7 +97,7 @@ namespace apsc
    * @return
    */
   template <typename T, typename CompOper=std::less<double>>
-      inline T interp1D(std::vector<double> const & keys, std::vector<T> const & values,
+      T interp1D(std::vector<double> const & keys, std::vector<T> const & values,
 			     double const & keyVal, CompOper const & comp=std::less<double>{})
   {
     using namespace internals;
