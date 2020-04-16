@@ -70,7 +70,18 @@ int main(int argc, char * argv[])
     dist.reserve(N);
     auto res = values.begin();
     // Compute the cumulative probability function
-    for (auto v:values)
+    // dampling at equal spaced data
+    int Nsamples=values.size()/4;
+    auto len = values.back()-values.front();
+    auto step = len/(Nsamples-1.0);
+    std::vector<double> steps(Nsamples);
+    auto posiz=values.front();
+    for (auto & s: steps)
+      {
+        s=posiz;
+        posiz+=step;
+      }
+    for (auto v:steps)
       {
         // Very complicated, it can be done in a simpler way using a multiset
         // but it is a good reminder of useful algorithms.
@@ -97,7 +108,7 @@ int main(int argc, char * argv[])
     // first point
     outFileStream<<start->first<<" "<<(next->second-start->second)/
     (next->first-start->first)<<" "<<start->second<<"\n";
-                                                                                    for(auto i=dist.begin()+1;i<newEnd-1;++i)
+    for(auto i=dist.begin()+1;i<newEnd-1;++i)
       {
         auto delta   = (i+1)->second-(i-1)->second;
         auto h       = (i+1)->first- (i-1)->first;
