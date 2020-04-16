@@ -60,7 +60,7 @@ namespace apsc
     class MultiCityDataFixed
     {
     public:
-      using VariableType= typename MultiCityEpidemicVariables<NumCities>::VariableType;
+      using VariableType= MultiCityPopulationVariables<NumCities>;
       using BlockType= typename MultiCityEpidemicVariables<NumCities>::BlockType;
       using VectorType = typename MultiCityEpidemicVariables<NumCities>::VectorType;
       //! Time is stored in a double

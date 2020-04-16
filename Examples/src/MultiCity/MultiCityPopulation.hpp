@@ -14,52 +14,48 @@ namespace apsc
   namespace multicity
   {
     template<int NumCities>
-        struct MultiCityPopulationVariables
-        {
-          //! The type of variables for the RK solver
-          using VariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
-          //! The type for a Vector
-          using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
-          //! Adjourn current population in each city
-          void computeNp()
-          {
-            Np=N.rowwise().sum();
-          }
-          /*!
-           * Initializes N by setting as a diagonal matrix with Nr as diagonal
-           */
-          void initializeN(){
-            N = Eigen::DiagonalMatrix<double,NumCities,NumCities>(Nr);
-            computeNp();
-          }
-          /*!
-           * compute total population (for check)
-           *
-           * @return an array containing the tatal population summed as the sum of resident and the sum of mobility matrix N
-           */
-          std::array<double,2> totalPop()
-          {
-            return {N.sum(),Nr.sum()};
-          }
-          VariableType N;
-          VectorType Np;
-          VectorType Nr;
-        };
-    //! A general template for initialization`
-      template<int NumCities>
-      struct InitializePopulation
-      {
-	static void initialize(MultiCityPopulationVariables<NumCities> &);
-      };
-      //! The two city case of the article
-      struct initialize2Cities: public InitializePopulation<2>
-      {
-	static void initialize(MultiCityPopulationVariables<2> & p)
-	{
-	  p.Nr<<2500,2500;
-	  p.initializeN();
-	}
-      };
+    using MultiCityPopulationVariables =typename MultiCityModelTraits<NumCities>::PopulationVariableType;
+
+    template<int NumCities>
+       using MultiCityPopVectorType =typename MultiCityModelTraits<NumCities>::VectorType;
+
+
+    template<int NumCities>
+    MultiCityPopVectorType<NumCities> Np(MultiCityPopulationVariables<NumCities> const & N)
+    {
+      return (N.rowwise().sum());
+    }
+
+     template<int NumCities>
+     MultiCityPopVectorType<NumCities> Nr(MultiCityPopulationVariables<NumCities> const & N)
+     {
+       return (N.transpose().rowwise().sum());
+     }
+
+     template<int NumCities>
+     std::array<double,2> totalPop(MultiCityPopulationVariables<NumCities> const & N)
+     {
+       return {N.sum(),Nr(N).sum()};
+     }
+     //! A general template for initialization`
+     template<int NumCities>
+     struct InitializePopulation
+     {
+       virtual MultiCityPopulationVariables<NumCities> initialize()=0;
+       virtual ~InitializePopulation<NumCities>()=default;
+     };
+     //! The two city case of the article
+     struct initialize2Cities: public InitializePopulation<2>
+     {
+       MultiCityPopulationVariables<2>
+       initialize() override
+  	{
+	 MultiCityPopulationVariables<2> N;
+	 N<<2500,0,0,2500;
+  	 return N;
+  	}
+     };
+
   }
 }
 
