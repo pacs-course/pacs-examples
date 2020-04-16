@@ -9,6 +9,7 @@
 #define EXAMPLES_SRC_MULTICITY_POPULATIONMODEL_HPP_
 #include "MultiCityEpidemic.hpp"
 #include "MultiCityPopulation.hpp"
+#include "RKFMC.hpp"
 namespace apsc
 {
   namespace multicity
@@ -17,10 +18,11 @@ namespace apsc
     class PopulationModel
     {
     public:
-      using VariableType= typename MultiCityPopulationVariables<NumCities>::VariableType;
+      using VariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
       using ForcingTermType= typename MultiCityModelTraits<NumCities>::PopulationForcingTermType;
-      using VectorType = typename MultiCityPopulationVariables<NumCities>::VectorType;
+      using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
       PopulationModel()=default;
+      //! get epidemic model
       PopulationModel(EpiData<NumCities> const & d):data_{d}{}
       //! Setters and getters
       //!@{
@@ -53,6 +55,40 @@ namespace apsc
       }
     private:
       EpiData<NumCities> data_;
+    };
+
+    template<int NumCities, template<int> class EpiData=MultiCityDataFixed<NumCities>, class RKsolverType=RKFScheme::RK45_t>
+    class
+    advanceMultiCityPopulation
+    {
+    public:
+      using PopulationModel=PopulationModel<NumCities,EpiData>;
+      using VectorType = typename PopulationModel::VectorType;
+      using VariableType = typename PopulationModel::VariableType;
+      advanceMultiCityPopulation()=delete; // at the moment is not default constructible
+      advanceMultiCityPopulation(PopulationModel const & popModel):
+      model{popModel},
+      RK{RKsolverType{},popModel}
+      {};
+
+      template <typename T>
+      void setInitialValue(T&& initialValue)
+      {
+	N0=std::forward<T>(initialValue);
+      }
+      multicity::RKFResult<MultiCityPopulationVariables<NumCities>>
+      advance(double initialTime, double endTime)
+     {
+       return RK(initialTime, endTime, N0, hinit,tolerance,maxSteps);
+     }
+
+     double tolerance{1.e-4};
+     double hinit{1.0};
+     int maxSteps{1000};
+    private:
+      MultiCityPopulationVariables<NumCities> N0;
+      PopulationModel model;
+      RKFMC<RKsolverType,PopulationModel> RK{};
     };
   }
 }
