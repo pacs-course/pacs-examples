@@ -100,14 +100,14 @@ public:
     aij_update(a, i, j, 0);
   };
 
-  /// Convert row-oriented sparse matrix to CRS format with shift.
+  /// Convert row-oriented sparse matrix to CSR format with shift.
   void
   csr(std::vector<double> &a,
       std::vector<int> &   col_ind,
       std::vector<int> &   row_ptr,
       int                  base);
 
-  /// Convert row-oriented sparse matrix to CRS format.
+  /// Convert row-oriented sparse matrix to CSR format.
   void
   csr(std::vector<double> &a,
       std::vector<int> &   col_ind,
