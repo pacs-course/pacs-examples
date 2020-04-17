@@ -15,11 +15,11 @@ sparse_matrix::extract_block_pointer(const std::vector<int> &rows,
   // reduce the complexity of searches.
   // with this format the complexity
   // should be:
-  // cols.size () * log (cols.size ())
+  // cols.size() * log(cols.size())
 
   std::map<int, int> ordcol;
 
-  for (jj = 0u; jj < cols.size(); ++jj)
+  for (jj = 0; jj < cols.size(); ++jj)
     ordcol.insert(std::pair<int, int>(cols[jj], jj));
 
   for (ii = 0; ii < rows.size(); ++ii)
@@ -35,8 +35,8 @@ sparse_matrix::extract_block_pointer(const std::vector<int> &rows,
             {
               jcol = jout->first;
               // check if the current column is in the
-              // list of selected columns (complexity: log (cols.size
-              // ()))
+              // list of selected columns
+              // (complexity: log(cols.size()))
               if (ordcol.count(jcol))
                 // insert a pointer to this entry in the output
                 out[ii][ordcol.at(jcol)] = &((*irow)[jcol]);
@@ -64,7 +64,7 @@ sparse_matrix::extract_block_pointer_keep_cols(
 
   std::set<int> ordcol;
 
-  for (jj = 0u; jj < cols.size(); ++jj)
+  for (jj = 0; jj < cols.size(); ++jj)
     ordcol.insert(cols[jj]);
 
   for (ii = 0; ii < rows.size(); ++ii)

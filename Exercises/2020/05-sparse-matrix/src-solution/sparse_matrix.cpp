@@ -1,5 +1,7 @@
 #include "sparse_matrix.hpp"
 
+#include <cmath>
+
 void
 sparse_matrix::init()
 {
@@ -18,8 +20,9 @@ sparse_matrix::update_properties()
       nnz += (*this)[i].size();
       for (j = (*this)[i].begin(); j != (*this)[i].end(); ++j)
         {
-          size_t tmp = (*this).col_idx(j) + 1;
-          m          = m < tmp ? tmp : m;
+          size_t tmp = col_idx(j) + 1;
+
+          m = std::max(m, tmp);
         }
     }
 }
