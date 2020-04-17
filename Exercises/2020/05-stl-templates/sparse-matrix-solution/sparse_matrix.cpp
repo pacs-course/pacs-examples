@@ -1,6 +1,8 @@
 #include "sparse_matrix.hpp"
 
+#include <cassert>
 #include <cmath>
+#include <iomanip>
 
 void
 sparse_matrix::init()
