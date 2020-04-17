@@ -37,7 +37,7 @@
 }
 
 \begin{document}
-    \title{Templates and STL containers}
+    \title{STL and templates}
     \author{Pasquale Claudio Africa}
     \date{17/04/2020}
 
@@ -46,7 +46,7 @@
 \end{frame}
 
 
-\begin{frame}{What is a sparse matrix?}
+\begin{frame}{Exercise 1 - What is a sparse matrix?}
 \begin{itemize}
 \item A $N \times N$ sparse matrix is a matrix whose number of non-zero elements $N_\mathrm{nz}$ is $O(N)$. \\[3mm]
 \item The average number $m$ of non-zero elements per row (or column)
@@ -56,7 +56,7 @@ is constant w.r.t. the matrix size. \\[3mm]
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Some Examples of Sparse Matrix Formats}
+\begin{frame}[fragile]{Exercise 1 - Sparse matrix formats}
 Some (slightly revisited) classical data structures for sparse matrices
 
 \begin{equation*}
@@ -90,7 +90,7 @@ std::vector<int>    row_ptr{0, 2, 5, 8, 10}; // One entry per row.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Typical operations with sparse matrices} 
+\begin{frame}[fragile]{Exercise 1 - Typical operations with sparse matrices} 
 \begin{itemize}
 \item Insertion: \\
 \lstinline|A[i][j] = x;|
@@ -112,9 +112,9 @@ for (row : A)
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Inheriting from STL containers}
+\begin{frame}[fragile]{Exercise 1 - Inheriting from STL containers}
 \begin{itemize}
-\item The C++ standard leaves a lot of freedom for implementation of containers.
+\item The \texttt{C++} standard leaves a lot of freedom for implementation of containers.
 \item STL containers have non-virtual destructors.
 \item \href{http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines\#Rc-dtor-virtual}{C.35: A base class destructor should be either public and virtual, or protected and non-virtual.}
 \small\begin{lstlisting}
@@ -136,15 +136,15 @@ delete var; // Calls var::~B() but not var::~D()!
 \end{frame}
 
 
-\begin{frame}[fragile]{Exercise: Sparse Matrix class}
+\begin{frame}[fragile]{Exercise 1 - Sparse matrix class}
 \begin{itemize}
-\item Implement a C++ class to represent a sparse matrix based on STL containers.
+\item Implement a \texttt{C++} class to represent a sparse matrix based on STL containers.
 \item Simplify random access, allocation, entry increment, sequential traversing.
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}[fragile]{Exercise: Sparse Matrix class}
+\begin{frame}[fragile]{Exercise 1 - Sparse matrix class}
 Implement the following methods:
 \begin{lstlisting}[basicstyle=\footnotesize]
 /// Convert row-oriented sparse matrix to CRS format.
@@ -170,5 +170,9 @@ friend std::vector<double>
 operator*(sparse_matrix &M, const std::vector<double> &x);
 \end{lstlisting}
 \end{frame}
-  
+
+\begin{frame}[fragile]{Exercise 2 - Finite differences}
+Implement a \texttt{C++} class to compute derivatives of any order of a given function using recursive backward/forward first-order finite difference formulas.
+\end{frame}
+
 \end{document}
