@@ -2,6 +2,7 @@
 #define SPARSE_MATRIX_HPP
 
 #include <cassert>
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -152,8 +153,9 @@ sparse_matrix_template<T>::update_properties()
       nnz += (*this)[i].size();
       for (j = (*this)[i].begin(); j != (*this)[i].end(); ++j)
         {
-          size_t tmp = (*this).col_idx(j) + 1;
-          m          = m < tmp ? tmp : m;
+          size_t tmp = col_idx(j) + 1;
+
+          m = std::max(m, tmp);
         }
     }
 }
