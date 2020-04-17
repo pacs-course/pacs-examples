@@ -118,19 +118,19 @@ for (row : A)
 \item STL containers have non-virtual destructors.
 \item \href{http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines\#Rc-dtor-virtual}{C.35: A base class destructor should be either public and virtual, or protected and non-virtual.}
 \small\begin{lstlisting}
-class D : public B {
-public :
+class Base {
+public:
+ ~Base { do_something(); }; // Non-virtual.
+}
+
+class Derived : public Base {
+public:
  MyComplexType member;
- ~D { member.clear(); ... }
+ ~Derived { member.clear(); ... }
 }
 
-class B {
- public :
- ~B { do_something(); }; // Non-virtual.
-}
-
-B* var = new D;
-delete var; // Calls var::~B() but not var::~D()!
+Base *var = new Derived;
+delete var; // Calls var::~Base() but not var::~Derived()!
 \end{lstlisting}\normalsize
 \end{itemize}
 \end{frame}
@@ -147,32 +147,34 @@ delete var; // Calls var::~B() but not var::~D()!
 \begin{frame}[fragile]{Exercise 1 - Sparse matrix class}
 Implement the following methods:
 \begin{lstlisting}[basicstyle=\footnotesize]
+/// Convert row-oriented sparse matrix to AIJ format.
+void
+aij(std::vector<double> &a,
+    std::vector<int> &   i,
+    std::vector<int> &   j)
+
 /// Convert row-oriented sparse matrix to CRS format.
 void csr(std::vector<double> &a,
-         std::vector<int> &col_ind,
-         std::vector<int> &row_ptr);
+         std::vector<int> &   col_ind,
+         std::vector<int> &   row_ptr);
 
-/// Update the entries of a sparse matrix in CSR format.
-void csr_update(std::vector<double> &a,
-                const std::vector<int> &col_ind,
-                const std::vector<int> &row_ptr);
-
-/// Stream output operator.
-std::ostream & operator<< (std::ostream &stream,
-                           sparse_matrix &M);
+/// Stream operator.
+friend std::ostream &
+operator<<(std::ostream &stream,
+           sparse_matrix &M);
 
 /// Sparse matrix increment.
-/// Automatically allocates additional entries.
-void sparse_matrix::operator+= (sparse_matrix &other);
+void sparse_matrix::operator+=(sparse_matrix &other);
 
 /// Compute matrix-vector product.
 friend std::vector<double>
-operator*(sparse_matrix &M, const std::vector<double> &x);
+operator*(sparse_matrix &M,
+          const std::vector<double> &x);
 \end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]{Exercise 2 - Finite differences}
-Implement a \texttt{C++} class to compute derivatives of any order of a given function using recursive backward/forward first-order finite difference formulas.
+Implement a \texttt{C++} template class to compute derivatives of any order of a given function (callable object) using recursive backward/forward first-order finite difference formulas.
 \end{frame}
 
 \end{document}
