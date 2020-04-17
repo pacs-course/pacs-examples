@@ -1,11 +1,8 @@
 #ifndef SPARSE_MATRIX_HPP
 #define SPARSE_MATRIX_HPP
 
-#include <cassert>
-#include <iomanip>
 #include <iostream>
 #include <map>
-#include <set>
 #include <vector>
 
 /// Class for sparse row-oriented matrix.
