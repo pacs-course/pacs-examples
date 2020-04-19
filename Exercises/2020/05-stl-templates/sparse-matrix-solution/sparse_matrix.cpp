@@ -19,13 +19,16 @@ sparse_matrix::update_properties()
   m   = 0;
   for (size_t i = 0; i < size(); ++i)
     {
-      nnz += (*this)[i].size();
+      if ((*this)[i].size() > 0)
+        {
+          nnz += (*this)[i].size();
 
-      // std::map are sorted, so we just need to get the index of the
-      // last element.
-      size_t tmp = (*this)[i].rbegin()->first + 1;
+          // std::map are sorted, so we just need to get the index of
+          // the last element.
+          size_t tmp = (*this)[i].rbegin()->first + 1;
 
-      m = std::max(m, tmp);
+          m = std::max(m, tmp);
+        }
     }
 }
 
