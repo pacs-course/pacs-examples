@@ -20,20 +20,20 @@ namespace apsc
        using MultiCityPopVectorType =typename MultiCityModelTraits<NumCities>::VectorType;
 
 
-    template<int NumCities>
-    MultiCityPopVectorType<NumCities> Np(MultiCityPopulationVariables<NumCities> const & N)
+    template<class MP>
+    decltype(auto) Np(MP const & N)
     {
-      return (N.rowwise().sum());
+      return N.transpose().rowwise().sum();
     }
 
-     template<int NumCities>
-     MultiCityPopVectorType<NumCities> Nr(MultiCityPopulationVariables<NumCities> const & N)
+     template<class MP>
+     decltype(auto) Nr(MP const & N)
      {
-       return (N.transpose().rowwise().sum());
+       return N.rowwise().sum();
      }
 
-     template<int NumCities>
-     std::array<double,2> totalPop(MultiCityPopulationVariables<NumCities> const & N)
+     template<class MP>
+     std::array<double,2> totalPop(MP const & N)
      {
        return {N.sum(),Nr(N).sum()};
      }
