@@ -14,17 +14,21 @@ namespace apsc
 {
   namespace multicity
   {
-    /*! It defines the variable necessary to solve the dynamic system for the multicity model
+    //! The variable set used for the epidemic model
+    template<int NumCities>
+        using MultiCityEpidemicVariables =typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
+
+    /*! It is a wrapper that defines the variable necessary to solve the dynamic system for the multicity model
      *
      * We refer to the article A multi-city epidemic model, by J.Arino and P. van den Driessche
      *
      * The variable S (susceptibles) and I (infectious) are stored in a 2N X N Eigen Matrix
-     * and can be extracted singularly
+     * and can be extracted singularly. It can be extended to other models
      *
-     * @tparam NumCities Number of cieties
+     * @tparam NumCities Number of cities
      */
     template<int NumCities>
-    struct MultiCityEpidemicVariables
+    struct MultiCityEpidemicVariablesProxy
     {
       //! The type of variables for the RK solver
       using VariableType=typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
@@ -32,17 +36,31 @@ namespace apsc
       using BlockType = typename MultiCityModelTraits<NumCities>::BlockType;
       //! The type for a Vector
       using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
-      //! @defgroup mainvariables Functions returning the main variables S and I
+      //! Constructor takes a reference to the Variable Set
+      MultiCityEpidemicVariablesProxy (VariableType & SI):SI{SI}{};
+      //! @defgroup mainvariables Functions returning the main variables S and I for the SIS model
       //! @{
       decltype(auto) S(){return SI.template block<NumCities,NumCities>(0,0);}
       decltype(auto) S()const {return SI.template block<NumCities,NumCities>(0,0);}
       decltype(auto) I(){return SI.template block<NumCities,NumCities>(NumCities,0);}
       decltype(auto) I()const {return SI.template block<NumCities,NumCities>(NumCities,0);}
       //@}
-      //! The matrix with the global variables \f$[S,I]^T\f$
-      VariableType SI;
+      //! This for a future model,, for instance SIR or SEIR
+      /*!
+       * @tparam VariableSet the set I want to extract
+       * @return The extracted set
+       */
+      template <unsigned int VariableSet>
+      decltype(auto) Var(){return SI.template block<NumCities,NumCities>(NumCities*VariableSet,0);}
       //! The number of cities
       static constexpr int NCities= NumCities;
+      //! The number of Variable Sets
+      static constexpr unsigned NumEquationSet=MultiCityModelTraits<NumCities>::NumEquationSet;
+
+    private:
+      //! The matrix with the global variables \f$[S,I]^T\f$
+      VariableType & SI;
+
     };
 
     /*! Data for the model (fixed parameters version)
@@ -60,9 +78,9 @@ namespace apsc
     class MultiCityDataFixed
     {
     public:
-      using VariableType= MultiCityPopulationVariables<NumCities>;
-      using BlockType= typename MultiCityEpidemicVariables<NumCities>::BlockType;
-      using VectorType = typename MultiCityEpidemicVariables<NumCities>::VectorType;
+      using VariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
+      using BlockType= typename MultiCityModelTraits<NumCities>::BlockType;
+      using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
       //! Time is stored in a double
       using Time = double;
       /*!
@@ -75,7 +93,13 @@ namespace apsc
        * @return per capita rate of outbound movement
        */
       VectorType g(Time const &) const {return g_;}
-       /*!
+      /*!
+       *
+       * @param time (not used)
+       * @return average number of contacts in each city
+       */
+      VectorType k(Time const&) const {return k_;}
+     /*!
        * @param time (not used)
        * @param k the city index
        * @return disease transmission coefficient for city k
@@ -121,7 +145,7 @@ namespace apsc
       beta_k[0]<<0.016,0.016,0.016,0.016;
       beta_k[1]<<0.048,0.048,0.048,0.048;
       g_<<0.25,0.15;
-      m_<<0.,0.5,0.5,0.;
+      m_<<0.,1.0,1.0,0.;
     }
 
     template<int NumCities>
