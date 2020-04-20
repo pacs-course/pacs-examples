@@ -129,7 +129,7 @@ namespace apsc
   else
     factor= 1./(ButcherTable.order-1);
   // Iteration counter
-  unsigned int iter=0;
+  int iter=0;
   // I want to check that the time step does not go ridiculosly small
   double hmin=100*(T-T0)*std::numeric_limits<double>::epsilon();
   double h=std::max(hInit,hmin);
