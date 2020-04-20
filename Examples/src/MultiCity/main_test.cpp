@@ -6,45 +6,51 @@
  */
 
 #include <iostream>
+#include <fstream>
 
 #include "MultiCityEpidemic.hpp"
 #include "MultiCityPopulation.hpp"
 #include "PopulationModel.hpp"
+#include "EpidemicModel.hpp"
+#include "MulticityModel.hpp"
 int main()
 {
   using namespace apsc::multicity;
   constexpr int N=2;
+  // Set intitial data for variables
   MultiCityEpidemicVariables<N> mcity;
-  MultiCityEpidemicVariables<N>::BlockType S0;
-  MultiCityEpidemicVariables<N>::BlockType I0;
-  for (int i=0; i<N; ++i)
-    for (int j=0; j<N; ++j)
-    {
-      S0(i,j)=i*j;
-      I0(i,j)=0.2;
-    }
-  mcity.S()=S0;
-  mcity.I()=I0;
-  std::cout<<"S="<<mcity.S()<<std::endl;
-  std::cout<<"I="<<mcity.I()<<std::endl;
+  MultiCityEpidemicVariablesProxy<N> V{mcity};
+  V.S().fill(0.0);
+  V.I().fill(0.0);
+  V.S()(1,1)=2500;
+  V.S()(0,0)=2500;
+  std::cout<<V.S()<<std::endl;
+  std::cout<<V.I()<<std::endl;
 
+  // Get epidemic data
   MultiCityDataFixed<2> data;
   data.initializeFromArticle();
   std::cout<<data;
 
-  MultiCityPopulationVariables<N> pop;
-  initialize2Cities::initialize(pop);
-  std::cout<<"Population Data\n";
-  std::cout<<"N\n"<<pop.N<<std::endl;
-  std::cout<<"Np\n"<<pop.Np<<std::endl;
-  std::cout<<"Nr\n"<<pop.Nr;
-  std::cout<<std::endl;
-  PopulationModel<N,MultiCityDataFixed> modelP{data};
-  auto force = modelP(2.0, pop.N);
-  std::cout<<"forcing tem\n"<<force;
-  std::cout<<std::endl;
+  // Advancer object
+  MultiCityModelAdvance<N,
+  PopulationModel<N,MultiCityDataFixed>,
+  EpidemicModel<N,MultiCityDataFixed> > mcAdvance{data};
 
+  // Fill advancer with necessary data
+  mcAdvance.initialData.E_Initial=mcity;
+  mcAdvance.initialData.N_Initial=initialize2Cities{}.initialize();
+  mcAdvance.initialData.tInitial=0; // initial time
+  mcAdvance.initialData.tFinal=100; // End time
+  mcAdvance.initialData.numSteps=100; // haoe many time I want output
 
+  // advance
+  auto res=mcAdvance.advance();
+
+  // dump results
+  std::ofstream file("result.txt");
+  file<<res;
+  file.close();
 
 }
 
