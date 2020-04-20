@@ -64,7 +64,7 @@ namespace apsc
      */
     RKFResult<VariableType>
     operator()(double const & T0, double const & T, VariableType const & y0,
-               double const & hInit, double const & tol, int maxStep=2000) const;
+               double const & hInit, double const & tol, unsigned int maxStep=2000) const;
   private:
     Function M_f;
     B ButcherTable;
@@ -100,7 +100,7 @@ namespace apsc
   auto
   RKFMC<B,Model>::operator () (const double& T0, const double& T,
                             const VariableType & y0, const double& hInit, const double& tol,
-                            int maxSteps) const
+                            unsigned int maxSteps) const
   -> RKFResult<VariableType>
   {
   RKFResult<VariableType> res;
@@ -114,7 +114,7 @@ namespace apsc
   auto & failed=res.failed;
   failed=false; // set failed to false
   //  reserve some space according to data
-  int expectedSteps=std::min(std::max(1,1+static_cast<int>((T-T0)/hInit)),maxSteps);
+  unsigned int expectedSteps=std::min(std::max(1u,1u+static_cast<unsigned int>((T-T0)/hInit)),maxSteps);
   time.reserve(expectedSteps);
   y.reserve(expectedSteps);
   // push initial step

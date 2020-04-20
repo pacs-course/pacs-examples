@@ -72,7 +72,9 @@ using RK45_t = ButcherArray<6>;
 using RK23_t = ButcherArray<4>;
 //! Heun-Euler scheme 2nd order
 using RK12_t = ButcherArray<2>;
-
+// Functions to create a scheme (primary template)
+template<class RK>
+RK make_RK();
 //C++17 here!
 inline RK45_t RK45(
     {{
@@ -87,6 +89,8 @@ inline RK45_t RK45(
     {{16./135,0, 6656./12825, 28561./56430,-9./50, 2./55}},//5th order
     5
 );
+template<>
+RK45_t  make_RK<RK45_t>(){return RK45;}
 
 inline RK23_t RK23(
     {{
@@ -99,6 +103,8 @@ inline RK23_t RK23(
     {{2./9,1./3,4./9,0.}}, // 3rd order
     3
 );
+template<>
+RK23_t  make_RK<RK23_t>(){return RK23;}
 
 inline RK12_t RK12(
     {{
@@ -109,6 +115,8 @@ inline RK12_t RK12(
     {{0.5, 0.5}},//2nd order
     2
 );
+template<>
+RK12_t  make_RK<RK12_t>(){return RK12;}
 
 
 
