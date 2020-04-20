@@ -67,14 +67,8 @@ namespace RKFScheme
 {
 // SOME COMMON RK embedded schemes
 //! RK45, the actual RK <Fehlberg scheme
-using RK45_t = ButcherArray<6>;
-//! RK23 a lower order scheme
-using RK23_t = ButcherArray<4>;
-//! Heun-Euler scheme 2nd order
-using RK12_t = ButcherArray<2>;
-
-//C++17 here!
-inline RK45_t RK45(
+  struct RK45_t: public ButcherArray<6>{
+    RK45_t(): ButcherArray<6>{
     {{
       {{0.,0.,0.,0.,0.,0.}},
       {{1./4, 0., 0., 0., 0., 0.}},
@@ -86,9 +80,11 @@ inline RK45_t RK45(
     {{25./216,0.,1408./2565,2197./4104,-1./5,0.}}, // 4th order
     {{16./135,0, 6656./12825, 28561./56430,-9./50, 2./55}},//5th order
     5
-);
-
-inline RK23_t RK23(
+      }{}
+  };
+//! RK23 a lower order scheme
+  struct RK23_t: public ButcherArray<4>{
+    RK23_t():ButcherArray<4>{
     {{
       {{0.,0.,0.,0.}},
       {{1./2, 0., 0., 0.}},
@@ -98,9 +94,11 @@ inline RK23_t RK23(
     {{7./24,1./4, 1./3, 1./8}},//2nd order
     {{2./9,1./3,4./9,0.}}, // 3rd order
     3
-);
-
-inline RK12_t RK12(
+      }{}
+  };
+//! Heun-Euler scheme 2nd order
+  struct RK12_t: public ButcherArray<2>{
+    RK12_t():ButcherArray<2>{
     {{
       {{0., 0.}},
       {{1., 0.}},
@@ -108,7 +106,15 @@ inline RK12_t RK12(
     {{1.0, 0.0}}, // 1st order
     {{0.5, 0.5}},//2nd order
     2
-);
+      }{}
+  };
+
+//C++17 here!
+  inline RK45_t RK45{};
+
+  inline RK23_t RK23{};
+
+  inline RK12_t RK12{};
 
 
 
