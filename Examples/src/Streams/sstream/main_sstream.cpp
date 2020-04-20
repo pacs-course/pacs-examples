@@ -37,6 +37,9 @@ int main()
      #Comment: A file that contains some data
       Point1:  0.3 0.4 # acomment
       Point2:  0.5 0.8
+
+      Note: this is a case where you may also use regexps, but
+      we can do without as follows:
   */
   std::ifstream file("datafile.dat");
   std::vector<double> x;
@@ -45,7 +48,7 @@ int main()
   // Until I reach end of file
   while (!file.fail() && !file.eof()){
     std::string s;
-    getline(file,s); // read a whole line (up to next carriage return)
+    getline(file,s); // read a whole line (up to next newline character)
     if(s.empty()) continue; // empty line: skip
     //std::string::size_type posc=s.find('#'); // find #
     auto posc=s.find('#'); // find #
