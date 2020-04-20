@@ -58,7 +58,7 @@ int main()
   std::ofstream binfile ("file.dat",std::ios::binary);
 
   int n =10;
-  //an int is immediately serializable
+  //an int is trivially serializable
   binfile.write(reinterpret_cast<char*>(&n), sizeof n );
   // A vector is easily serializable (but you vave to store the data)!
   // The number of elements has already been stored
