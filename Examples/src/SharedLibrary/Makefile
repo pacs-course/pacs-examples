@@ -62,7 +62,7 @@ main: main.o
 	$(CXX) $(LDFLAGS) $(LOADLIBES) main.o  -L. -lsmall -o main
 
 development:
-	$(MAKE) main LOADLIBES=-Wl,-rpath=.
+	$(MAKE) main LDLIBS=-Wl,-rpath,.
 
 clean:
 	$(RM) -f *.o main libsmall.so lib*.so.* 
