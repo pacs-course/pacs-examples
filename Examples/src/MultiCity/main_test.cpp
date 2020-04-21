@@ -23,9 +23,9 @@ int main()
   V.S().fill(0.0);
   V.I().fill(0.0);
   V.S()(1,1)=2500;
-  V.S()(0,0)=2500;
-  std::cout<<V.S()<<std::endl;
-  std::cout<<V.I()<<std::endl;
+  V.S()(0,0)=2400;
+  V.I()(0,0)=100; // 100 infected in city 0
+  std::cout<<mcity<<std::endl;
 
   // Get epidemic data
   MultiCityDataFixed<2> data;
@@ -41,7 +41,7 @@ int main()
   mcAdvance.initialData.E_Initial=mcity;
   mcAdvance.initialData.N_Initial=initialize2Cities{}.initialize();
   mcAdvance.initialData.tInitial=0; // initial time
-  mcAdvance.initialData.tFinal=100; // End time
+  mcAdvance.initialData.tFinal=1000;// End time
   mcAdvance.initialData.numSteps=100; // haoe many time I want output
 
   // advance

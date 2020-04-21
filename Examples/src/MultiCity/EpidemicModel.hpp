@@ -106,6 +106,7 @@ EpidemicModel<NumCities,EpiData>::operator() (const double & t, const VariableTy
     VectorType  rSsum = -FS.rowwise().sum();
     FS.diagonal()=rSsum; //rS term completed ckd
     BlockType Sdiag;
+    Sdiag.fill(0.0);
     Sdiag.diagonal()=S.diagonal();
     FS         += Sdiag*gM.transpose(); // gmS term ckd
     FS.array() +=-d*S.array()+gamma*I.array(); // -dS+gamma I term ckd
@@ -117,6 +118,7 @@ EpidemicModel<NumCities,EpiData>::operator() (const double & t, const VariableTy
     VectorType  rIsum = -FI.rowwise().sum();
     FI.diagonal()=rIsum;
     BlockType Idiag;
+    Idiag.fill(0.0);
     Idiag.diagonal()=I.diagonal();
     FI        += Idiag*gM.transpose(); // gmS term ckd
     FI.array()-= (d+gamma)*I.array(); // -(d+gamma )I term ckd
