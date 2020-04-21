@@ -157,7 +157,8 @@ namespace apsc
       out<<" g    ="<<mc.g(0)<<std::endl;
       out<<" d    =\n"<<mc.d(0)<<std::endl;
       out<<" m    =\n"<<mc.m(0)<<std::endl;
-      for (int i=0;i<NumCities;++i)
+      out<<" kappa=\n"<<mc.k(0)<<std::endl;
+     for (int i=0;i<NumCities;++i)
 	{
 	  out<<"beta for city "<<i+1<<std::endl;
 	  out<<" beta=\n"<<mc.beta(0,i)<<std::endl;
