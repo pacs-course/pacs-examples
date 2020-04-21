@@ -47,58 +47,53 @@
 
 \begin{frame}{Exercise 1}
 
-Implement a
-library for matrices (and cloumn vectors 
-implemented as 1-column matrices) based on 
-STL containers such as \lstinline[language=C++]{std::vector<>}
-or \lstinline[language=C++]{std::array<>}
-with the following methods/functions
+Starting from the provided implementation of the class for dense matrices (and column vectors represented as 1-column matrices) based on \lstinline{std::vector}, implement the following methods:
 \begin{itemize}
-\item transpose : $A = A^{T}$
-\item solve : solve $A x = b$ by means of Gaussian eliminition with partial pivoting by rows
-\item operator* : matrix-matrix and matrix-vector multiplication
+\item transpose: $A = A^{T}$.
+\item \lstinline{operator*}: matrix-matrix and matrix-vector multiplication.
 \end{itemize}
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Solution}
+\begin{frame}{Exercise 1 - What you need to know}
 \begin{itemize}
-\item \lstinline[language=C++]{std::array<>}
-      requires the size to be known at compile time,
-      in order to make the \lstinline[language=C++]{matrix}
-      object configurable at run time we use 
-      \lstinline[language=C++]{std::vector<>}\\[3mm]
-\item matrices ar organized as \emph{column major}, {\it i.e.}
-      %$A(i, j) = $ \lstinline[language=C++]{data[i + j * rows ()]}, 
+\item The implemented matrix class is organized as
+      \emph{column major}, {\it i.e.}
+      $A(i, j) = $ \lstinline{data[i + j * rows()]}, 
       conversion from 1d to 2d indexing is performed by the utility
-      (private) function \lstinline[language=C++]{sub2ind}\\[3mm]
-\item access to elements is implemented both in const and non-const
-      versions, by overloading \lstinline[language=C++]{operator()} \\[3mm]
-\item data is private, \emph{getter methods} expose what is needed to 
-      the user, both const and non-const versions are provided \\[3mm]
-\item naive implementation of matrix-matrix multiplication is slow 
-      because it has low \emph{data locality}
-      (see below more about memory hierarchy and cache optimized algorithms), 
-      simply transposing the left matrix factor improves performance significantly\\[3mm]
-\item \lstinline[language=C++]{\#include <ctime>} header provides timing utilities,
-      \lstinline[language=C++]{tic ()} and \lstinline[language=C++]{toc (x)} macros
-      start and stop the timer (like in Matlab)
+      method \lstinline{sub2ind}.\\[3mm]
+\item Access to elements is implemented both in const and non-const
+      versions, by overloading \lstinline{operator()}. \\[3mm]
+\item Data is private, \emph{getter methods} expose what is needed
+      to the user, both const and non-const versions are provided. \\[3mm]
+\item Naive implementation of matrix-matrix multiplication is slow 
+      because it has low \emph{data locality}, simply transposing the left matrix factor improves performance significantly\footnote{See \textit{M. Kowarschik, C. Weiß. (2002). Lecture Notes in Computer Science. 213-232. DOI: 10.1007/3-540-36574-5\_10} for further details.}.\\[3mm]
+\item The \lstinline{\#include <ctime>} header provides timing
+      utilities, \lstinline{tic()} and \lstinline{toc(x)} macros
+      start and stop the timer.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Exercise 1.2}
-
 \begin{itemize}
-\item Transpose the first factor in matrix multiplication before performing the product
-\item Compare speed with previous implementation
+\item Transpose the first factor in matrix multiplication before performing the product.
+\item Compare the execution speed with respect to the previous implementation.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Exercise 1.3}
+\begin{frame}{Exercise 1.2 - Details}
+\begin{figure}
+    \centering
+    \only<1>{\includegraphics[width=\textwidth]{images/memory_layout.png}}
+    \only<2>{\includegraphics[width=\textwidth]{images/access_patterns.png}}
+    \only<3>{\includegraphics[width=\textwidth]{images/loop_tiling.png}}
+\end{figure}
+\end{frame}
 
+\begin{frame}{Exercise 1.3}
 \begin{itemize}
-\item Include the {\tt Eigen/Dense} header
-\item Use the {\tt Eigen::Map} template class to wrap the matrix data and interpret it as {\tt Eigen::MatrixXd}
-\item Compare speed with previous implementation
+\item Include the {\tt Eigen/Dense} header.
+\item Use the {\tt Eigen::Map} template class to wrap the matrix data and interpret it as {\tt Eigen::MatrixXd}.
+\item Compare the execution speed with respect to the previous implementations.
 \end{itemize}
 \end{frame}
 
@@ -111,8 +106,9 @@ The program \texttt{integer-list} in the directory \texttt{02-bug} has:
     \item One memory leak.
     \item A potential memory leak that is not captured by the main.
 \end{itemize}
+\vfill
+Find all the issues and fix them. \\[3mm]
 
-Find all the issues and fix them. \\
 The directory \texttt{02-bug-solution} contains the fixed code,
 please don't look at it before trying to solve the exercise by yourself.
 \end{frame}
