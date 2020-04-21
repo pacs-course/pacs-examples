@@ -94,6 +94,7 @@ EXEC_SRCS:=$(exe_sources)
 all:
 	@echo "make static makes static library and executable"
 	@echo "make dynamic makes dynamic library and executable"
+	@echo "make exec [FPE_ABORT=yes] makes executable"
 	@echo "make depend just makes dependency file"
 	@echo "make clean cleans all but not not library"
 	@echo "make distclean cleans all"
@@ -106,10 +107,8 @@ depend: $(DEPEND)
 
 static:
 	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
 	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
