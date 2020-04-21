@@ -17,14 +17,13 @@
 #warning "FE_INVALID FE_DIVBYZERO FE_OVERFLOW are trapped" 
 //! If FPE_ABORT is set a fp exception causes the progam to terminate
 /* C style implementation */
-   static void __attribute__ ((constructor))
-   trapfpe (){
+//   static void __attribute__ ((constructor))
+//   trapfpe (){
    //! Enable some exceptions.  At startup all exceptions are masked.
-     feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
-}
+//     feenableexcept (FE_INVALID|FE_DIVBYZERO|FE_OVERFLOW);
+//}
 //
 //! IMPLEMENTATION AS STATIC METHOD (More C++ style)
-/*
   namespace
 {
   struct FpeTrap{
@@ -35,6 +34,6 @@
     }
   };
 }
-*/
 #endif
+
 #endif
