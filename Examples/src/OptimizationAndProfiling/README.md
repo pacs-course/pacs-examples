@@ -15,8 +15,8 @@
 * `make leak`. An example of use of valgrind to find a memory leak. You should have valgrind installed
 
 
-* `make profile`. An example of use of `gprof` profiler. The --annotated-source option is not working with the current version of `g++`
-	 on my computer. Try it on yours.
+* `make profile`. An example of use of `gprof` profiler. The --annotated-source option is  working only if -g is activated. But better use gcov to have the 
+info provided by --annotated-source, so I am not using it.
 
 * `make massif`. An example of use of `massif` tool of `valgrind`  to analyze memory usage.
 
@@ -24,6 +24,8 @@
 
 * `make coverage` : use of `gcov` to to the coverage of a program. It produces a lot
      of files, but you can clean it up using make clean
+
+* `make lcoverage` : like `coverage` but uses `lcov` and `genhtml` to have nicer result
      
 * `namemangling,cpp` does not create any executable. is only to test namemangling. You should do `g++ -c namemangling.cpp`
     and run `nm namemangling.o` or `nm --demangle namemangling.o` to see the difference.
