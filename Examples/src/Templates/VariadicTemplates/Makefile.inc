@@ -1,0 +1,2 @@
+# Activate optimization
+RELEASE=yes
