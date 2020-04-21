@@ -28,7 +28,7 @@ void covol2(Vet const & A, Vet const & B , Vet & R)
 //! Sums to R the convolution of A and B
 //! This version is argument alias proof! But uses more memory
 /*!
-  @note I could have not returned the new R with the return statement.
+  @note I could have  returned the new R with the return statement.
   I just wanted to maintain the same signature as the previous functions.
  */
 void covol3(Vet const  A, Vet const  B , Vet & R)
