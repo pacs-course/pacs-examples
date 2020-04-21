@@ -1,4 +1,6 @@
-#include "matrix.h"
+#include "matrix.hpp"
+
+#include <Eigen/Dense>
 
 #include <algorithm>
 #include <cassert>
@@ -15,21 +17,6 @@ matrix::transpose() const
   return (retval);
 }
 
-#if defined(MAKE_TMP_TRANSP)
-matrix operator*(const matrix &A, const matrix &B)
-{
-  unsigned int i, j, k;
-  assert(A.get_cols() == B.get_rows());
-  matrix retval(A.get_rows(), B.get_cols());
-  matrix tmp = A.transpose();
-  for (i = 0; i < retval.get_rows(); ++i)
-    for (j = 0; j < retval.get_cols(); ++j)
-      for (k = 0; k < A.get_cols(); ++k)
-        retval(i, j) += tmp(k, i) * B(k, j);
-  return (retval);
-}
-#elif defined(USE_EIGEN_MAP_PROD)
-#  include <Eigen/Dense>
 matrix operator*(const matrix &A, const matrix &B)
 {
   assert(A.get_cols() == B.get_rows());
@@ -52,19 +39,6 @@ matrix operator*(const matrix &A, const matrix &B)
 
   return (retval);
 }
-#else
-matrix operator*(const matrix &A, const matrix &B)
-{
-  unsigned int i, j, k;
-  assert(A.get_cols() == B.get_rows());
-  matrix retval(A.get_rows(), B.get_cols());
-  for (i = 0; i < retval.get_rows(); ++i)
-    for (j = 0; j < retval.get_cols(); ++j)
-      for (k = 0; k < A.get_cols(); ++k)
-        retval(i, j) += A(i, k) * B(k, j);
-  return (retval);
-}
-#endif
 
 void
 matrix::solve(matrix &rhs)

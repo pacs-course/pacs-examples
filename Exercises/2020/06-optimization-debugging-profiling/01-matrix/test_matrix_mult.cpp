@@ -1,6 +1,7 @@
-#include "test_matrix_mult.h"
+#include "test_matrix_mult.hpp"
 
-#include "matrix.h"
+#include "matrix.hpp"
+
 int
 main()
 {
