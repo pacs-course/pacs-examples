@@ -47,40 +47,160 @@ int main()
   std::cout<<"Norm1, NOrmInf and NormF of a: "<<a.norm1()<<" "<<a.normInf()<<" "<<a.normF()<<std::endl;
 
   // Testing different implementation of matrix/matrix
-  // Creating 2 big matrices
-  //MyMat0<double,COLUMNMAJOR> A(1000,1000);
-  std::cout<<"Creating two big matrices"<<std::endl;
-  MyMat0<double,ROWMAJOR> A(1024,2048);
-  A.fillRandom();
-  //  MyMat0<double,COLUMNMAJOR> B(1000,1000);
-  MyMat0<double,ROWMAJOR> B(2048,1024);
-  B.fillRandom();
-  std::cout<<"Done"<<std::endl;
-  Timings::Chrono watch;
-  std::cout<< "Standard Matrix Moltiplication"<<"\n";
-  watch.start();
-  auto res1=matMul(A,B);
-  watch.stop();
-  double t1=watch.wallTime();
-  std::cout<<watch<<std::endl;
-  std::cout<< "Optimized Matrix Moltiplication"<<"\n";
-  watch.start();
-  auto res2=matMulOpt(A,B);
-  watch.stop();
-  double t2=watch.wallTime();
-  std::cout<<watch<<std::endl;
-  std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
-  std::cout<<"Speedup: "<<t1/t2<<std::endl;
+  constexpr int NR=600;
+  constexpr int NC=600;
+  {
+    // Creating 2 big matrices
+    std::cout<<"Creating two big matrices ROWMAJOR ROWMAJOR"<<std::endl;
+    MyMat0<double,ROWMAJOR> A(NR,NC);
+    A.fillRandom();
+    MyMat0<double,ROWMAJOR> B(NC,NR);
+    B.fillRandom();
+    std::cout<<"Done"<<std::endl;
+    Timings::Chrono watch;
+    std::cout<< "Standard Matrix Moltiplication"<<"\n";
+    watch.start();
+    auto res1=matMul(A,B);
+    watch.stop();
+    std::cout<<"NormF="<<res1.normF()<<std::endl;
+   double t1=watch.wallTime();
+    std::cout<<watch;
+    std::cout<< "Optimized Matrix Moltiplication"<<"\n";
+    watch.start();
+    auto res2=matMulOpt(A,B);
+    watch.stop();
+    std::cout<<"NormF="<<res2.normF()<<std::endl;
+    double t2=watch.wallTime();
+    std::cout<<watch;
+    std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+    std::cout<<"Speedup: "<<t1/t2<<std::endl;
 #ifndef NOBLAS
-  std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
-  watch.start();
-  res2=matMulOptBlas(A,B);
-  watch.stop();
-  t2=watch.wallTime();
-  std::cout<<watch<<std::endl;
-  std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
-  std::cout<<"Speedup: "<<t1/t2<<std::endl;
+    std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
+    watch.start();
+    auto res3=matMulOptBlas(A,B);
+    watch.stop();
+    std::cout<<"NormF="<<res3.normF()<<std::endl;
+    t2=watch.wallTime();
+    std::cout<<watch;
+    std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+    std::cout<<"Speedup: "<<t1/t2<<std::endl;
 #endif
+  }
+  std::cout<<std::endl;
+  {
+    // Creating 2 big matrices
+    std::cout<<"Creating two big matrices ROWMAJOR COLUMMAJOR"<<std::endl;
+    MyMat0<double,ROWMAJOR> A(NR,NC);
+    A.fillRandom();
+    MyMat0<double,COLUMNMAJOR> B(NC,NR);
+    B.fillRandom();
+    std::cout<<"Done"<<std::endl;
+    Timings::Chrono watch;
+    std::cout<< "Standard Matrix Moltiplication"<<"\n";
+    watch.start();
+    auto res1=matMul(A,B);
+    watch.stop();
+    std::cout<<"NormF="<<res1.normF()<<std::endl;
+    double t1=watch.wallTime();
+    std::cout<<watch;
+    std::cout<< "Optimized Matrix Moltiplication"<<"\n";
+    watch.start();
+    auto res2=matMulOpt(A,B);
+    watch.stop();
+    std::cout<<"NormF="<<res2.normF()<<std::endl;
+    double t2=watch.wallTime();
+    std::cout<<watch;
+    std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+    std::cout<<"Speedup: "<<t1/t2<<std::endl;
+#ifndef NOBLAS
+    std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
+    watch.start();
+    auto res3=matMulOptBlas(A,B);
+    watch.stop();
+    std::cout<<"NormF="<<res3.normF()<<std::endl;
+    t2=watch.wallTime();
+    std::cout<<watch;
+    std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+    std::cout<<"Speedup: "<<t1/t2<<std::endl;
+ #endif
+    }
+  std::cout<<std::endl;
+  {
+      // Creating 2 big matrices
+     std::cout<<"Creating two big matrices COLUMMAJOR COLUMMAJOR"<<std::endl;
+     MyMat0<double,COLUMNMAJOR> A(NR,NC);
+     A.fillRandom();
+     MyMat0<double,COLUMNMAJOR> B(NC,NR);
+     B.fillRandom();
+     std::cout<<"Done"<<std::endl;
+     Timings::Chrono watch;
+     std::cout<< "Standard Matrix Moltiplication"<<"\n";
+     watch.start();
+     auto res1=matMul(A,B);
+     watch.stop();
+     std::cout<<"NormF="<<res1.normF()<<std::endl;
+     double t1=watch.wallTime();
+     std::cout<<watch;
+     std::cout<< "Optimized Matrix Moltiplication"<<"\n";
+     watch.start();
+     auto res2=matMulOpt(A,B);
+     watch.stop();
+     std::cout<<"NormF="<<res2.normF()<<std::endl;
+     double t2=watch.wallTime();
+     std::cout<<watch;
+     std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+     std::cout<<"Speedup: "<<t1/t2<<std::endl;
+ #ifndef NOBLAS
+     std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
+     watch.start();
+     auto res3=matMulOptBlas(A,B);
+     watch.stop();
+     std::cout<<"NormF="<<res3.normF()<<std::endl;
+     t2=watch.wallTime();
+     std::cout<<watch;
+     std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+     std::cout<<"Speedup: "<<t1/t2<<std::endl;
+ #endif
+      }
+  std::cout<<std::endl;
+  {
+      // Creating 2 big matrices
+     std::cout<<"Creating two big matrices COLUMMAJOR ROWMAJOR"<<std::endl;
+     MyMat0<double,COLUMNMAJOR> A(NR,NC);
+     A.fillRandom();
+     MyMat0<double,ROWMAJOR> B(NC,NR);
+     B.fillRandom();
+     std::cout<<"Done"<<std::endl;
+     Timings::Chrono watch;
+     std::cout<< "Standard Matrix Moltiplication"<<"\n";
+     watch.start();
+     auto res1=matMul(A,B);
+     watch.stop();
+     std::cout<<"NormF="<<res1.normF()<<std::endl;
+     double t1=watch.wallTime();
+     std::cout<<watch;
+     std::cout<< "Optimized Matrix Moltiplication"<<"\n";
+     watch.start();
+     auto res2=matMulOpt(A,B);
+     watch.stop();
+     std::cout<<"NormF="<<res2.normF()<<std::endl;
+     double t2=watch.wallTime();
+     std::cout<<watch;
+     std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+     std::cout<<"Speedup: "<<t1/t2<<std::endl;
+ #ifndef NOBLAS
+     std::cout<< " Blas Optimized Matrix Moltiplication"<<"\n";
+     watch.start();
+     auto res3=matMulOptBlas(A,B);
+     watch.stop();
+     t2=watch.wallTime();
+     std::cout<<"NormF="<<res3.normF()<<std::endl;
+     std::cout<<watch;
+     std::cout<<"Gain: "<<100*(t1-t2)/t1<<"%"<<std::endl;
+     std::cout<<"Speedup: "<<t1/t2<<std::endl;
+ #endif
+     }
+
   /* Only to test if replaceCol works
   std::vector<double> v(A.nrow(),1.0);
   A.replaceCol(3,v);
