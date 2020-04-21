@@ -1,7 +1,7 @@
 BLAS=yes# the default
 # change it to suite your needs if yo do not use modules
 # module load suitesparse will also load the blas library
-
+RELEASE=yes
 #BLAS_LIB_DIR=-L${mkOpenblasLib}
 #BLAS_INC_DIR=-I${mkOpenblasInc}
 BLAS_LIB_DIR=

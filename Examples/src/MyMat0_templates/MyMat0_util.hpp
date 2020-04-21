@@ -47,6 +47,7 @@ namespace LinearAlgebra
         for(size_type i=0; i<m1.nrow();++i)
           {
             size_type row_starts= m1.getIndex(i,0);
+            // ! can use parallel version!
             res(i,j) = std::inner_product(tmp.begin(),tmp.end(),m1.cbegin()+row_starts,T(0));
             /*
             for(size_type k=0; k<m2.nrow();++k)
@@ -87,7 +88,8 @@ namespace LinearAlgebra
           }
         for(size_type j=0; j<m2.ncol();++j)
           {
-            size_type column_start = m2.gitIndex(0,j);
+            size_type column_start = m2.getIndex(0,j);
+            //! I can parallelize here!
             res(i,j) = std::inner_product(tmp.begin(),tmp.end(),m2.cbegin()+column_start,T(0));
             /*
               for(size_type k=0; k<m2.nrow();++k)
@@ -115,6 +117,7 @@ namespace LinearAlgebra
             size_type column_start = m2.getIndex(0,j);
             size_type row_start = m1.getIndex(i,0);
             size_type row_end   = m1.getIndex(i+1,0);
+            // I can parallelize here!
             res(i,j) = std::inner_product(
                                           m1.cbegin()+row_start,
                                           m1.cbegin()+row_end,

@@ -82,5 +82,7 @@ inefficient (run-time if statement are expensive). Tag-dispatching is instead re
 
 This `if` is resolved **compile-time**, so in this case we could have avoided tag-dispatching. But only since C++17. And there are still cases where tag-dispatching is better and, afre all, is not so complicated.
 
+**NOTE** The code uses the blas library if BLAS is set to yes in the `Makefile.inc` file. Check `Makefile.inc` to suit your needs.
+
 
 
