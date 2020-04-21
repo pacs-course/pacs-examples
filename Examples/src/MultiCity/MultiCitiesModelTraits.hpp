@@ -20,16 +20,16 @@ namespace apsc
      *
      * @tparam NumCities the number of cities
      */
-    template<int NumCities>
+    template<int NumCities, int NumEpidVariables=2>
     struct MultiCityModelTraits
     {
        //! The number of cities
        static constexpr unsigned int NCities = NumCities; // the SIS model has 2
        /*!
-        * The number of sets of variables
+        * The number of sets of variables in the epidemic model
         * 2 for the SIS model it should be changed for other models
         */
-       static constexpr unsigned int NumEquationsSet = 2; // the SIS model has 2
+       static constexpr unsigned int NumEquationsSet = NumEpidVariables; // the SIS model has 2
       //! The type of variables for the solver for population
        using PopulationVariableType=Eigen::Matrix<double,NumCities,NumCities>;
        //! The type of variables for the solver for epidemic model
