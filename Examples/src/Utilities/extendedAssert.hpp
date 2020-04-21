@@ -37,6 +37,11 @@
               is disactivated;
   - ERRORSTATUS Could be defined as an integer number passed to exit (defaulted to 1).
 
+Example of usage:
+
+@code
+SURE_ASSERT(m>0,"m should be positive")
+@endcode
 */
 # ifndef _EXTENDEDASSERT_HH_
 # define _EXTENDEDASSERT_HH_
