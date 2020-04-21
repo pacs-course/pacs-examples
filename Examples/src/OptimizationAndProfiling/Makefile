@@ -65,7 +65,7 @@ esempioExtAss:
 	$(CXX) $(CPPFLAGS) -O2 -DNDEBUG esempioExtAss.cpp  rational.cpp -o esempioExtAss_release
 
 aliasing: aliasing.cpp
-	$(CXX) $(CPPFLAGS) -std=c++14 -O3 -o aliasing aliasing.cpp
+	$(CXX) $(CPPFLAGS) -std=c++17 -O3 -o aliasing aliasing.cpp
 clean:
 	$(RM)  *.o *.s *.log.* massif* provamassif a.out esempio1* esempio0* esempio2 esempio3 leak *.E *.S result.dat aliasing *.gcov *.gcda *.gcno esempio
 	$(RM)  esempioExtAss_debug  esempioExtAss_release *.txt unroll1_nounroll unroll1_unroll coverage.info
@@ -88,8 +88,8 @@ optimize: chrono.o
 	@echo
 	@echo "**version with -O3  -ffast-math -funroll-loops -msse4 -mfpmath=sse"; ./esempio3;
 debug:
-	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -g -o esempio0_debug esempio.cpp chrono.cpp
-	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -g -o esempio1_debug esempio_errore.cpp chrono.cpp
+	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -o esempio0_debug esempio.cpp chrono.cpp
+	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)   -o esempio1_debug esempio_errore.cpp chrono.cpp
 
 leak:
 	 $(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Wall -g leak.cpp -o leak
@@ -99,9 +99,9 @@ leak:
 profile:
 #	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
 	echo " With no optimization"
-	g++ -std=c++11 -pg -O0 esempio.cpp chrono.cpp -o esempio0
+	g++ -std=c++11 -pg -g -O0 esempio.cpp chrono.cpp -o esempio0
 	./esempio0 -i dati
-	gprof --line ./esempio0 gmon.out >Profiling_nopt.txt
+	gprof --line  ./esempio0 gmon.out >Profiling_nopt.txt
 	echo " With optimization"
 	g++ -std=c++11 -pg -O2 esempio.cpp chrono.cpp -o esempio0
 	./esempio0 -i dati
@@ -117,7 +117,7 @@ massif:
 coverage:
 	$(CXX) -g -fprofile-arcs -ftest-coverage chrono.cpp esempio.cpp -o esempio
 	./esempio -i dati
-	gcov ./esempio > summary.txt
+	gcov  --demangled-names ./esempio > summary.txt
 
 lcoverage:
 	$(CXX) -g -fprofile-arcs -ftest-coverage chrono.cpp esempio.cpp -o esempio
