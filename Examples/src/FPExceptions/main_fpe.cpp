@@ -9,7 +9,7 @@ int main()
 {
     using namespace std;
     bool theEnd{false};
-    double a, b;
+    double a, b, c;
     bool on{false};
 #ifndef FPE_ABORT
     cout << "Type 1 if you want to launch exception if a FPEs occurs: ";
@@ -29,21 +29,21 @@ int main()
 #endif
     do
     {
-        std::cout << "Gimme 2 numbers a and b" << std::endl <<
-                  "I will compute 1/a and log(b)" << std::endl;
-        std::cin >> a >> b;
+        std::cout << "Gimme 3 numbers a and b" << std::endl <<
+                  "I will compute 1/a, log(b) and exp(c)" << std::endl;
+        std::cin >> a >> b>>c;
         try
           {
             double z = f1 (a);
             std::cout << " 1/" << a << " is " << z << std::endl;
-            std::cout.flush();
-            test_fpe_exception (on);
             double x = f2 (b);
             std::cout << " log(" << b << ") is " << x << std::endl;
+            double y = std::exp(c);
+            std::cout << " exp(" << c << ") is " << y << std::endl;
             std::cout.flush();
             test_fpe_exception (on);
           }
-        catch (std::runtime_error& x)
+        catch (std::exception& x)
           {
             std::cout << x.what() << std::endl;
           }
