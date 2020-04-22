@@ -1,6 +1,7 @@
 #ifndef HH_FPEUTILITIES_HH
 #define HH_FPEUTILITIES_HH
 #include <stdexcept>
+#include <string>
 
 //!This function may throw exceptions if a fpe has been raised.
 //! @param on if true means that exceptions will be thrown
@@ -11,31 +12,13 @@ bool test_fpe_exception(bool on=true);
 /*
   It launches a runtime exception with a message.
  */
-struct 
-InvalidFPOperation: public std::runtime_error
+class
+InvalidFPOperation: public std::exception
 {
-  InvalidFPOperation():std::runtime_error("Invalid floating point operation"){};
+public:
+  InvalidFPOperation(int flags);
+  const char* what()const noexcept override;
+private:
+  std::string message;
 };
-
-//! Exception for floating point overflow
-/*
-  It launches a runtime exception with a message.
- */
-struct 
-FloatOverflow: public std::runtime_error
-{
-  FloatOverflow():std::runtime_error("Floating point overflow"){};
-};
-
-//! Exception for zero division
-/*
-  It launches a runtime exception with a message.
- */
-struct 
-ZeroDivision: public std::runtime_error
-{
-  ZeroDivision():std::runtime_error("Division by zero"){};
-};
-
-
 #endif
