@@ -1,8 +1,6 @@
 // Build and print a list of integers.
 #include "integer-list.hpp"
 
-#include <iostream>
-
 int
 main(int argc, char **argv)
 {
