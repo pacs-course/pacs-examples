@@ -57,19 +57,14 @@ Starting from the provided implementation of the class for dense matrices (and c
 \begin{frame}{Exercise 1 - What you need to know}
 \begin{itemize}
 \item The implemented matrix class is organized as
-      \emph{column major}, {\it i.e.}
+      \textbf{column-major}, \textit{i.e.}
       $A(i, j) = $ \lstinline{data[i + j * rows()]}, 
       conversion from 1d to 2d indexing is performed by the utility
       method \lstinline{sub2ind}.\\[3mm]
-\item Access to elements is implemented both in const and non-const
-      versions, by overloading \lstinline{operator()}. \\[3mm]
-\item Data is private, \emph{getter methods} expose what is needed
-      to the user, both const and non-const versions are provided. \\[3mm]
-\item Naive implementation of matrix-matrix multiplication is slow 
-      because it has low \emph{data locality}, simply transposing the left matrix factor improves performance significantly\footnote{See \textit{M. Kowarschik, C. Weiß. (2002). Lecture Notes in Computer Science. 213-232. DOI: 10.1007/3-540-36574-5\_10} for further details.}.\\[3mm]
-\item The \lstinline{\#include <ctime>} header provides timing
-      utilities, \lstinline{tic()} and \lstinline{toc(x)} macros
-      start and stop the timer.
+\item Access to elements is implemented both in \texttt{const} and non-\texttt{const} versions, by overloading \lstinline{operator()}. \\[3mm]
+\item Data is private, \textit{getter methods} expose what is needed to the user, both \texttt{const} and non-\texttt{const} versions are provided. \\[3mm]
+\item Naive implementation of matrix-matrix multiplication is slow because it has low \textit{data locality}, simply transposing the left matrix factor improves performance significantly\footnote{See \textit{M. Kowarschik, C. Weiß. (2002). Lecture Notes in Computer Science. 213-232. DOI: 10.1007/3-540-36574-5\_10} for further details.}.\\[3mm]
+\item The \lstinline{\#include <ctime>} header provides timing utilities, \lstinline{tic()} and \lstinline{toc(x)} macros start and stop the timer.
 \end{itemize}
 \end{frame}
 
@@ -86,6 +81,7 @@ Starting from the provided implementation of the class for dense matrices (and c
     \only<1>{\includegraphics[width=\textwidth]{images/memory_layout.png}}
     \only<2>{\includegraphics[width=\textwidth]{images/access_patterns.png}}
     \only<3>{\includegraphics[width=\textwidth]{images/loop_tiling.png}}
+    \caption{\alt<1>{Typical memory layout of a computer.}{Example with a row-major matrix.}}
 \end{figure}
 \end{frame}
 
@@ -101,16 +97,18 @@ Starting from the provided implementation of the class for dense matrices (and c
 The program \texttt{integer-list} in the directory \texttt{02-bug} has:
 
 \begin{itemize}
-    \item One compile error.
-    \item One run-time error.
-    \item One memory leak.
-    \item A potential memory leak that is not captured by the main.
+    \item a compile error;
+    \item a run-time error;
+    \item a memory leak;
+    \item a potential memory leak that is not captured by the main.
 \end{itemize}
-\vfill
+\vspace{0.5cm}
 Find all the issues and fix them. \\[3mm]
 
+Get help by using \texttt{gdb} and \texttt{valgrind}.\\[3mm]
+
 The directory \texttt{02-bug-solution} contains the fixed code,
-please don't look at it before trying to solve the exercise by yourself.
+please don't look at it before trying to solve the exercise by yourself!
 \end{frame}
 
 \end{document}
