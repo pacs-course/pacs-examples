@@ -9,12 +9,15 @@
 matrix
 matrix::transpose() const
 {
-  matrix       retval(get_cols(), get_rows());
-  unsigned int i, j;
-  for (j = 0; j < retval.get_cols(); ++j)
-    for (i = 0; i < retval.get_rows(); ++i)
-      retval(i, j) = const_index(j, i);
-  return (retval);
+  matrix retval(*this);
+
+  Eigen::Map<Eigen::MatrixXd> eigen_retval(retval.get_data(),
+                                           retval.get_rows(),
+                                           retval.get_cols());
+
+  eigen_retval.transpose();
+
+  return retval;
 }
 
 matrix operator*(const matrix &A, const matrix &B)
@@ -32,12 +35,12 @@ matrix operator*(const matrix &A, const matrix &B)
   matrix retval(A.get_rows(), B.get_cols());
 
   Eigen::Map<Eigen::MatrixXd> eigen_retval(retval.get_data(),
-                                           A.get_rows(),
-                                           B.get_cols());
+                                           retval.get_rows(),
+                                           retval.get_cols());
 
   eigen_retval = eigen_A * eigen_B;
 
-  return (retval);
+  return retval;
 }
 
 void
@@ -60,7 +63,7 @@ matrix::solve(matrix &rhs)
     {
       f = b[p[ii]];
       for (kk = 0; kk < ii; ++kk)
-        f -= index(p[ii], kk) * b[p[kk]];
+        f -= value(p[ii], kk) * b[p[kk]];
       b[p[ii]] = f;
     }
 
@@ -71,8 +74,8 @@ matrix::solve(matrix &rhs)
       ii = get_rows() - jj;
       f  = b[p[ii]];
       for (kk = ii + 1; kk < get_cols(); ++kk)
-        f -= index(p[ii], kk) * b[p[kk]];
-      b[p[ii]] = f / index(p[ii], ii);
+        f -= value(p[ii], kk) * b[p[kk]];
+      b[p[ii]] = f / value(p[ii], ii);
     }
 }
 
@@ -92,25 +95,25 @@ matrix::factorize()
   assert(m == n);
   for (ii = 0; ii < m - 1; ++ii)
     {
-      maxpivot  = index(p[ii], ii);
+      maxpivot  = value(p[ii], ii);
       imaxpivot = ii;
       for (kk = ii + 1; kk < m; ++kk)
-        if (index(p[kk], ii) > maxpivot)
+        if (value(p[kk], ii) > maxpivot)
           {
-            maxpivot  = index(p[kk], ii);
+            maxpivot  = value(p[kk], ii);
             imaxpivot = kk;
           }
 
       if (imaxpivot != ii)
         std::swap(p[ii], p[imaxpivot]);
 
-      pivot = index(p[ii], ii);
+      pivot = value(p[ii], ii);
       for (jj = ii + 1; jj < m; ++jj)
         {
-          index(p[jj], ii) = index(p[jj], ii) / pivot;
+          value(p[jj], ii) = value(p[jj], ii) / pivot;
 
           for (kk = ii + 1; kk < n; ++kk)
-            index(p[jj], kk) += -index(p[ii], kk) * index(p[jj], ii);
+            value(p[jj], kk) += -value(p[ii], kk) * value(p[jj], ii);
         }
     }
   factorized = true;
