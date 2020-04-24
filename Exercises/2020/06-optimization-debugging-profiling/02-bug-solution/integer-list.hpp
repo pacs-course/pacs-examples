@@ -139,20 +139,22 @@ public:
   // find first node with a specified value in sublist starting from
   // this node return NULL if not found
   Node *
-  find(int needle)
+  find(int value)
   {
-    if (data == needle)
+    if (data == value)
       return this;
 
     Node *t = this;
     while (!t->isLast())
       {
         t = t->getNext();
-        if (t->getData() == needle)
+        if (t->getData() == value)
           return t;
       }
+
     return NULL;
   }
+
   // print the data in the sublist starting from this node
   void
   print(void)
