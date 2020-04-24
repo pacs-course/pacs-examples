@@ -8,11 +8,11 @@
 #include <ctime>
 
 static clock_t c_start, c_diff;
-static double  c_msec;
+static double  c_sec;
 #define tic() c_start = clock();
-#define toc(x)                                             \
-  c_diff = clock() - c_start;                              \
-  c_msec = (double)c_diff * 1000 / (double)CLOCKS_PER_SEC; \
-  std::cout << x << c_msec << std::endl;
+#define toc(x)                                      \
+  c_diff = clock() - c_start;                       \
+  c_sec  = (double)c_diff / (double)CLOCKS_PER_SEC; \
+  std::cout << x << c_sec << " [s]" << std::endl;
 
 #endif
