@@ -19,13 +19,13 @@ private:
   };
 
   double &
-  index(unsigned int irow, unsigned int jcol)
+  value(unsigned int irow, unsigned int jcol)
   {
     return data[sub2ind(irow, jcol)];
   };
 
   const double &
-  const_index(unsigned int irow, unsigned int jcol) const
+  value(unsigned int irow, unsigned int jcol) const
   {
     return data[sub2ind(irow, jcol)];
   };
@@ -64,13 +64,13 @@ public:
   double &
   operator()(unsigned int irow, unsigned int jcol)
   {
-    return index(irow, jcol);
+    return value(irow, jcol);
   };
 
   const double &
   operator()(unsigned int irow, unsigned int jcol) const
   {
-    return const_index(irow, jcol);
+    return value(irow, jcol);
   };
 
   const double *
