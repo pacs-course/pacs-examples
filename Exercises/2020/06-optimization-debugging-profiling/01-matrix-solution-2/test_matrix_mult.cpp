@@ -21,5 +21,10 @@ main()
   matrix C = A * B;
   toc("multiply_time = ");
 
+  tic();
+  matrix D = A.transpose();
+  toc("transpose_time = ");
+
+  return 0;
   return 0;
 }
