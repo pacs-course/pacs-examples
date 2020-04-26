@@ -51,7 +51,7 @@ namespace apsc
        initialize() override
   	{
 	 MultiCityPopulationVariables<2> N;
-	 N<<2500,0,0,2500;
+	 N<<25000,0,0,25000;
   	 return N;
   	}
      };
