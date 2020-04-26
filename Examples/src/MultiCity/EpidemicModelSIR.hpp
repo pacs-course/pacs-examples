@@ -5,8 +5,8 @@
  *      Author: forma
  */
 
-#ifndef EXAMPLES_SRC_MULTICITY_EPIDEMICMODEL_HPP_
-#define EXAMPLES_SRC_MULTICITY_EPIDEMICMODEL_HPP_
+#ifndef EXAMPLES_SRC_MULTICITY_EPIDEMICMODELSIR_HPP_
+#define EXAMPLES_SRC_MULTICITY_EPIDEMICMODELSIR_HPP_
 #include "PopulationModel.hpp"
 #include "MultiCityEpidemic.hpp"
 namespace apsc
@@ -19,7 +19,7 @@ namespace multicity
    * @tparam EpiData  Edidamic data
    */
 template<int NumCities, template<int> class EpiData>
-class EpidemicModel
+class EpidemicModelSIR
 {
 public:
    static int constexpr NCity=NumCities;
@@ -28,19 +28,19 @@ public:
    * Main variables
    */
   /*{ */
-  using VariableType= typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
-  using ForcingTermType= typename MultiCityModelTraits<NumCities>::EpidemicForcingTermType;
-  using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
-  using BlockType = typename MultiCityModelTraits<NumCities>::BlockType;
-  using PopulationVariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
+  using VariableType= typename MultiCityModelTraits<NumCities,2>::EpidemicVariableType;
+  using ForcingTermType= typename MultiCityModelTraits<NumCities,2>::EpidemicForcingTermType;
+  using VectorType = typename MultiCityModelTraits<NumCities,2>::VectorType;
+  using BlockType = typename MultiCityModelTraits<NumCities,2>::BlockType;
+  using PopulationVariableType= typename MultiCityModelTraits<NumCities,2>::PopulationVariableType;
 /*}*/
   /*!
    * Constructor
    * @param data  Epidemic data
    * @param n Population variable N
    */
-  EpidemicModel(EpiData<NumCities> const & data, PopulationVariableType & n):data_{data},N{n}{};
-  EpidemicModel()=delete;
+  EpidemicModelSIR(EpiData<NumCities> const & data, PopulationVariableType & n):data_{data},N{n}{};
+  EpidemicModelSIR()=delete;
   //! The operator returning the rhs.
   /*!
    *
@@ -72,8 +72,8 @@ private:
 };
   // implementation
 template<int NumCities, template<int> class EpiData>
-typename EpidemicModel<NumCities,EpiData>::VariableType
-EpidemicModel<NumCities,EpiData>::operator() (const double & t, const VariableType & V) const
+typename EpidemicModelSIR<NumCities,EpiData>::VariableType
+EpidemicModelSIR<NumCities,EpiData>::operator() (const double & t, const VariableType & V) const
 {
   // Extract main variables from V
   BlockType S = apsc::multicity::extract<NumCities,0>(V);
@@ -86,11 +86,12 @@ EpidemicModel<NumCities,EpiData>::operator() (const double & t, const VariableTy
   auto g = data_.g(t);
   auto r = data_.r(t);
   auto m = data_.m(t);
+  auto ifract = data_.immuneFraction(t);
   // Set diagonal of m to -1,
   {
-    VectorType dOne;
-    dOne.fill(-1.0);
-    m.diagonal()=dOne;
+    // Remember that for misterious reasons m is transposed  w.r.t. r
+    VectorType md=m.colwise().sum().transpose()-m.diagonal();
+    m-=md.asDiagonal();
   }
   VectorType k    = data_.k(t);
   double gamma = data_.gamma(t);
@@ -109,7 +110,8 @@ EpidemicModel<NumCities,EpiData>::operator() (const double & t, const VariableTy
     Sdiag.fill(0.0);
     Sdiag.diagonal()=S.diagonal();
     FS         += Sdiag*gM.transpose(); // gmS term ckd
-    FS.array() +=-d*S.array()+gamma*I.array(); // -dS+gamma I term ckd
+    //@note modification to extend to sir: the term (1-ifract)
+    FS.array() +=-d*S.array()+gamma*(1.0-ifract)*I.array(); // -dS+gamma I term ckd
     FS         += d*Nr.asDiagonal(); // diagonal Dnr term
   }
   //** Block I
@@ -143,4 +145,4 @@ EpidemicModel<NumCities,EpiData>::operator() (const double & t, const VariableTy
 }// end namespace apsc
 
 
-#endif /* EXAMPLES_SRC_MULTICITY_EPIDEMICMODEL_HPP_ */
+#endif /* EXAMPLES_SRC_MULTICITY_EPIDEMICMODELSIR_HPP_ */

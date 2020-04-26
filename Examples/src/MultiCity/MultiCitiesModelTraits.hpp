@@ -108,7 +108,7 @@ namespace apsc
      * @tparam NumCities Number of cities (compulsory)
      * @tparam Index Equations set to extract
      * @tparam Matrix Type of Eigen Matrix from which extract the set
-     * @param M Th Eigen Matrix from which extract the set
+     * @param M The Eigen Matrix from which extract the set
      * @return The extracted block
      *
      * @note this is const version: only for getting values.
