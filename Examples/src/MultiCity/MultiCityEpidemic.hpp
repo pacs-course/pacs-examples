@@ -15,8 +15,8 @@ namespace apsc
   namespace multicity
   {
     //! The variable set used for the epidemic model
-    template<int NumCities>
-        using MultiCityEpidemicVariables =typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
+    template<int NumCities,int NumVariables=2>
+        using MultiCityEpidemicVariables =typename MultiCityModelTraits<NumCities,NumVariables>::EpidemicVariableType;
 
     /*! It is a wrapper that defines the variable necessary to solve the dynamic system for the multicity model
      *
@@ -28,16 +28,16 @@ namespace apsc
      * @tparam NumCities Number of cities
      */
     template<int NumCities>
-    struct MultiCityEpidemicVariablesProxy
+    struct MultiCityEpidemicVariablesSISProxy
     {
       //! The type of variables for the RK solver
-      using VariableType=typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
+      using VariableType=typename MultiCityModelTraits<NumCities,2>::EpidemicVariableType;
       //! The type of S and I
-      using BlockType = typename MultiCityModelTraits<NumCities>::BlockType;
+      using BlockType = typename MultiCityModelTraits<NumCities,2>::BlockType;
       //! The type for a Vector
-      using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
+      using VectorType = typename MultiCityModelTraits<NumCities,2>::VectorType;
       //! Constructor takes a reference to the Variable Set
-      MultiCityEpidemicVariablesProxy (VariableType & SI):SI{SI}{};
+      MultiCityEpidemicVariablesSISProxy (VariableType & SI):SI{SI}{};
       //! @defgroup mainvariables Functions returning the main variables S and I for the SIS model
       //! @{
       decltype(auto) S(){return SI.template block<NumCities,NumCities>(0,0);}
@@ -55,7 +55,7 @@ namespace apsc
       //! The number of cities
       static constexpr int NCities= NumCities;
       //! The number of Variable Sets
-      static constexpr unsigned NumEquationSet=MultiCityModelTraits<NumCities>::NumEquationSet;
+      static constexpr unsigned NumEquationSet=MultiCityModelTraits<NumCities,2>::NumEquationSet;
 
     private:
       //! The matrix with the global variables \f$[S,I]^T\f$
@@ -74,13 +74,15 @@ namespace apsc
      * @tparam NumCities Number of cities
      *
      */
-    template<int NumCities>
+    template<int NumCities,int NumVariables=2>
     class MultiCityDataFixed
     {
     public:
-      using VariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
-      using BlockType= typename MultiCityModelTraits<NumCities>::BlockType;
-      using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
+      using VariableType= typename MultiCityModelTraits<NumCities,NumVariables>::PopulationVariableType;
+      using BlockType= typename MultiCityModelTraits<NumCities,NumVariables>::BlockType;
+      using VectorType = typename MultiCityModelTraits<NumCities,NumVariables>::VectorType;
+      static constexpr int NCities=NumCities;
+      static constexpr int NVar=NumVariables;
       //! Time is stored in a double
       using Time = double;
       /*!
@@ -124,8 +126,21 @@ namespace apsc
        * Initialization with article value.
        * Works only if NumCities=2 or 3
        */
-      void initializeFromArticle();
-
+      /*!
+       * This is an extension to the model of the article. It is the fraction of recovered individuals
+       * that are immune. In the SIS model of the article this fraction is 0. All recovered becomes subsceptile again
+       * In a SIR model is 1: all recovered are immune. So S + I is not constant anymore (and equal to the immune)
+       * @param
+       * @return
+       */
+      double immuneFraction(Time const &) const {return immuneFraction_;}
+      //! An utility function
+      /*!
+       * It gives a reasonable initialization
+       */
+	void initializeFromArticle();
+      // I leave them public for simplicity
+      // @todo: make setters
       BlockType r_;
       VectorType g_;
       std::array<BlockType,NumCities> beta_k;
@@ -133,6 +148,7 @@ namespace apsc
       BlockType m_;
       double gamma_=0.0;
       double d_=0.0;
+      double immuneFraction_=0;
     };
 
     template<>
@@ -146,6 +162,7 @@ namespace apsc
       beta_k[1]<<0.048,0.048,0.048,0.048;
       g_<<0.25,0.15;
       m_<<0.,1.0,1.0,0.;
+      immuneFraction_=0;
     }
 
     template<int NumCities>
