@@ -17,7 +17,7 @@
 #include "Eigen/Core"
 
 #if (EIGEN_MAJOR_VERSION < 3) || (EIGEN_WORLD_VERSION < 3)
-#error "I need EIGEN at leasst Version 3.3.X"
+#error "I need EIGEN at least Version 3.3.X"
 #endif
 
 #include "unsupported/Eigen/SparseExtra"
@@ -30,16 +30,16 @@ namespace Eigen
     In this version the output matrix has a full graph even if it is 
     declared symmetric in the file.
     
-    \param SparseMatrixType A Eigen sparse matrix type
+    \tparam SparseMatrixType A Eigen sparse matrix type
     \param filename The name of the file.
   */
-  
   template<typename SparseMatrixType>
   SparseMatrixType read_MM_Matrix(const std::string& filename);
+
   /*!
     Reads an Eigen vector. It returns an Eigen vector 
     It does not work with std::vector.
-    \param Vector type. A Eigen vector type. 
+    \tparam VectorType. A Eigen vector type. 
     \param filename. The name of the file storing the vector
   */
   template<typename VectorType>
