@@ -8,9 +8,10 @@
 #ifndef EXAMPLES_SRC_MULTICITY_MULTICITYMODELADVANCE_HPP_
 #define EXAMPLES_SRC_MULTICITY_MULTICITYMODELADVANCE_HPP_
 #include "PopulationModel.hpp"
-#include "EpidemicModel.hpp"
 #include <iostream>
 #include <tuple>
+
+#include "EpidemicModelSIR.hpp"
 namespace apsc
 {
   namespace multicity
@@ -18,11 +19,11 @@ namespace apsc
     /*!
      * A struct that encapsulate the result
      */
-    template<int NumCities>
+    template<int NumCities,int NumVariables=2>
     struct Result
     {
-      using EpidemicVariableType= typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
-      using PopulationVariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
+      using EpidemicVariableType= typename MultiCityModelTraits<NumCities,NumVariables>::EpidemicVariableType;
+      using PopulationVariableType= typename MultiCityModelTraits<NumCities,NumVariables>::PopulationVariableType;
       //! the population at each time
       std::vector<std::tuple<double,PopulationVariableType>> population;
    	//! the epidemic variables at each time
@@ -54,12 +55,12 @@ namespace apsc
       /*!
        * Main variables
        *{*/
-      using EpidemicVariableType= typename MultiCityModelTraits<NumCities>::EpidemicVariableType;
-      using PopulationVariableType= typename MultiCityModelTraits<NumCities>::PopulationVariableType;
-      using PopulationForcingTermType= typename MultiCityModelTraits<NumCities>::PopulationForcingTermType;
-      using EpidemicForcingTermType= typename MultiCityModelTraits<NumCities>::EpidemicForcingTermType;
-      using VectorType = typename MultiCityModelTraits<NumCities>::VectorType;
-      using BlockType = typename MultiCityModelTraits<NumCities>::BlockType;
+      using EpidemicVariableType= typename EModel::VariableType;
+      using PopulationVariableType= typename PModel::VariableType;
+      using PopulationForcingTermType= typename PModel::ForcingTermType;
+      using EpidemicForcingTermType= typename EModel::ForcingTermType;
+      using VectorType = typename EModel::VectorType;
+      using BlockType = typename EModel::BlockType;
       /*!{*/
 /*!
   *  A struct (aggregate) that encapsulates the data for the solver

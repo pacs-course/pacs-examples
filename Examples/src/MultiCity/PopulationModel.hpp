@@ -40,8 +40,12 @@ namespace apsc
 	auto g = data_.g(t);
 	auto r = data_.r(t);
 	auto m = data_.m(t);
-
+	// fix m and r so that they are consistent
+	// This way I can also put g=1 and use only m.
+	// Remember that for misterious reasons m is transposed  w.r.t. r!
 	//VectorType Nr=N.rowwise().sum();
+	VectorType md=m.colwise().sum().transpose()-m.diagonal();
+	m-=md.asDiagonal();
 	VectorType Nr=apsc::multicity::Nr(N);
 	VariableType gM=m*g.asDiagonal();
 	F = -r.array()*N.array(); // r N term in 3.b
@@ -53,7 +57,7 @@ namespace apsc
 		//if (i==j) continue; // skip diagonal (not needed, better let compiler optimize loop)
 		F(i,j)+=gM.coeff(j,i)*N.coeff(i,i)-d*N.coeff(i,j); // Eq 3.b
 	      }
-	    F(i,i)=rNsum(i)-(g(i)+d)*N.coeff(i,i) + d*Nr(i); // Eq 3.a
+	    F(i,i)=rNsum(i)+(g(i)*m(i,i)-d)*N.coeff(i,i) + d*Nr(i); // Eq 3.a
 	  }
       return F;
       }
