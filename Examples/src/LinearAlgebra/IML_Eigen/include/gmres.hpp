@@ -15,9 +15,10 @@
 //
 //! Upon successful return, output arguments have the following values:
 //!
-//!    \param Matrix  An Eigen sparse matrix
-//!    \param Vector  An Eigen vector
-//!    \param Preconditioner Something that obeys the preconditioner concept: It has a method called solve(Vector const&).
+//!    \tparam Matrix  An Eigen sparse matrix
+//!    \tparam Vector  An Eigen vector
+//!    \tparam Preconditioner Something that obeys the preconditioner concept: It has a method called solve(Vector const&).
+//!    \param A the matrix
 //!    \param b The right hand side
 //!    \param x approximate solution to Ax = b (initial guess at te start)
 //!    \param max_iter the number of iterations performed before the
