@@ -12,6 +12,13 @@ namespace LinearAlgebra
     using value_type=Eigen::Matrix3f::Scalar;
     using size_type=Eigen::Matrix3f::Index;
   };
+
+  template <>
+  struct Matrix_Traits<const Eigen::Matrix3f>
+  {
+    using value_type=Eigen::Matrix3f::Scalar;
+    using size_type=Eigen::Matrix3f::Index;
+  };
 }
 
 int main()
@@ -22,21 +29,17 @@ int main()
     7, 8, 9;
 
   std::cout<<m<<std::endl;
-  std::cout<<" Now the transpose"<<std::endl;
+  std::cout<<" Now change element (1,0) of the transpose"<<std::endl;
 
-  LinearAlgebra::TransposedView<Eigen::Matrix3f> mt(m);
+  auto mt =LinearAlgebra::trans(m);
 
-  //mt(0,0)=100.f;
-  
-  //  for (auto i=0;i<3;++i)
-  //for (auto j=0;j<3;++j)
-  //  {
-  //    std::cout<<"("<<i<<", "<<j<<")= "<<mt(i,j)<<std::endl;
-  //  }
+  mt(1,0)=100.f;
+  std::cout<<m<<std::endl;
 
   // and now the const version
   std::cout<<std::endl;
   const Eigen::Matrix3f mc(m);
+  // LinearAlgebra::TransposedView<Eigen::Matrix3f> mtc(mc); // not working
   auto mtc=LinearAlgebra::trans(mc);
   for (auto i=0;i<3;++i)
     {
