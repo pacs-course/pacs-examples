@@ -1,4 +1,4 @@
-This is an example of the use of static and shared libraries.
+#This is an example of the use of static and shared libraries#
 
 The program uses umfpack to solve a simple linear system.
 
