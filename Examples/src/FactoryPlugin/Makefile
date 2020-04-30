@@ -37,12 +37,23 @@ HEADERS=$(wildcard *.hpp)
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
+CXXFLAGS+=-fPIC
+LDFLAGS= $(OPTFLAGS) -export-dynamic
+LDLIBS=-ldl
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) $(EXEC)
+all: $(DEPEND) library $(EXEC)
+
+library: libTS.so libQuad.so
+
+libTS.so: TriangleAndSquare.o Polygon.o
+	$(CXX) $(OPTFLAGS) -shared TriangleAndSquare.o Polygon.o  -o libTS.so
+	
+libQuad.so: Quadrilateral.o  Polygon.o
+	$(CXX) $(OPTFLAGS) -shared Quadrilateral.o Polygon.o -o libQuad.so
 
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
@@ -50,12 +61,13 @@ clean:
 distclean:
 	$(MAKE) clean
 	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.bak *~
+	$(RM) *.out *.bak *~ *.so
 
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(OBJS)
+$(EXEC): main_poly.o Polygon.o loadPolyFactory.o
+
 
 $(OBJS): $(SRCS)
 
