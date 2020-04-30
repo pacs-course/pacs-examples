@@ -55,7 +55,7 @@ namespace LinearAlgebra {
                                 const value_type,
                                 value_type&>::type;
   public:
-    explicit TransposedView(Matrix& A) : ref(A) {}
+     TransposedView(Matrix& A) : ref(A) {}
     
 
     //! I have to handle the situation when a non const TransposedView stores a const matrix
