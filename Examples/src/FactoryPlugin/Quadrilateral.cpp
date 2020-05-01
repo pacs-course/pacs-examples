@@ -5,6 +5,7 @@
  *      Author: forma
  */
 #include "Quadrilateral.hpp"
+#include "FactoryTraits.hpp"
 namespace Geometry
 {
   // ********************* QUADRILATERAL **********************

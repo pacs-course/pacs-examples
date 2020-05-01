@@ -7,7 +7,7 @@
 
 #ifndef EXAMPLES_SRC_FACTORYPLUGIN_QUADRILATERAL_HPP_
 #define EXAMPLES_SRC_FACTORYPLUGIN_QUADRILATERAL_HPP_
-#include "FactoryTraits.hpp"
+#include "Polygon.hpp"
 namespace Geometry
 {
   /*!
