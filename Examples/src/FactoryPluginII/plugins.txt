@@ -1,0 +1,2 @@
+./libTS.so
+./libQuad.so
