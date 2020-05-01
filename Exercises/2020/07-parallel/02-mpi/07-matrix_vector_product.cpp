@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <random>
+#include <vector>
 
 static clock_t c_start, c_diff;
 static double  c_sec;
@@ -16,13 +17,14 @@ static double  c_sec;
 /**
  * Parallel matrix-vector product.
  *
- * Data are generated randomly by rank 0. Then each rank is assigned a
- * sub-block of the input data (split by rows, without overlap) and
- * computes the local matrix-vector product. Finally, the results are
- * collected back by rank 0, which prints them to output.
+ * Data are generated randomly by rank 0 and then broadcasted.
+ * Each rank is assigned a sub-block of the input matrix (split by
+ * rows, without overlap) and computes the local matrix-vector
+ * product. Finally, the results are collected back by rank 0, which
+ * prints them to output.
  *
- * This example makes use of hybrid shared/distributed parallelization
- * through OpenMP and MPI.
+ * This example makes use of hybrid
+ * shared/distributed parallelization through OpenMP and MPI.
  */
 int
 main(int argc, char **argv)
@@ -46,17 +48,14 @@ main(int argc, char **argv)
   unsigned int n_rows;
   unsigned int n_cols;
 
-  unsigned int count     = 0;
-  int          remainder = 0;
-
   std::vector<double> matrix;
   std::vector<double> vector;
   std::vector<double> result;
 
   std::vector<int> send_counts;
-  std::vector<int> send_displs;
+  std::vector<int> send_offset;
   std::vector<int> recv_counts;
-  std::vector<int> recv_displs;
+  std::vector<int> recv_offset;
 
   if (mpi_rank == 0)
     {
@@ -93,8 +92,8 @@ main(int argc, char **argv)
 
   vector.resize(n_cols);
 
-  count     = n_rows / mpi_size;
-  remainder = n_rows - count * mpi_size;
+  unsigned int count     = n_rows / mpi_size;
+  int          remainder = n_rows - count * mpi_size;
 
   if (mpi_rank == 0)
     {
@@ -130,9 +129,9 @@ main(int argc, char **argv)
       std::cout << std::endl << std::endl;
 
       send_counts.resize(mpi_size);
-      send_displs.resize(mpi_size);
+      send_offset.resize(mpi_size);
       recv_counts.resize(mpi_size);
-      recv_displs.resize(mpi_size);
+      recv_offset.resize(mpi_size);
 
       int offset = 0;
       for (int i = 0; i < mpi_size; ++i)
@@ -140,8 +139,8 @@ main(int argc, char **argv)
           recv_counts[i] = (i < remainder) ? (count + 1) : count;
           send_counts[i] = recv_counts[i] * n_cols;
 
-          recv_displs[i] = offset;
-          send_displs[i] = offset * n_cols;
+          recv_offset[i] = offset;
+          send_offset[i] = offset * n_cols;
 
           offset += recv_counts[i];
         }
@@ -160,7 +159,7 @@ main(int argc, char **argv)
   std::vector<double> matrix_local(n_rows_local * n_cols);
   MPI_Scatterv(matrix.data(),
                send_counts.data(),
-               send_displs.data(),
+               send_offset.data(),
                MPI_DOUBLE,
                matrix_local.data(),
                n_rows_local * n_cols,
@@ -170,7 +169,7 @@ main(int argc, char **argv)
 
   std::vector<double> result_local(n_rows_local, 0.0);
 
-#pragma omp parallel for
+#pragma omp parallel for shared(result_local)
   for (unsigned int i = 0; i < n_rows_local; ++i)
     {
       for (unsigned int j = 0; j < n_cols; ++j)
@@ -187,7 +186,7 @@ main(int argc, char **argv)
               MPI_DOUBLE,
               result.data(),
               recv_counts.data(),
-              recv_displs.data(),
+              recv_offset.data(),
               MPI_DOUBLE,
               0,
               mpi_comm);
