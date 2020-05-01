@@ -1,0 +1,211 @@
+#include <mpi.h>
+#include <omp.h>
+
+#include <algorithm>
+#include <iostream>
+#include <random>
+
+static clock_t c_start, c_diff;
+static double  c_sec;
+#define tic() c_start = clock();
+#define toc(x)                                      \
+  c_diff = clock() - c_start;                       \
+  c_sec  = (double)c_diff / (double)CLOCKS_PER_SEC; \
+  std::cout << x << c_sec << " [s]" << std::endl;
+
+/**
+ * Parallel matrix-vector product.
+ *
+ * Data are generated randomly by rank 0. Then each rank is assigned a
+ * sub-block of the input data (split by rows, without overlap) and
+ * computes the local matrix-vector product. Finally, the results are
+ * collected back by rank 0, which prints them to output.
+ *
+ * This example makes use of hybrid shared/distributed parallelization
+ * through OpenMP and MPI.
+ */
+int
+main(int argc, char **argv)
+{
+  MPI_Init(&argc, &argv);
+
+  MPI_Comm mpi_comm = MPI_COMM_WORLD;
+
+  int mpi_rank;
+  MPI_Comm_rank(mpi_comm, &mpi_rank);
+
+  int mpi_size;
+  MPI_Comm_size(mpi_comm, &mpi_size);
+
+#pragma omp parallel master
+  if (mpi_rank == 0)
+    std::cout << "Number of processes: " << mpi_size
+              << ", number of threads: " << omp_get_num_threads()
+              << std::endl;
+
+  unsigned int n_rows;
+  unsigned int n_cols;
+
+  unsigned int count     = 0;
+  int          remainder = 0;
+
+  std::vector<double> matrix;
+  std::vector<double> vector;
+  std::vector<double> result;
+
+  std::vector<int> send_counts;
+  std::vector<int> send_displs;
+  std::vector<int> recv_counts;
+  std::vector<int> recv_displs;
+
+  if (mpi_rank == 0)
+    {
+      std::cout << std::endl
+                << "Enter the number of matrix rows:" << std::endl;
+      std::cin >> n_rows;
+
+      if (n_rows < 1)
+        {
+          std::cerr
+            << "ERROR: Number of rows should be greater than 1."
+            << std::endl;
+
+          return 1;
+        }
+
+      std::cout << "Enter the number of matrix columns:" << std::endl;
+      std::cin >> n_cols;
+
+      if (n_cols < 1)
+        {
+          std::cerr
+            << "ERROR: Number of columns should be greater than 1."
+            << std::endl;
+
+          return 1;
+        }
+
+      std::cout << std::endl;
+    }
+
+  MPI_Bcast(&n_rows, 1, MPI_INT, 0, mpi_comm);
+  MPI_Bcast(&n_cols, 1, MPI_INT, 0, mpi_comm);
+
+  vector.resize(n_cols);
+
+  count     = n_rows / mpi_size;
+  remainder = n_rows - count * mpi_size;
+
+  if (mpi_rank == 0)
+    {
+      std::random_device                     engine;
+      std::uniform_real_distribution<double> rand(0, 1);
+
+      // Generate matrix.
+      matrix.resize(n_rows * n_cols);
+      std::generate(matrix.begin(), matrix.end(), [&engine, &rand]() {
+        return rand(engine);
+      });
+
+      std::cout << "Matrix:" << std::endl;
+      for (unsigned int i = 0; i < n_rows; ++i)
+        {
+          for (unsigned int j = 0; j < n_cols; ++j)
+            std::cout << matrix[i * n_cols + j] << '\t';
+
+          std::cout << std::endl;
+        }
+      std::cout << std::endl;
+
+      // Generate vector.
+      std::generate(vector.begin(), vector.end(), [&engine, &rand]() {
+        return rand(engine);
+      });
+
+      std::cout << "Vector:" << std::endl;
+      for (auto v : vector)
+        {
+          std::cout << v << ' ';
+        }
+      std::cout << std::endl << std::endl;
+
+      send_counts.resize(mpi_size);
+      send_displs.resize(mpi_size);
+      recv_counts.resize(mpi_size);
+      recv_displs.resize(mpi_size);
+
+      int offset = 0;
+      for (int i = 0; i < mpi_size; ++i)
+        {
+          recv_counts[i] = (i < remainder) ? (count + 1) : count;
+          send_counts[i] = recv_counts[i] * n_cols;
+
+          recv_displs[i] = offset;
+          send_displs[i] = offset * n_cols;
+
+          offset += recv_counts[i];
+        }
+    }
+
+  MPI_Bcast(vector.data(), n_cols, MPI_DOUBLE, 0, mpi_comm);
+
+  tic();
+
+  unsigned int n_rows_local =
+    (mpi_rank < remainder) ? (count + 1) : count;
+
+  std::cout << "Number of rows on rank " << mpi_rank << ": "
+            << n_rows_local << std::endl;
+
+  std::vector<double> matrix_local(n_rows_local * n_cols);
+  MPI_Scatterv(matrix.data(),
+               send_counts.data(),
+               send_displs.data(),
+               MPI_DOUBLE,
+               matrix_local.data(),
+               n_rows_local * n_cols,
+               MPI_DOUBLE,
+               0,
+               mpi_comm);
+
+  std::vector<double> result_local(n_rows_local, 0.0);
+
+#pragma omp parallel for
+  for (unsigned int i = 0; i < n_rows_local; ++i)
+    {
+      for (unsigned int j = 0; j < n_cols; ++j)
+        {
+          result_local[i] += matrix_local[i * n_cols + j] * vector[j];
+        }
+    }
+
+  if (mpi_rank == 0)
+    result.resize(n_rows);
+
+  MPI_Gatherv(result_local.data(),
+              n_rows_local,
+              MPI_DOUBLE,
+              result.data(),
+              recv_counts.data(),
+              recv_displs.data(),
+              MPI_DOUBLE,
+              0,
+              mpi_comm);
+
+  if (mpi_rank == 0)
+    {
+      std::cout << std::endl << "Result:" << std::endl;
+
+      for (auto v : result)
+        std::cout << v << ' ';
+
+      std::cout << std::endl << std::endl;
+    }
+
+  MPI_Barrier(mpi_comm);
+  toc("Time elapsed on rank " + std::to_string(mpi_rank) + ": ");
+
+  MPI_Finalize();
+
+  return 0;
+}
