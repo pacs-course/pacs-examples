@@ -7,6 +7,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <type_traits>
 #include <vector>
 
 /// Templated class for sparse row-oriented matrix.
@@ -29,8 +30,15 @@ public:
   }
 
   /// Value stored in non-empty column.
-  virtual double
-  col_val(const col_iterator &j) = 0;
+  inline std::remove_pointer_t<T>
+  col_val(const col_iterator &j) const
+  {
+    // Since C++17.
+    if constexpr (std::is_pointer_v<T>)
+      return *((*j).second);
+    else
+      return (*j).second;
+  }
 
   size_t m;   ///< number of nonempty columns.
   size_t nnz; ///< number of nonzero elements.
@@ -70,64 +78,64 @@ public:
 
   /// Convert row-oriented sparse matrix to AIJ format, with shift.
   void
-  aij(std::vector<double> &a,
-      std::vector<int> &   i,
-      std::vector<int> &   j,
-      int                  base);
+  aij(std::vector<std::remove_pointer_t<T>> &a,
+      std::vector<int> &                     i,
+      std::vector<int> &                     j,
+      int                                    base);
 
   /// Convert row-oriented sparse matrix to AIJ format.
   void
-  aij(std::vector<double> &a,
-      std::vector<int> &   i,
-      std::vector<int> &   j)
+  aij(std::vector<std::remove_pointer_t<T>> &a,
+      std::vector<int> &                     i,
+      std::vector<int> &                     j)
   {
     aij(a, i, j, 0);
   };
 
   /// Update the entries of a sparse matrix in AIJ format, with shift.
   void
-  aij_update(std::vector<double> &   a,
-             const std::vector<int> &i,
-             const std::vector<int> &j,
-             int                     base);
+  aij_update(std::vector<std::remove_pointer_t<T>> &a,
+             const std::vector<int> &               i,
+             const std::vector<int> &               j,
+             int                                    base);
 
   /// Update the entries of a sparse matrix in AIJ format.
   void
-  aij_update(std::vector<double> &   a,
-             const std::vector<int> &i,
-             const std::vector<int> &j)
+  aij_update(std::vector<std::remove_pointer_t<T>> &a,
+             const std::vector<int> &               i,
+             const std::vector<int> &               j)
   {
     aij_update(a, i, j, 0);
   };
 
   /// Convert row-oriented sparse matrix to CSR format with shift.
   void
-  csr(std::vector<double> &a,
-      std::vector<int> &   col_ind,
-      std::vector<int> &   row_ptr,
-      int                  base);
+  csr(std::vector<std::remove_pointer_t<T>> &a,
+      std::vector<int> &                     col_ind,
+      std::vector<int> &                     row_ptr,
+      int                                    base);
 
   /// Convert row-oriented sparse matrix to CSR format.
   void
-  csr(std::vector<double> &a,
-      std::vector<int> &   col_ind,
-      std::vector<int> &   row_ptr)
+  csr(std::vector<std::remove_pointer_t<T>> &a,
+      std::vector<int> &                     col_ind,
+      std::vector<int> &                     row_ptr)
   {
     csr(a, col_ind, row_ptr, 0);
   };
 
   /// Update the entries of a sparse matrix in CSR format, with shift.
   void
-  csr_update(std::vector<double> &   a,
-             const std::vector<int> &col_ind,
-             const std::vector<int> &row_ptr,
-             int                     base);
+  csr_update(std::vector<std::remove_pointer_t<T>> &a,
+             const std::vector<int> &               col_ind,
+             const std::vector<int> &               row_ptr,
+             int                                    base);
 
   /// Update the entries of a sparse matrix in CSR format.
   void
-  csr_update(std::vector<double> &   a,
-             const std::vector<int> &col_ind,
-             const std::vector<int> &row_ptr)
+  csr_update(std::vector<std::remove_pointer_t<T>> &a,
+             const std::vector<int> &               col_ind,
+             const std::vector<int> &               row_ptr)
   {
     csr_update(a, col_ind, row_ptr, 0);
   };
@@ -190,10 +198,11 @@ operator<<(std::ostream &stream, sparse_matrix_template<T> &M)
 
 template <class T>
 void
-sparse_matrix_template<T>::aij(std::vector<double> &a,
-                               std::vector<int> &   i,
-                               std::vector<int> &   j,
-                               int                  base)
+sparse_matrix_template<T>::aij(
+  std::vector<std::remove_pointer_t<T>> &a,
+  std::vector<int> &                     i,
+  std::vector<int> &                     j,
+  int                                    base)
 {
   update_properties();
   a.resize(nnz);
@@ -215,10 +224,11 @@ sparse_matrix_template<T>::aij(std::vector<double> &a,
 
 template <class T>
 void
-sparse_matrix_template<T>::aij_update(std::vector<double> &   a,
-                                      const std::vector<int> &i,
-                                      const std::vector<int> &j,
-                                      int                     base)
+sparse_matrix_template<T>::aij_update(
+  std::vector<std::remove_pointer_t<T>> &a,
+  const std::vector<int> &               i,
+  const std::vector<int> &               j,
+  int                                    base)
 {
   size_t                                           n = i.size();
   typename sparse_matrix_template<T>::col_iterator jj;
@@ -230,10 +240,11 @@ sparse_matrix_template<T>::aij_update(std::vector<double> &   a,
 
 template <class T>
 void
-sparse_matrix_template<T>::csr(std::vector<double> &a,
-                               std::vector<int> &   col_ind,
-                               std::vector<int> &   row_ptr,
-                               int                  base)
+sparse_matrix_template<T>::csr(
+  std::vector<std::remove_pointer_t<T>> &a,
+  std::vector<int> &                     col_ind,
+  std::vector<int> &                     row_ptr,
+  int                                    base)
 {
   update_properties();
   a.resize(nnz);
@@ -263,10 +274,11 @@ sparse_matrix_template<T>::csr(std::vector<double> &a,
 
 template <class T>
 void
-sparse_matrix_template<T>::csr_update(std::vector<double> &   a,
-                                      const std::vector<int> &col_ind,
-                                      const std::vector<int> &row_ptr,
-                                      int                     base)
+sparse_matrix_template<T>::csr_update(
+  std::vector<std::remove_pointer_t<T>> &a,
+  const std::vector<int> &               col_ind,
+  const std::vector<int> &               row_ptr,
+  int                                    base)
 {
   size_t ni = row_ptr.size();
   size_t nj = col_ind.size();
@@ -281,30 +293,16 @@ sparse_matrix_template<T>::csr_update(std::vector<double> &   a,
 }
 
 
-using double_sparse_matrix   = sparse_matrix_template<double>;
-using double_p_sparse_matrix = sparse_matrix_template<double *>;
-
 /// Sparse row-oriented double* matrix.
-class p_sparse_matrix : public double_p_sparse_matrix
-{
-public:
-  double
-  col_val(const double_p_sparse_matrix::col_iterator &j)
-  {
-    return *((*j).second);
-  }
-};
+using p_sparse_matrix = sparse_matrix_template<double *>;
+
+
+using double_sparse_matrix = sparse_matrix_template<double>;
 
 /// Sparse row-oriented double matrix.
 class sparse_matrix : public double_sparse_matrix
 {
 public:
-  double
-  col_val(const double_sparse_matrix::col_iterator &j)
-  {
-    return (*j).second;
-  }
-
   /// Build a p_sparse_matrix whose entries are pointers to given rows
   /// and columns.
   void
