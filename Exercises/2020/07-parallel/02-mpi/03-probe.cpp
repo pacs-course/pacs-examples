@@ -27,18 +27,12 @@ main(int argc, char **argv)
   int mpi_size;
   MPI_Comm_size(mpi_comm, &mpi_size);
 
-  try
-    {
-      if (mpi_size != 2)
-        {
-          throw std::runtime_error("ERROR: This program is only "
-                                   "meant to be run on 2 processes.");
-        }
-    }
-  catch (const std::runtime_error &exc)
+  if (mpi_size != 2)
     {
       if (mpi_rank == 0)
-        std::cerr << exc.what() << std::endl;
+        std::cerr << "ERROR: This program is only "
+                     "meant to be run on 2 processes."
+                  << std::endl;
 
       return 1;
     }
@@ -53,7 +47,7 @@ main(int argc, char **argv)
       std::vector<double> array(max_length);
 
       std::uniform_real_distribution<double> rand(0, 1);
-      std::generate(array.begin(), array.end(), [&rand, &engine]() {
+      std::generate(array.begin(), array.end(), [&engine, &rand]() {
         return rand(engine);
       });
 
@@ -92,12 +86,13 @@ main(int argc, char **argv)
                MPI_STATUS_IGNORE);
 
       std::cout << "Process 1 received " << array_length
-                << " numbers." << std::endl;
-      std::cout << "    Last number received: " << array[array_length - 1]
-                << std::endl
+                << " numbers." << std::endl
+                << "    Last number received: "
+                << array[array_length - 1] << std::endl
                 << "    Message source: " << status.MPI_SOURCE
                 << std::endl
-                << "    Message tag:    " << status.MPI_TAG << std::endl;
+                << "    Message tag:    " << status.MPI_TAG
+                << std::endl;
     }
 
   MPI_Finalize();
