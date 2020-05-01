@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <random>
+#include <vector>
 
 /*
  * The length of a passed array, if not known a priori, can also be
@@ -57,18 +58,18 @@ main(int argc, char **argv)
       int array_length = randi(engine);
 
       MPI_Send(
-        array.data(), array_length, MPI_DOUBLE, 1, 0, mpi_comm);
+        array.data(), array_length, MPI_DOUBLE, 1, 10, mpi_comm);
       std::cout << "Process 0 sent " << array_length
                 << " numbers to process 1." << std::endl
                 << "    Last number sent: " << array[array_length - 1]
-                << std::endl;
+                << "." << std::endl;
     }
-  else
+  else // if (mpi_rank == 1)
     {
       MPI_Status status;
 
       // Probe for incoming message and get the status.
-      MPI_Probe(0, 0, mpi_comm, &status);
+      MPI_Probe(0, 10, mpi_comm, &status);
 
       // Get the count from the status.
       int array_length;
@@ -80,18 +81,18 @@ main(int argc, char **argv)
       MPI_Recv(array.data(),
                array_length,
                MPI_DOUBLE,
-               0,
-               0,
+               status.MPI_SOURCE,
+               status.MPI_TAG,
                mpi_comm,
                MPI_STATUS_IGNORE);
 
       std::cout << "Process 1 received " << array_length
                 << " numbers." << std::endl
                 << "    Last number received: "
-                << array[array_length - 1] << std::endl
-                << "    Message source: " << status.MPI_SOURCE
-                << std::endl
-                << "    Message tag:    " << status.MPI_TAG
+                << array[array_length - 1] << "." << std::endl
+                << "    Message source: rank " << status.MPI_SOURCE
+                << "." << std::endl
+                << "    Message tag:    " << status.MPI_TAG << "."
                 << std::endl;
     }
 

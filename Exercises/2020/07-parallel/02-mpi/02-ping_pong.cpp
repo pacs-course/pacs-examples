@@ -28,11 +28,11 @@ main(int argc, char **argv)
       return 1;
     }
 
-  unsigned int num_iterations = 10;
+  unsigned int num_iterations  = 10;
+  int          ping_pong_count = 0;
 
-  int ping_pong_count = 0;
+  int partner_rank = !mpi_rank;
 
-  int        partner_rank = (mpi_rank + 1) % 2;
   MPI_Status status;
 
   for (unsigned int i = 0; i < num_iterations; ++i)
@@ -48,7 +48,7 @@ main(int argc, char **argv)
                     << " (ping_pong_count = " << ping_pong_count
                     << ")." << std::endl;
         }
-      else
+      else // if (mpi_rank == 1)
         {
           MPI_Recv(&ping_pong_count,
                    1,
