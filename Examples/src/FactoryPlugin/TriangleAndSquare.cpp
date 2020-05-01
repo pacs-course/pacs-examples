@@ -5,6 +5,7 @@
  *      Author: forma
  */
 #include "TriangleAndSquare.hpp"
+#include "FactoryTraits.hpp"
 namespace Geometry
 {
   // ********************* TRIANGLE **********************
