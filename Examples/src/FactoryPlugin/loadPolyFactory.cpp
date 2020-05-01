@@ -57,12 +57,6 @@ namespace Geometry
     for (auto l:this->loadedLibs) dlclose(l);
     this->loadedLibs.clear();
   }
-
-  loadPolyFactory::~loadPolyFactory ()
-  {
-    this->close();
-  }
-
 }	  // end namespace
 
 

@@ -24,16 +24,7 @@ namespace Geometry
     // other stuff in the future...
   };
 
-  //! Not for genral use
-  namespace internals
-  {
-    //! Loads the factory when lib is loaded
-    static void __attribute__ ((constructor)) LoadF();
-  }
 
 }
-
-
-
 
 #endif /* EXAMPLES_SRC_FACTORYPLUGIN_QUADRILATERAL_HPP_ */
