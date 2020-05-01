@@ -18,18 +18,12 @@ main(int argc, char **argv)
   int mpi_size;
   MPI_Comm_size(mpi_comm, &mpi_size);
 
-  try
-    {
-      if (mpi_size != 2)
-        {
-          throw std::runtime_error("ERROR: This program is only "
-                                   "meant to be run on 2 processes.");
-        }
-    }
-  catch (const std::runtime_error &exc)
+  if (mpi_size != 2)
     {
       if (mpi_rank == 0)
-        std::cerr << exc.what() << std::endl;
+        std::cerr << "ERROR: This program is only "
+                     "meant to be run on 2 processes."
+                  << std::endl;
 
       return 1;
     }
