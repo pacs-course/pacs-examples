@@ -1,33 +1,25 @@
 #include <omp.h>
 
-#include <ctime>
+#include <cmath>
 #include <iomanip>
 #include <iostream>
 
-static clock_t c_start, c_diff;
-static double  c_sec;
-#define tic() c_start = clock();
-#define toc(x)                                      \
-  c_diff = clock() - c_start;                       \
-  c_sec  = (double)c_diff / (double)CLOCKS_PER_SEC; \
-  std::cout << x << c_sec << " [s]" << std::endl;
-
 /**
- * In this example we perform the integral of 4 / (1 + x^2) between 0
- * and 1; this should equal pi. We sum over the integral range in a
- * for loop, which we parallelize using OpenMP.
+ * This exercise presents a simple program to determine the value of
+ * pi. The algorithm suggested here is chosen for its simplicity. The
+ * method evaluates the integral of 4 / (1 + x^2) between 0 and 1
+ * using the composite midpoint rule. We sum over the integral range
+ * in a for loop, parallelized using OpenMP.
  */
 int
 main(int argc, char **argv)
 {
-  double pi  = 0.0;
-  double sum = 0.0;
+  const unsigned int n = 1e8;
+  const double       h = 1.0 / n;
+
   double x;
-
-  const unsigned int N = 1e8;
-  const double       w = 1.0 / N;
-
-  tic();
+  double sum = 0.0;
+  double pi  = 0.0;
 
 /**
  * We declare x as private, i.e. each thread keeps its own copy.
@@ -49,22 +41,22 @@ main(int argc, char **argv)
  * See http://jakascorner.com/blog/2016/06/omp-for-scheduling.html
  * for an explanation about scheduling types.
  */
-#pragma omp for schedule(auto)
-    for (unsigned int i = 0; i < N; ++i)
+#pragma omp for schedule(static)
+    for (unsigned int i = 1; i <= n; ++i)
       {
-        x = w * (i + 0.5);
+        x = h * (i - 0.5);
         sum += 4.0 / (1.0 + x * x);
       }
 
 #pragma omp critical
     {
-      pi += w * sum;
+      pi += h * sum;
     }
   }
 
-  std::cout << std::setprecision(16) << "pi = " << pi << "\n";
-
-  toc("Time elapsed: ");
+  std::cout << std::setprecision(16) << "pi = " << pi << ", error = "
+            << std::fabs(pi - 3.141592653589793238462643)
+            << std::endl;
 
   return 0;
 }
