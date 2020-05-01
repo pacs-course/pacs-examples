@@ -29,8 +29,6 @@ namespace Geometry
     bool load(std::string pluginFile);
     //! close libraries
     void close();
-    //! Destructor closes libraries
-    ~loadPolyFactory();
   private:
     vector<void *> loadedLibs;
   };
