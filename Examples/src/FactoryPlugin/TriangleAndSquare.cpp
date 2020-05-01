@@ -27,11 +27,9 @@ namespace Geometry
        //not implemented yet
        return 0;};
 
-   namespace internals
+   namespace
    {
-     // in principle I do not have to repeat the attribute here (it is sufficient in the declaration in the hpp file)
-     // but it does not hurt.
-     static void __attribute__ ((constructor)) LoadF()
+     void __attribute__ ((constructor)) LoadF()
     {
        // add triangle and square to the factory
       polyFactory["Triangle"]=[](){return std::make_unique<Triangle>();};

@@ -40,13 +40,6 @@ namespace Geometry
       double diagLen()const;
     };
 
-    //! Internals, not for gerneral use
-    namespace internals
-    {
-      //! Loads the factory when lib is loaded
-      static void __attribute__ ((constructor)) LoadF();
-    }
-
 }
 
 
