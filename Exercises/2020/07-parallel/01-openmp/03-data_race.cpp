@@ -52,6 +52,11 @@ main(int argc, char **argv)
 #pragma omp for
     for (size_t i = 0; i < N - 1; ++i)
       {
+        /**
+         * Possible data race: if another thread overwrites a[i + 1]
+         * before the current thread computes a[i],
+         * the result will be wrong.
+         */
         a[i] = a[i + 1] + b[i];
 
 #pragma omp critical
