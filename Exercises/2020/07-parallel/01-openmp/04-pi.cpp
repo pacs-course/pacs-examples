@@ -27,7 +27,7 @@ main(int argc, char **argv)
  * outside the parallel block's scope, but they must be initialized
  * in each thread.
  *
- * We declare sum as firstprivate, i.e. it's private but intialized
+ * We declare sum as firstprivate, i.e. it's private but initialized
  * with the value defined in the master thread; 0.0 in this case.
  *
  * We declare pi as shared, any thread can access it. Shared is the
