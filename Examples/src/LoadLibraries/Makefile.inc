@@ -1,0 +1,2 @@
+LIBNAME=loadlibs
+LIBD=-ldl
