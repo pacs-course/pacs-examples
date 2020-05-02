@@ -30,7 +30,7 @@ namespace Geometry
     //! close libraries
     void close();
   private:
-    vector<void *> loadedLibs;
+    std::vector<void *> loadedLibs;
   };
 
 }
