@@ -10,36 +10,44 @@ namespace GenericFactory {
     It provides the builder as static method 
     and the automatic registration mechanism.
 
-    \param Factory The type of the factory.  
-    \param ConcreteProduct is the derived (concrete) type to be 
-    registered in the factory
+    \tparam Factory The type of the factory. It must be a specialization of GenericFactory::Factory<>.
+    \tparam ConcreteProduct is the derived (concrete) type to be registered in the factory
     
-    @note I have to use the default builder provided by the factory. No check is made to verify it
-    @todo Add check un builder type using type_traits and static_assert
   */
   template
   <typename Factory, typename ConcreteProduct>
   class Proxy {
   public:
     
-    typedef typename  Factory::AbstractProduct_type AbstractProduct_type;
-    typedef typename  Factory::Identifier_type Identifier_type;
-    typedef typename  Factory::Builder_type Builder_type;
+    using AbstractProduct_type=typename  Factory::AbstractProduct_type;
+    using Identifier_type     =typename  Factory::Identifier_type;
+    using Builder_type        =typename  Factory::Builder_type;
     // The type returned by the builder
-    typedef typename  std::result_of<Builder_type()>::type Result_type;
-    typedef           Factory Factory_type;
+    using Result_type         =typename  std::invoke_result<Builder_type()>::type;
+    using Factory_type        =Factory;
     
-    //! The constructor does the registration.
-    Proxy(Identifier_type const &);
+    /*! The constructor does the registration.
+      @param name The identifier
+      @note I use the builder type provided by the factory. No check is made to verify that it is consistant with the one provided by this Proxy.
+      the builder type must take no arguments and have a return type that accepts a pointer to the ConcreteProduct as argument.
+    */
+    Proxy(Identifier_type const & name);
 
-    //! The builder. Must comply with the signature.
+    /*! This version takes also the builder. It does not use the builder already provided by the class.To be used in case on incompatibilities. 
+      @param name The identifier
+      @param builder The builder
+     */
+    Proxy(Identifier_type const & name, Builder_type const& b);
+
+    //! The in-built builder. Must comply with the signature.
     /*!
-      Actually you do not need to use the proxy to define the builder, you may do it in a simpler way.
-      I assume that the builder is type that returns Result_type
+      Actually you do not need to use the proxy to define the builder, 
+      but this way you have only one object that does everything
+      I assume that the builder is a type that returns Result_type
       and that Result_type can be constructed with a pointer the
       concrete product. I also assume that Result_type takes
       care of memory handling (i.e. is a unique_ptr or something
-      that behaves like a unique_prt.
+      that behaves like a unique_prt).
      */
     static Result_type Build()
     {
@@ -60,10 +68,21 @@ namespace GenericFactory {
   Proxy<F,C>::Proxy(Identifier_type const & name) {
     // get the factory. First time creates it.
     Factory_type & factory(Factory_type::Instance());
-    // Insert the builder. The & is not needed.
+    // Insert the builder. The & is not needed, but it does not hurt.
     factory.add(name,&Proxy<F,C>::Build);
-    std::cout<<"Added "<< name << " to factory"<<std::endl;
+    std::clog<<"Added "<< name << " to factory"<<std::endl;
   }
+
+  template<typename F, typename C>
+  Proxy<F,C>::Proxy(Identifier_type const & name, Builder_type const& b)
+  {
+   // get the factory. First time creates it.
+    Factory_type & factory(Factory_type::Instance());
+    // Insert the builder. The & is not needed, but it does not hurt.
+    factory.add(name,b);
+    std::clog<<"Added "<< name << " to factory"<<std::endl;
+  }
+
 }
 
 #endif /* RULESHANDLER_HPP_ */
