@@ -15,7 +15,7 @@ namespace GenericFactory{
 
     It is implemented as a Singleton. The compulsory way to 
     access a method is Factory::Instance().method().
-    Typycally to access the factory one does
+    Typically to access the factory one does
     \code
     auto&  myFactory = Factory<A,I,B>::Instance();
     myFactory.add(...)
@@ -25,6 +25,8 @@ namespace GenericFactory{
             an ordering relation since they will be stored as key in a std::map
     @tparam Builder The type of the callable object that produces the the concrete object derived from AbstractProduct
     It may have arguments but its return type must be std::unique_ptr<AbstractProduct>.
+    @throw  A std::invalid_argument exception if something goes wrong when querying the factory.
+    @note   The Identifier should have a output stream operator for the construction of the exception.
   */
   template
   < typename AbstractProduct,
@@ -57,19 +59,22 @@ namespace GenericFactory{
       \param name The identifier
       \param args The arguments pack to be passed to the builder. It may be empty
       
-      \note The defualt builder does not take any argument. This version is rovided in case 
+      \note The defualt builder does not take any argument. This version is provided in case 
       the template is specialised with a builder that takes arguments.
     */
     template<typename... Args>
     std::unique_ptr<AbstractProduct> create(Identifier const & name, Args&&... args) const;
+    /*!
+       Returns the builder
+    */
+    Builder get(Identifier const & name) const;
+    //
     //! Register the given rule.
     void add(Identifier const &, Builder_type const &);
     //! Returns a list of registered rules.
     std::vector<Identifier> registered()const;
     //! Unregister a rule.
     void unregister(Identifier const & name){ _storage.erase(name);}
-    //! Destructor
-    ~Factory()=default;
   private:
     typedef std::map<Identifier,Builder_type> Container_type;
     //! Made private since it is a Singleton
@@ -82,7 +87,7 @@ namespace GenericFactory{
     Container_type _storage;
   };
 
-
+  //    ****   IMPLEMENTATIONS  ****
   
   template
   <
@@ -103,10 +108,8 @@ namespace GenericFactory{
     typename Identifier,
     typename Builder
     >
-  template<typename... Args>
-   std::unique_ptr<AbstractProduct>
-  //  auto
-  Factory<AbstractProduct,Identifier,Builder>::create(Identifier const & name, Args&&... args) 
+  Builder
+  Factory<AbstractProduct,Identifier,Builder>::get(Identifier const & name) 
     const {
     auto f = _storage.find(name);
     if (f == _storage.end())
@@ -120,10 +123,22 @@ namespace GenericFactory{
       }
     else
       {
-        // Use of std::forward to forward arguments to the constructor
-        //	return std::make_unique<AbstractProduct>(f->second(std::forward<Args>(args)...));
-        return f->second(std::forward<Args>(args)...);
+        return f->second;
       }
+  }
+
+  template
+  <
+    typename AbstractProduct,
+    typename Identifier,
+    typename Builder
+    >
+  template<typename... Args>
+   std::unique_ptr<AbstractProduct>
+  Factory<AbstractProduct,Identifier,Builder>::create(Identifier const & name, Args&&... args) 
+    const {
+    // Use of std::forward to forward arguments to the constructor
+    return this->get(name)(std::forward<Args>(args)...);
   }
   
   template
@@ -157,8 +172,7 @@ namespace GenericFactory{
     const {
     std::vector<Identifier> tmp;
     tmp.reserve(_storage.size());
-    for(auto i=_storage.begin(); i!=_storage.end();++i)
-      tmp.push_back(i->first);
+    for(auto const & i: _storage) tmp.push_back(i.first);
     return tmp;
   }
   
