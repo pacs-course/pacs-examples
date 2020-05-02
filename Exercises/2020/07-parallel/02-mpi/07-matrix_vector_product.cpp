@@ -122,7 +122,7 @@ main(int argc, char **argv)
       });
 
       std::cout << "Vector:" << std::endl;
-      for (auto v : vector)
+      for (const auto &v : vector)
         {
           std::cout << v << ' ';
         }
@@ -195,7 +195,7 @@ main(int argc, char **argv)
     {
       std::cout << std::endl << "Result:" << std::endl;
 
-      for (auto v : result)
+      for (const auto &v : result)
         std::cout << v << ' ';
 
       std::cout << std::endl << std::endl;
