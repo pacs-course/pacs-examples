@@ -5,5 +5,5 @@ library=./libmyrules.so
 a=-1
 b=3
 nint=25
-rule=Adaptive
+rule=Trapezoidal
 
