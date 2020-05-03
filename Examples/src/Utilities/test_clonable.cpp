@@ -1,7 +1,7 @@
 // a test for cloning utilitiess
 #include "CloningUtilities.hpp"
 #include <iostream>
-
+#include <unordered_set>
 //A nonclonable class
 class NoClone{
 public:
@@ -16,7 +16,7 @@ public:
 class Base
 {
 public:
-  virtual void whoAmI()=0;
+  virtual void whoAmI()const =0;
   virtual void setValue(double const &)=0;
   virtual std::unique_ptr<Base> clone()=0;
   virtual ~Base()=default;
@@ -27,7 +27,7 @@ class Derived1: public Base
 {
 public:
   void setValue(double const & inp)override {value_=inp;}
-  void whoAmI() override
+  void whoAmI()const  override
   {
     std::cout<<" I am Derived1 and I store "<<value_<<std::endl;
   }
@@ -43,7 +43,7 @@ class Derived2: public Base
 {
 public:
   void setValue(double const & inp)override {value_=inp;}
-  void whoAmI() override
+  void whoAmI() const override
   {
     std::cout<<" I am Derived2 and I store "<<value_<<std::endl;
   }
@@ -133,7 +133,24 @@ int main()
   std::cout<<"The resource in D is: ";
   D.resource().whoAmI();
 
+  // Testing some part of code
+  
+  apsc::Wrapper<Base> wb{apsc::make_wrapper<Derived1>()};
+  std::cout<<"The resource in wb is: ";
+  wb->whoAmI();
+  wb=apsc::make_wrapper<Derived2>(); 
+  std::cout<<"The resource in wb is: ";
+  wb->whoAmI();
+  apsc::Wrapper<Base> wz{apsc::make_wrapper<Derived1>()};
+  std::cout<<"The resource in wz is: ";
+  wz->whoAmI();
+  apsc::Wrapper<Base> wc{apsc::make_wrapper<Derived1>()};
+  std::cout<<"The resource in wc is: ";
+  wz->whoAmI();
+  std::cout<< (wz==wc)<<" "<<(wz<wc)<<std::endl;
 
+  std::unordered_set<apsc::Wrapper<Base>> sw{wb,wc,wz};
+  for (auto const & z:sw)z->whoAmI();
 }
 
                

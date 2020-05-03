@@ -47,15 +47,18 @@ namespace NumericalIntegration{
     //! The method that applies the rule.
     double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
+    std::string name() const override {return "Adaptive";}
   private:
     //! Static because common to all objects of this class
-    static QuadratureRulePlusError<SQR> _therule;
+    //! inline since since c++17 this way we have  a definition.
+    inline static QuadratureRulePlusError<SQR> _therule;
     double _targetError;
     unsigned int _maxIter;
    };
 
-  template <class SQR>
-  QuadratureRulePlusError<SQR> QuadratureRuleAdaptive<SQR>::_therule;
+  // Not needed since C++17
+  //template <class SQR>
+  //QuadratureRulePlusError<SQR> QuadratureRuleAdaptive<SQR>::_therule;
   
 
   // Here a cannot use simply clone() since it returns a unique_ptr to a 
