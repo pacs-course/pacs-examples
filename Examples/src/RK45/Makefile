@@ -47,9 +47,9 @@ ifeq ($(LIBTYPE),DYNAMIC)
   LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
 endif
 else
-  OPTFLAGS=-O3
+  OPTFLAGS=-O3 -funroll-loops
   CPPFLAGS+=-DNDEBUG
-#  LDFLAGS+=-Wl,-rpath=.# Uncoment if you want it also for dynamic lib
+  LDFLAGS+=-Wl,-rpath=.# Comment if you dont want it also for dynamic lib
 endif
 ifeq ($(FPEABORT),yes)
  EXEC_CPPFLAGS=-DFPE_ABORT

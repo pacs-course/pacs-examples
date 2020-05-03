@@ -70,7 +70,7 @@ namespace NumericalIntegration{
   {}
 
   template <class SQR>
-  QuadratureRuleHandler QuadratureRuleAdaptive<SQR>::clone() const
+  QuadratureRuleHandler QuadratureRuleAdaptive<SQR>::clone() const override
   { return  QuadratureRuleHandler(new QuadratureRuleAdaptive<SQR>(*this));}
 
   /*!

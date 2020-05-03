@@ -68,7 +68,7 @@ namespace NumericalIntegration{
       and assignment operators for classes that aggregate object of the
       QuadratureRule hierarchy by composition.
      */
-    virtual QuadratureRuleHandler clone() const =0;
+    virtual QuadratureRuleHandler clone() const override =0;
     // Applies the rule in the interval (a,b)
     double apply(FunPoint const & f, double const &a, double const& b) const override;
     virtual ~StandardQuadratureRule()=default;

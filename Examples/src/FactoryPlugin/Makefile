@@ -38,7 +38,7 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 CXXFLAGS+=-fPIC
-LDFLAGS= $(OPTFLAGS) -export-dynamic
+LDFLAGS= $(OPTFLAGS) -Wl,-E
 LDLIBS=-ldl
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
@@ -51,7 +51,7 @@ library: libTS.so libQuad.so
 
 libTS.so: TriangleAndSquare.o Polygon.o
 	$(CXX) $(OPTFLAGS) -shared TriangleAndSquare.o Polygon.o  -o libTS.so
-	
+
 libQuad.so: Quadrilateral.o  Polygon.o
 	$(CXX) $(OPTFLAGS) -shared Quadrilateral.o Polygon.o -o libQuad.so
 
