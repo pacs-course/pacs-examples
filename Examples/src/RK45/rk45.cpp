@@ -1,7 +1,7 @@
 #include "rk45.hpp"
 #include <cmath>
 #include <algorithm> // for max
-namespace ODE
+namespace apsc
 {
   // f(t,y)
   double rk45_step
