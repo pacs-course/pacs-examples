@@ -28,7 +28,7 @@ namespace Geometry
 	@param domain A 1D domain
 	@param b num_elements Number of elements
       */
-    Uniform(Geometry::Domain1D const & domain, unsigned int const num_elements):
+    Uniform(Geometry::Domain1D const & domain, unsigned int num_elements):
       OneDMeshGenerator(domain),M_num_elements(num_elements){}
     //! Call operator
     /*!

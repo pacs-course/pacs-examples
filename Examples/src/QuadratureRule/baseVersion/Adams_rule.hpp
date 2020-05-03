@@ -1,6 +1,6 @@
 #ifndef __NUMERICAL_RULE_HPP
 #define __NUMERICAL_RULE_HPP
-#include "QuadratureRule.hpp"
+#include "StandardQuadratureRule.hpp"
 namespace NumericalIntegration{
   /*!
     \file numerical_rule.hpp 

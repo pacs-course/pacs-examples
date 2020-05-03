@@ -71,9 +71,9 @@ SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
-LIB_SRCS:=numerical_rule.cpp montecarlo.cpp 
+LIB_SRCS:=Adams_rule.cpp montecarlo.cpp 
 LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
-LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp) $(wildcard Quadrature*.hpp)
+LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp) Gauss_rule.hpp StandardQuadratureRule.hpp $(wildcard Quadrature*.hpp)
 
 LIB2_SRCS:=helperfunction.cpp numerical_integration.cpp 
 LIB2_OBJS:=$(LIB2_SRCS:.cpp=.o)
