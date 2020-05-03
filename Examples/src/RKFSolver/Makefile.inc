@@ -1,4 +1,4 @@
-LIBNAME=rkf
+LIBNAME=RKF
 test:
 	$(MAKE) clean
 	$(MAKE) dynamic

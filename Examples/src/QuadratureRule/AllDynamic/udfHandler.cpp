@@ -25,7 +25,7 @@ namespace NumericalIntegration{
   }
   
 void UdfHandler::closeUdfLibrary(){
-	if(!this->M_lib_handle) dlclose(this->M_lib_handle);
+	if(this->M_lib_handle != nullptr) dlclose(this->M_lib_handle);
 }
 
   UdfHandler::UdfHandler(const std::string & s):UdfHandler()

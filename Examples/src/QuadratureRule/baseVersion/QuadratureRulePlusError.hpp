@@ -46,7 +46,7 @@ namespace NumericalIntegration{
   public:
     QuadratureRulePlusError();
     //! Cloning method.
-    QuadratureRuleHandler   clone() const;
+    QuadratureRuleHandler   clone() const override;
     //! Number of quadrature nodes. Delagates to the stored rules.
     int num_nodes()const {return _therule.num_nodes();}
     //! Coordinate of i-th node. Delegates to the stored rules.

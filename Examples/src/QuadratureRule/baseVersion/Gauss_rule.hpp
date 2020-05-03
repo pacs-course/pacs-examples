@@ -26,7 +26,7 @@ namespace NumericalIntegration{
     {
       {1,1},{-1./std::sqrt(3.),1./std::sqrt(3)},4
     }{}
-    QuadratureRuleHandler clone() const
+    QuadratureRuleHandler clone() const override
     {
       return QuadratureRuleHandler(new GaussLegendre2p(*this));
     }
@@ -40,7 +40,7 @@ namespace NumericalIntegration{
      {
        {5./9.,8./9.,5./9.},{-std::sqrt(3./5.),0,std::sqrt(3./5.)},6
      }{}
-     QuadratureRuleHandler clone() const
+     QuadratureRuleHandler clone() const override
      {
        return QuadratureRuleHandler(new GaussLegendre3p(*this));
      }
@@ -55,7 +55,7 @@ namespace NumericalIntegration{
 	{-1.,-1./std::sqrt(5.),1./std::sqrt(5),1.},
 	6
       }{}
-      QuadratureRuleHandler clone() const
+      QuadratureRuleHandler clone() const override
       {
         return QuadratureRuleHandler(new GaussLobatto4p(*this));
       }
@@ -70,7 +70,7 @@ namespace NumericalIntegration{
          {1.10, 49./90, 32/45., 29./90, 1.10},
 	 {-1, -std::sqrt(3./7.),0,std::sqrt(3./7.),1},8
        }{}
-       QuadratureRuleHandler clone() const
+       QuadratureRuleHandler clone() const override
        {
          return QuadratureRuleHandler(new GaussLobatto5p(*this));
        }
