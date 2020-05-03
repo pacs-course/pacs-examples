@@ -14,7 +14,7 @@ namespace NumericalIntegration{
   {
   public:
     Simpson();
-    QuadratureRuleHandler clone() const;
+    QuadratureRuleHandler clone() const override;
   };
 
   //! Midpoint rule
@@ -22,7 +22,7 @@ namespace NumericalIntegration{
   {
   public:
     MidPoint();
-    QuadratureRuleHandler clone()const ;
+    QuadratureRuleHandler clone()const override;
   };
 
   //! Trapezoidal rule
@@ -30,7 +30,7 @@ namespace NumericalIntegration{
   {
   public:
     Trapezoidal();
-    QuadratureRuleHandler clone()const ;
+    QuadratureRuleHandler clone()const override;
   };
 
   

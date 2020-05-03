@@ -13,7 +13,7 @@
 //! Registration in the factory I use an unnamed namespace
 /*!
   When I load the library I must be sure that the symbols are loaded
-  so I need to use the option -Wl,-E or -Wl,-export-dynamic
+  so I need to use the option -Wl,-E or -export-dynamic
  */
 /*
 namespace TheRules
@@ -43,7 +43,6 @@ namespace TheRules
 
 
 //! Another alternative. The function is automatically loaded
-/*! No need of -Wl,-E linker option */
 
 namespace{
  __attribute__((constructor))

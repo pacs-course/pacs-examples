@@ -4,7 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <stdexcept>
-namespace ODE
+namespace apsc
 {
   //! Defailt max number of iteration
   constexpr std::size_t MAX_STEPS=10000; 

@@ -1,12 +1,11 @@
 #include "rk45.hpp"
 #include<iostream>
 #include <fstream>
-#include "RKF.hpp"
 #include <cmath>
 int main()
 {
   using namespace std;
-  using namespace ODE;
+  using namespace apsc;
   auto fun = [](double const & t, double const & y){return -10*y;};
   //auto fun = [](double const & t, double const & y){return -std::sin(t);};
   double t0=0;
@@ -31,14 +30,6 @@ int main()
   std::cout.setf(std::ios::scientific);
   std::cout<<"Max error "<<max_error<<" Desired max error "<<errorDesired;
   std::cout<<std::endl;
-
-  // Now with the new version!
-  ODE::RKF<ODE::RK45_t> solver{ODE::RK45,fun};
-  auto solution = solver(t0,T, y0, h_init, errorDesired);
-  //ODE::RKF<ODE::RK23_t> solver{ODE::RK23,fun};
-  //auto solution = solver(t0,T, y0, h_init, errorDesired);
-  ofstream file2("result2.dat");
-  file2<<solution;
 
 
 }
