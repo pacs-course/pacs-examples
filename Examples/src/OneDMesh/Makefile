@@ -1,4 +1,4 @@
-############################################################
+###########################################################
 #
 # An example of Makefile for the course on 
 # Advanced Programming for Scientific Computing
@@ -49,7 +49,7 @@ ifeq ($(LIBTYPE),DYNAMIC)
  # LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
 endif
 else
-  OPTFLAGS=-O3
+  OPTFLAGS=-O3 -funroll-loops
   CPPFLAGS+=-DNDEBUG
 endif
 ifeq ($(FPEABORT),yes)

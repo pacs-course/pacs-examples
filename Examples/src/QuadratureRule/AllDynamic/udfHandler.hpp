@@ -10,7 +10,7 @@
 #include <string>
 #include <stdexcept>
 #include <type_traits>
-#include "QuadratureRule.hpp"
+#include "QuadratureRuleBase.hpp"
 namespace NumericalIntegration{
   //! A class to simplify the management of loading funcions from a shared library
   /*!
@@ -34,7 +34,7 @@ namespace NumericalIntegration{
     NumericalIntegration::FunPoint getFunction(std::string const & s) const;
     void closeUdfLibrary();
   private:
-    void * M_lib_handle;
+    void * M_lib_handle=nullptr;
   };
 
 }

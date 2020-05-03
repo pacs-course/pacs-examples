@@ -57,13 +57,13 @@ ifeq ($(DEBUG),no)
   OPTFLAGS=-O3 -funroll-loops
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
   #LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR)
-  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -Wl,-E
+  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -export-dynamic
 
 else
   OPTFLAGS=-g -O0
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
 #  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
-  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -Wl,-E
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -export-dynamic
 endif
 #CXX=g++-4.7
 LDLIBS=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
@@ -102,7 +102,7 @@ EXEC=$(exe_sources:.cpp=)
 EXEC_OBJS=$(exe_sources:.cpp=.o)
 EXEC_SRCS:=$(exe_sources)
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc static dynamic depend install library
+.phony= all clean distclean doc static dynamic depend install library alllibs
 
 .DEFAULT_GOAL = all
 
@@ -121,6 +121,8 @@ all:
 	@echo "root lib when compiling executable"
 	@echo "To run executable you need to type"
 	@echo "export LD_LIBRARY_PATH="$(PACS_LIB_DIR):.
+
+alllibs: dynamic
 
 depend: $(DEPEND)
 
