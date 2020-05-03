@@ -1,7 +1,8 @@
 #ifndef QUADRATURERULEPLUSERROR_HPP
 #define QUADRATURERULEPLUSERROR_HPP
 #include <cmath>
-#include "QuadratureRule.hpp"
+
+#include "QuadratureRuleBase.hpp"
 
 namespace NumericalIntegration{
 
@@ -18,11 +19,11 @@ namespace NumericalIntegration{
    */
   struct ExtractError
   {
-    static double error;
+    inline static double error=0.0;
     static void reset(){error=0.0;}
   };
-  //! Definition of the satic member
-  double ExtractError::error(0.0);
+  // Definition of the static member (not neded since C++17)
+  //double ExtractError::error(0.0);
   /*!
     \brief Standard quadrature rule plus error.
 
@@ -54,19 +55,22 @@ namespace NumericalIntegration{
     double weight(const int i)const{return _therule.weight(i);};
     //! Order of convergence of the rule.
     unsigned int order() const{return _therule.order();};
-    //! The factor used to compute the errore estimate
+    //! The factor used to compute the error estimate
     double factor()const {return _factor;}
     //! The actual rule.
     double apply(FunPoint const &, double const & a,
-			 double const & b) const;
+			 double const & b) const override;
+    std::string name()const override{return "QuadratureRulePlusError";}
   protected:
-    //! The underlying rule. static becouse it is common to all objects of the class
-    static SQR _therule;
+    //! The underlying rule. static because it is common to all objects of the class
+    //! inlided so this is a definition (since C++17)
+    inline static SQR _therule;
     //! Factor used in the calculation of the error estimate.
     double _factor;
   };
-  template<typename SQR>
-  SQR QuadratureRulePlusError<SQR>::_therule;
+  // Not needed in C++17
+  //template<typename SQR>
+  //SQR QuadratureRulePlusError<SQR>::_therule;
  
 
   template<typename SQR>
@@ -78,7 +82,7 @@ namespace NumericalIntegration{
   { return  QuadratureRuleHandler(new QuadratureRulePlusError<SQR>(*this));}
 
   /*! 
-    In the apply method I am using the error formula in a stange way
+    In the apply method I am using the error formula in a strange way
     because want to replicate exactly the behavior of the
     QuadratureBase classes. Thus I compute the error of the formula
     with step h even if I have available the result with step

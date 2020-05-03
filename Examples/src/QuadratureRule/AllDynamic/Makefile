@@ -21,7 +21,7 @@ DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 LIBLIB= -L$(PACS_LIB_DIR) -lquadrules
 
-# Library with composite integration stuff
+# Library with composite integration stuff (to be done at the moment they are all together)
 LIBNAME2=
 DYNAMIC_LIBFILE2=
 STATIC_LIBFILE2=
@@ -54,7 +54,7 @@ else
 endif
 export DEBUG
 ifeq ($(DEBUG),no)
-  OPTFLAGS=-O3
+  OPTFLAGS=-O3 -funroll-loops
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
   #LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR)
   LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -Wl,-E

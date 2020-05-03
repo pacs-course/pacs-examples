@@ -2,6 +2,7 @@
 #define HH_QUADRATURERULEBASE_HH
 #include <memory>
 #include <functional>
+#include <string>
 
 namespace NumericalIntegration{
   
@@ -44,6 +45,8 @@ namespace NumericalIntegration{
     */
     virtual void setTargetError(double const a){}
     virtual void setMaxIter(unsigned int n){}
+    //! a string that identify the general type of quadrature rules
+    virtual std::string name() const=0;
   };
 }
 #endif

@@ -37,15 +37,9 @@ namespace NumericalIntegration{
      */
     StandardQuadratureRule(std::array<double,NKNOTS> weight,std::array<double,NKNOTS> nodes,double order=0):
       _w(weight),_n(nodes),my_order(order)
-    {
-    }
-    //! Default constructor
-    StandardQuadratureRule():_w(),_n(),my_order(0){}
-    //! Default copy and move operations
-    StandardQuadratureRule(StandardQuadratureRule const &)=default;
-    StandardQuadratureRule(StandardQuadratureRule&&)=default;
-    StandardQuadratureRule & operator=(StandardQuadratureRule const &)=default;
-    StandardQuadratureRule & operator=(StandardQuadratureRule&&)=default;
+    {}
+    //! class is default constructible
+    StandardQuadratureRule()=default;
     //! number of nodes used by the rule
     constexpr unsigned int num_nodes() const
     {
@@ -66,6 +60,8 @@ namespace NumericalIntegration{
     {
       return my_order;
     }
+    //! returns a string that identify the general type of quadrature rule
+    std::string name() const override{return "StandardQuadratureRule";};
     //! The class is clonable.
     /*!
       Having a clonable class makes it possible to write copyconstructors
@@ -74,13 +70,13 @@ namespace NumericalIntegration{
      */
     virtual QuadratureRuleHandler clone() const =0;
     // Applies the rule in the interval (a,b)
-    double apply(FunPoint const & f, double const &a, double const& b) const;
+    double apply(FunPoint const & f, double const &a, double const& b) const override;
     virtual ~StandardQuadratureRule()=default;
 
   protected:
     std::array<double,NKNOTS>  _w;
     std::array<double,NKNOTS>  _n;
-    unsigned int my_order;
+    unsigned int my_order=0;
   private:
   };
   

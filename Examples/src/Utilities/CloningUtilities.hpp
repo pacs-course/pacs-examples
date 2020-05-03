@@ -2,7 +2,7 @@
 #define WRAPPER_H
 #include <memory>
 #include <type_traits>
-#include <cassert>
+#include <functional>
 namespace apsc
 {
   /* wrapper namespace. To use this utilities you need
@@ -172,8 +172,12 @@ namespace apsc
   public:
     //! Check if clone is present
     static_assert(isClonable<T>(),"template parameter of Wrapper must be a clonable class. clone() should return a unique_ptr");
-    // The type of the stored pointer
+    // The type of the stored unique pointer
     using Ptr_t=std::unique_ptr<T>;
+    /*! This class imitates that of the unique pointer so it exposes the same member types*/
+    using pointer= typename Ptr_t::pointer;
+    using element_type =T;
+    using deleter_type = typename Ptr_t::deleter_type;
     //! The default constructor
     /*
      * The synthetic one is ok since the default constructor of a unique_ptr
@@ -192,8 +196,15 @@ namespace apsc
     /*!
      * I can just move the stored pointer!
      */
-    Wrapper(Ptr_t&& p):DataPtr(std::move(p)){}
-    
+    Wrapper(Ptr_t&& p) noexcept :DataPtr(std::move(p)){}
+       
+    /*!
+     * Taking a pointer. I just create the internal unique_ptr.
+     * @note Now the Wrapper has ownership of the resource!
+     */
+    Wrapper(T* p) noexcept :DataPtr(p){}
+
+
     //! Copy constructor
     /*!
      * Here I implement a copy semantic that makes deep copy of the resource.
@@ -205,6 +216,14 @@ namespace apsc
      */
     Wrapper(const Wrapper<T>& original):
       DataPtr(original.DataPtr ? original.DataPtr->clone() : Ptr_t{}){}
+    //! Copy conversion
+    /*!
+     * This constructor takes any Wrapper<U> with U different from T. It allows
+     * the conversion from Wrapper<Derived> to Wrapper<Base>
+     */
+    template<class U>
+    Wrapper(const Wrapper<U>& original):
+      DataPtr(original.get() ? original.DataPtr->clone() : Ptr_t{}){}
     //!copy-assignement operator
     /*!
      * It resets current resource and clone that of the other wrapper
@@ -212,14 +231,14 @@ namespace apsc
     Wrapper& operator=(const Wrapper<T>& original)
     {
       if (this != &original)
-        DataPtr=(original.DataPtr ? original.DataPtr->clone() : Ptr_t{});
+        DataPtr= original.DataPtr ? original.DataPtr->clone() : Ptr_t{};
       return *this;
     }
     //! Maybe I want to assign a unique pointer
     /*!
      * If argument is an rvalue unique_ptr can be moved.
      */
-    Wrapper& operator=(Ptr_t&& p)
+    Wrapper& operator=(Ptr_t&& p) noexcept
     {
       DataPtr=std::move(p);
       return *this;
@@ -236,60 +255,149 @@ namespace apsc
     
     //! The move constructor
     /*!
-     * The synthetic one is ok since unique_ptr can be moved
+     * @param rhs the wrapper to be moved
+     * @note unique_ptr can be moved
      */
-    Wrapper(Wrapper<T>&&)=default;
+    Wrapper(Wrapper<T>&& rhs)=default;
+    /*! 
+     *  To allow conversion in move constructor
+     * @param rhs the wrapper to be moved
+     */
+    template <class U>
+    Wrapper(Wrapper<U>&& rhs)noexcept :DataPtr(rhs.get())
+    {
+      using otherPType=typename Wrapper<U>::pointer;
+      static_assert(std::is_convertible<otherPType,pointer>::value, "Pointers must be convertible");
+      rhs.release(); // releases the resources
+    }
     
     //! Move assignement
-    Wrapper& operator=(Wrapper<T>&&)=default;
+    /*!
+     * @param rhs the wrapper to be moved
+     */
+    Wrapper& operator=(Wrapper<T>&& rhs)=default;
+    /*!
+     * To allow for conversion Derived -> Base
+     * @param rhs the wrapper to be moved, may be a wrapper to a derived type
+     * @note maybe not required since I have conversion in the move constructor. After the assignment the 
+     * rhs is null.
+     */
+    template <class U>
+    Wrapper& operator=(Wrapper<U>&& rhs) noexcept
+    {
+      using otherPType=typename Wrapper<U>::pointer;
+      static_assert(std::is_convertible<otherPType,pointer>::value, "Pointers must be convertible");
+      if(this->get() != static_cast<T*>(rhs.get()))
+        {
+          DataPtr.reset(rhs.get());
+        }
+      rhs.release(); // release resource
+      return *this;
+    };
     
-    //! unique_ptr<T> takes care of deleting the data
-    ~Wrapper()=default;
+    /*! Dereferencing operator. The Wrapper works like a pointer to T*/
+    const T& operator*() const noexcept {return *DataPtr;}
+    /*! Dereferencing operator. The Wrapper works like a pointer to T*/
+    T&       operator*()noexcept { return *DataPtr;}
     
-    /*! The Wrapper works like a pointer to T*/
-    const T& operator*() const{return *DataPtr;}
-    T&       operator*(){ return *DataPtr;}
-    
-    /*! The Wrapper works like a pointer to T*/
-    const T* const operator->() const{ return DataPtr.get();}
-    T*             operator->(){ return DataPtr.get();}
-    /*! This class imitates that of the uniqe pointer so it exposes the same member types*/
-    using pointer= typename Ptr_t::pointer;
-    using element_type =T;
-    using deleter_type = typename Ptr_t::deleter_type;
-    /* The method release */
-    auto release(){return DataPtr.release();}
-    /*! reset. You can pass directly a pointer */
-    void reset(pointer ptr = pointer()){DataPtr.reset(ptr);}
+    /*! Dereferencing operator. The Wrapper works like a pointer to T*/
+    const T* const operator->() const noexcept { return DataPtr.get();}
+    /*! Dereferencing operator. The Wrapper works like a pointer to T*/
+    T*             operator->() noexcept { return DataPtr.get();}
+    //! It releases the resource returning a pointer  
+    auto release()noexcept {return DataPtr.release();}
+    /*! Deletes the resource 
+     *  You can pass the pointer of a new resource to hold
+     *  @param ptr the pointer to the new resource, defaulted to nullprt
+     */
+    void reset(pointer ptr = nullptr)noexcept {DataPtr.reset(ptr);}
     /*! swap wrappers */
     void swap(Wrapper<T>& other) noexcept {DataPtr.swap(other.DataPtr);}
     /*! get the pointer */
     pointer get() const noexcept { return DataPtr.get();}
     /*! conversion to bool */
     explicit operator bool() const noexcept {return static_cast<bool>(DataPtr);}
-  private:
+   private:
     Ptr_t DataPtr;
   };
-  //! Utility to make a Wrapper 
+    //! Utility to make a Wrapper 
   /*!
     Creates a Wrapper<Base> indicating Base and Derived class. 
     I need two compulsory template parameters, one for the Base
     and une for the concrete Derived class since I have not implemented
     the conversion Wrapper<D> to Wrapper<B>.
    
-    /tparam B The base class. The function returns Wrapper<B>
-    /tparam D The derived class. The Wrapper will own an object of type D.
-    /tparam Args Automatically deduced possible arguments for the constructor of D
-    /param args The (possible) arguments of type Args
-    /todo Conversion operator between Wrapper<D> and Wrapped<B>. 
-     It should not be so difficult and it would simplify things a little.
+    @tparam B The base class. The function returns Wrapper<B>
+    @tparam D The derived class. The Wrapper will own an object of type D.
+    @tparam Args Automatically deduced possible arguments for the constructor of D
+    @param args The (possible) arguments of type Args
+    @note deprecated. Use make_wrapper
    */
-  template<class B, class D, typename... Args>
-  Wrapper<B> make_Wrapper(Args&&... args)
-  {
-    return Wrapper<B>(std::make_unique<D>(std::forward<Args>(args)...));
-  }
+    template<class B, class D, typename... Args>
+    Wrapper<B> make_Wrapper(Args&&... args)
+    {
+      return Wrapper<B>(std::make_unique<D>(std::forward<Args>(args)...));
+    }
+  /*!
+    Creates a Wrapper the class to hold. 
+    @tparam D The Wrapper will own an object of type D.
+    @tparam Args Automatically deduced possible arguments for the constructor of D
+    @param args The (possible) arguments of type Args
+   */
+    template<class D, typename... Args>
+    Wrapper<D> make_wrapper(Args&&... args)
+    {
+      return Wrapper<D>{std::make_unique<D>(std::forward<Args>(args)...)};
+    }
+  //! comparison operator
+    template <class T>
+    bool operator <(Wrapper<T> const & a, Wrapper<T> const & b)
+    {
+      return a.get() < b.get();
+    }
+  //! comparison operator
+    template <class T>
+    bool operator <=(Wrapper<T> const & a, Wrapper<T> const & b)
+    {
+      return a.get() <= b.get();
+    }
+  //! comparison operator
+    template <class T>
+    bool operator >(Wrapper<T> const & a, Wrapper<T> const & b)
+    {
+      return a.get() > b.get();
+    }
+  //! comparison operator
+    template <class T>
+    bool operator >=(Wrapper<T> const & a, Wrapper<T> const & b)
+    {
+      return a.get() >= b.get();
+    }
+  //! comparison operator
+    template <class T>
+    bool operator ==(Wrapper<T> const & a, Wrapper<T> const & b)
+    {
+      return a.get() == b.get();
+    }
+  //! comparison operator
+    template <class T>
+    bool operator !=(Wrapper<T> const & a, Wrapper<T> const & b)
+    {
+      return a.get() != b.get();
+    }
 }// end namespace apsc
+/*!
+ *  Specialization of std::hash. I can store wrappers in unordered associative containers
+ *  @note I rely on the fact the the standard library provides the hash for any pointer type
+ */
+template<class T>
+struct std::hash<class apsc::Wrapper<T>>
+{
+  std::size_t operator()(const apsc::Wrapper<T> & w )const noexcept
+  {
+    return std::hash<typename apsc::Wrapper<T>::pointer>{}(w.get());
+  }
+};
 
 #endif
 /*
@@ -302,7 +410,7 @@ namespace apsc
  * any purpose is hereby granted without fee, provided that the above
  * copyright notice appear in all copies and that both that copyright
  * notice and this permission notice appear in supporting documentation.
- * Mark Joshi and Luca Formaggia make no representations about 
+ * The authors make no representations about 
  * the suitability of this
  * software for any purpose. It is provided "as is" without express or
  * implied warranty.
