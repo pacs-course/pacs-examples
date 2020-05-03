@@ -34,7 +34,7 @@ namespace Geometry
     std::size_t maxSteps = 20000;
 
     auto solution=
-      ODE::rk45(
+      apsc::rk45(
 	   [this](double const & x,double const &){return 1./this->M_h(x);},
 	   t0,T,y0,h_initial,h_max,final_error,status,maxSteps);
     auto lastValue=solution.back().second;
