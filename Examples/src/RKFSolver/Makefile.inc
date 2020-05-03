@@ -1,4 +1,4 @@
-LIBNAME=rk45
+LIBNAME=rkf
 test:
 	$(MAKE) clean
 	$(MAKE) dynamic

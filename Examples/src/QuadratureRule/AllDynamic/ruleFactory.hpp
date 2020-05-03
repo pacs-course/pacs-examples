@@ -22,7 +22,15 @@ namespace QuadratureRuleFactory
   {
     // get the factory
     RulesFactory & factory(RulesFactory::Instance());
-    factory.add(name,[](){return  std::unique_ptr<NumericalIntegration::QuadratureRule>(new ConcreteRule());});
+    factory.add
+    (name,
+     []()
+     {
+      return
+	  NumericalIntegration::QuadratureRuleHandler
+	  {std::make_unique<ConcreteRule>()};
+      }
+    );
   }
 
 }

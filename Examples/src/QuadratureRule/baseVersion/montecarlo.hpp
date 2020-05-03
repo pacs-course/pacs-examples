@@ -1,6 +1,6 @@
 #ifndef MONTECARLO_HPP
 #define MONTECARLO_HPP
-#include "QuadratureRule.hpp"
+#include "QuadratureRuleBase.hpp"
 namespace NumericalIntegration{
   
   //! Implements montecarlo quadrature
@@ -19,6 +19,7 @@ namespace NumericalIntegration{
     std::unique_ptr<QuadratureRule> clone()const override;
     double apply(FunPoint const &, double const & a,
              double const & b) const override;
+    std::string name() const override {return "Montecarlo";}
     //! Sets desired maximal error
     void setError(double e);
     //! Sets maximal number of samples;
