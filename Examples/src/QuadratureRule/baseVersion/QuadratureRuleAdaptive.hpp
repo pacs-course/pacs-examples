@@ -92,13 +92,13 @@ namespace NumericalIntegration{
     while(counter<_maxIter && !subint.empty()){
       pair<double,double> z = subint.front();
       subint.pop();
-      ExtractError::reset();
+      QuadratureRulePlusError<SQR>::ExtractError::reset();
       double x1=z.first;
       double x2=z.second;
       double h2=(x2-x1);
       double errorLocalTarget=_targetError*h2/dSize;
       double lr=this->_therule.apply(f,x1,x2);
-      double localError=std::abs(ExtractError::error);
+      double localError=std::abs(QuadratureRulePlusError<SQR>::ExtractError::error);
       ++counter;
       if (localError<=errorLocalTarget) result+=lr;
       else{

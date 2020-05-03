@@ -12,16 +12,9 @@ namespace NumericalIntegration{
     implements composite integration, I need an external object to
     gather the information about the value of the error estimate of
     the given rule. I have chosen to use static members, but other
-    solutions ar possible, for instance storing inside the
-    QuadratureRulePlusError class a reference to an object whose role
-    is to record the error. This latter solution is also safer, I have
-    preferred the simpler one in this example.
+    solutions are possible, for instance having a static
    */
-  struct ExtractError
-  {
-    inline static double error=0.0;
-    static void reset(){error=0.0;}
-  };
+
   // Definition of the static member (not neded since C++17)
   //double ExtractError::error(0.0);
   /*!
@@ -61,12 +54,19 @@ namespace NumericalIntegration{
     double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
     std::string name()const override{return "QuadratureRulePlusError";}
-  protected:
+    struct ExtractError
+     {
+       inline static double error=0.0;
+       static void reset(){error=0.0;}
+     };
+    protected:
+
     //! The underlying rule. static because it is common to all objects of the class
     //! inlided so this is a definition (since C++17)
     inline static SQR _therule;
     //! Factor used in the calculation of the error estimate.
     double _factor;
+
   };
   // Not needed in C++17
   //template<typename SQR>
