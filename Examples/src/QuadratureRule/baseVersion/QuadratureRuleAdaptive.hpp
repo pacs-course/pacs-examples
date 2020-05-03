@@ -70,8 +70,7 @@ namespace NumericalIntegration{
   {}
 
   template <class SQR>
-  QuadratureRuleHandler QuadratureRuleAdaptive<SQR>::clone() const override
-  { return  QuadratureRuleHandler(new QuadratureRuleAdaptive<SQR>(*this));}
+  QuadratureRuleHandler QuadratureRuleAdaptive<SQR>::clone() const{ return  QuadratureRuleHandler(new QuadratureRuleAdaptive<SQR>(*this));}
 
   /*!
     @detail In the apply method I use the facilities of the QudaratureRUlePlusError classes
