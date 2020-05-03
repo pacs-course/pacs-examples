@@ -61,7 +61,9 @@ else
 endif
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc library install test
+.phony= all clean distclean doc library install test alllibs
+
+alllibs: all
 
 all: $(DEPEND) library test
 

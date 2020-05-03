@@ -1,1 +1,0 @@
-Directory for header files for the Examples
