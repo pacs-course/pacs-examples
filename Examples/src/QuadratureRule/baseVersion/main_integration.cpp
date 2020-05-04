@@ -15,14 +15,16 @@ using namespace Geometry;
 
 
 int main(int argc, char** argv){
-  FunPoint f=fsincos;
-  
   using namespace std;
+  FunPoint f=fsincos;
+
   double a,b;
   int nint;
   double targetError;
   readParameters(argc,argv, a, b,nint,targetError);
   cout<<"Integral from "<<a<<" to "<<b <<" on "<< nint <<" intervals"<<endl;
+  double exactVal=exact(a,b);
+
   Domain1D domain(a,b);
   Mesh1D mesh(domain,nint);
   
@@ -36,7 +38,6 @@ int main(int argc, char** argv){
 
   double approxs=s.apply(f);
   double approxm=m.apply(f);
-  double exactVal=exact(a,b);
   cout<<"MidPoint="<<approxm<<" Trapezoidal="<<t.apply(f)<<
       " Simpson="<<approxs<<" GaussLegendre3p="<<gL.apply(f)<<
       " Exact="<<exactVal<<endl;

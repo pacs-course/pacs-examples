@@ -17,7 +17,7 @@ extern "C"
     return x*x*std::sin(x);
   };
   
-  double myfun(double const & x)
+  double one(double const & x)
   {
     return 1;
   };
