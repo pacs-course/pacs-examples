@@ -57,13 +57,13 @@ ifeq ($(DEBUG),no)
   OPTFLAGS=-O3 -funroll-loops
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
   #LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR)
-  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -export-dynamic
+  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -Wl,-E
 
 else
   OPTFLAGS=-g -O0
   LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
 #  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
-  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -export-dynamic
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -Wl,-E
 endif
 #CXX=g++-4.7
 LDLIBS=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
