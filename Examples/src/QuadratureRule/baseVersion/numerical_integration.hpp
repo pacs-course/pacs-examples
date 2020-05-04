@@ -67,11 +67,11 @@ namespace NumericalIntegration{
      */
     Quadrature(Quadrature const & rhs): _rule(rhs._rule->clone()),  _mesh(rhs._mesh){}
     //! Move constructor.
-    Quadrature(Quadrature&& rhs): _rule(std::move(rhs._rule)), _mesh(std::move(rhs._mesh)){}
+    Quadrature(Quadrature&& rhs)=default;
     //! Copy assignment.
     Quadrature & operator=(Quadrature const &);
     //! Move assignment.
-    Quadrature & operator=(Quadrature&&);
+    Quadrature & operator=(Quadrature&&)=default;
     //! Calculates the integal on the passed integrand function.
     double apply(FunPoint const &) const;
     QuadratureRule const & myRule()const {return *(_rule.get());}
