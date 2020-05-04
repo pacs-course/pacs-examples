@@ -29,7 +29,7 @@ namespace NumericalIntegration{
     
     //! The clone method.
     /*!  
-      The override qualifier hels to avoid error (C++11): this
+      The override qualifier helps to avoid error: this
       method must override a virtual method of the base class.
      */
     QuadratureRuleHandler clone() const override;
@@ -49,7 +49,6 @@ namespace NumericalIntegration{
 			 double const & b) const override;
     std::string name() const override {return "Adaptive";}
   private:
-    //! Static because common to all objects of this class
     //! inline since since c++17 this way we have  a definition.
     QuadratureRulePlusError<SQR> _therule;
     double _targetError;
@@ -61,9 +60,6 @@ namespace NumericalIntegration{
   //QuadratureRulePlusError<SQR> QuadratureRuleAdaptive<SQR>::_therule;
   
 
-  // Here a cannot use simply clone() since it returns a unique_ptr to a 
-  // QuadratureRule and not StandardQuadratureRule, so I need to get the
-  // raw pointer using release()
   template <class SQR>
   QuadratureRuleAdaptive<SQR>::QuadratureRuleAdaptive(double targetError, unsigned int maxIter):
    _targetError(targetError), _maxIter(maxIter)
