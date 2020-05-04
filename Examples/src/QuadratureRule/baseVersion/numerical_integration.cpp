@@ -13,15 +13,6 @@ namespace NumericalIntegration{
     return *this;
   }
 
-// I need to copy the QuadratureRule not its handler!
-  Quadrature & Quadrature::operator=(Quadrature&& rhs){
-    if(this!=&rhs){
-      _mesh=std::move(rhs._mesh);
-      _rule=std::move(rhs._rule);
-    }
-    return *this;
-  }
-
 
   double Quadrature::apply(FunPoint const & f) const
   {
