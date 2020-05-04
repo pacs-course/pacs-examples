@@ -105,8 +105,7 @@ namespace NumericalIntegration{
 	subint.push(make_pair(x1,(x1+x2)/2));
 	subint.push(make_pair((x1+x2)/2,x2));
       }
-    }  double exactVal=exact(a,b);  double exactVal=exact(a,b);
-
+    }
     //std::clog<<"Number of Iterations in Adaptive Rule="<<counter<<std::endl;
     if(counter>=_maxIter) 
       //throw std::runtime_error("Max number iteration exceeded in QuadratureRuleAdaptive");
