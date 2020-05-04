@@ -55,10 +55,6 @@ namespace NumericalIntegration{
     unsigned int _maxIter;
    };
 
-  // Not needed since C++17
-  //template <class SQR>
-  //QuadratureRulePlusError<SQR> QuadratureRuleAdaptive<SQR>::_therule;
-  
 
   template <class SQR>
   QuadratureRuleAdaptive<SQR>::QuadratureRuleAdaptive(double targetError, unsigned int maxIter):
