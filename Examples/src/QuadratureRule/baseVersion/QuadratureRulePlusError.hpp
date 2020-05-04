@@ -6,19 +6,9 @@
 
 namespace NumericalIntegration{
 
-  //! A class that will record the error.
-  /*
-    Since the Quadrature rule is composed inside the class that
-    implements composite integration, I need an external object to
-    gather the information about the value of the error estimate of
-    the given rule. I have chosen to use static members, but other
-    solutions are possible, for instance having a static
-   */
 
-  // Definition of the static member (not neded since C++17)
-  //double ExtractError::error(0.0);
   /*!
-    \brief Standard quadrature rule plus error.
+    \brief Standard quadrature rule plus computation of error estimate.
 
     This class implements the Decorator design pattern:
     it is implemented in terms of an object of the
@@ -29,8 +19,10 @@ namespace NumericalIntegration{
     an estimate of the error using the classical formula based
     on comparing the integral over h and that over h/2.
 
-    It uses the ExtractError class to pass out the information
-    about the error.
+    Since the Quadrature rule is composed inside the class that
+    implements composite integration, I need a way to
+    gather the information about the value of the error estimate of
+    the given rule. I have chosen to use an mutable variable of an embedded struct
    */
 
   template<typename SQR>
@@ -53,12 +45,18 @@ namespace NumericalIntegration{
     //! The actual rule.
     double apply(FunPoint const &, double const & a,
 			 double const & b) const override;
+    //! String to identify the rule type
     std::string name()const override{return "QuadratureRulePlusError";}
-    struct ExtractError
+    //! Internal class to store the error
+    struct Error
      {
-       inline static double error=0.0;
-       static void reset(){error=0.0;}
+       double error=0.0;
+       void reset(){error=0.0;}
      };
+    //! The error.
+    //! @note mutable since it may change even on const object. Indeed apply() is const
+    //! since it override a const method of the base class.
+    mutable Error ExtractError;
     protected:
 
     //! The underlying rule. static because it is common to all objects of the class
@@ -97,7 +95,7 @@ namespace NumericalIntegration{
     double result2=
       _therule.apply(f,a,xm)+_therule.apply(f,xm,b);
     // Record the error in the extractor.
-    ExtractError::error+=(result2-result)*_factor;
+    ExtractError.error+=(result2-result)*_factor;
     return result;// I should return result2 see commment above
   }
 }

@@ -51,7 +51,7 @@ namespace NumericalIntegration{
   private:
     //! Static because common to all objects of this class
     //! inline since since c++17 this way we have  a definition.
-    inline static QuadratureRulePlusError<SQR> _therule;
+    QuadratureRulePlusError<SQR> _therule;
     double _targetError;
     unsigned int _maxIter;
    };
@@ -92,23 +92,25 @@ namespace NumericalIntegration{
     while(counter<_maxIter && !subint.empty()){
       pair<double,double> z = subint.front();
       subint.pop();
-      QuadratureRulePlusError<SQR>::ExtractError::reset();
+      _therule.ExtractError.reset();
       double x1=z.first;
       double x2=z.second;
       double h2=(x2-x1);
       double errorLocalTarget=_targetError*h2/dSize;
       double lr=this->_therule.apply(f,x1,x2);
-      double localError=std::abs(QuadratureRulePlusError<SQR>::ExtractError::error);
+      double localError=std::abs(_therule.ExtractError.error);
       ++counter;
       if (localError<=errorLocalTarget) result+=lr;
       else{
 	subint.push(make_pair(x1,(x1+x2)/2));
 	subint.push(make_pair((x1+x2)/2,x2));
       }
-    }      
+    }  double exactVal=exact(a,b);  double exactVal=exact(a,b);
+
+    //std::clog<<"Number of Iterations in Adaptive Rule="<<counter<<std::endl;
     if(counter>=_maxIter) 
       //throw std::runtime_error("Max number iteration exceeded in QuadratureRuleAdaptive");
-    std::clog<<"Max number iteration exceeded in QuadratureRuleAdaptive: "<<counter<<std::endl;    
+    std::cerr<<"Max number iteration exceeded in QuadratureRuleAdaptive: "<<counter<<std::endl;
     return result;
   }
 }
