@@ -87,6 +87,15 @@ namespace GenericFactory{
     Container_type _storage;
   };
 
+  //! This template alias may be used to store functions: the builder is here the function type
+  /*!
+   * In this version you cannot use the method create()
+   * @todo use enable_if to eliminate the method when AbstractProduct=void
+   */
+  template<typename Identifier, typename FunType>
+  using FunctionFactory=Factory<void,Identifier,FunType>;
+
+
   //    ****   IMPLEMENTATIONS  ****
   
   template
