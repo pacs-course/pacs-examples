@@ -14,10 +14,11 @@
 #include "cppoptlib/solver/gradientdescentsolver.h"
 #include "cppoptlib/solver/bfgssolver.h"
 #include "CostFunctionProxyCppNumSolver.hpp"
-#include <random>
 #endif
 
 #include <iostream>
+#include <random>
+
 int main()
 {
   using namespace LinearAlgebra;
