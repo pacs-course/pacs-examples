@@ -1,9 +1,11 @@
 integrand=fsincos
 udflib=./libudf.so
 library=./libmyrules.so
-#rule=Simpson
+#rule=AdaptiveGauss3
 a=-1
 b=3
 nint=25
 rule=Trapezoidal
+targetError=1.e-5
+maxIter=100
 
