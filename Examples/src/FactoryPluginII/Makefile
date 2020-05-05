@@ -38,8 +38,8 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 CXXFLAGS+=-fPIC
-LDFLAGS= $(OPTFLAGS) -Wl,-E
-LDLIBS=-ldl
+LDFLAGS= $(OPTFLAGS)
+LDLIBS=-L. -lFactory -ldl
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
@@ -47,13 +47,18 @@ LDLIBS=-ldl
 
 all: $(DEPEND) library $(EXEC)
 
-library: libTS.so libQuad.so
+library: libFactory.so libTS.so libQuad.so 
 
-libTS.so: TriangleAndSquare.o Polygon.o
-	$(CXX) $(OPTFLAGS) -shared TriangleAndSquare.o Polygon.o  -o libTS.so
+libFactory.so: FactoryTraits.o
+	$(CXX) $(OPTFLAGS) -shared FactoryTraits.o  -o libFactory.so
 	
+libTS.so: TriangleAndSquare.o Polygon.o
+	$(CXX) $(OPTFLAGS) -shared TriangleAndSquare.o Polygon.o  -L. -lFactory -o libTS.so
+
 libQuad.so: Quadrilateral.o  Polygon.o
-	$(CXX) $(OPTFLAGS) -shared Quadrilateral.o Polygon.o -o libQuad.so
+	$(CXX) $(OPTFLAGS) -shared Quadrilateral.o Polygon.o  -L. -lFactory  -o libQuad.so
+
+
 
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
