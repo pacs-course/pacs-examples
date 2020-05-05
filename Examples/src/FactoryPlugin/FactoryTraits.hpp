@@ -20,8 +20,8 @@ namespace Geometry
   using PolyId=std::string;
   //! The factory, just a map!
   using PolyFactory=std::map<PolyId,PolyBuilder>;
-  //! The object storing the factory.
-  inline PolyFactory polyFactory;
+  //! The object storing the factory. Defined in the source file (must be stored in a shared lib)
+  extern PolyFactory polyFactory;
 }
 
 
