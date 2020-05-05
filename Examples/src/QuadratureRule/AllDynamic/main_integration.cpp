@@ -53,7 +53,7 @@ int main(int argc, char** argv){
   std::string inputFile=key_input("InputFile","quadratura.getpot");
   GetPot   cl(inputFile.c_str());
   // Get the factory with the rules (before loading libs!)
-  RulesFactory & rulesFactory( RulesFactory::Instance());
+  RulesFactory & rulesFactory=QuadratureRuleFactory::MyFactory;
   // Load library with the rules
   string quadlib=cl("library","libmyrules.so");
   void * dylib=dlopen(quadlib.c_str(),RTLD_NOW);
