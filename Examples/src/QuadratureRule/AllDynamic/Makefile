@@ -19,20 +19,20 @@ MAKEFILEH_DIR=../../..
 LIBNAME=myrules
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
-LIBLIB= -L$(PACS_LIB_DIR) -lquadrules
+LIBLIB= -L$(PACS_LIB_DIR) -lquadrules -L. -lrulesFactory
 
-# Library with composite integration stuff (to be done at the moment they are all together)
-LIBNAME2=
-DYNAMIC_LIBFILE2=
-STATIC_LIBFILE2=
+# Library with 
+LIBNAME2=rulesFactory
+DYNAMIC_LIBFILE2=lib$(LIBNAME2).so
+STATIC_LIBFILE2=lib$(LIBNAME2).a
 
 # Library with integrands
 LIBNAME3=udf
 DYNAMIC_LIBFILE3=lib$(LIBNAME3).so
 STATIC_LIBFILE3=lib$(LIBNAME3).a
 
-# Additional librarie
-OTHER_LIBRARIES=-lquadrature -lMesh1D -ldl 
+# Additional libraries for the main
+OTHER_LIBRARIES=-lquadrature -lMesh1D -l$(LIBNAME2) -ldl 
 
 
 
@@ -55,18 +55,16 @@ endif
 export DEBUG
 ifeq ($(DEBUG),no)
   OPTFLAGS=-O3 -funroll-loops
-  LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
-  #LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR)
-  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR) -Wl,-E
+    #LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR)
+  LDFLAGS+= -Wl,-rpath=$(PACS_LIB_DIR)
 
 else
   OPTFLAGS=-g -O0
-  LIBRARIES+=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
 #  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
-  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)  -Wl,-E
+  LDFLAGS+=-Wl,-rpath=$(PACS_LIB_DIR)
 endif
 #CXX=g++-4.7
-LDLIBS=-L$(PACS_LIB_DIR)  $(OTHER_LIBRARIES)
+LDLIBS=-L$(PACS_LIB_DIR) -L.  $(OTHER_LIBRARIES)
 #
 # You may have an include file also in the current directory
 #
@@ -86,7 +84,7 @@ OBJS = $(SRCS:.cpp=.o)
 LIB_SRCS:=myRules.cpp
 LIB_OBJS:=$(LIB_SRCS:.cpp=.o)
 LIB_HEADERS:=$(LIB_SRCS:.cpp=.hpp)
-LIB2_SRCS:=
+LIB2_SRCS:=ruleFactory.cpp
 LIB2_OBJS:=$(LIB2_SRCS:.cpp=.o)
 LIB2_HEADERS:=$(LIB2_SRCS:.cpp=.hpp)
 LIB3_SRCS:=udf.cpp
@@ -122,7 +120,7 @@ all:
 	@echo "To run executable you need to type"
 	@echo "export LD_LIBRARY_PATH="$(PACS_LIB_DIR):.
 
-alllibs: dynamic
+alllib: dynamic
 
 depend: $(DEPEND)
 
@@ -137,7 +135,7 @@ dynamic:
 
 exec: $(EXEC)
 
-library:  $(LIBRARY) $(LIBRARY2) $(LIBRARY3)
+library:   $(LIBRARY2) $(LIBRARY) $(LIBRARY3)
 
 #install:
 #	cp $(LIB_HEADERS) $(LIB2_HEADERS) $(PACS_INC_DIR)
@@ -150,11 +148,6 @@ distclean:
 	$(RM) -r -f ./doc *.a *.so
 	$(RM) -f *.out *.bak *~ $(DEPEND)
 
-alllib:
-	$(MAKE) clean
-	$(MAKE) static DEBUG=no
-	$(MAKE) clean
-	$(MAKE) dynamic DEBUG=no
 doc:
 	doxygen $(DOXYFILE)
 
