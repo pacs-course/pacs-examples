@@ -10,9 +10,10 @@ namespace QuadratureRuleFactory
     <
     NumericalIntegration::QuadratureRule,std::string
     >;
-  
+  //! My only factory
+  extern RulesFactory& MyFactory;
   //! A simple method to insert a rule
-  /*! It is a valid alternative to the "RuleProxy". The RuleProxy us based on the utiliti contained in the 
+  /*! It is a valid alternative to the "RuleProxy". The RuleProxy us based on the utility contained in the
     Proxy.hpp file (in AbstractFactory directory). It is rather nice since it is based on define a special object
     whose construction automatically register a builder in the Factory. However is a bit complicated. HAving just a simple template function
     is easier to understand, even if automatic registration will require to use a compiler directive, see in myRules.cpp.
@@ -21,7 +22,7 @@ namespace QuadratureRuleFactory
   void addRuleToFactory(std::string const & name)
   {
     // get the factory
-    RulesFactory & factory(RulesFactory::Instance());
+    RulesFactory & factory=MyFactory;
     factory.add
     (name,
      []()
