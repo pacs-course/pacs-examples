@@ -6,6 +6,7 @@
 #include "udfHandler.hpp"
 #include "ruleProxy.hpp"
 #include <string>
+#include <filesystem>
 void printHelp(){
 	using std::cout;
 	using std::endl;
@@ -51,6 +52,12 @@ int main(int argc, char** argv){
 
   // Get the input file
   std::string inputFile=key_input("InputFile","quadratura.getpot");
+  std::filesystem::path filepath(inputFile);
+  if (!std::filesystem::exists(filepath))
+    {
+      std::cerr<<"Input file "<<inputFile<<" does not exists\n";
+      return 1;
+    }
   GetPot   cl(inputFile.c_str());
   // Get the factory with the rules (before loading libs!)
   RulesFactory const & rulesFactory=QuadratureRuleFactory::MyFactory;
