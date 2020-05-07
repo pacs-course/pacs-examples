@@ -59,9 +59,11 @@ int main(int argc, char** argv){
       return 1;
     }
   GetPot   cl(inputFile.c_str());
-  // Get the factory with the rules (before loading libs!)
+  //get the factory: this is the correct way
   RulesFactory const & rulesFactory=QuadratureRuleFactory::MyFactory;
-  // Load library with the rules
+  // This is wrong. You should get the global variable
+  //RulesFactory const & rulesFactory=RulesFactory::Instance();
+ // Load library with the rules
   string quadlib=cl("library","libmyrules.so");
   void * dylib=dlopen(quadlib.c_str(),RTLD_NOW);
   if (dylib==nullptr){
