@@ -51,7 +51,7 @@ GMRESR(const Matrix &A, Vector &x, const Vector &b,
   //  H.resize(m+1,m,0.0);
   Real normb = norm(b);
   Vector r   = b- A*x;
-  y          = M*x;
+  y          = x;
   Real beta  = norm(r);
   
   if (normb == 0.0)
