@@ -45,7 +45,7 @@ namespace NumericalIntegration{
        return QuadratureRuleHandler(new GaussLegendre3p(*this));
      }
    };
-  //! Gauss  Legendre rule 2pt
+  //! Gauss  Lobatto rule 4pt
     class GaussLobatto4p final : public StandardQuadratureRule<4>
     {
     public:
