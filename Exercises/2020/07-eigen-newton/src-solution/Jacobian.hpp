@@ -40,14 +40,14 @@ protected:
 };
 
 /// Computes the jacobian by finite differences.
-/*!
-  The final keyword has been introduced in C++11 to stop
-  a hierarchy. No class can be derived from it.
-
-  @note This implementation is mildly dangerous, since it stores a pointer
-  to the linear system and nobody ensures that the linear system
-  will not be destroyed before the call method of this class is
-  used! But we may consider it a very unlikely event.
+/**
+ * The final keyword has been introduced in C++11 to stop a
+ * hierarchy. No class can be derived from it.
+ *
+ * @note This implementation is mildly dangerous, since it stores a pointer
+ * to the linear system and nobody ensures that the linear system will
+ * not be destroyed before the call method of this class is used! But
+ * we may consider it a very unlikely event.
  */
 class DiscreteJacobian final : public JacobianBase
 {
