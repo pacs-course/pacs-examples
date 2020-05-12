@@ -22,7 +22,8 @@
 //*****************************************************************
 
 #include "LinearAlgebraTraits.hpp"
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner,
            class Type >
 int 
@@ -80,4 +81,5 @@ CHEBY(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;                         // no convergence
 }
+}//end namespace
 #endif

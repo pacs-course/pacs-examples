@@ -23,7 +23,9 @@
 //  
 //*****************************************************************
 #include <cmath>
-template < class Matrix, class Vector, class Preconditioner>
+namespace LinearAlgebra
+{
+  template < class Matrix, class Vector, class Preconditioner>
 int 
 MINRES(const Matrix &A, Vector &x, const Vector &b,
    const Preconditioner &M, int &max_iter, typename Vector::Scalar &tol)
@@ -39,7 +41,6 @@ MINRES(const Matrix &A, Vector &x, const Vector &b,
   Real s0(0.0), s1(0.0);
   Real c0(1.0), c1(1.0);
   Real resid(0.0);
-
   // Set initial data
   Real normb  = b.norm();
   Vector v1   = b - A*x;
@@ -55,23 +56,30 @@ MINRES(const Matrix &A, Vector &x, const Vector &b,
     }
   Vector z1   = M.solve(v1);
   auto   dot  = z1.dot(v1);
-  if(dot <=0.0 )
-    throw std::runtime_error("MINRES: Precond. must be spd");
+  if(dot <=0.0 ){
+      tol = resid;
+      max_iter = 0;
+      throw std::runtime_error("MINRES: Precond. must be spd");
+  }
   Real gamma1 = std::sqrt(dot);
   auto eta    = gamma1;
-  
-  for (int i = 1; i <= max_iter; ++i)
+  int i;
+  for (i = 1; i <= max_iter; ++i)
     {
       z1         /= gamma1; // scale z(i)
       Vector Az   = A*z1;
       auto d1     = z1.dot(Az);
       // std::cout<<" It "<<i<<std::endl;
       // std::cout<<" gamma 1"<<gamma1<<std::endl;
-      Vector v2   = Az - (d1/gamma1)*v1 - (gamma1/gamma0)*v0;
+      Vector v2   = Az - (d1/gamma1)*v1;
+      if(i>1) v2-= (gamma1/gamma0)*v0;
       Vector z2   = M.solve(v2);
       dot         = z2.dot(v2);
       if(dot <=0.0 )
+	{ tol= (b-A*x).norm()/normb;
+	max_iter=i;
         throw std::runtime_error("MINRES: Precond. must be spd");
+	}
       auto gamma2 = std::sqrt(dot);
       auto alpha0 = c1*d1 - c0*s1*gamma1;
       auto alpha1 = std::sqrt(alpha0*alpha0+gamma2*gamma2);
@@ -111,7 +119,9 @@ MINRES(const Matrix &A, Vector &x, const Vector &b,
       c1          = c2;
     }
   // Exit with error flag set
-  tol = (b-A*x).norm()/normb;;
+  tol = (b-A*x).norm()/normb;
+  max_iter=i;
   return 1;
 }
+}// end namespace
 #endif

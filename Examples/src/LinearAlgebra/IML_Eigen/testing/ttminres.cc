@@ -11,8 +11,7 @@ using std::cerr;
 #include <Eigen/SparseCore>
 #include <Eigen/IterativeLinearSolvers>
 #include "MM_readers.hpp"
-#include "ir.hpp"                          // IML++ IR template
-
+#include "tminres.hpp"                          // IML++ BiCG template
 int
 main(int argc, char * argv[])
 {
@@ -27,7 +26,7 @@ main(int argc, char * argv[])
   }
 
   double tol = 1.e-6;                    // Convergence tolerance
-  int result, maxit = 150;               // Maximum iterations
+  int result, maxit = 5000;               // Maximum iterations
   std::string matrixFile(argv[1]);
   SpMat A=Eigen::read_MM_Matrix<SpMat>(matrixFile);
   std::cout<<"Matrix size:"<<A.rows()<<"X"<<A.cols()<<std::endl;
@@ -40,11 +39,10 @@ main(int argc, char * argv[])
   //Eigen::IdentityPreconditioner D(A);// Create diagonal preconditioner
   Eigen::DiagonalPreconditioner<double> D(A);// Create diagonal preconditioner
   x=0*x;
+  
+  result = TMINRES(A, x, b, D, maxit, tol);   // Solve system
 
-
-  result = IR(A, x, b, D, maxit, tol);   // Solve system
-
-  cout << "IR flag = " << result << endl;
+  cout << "TMINRES   flag = " << result << endl;
   cout << "iterations performed: " << maxit << endl;
   cout << "tolerance achieved  : " << tol << endl;
   cout << "Error:                " << (x-e).norm()<<std::endl;
