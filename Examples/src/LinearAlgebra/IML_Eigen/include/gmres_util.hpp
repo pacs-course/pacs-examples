@@ -3,7 +3,8 @@
 #include <cmath>
 #include <vector>
 //using std::abs;
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector >
 void 
 Update(Vector &x, int k, Matrix const &h, Vector const  &s, std::vector<Vector>const & v)
@@ -49,7 +50,7 @@ void ApplyPlaneRotation(Real &dx, Real &dy, Real &cs, Real &sn)
   dy = -sn * dx + cs * dy;
   dx = temp;
 }
-
+}// end namespace
 /*
 template < class Real >
 Real 

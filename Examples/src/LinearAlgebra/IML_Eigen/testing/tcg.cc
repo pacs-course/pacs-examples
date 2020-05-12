@@ -15,6 +15,7 @@ using std::cerr;
 int
 main(int argc, char * argv[])
 {
+  using namespace LinearAlgebra;
   // Some useful alias
   using SpMat=Eigen::SparseMatrix<double>;
   using SpVec=Eigen::VectorXd;

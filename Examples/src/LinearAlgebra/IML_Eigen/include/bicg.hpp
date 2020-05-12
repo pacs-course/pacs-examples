@@ -21,7 +21,8 @@
 //  
 //*****************************************************************
 #include "LinearAlgebraTraits.hpp"
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner>
 int 
 BiCG(const Matrix &A, Vector &x, const Vector &b,
@@ -88,5 +89,5 @@ BiCG(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;
 }
-  
+}// end namespace  
 #endif

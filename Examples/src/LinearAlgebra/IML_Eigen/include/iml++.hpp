@@ -10,6 +10,7 @@
 #include "gmresr.hpp"
 #include "fgmres.hpp"
 #include "minres.hpp"
+#include "tminres.hpp"
 #include "ir.hpp"
 #include "qmr.hpp"
 #endif

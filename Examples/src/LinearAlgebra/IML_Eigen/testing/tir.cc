@@ -17,6 +17,7 @@ int
 main(int argc, char * argv[])
 {
   // Some useful alias
+  using namespace LinearAlgebra;
   using SpMat=Eigen::SparseMatrix<double>;
   using SpVec=Eigen::VectorXd;
 
