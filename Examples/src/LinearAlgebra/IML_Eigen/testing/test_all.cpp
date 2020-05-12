@@ -18,7 +18,7 @@ using std::cerr;
 #include <map>
 #include <string>
 //! Select solvers
-enum SolverSwitch {Umfpack, SparseLU, gmres, gmresr, cg, cheby, bicgstab, cgs,bicg,ir,qmr,fgmres,minres};
+enum SolverSwitch {Umfpack, SparseLU, gmres, gmresr, cg, cheby, bicgstab, cgs,bicg,ir,qmr,fgmres,minres,tminres};
 //! where to store parameters
 struct TestParameters
 {
@@ -33,7 +33,7 @@ struct TestParameters
 
 //! Map solvers to switch
 const std::map<std::string,SolverSwitch> getSolver=
-  {
+    {
     {std::string{"umfpack"},Umfpack},
     {std::string{"sparselu"},SparseLU},
     {std::string{"gmres"},gmres},
@@ -46,7 +46,8 @@ const std::map<std::string,SolverSwitch> getSolver=
     {std::string{"ir"},ir},
     {std::string{"qmr"},qmr},
     {std::string{"fgmres"},fgmres},
-    {std::string{"minres"},minres}
+    {std::string{"minres"},minres},
+    {std::string{"tminres"},tminres}
   }; 
 
 //! Read parameters from getpot object
@@ -102,6 +103,7 @@ std::ostream & operator << (std::ostream & out, TestParameters const & p)
 int
 main(int argc, char * argv[])
 {
+  using namespace LinearAlgebra;
   // Parse command line with getpot
   GetPot indata(argc,argv);
   if ( indata.search(2,"--help","-h") )
@@ -143,8 +145,10 @@ main(int argc, char * argv[])
     D.setFillfactor(4);
     D.compute(A);
   */
-  //Eigen::IdentityPreconditioner D(A);// Create identity preconditioner (no prec).
+  Eigen::IdentityPreconditioner I(A);// Create identity preconditioner (no prec).
   Eigen::DiagonalPreconditioner<double> D(A);// Create diagonal preconditioner
+  //Eigen::IncompleteCholesky<double> IC(A);// Create I cholesky preconditioner
+  Eigen::IncompleteLUT<double> ILU(A);// create ILU preconditioner
   x=0*x;// Start from 0.
 
   // Status
@@ -186,7 +190,7 @@ main(int argc, char * argv[])
     case gmresr :
       {
         auto m = testParameters.gmres_levels;
-        result = GMRESR(A, x, b, D, m, maxit, tol);  // Solve system
+        result = GMRESR(A, x, b, I, m, maxit, tol);  // Solve system
         break;
       }
     case fgmres :
@@ -196,19 +200,22 @@ main(int argc, char * argv[])
         break;
       }
     case cg:
-      result = CG(A, x, b, D, maxit, tol);   // Solve system
+      result = CG(A, x, b, I, maxit, tol);   // Solve system
       break;
     case minres:
       try
         {
-          result = MINRES(A, x, b, D, maxit, tol);   // Solve system
+          result = MINRES(A, x, b, I, maxit, tol);   // Solve system
         }
-      catch (...)
+      catch (std::runtime_error const & rte)
         {
-          std::cerr<< "Something wrong"<<std::endl;
+          std::cerr<< "Something wrong "<<rte.what()<<std::endl;
         }
       break;
-    case cheby:
+    case tminres:
+	  result = TMINRES(A, x, b, I, maxit, tol,0,true);   // Solve system
+	  break;
+          case cheby:
       result = CHEBY(A, x, b, D, maxit, tol, testParameters.eigmin, testParameters.eigmax);  // Solve system
     break;
     case bicgstab:
@@ -232,11 +239,13 @@ main(int argc, char * argv[])
   
   
 
-
+  double solError=(x-e).norm()/e.norm();
+  double resFinal=(b-A*x).norm()/b.norm();
   cout << "Solver flag = " << result << endl;
-  cout << "iterations performed: " << maxit << endl;
-  cout << "tolerance achieved  : " << tol << endl;
-  cout << "Error:                " << (x-e).norm()/e.norm()<<std::endl;
-
+  cout << "iterations performed:  " << maxit << endl;
+  cout << "tolerance achieved  :  " << tol << endl;
+  cout << "Relative Error:        " << solError<<std::endl;
+  cout << "Relative Residual Error:" << resFinal<<std::endl;
+  cout << "Cond. Estimate         :"<< solError/resFinal<<std::endl;
   return result;
 }

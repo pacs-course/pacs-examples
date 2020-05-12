@@ -7,7 +7,7 @@
 //! FGMRES solves the unsymmetric linear system Ax = b using the 
 //! Flexible version for Generalized Minimum Residual method
 //!
-//! GMRES(m) follows the algorithm described in
+//! FGMRES(m) follows the algorithm described in
 //! "A flexible inner-outer preconditioned GMRES algorithm"
 //!  by Y. Saad 
 //!
@@ -31,7 +31,8 @@
 #include "gmres_util.hpp"
 #include "LinearAlgebraTraits.hpp"
 #include <memory>
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner>
 int 
 FGMRES(const Matrix &A, Vector &x, const Vector &b,
@@ -107,5 +108,5 @@ FGMRES(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;
 }
-
+}//end neamespace
 #endif
