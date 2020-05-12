@@ -15,7 +15,7 @@ matrix::transpose() const
                                            retval.get_rows(),
                                            retval.get_cols());
 
-  eigen_retval.transpose();
+  eigen_retval.transposeInPlace();
 
   return retval;
 }

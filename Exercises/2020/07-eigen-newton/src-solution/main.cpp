@@ -7,11 +7,12 @@
 int
 main(int argc, char **argv)
 {
-  using ArgumentType = NewtonTraits::ArgumentType;
-  using JacobianType = NewtonTraits::JacobianMatrixType;
+  using ArgumentType       = NewtonTraits::ArgumentType;
+  using ReturnType         = NewtonTraits::ReturnType;
+  using JacobianMatrixType = NewtonTraits::JacobianMatrixType;
 
-  auto system = [](const ArgumentType &x) -> ArgumentType {
-    ArgumentType y(2);
+  auto system = [](const ArgumentType &x) -> ReturnType {
+    ReturnType y(2);
 
     y(0) = (1 - x(0)) * (1 - x(0)) + 0.1 * (5 - x(1)) * (5 - x(1));
     y(1) = 1.5 - x(0) - 0.1 * x(1);
@@ -19,8 +20,8 @@ main(int argc, char **argv)
     return y;
   };
 
-  auto jacobianFun = [](const ArgumentType &x) -> JacobianType {
-    JacobianType J(2, 2);
+  auto jacobianFun = [](const ArgumentType &x) -> JacobianMatrixType {
+    JacobianMatrixType J(2, 2);
 
     J(0, 0) = -2 * (1 - x(0));
     J(0, 1) = -0.2 * (5 - x(1));
@@ -55,7 +56,7 @@ main(int argc, char **argv)
   }
 
   solver.setJacobianPtr(
-    make_Jacobian<JacobianKind::Discrete>(nullptr, 10));
+    make_Jacobian<JacobianType::Discrete>(nullptr, 10));
 
   {
     std::cout << std::endl
