@@ -34,7 +34,9 @@
 #include <cmath>
 #include "LinearAlgebraTraits.hpp"
 
-template < class Matrix, class Vector, class Preconditioner1,
+namespace LinearAlgebra
+{
+  template < class Matrix, class Vector, class Preconditioner1,
            class Preconditioner2>
 int 
 QMR(const Matrix &A, Vector &x, const Vector &b, const Preconditioner1 &M1, 
@@ -164,4 +166,5 @@ QMR(const Matrix &A, Vector &x, const Vector &b, const Preconditioner1 &M1,
   tol = resid;
   return 1;                            // no convergence
 }
+}// end namespace
 #endif

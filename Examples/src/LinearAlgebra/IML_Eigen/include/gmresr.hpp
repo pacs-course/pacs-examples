@@ -30,7 +30,8 @@
 #include "gmres_util.hpp"
 #include "LinearAlgebraTraits.hpp"
 #include <memory>
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner>
 int 
 GMRESR(const Matrix &A, Vector &x, const Vector &b,
@@ -47,11 +48,11 @@ GMRESR(const Matrix &A, Vector &x, const Vector &b,
   Vector  z(b.size());
   Vector  y(b.size());
   Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> H=
-    Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>::Zero(m+1,m);
+  Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>::Zero(m+1,m);
   //  H.resize(m+1,m,0.0);
   Real normb = norm(b);
   Vector r   = b- A*x;
-  y          = x;
+  y          = x; // it should be M*x. Better set x=0
   Real beta  = norm(r);
   
   if (normb == 0.0)
@@ -109,6 +110,7 @@ GMRESR(const Matrix &A, Vector &x, const Vector &b,
   
   tol = resid;
   return 1;
+}
 }
 
 #endif

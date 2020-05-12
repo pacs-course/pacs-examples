@@ -31,7 +31,8 @@
 #include "gmres_util.hpp"
 #include "LinearAlgebraTraits.hpp"
 #include <memory>
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner>
 int 
 GMRES(const Matrix &A, Vector &x, const Vector &b,
@@ -42,7 +43,9 @@ GMRES(const Matrix &A, Vector &x, const Vector &b,
   using LinearAlgebra::dot;
   using Real= typename Vector::Scalar;
   Real resid;
-  int i, j = 1, k;
+  int i=0;
+  int j = 1;
+  int k =0;
   Vector s(m+1), cs(m+1), sn(m+1);
   Vector  w(b.size());
   Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic> H=
@@ -96,7 +99,7 @@ GMRES(const Matrix &A, Vector &x, const Vector &b,
     w = b - A * x;
     r = M.solve(w);
     beta = norm(r);
-    resid = norm(w)/beta;
+    resid = norm(w)/b.norm();
     if (resid < tol) {
       tol = resid;
       max_iter = j;
@@ -107,5 +110,5 @@ GMRES(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;
 }
-
+}// end namespace
 #endif
