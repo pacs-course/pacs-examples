@@ -21,7 +21,8 @@
 //  
 //*****************************************************************
 #include "LinearAlgebraTraits.hpp"
-
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner>
 int 
 CGS(const Matrix &A, Vector &x, const Vector &b,
@@ -82,5 +83,5 @@ CGS(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;
 }
-
+}// end namespace
 #endif
