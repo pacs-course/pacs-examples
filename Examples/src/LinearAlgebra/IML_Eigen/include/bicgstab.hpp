@@ -22,7 +22,9 @@
 //*****************************************************************
 
 #include "LinearAlgebraTraits.hpp"
-template < class Matrix, class Vector, class Preconditioner>
+namespace LinearAlgebra
+{
+  template < class Matrix, class Vector, class Preconditioner>
 int 
 BiCGSTAB(const Matrix &A, Vector &x, const Vector &b,
          const Preconditioner &M, int &max_iter, typename Vector::Scalar &tol)
@@ -90,4 +92,5 @@ BiCGSTAB(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;
 }
+}//end namespace
 #endif

@@ -16,6 +16,7 @@ int
 main(int argc, char * argv[])
 {
   // Some useful alias
+  using namespace LinearAlgebra;
   using SpMat=Eigen::SparseMatrix<double>;
   using SpVec=Eigen::VectorXd;
 
@@ -25,7 +26,7 @@ main(int argc, char * argv[])
   }
 
   double tol = 1.e-6;                       // Convergence tolerance
-  int result, maxit = 150, restart = 32;    // Maximum, restart iterations
+  int result, maxit = 5000, restart = 50;    // Maximum, restart iterations
 
   std::string matrixFile(argv[1]);
   SpMat A=Eigen::read_MM_Matrix<SpMat>(matrixFile);

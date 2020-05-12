@@ -21,6 +21,8 @@
 //  
 //*****************************************************************
 
+namespace LinearAlgebra
+{
 template < class Matrix, class Vector, class Preconditioner>
 int 
 CG(const Matrix &A, Vector &x, const Vector &b,
@@ -75,4 +77,5 @@ CG(const Matrix &A, Vector &x, const Vector &b,
   tol = resid;
   return 1;
 }
+}//end namespace
 #endif
