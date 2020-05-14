@@ -40,12 +40,12 @@ main(int argc, char **argv)
       if (mpi_rank == ping_pong_count % 2)
         {
           ++ping_pong_count;
+
           MPI_Send(
             &ping_pong_count, 1, MPI_INT, partner_rank, 0, mpi_comm);
 
-          std::cout << "Ping! Rank " << mpi_rank
-                    << " sent     to   rank " << partner_rank
-                    << " (ping_pong_count = " << ping_pong_count
+          std::cout << "Ping! Rank " << mpi_rank << " ---> rank "
+                    << partner_rank << " (count = " << ping_pong_count
                     << ")." << std::endl;
         }
       else // if (mpi_rank == 1)
@@ -58,9 +58,8 @@ main(int argc, char **argv)
                    mpi_comm,
                    &status);
 
-          std::cout << "Pong! Rank " << mpi_rank
-                    << " received from rank " << partner_rank
-                    << " (ping_pong_count = " << ping_pong_count
+          std::cout << "Pong! Rank " << mpi_rank << " <--- rank "
+                    << partner_rank << " (count = " << ping_pong_count
                     << ")." << std::endl;
         }
     }
