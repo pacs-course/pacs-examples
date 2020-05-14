@@ -4,7 +4,8 @@
 #include <vector>
 
 /**
- * Non-blocking communication.
+ * Solution to deadlock of 04-deadlock.cpp using non-blocking
+ * communication.
  * The vector "to_receive" in rank 0 is replaced with
  * the vector "to_send" in rank 1, and vice-versa.
  */
@@ -41,6 +42,7 @@ main(int argc, char **argv)
 
   MPI_Request request;
   MPI_Status  status;
+  int         ready;
 
   MPI_Irecv(to_receive.data(),
             to_receive.size(),
@@ -50,6 +52,11 @@ main(int argc, char **argv)
             mpi_comm,
             &request);
 
+  MPI_Test(&request, &ready, MPI_STATUS_IGNORE);
+  std::cout << "Test on rank " << mpi_rank
+            << ": non-blocking communication "
+            << (ready ? "" : "not yet ") << "completed." << std::endl;
+
   MPI_Send(to_send.data(),
            to_send.size(),
            MPI_DOUBLE,
@@ -57,7 +64,12 @@ main(int argc, char **argv)
            tag_send,
            mpi_comm);
 
+  // Wait for the communication to end.
   MPI_Wait(&request, &status);
+
+  std::cout << "Wait on rank " << mpi_rank
+            << ": non-blocking communication completed." << std::endl
+            << std::endl;
 
   int recv_count;
   MPI_Get_count(&status, MPI_DOUBLE, &recv_count);
@@ -67,6 +79,7 @@ main(int argc, char **argv)
             << "    Message source: rank " << status.MPI_SOURCE << "."
             << std::endl
             << "    Message tag:    " << status.MPI_TAG << "."
+            << std::endl
             << std::endl;
 
   MPI_Finalize();

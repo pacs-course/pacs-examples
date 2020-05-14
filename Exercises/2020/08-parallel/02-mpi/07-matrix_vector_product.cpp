@@ -2,6 +2,8 @@
 #include <omp.h>
 
 #include <algorithm>
+#include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -45,6 +47,9 @@ main(int argc, char **argv)
               << ", number of threads: " << omp_get_num_threads()
               << std::endl;
 
+  // Set to true to print matrix, vector and result.
+  bool print = false;
+
   unsigned int n_rows;
   unsigned int n_cols;
 
@@ -52,10 +57,15 @@ main(int argc, char **argv)
   std::vector<double> vector;
   std::vector<double> result;
 
+  // Vectors to store the number of elements to send to each
+  // processor and the offset index where to start reading them from.
   std::vector<int> send_counts;
-  std::vector<int> send_offset;
+  std::vector<int> send_start_idx;
+
+  // Vectors to store the number of elements to receive from each
+  // processor and the offset index where to start writing them into.
   std::vector<int> recv_counts;
-  std::vector<int> recv_offset;
+  std::vector<int> recv_start_idx;
 
   if (mpi_rank == 0)
     {
@@ -106,43 +116,49 @@ main(int argc, char **argv)
         return rand(engine);
       });
 
-      std::cout << "Matrix:" << std::endl;
-      for (unsigned int i = 0; i < n_rows; ++i)
+      if (print)
         {
-          for (unsigned int j = 0; j < n_cols; ++j)
-            std::cout << matrix[i * n_cols + j] << '\t';
+          std::cout << "Matrix:" << std::endl;
+          for (unsigned int i = 0; i < n_rows; ++i)
+            {
+              for (unsigned int j = 0; j < n_cols; ++j)
+                std::cout << std::setw(12) << matrix[i * n_cols + j];
 
+              std::cout << std::endl;
+            }
           std::cout << std::endl;
         }
-      std::cout << std::endl;
 
       // Generate vector.
       std::generate(vector.begin(), vector.end(), [&engine, &rand]() {
         return rand(engine);
       });
 
-      std::cout << "Vector:" << std::endl;
-      for (const auto &v : vector)
+      if (print)
         {
-          std::cout << v << ' ';
+          std::cout << "Vector:" << std::endl;
+          for (const auto &v : vector)
+            {
+              std::cout << std::setw(12) << v;
+            }
+          std::cout << std::endl << std::endl;
         }
-      std::cout << std::endl << std::endl;
 
       send_counts.resize(mpi_size);
-      send_offset.resize(mpi_size);
+      send_start_idx.resize(mpi_size);
       recv_counts.resize(mpi_size);
-      recv_offset.resize(mpi_size);
+      recv_start_idx.resize(mpi_size);
 
-      int offset = 0;
+      int start_idx = 0;
       for (int i = 0; i < mpi_size; ++i)
         {
           recv_counts[i] = (i < remainder) ? (count + 1) : count;
           send_counts[i] = recv_counts[i] * n_cols;
 
-          recv_offset[i] = offset;
-          send_offset[i] = offset * n_cols;
+          recv_start_idx[i] = start_idx;
+          send_start_idx[i] = start_idx * n_cols;
 
-          offset += recv_counts[i];
+          start_idx += recv_counts[i];
         }
     }
 
@@ -159,7 +175,7 @@ main(int argc, char **argv)
   std::vector<double> matrix_local(n_rows_local * n_cols);
   MPI_Scatterv(matrix.data(),
                send_counts.data(),
-               send_offset.data(),
+               send_start_idx.data(),
                MPI_DOUBLE,
                matrix_local.data(),
                n_rows_local * n_cols,
@@ -186,17 +202,17 @@ main(int argc, char **argv)
               MPI_DOUBLE,
               result.data(),
               recv_counts.data(),
-              recv_offset.data(),
+              recv_start_idx.data(),
               MPI_DOUBLE,
               0,
               mpi_comm);
 
-  if (mpi_rank == 0)
+  if (print && mpi_rank == 0)
     {
       std::cout << std::endl << "Result:" << std::endl;
 
       for (const auto &v : result)
-        std::cout << v << ' ';
+        std::cout << std::setw(12) << v;
 
       std::cout << std::endl << std::endl;
     }
