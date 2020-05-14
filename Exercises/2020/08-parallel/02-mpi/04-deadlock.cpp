@@ -40,6 +40,9 @@ main(int argc, char **argv)
 
   if (mpi_rank == 0)
     {
+      std::cout << "Rank " << mpi_rank << " waiting to receive..."
+                << std::endl;
+
       MPI_Recv(&number_to_receive,
                1,
                MPI_INT,
@@ -48,11 +51,18 @@ main(int argc, char **argv)
                mpi_comm,
                &status);
 
+      std::cout << "Rank " << mpi_rank << " received." << std::endl;
+
       MPI_Send(
         &number_to_send, 1, MPI_INT, partner_rank, 10, mpi_comm);
+
+      std::cout << "Rank " << mpi_rank << " sent." << std::endl;
     }
   else // if (mpi_rank == 1)
     {
+      std::cout << "Rank " << mpi_rank << " waiting to receive..."
+                << std::endl;
+
       MPI_Recv(&number_to_receive,
                1,
                MPI_INT,
@@ -61,8 +71,12 @@ main(int argc, char **argv)
                mpi_comm,
                &status);
 
+      std::cout << "Rank " << mpi_rank << " received." << std::endl;
+
       MPI_Send(
         &number_to_send, 1, MPI_INT, partner_rank, 20, mpi_comm);
+
+      std::cout << "Rank " << mpi_rank << " sent." << std::endl;
     }
 
   MPI_Finalize();
