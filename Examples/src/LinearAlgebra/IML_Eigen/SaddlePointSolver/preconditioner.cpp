@@ -10,7 +10,8 @@
 #include <unsupported/Eigen/SparseExtra>
 #include <chrono>
 #include <cmath>
-
+#include <iostream>
+#include "cg.hpp"
 namespace FVCode3D
 {
   // LF si potrebbe usare decltype(auto)?
@@ -184,9 +185,9 @@ Real constexpr HSS_preconditioner::alpha_default;
     for(int i=0; i<BBtalpha.rows(); i++)
       BBtalpha.coeffRef(i,i) += alpha*alpha;
 
-    cg.setMaxIterations(MaxIt);
-    cg.setTolerance(tol);
-    cg.compute(Halpha);
+    //cg.setMaxIterations(MaxIt);
+    //cg.setTolerance(tol);
+    //cg.compute(Halpha);
     cholT.compute(Talpha);
     cholBBt.compute(BBtalpha);
   }
@@ -194,21 +195,27 @@ Real constexpr HSS_preconditioner::alpha_default;
   Vector HSS_preconditioner::solve(const Vector & r) const
   {
     auto & B = *Bptr;
-    Vector rscaled{2*alpha*r};
+    Vector rscaled=2*alpha*r;
     // First step: solve the H linear system
-    Vector omega1 = cg.solve(rscaled.head(Halpha.rows()));
+    //Vector omega1 = cg.solve(rscaled.head(Halpha.rows()));
+    Eigen::DiagonalPreconditioner<double> D(Halpha);
+    Vector omega1(Halpha.rows());
+    omega1.fill(0.0);
+    auto tolrcg=tol;
+    int maxitcg=MaxIt;
+    Vector b = rscaled.head(Halpha.rows());
+    LinearAlgebra::CG(Halpha,omega1,b, D, maxitcg, tolrcg);
     // Second step: solve the T linear system
     Vector omega2(Ncell+Nfrac);
-    //for(UInt i = 0; i<Ncell; i++)
-    //  {
-   //	omega2[i] = r[Halpha.rows()+i]/alpha;
-     // }
     omega2.tail(Nfrac) = cholT.solve(rscaled.tail(Nfrac));
+    for(UInt i = 0; i<Ncell; i++)
+     {
+  	omega2[i] = 2.*r[Halpha.rows()+i];
+     }
     // Third step: solve the BBt linear system
     Vector z(Halpha.rows()+Ncell+Nfrac);
     z.tail(Ncell+Nfrac) = cholBBt.solve(B*omega1+alpha*omega2);
     z.head(Halpha.rows()) = (omega1-B.transpose()*z.tail(Ncell+Nfrac))/alpha;
-
     return z;
   }
 

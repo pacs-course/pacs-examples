@@ -238,6 +238,8 @@ main(int argc, char * argv[])
       std::clog<<"Condition Number of M "<<evalues(0)/evalues(evalues.size()-1)<<std::endl;
                    evalues=computeSymEigenValues(T,2);
       std::clog<<"Eigenvalues of T "<<evalues<<std::endl;
+      auto nn=saddlePointMat.squaredNorm();
+      std::clog<<"Norm of SPM "<<std::sqrt(nn)<<" Normalised norm "<<std::sqrt(nn/saddlePointMat.nonZeros())<<std::endl;
       return 0;
     }
   M.resize(0,0);
