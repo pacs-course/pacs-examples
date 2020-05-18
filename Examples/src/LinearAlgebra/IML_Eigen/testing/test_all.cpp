@@ -148,7 +148,7 @@ main(int argc, char * argv[])
   Eigen::IdentityPreconditioner I(A);// Create identity preconditioner (no prec).
   Eigen::DiagonalPreconditioner<double> D(A);// Create diagonal preconditioner
   //Eigen::IncompleteCholesky<double> IC(A);// Create I cholesky preconditioner
-  Eigen::IncompleteLUT<double> ILU(A);// create ILU preconditioner
+  //Eigen::IncompleteLUT<double> ILU(A);// create ILU preconditioner
   x=0*x;// Start from 0.
 
   // Status
