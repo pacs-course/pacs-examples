@@ -177,7 +177,13 @@ public:
 		B.resize(Brow,Mdim);
 		T.resize(Brow,Brow);
 	}
+
+    Real squaredNorm()const
+    {
+      return M.squaredNorm()+2*B.squaredNorm()+T.squaredNorm();
+    }
 	
+    Real norm(){return std::sqrt(this->squaredNorm());}
 	//! Get the number of non zero
     /*!
      * @return the number of non zero
@@ -197,9 +203,9 @@ public:
       Vector result(M.rows()+B.rows());
       result.head(M.rows()) = M*x.head(M.cols()) + B.transpose()*x.tail(B.rows());
       if (isSymUndef==true)
-	result.tail(B.rows()) = B*x.head(M.cols()) + T*x.tail(B.rows());
+	result.tail(B.rows())= B*x.head(M.cols()) + T*x.tail(B.rows());
       else
-	result.tail(B.rows()) = -(B*x.head(M.cols()) + T*x.tail(B.rows()));
+	result.tail(B.rows())= -(B*x.head(M.cols()) + T*x.tail(B.rows()));
       return result;
 	}
     //@}
