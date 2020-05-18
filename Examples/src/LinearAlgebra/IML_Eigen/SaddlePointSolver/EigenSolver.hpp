@@ -50,7 +50,7 @@ Eigen::VectorXd computeSymEigenValues(SpMat const & M, int numEigs)
   Eigen::VectorXd evalues;
   Spectra::SparseSymMatProd<double> op(M);
   Spectra::SymEigsSolver< double, SelectionRule, Spectra::SparseSymMatProd<double> >
-  eigs(&op, numEigs, 10*numEigs);
+  eigs(&op, numEigs, 20*numEigs);
   eigs.init();
   eigs.compute();
   auto status=eigs.info();
