@@ -271,7 +271,7 @@ TMINRES(const Operator &A, Vector &x, const Vector &b,
           gamma = std::max(gamma, eps);
           cs = gbar/gamma;                     // c_k
           sn = beta/gamma;                     // s_k
-          phi *= cs;                     // phi_k
+          phi    = cs*phibar;                     // phi_k
           phibar = sn*phibar;                  // phibar_{k+1}
 
 
