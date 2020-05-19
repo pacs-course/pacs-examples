@@ -214,8 +214,10 @@ public:
 	  bool  isSymUndef=true;
     //! return the full matrix
     SpMat fullMatrix() const;
+  //! Clears matrix and frees memory
+  void clear();
 private:
-  //LF Store as references
+  //@toto LF Store as references
 	//! The M block matrix
 	SpMat     M;
 	//! The B block matrix 
