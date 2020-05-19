@@ -76,6 +76,15 @@ namespace FVCode3D
     return result;
   }
 
+  void SaddlePointMat::clear()
+  {
+  M.resize(0,0);
+  B.resize(0,0);
+  T.resize(0,0);
+  M.data().squeeze();
+  B.data().squeeze();
+  T.data().squeeze();
+  }
 
   Vector diagonal_preconditioner::solve(const Vector & r) const
   {
