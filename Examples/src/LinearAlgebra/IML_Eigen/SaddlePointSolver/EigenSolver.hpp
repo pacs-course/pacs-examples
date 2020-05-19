@@ -34,7 +34,7 @@ Eigen::VectorXcd computeEigenValues(SpMat const & M, int numEigs)
   Spectra::SparseGenMatProd<double> op(M);
   Spectra::GenEigsSolver< double, SelectionRule, Spectra::SparseGenMatProd<double> > eigs(&op, numEigs, 2*numEigs+1);
   eigs.init();
-  eigs.compute();
+  eigs.compute(2500,1.e-6);
   if(eigs.info() != Spectra::SUCCESSFUL)
     {
       std::cerr<<"Eigenvalue computation not successful";
@@ -49,8 +49,10 @@ Eigen::VectorXd computeSymEigenValues(SpMat const & M, int numEigs)
 {
   Eigen::VectorXd evalues;
   Spectra::SparseSymMatProd<double> op(M);
+  int numArnoldi=std::min(150L,std::max(25L*numEigs,M.rows()/600L));
+
   Spectra::SymEigsSolver< double, SelectionRule, Spectra::SparseSymMatProd<double> >
-  eigs(&op, numEigs, 20*numEigs);
+  eigs(&op, numEigs, numArnoldi);
   eigs.init();
   eigs.compute();
   auto status=eigs.info();
@@ -60,12 +62,12 @@ Eigen::VectorXd computeSymEigenValues(SpMat const & M, int numEigs)
     }
   else if (status== Spectra::NOT_CONVERGING)
     {
-      std::cerr<<"Eigenvalue computation not converged. ";
+      std::cerr<<"Eigenvalue computation not converged.\n ";
       evalues=eigs.eigenvalues();
     }
   else
     {
-         std::cerr<<"Eigenvalue computation not successful. ";
+         std::cerr<<"Eigenvalue computation not successful.\n ";
     }
   return evalues;
 }
