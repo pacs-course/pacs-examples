@@ -32,7 +32,7 @@ namespace Utility
  using int_type=long unsigned int; 
  //! Another implementation, it makes use of the
  //! new constexpr magic adn works with any integer types!. Needs at least C++11
- //! @note In c++17 you can simplify a little the syntax (or use std::gcd() directly!)
+ //! @note In c++17 you can use if constwexpr (or use std::gcd() directly!)
  template <class M, class N>
  auto constexpr  GCD(const M m , const N n) -> typename std::common_type<M,N>::type
   {

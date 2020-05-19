@@ -33,15 +33,16 @@ namespace LinearAlgebra {
   {
   public:
     using size_type=  typename Matrix_Traits<Matrix>::size_type;
-
     using value_type= typename Matrix_Traits<Matrix>::value_type;
     //! A more sophisticated method to get value type!
-    /*
+    /*!
+     * @code
       using value_type=
       typename std::remove_reference<
       typename std::remove_cv<
       decltype(std::declval<Matrix>()(0,0))
       >::type>::type;
+      @endcode
     */
   private:
     //! A type dependent on the type of the matrix
@@ -57,7 +58,6 @@ namespace LinearAlgebra {
   public:
      TransposedView(Matrix& A) : ref(A) {}
     
-
     //! I have to handle the situation when a non const TransposedView stores a const matrix
     /*! 
      The non const version is enabled only if the viewed matrix
@@ -83,10 +83,25 @@ namespace LinearAlgebra {
   
   //! This returns the transposed view of a matrix
   template <typename Matrix>
-  TransposedView<Matrix> inline trans(Matrix& A)
+  TransposedView<Matrix> inline make_transposeView(Matrix& A)
   {
-    return TransposedView<Matrix>(A);
+    return TransposedView<Matrix>{A};
   }
+  /*
+   *  As always in c++ there are alternatives, I can for instance create a make_transposeView
+   *  that returns a const TransposedView whenever Matrix is constant. This way I do not need enable_if
+   *  But then the user must always make_transposeView to create the view.
+   *
+   *  This should work (untested)
+   *
+   *  template <typename Matrix>
+   *  auto make_transposeView(Matrix& A)
+   *  {
+   *  using returnType=std::conditional_t<std::is_const_v<Matrix>,const TransposedView<Matrix>,TransposedView<Matrix>>;
+   *  return returnType{A};
+   *  }
+   *
+   */
 }// end namespace
 
 #endif
