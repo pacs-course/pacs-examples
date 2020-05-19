@@ -18,14 +18,14 @@
 
 * *Metadot* Implementtion of the dot product between two std::array. We use recursion to unwrap the loop!
 
-* *Pi*  Compiting Pi using a truncated series. I can specify the number of elements of elements of the series I want and recursion is used. 
-	I can also specify in a tempalte argument which type of float to store the result.
+* *Pi*  Computing Pi using a truncated series. You can specify the number of elements of the series you wish to use: recursion is used. 
+	You can also specify in a tempalte argument which type of float to store the result.
 	
 * *Pow*  Different recursion technique to compute the exponent function x^n when n is an integer. Here we show also an usage of type tagdispatching, 
 	that is the use of a struct that represent a value to select, via overloading, the correct function to call. **Note** C++17 has finally introduced a specialization of `std::pow()` for integer exponents.
 	
-* *Switch*	We show first how the use of types stored in a class can be used to determine template derived types. A mesh class selects automaticaly 
-	the type of the boundary elements according to the type of the domain element. We show also an approach where an integer representing
+* *Switch*	We show first how types stored in a class can be used to determine template derived types. A mesh class selects automatically 
+	the type of the boundary elements according to the type of the domain elements. We show also an approach where an integer representing
 	the intrinsic dimension is mapped to the correspondint element.
 
 * *transposeView* An example of a view. A view is a special proxy class that allows to give a different semantic to an object. In this case, we have a class 
@@ -36,9 +36,3 @@
 * *Trivial*. This example shows the difference and some application of `std::is_trivial`, `std::is_trivially_constuctible` and `std::has_standard_layout`. If an object is trivially constuctible can be serialized (sufficient condition!) if it has standard layout it may be converted to pointer to the
  	first member or passed to a c/fortran function as a normal struct (in c) or a structure type in Fortran. Again, it is just a sufficient 
  	condition.
- 	
-* *TypeTraitsC11* Some examples of using the type trait utilities introduced since C++11:
-    * fselect. A template class that returna a value even if the template parameter is a pointer. A use of `std::remove_pointer` and
-    		of `std::is_pointer`;
-    * *move_swap*. My implementation of the swap utility. Use the one given by the standard library, this is just an example of possible implementation
-    * *main_traits* Testing the previous utilities and also shows an example of usage of `std::is_base_of<B,D>`

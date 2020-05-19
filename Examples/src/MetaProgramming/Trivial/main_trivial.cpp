@@ -9,7 +9,6 @@ extern "C"
 }
 //! A trivial 
 struct Trivial{
-  Trivial()=default; // or you can jut omit it
   double a;
   int b;
 };
@@ -27,12 +26,12 @@ struct StandardLayout
   //! Copy constructor
   /*!
     This is useless and actually wrong since this constructor
-    is equivalent to the synthetic (trivial) one. But declaring
+    is equivalent to the synthetic one. But declaring
     a user-defined copy constructor I am making this struct not
-    satysfying the requirement of a TriviallyCopyable class, even
-    if morally it is TriviallyCopyable
+    satysfying the requirement of a TriviallyCopyable class (even
+    if morally it is trivially copyable). But is still has standard layout.
     
-    @note Don't declare (or declare it default) s copy contructor if the
+    @note Don't declare (or declare it default) the copy contructor if the
     synthetic one is what you need!
    */
   StandardLayout(StandardLayout const & rhs):m_a(rhs.m_a),m_b(rhs.m_b){};
@@ -67,7 +66,7 @@ int main()
   std::cout<<sl.m_a<<" "<<sl.m_b<<std::endl;
   std::cout<<s2.m_a<<" "<<s2.m_b<<std::endl;
 
-  // Interfacing with a use a C function
+  // More interesting: interfacing with a C function
   fillMyStruct(reinterpret_cast<MyStruct*>(&sl));
   std::cout<<"After calling the C function the values should be 3 and 7.:"<<std::endl;
   std::cout<<sl.m_a<<" "<<sl.m_b<<std::endl;
