@@ -79,7 +79,8 @@ constexpr R pow(const R x)
 //! In C++11 can have also a even simpler implementation
 /*!
  *  But beware that constexpr functions are tricky. They work only on
- *  constant expressions. So the previous version (pow) is better!
+ *  constant expressions. So the previous version (pow) is safer since it obliges you to
+ *  use a constant as an exponent (but less flexible)!
  */
 
 template<class R>

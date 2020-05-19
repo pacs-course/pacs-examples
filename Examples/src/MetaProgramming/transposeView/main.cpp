@@ -31,7 +31,7 @@ int main()
   std::cout<<m<<std::endl;
   std::cout<<" Now change element (1,0) of the transpose"<<std::endl;
 
-  auto mt =LinearAlgebra::trans(m);
+  auto mt =LinearAlgebra::make_transposeView(m);
 
   mt(1,0)=100.f;
   std::cout<<m<<std::endl;
@@ -39,8 +39,9 @@ int main()
   // and now the const version
   std::cout<<std::endl;
   const Eigen::Matrix3f mc(m);
-  // LinearAlgebra::TransposedView<Eigen::Matrix3f> mtc(mc); // not working
-  auto mtc=LinearAlgebra::trans(mc);
+
+  auto mtc=LinearAlgebra::make_transposeView(mc);
+  std::cout<<" Printing the the transpose"<<std::endl;
   for (auto i=0;i<3;++i)
     {
     for (auto j=0;j<3;++j)
@@ -49,7 +50,7 @@ int main()
       }
     std::cout<<std::endl;
     }
-  //   mtc(0,1)=10.f; //Error ive if mtc is not constant the stored matrix is
-  //  constant.
+  //   mtc(0,1)=10.f; //Error even if mtc is not constant the stored matrix is
+  //  constant!!
   
 }
