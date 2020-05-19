@@ -6,12 +6,12 @@ int main()
 {
   Timings::Chrono watch;
   const unsigned int ntimes=1000;
-  // I compute 10.5^5
+  // I compute 10.5^8
   std::cout<<"With standard pow"<<std::endl;
   watch.start();
   for (unsigned int i=0;i<ntimes;++i)
     {
-      const double x=std::pow(10.5,5);
+      const double x=std::pow(10.5,8);
     }
   watch.stop();
   std::cout<<watch<<std::endl; 
@@ -19,7 +19,7 @@ int main()
   watch.start();
   for (unsigned int i=0;i<ntimes;++i)
     {
-      const double x= pow<5>(10.5);
+      const double x= pow<8>(10.5);
     }
   watch.stop();
   std::cout<<watch<<std::endl; 
@@ -28,9 +28,7 @@ int main()
   watch.start();
   for (unsigned int i=0;i<ntimes;++i)
     {
-      // you need constexpr otherwise POW is
-      // evaluated run time!
-      constexpr double x=POW(10.5,5);
+      double x=POW(10.5,8);
     }
   watch.stop();
   std::cout<<watch<<std::endl; 
