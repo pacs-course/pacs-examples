@@ -7,7 +7,7 @@
 
 //! An example of abstract builder base class
 /*!
-  It forms the base for builders to be used with 
+  It forms the base for builders to be used with
   object factories.
 
   It uses the default constructor. It would be nice to have
@@ -23,12 +23,12 @@
  */
 template<class AbstractProduct>
 class
-BaseBuilder
+    BaseBuilder
 {
- public:
+public:
 
-  virtual std::unique_ptr<AbstractProduct>  create()=0;
-  virtual ~BaseBuilder(){};
+    virtual std::unique_ptr<AbstractProduct>  create() = 0;
+    virtual ~BaseBuilder() {};
 };
 //! Abstract builder
 /*!
@@ -38,14 +38,16 @@ BaseBuilder
  */
 template<class ConcreteProduct, class AbstractProduct>
 class
-Builder : public BaseBuilder<AbstractProduct>
+    Builder : public BaseBuilder<AbstractProduct>
 {
 public:
- static_assert(
-		    std::is_base_of<AbstractProduct, ConcreteProduct>::value,
-		    "Builder requires that AbstractProduct be a base of ConcreteProduct");
-  std::unique_ptr<AbstractProduct> create(){return
-      std::make_unique<ConcreteProduct>();
-  } 
+    static_assert (
+        std::is_base_of<AbstractProduct, ConcreteProduct>::value,
+        "Builder requires that AbstractProduct be a base of ConcreteProduct");
+    std::unique_ptr<AbstractProduct> create()
+    {
+        return
+            std::make_unique<ConcreteProduct>();
+    }
 };
 #endif
