@@ -10,19 +10,19 @@
 #include "Polygon.hpp"
 namespace Geometry
 {
-  /*!
-   * Derived class for quadrilaterals
-   */
-  class Quadrilateral: public Polygon
-  {
-  public:
+/*!
+ * Derived class for quadrilaterals
+ */
+class Quadrilateral: public Polygon
+{
+public:
     Quadrilateral();
-    explicit Quadrilateral(Vertices const & v);
-    explicit Quadrilateral(Vertices const & v,bool convex);
+    explicit Quadrilateral (Vertices const& v);
+    explicit Quadrilateral (Vertices const& v, bool convex);
     virtual ~Quadrilateral();
-    virtual void showMe(ostream & out=cout) const override;
+    virtual void showMe (ostream& out = cout) const override;
     // other stuff in the future...
-  };
+};
 
 
 }
