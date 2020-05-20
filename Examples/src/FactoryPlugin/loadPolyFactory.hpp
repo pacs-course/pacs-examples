@@ -16,22 +16,25 @@
 #include<algorithm>
 namespace Geometry
 {
-  /*!
-   * A class that loads, opens and holds dynamic libraries whose name is stored in a file
-   */
-  class loadPolyFactory
-  {
-  public:
-    loadPolyFactory()=default;
+/*!
+ * A class that loads, opens and holds dynamic libraries whose name is stored in a file
+ */
+class loadPolyFactory
+{
+public:
+    loadPolyFactory() = default;
     //! Constructor that loads libraries
-    loadPolyFactory(std::string s){this->load(s);}
+    loadPolyFactory (std::string s)
+    {
+        this->load (s);
+    }
     //! loads load library names (plugins) from file
-    bool load(std::string pluginFile);
+    bool load (std::string pluginFile);
     //! close libraries
     void close();
-  private:
-    std::vector<void *> loadedLibs;
-  };
+private:
+    std::vector<void*> loadedLibs;
+};
 
 }
 
