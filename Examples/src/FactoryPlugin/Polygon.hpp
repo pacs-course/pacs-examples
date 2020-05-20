@@ -8,19 +8,19 @@
 namespace Geometry
 {
 
-  using ::std::cout;
-  using ::std::endl;
-  using ::std::ostream;
-  using ::std::vector;
-  
+using ::std::cout;
+using ::std::endl;
+using ::std::ostream;
+using ::std::vector;
+
 //! A simple class for points
-  struct Point2D
+struct Point2D
 {
-  double x;
-  double y;
+    double x;
+    double y;
 };
 
-double distance(Point2D const & a, Point2D const & b);
+double distance (Point2D const& a, Point2D const& b);
 
 typedef vector<Point2D> Vertices;
 /*!
@@ -29,23 +29,23 @@ typedef vector<Point2D> Vertices;
 class Polygon
 {
 public:
-  explicit Polygon(bool convex=false);
-  explicit Polygon(Vertices v, bool convex=false);
-  virtual ~Polygon();
-  void setVertices(Vertices const & v);
-  bool isConvex() const;
-  Vertices const & theVertices()const;
-  virtual void showMe(ostream & out=cout) const;
-  // other functionalities
-  virtual double diameter() const;
-  virtual double inscibedCircle() const;
-  // 
-  void translate(double const & x, double const & y);
-  void rotate(double const & angle);
-  void scale(double const & xfactor, double const & yfactor);
+    explicit Polygon (bool convex = false);
+    explicit Polygon (Vertices v, bool convex = false);
+    virtual ~Polygon();
+    void setVertices (Vertices const& v);
+    bool isConvex() const;
+    Vertices const& theVertices() const;
+    virtual void showMe (ostream& out = cout) const;
+    // other functionalities
+    virtual double diameter() const;
+    virtual double inscibedCircle() const;
+    //
+    void translate (double const& x, double const& y);
+    void rotate (double const& angle);
+    void scale (double const& xfactor, double const& yfactor);
 protected:
-  bool isconvex;
-  Vertices vertexes;
+    bool isconvex;
+    Vertices vertexes;
 };
 }
 
