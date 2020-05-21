@@ -45,16 +45,15 @@ Eigen::VectorXcd computeEigenValues(SpMat const & M, int numEigs)
 }
 
 template <typename SpMat, int SelectionRule = Spectra::BOTH_ENDS >
-Eigen::VectorXd computeSymEigenValues(SpMat const & M, int numEigs)
+Eigen::VectorXd computeSymEigenValues(SpMat const & M, int numEigs, long int ncv=20L, long int maxit=1500L, double tol=1.e-08)
 {
   Eigen::VectorXd evalues;
   Spectra::SparseSymMatProd<double> op(M);
-  int numArnoldi=std::min(150L,std::max(25L*numEigs,M.rows()/600L));
 
   Spectra::SymEigsSolver< double, SelectionRule, Spectra::SparseSymMatProd<double> >
-  eigs(&op, numEigs, numArnoldi);
+  eigs(&op, numEigs, ncv);
   eigs.init();
-  eigs.compute();
+  eigs.compute(maxit,tol);
   auto status=eigs.info();
   if(status == Spectra::SUCCESSFUL)
     {
