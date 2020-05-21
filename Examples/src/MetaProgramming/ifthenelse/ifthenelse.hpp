@@ -20,7 +20,7 @@ struct IfThenElse
   using type=Ta;
 };
 
-//! partial specialization: false yields third argument
+//! partial specialization: false yield third argument
 template<typename Ta, typename Tb>
 struct IfThenElse <false, Ta, Tb> 
 {
@@ -29,7 +29,7 @@ struct IfThenElse <false, Ta, Tb>
 
 //! A useful type alias. 
 /*!
-  In c++14 you have one for all standard type traits returning a type.
+ Since c++14 you have one for all standard type traits returning a type.
 */
 template<bool C, class Ta, class Tb>
 using IfThenElse_t = typename  IfThenElse<C,Ta,Tb>::type;
