@@ -7,9 +7,9 @@
 #include "FactoryTraits.hpp"
 namespace Geometry
 {
-  // The common factory for all programs
-  // it would be better make it a Singleton (see example in QuadratureRule)
-  PolyFactory polyFactory;
+// The common factory for all programs
+// it would be better make it a Singleton (see example in QuadratureRule)
+PolyFactory polyFactory;
 }
 
 

@@ -13,7 +13,7 @@ int main ()
   // we have set a larger precision to see more digits. The setting
   // can be brought back to the default by 
   // std::cout<<std::defaultfloat;
-
+  
   // you may change tolerance
   sqrt5.tolerance=1.e-5;
   std::cout<<"sqrt5(5)="<<sqrt5(5)<<" with tol=1e-5"<<std::endl;
