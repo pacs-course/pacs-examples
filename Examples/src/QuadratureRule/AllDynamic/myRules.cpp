@@ -16,29 +16,26 @@
   so I need to use the option -Wl,-E or -export-dynamic
  */
 /*
-namespace TheRules
+namespace
 {
   using namespace NumericalIntegration;
   using QuadratureRuleFactory::RuleProxy;
   
   RuleProxy<Simpson> SH("Simpson");
-  
   RuleProxy<Trapezoidal> TH("Trapezoidal");
-  
-  RuleProxy<MidPoint> MH("MidPoint");
-  
+  RuleProxy<MidPoint> MH("MidPoint");  
   RuleProxy<QuadratureRuleAdaptive<Simpson>> AD("Adaptive");
-
+  RuleProxy<QuadratureRuleAdaptive<GaussLegendre3p>> AD2("AdaptiveGauss3");
+  RuleProxy<GaussLegendre3p> GL3("GaussLegendre3");
+  RuleProxy<GaussLegendre2p> GL2("GaussLegendre2");
+  RuleProxy<GaussLobatto4p> gL4("GaussLobatto4");
+  RuleProxy<GaussLobatto5p> gL5("GaussLobatto5");
+  RuleProxy<MonteCarlo> MC("Montecarlo");
 }
 */
 //!Alternative use a function.
-/*! You must load the function and run it.
-  @code
-    void * dylib=dlopen(libraryname,RTLD_NOW);
-    void * lfi = dlsym(dylib,"loadFactoryItems")
-    static_cast<void(*)()>(lfi)();
-  @endcode
-  or declare it static with constructor attribute
+ /*  
+     You must define with constructor attribute
  */
 
 

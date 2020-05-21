@@ -48,6 +48,7 @@ main(int argc, char **argv)
         sum += 4.0 / (1.0 + x * x);
       }
 
+// Critical block, to prevent data race!
 #pragma omp critical
     {
       pi += h * sum;

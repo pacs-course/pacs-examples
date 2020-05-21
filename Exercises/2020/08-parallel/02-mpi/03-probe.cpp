@@ -62,7 +62,8 @@ main(int argc, char **argv)
       std::cout << "Process 0 sent " << array_length
                 << " numbers to process 1." << std::endl
                 << "    Last number sent: " << array[array_length - 1]
-                << "." << std::endl;
+                << "." << std::endl
+                << std::endl;
     }
   else // if (mpi_rank == 1)
     {
@@ -93,6 +94,7 @@ main(int argc, char **argv)
                 << "    Message source: rank " << status.MPI_SOURCE
                 << "." << std::endl
                 << "    Message tag:    " << status.MPI_TAG << "."
+                << std::endl
                 << std::endl;
     }
 

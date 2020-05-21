@@ -44,4 +44,5 @@ T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
   return internals::metaDot<N>::apply(a,b);
 }
 
+//
 #endif
