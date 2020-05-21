@@ -27,8 +27,7 @@ public:
 private:
   double i=10.0;
 };
-// Before c++17  non integral static member could not be initialised in class, unless constexpr!
-// You  have to do it out of class (in general in a cpp file):
+// You  have to do it out of class (before C++17):
 // const double DefaultConstructible::j=40.0;
 
 //! A template function where I want to interrogate the type of get_i().
