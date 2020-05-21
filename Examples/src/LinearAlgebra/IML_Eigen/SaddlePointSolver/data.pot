@@ -1,17 +1,17 @@
 # Tolerance for stopping criterion
-tol=5.0e-7
+tol=1.0e-6
 #Maximum number of iterations
 max_iter=3000
 # GMRES restart level (only if using GMRES)
-gmres_levels=40
+gmres_levels=300
 # The M B and T matrix
-MMatrixname=/home/forma/Work/pacs/PACSCourse/Material/Examples/src/LinearAlgebra/IML_Eigen/SaddlePointSolver/matrices/network2_inutile/M.mat #The M matrix
-BMatrixname=/home/forma/Work/pacs/PACSCourse/Material/Examples/src/LinearAlgebra/IML_Eigen/SaddlePointSolver/matrices/network2_inutile/B.mat #The B matrix
-TMatrixname=/home/forma/Work/pacs/PACSCourse/Material/Examples/src/LinearAlgebra/IML_Eigen/SaddlePointSolver/matrices/network2_inutile/T.mat #The T matrix
+MMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/case_4.2/fine/kt_100_kn_1/M.mat #The M matrix
+BMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/case_4.2/fine/kt_100_kn_1/B.mat #The B matrix
+TMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/case_4.2/fine/kt_100_kn_1/T.mat #The T matrix
 # Solver type among {umfpack, sparselu, gmres, gmresr, minres, tminres, eigenvalues}
 # if solver=eigenvalues max/min only eigenvalues are computed for the given matrices. Otherwise the solver is launched (no computation of eigvalues)
-solver=eigenvalues
-#solver=gmres
+solver=gmresr
+#solver=eigenvalues
 # Preconditioner type among {Diagonal,BlockDiagonal,BlockTriangular, 
 # ILU, HSS, Identity}
 preconditioner=ILU
@@ -20,15 +20,20 @@ isSymUndef=1
 # use lumped mass matrix approximation (1) or diagonal part approximation (0)
 isLumped=0
 # the file name where you want logging (NONE if none)
-logfile=NONE
+logfile=log.txt
 # section only for HSS
 [HSS]
 # max iteration for the inner solve
 max_iter=100;
 # alpha coefficient
-alpha=0.0025;
+alpha=0.001;
 # tolerance for the inner solve
-tol=1.e-3;
+tol=1.e-2;
+#section for eigenvalues computation
+[EIG]
+ncv = 40; 
+maxit = 10000;
+tol = 1.e-3;
 
 
 
