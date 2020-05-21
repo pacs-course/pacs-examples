@@ -128,6 +128,11 @@
 \titlepage
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is git?}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/git_2x.png}
+\end{frame}
+
 \begin{frame}{What is a revision control system (RCS)}
 \titleline
 {\small
@@ -202,25 +207,12 @@ repository. Indeed \textcolor{blue}{you do not even need a remote repository to 
   \includegraphics[width=\textwidth]{figures/gitk3}
 \end{frame}
 
-\begin{frame}{Free Remote repos: Github}
-\href{https://github.com/}{Github} is a web site that allows you to create repositories and share them with others. 
-It provides also a nice web interface and the possibility of forking from other repositories. 
-
-\medskip
-
-\centerline{
-\includegraphics[width=0.9\textwidth]{figures/github}
-}
-\end{frame}
-
-
-\begin{frame}{Free Remote repos:Bitbucket}
-\href{https://bitbucket.org/}{Bitbucket} is another git based site that allows you to create repositories and share them with others and have a nice user interface. It supports also private projects (github allow them only in the professional version).
-\medskip
-
-\centerline{
-\includegraphics[width=0.9\textwidth]{figures/bitbucket}
-}
+\begin{frame}{Free remote repos}
+\begin{itemize}
+    \item \href{https://github.com/}{Github}
+    \item \href{https://gitlab.com/}{GitLab}
+    \item \href{https://bitbucket.org/}{Bitbucket}
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Graphical Interfaces}
@@ -387,12 +379,12 @@ show status of the repo
 \item \alert{staged} (in the index, or staging area). Ready to be \textcolor{blue}{committed} into the repository with a \textcolor{blue}{\texttt{git commit}}.
 \end{itemize}
 \end{frame}
-\begin{frame}
-  \frametitle{The git workflow}
-  \centerline{\includegraphics[width=0.8\textwidth]{figures/gitareas}}
-  \titleline
+\begin{frame}{The git workflow}
+  \centerline{\includegraphics[width=0.75\textwidth]{figures/gitareas}}
   
-  \alert{\texttt{.git}} is the \alert{hidden directory} where \texttt{git} stores its internal database and configuration files. \alert{DON'T DELETE IT!!}
+  \alert{\texttt{.git}} is the \alert{hidden directory} where \texttt{git} stores its internal database and configuration files. \alert{DON'T DELETE IT!!}\\[3mm]
+  
+  See also: \url{https://ndpsoftware.com/git-cheatsheet.html}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -430,6 +422,11 @@ Paragraphs are separated by empty lines.\\
 \end{shell}
 \titleline
 If you use the option \texttt{-m} \alert{you can only set the brief description} (often it is enough!).
+\end{frame}
+
+\begin{frame}{What is git?}
+  \centering
+  \includegraphics[width=0.95\textwidth]{figures/git_commit_2x.png}
 \end{frame}
 
 \begin{frame}{Add, Commit}
