@@ -17,12 +17,12 @@ main(int argc, char **argv)
     thread_id = omp_get_thread_num();
 
 /**
- * The following block is 'critical', i.e. we only let one thread
+ * The following block is "critical", i.e. we only let one thread
  * execute this block at a time.
  *
  * Other types of blocks include single (only one thread executes
  * this block), master (only the master thread executes this
- * block), atomic (protect a variable by changing it in one step)
+ * block), atomic (protect a variable by changing it in one step).
  */
 #pragma omp critical
     std::cout << "Hello World from thread " << thread_id << "!"
@@ -34,7 +34,7 @@ main(int argc, char **argv)
 
 // Only master thread prints this.
 #pragma omp master
-    // The previous line is equivalent to: if (thread_id == 0)
+    // The previous line is equivalent to: if (thread_id == 0).
     {
       n_threads = omp_get_num_threads();
       std::cout << "Number of threads = " << n_threads << std::endl;

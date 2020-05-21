@@ -12,12 +12,11 @@ namespace TypeTraits
 {
   //! A template that takes anything
   /*!  
-    void_t<T> is always equal to void.  It is used as a way of
+    void_t<T> is always equal to void.  It is a way of
     checking that a type has been defined, irrespectively from the
     actual type.
 
-    @note The type void is very special, it represent the "null type" Any type can be converted to void type,
-    so it is the best way to express "I want a type but I don't care which one"
+    @note The type void is very special, it represent the "null type" Any type can be converted to void type, so it is the best way to express "I want a type but I don't care which one"
   */
 #if __cplusplus >= 201703L
   //! C++17 has void_t
@@ -65,7 +64,7 @@ namespace TypeTraits
     template<typename T>
     struct has_clone
     <
-      T,
+      class T, class Base,
       typename
       enable_if<std::is_convertible<decltype( std::declval<T&>().clone() ),
                              std::unique_prt<Base>
@@ -81,7 +80,7 @@ namespace TypeTraits
 
   //! A helper function (maybe the only one the user will actually use!)
   template <class T>
-  constexpr bool isClonable() { return has_clone<T>(); }
+  constexpr bool isClonable() { return has_clone<T>{}; }
 
 }
 #endif

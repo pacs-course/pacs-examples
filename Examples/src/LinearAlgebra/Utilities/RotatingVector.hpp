@@ -47,10 +47,20 @@ public:
   //! The max number of elements
   auto constexpr max_size(){return N;}
   //! The last element
-  auto & back(){return M_vec[M_size];}
+  auto & back(){return M_vec[M_size-1];}
+  //!  get the last element inserted starting from last
+  //! @note no check is made to verify that the element is valid
+  //! back<0> is equivalent to back()
+  template<unsigned int i>
+  auto & back(){return M_vec[M_size-1-i];}
   //! The last element
-  auto  back()const {return M_vec[M_size];}
-  //! true if all elements are filled up
+  auto  back()const {return M_vec[M_size-1];}
+  //!  get the last element inserted starting from last
+  //! @note no check is made to verify that the element is valid
+  //! back<0> is equivalent to back()
+  template<unsigned int i>
+  auto  back()const {return M_vec[M_size-1-i];}  //! true if all elements are filled up
+  //! @note no check is made to test if the call is valid
   bool full()const {return M_size==N;}
   //! true if empty
   bool empty()const {return M_size==0u;}
@@ -133,8 +143,18 @@ private:
     auto constexpr max_size(){return M_N;}
     //! The last element
     auto & back(){return M_vec.back();}
+    //!  get the last element inserted starting from last
+    //! @note no check is made to verify that the element is valid
+    //! back<0> is equivalent to back()
+    template<unsigned int i>
+    auto & back(){return *(M_vec.end()-1-i);}
     //! The last element
     auto  back()const {return M_vec.back();}
+    //!  get the last element inserted starting from last
+    //! @note no check is made to verify that the element is valid
+    //! back<0> is equivalent to back()
+    template<unsigned int i>
+    auto  back()const {return *(M_vec.end()-1-i);}
     //! true if all elements are filled up
     bool full()const {return this->size()=M_N;}
     //! true if empty

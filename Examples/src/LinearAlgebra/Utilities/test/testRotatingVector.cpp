@@ -77,6 +77,8 @@ int main()
   std::cout<<" adding (6,6,6) "<<std::endl;
   rvx.emplace_back(array<double,3>{6.,6.,6.});
   printRV(rvx);
+  std::cout<<"The last element   "<<rvx.back()[0]<<","<<rvx.back()[1]<<","<<rvx.back()[2]<<std::endl;
+  std::cout<<"The last-1 element "<<rvx.back<1>()[0]<<","<<rvx.back<1>()[1]<<","<<rvx.back<1>()[2]<<std::endl;
   std::cout<<"I can shrink to max 3"<<std::endl;
   rvx.setMaxSize(3);
   printRV(rvx);
