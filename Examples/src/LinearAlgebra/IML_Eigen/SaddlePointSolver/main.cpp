@@ -78,10 +78,13 @@ main(int argc, char * argv[])
 // free memory
   if (testParameters.solverSwitch==eigenvalues)
     {
-      Eigen::VectorXd evalues=computeSymEigenValues(saddlePointMat.getM(),2);
+      long int maxit=testParameters.EIGmaxit;
+      long int ncv = testParameters.EIGncv;
+      double eigtol = testParameters.EIGtol;
+      Eigen::VectorXd evalues=computeSymEigenValues(saddlePointMat.getM(),2,ncv,maxit,eigtol);
       std::clog<<"Eigenvalues of M "<<evalues<<std::endl;
       std::clog<<"Condition Number of M "<<evalues(0)/evalues(evalues.size()-1)<<std::endl;
-                   evalues=computeSymEigenValues(saddlePointMat.getT(),2);
+                   evalues=computeSymEigenValues(saddlePointMat.getT(),2,ncv,maxit,eigtol);
       std::clog<<"Eigenvalues of T "<<evalues<<std::endl;
       auto nn=saddlePointMat.squaredNorm();
       std::clog<<"Norm of SPM "<<std::sqrt(nn)<<" Normalised norm "<<std::sqrt(nn/saddlePointMat.nonZeros())<<std::endl;
@@ -90,8 +93,8 @@ main(int argc, char * argv[])
       saddlePointMat.clear();
       evalues=computeSymEigenValues(full,2);
       std::clog<<"Smallest/largest Eigenvalues of A "<<evalues<<std::endl;
-            evalues=computeSymEigenValues<SpMat,Spectra::SMALLEST_MAGN>(full,1);
-      std::clog<<"Eigenvalue of A with smallest magnitude"<<evalues<<std::endl;
+      //      evalues=computeSymEigenValues<SpMat,Spectra::SMALLEST_MAGN>(full,1,ncv,maxit,eigtol);
+      //std::clog<<"Eigenvalue of A with smallest magnitude"<<evalues<<std::endl;
       return 0;
     }
 
