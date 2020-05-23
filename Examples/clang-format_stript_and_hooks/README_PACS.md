@@ -13,4 +13,14 @@ git config clangFormat.style file
 ```
 This way git knows that has to use clang-format with the option `style=file` with which `clang-format` uses the first `.clang-format`  located in one of the parent directories of the source file (that's why you put it in the main directory of your project.).
 
+In this folder you find also the script `apply_clang-format` (not to
+be confused with `apply-format`, which is part of the tools provided
+in the original sofware, see `README.md`). This helps to call
+clang-format with the right options. Beware, it will not create any
+backup file: the modifications are made in place.
+
+You have to put it in a diractory in your `PATH`.
+
+
+
 # Note: you must have clang, or at least clang-format, properly installed in your system! 
