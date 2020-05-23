@@ -1,6 +1,7 @@
 #include "twoFunctions.hpp"
 int main()
 {
-    double x{cubeconst (5.0) };
+    constexpr double a=5.0;
+    auto b = cubeconst(a);
 }
 
