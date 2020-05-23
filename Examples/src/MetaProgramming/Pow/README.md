@@ -13,4 +13,9 @@ Compare the results with and without debugging. You may note the high cost of `s
 
 *Note* Things may have changed with c++17 since now the standard accounts for a specialization of `std::pow` with integer arguments, so you may not need this technique anymore (but it very much depend on the actual implementation of the standard library in your compiler, at the moment the performance of std::pow with integer exponent is still poor compared to the recursive version I have implemented here).
 
-*A second note* Ignore the worning about unused variable. It is just an example....
+I have now added also a function `apsc::pow` in `generalPow.hpp` that, by using type-traits select automatically the best choiche.
+
+**Note**: However, things are changing, the implementations of std::pow is much better in the newer versions of the standard library. They detect if the exponent is an integer (like I do in my general version) and they redirict the algorithms to different implementations. So, `std::pow` is not necessarily a bottleneck. Of corse, you have to activate optimization if you want to gain. 
+
+
+
