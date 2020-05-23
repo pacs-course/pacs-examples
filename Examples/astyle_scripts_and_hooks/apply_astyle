@@ -1,0 +1,18 @@
+astyle \
+        --style=gnu \
+        --indent=spaces=2  \
+        --indent-switches \
+        --pad-oper \
+        --pad-paren-out \
+        --pad-header \
+        --convert-tabs \
+        --break-closing-brackets \
+        --align-pointer=type \
+        --max-instatement-indent=80 \
+        --preserve-date \
+        --lineend=linux \
+        --formatted \
+        --verbose $*
+	
+
+#        --recursive "*.*pp"
