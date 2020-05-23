@@ -1,12 +1,12 @@
 #Assembly code
 include ../../Makefile.inc
-CXXFLAGS=-O -std=c++14
-OUTPUT=mainConstexprFunction mainNormalFunction mainConstexprFunction2
+CXXFLAGS=-O3 -std=c++17
+OUTPUT=mainConstexprFunction mainNormalFunction mainConstexprFunction2  mainHornerConstexpr
 all : $(OUTPUT)
-mainConstexprFunction: mainConstexprFunction.cpp
-mainConstexprFunction2: mainConstexprFunction2.cpp
-mainNormalFunction: mainNormalFunction.cpp twoFunctions.o
-examine:
+mainConstexprFunction: mainConstexprFunction.o
+mainConstexprFunction2: mainConstexprFunction2.o
+mainNormalFunction: mainNormalFunction.o twoFunctions.o
+mainHornerConstexpr: mainHornerConstexpr.o HornerConstexpr.hpp
 clean:
 	$(RM) $(OUTPUT) *.o 
 distclean: clean
