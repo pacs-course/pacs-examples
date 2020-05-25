@@ -77,7 +77,7 @@ struct ButcherArray
 namespace RKFScheme
 {
   // SOME COMMON RK embedded schemes
-  //! RK45, the actual RK <Fehlberg scheme
+  //! RK45, the actual RK-Fehlberg scheme
   struct RK45_t : public ButcherArray<6>
   {
     RK45_t()
