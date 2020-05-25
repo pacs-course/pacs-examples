@@ -1,7 +1,7 @@
 #ifndef RKF_HPP
 #define RKF_HPP
 
-#include "ButcherRKF.hpp" // not strictly needed here but it simplifies things
+#include "ButcherRKF.hpp"
 #include "RKFTraits.hpp"
 
 #include <cmath>
@@ -163,7 +163,7 @@ RKF<B, KIND>::operator()(const double &      T0,
     factor = 1. / (ButcherTable.order - 1);
   // Iteration counter
   int iter = 0;
-  // I want to check that the time step does not go ridiculosly
+  // I want to check that the time step does not go ridiculously
   // small
   double hmin =
     100 * (T - T0) * std::numeric_limits<double>::epsilon();
@@ -189,7 +189,7 @@ RKF<B, KIND>::operator()(const double &      T0,
           h = T - t;    // fix h
           if (h < hmin) // test is new step very small
             {
-              // step ridicuously small. We are at the end, stop
+              // step ridiculously small. We are at the end, stop
               // here
               ylow  = ycurr;
               yhigh = ycurr;
