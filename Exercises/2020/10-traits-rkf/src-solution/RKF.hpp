@@ -176,13 +176,16 @@ RKF<B, KIND>::operator()(const double &      T0,
       ++iter;
       // The low precision solution
       VariableType ylow;
+
       // The high precision solution
       VariableType yhigh;
+
       // I compute the amount of error per time step
       // since I want to control the final error
       // But I also have to avoid overdoing, otherwise I will
       // never expand the step!
       double errorPerTimeStep = tol * h / delta;
+
       // Check if new time step will cross the final time step
       if (t + h >= T)
         {
@@ -200,9 +203,8 @@ RKF<B, KIND>::operator()(const double &      T0,
       else
         std::tie(ylow, yhigh) = RKFstep(t, ycurr, h); // step
       double currentError = this->norm(ylow - yhigh);
-      double mu           = std::pow(
-        errorPerTimeStep / currentError,
-        factor); // very expensive:alternative take factor=1 always
+      double mu = std::pow(errorPerTimeStep / currentError, factor);
+
       if (currentError <= errorPerTimeStep)
         {
           // fine set new point!
@@ -215,9 +217,8 @@ RKF<B, KIND>::operator()(const double &      T0,
           // previously rejected and I am not at the end
           if ((mu >= 1.0) && !rejected && (t < T))
             {
-              h *=
-                std::min(expansionFactor,
-                         mu); // alternative use only expansion factor
+              // alternative use only expansion factor
+              h *= std::min(expansionFactor, mu);
               ++expansions;
             }
           rejected = false;
@@ -225,16 +226,17 @@ RKF<B, KIND>::operator()(const double &      T0,
       else
         {
           rejected = true;
-          h *=
-            mu *
-            reductionFactor; // a little more to be sure.
-                             // Alternative use only reductionFactor
+          // a little more to be sure.
+          // Alternative use only reductionFactor
+          h *= mu * reductionFactor;
           ++contractions;
           h = h <= hmin ? hmin : h;
         }
     }
+
   if (iter > maxSteps)
     failed = true;
+
   return res;
 }
 
