@@ -110,11 +110,11 @@ namespace RKFScheme
   };
 
 //C++17 here!
-  inline RK45_t RK45{};
+  inline const RK45_t RK45{};
 
-  inline RK23_t RK23{};
+  inline const RK23_t RK23{};
 
-  inline RK12_t RK12{};
+  inline const RK12_t RK12{};
 
 
 
