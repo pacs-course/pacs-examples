@@ -46,25 +46,41 @@
 \end{frame}
 
 \begin{frame}{RKF solver}
-This example (a modified version of \texttt{Examples/src/RKFSolver}) is about a set of tools that implement generic Runge-Kutta-Fehlberg methods to solve non-linear scalar, vector and matrix Ordinary Differential Equations, based on the \texttt{Eigen} library.
+This example (a modified version of \texttt{Examples/src/RKFSolver}) is about a set of tools that implement embedded Runge-Kutta-Fehlberg methods to solve non-linear scalar, vector and matrix Ordinary Differential Equations, based on the \texttt{Eigen} library.
+\vfill
+Consider an ODE of the form
+\begin{equation*}
+\frac{\mathrm{d} y}{\mathrm{d} y} = f(t, y)
+\end{equation*}
+and consider the coefficients \(b_i, b_i^*, a_ij, c_i\) to be given in the form of a Butcher tableau.
+We recall that, at each time step \(t_n\), an embedded RKF method of order \(p\) consists of the following steps.
+\begin{enumerate}
+\item Compute the high-order solution \(y_{n+1} = y_{n} + h \sum_{i=1}^p b_i k_i\), where \(k_i = f\left(t_n + c_i h_n, y_n + \sum_{j=1}^{i-1}a_{ij}k_j\right)\), and \(h_n = t_{n+1} - t_n\).
+\item Compute the low-order solution \(y_{n+1}^* = y_{n} + h \sum_{i=1}^p b_i^* k_i\).
+\item Compute the error \(\varepsilon_{n+1} = y_{n+1} - y_{n+1}^* = h\sum_{i=1}^p(b_i - b_i^*)k_i\).
+\item Adapt the step size \(h_{n+1} = \tau h_{n}\), where \(\tau\) is a reduction/expansion factor depending on whether \(\varepsilon_{n+1}\) is larger or smaller than a prescribed tolerance.
+\end{enumerate}
+\end{frame}
 
+\begin{frame}{RKF solver}
 The code structure is the following:
 \begin{itemize}
-\item \texttt{...} ...
+\item \texttt{ButcherRKF} contains the definition of the Butcher tableaux for the most common RKF methods.
+\item \texttt{RKFTraits} defines the basic structure that enable to statically select the type of the equation(s) to be solved (\textit{i.e.} scalar, vector, matrix).
+\item \texttt{RKF} implements a generic RKF solver interface.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Possible extensions}
-\begin{itemize}
-\item Argomento di default
-\item Nuovo RKF
-\item Nuovo problema
+\begin{frame}{Homeworks}
+\begin{enumerate}
+\item Use the provided solver to solve the SIR model presented in \url{https://arxiv.org/pdf/2003.00122.pdf}.
+\item Implement the Bogacki–Shampine and the Dormand-Prince methods (\url{https://en.wikipedia.org/wiki/List_of_Runge\%E2\%80\%93Kutta_methods\#Embedded_methods})
+\item Modify the constructor of the \texttt{RKF} class so that the chosen RKF method has a default value.
 
-\item Opzioni in una classe
-\item Set get nel solve, letti da file
+\item Define a class to handle the input options for the \texttt{RKF} class, and provide the corresponding setter/getter methods and possibly a method to parse options from file.
 
-\item Polimorfismo+factory RKF
-\end{itemize}
+\item (Advanced) Implement the factory pattern to the \texttt{ButcherArray} class, so that the actual method can be chosen dynamically exploiting polymorphism.
+\end{enumerate}
 \end{frame}
 
 \end{document}
