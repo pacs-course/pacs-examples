@@ -59,9 +59,9 @@ $(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
-$(DEPEND): $(SRCS)
+$(DEPEND): $(SRCS) $(HEADERS)
 	-\rm $(DEPEND)
-	for f in $(SRCS); do \
+	for f in $(SRCS) $(HEADERS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
 
