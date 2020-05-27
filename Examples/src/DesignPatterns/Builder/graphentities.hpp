@@ -37,14 +37,15 @@ namespace Graphs
   class edge: public element
   {
   public:
+    edge()=default;
     // edge ends and id
-    edge(basic_edge const & e={nullID,nullID},unsigned int i=nullID):
+    edge(basic_edge const & e,unsigned int i=nullID):
       element{i},M_edge{e}{}
     // Returns ids of edges ends
     basic_edge getEdgeNodes() const {return M_edge;};
     void setEdgeNodes(basic_edge const & a) {M_edge=a;};
   private:
-    basic_edge M_edge;
+    basic_edge M_edge{nullID,nullID};
   };
 } // end namespace Graph
 
@@ -52,7 +53,7 @@ namespace Graphs
 template <>
 struct std::less<Graphs::node>
 { 
-  bool operator()(const Graphs::node & a, const Graphs::node & b)
+  bool operator()(const Graphs::node & a, const Graphs::node & b) const
   {
     return a.getId()<b.getId();  
   }
@@ -67,7 +68,7 @@ struct std::less<Graphs::node>
 template <>
 struct std::less<Graphs::edge>
 { 
-  bool operator()( const Graphs::edge & a, const Graphs::edge & b)
+  bool operator()( const Graphs::edge & a, const Graphs::edge & b) const
   {
     return a.getEdgeNodes()<b.getEdgeNodes();  
   }
