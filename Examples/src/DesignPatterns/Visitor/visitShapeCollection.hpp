@@ -8,7 +8,7 @@ pointer in a container
 */
 template <typename C>
 void visitShapeCollection(C & collection,
-                          Geometry::ShapeVisitor & visitor)
+                          Geometry2::ShapeVisitor & visitor)
 {
   for (auto & i: collection) i->accept(visitor);
 }

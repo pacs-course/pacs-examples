@@ -7,12 +7,12 @@
 
 #ifndef SHAPEVISITOR_HPP_
 #define SHAPEVISITOR_HPP_
-namespace Geometry{
+namespace Geometry2{
 // Forward declarations
 
 class Point;
 class Triangle;
-class Square;
+class Quadrilateral;
 
   //! This is the abstract class
   /*!
@@ -28,7 +28,7 @@ class Square;
   class ShapeVisitor{
   public:
     virtual void visit(Triangle&)=0;
-    virtual void visit(Square&)=0;
+    virtual void visit(Quadrilateral&)=0;
     virtual void visit(Point&)=0;
     virtual ~ShapeVisitor()=default;
   };
@@ -36,29 +36,27 @@ class Square;
   //! counts how many different shapes we have
   class CountShapes: public ShapeVisitor{
   public:
-    CountShapes();
     void visit(Triangle&) override;
-    void visit(Square&) override;
+    void visit(Quadrilateral&) override;
     void visit(Point&) override;
-    int getNumPoints() const;
-    int getNumSquares() const;
-    int getNumTriangles() const;
+    int getNumPoints() const {return numPoints;}
+    int getNumSquares() const {return numQuadrilateral;}
+    int getNumTriangles() const {return numTriangles;}
   private:
-    int numTriangles;
-    int numSquares;
-    int numPoints;
+    int numTriangles=0;
+    int numQuadrilateral=0;
+    int numPoints=0;
   };
   
   //! Compute and accumulate shape area
   class ComputeArea: public ShapeVisitor{
   public:
-    ComputeArea();
     void visit(Triangle&) override;
-    void visit(Square&) override;
+    void visit(Quadrilateral&) override;
     void visit(Point&) override;
-    double getTotalArea() const;
+    double getTotalArea() const{return totalArea;}
   private:
-    double totalArea;
+    double totalArea=0.0;
   };
 
   //! Invert badly oriented elements
@@ -69,11 +67,12 @@ class Square;
   class swapInvertedShapes: public ShapeVisitor
   {
   public:
-    swapInvertedShapes()=default;
     void visit(Triangle&) override;
-    void visit(Square&) override;
+    void visit(Quadrilateral&) override;
     void visit(Point&) override {};// does nothing, defined in class
-    double getTotalArea() const;
+    int numFixedTria()const {return fixedTria;}
+    int numFixedQuad()const {return fixedQuad;}
+  private:
     int fixedTria=0;
     int fixedQuad=0;
   };
