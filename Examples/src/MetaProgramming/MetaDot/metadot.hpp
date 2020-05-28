@@ -1,6 +1,7 @@
 #ifndef HH_METADOT_HH
 #define HH_METADOT_HH
 #include <array>
+#include <complex>
 #include <cstddef>
 #include <type_traits>
 /*! An example of template metaprogramming.
@@ -54,7 +55,15 @@ template<std::size_t N,typename T1, typename T2>
     using result_type=std::common_type_t<T1,T2>;
     // casting 0 not really needed
     result_type result=static_cast<result_type>(0);
-    for (std::size_t i = 0; i<N; ++i) result+=a[i]*b[i];
+    // is integer or floating point
+    if constexpr (std::is_arithmetic<result_type>::value)
+      {
+        for (std::size_t i = 0; i<N; ++i) result+=a[i]*b[i];
+      }
+    else // I assume T2 is complex
+    {
+      for (std::size_t i = 0; i<N; ++i) result+=a[i]*std::conj(b[i]);
+    }
     return result;                     
   }
 
