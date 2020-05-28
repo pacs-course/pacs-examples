@@ -67,7 +67,8 @@ The code structure is the following:
 \begin{itemize}
 \item \texttt{ButcherRKF} contains the definition of the Butcher tableaux for the most common RKF methods.
 \item \texttt{RKFTraits} defines the basic structure that enable to statically select the type of the equation(s) to be solved (\textit{i.e.} scalar, vector, matrix).
-\item \texttt{RKF} implements a generic RKF solver interface.
+\item \texttt{RKFResult} is a data structure containing the output of the RKF solver.
+\item \texttt{RKF} implements a generic RKF solver interface, filling a proper \texttt{RKFResult} object.
 \end{itemize}
 \end{frame}
 
