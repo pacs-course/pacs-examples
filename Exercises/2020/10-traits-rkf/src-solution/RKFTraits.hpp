@@ -7,8 +7,8 @@
 #include <functional>
 #include <vector>
 
-//! The two kinds of RK solver for scalar or vector differential
-//! problems
+//! The three kinds of RK solver for scalar, vector and matrix
+//! differential problems
 enum class RKFKind
 {
   SCALAR = 0,
