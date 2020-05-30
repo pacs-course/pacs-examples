@@ -7,3 +7,8 @@ nm --demangle mainNormalFunction | grep  cube
 
 echo "nm --demangle mainConstexprFunction2 | grep  cube"
 nm --demangle mainConstexprFunction2 | grep  cube
+
+echo "size mainConstexprFunction"
+size mainConstexprFunction
+echo "size mainConstexprFunction2"
+size mainConstexprFunction2

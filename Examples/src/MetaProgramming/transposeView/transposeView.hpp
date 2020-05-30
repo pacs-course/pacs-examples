@@ -48,8 +48,7 @@ namespace LinearAlgebra {
     //! A type dependent on the type of the matrix
     /*
       If the stored matrix is constant this statement define a
-      const type for the contained values. I am not using it, but
-      is an example of use of conditional.
+      const type for the contained values.
      */
     using vref_type=
       typename std::conditional<std::is_const<Matrix>::value,
@@ -61,12 +60,14 @@ namespace LinearAlgebra {
     //! I have to handle the situation when a non const TransposedView stores a const matrix
     /*! 
      The non const version is enabled only if the viewed matrix
-      is non-const. I could have used the vref_type defined above
-      as return type and I would have obtained my objective.
-      But here I show a usage of enable_if
+      is non-const. Or I can use the vref_type defined above
+      as return type to obtain the objective.
+      But here I show also an usage of enable_if
     */
     template<typename T=Matrix>
     std::enable_if_t<!std::is_const<T>::value,value_type &>
+    // comment next line if you want to use enable_if
+    //vref_type
     operator()(size_type r, size_type c)
     {
       return ref(c, r);
@@ -87,21 +88,6 @@ namespace LinearAlgebra {
   {
     return TransposedView<Matrix>{A};
   }
-  /*
-   *  As always in c++ there are alternatives, I can for instance create a make_transposeView
-   *  that returns a const TransposedView whenever Matrix is constant. This way I do not need enable_if
-   *  But then the user must always make_transposeView to create the view.
-   *
-   *  This should work (untested)
-   *
-   *  template <typename Matrix>
-   *  auto make_transposeView(Matrix& A)
-   *  {
-   *  using returnType=std::conditional_t<std::is_const_v<Matrix>,const TransposedView<Matrix>,TransposedView<Matrix>>;
-   *  return returnType{A};
-   *  }
-   *
-   */
 }// end namespace
 
 #endif
