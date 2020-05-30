@@ -1,0 +1,97 @@
+#!/bin/sh
+
+# Astyle pre-commit hook - Version 2.0 (By Ramon Fried and Yossi Segev)
+# This file should be placed under .git/hooks and should have executables permissions
+# Things to change (if you want):
+# 1. The Astyle settings (it no longer takes it from the default)
+# 2. The files the scripts operates upon (currently only C/C++ source / header files)
+# 3. You can comment the line indicated in the final part of the script
+#    if you do not want to backup the original version.
+
+DATE=$(date +%d-%m-%Y--%H:%M)
+BACKUPDIR="formatbackup-$DATE"
+
+ASTYLE_SETTINGS_LINUX_USER_SPACE="--suffix=none \
+                                    --style=gnu \
+                                    --indent=spaces=2  \
+                                    --indent-switches \
+                                    --pad-oper \
+                                    --pad-paren-out \
+                                    --pad-header \
+                                    --convert-tabs \
+                                    --break-closing-brackets \
+                                    --align-pointer=type \
+                                    --max-instatement-indent=80 \
+                                    --preserve-date \
+                                    --lineend=linux"
+
+ASTYLE_SETTINGS_LINUX_KERNEL_SPACE="--style=1tbs \
+                                    --indent=tab \
+                                    --align-pointer=name \
+                                    --add-brackets \
+                                    --max-code-length=80"
+
+# Alter this line to change configuration
+ASTYLE_PARAMETERS=${ASTYLE_SETTINGS_LINUX_USER_SPACE}
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+# If you want to allow non-ascii filenames set this variable to true.
+allownonascii=$(git config hooks.allownonascii)
+
+# Cross platform projects tend to avoid non-ascii filenames; prevent
+# them from being added to the repository. We exploit the fact that the
+# printable range starts at the space character and ends with tilde.
+if [ "$allownonascii" != "true" ] &&
+	# Note that the use of brackets around a tr range is ok here, (it's
+	# even required, for portability to Solaris 10's /usr/bin/tr), since
+	# the square bracket bytes happen to fall in the designated range.
+	test "$(git diff --cached --name-only --diff-filter=A -z $against |
+	  LC_ALL=C tr -d '[ -~]\0')"
+then
+	echo "Error: Attempt to add a non-ascii file name."
+	echo
+	echo "This can cause problems if you want to work"
+	echo "with people on other platforms."
+	echo
+	echo "To be portable it is advisable to rename the file ..."
+	echo
+	echo "If you know what you are doing you can disable this"
+	echo "check using:"
+	echo
+	echo "  git config hooks.allownonascii true"
+	echo
+	exit 1
+fi
+
+ASTYLE=astyle
+
+case `$ASTYLE --version 2> /dev/null` in
+  Artistic*)
+      ;;
+  default)
+      echo "Did not find astyle, please install it before continuing."
+      exit 1
+      ;;
+esac
+
+mkdir -p ${BACKUPDIR}
+files=$(git-diff-index --diff-filter=ACMR --name-only -r --cached $against -- | grep -i '\.c$\|\.cpp$\|\.hpp$\|\.h$')
+for file in $files; do
+    x=`echo $file`
+    if test "x$x" != "x"; then
+        # comment this line if you do not want backup files
+        cp --parents $file ${BACKUPDIR}
+	# Remove trailing spaces
+        sed -i 's/[[:space:]]*$//' $file
+	$ASTYLE ${ASTYLE_PARAMETERS} $file
+        git add $file
+    fi
+done
+

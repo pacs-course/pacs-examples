@@ -8,103 +8,57 @@
 #include "ShapeVisitor.hpp"
 #include "geo.hpp"
 
-namespace Geometry{
-
-int CountShapes::getNumPoints() const
+namespace Geometry2
 {
-    return numPoints;
-}
 
-int CountShapes::getNumSquares() const
-{
-    return numSquares;
-}
 
-int CountShapes::getNumTriangles() const
-{
-    return numTriangles;
-}
-
-double ComputeArea::getTotalArea() const
-{
-    return totalArea;
-}
-
-}
-
-void Geometry::ComputeArea::visit(Square & s)
+void ComputeArea::visit(Quadrilateral & s)
 {
   totalArea+=s.measure();
 }
 
-
-
-void Geometry::CountShapes::visit(Triangle & s)
+void CountShapes::visit(Triangle & s)
 {
   ++numTriangles;
 }
 
+void CountShapes::visit(Quadrilateral & s)
+{
+	++numQuadrilateral;
+}
 
-
-
-
-
-Geometry::ComputeArea::ComputeArea() : totalArea(0.0)
+void ComputeArea::visit(Point & s)
 {}
 
-
-
-
-void Geometry::CountShapes::visit(Square & s)
+void ComputeArea::visit(Triangle & s)
 {
-	++numSquares;
+  this->totalArea+=s.measure();
 }
 
-
-
-Geometry::CountShapes::CountShapes():numTriangles(0),numSquares(0),numPoints(0)
+void CountShapes::visit(Point & s)
 {
+  ++numPoints;
 }
 
-
-
-void Geometry::ComputeArea::visit(Point & s)
-{}
-
-
-
-void Geometry::ComputeArea::visit(Triangle & s)
-{
-	this->totalArea+=s.measure();
-}
-
-
-
-void Geometry::CountShapes::visit(Point & s)
-{
-	++numPoints;
-}
-
-void Geometry::swapInvertedShapes::visit(Triangle & s)
+void swapInvertedShapes::visit(Triangle & s)
 {
   if(s.measure()<0.0)
     {
-      auto & points=s.getPoints();
-      std::swap(points[0],points[1]);
+      std::swap(s[0],s[1]);
       ++fixedTria;
     }
 }
 
-void Geometry::swapInvertedShapes::visit(Square & s)
+void swapInvertedShapes::visit(Quadrilateral & s)
 {
   if(s.measure()<0.0)
     {
-      auto & points=s.getPoints();
-      std::swap(points[3],points[1]);
+      std::swap(s[3],s[1]);
       ++fixedQuad;
     }
 }
 
+}//end namespace
 
 
 
