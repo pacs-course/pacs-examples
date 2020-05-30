@@ -50,7 +50,7 @@ int main()
       }
     std::cout<<std::endl;
     }
-  //   mtc(0,1)=10.f; //Error even if mtc is not constant the stored matrix is
+   mtc(0,1)=10.f; //Error even if mtc is not constant the stored matrix is
   //  constant!!
   
 }
