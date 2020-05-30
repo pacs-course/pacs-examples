@@ -64,9 +64,11 @@ namespace LinearAlgebra {
       as return type to obtain the objective.
       But here I show also an usage of enable_if
     */
-//    template<typename T=Matrix>
-//    std::enable_if_t<!std::is_const<T>::value,value_type &>
-    vref_type operator()(size_type r, size_type c)
+    template<typename T=Matrix>
+    std::enable_if_t<!std::is_const<T>::value,value_type &>
+    // comment next line if you want to use enable_if
+    //vref_type
+    operator()(size_type r, size_type c)
     {
       return ref(c, r);
     }
@@ -86,21 +88,6 @@ namespace LinearAlgebra {
   {
     return TransposedView<Matrix>{A};
   }
-  /*
-   *  As always in c++ there are alternatives, I can for instance create a make_transposeView
-   *  that returns a const TransposedView whenever Matrix is constant. This way I do not need enable_if
-   *  But then the user must always make_transposeView to create the view.
-   *
-   *  This should work (untested)
-   *
-   *  template <typename Matrix>
-   *  auto make_transposeView(Matrix& A)
-   *  {
-   *  using returnType=std::conditional_t<std::is_const_v<Matrix>,const TransposedView<Matrix>,TransposedView<Matrix>>;
-   *  return returnType{A};
-   *  }
-   *
-   */
 }// end namespace
 
 #endif
