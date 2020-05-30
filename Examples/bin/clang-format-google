@@ -1,0 +1,4 @@
+#!/bin/bash
+# change next line
+CLANG_BINDIR=/opt/clang9.0/bin
+${CLANG_BINDIR}/clang-format --style=Google $*
