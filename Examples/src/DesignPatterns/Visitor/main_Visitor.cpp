@@ -11,34 +11,27 @@
 #include "ShapeVisitor.hpp"
 #include "visitShapeCollection.hpp"
 int main(){
-  using namespace Geometry;
+  using namespace Geometry2;
   using namespace std;
   Point p0(0.,0.);
   Point p1(1,0);
   Point p2(1,1);
   Point p3(0,1);
   Point p4(-1,0);
-  vector<Point> points;
-  points.push_back(p0);
-  points.push_back(p1);
-  points.push_back(p2);
-  points.push_back(p3);
-  points.push_back(p4);
-  
+
   // Create a collection of shapes
-  // I should I have used unique_ptr, but it doesn not work
-  // need to check why
+  // Here I use just a vector of pointer (unique)
   using shapeHandler=std::unique_ptr<Shape>;
   vector<shapeHandler> collection;
 
-  collection.emplace_back(new Triangle(p0,p1,p2));
-  collection.emplace_back(new Triangle(p1,p3,p2)); // incorrect orientation
-  collection.emplace_back(new Square(p0,p1,p2,p3));
-  collection.emplace_back(new Triangle(p4,p0,p3));
-  collection.emplace_back(new Triangle(p4,p0,p3));
-  collection.emplace_back(new Point(0.,0.));
+  collection.emplace_back(std::make_unique<Triangle>(p0,p1,p2));
+  collection.emplace_back(std::make_unique<Triangle>(p1,p3,p2)); // incorrect orientation
+  collection.emplace_back(std::make_unique<Quadrilateral>(p0,p1,p2,p3));
+  collection.emplace_back(std::make_unique<Triangle>(p4,p0,p3));
+  collection.emplace_back(std::make_unique<Triangle>(p4,p0,p3));
+  collection.emplace_back(std::make_unique<Point>(0.,0.));
   
-  // Visit the collection
+  // Visitor for the the collection
   CountShapes counter;
   ComputeArea evaluateArea;
   swapInvertedShapes fixShapes;
@@ -52,8 +45,8 @@ int main(){
   cout<<"Area="<<evaluateArea.getTotalArea()<<endl;
   
   visitShapeCollection(collection,fixShapes);
-  cout<<"Fixed triangles: "<<fixShapes.fixedTria<<std::endl;
-  cout<<"Fixed squares  : "<<fixShapes.fixedQuad<<std::endl;
+  cout<<"Fixed triangles: "<<fixShapes.numFixedTria()<<std::endl;
+  cout<<"Fixed squares  : "<<fixShapes.numFixedQuad()<<std::endl;
   
   visitShapeCollection(collection,evaluateArea);
   cout<<"Area after fix="<<evaluateArea.getTotalArea()<<endl;

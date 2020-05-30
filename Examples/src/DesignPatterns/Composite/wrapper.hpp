@@ -157,7 +157,7 @@ private:
  * Copyright (c) 2002
  * Mark Joshi
  * Copyright (c) 2006
- * Luca Formaggia (version with auto_ptr<T>)
+ * Luca Formaggia (version with unique_ptr<T>)
  *
  * Permission to use, copy, modify, distribute and sell this software for
  * any purpose is hereby granted without fee, provided that the above
