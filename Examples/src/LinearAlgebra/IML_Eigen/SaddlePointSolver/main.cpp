@@ -102,7 +102,7 @@ main(int argc, char * argv[])
   saddlePointMat.makeCompressed();
   // Create the right hand side so that the solution is a vector of 1s
   //
-  SpVec e=SpVec::Ones(saddlePointMat.getM().rows()+saddlePointMat.getB().rows());
+  SpVec e=SpVec::Random(saddlePointMat.getM().rows()+saddlePointMat.getB().rows());
   SpVec b=saddlePointMat * e;
   SpVec x(saddlePointMat.getM().rows()+saddlePointMat.getB().rows());
   x.fill(0.);// Start from 0.
