@@ -148,8 +148,8 @@ inline TestParameters read_parameters(GetPot const & ifl)
 
 inline void loadPreconditioner(FVCode3D::preconditioner & p, FVCode3D::SaddlePointMat const & m, TestParameters const & param)
 {
-  p.set(m);
   p.setLumping(param.lumped);
+  p.set(m);
   p.set_alpha(param.HSSalpha);
   p.set_MaxIt(param.HSSMaxIter);
   p.set_tol(param.HSStol);
@@ -182,7 +182,7 @@ inline std::ostream & operator << (std::ostream & out, TestParameters const & p)
   out<<"M matrix file name= "<< p.MMatrixFileName<<std::endl;
   out<<"T matrix file name= "<< p.TMatrixFileName<<std::endl;
   out<<"B matrix file name= "<< p.BMatrixFileName<<std::endl;
-  out<<"Symmetric indefinite form:"<<std::boolalpha<<p.isSymUndef<<std::endl;
+  out<<"Symmetric indefinite form:"<<std::boolalpha<<p.isSymUndef<<" Lumping:"<<p.lumped<<std::endl;
   return out;
 }
 }// end namespace

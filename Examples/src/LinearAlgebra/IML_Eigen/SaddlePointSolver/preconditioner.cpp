@@ -20,6 +20,7 @@ namespace FVCode3D
   {
     if (lumping)
       {
+        std::cout<<"Using lumped M matrix"<<std::endl;
 	auto & M = SP.getM();
 	Vector ML(M.rows());
 	ML.setZero();
@@ -33,7 +34,10 @@ namespace FVCode3D
 	return ML.asDiagonal().inverse();
       }
     else
+    {
+      std::cout<<"Using diagonal of M matrix"<<std::endl;
       return SP.getM().diagonal().asDiagonal().inverse();
+    }        
   }
 
   SpMat ComputeApproximateSchur(const SaddlePointMat & SP,
@@ -94,7 +98,7 @@ namespace FVCode3D
     for(int i = 0; i<M.rows(); i++)
       {
 	if(M.coeff(i,i)!=0)
-	  z[i] = r[i]/M.coeff(i,i);
+	  z[i] = r[i]/std::abs(M.coeff(i,i));
 	else
 	  // This should never happen, preconditioner must be non singular
 	  z[i] = r[i];
@@ -102,7 +106,7 @@ namespace FVCode3D
     for(int i = 0; i<T.rows(); i++)
       {
 	if(T.coeff(i,i)!=0)
-	  z[M.rows()+i] = r[M.rows()+i]/T.coeff(i,i);
+	  z[M.rows()+i] = r[M.rows()+i]/std::abs(T.coeff(i,i));
 	else
 	  // This may happen since T may be zero.
 	  z[M.rows()+i] = r[M.rows()+i];
@@ -159,8 +163,6 @@ Real constexpr HSS_preconditioner::alpha_default;
 
   void HSS_preconditioner::set(const SaddlePointMat & SP)
   {
-    alpha = 1.e-4;
-
     auto & M = SP.getM();
     auto & B = SP.getB();
     auto & T = SP.getT();
