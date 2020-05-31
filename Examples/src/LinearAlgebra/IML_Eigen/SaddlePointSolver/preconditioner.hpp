@@ -278,7 +278,7 @@ public:
    *  If we set lumping=true the approximation of the matrix M in the Shur complement will be made
    *  by the lumping strategy, i.e. by summing the rows. The default (lumping=false) uses the diagonal part of M
    */
-  void setLumping(bool lumping=false)
+  void setLumping(bool lumping)
   {
     this->lumped=lumping;
   }
@@ -405,7 +405,7 @@ public:
     //@{
   BlockDiagonal_preconditioner(const SaddlePointMat & SP):
     Bptr{& SP.getB()}{
-      Md_inv = ComputeApproximateInverseInnerProd(SP,false);
+      Md_inv = ComputeApproximateInverseInnerProd(SP,this->lumped);
       chol.compute(-ComputeApproximateSchur(SP, Md_inv));
     }
       //! Empty-Constructor
@@ -422,7 +422,7 @@ public:
        void set(const SaddlePointMat & SP) override
        {
          Bptr   = & SP.getB();
-         Md_inv = ComputeApproximateInverseInnerProd(SP,lumped);
+         Md_inv = ComputeApproximateInverseInnerProd(SP,this->lumped);
          // store Chowleski factor of -S
          chol.compute(-ComputeApproximateSchur(SP, Md_inv));       }
     //@}
@@ -459,7 +459,7 @@ public:
     //@{
   BlockTriangular_preconditioner(const SaddlePointMat & SP):
       Bptr{&SP.getB()}{
-	Md_inv=ComputeApproximateInverseInnerProd(SP,false);
+	Md_inv=ComputeApproximateInverseInnerProd(SP,this->lumped);
 	         // B D^{-1}B^T -T (-Shur complement)
 	chol.compute(-ComputeApproximateSchur(SP, Md_inv));
       }
@@ -475,7 +475,7 @@ public:
        void set(const SaddlePointMat & SP) override
        {
          Bptr   = & SP.getB();
-         Md_inv=ComputeApproximateInverseInnerProd(SP,lumped);
+         Md_inv=ComputeApproximateInverseInnerProd(SP,this->lumped);
          // -B D^{-1}B^T + T (-Schur complement)
          chol.compute(-ComputeApproximateSchur(SP, Md_inv));// store chowleski factor
        }
@@ -516,7 +516,7 @@ public:
   ILU_preconditioner(const SaddlePointMat & SP)
   : Bptr{&SP.getB()}
     {
-      Md_inv=ComputeApproximateInverseInnerProd(SP,false);
+      Md_inv=ComputeApproximateInverseInnerProd(SP,this->lumped);
       // store Chowleski factor of -S
       chol.compute(-ComputeApproximateSchur(SP, Md_inv));
     }
@@ -533,7 +533,7 @@ public:
         void set(const SaddlePointMat & SP)override
         {
           Bptr   = & SP.getB();
-          Md_inv=ComputeApproximateInverseInnerProd(SP,lumped);
+          Md_inv=ComputeApproximateInverseInnerProd(SP,this->lumped);
           // store Chowleski factor of -S
           chol.compute(-ComputeApproximateSchur(SP, Md_inv));
         }
