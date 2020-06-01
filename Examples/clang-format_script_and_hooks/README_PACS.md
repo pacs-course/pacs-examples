@@ -1,7 +1,7 @@
 Copy of  `lformaggia/clang-format-hooks.git` on github, a fork of  barisione/clang-format-hooks. It contains the original codes but also `PACS_clang-format`, that you hve to copy into `.clang-format` in the main directory of the example if you want it to have clang-config to use the proper configuration file:
 
 ``` bash
-cp PACS_clang_config ../.clang_config
+cp PACS_clang-format ../.clang-format
 ```
 
 Then you can use the `apply-format` script or install the git hook following the instructions on the `README.md` file.
