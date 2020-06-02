@@ -40,9 +40,8 @@ main(int argc, char **argv)
               << " Estimated Error " << solution.estimatedError;
     std::cout << std::endl;
 
-    // auto solution = solver(t0,T, y0, h_init, errorDesired);
-    ofstream file2("results_exp.dat");
-    file2 << solution;
+    ofstream file("results_exp.dat");
+    file << solution;
   }
   {
     // Van Der Pol with mu=1
@@ -76,8 +75,8 @@ main(int argc, char **argv)
               << solution.estimatedError;
     std::cout << std::endl;
 
-    ofstream file3("results_VDP.dat");
-    file3 << solution;
+    ofstream file("results_VDP.dat");
+    file << solution;
   }
 
   return 0;
