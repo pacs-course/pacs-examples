@@ -10,11 +10,7 @@ namespace Globals
   (see below)
  */
 extern int globalValue;
-//! Declaration of a global stuct that may represent global parameters of a program
-/*!
-    It is a good practice to use namespaces. In this case the global variable
-    is a namespace variable.
- */
+//! Declaration of a stuct that may represent global parameters of a program
   struct GlobalParameters
   {
     bool negate;
@@ -22,7 +18,7 @@ extern int globalValue;
   };
   
   //! A namespace variable with external linkage: only declared!
-  /*!  Must be defined elsewhere, typically in the correspining source
+  /*!  Must be defined elsewhere, typically in the corresponding source
     file.  This variable will be available to all translation units
     including this file (and linking with the source). Maybe you want to make
     GlobalParameters a Singleton, we will discuss that in a specific lecture.
