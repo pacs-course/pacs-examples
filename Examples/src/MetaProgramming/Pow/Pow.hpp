@@ -69,7 +69,7 @@ pow17 (const R &x)
     // convertible to R!
     return static_cast<R> (1.0);
   else
-    return pow17<N - 1> (x);
+    return pow17<N - 1> (x)*x;
 }
 
 //! Since C++11 can have also a even simpler implementation
