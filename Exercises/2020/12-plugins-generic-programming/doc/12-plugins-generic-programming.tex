@@ -36,6 +36,9 @@
   lineskip=0ex, %  frame=single
 }
 
+\DeclareSymbolFont{extraup}{U}{zavm}{m}{n}
+\DeclareMathSymbol{\varheart}{\mathalpha}{extraup}{86}
+
 \begin{document}
     \title{Plugins \protect\\ Generic programming}
     \author{Pasquale Claudio Africa}
@@ -63,10 +66,15 @@ vectors of couples of values (representing the interpolation nodes and the corre
 It is rather generic and accepts as an input iterators to any container with bi-directional iterators. Bi-directionality is indeed only needed for extrapolation on the right.
 \end{frame}
 
-\begin{frame}{Thank you all and have fun with \texttt{C++}!}
+\begin{frame}{Thank you all... \textcolor{red}{\(\varheart\)}}
+...and have fun with \texttt{C++}!
+\begingroup
+\begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{meme_c++.png}\\
+\includegraphics[width=0.75\textwidth]{meme_c++.png}
+\end{figure}
 \url{https://www.reddit.com/r/cpp/comments/4m4pep/fun_c_syntax/}
+\endgroup
 \end{frame}
 
 \end{document}
