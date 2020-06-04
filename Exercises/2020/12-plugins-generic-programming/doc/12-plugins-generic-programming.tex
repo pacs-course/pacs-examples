@@ -45,7 +45,7 @@
     \maketitle
 \end{frame}
 
-\begin{frame}{Quadrature rule with plugins}
+\begin{frame}{Exercise 1: quadrature rules with plugins}
 \begin{itemize}
 \item Implement a code that enables the user to compute the integral of a scalar function by selecting the quadrature rule as the name of a dynamically loadable object;
 \item The dynamically loadable object should define a function with the following signature:
@@ -56,7 +56,17 @@
 \end{frame}
 
 
-\begin{frame}{1D Interpolator using generic programming}
+\begin{frame}{Exercise 2: 1D interpolator using generic programming}
+This exercise (inspired by \texttt{Examples/src/RKFSolver}) shows an example of a generic piecewise linear 1D interpolator, with an application to
+vectors of couples of values (representing the interpolation nodes and the corresponding values) and to two separate vectors (one for the nodes and one for the values).
+
+It is rather generic and accepts as an input iterators to any container with bi-directional iterators. Bi-directionality is indeed only needed for extrapolation on the right.
+\end{frame}
+
+\begin{frame}{Thank you all and have fun with \texttt{C++}!}
+\centering
+\includegraphics[width=0.75\textwidth]{meme_c++.png}\\
+\url{https://www.reddit.com/r/cpp/comments/4m4pep/fun_c_syntax/}
 \end{frame}
 
 \end{document}
