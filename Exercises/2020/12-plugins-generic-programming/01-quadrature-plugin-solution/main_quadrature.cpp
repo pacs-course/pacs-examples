@@ -15,7 +15,7 @@ main(int argc, char **argv)
 {
   double (*integrate)(std::function<double(double)>, double, double);
 
-  void *handle = dlopen(argv[1], RTLD_LAZY);
+  void *handle = dlopen("adaptive_quadrature.so", RTLD_LAZY);
   if (!handle)
     {
       std::cerr << "Cannot load object!" << std::endl;
