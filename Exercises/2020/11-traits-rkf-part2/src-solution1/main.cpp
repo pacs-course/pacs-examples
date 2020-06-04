@@ -10,7 +10,7 @@ main(int argc, char **argv)
   using namespace std;
 
   // Input coefficients are related to the region of Lombardy
-  // and are taken from: https://arxiv.org/pdf/2003.14391.pdf.
+  // and are taken from https://arxiv.org/pdf/2003.14391.pdf.
   constexpr unsigned int n = 1.006e6;
 
   auto fun = [&n](double const &t, Eigen::VectorXd const &y) {
