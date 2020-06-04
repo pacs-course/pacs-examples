@@ -59,7 +59,8 @@ public:
   using VariableType = typename RKFTraits<KIND>::VariableType;
   using Function     = typename RKFTraits<KIND>::ForcingTermType;
 
-  //! Constructor passing butcher table and forcing function
+  //! Constructor passing butcher table, solver options and
+  //! forcing function
   RKF(Function const &f, RKFOptions const &options, B const &bt = B{})
     : M_f(f)
     , ButcherTable(bt)
