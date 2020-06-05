@@ -65,6 +65,10 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
     }
   Real gamma1 = std::sqrt (dot);
   auto eta = gamma1;
+  auto eta0 = eta;
+  // Avoid division by zero
+  if (eta0==0.0)
+    eta0=1.0;
   int  i;
   for (i = 1; i <= max_iter; ++i)
     {
@@ -98,18 +102,19 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
       Vector w2 = inva1 * (z1 - alpha3 * w0 - alpha2 * w1);
       auto   f = c2 * eta;
       x += f * w2; // update solution
+      eta *= -s2;
       // Test convergence
-      // \todo Here we should do better since the residual
-      // should already be available
-      // resid = (b - A * x).norm () / normb;
-      if ((resid = std::abs (f) / normb) <= tol)
+      // I use the test suggested in: A modified implementation of minres to
+      // monitor residual subvectors norms for block matrices
+      // R Herzog and K.M. Soodhalter, Arxiv 1603.04475v2, 2016
+      // The test is equivalent to ||r||_{P^-1}//||r_0||_{P^{-1}}
+      if ((resid = std::abs (eta) / eta0) <= tol)
         {
           tol = resid;
           max_iter = i;
           return 0;
         }
       // Update values
-      eta *= -s2;
       gamma0 = gamma1;
       gamma1 = gamma2;
       s0 = s1;
@@ -123,7 +128,7 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
       c1 = c2;
     }
   // Exit with error flag set
-  tol = resid;
+  tol = std::abs (eta) / eta0;
   max_iter = i;
   return 1;
 }
