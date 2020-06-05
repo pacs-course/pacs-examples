@@ -639,6 +639,8 @@ private:
     Eigen::SimplicialLDLT<SpMat, Eigen::Upper> cholT;
     //! Cholesky factorization for BBtalpha
     Eigen::SimplicialLDLT<SpMat, Eigen::Upper> cholBBt;
+    //! Vector to scale M
+    Vector scaledM;
      //! The alpha coeff of the scheme (default value)
     static constexpr Real      alpha_default = 1e-2;
     //! The max it for CG (default value)
