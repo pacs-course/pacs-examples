@@ -102,13 +102,13 @@ FGMRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
       Update (x, m - 1, H, s, z);
       r = b - A * x;
       beta = norm (r);
-      resid = beta / normb;
-      if (resid < tol)
-        {
-          tol = resid;
-          max_iter = j;
-          return 0;
-        }
+//      resid = beta / normb;
+//      if (resid < tol)
+//        {
+//          tol = resid;
+//          max_iter = j;
+//          return 0;
+//        }
     }
   tol = resid;
   return 1;
