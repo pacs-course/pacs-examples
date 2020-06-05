@@ -47,14 +47,14 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   if (normb == 0.0)
     normb = 1.0;
   // Test trivial solution
-  resid = v1.norm () / normb;
+  // resid = v1.norm () / normb;
   // std::cout<<resid<<std::endl;
-  if (resid <= tol)
-    {
-      tol = resid;
-      max_iter = 0;
-      return 0;
-    }
+  // if (resid <= tol)
+  //  {
+  //    tol = resid;
+  //    max_iter = 0;
+  //    return 0;
+  //  }
   Vector z1 = M.solve (v1);
   auto   dot = z1.dot (v1);
   if (dot <= 0.0)
@@ -101,8 +101,8 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
       // Test convergence
       // \todo Here we should do better since the residual
       // should already be available
-      resid = (b - A * x).norm () / normb;
-      if (resid <= tol)
+      // resid = (b - A * x).norm () / normb;
+      if ((resid = std::abs (f) / normb) <= tol)
         {
           tol = resid;
           max_iter = i;
@@ -123,7 +123,7 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
       c1 = c2;
     }
   // Exit with error flag set
-  tol = (b - A * x).norm () / normb;
+  tol = resid;
   max_iter = i;
   return 1;
 }
