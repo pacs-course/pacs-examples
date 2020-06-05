@@ -1,5 +1,5 @@
-#ifndef HAVE_MIDPOINT_H
-#define HAVE_MIDPOINT_H
+#ifndef HAVE_MIDPOINT_HPP
+#define HAVE_MIDPOINT_HPP
 
 #include <functional>
 

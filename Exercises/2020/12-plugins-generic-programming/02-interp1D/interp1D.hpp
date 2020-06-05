@@ -58,11 +58,11 @@
  * @throw a runtime standard exception if I do not have at least 2
  * interpolation nodes
  */
-template <typename RAIterator,
-          typename Key,
-          typename ExtractKey,
-          typename ExtractValue,
-          typename CompareKey = std::less<Key>>
+template <class RAIterator,
+          class Key,
+          class ExtractKey,
+          class ExtractValue,
+          class CompareKey = std::less<Key>>
 auto
 interp1D(RAIterator const &  begin,
          RAIterator const &  end,
