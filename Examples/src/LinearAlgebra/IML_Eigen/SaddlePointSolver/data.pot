@@ -1,21 +1,21 @@
 # Tolerance for stopping criterion
-tol=1e-9
+tol=1.e-8
 #Maximum number of iterations
 max_iter=10000
 # GMRES restart level (only if using GMRES)
-gmres_levels=400
+gmres_levels=40
 # The M B and T matrix
-MMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/case_4.2/case_A/coarse/M.mat #The M matrix
-BMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/case_4.2/case_A/coarse/B.mat #The B matrix
-TMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/case_4.2/case_A/coarse/T.mat #The T matrix
+MMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/table6/aggiunta_frattura_perm8/M.mat #The M matrix
+BMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/table6/aggiunta_frattura_perm8/B.mat #The B matrix
+TMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondizionatori/matrici/table6/aggiunta_frattura_perm8/T.mat #The T matrix
 # Solver type among {umfpack, sparselu, gmres, fgmres, gmresr, minres, tminres, eigenvalues}
 # if solver=eigenvalues max/min only eigenvalues are computed for the given matrices. Otherwise the solver is launched (no computation of eigvalues)
+solver=fgmres
 #solver=minres
-solver=gmres
 # Preconditioner type among {Diagonal,BlockDiagonal,BlockTriangular, 
 # ILU, HSS, Identity}
-preconditioner=Diagonal
-# use symmetric undefinite format (1) or unsummetric definite format (0)
+preconditioner=BlockDiagonal
+# use symmetric undefinite format (1) or unsymmetric definite format (0)
 isSymUndef=1
 # use lumped mass matrix approximation (1) or diagonal part approximation (0)
 isLumped=0
@@ -26,12 +26,15 @@ logfile=NONE
 # max iteration for the inner solve
 max_iter=100;
 # alpha coefficient
-alpha=0.05;
+#alpha=0.017;
+#alpha=0.0176;
+alpha=0.1;
+#alpha=0.001;
 # tolerance for the inner solve
 tol=1.e-2;
 #section for eigenvalues computation
 [EIG]
-ncv = 40; 
+ncv = 60; 
 maxit = 10000;
 tol = 1.e-3;
 
