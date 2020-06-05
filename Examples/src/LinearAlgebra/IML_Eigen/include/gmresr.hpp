@@ -110,7 +110,7 @@ GMRESR (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
         {
           tol = resid;
           max_iter = j;
-          return 0;
+          return -1;
         }
     }
 
