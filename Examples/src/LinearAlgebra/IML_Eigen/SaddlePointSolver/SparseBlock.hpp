@@ -4,31 +4,55 @@
  */
 #ifndef FVCODE3D_SPARSEBLOCK_HPP_
 #define FVCODE3D_SPARSEBLOCK_HPP_
-
-#include <Eigen/Sparse>
 #include "BasicType.hpp"
+#include <Eigen/Sparse>
+#include <vector>
+#include <exception>
 
 namespace FVCode3D
 {
-
-//! Extract a block from a SpMat
+//! Extracts a block from a Eigen Sparse Matrix
 /*!
- * Only for ColMajor Sparse Matrix
+ *
+ * @tparam SparseMatrix The Eigen sparse matrix type
+ * @param matrix The matrix from which block is extracted
+ * @param startRow Starting row for extraction
+ * @param startCol Starting columns for extraction
+ * @param nRows Number of rows of extracted matrix
+ * @param nCols Number of columns of extracted matrix
+ * @return The extracted matrix
+ * @throw runtime_exception if block sizing is incorrect
  */
-SpMat sparseBlock(SpMat _matrix, UInt _ibegin, UInt _jbegin, UInt _icount, UInt _jcount);
+  template<class SparseMatrix>
+  auto sparseBlock(SparseMatrix const & matrix, UInt startRow, UInt startCol, UInt nRows, UInt nCols){
+    // block for check
+    {
+      auto rowsOriginal = matrix.rows();
+      auto colsOriginal = matrix.cols();
+      if (startRow + nRows > rowsOriginal || startCol + nCols > colsOriginal)
+        throw std::runtime_error("sparseBlock: sizing of block is inconsistent");
+    }
 
-//! Extract the top left block of a Sparse Matrix
-SpMat sparseTopLeftBlock(SpMat _matrix, UInt _icount, UInt _jcount);
-
-//! Extract the top right block of a Sparse Matrix
-SpMat sparseTopRightBlock(SpMat _matrix, UInt _icount, UInt _jcount);
-
-//! Extract the bottom left block of a Sparse Matrix
-SpMat sparseBottomLeftBlock(SpMat _matrix, UInt _icount, UInt _jcount);
-
-//! Extract the bottom right block of a Sparse Matrix
-SpMat sparseBottomRightBlock(SpMat _matrix, UInt _icount, UInt _jcount);
-
+    using Triplet = Eigen::Triplet<typename SparseMatrix::Scalar>;
+    std::vector<Triplet> triplets;
+    triplets.reserve(matrix.nonZeros());
+    for (int k=0; k<matrix.outerSize(); ++k)
+      for (typename SparseMatrix::InnerIterator it(matrix,k); it; ++it)
+        {
+          auto i = it.row();
+          auto j = it.col();
+          if( i>=startRow && i< startRow + nRows)
+            {
+              if(j>=startCol && j< startCol + nCols)
+                {
+                  triplets.emplace_back(i-startRow,j-startCol,it.value());
+                }
+            }
+        }
+    SparseMatrix R(nRows,nCols);
+    R.setFromTriplets(triplets.begin(), triplets.end());
+    return R;
+  }
 } // namespace Eigen
 
 #endif // FVCODE3D_SPARSEBLOCK_HPP_
