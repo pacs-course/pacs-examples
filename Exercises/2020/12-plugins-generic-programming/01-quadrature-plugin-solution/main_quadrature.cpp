@@ -13,8 +13,6 @@ integrand(double x)
 int
 main(int argc, char **argv)
 {
-  double (*integrate)(std::function<double(double)>, double, double);
-
   void *handle = dlopen("adaptive_quadrature.so", RTLD_LAZY);
   if (!handle)
     {
@@ -33,8 +31,8 @@ main(int argc, char **argv)
       return 1;
     }
 
-  integrate = reinterpret_cast<
-    double (*)(std::function<double(double)>, double, double)>(sym);
+  double (*integrate)(std::function<double(double)>, double, double);
+  integrate = reinterpret_cast<decltype(integrate)>(sym);
 
   double res = integrate(integrand, 0, M_PI);
 
