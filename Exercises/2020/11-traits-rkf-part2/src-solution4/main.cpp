@@ -15,16 +15,13 @@ main(int argc, char **argv)
     };
     auto exact = [](double const &t) { return std::exp(-10. * t); };
 
-    double t0           = 0;
-    double y0           = 1;
-    double T            = 100;
-    double h_init       = 0.2;
-    double errorDesired = 1.e-4;
+    RKFOptions options{0., 100., 1e-5, 1e-4, int(1e6)};
+    RKF<RKFScheme::FehlbergRK12, RKFKind::SCALAR> solver{fun,
+                                                         options};
 
-    RKF<RKFScheme::RK45_t, RKFKind::SCALAR> solver{RKFScheme::RK45,
-                                                   fun};
+    double y0{1};
 
-    auto solution = solver(t0, T, y0, h_init, errorDesired);
+    auto solution = solver(y0);
 
     double max_error = 0.;
     int    count     = 0;
@@ -36,7 +33,7 @@ main(int argc, char **argv)
 
     std::cout << std::boolalpha;
     std::cout << "Max error " << max_error << " Desired max error "
-              << errorDesired << " Failed:" << solution.failed
+              << options.tol << " Failed:" << solution.failed
               << " Estimated Error " << solution.estimatedError;
     std::cout << std::endl;
 
@@ -54,23 +51,17 @@ main(int argc, char **argv)
       return out;
     };
 
-    RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{RKFScheme::RK45,
-                                                   fun};
-
-    double t0 = 0;
-    double T  = 40.;
+    RKFOptions options{0., 40., 0.2, 1e-4, 2000};
+    RKF<RKFScheme::DormandPrince, RKFKind::VECTOR> solver{fun,
+                                                          options};
 
     Eigen::VectorXd y0(2);
     y0[0] = 1.;
     y0[1] = 1.;
 
-    double h_init       = 0.2;
-    double errorDesired = 1.e-4;
-    int    maxSteps     = 2000;
+    auto solution = solver(y0);
 
-    auto solution = solver(t0, T, y0, h_init, errorDesired, maxSteps);
-
-    std::cout << " Desired max error " << errorDesired
+    std::cout << " Desired max error " << options.tol
               << " Failed:" << solution.failed << " Estimated Error "
               << solution.estimatedError;
     std::cout << std::endl;
