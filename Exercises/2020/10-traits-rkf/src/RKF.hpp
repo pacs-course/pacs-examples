@@ -1,6 +1,14 @@
 #ifndef RKF_HPP
 #define RKF_HPP
 
+inline std::ostream &
+operator<<(std::ostream &out, const RKFResult<RKFKind::SCALAR> &res);
+
+inline std::ostream &
+operator<<(std::ostream &out, const RKFResult<RKFKind::VECTOR> &res);
+
+// Implementations.
+
 std::ostream &
 operator<<(std::ostream &out, const RKFResult<RKFKind::SCALAR> &res)
 {
