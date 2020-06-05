@@ -36,8 +36,7 @@ main(int argc, char **argv)
   integrate = reinterpret_cast<
     double (*)(std::function<double(double)>, double, double)>(sym);
 
-  double pi  = 4 * atan(1);
-  double res = integrate(integrand, 0, pi);
+  double res = integrate(integrand, 0, M_PI);
 
   std::cout << "res = " << res << std::endl;
 
