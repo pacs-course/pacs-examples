@@ -58,7 +58,8 @@ GMRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
 
   if (normb == 0.0)
     normb = 1;
-  resid = norm (w) / normb;
+  // For consistency I check preconditioned residual
+  resid = norm (r) / normb;
   if (resid <= tol)
     {
       tol = resid;
@@ -104,13 +105,14 @@ GMRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
       w = b - A * x;
       r = M.solve (w);
       beta = norm (r);
-      resid = norm (w) / b.norm ();
-      if (resid < tol)
-        {
-          tol = resid;
-          max_iter = j;
-          return 0;
-        }
+      // to be consistent from above I check preconditioned residual
+      //resid = norm (r) / b.norm ();
+      //if (resid < tol)
+      //  {
+      //    tol = resid;
+      //    max_iter = j;
+      //    return -1;
+      //  }
     }
 
   tol = resid;
