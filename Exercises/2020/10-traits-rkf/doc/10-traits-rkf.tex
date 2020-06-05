@@ -37,7 +37,7 @@
 }
 
 \begin{document}
-    \title{A Runge-Kutta-Fehlberg solver\protect\\ using type traits and \texttt{Eigen}}
+    \title{A Runge-Kutta-Fehlberg solver\protect\\ using traits and \texttt{Eigen}}
     \author{Pasquale Claudio Africa}
     \date{29/05/2020}
 
@@ -52,13 +52,13 @@ Consider an ODE of the form
 \begin{equation*}
 \frac{\mathrm{d} y}{\mathrm{d} y} = f(t, y)
 \end{equation*}
-and consider the coefficients \(b_i, b_i^*, a_ij, c_i\) to be given in the form of a Butcher tableau.
+and consider the coefficients \(b_i, b_i^*, a_{ij}, c_i\) to be given in the form of a Butcher tableau.
 We recall that, at each time step \(t_n\), an embedded RKF method of order \(p\) consists of the following steps.
 \begin{enumerate}
 \item Compute the high-order solution \(y_{n+1} = y_{n} + h \sum_{i=1}^p b_i k_i\), where \(k_i = f\left(t_n + c_i h_n, y_n + \sum_{j=1}^{i-1}a_{ij}k_j\right)\), and \(h_n = t_{n+1} - t_n\).
 \item Compute the low-order solution \(y_{n+1}^* = y_{n} + h \sum_{i=1}^p b_i^* k_i\).
 \item Compute the error \(\varepsilon_{n+1} = y_{n+1} - y_{n+1}^* = h\sum_{i=1}^p(b_i - b_i^*)k_i\).
-\item Adapt the step size \(h_{n+1} = \tau h_{n}\), where \(\tau\) is a reduction/expansion factor depending on whether \(\varepsilon_{n+1}\) is larger or smaller than a prescribed tolerance.
+\item Adapt the step size \(h_{n+1} = \tau_{n} h_{n}\), where \(\tau_{n}\) is a reduction (\(<1\))/expansion (\(>1\)) factor depending on whether \(\varepsilon_{n+1}\) is larger or smaller than a prescribed tolerance.
 \end{enumerate}
 \end{frame}
 
@@ -67,14 +67,15 @@ The code structure is the following:
 \begin{itemize}
 \item \texttt{ButcherRKF} contains the definition of the Butcher tableaux for the most common RKF methods.
 \item \texttt{RKFTraits} defines the basic structure that enable to statically select the type of the equation(s) to be solved (\textit{i.e.} scalar, vector, matrix).
-\item \texttt{RKF} implements a generic RKF solver interface.
+\item \texttt{RKFResult} is a data structure containing the output of the RKF solver.
+\item \texttt{RKF} implements a generic RKF solver interface, filling a proper \texttt{RKFResult} object.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Homeworks}
 \begin{enumerate}
 \item Use the provided solver to solve the SIR model presented in \url{https://arxiv.org/pdf/2003.00122.pdf}.
-\item Implement the Bogacki–Shampine and the Dormand-Prince methods (\url{https://en.wikipedia.org/wiki/List_of_Runge\%E2\%80\%93Kutta_methods\#Embedded_methods})
+\item Implement the Fehlberg12 and the Dormand-Prince methods (\url{https://en.wikipedia.org/wiki/List_of_Runge\%E2\%80\%93Kutta_methods\#Embedded_methods})
 \item Modify the constructor of the \texttt{RKF} class so that the chosen RKF method has a default value.
 
 \item Define a class to handle the input options for the \texttt{RKF} class, and provide the corresponding setter/getter methods and possibly a method to parse options from file.

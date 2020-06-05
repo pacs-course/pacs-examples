@@ -18,13 +18,13 @@ main(int argc, char **argv)
     double t0           = 0;
     double y0           = 1;
     double T            = 100;
-    double h_init       = 0.2;
+    double h_init       = 1e-5;
     double errorDesired = 1.e-4;
+    double maxSteps     = 1e6;
 
-    RKF<RKFScheme::RK45_t, RKFKind::SCALAR> solver{RKFScheme::RK45,
-                                                   fun};
+    RKF<RKFScheme::FehlbergRK12, RKFKind::SCALAR> solver{fun};
 
-    auto solution = solver(t0, T, y0, h_init, errorDesired);
+    auto solution = solver(t0, T, y0, h_init, errorDesired, maxSteps);
 
     double max_error = 0.;
     int    count     = 0;
@@ -54,8 +54,7 @@ main(int argc, char **argv)
       return out;
     };
 
-    RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{RKFScheme::RK45,
-                                                   fun};
+    RKF<RKFScheme::DormandPrince, RKFKind::VECTOR> solver{fun};
 
     double t0 = 0;
     double T  = 40.;
