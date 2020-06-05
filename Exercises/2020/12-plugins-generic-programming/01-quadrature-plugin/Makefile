@@ -6,7 +6,7 @@ LINK.o := $(LINK.cc) # Use C++ linker.
 
 EXEC=main_quadrature
 SRCS = $(wildcard *.cpp)
-LIBS=adaptive_quadrature.so midpoint.so
+LIBS=adaptive_quadrature.so midpoint.so trapezoidal.so
 
 DEPEND = make.dep
 

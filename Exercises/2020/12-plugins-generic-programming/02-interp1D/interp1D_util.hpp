@@ -18,7 +18,7 @@
  * @param comp Comparison operator, defaults to less<T>
  * @return
  */
-template <typename T, typename CompOper = std::less<double>>
+template <class T, class CompOper = std::less<double>>
 double
 interp1D(std::vector<T> const &v,
          double const &        keyVal,
@@ -38,7 +38,7 @@ interp1D(std::vector<T> const &v,
  * @param comp The comparison operator (defaulted to less<double>{}).
  * @return
  */
-template <typename T, typename CompOper = std::less<double>>
+template <class T, class CompOper = std::less<double>>
 T
 interp1D(std::vector<double> const &keys,
          std::vector<T> const &     values,
