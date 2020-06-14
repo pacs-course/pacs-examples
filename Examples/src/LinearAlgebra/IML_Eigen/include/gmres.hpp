@@ -26,6 +26,7 @@
 //!               tolerance was reached
 //!    \param m  The restart level.
 //!    \param tol the residual after the final iteration
+//! \note This version uses as a stopping criteria the relative reduction of the preconsitioned residual
 
 //*****************************************************************
 #include "LinearAlgebraTraits.hpp"
@@ -51,13 +52,14 @@ GMRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   Eigen::Matrix<Real, Eigen::Dynamic, Eigen::Dynamic> H =
     Eigen::Matrix<Real, Eigen::Dynamic, Eigen::Dynamic>::Zero (m + 1, m);
   //  H.resize(m+1,m,0.0);
-  Real normb = norm (M.solve (b));
+//  Real normb = norm (M.solve (b));
+  
   w = b - A * x;
   Vector r = M.solve (w);
   Real   beta = norm (r);
-
-  if (normb == 0.0)
-    normb = 1;
+  Real  normb = (beta==0.0 ? 1.0 : beta); //use preconditioned residual
+//  if (normb == 0.0)
+//    normb = 1;
   // For consistency I check preconditioned residual
   resid = norm (r) / normb;
   if (resid <= tol)
