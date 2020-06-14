@@ -1,6 +1,6 @@
 #ifndef HH_MINRES___HH
 #define HH_MINRES___HH
-//*****************************************************************
+/*!
 // Iterative template routine -- MINRES
 //
 // CG solves the symmetric positive definite linear
@@ -16,12 +16,18 @@
 //
 // Upon successful return, output arguments have the following values:
 //
-//        x  --  approximate solution to Ax = b
-// max_iter  --  the number of iterations performed before the
-//               tolerance was reached
-//      tol  --  the residual after the final iteration
+// \tparam Matrix a matrix class
+// \tparam Vector a vector class
 //
-//*****************************************************************
+//  \param x  initial value and approximate solution to Ax = b
+//  \param max_iter max number of iteration -> number of iterations performed
+//  \param tol  Desired tolerance -> the relative preconditioned residual after the final iteration
+//  \param b right hand side
+//  \param M preconditioner: it must have a method called solve() which applies the preconditioner.
+//
+//  \note Stopping criteria based on relative preconditioned residual
+*****************************************************************
+*/
 #include <cmath>
 namespace LinearAlgebra
 {
@@ -67,8 +73,7 @@ MINRES (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   auto eta = gamma1;
   auto eta0 = eta;
   // Avoid division by zero
-  if (eta0==0.0)
-    eta0=1.0;
+  if (eta0==0.0) eta0=1.0;
   int  i;
   for (i = 1; i <= max_iter; ++i)
     {
