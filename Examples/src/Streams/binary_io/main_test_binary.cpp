@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib> // for system()
 #include "chrono.hpp"
+#include "string_utility.hpp"
 #undef H5_USE_16_API
 #include "hdf5.h"
 #include "extendedAssert.hpp"
@@ -78,7 +79,13 @@ int main()
   asciifile2.close();
   tempo.stop();
   cout<<"Reading done: "<<tempo<<endl;
-  
+  cout<<"Reading formatted file as a whole"<<endl;
+  tempo.start();
+  Utility::GlobbedTextReader glob("file.dat");
+  for (auto i: v ) glob>>i;
+    //glob.close();
+  tempo.stop();
+  cout<<"Reading formatted file as a whole done: "<<tempo<<endl;
   cout<<"Reading binary file"<<endl;
   tempo.start();
   binfile2.read(reinterpret_cast<char* >(&DIM), sizeof DIM);
