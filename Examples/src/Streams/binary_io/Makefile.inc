@@ -4,6 +4,6 @@
 #
 HDF5_LIB=$(mkHdf5Lib)
 HDF5_INC=$(mkHdf5Inc)
-LDLIBS=-L$(HDF5_LIB) -lhdf5
+LDLIBS=-L$(HDF5_LIB) -lhdf5 -L$(PACS_LIB_DIR) -lpacs
 CPPFLAGS+= -I$(HDF5_INC)
 CXXFLAGS=-O3 -Wall $(STDFLAGS)
