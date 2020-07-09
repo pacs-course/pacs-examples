@@ -6,7 +6,7 @@ you need to do
 
 to install them. You will also produce tests for most of the utilities
 
-* `GetPot`  GetPot command parser
+* `GetPot`  GetPot command parser. I have now inserted the newest version. You have to include just `GetPot`, the other files (`GetPot.hpp` and `GetPot_imp.hpp`) are helper files that are *included* in `GetPot`.
 
 * `chrono`  An utility to take times
 
