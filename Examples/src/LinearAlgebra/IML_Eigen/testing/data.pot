@@ -14,5 +14,5 @@ eigmax=1.0
 matrixname=../../MatrixData/s_nopdef/darcy003.mtx
 
 # Solver type among {umfpack, sparselu, gmres, gmresr, cg, cheby, bicgstab, cgs,bicg,ir,qmr, minres, tminres}
-solver=minres
+solver=tminres
 #solver=umfpack
