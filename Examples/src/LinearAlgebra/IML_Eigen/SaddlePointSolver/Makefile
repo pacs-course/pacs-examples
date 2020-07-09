@@ -24,7 +24,7 @@ all: $(DEPEND) $(EXE)
 $(EXE): $(OBJS)
 
 clean:
-	-rm -f *.o $(EXE) test_all
+	-rm -f *.o $(EXE)
 
 $(DEPEND): $(SRCS)
 	-\rm $(DEPEND)
