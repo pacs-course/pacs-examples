@@ -109,12 +109,28 @@ namespace RKFScheme
       }{}
   };
 
+  //! RK1(2) scheme 2nd order
+    struct RKF12_t: public ButcherArray<3>{
+      RKF12_t():ButcherArray<3>{
+      {{
+        {{0.,      0.,        0.}},
+        {{1./2.,   0.,        0.}},
+        {{1./256., 255./256., 0.}},
+     }},
+      {{1.0/256. , 255./256, 0.0    }}, // 1st order
+      {{1./512.   ,255./256, 1./512.}},//2nd order
+      2
+                                }{}
+    };
+
 //C++17 here!
   inline const RK45_t RK45{};
 
   inline const RK23_t RK23{};
 
   inline const RK12_t RK12{};
+
+  inline const RKF12_t RKF12{};
 
 
 
