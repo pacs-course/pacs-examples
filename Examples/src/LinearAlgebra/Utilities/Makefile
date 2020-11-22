@@ -156,7 +156,7 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
 $(DEPEND): $(SRCS)
-	$(RM)-f $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
