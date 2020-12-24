@@ -1,7 +1,7 @@
 include ../../../../Makefile.inc
 CPPFLAGS+=-I..
 
-all: $(DEPEND) testMM_readers  testCooWrite testAdjacency testRotatingVector testBasicZeroFun
+all: $(DEPEND) testMM_readers  testCooWrite testAdjacency testRotatingVector testBasicZeroFun testBasicMinFun
 
 SRCS=testMM_readers.cpp  testCooWrite.cpp testAdjacency.cpp testRotatingVector.cpp
 
@@ -21,6 +21,7 @@ testRotatingVector.o: testRotatingVector.cpp ../RotatingVector.hpp
 
 testBasicZeroFun.o: testBasicZeroFun.cpp ../basicZeroFun.hpp
 
+testBasicMinFun.o: testBasicZeroFun.cpp ../basicOptimization.hpp
 
 ../Utilities.o: ../Utilities.cpp ../Utilities.hpp
 
