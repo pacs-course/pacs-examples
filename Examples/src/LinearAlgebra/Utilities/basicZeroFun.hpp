@@ -12,6 +12,7 @@
 #include <iostream>
 #include <limits>
 #include <tuple>
+#include <algorithm>
 namespace apsc
 {
 /*!
@@ -29,25 +30,26 @@ namespace apsc
  */
 template <class Function>
 double
-chord(Function const &f, double a, double b, double tol=1.e-6, double tola=1.e-10)
+chord(Function const &f, double a, double b, double tol = 1.e-6,
+      double tola = 1.e-10)
 {
   double ya = f(a);
   double yb = f(b);
   double delta = b - a;
-  double resid0 = std::max(std::abs(ya),std::abs(yb));
+  double resid0 = std::max(std::abs(ya), std::abs(yb));
   SURE_ASSERT(ya * yb < 0, "Function must change sign at the two end values");
   double           yc{ya};
   double           c{a};
   double           incr = std::numeric_limits<double>::max();
   constexpr double small = 10.0 * std::numeric_limits<double>::epsilon();
-  while (std::abs(yc) > tol*resid0+tola && incr > small)
+  while (std::abs(yc) > tol * resid0 + tola && incr > small)
     {
-      double incra = -ya/ (yb - ya);
-      double incrb = 1.-incra;
-      double incr = std::min(incra,incrb);
-      ASSERTM((std::max(incra,incrb)<=1.0 && incr>=0), "Chord is failing")
-      c = a + incra*delta;
-      //std::cout << c << std::endl;
+      double incra = -ya / (yb - ya);
+      double incrb = 1. - incra;
+      double incr = std::min(incra, incrb);
+      ASSERTM((std::max(incra, incrb) <= 1.0 && incr >= 0), "Chord is failing")
+      c = a + incra * delta;
+      // std::cout << c << std::endl;
       yc = f(c);
       if (yc * ya < 0.0)
         {
@@ -60,10 +62,11 @@ chord(Function const &f, double a, double b, double tol=1.e-6, double tola=1.e-1
           a = c;
         }
       delta = b - a;
-/*
- *      std::cout << delta << " " << yc << " " << ya << " " << yb << " " << incr
- *      << std::endl;
- */
+      /*
+       *      std::cout << delta << " " << yc << " " << ya << " " << yb << " "
+       * << incr
+       *      << std::endl;
+       */
     }
   return c;
 }
@@ -79,10 +82,12 @@ chord(Function const &f, double a, double b, double tol=1.e-6, double tola=1.e-1
  * @param tol Tolerance
  * @return The approximation of the zero of f
  * @pre f(a)*f(b)<0
+ * @note It the interval brackets the zero convergence should be guaranteed.
+ *
  */
 template <class Function>
 double
-bisection(Function const &f, double a, double b, double tol)
+bisection(Function const &f, double a, double b, double tol=1.e-5)
 {
   double ya = f(a);
   double yb = f(b);
@@ -106,7 +111,7 @@ bisection(Function const &f, double a, double b, double tol)
         }
       delta = b - a;
     }
-  return c;
+  return (a+b)/2.;
 }
 /*!
  * Computes the zero of a scalar function with the method of the secant
@@ -133,8 +138,10 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
   double       c{a};
   unsigned int iter{0u};
   double       check = tol * resid + tola;
-  while (resid > check && iter < maxIt)
+  bool goOn=resid>check;
+  while (goOn && iter < maxIt)
     {
+      goOn=resid>check;
       ++iter;
       double yb = f(b);
       c = a - ya * (b - a) / (yb - ya);
@@ -151,9 +158,158 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
           a = c;
         }
     }
+
   return std::make_tuple(c, iter < maxIt);
 }
 
+/*!
+ * This function tries to find an interval that brackets the zero of a
+ * function f. It does so by sampling the value of f at points
+ * generated starting from a given point
+ *
+ * @tparam Function the type of the function. must be convertible to double
+ * (*)(double)
+ * @param f The function.
+ * @param x1 initial point
+ * @param h initial increment for the sampling
+ * @param maxIter maximum number of iterations
+ * @return a tuple with the bracketing points and a bool which is true if number
+ * of iterations not exceeded (bracket found)
+ * @note I am adopting a simple algorithm. The search can be bettered using a
+ * quadratic (or cubic) search.
+ */
+template <class Function>
+std::tuple<double, double, bool>
+bracketInterval(Function const &f, double x1, double h = 0.01,
+                unsigned int maxIter = 200)
+{
+  constexpr double expandFactor = 1.5;
+  auto          hinit = h;
+  auto             x2 = x1 + h;
+  auto             y1 = f(x1);
+  auto             y2 = f(x2);
+  unsigned int     iter = 0u;
+  // get initial decrement direction
+  while ((y1 * y2 > 0) && (iter < maxIter))
+    {
+      ++iter;
+      if (std::abs(y2) > std::abs(y1))
+        {
+          // change direction
+          h *= (h>0.?-hinit:hinit);
+        }
+      else
+        {
+          // direction seems good, move on
+          x1=x2;
+          y1=y2;
+          h *= expandFactor;
+        }
+      x2 = x1 + h;
+      y2 = f(x2);
+    }
+  return std::make_tuple(x1, x2, iter <= maxIter);
+}
+/*!
+ * Brent type search
+ * If converging, it finds a zero with error below the given tolerance.
+ *
+ * @tparam Function The type of a callable object double (double)
+ * @param f A callable object double (double)
+ * @param a The first end of a bracketing interval
+ * @param b The second end of a bracketing interval
+ * @param tol Tolerance
+ * @param maxIter Max number of iteration.
+ * @return The found approximated zero and a status flag (true=converged).
+ *
+ * @pre f(a)*f(b)<0
+ * @note It the interval brackets the zero convergence should be guaranteed.
+ */
+template <class Function>
+std::tuple<double,bool> brent_search(const Function & f, double a, double b, double tol=1.e-5, unsigned maxIter=200)
+{
+  auto ya = f(a);
+  auto yb = f(b);
+  // First check.
+  if ((ya*yb) >= 0.0)
+    {
+      if (ya==0.)
+        return {a,true};
+      else if (yb==0.)
+        return {b,true};
+      else
+        return {a,false}; // precondition not met
+    };
+  //
+  if(std::abs(ya)<std::abs(yb))
+    {
+      std::swap(a,b);
+      std::swap(ya,yb);
+    }
+  //
+    auto c  = a;
+    auto d  = c;
+    auto yc = ya;
+    bool mflag{true};
+    auto   s=b;
+    auto   ys=yb;
+    unsigned iter{0u};
+    do
+      {
+//
+        if(ya != yc and yb != yc)
+          {
+            auto yab = ya-yb;
+            auto yac = ya-yc;
+            auto ycb = yc-yb;
+            // inverse quadratic interpolation
+            s = a*ya*yc/(yab*yac)+ b*ya*yc/(yab*ycb)-c*ya*yb/(yac*ycb);
+          }
+        else
+          {
+            // secant
+            s = b -yb*(b-a)/(yb-ya);
+          }
+//
+        if ( ( (s-3*(a+b)/4)*(s-b)>=0 ) or                           // condition 1
+             ( mflag  and (std::abs(s-b)>=0.5*std::abs(b-c) ) ) or  // condition 2
+             ( !mflag and (std::abs(s-b)>= 0.5*std::abs(c-d)) ) or // condition 3
+             (  mflag and (std::abs(b-c) < tol) ) or               // condition 4
+             ( !mflag and (std::abs(c-d) <tol) )                 // condition 5
+            )
+          {
+            mflag=true;
+            s = 0.5*(a+b); // back to bisection step
+            }
+        else
+          mflag=false;
+ //
+        ys = f(s);
+        d  = c;
+        c  = b;
+        yc = yb;
+//
+        if( ya*ys <0 )
+          {
+            b  = s;
+            yb = ys;
+          }
+        else
+          {
+            a  = s;
+            ya = ys;
+          }
+//
+        if(std::abs(ya) < std::abs(yb))
+          {
+            std::swap(a,b  );
+            std::swap(ya,yb);
+          }
+//
+        }
+    while (ys!=0. && std::abs(b-a)>tol && iter<maxIter);
+    return {s,iter<maxIter};
+}
 } // end namespace
 
 #endif /* EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICZEROFUN_HPP_ */
