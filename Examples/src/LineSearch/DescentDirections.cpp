@@ -13,17 +13,17 @@ apsc::BFGSDirection::operator()(const apsc::OptimizationCurrentValues &values)
   // First time is a gradient step
   if (firstTime)
     {
-      auto n = values.currentPoint.size();
+      auto const n = values.currentPoint.size();
       H = Eigen::MatrixXd::Identity(n,n);
       firstTime=false;
       this->previousValues=values;
       return -values.currentGradient;
     }
 
-  apsc::LineSearch_traits::Vector g =  values.currentGradient;
+  apsc::LineSearch_traits::Vector const & g =  values.currentGradient;
   apsc::LineSearch_traits::Vector yk = g - this->previousValues.currentGradient;
   apsc::LineSearch_traits::Vector sk = values.currentPoint-this->previousValues.currentPoint;
-  auto yks=yk.dot(sk);
+  auto const yks=yk.dot(sk);
   // Correct approximate Hessian only if we maintain sdp property if not keep the old one
   if(yks > this->smallNumber*sk.norm()*yk.norm())
     {
@@ -56,10 +56,10 @@ apsc::BFGSIDirection::operator()(const apsc::OptimizationCurrentValues &values)
       return -values.currentGradient;
     }
 
-  apsc::LineSearch_traits::Vector g =  values.currentGradient;
+  apsc::LineSearch_traits::Vector const  & g =  values.currentGradient;
   apsc::LineSearch_traits::Vector yk = g - this->previousValues.currentGradient;
   apsc::LineSearch_traits::Vector sk = values.currentPoint-this->previousValues.currentPoint;
-  auto yks=yk.dot(sk);
+  auto const yks=yk.dot(sk);
   // Correct approximate Hessian only if we maintain sdp property if not keep the old one
   if(yks > this->smallNumber*sk.norm()*yk.norm())
     {
@@ -90,7 +90,7 @@ apsc::BBDirection::operator()(const apsc::OptimizationCurrentValues &values)
       return -values.currentGradient;
     }
 
-  apsc::LineSearch_traits::Vector g =  values.currentGradient;
+  apsc::LineSearch_traits::Vector const & g =  values.currentGradient;
   apsc::LineSearch_traits::Vector yk = g - this->previousValues.currentGradient;
   apsc::LineSearch_traits::Vector sk = values.currentPoint-this->previousValues.currentPoint;
   auto yks=yk.dot(sk);
@@ -110,4 +110,29 @@ apsc::BBDirection::operator()(const apsc::OptimizationCurrentValues &values)
     {
       return -g;
     }
+}
+
+/*
+* Non-linear CG with Polak-Ribier formula
+*/
+apsc::LineSearch_traits::Vector
+apsc::CGDirection::operator()(const apsc::OptimizationCurrentValues &values)
+{
+  // First time is a gradient step
+  if (firstTime)
+    {
+      firstTime=false;
+      this->prevDk=-values.currentGradient;
+    }
+  else
+    {
+      apsc::LineSearch_traits::Vector const &   gk1 = values.currentGradient;
+      apsc::LineSearch_traits::Vector const &   gk  = this->previousValues.currentGradient;
+      apsc::LineSearch_traits::Vector const &   dk  = this->prevDk;
+      // Polak Ribiere formula
+      this->prevDk = -gk1 +(gk1.dot(gk1-gk)/(gk.dot(gk)) )*dk; // store for next time
+      if(prevDk.dot(gk1)>0) prevDk=-gk1; // check if direction is a descent if not go back to gradient
+    }
+  this->previousValues=values; // store for next time
+  return this->prevDk;
 }
