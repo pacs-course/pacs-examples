@@ -37,9 +37,16 @@ Content
 	left and the new element added at the back of the `RotatingVector`.
     It is generic, so the RotatingVector may store any type.
 	
-* `Utility` An utility to extract the graph of a matrix and another
+* `Utilities` An utility to extract the graph of a matrix and another
   utility to apply symmetric permutation on a Eigen sparse matrix. We
   have also an utility to apply RCMK reordering of a matrix.
+ 
+* `RotatingMatrix` Like rotating vector, but now the vectors are the compuns of an Eigen Matrix. In practice you have an Eigen matrix with a maximal number of columns
+you may add a column to the end of the matrix and if the maximal number of columns is reached, the columns are shifted to the left to give room to the new column. As a consequence the first column is canceled.
+
+* `mathUtils.hpp` It contains some utilities for linear algebra operation. For instance dot product and norm that wotk on a very generic setting.
+
+* `basicOptimization` Golden search for unconstrained minimization of a scalar function. And a simple implementation of a function to bracket a minimum. 
  
 In `test/` you have tests for all the utilities here contained, do
 

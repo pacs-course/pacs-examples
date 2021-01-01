@@ -5,7 +5,7 @@
 #ifndef RANGESUPPORT_HPP_
 #define RANGESUPPORT_HPP_
 
-#include <Eigen/Sparse>
+#include <Eigen/Core>
 
 namespace std
 {
