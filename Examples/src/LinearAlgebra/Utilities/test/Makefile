@@ -1,7 +1,7 @@
 include ../../../../Makefile.inc
 CPPFLAGS+=-I..
 
-all: $(DEPEND) testMM_readers  testCooWrite testAdjacency testRotatingVector testBasicZeroFun testBasicMinFun test_mathUtils
+all: $(DEPEND) testMM_readers  testCooWrite testAdjacency testRotatingVector testBasicZeroFun testBasicMinFun test_mathUtils test_RotatingMatrix
 
 # for multithreading
 LDLIBS+=-ltbb
@@ -27,6 +27,8 @@ testBasicZeroFun.o: testBasicZeroFun.cpp ../basicZeroFun.hpp
 testBasicMinFun.o: testBasicZeroFun.cpp ../basicOptimization.hpp
 
 test_mathUtils.o: test_mathUtils.cpp ../mathUtils.hpp
+
+test_RotatingMatrix.o: test_RotatingMatrix.cpp ../RotatingMatrix.hpp
 
 ../Utilities.o: ../Utilities.cpp ../Utilities.hpp
 
