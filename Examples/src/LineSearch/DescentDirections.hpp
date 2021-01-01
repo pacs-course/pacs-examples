@@ -28,14 +28,14 @@ namespace apsc
       return -values.currentGradient;
     }
   };
-/*!
- *  Implements the classic BFGS quasi-Newton algorithm.
- */
+  /*!
+   *  Implements the classic BFGS quasi-Newton algorithm.
+   */
   class BFGSDirection: public DescentDirectionBase
   {
   public:
     apsc::LineSearch_traits::Vector operator()
-        (apsc::OptimizationCurrentValues const & values) override;
+    (apsc::OptimizationCurrentValues const & values) override;
     /*!
      * You need to reset if you run another problem or you start from a different initial point.
      * @note This is done inside LineSearchSolver
@@ -53,32 +53,48 @@ namespace apsc
    * the Hessian.
    */
   class BFGSIDirection: public DescentDirectionBase
-    {
-    public:
-      apsc::LineSearch_traits::Vector operator()
-          (apsc::OptimizationCurrentValues const & values) override;
-      void reset() override;
-    private:
-      apsc::OptimizationCurrentValues previousValues;
-      Eigen::MatrixXd H;
-      bool firstTime{true};
-      double const smallNumber=std::sqrt(std::numeric_limits<double>::epsilon());
-    };
+  {
+  public:
+    apsc::LineSearch_traits::Vector operator()
+    (apsc::OptimizationCurrentValues const & values) override;
+    void reset() override;
+  private:
+    apsc::OptimizationCurrentValues previousValues;
+    Eigen::MatrixXd H;
+    bool firstTime{true};
+    double const smallNumber=std::sqrt(std::numeric_limits<double>::epsilon());
+  };
   /*!
    * Bazrzilain-Borwein
    */
   class BBDirection: public DescentDirectionBase
-      {
-      public:
-        apsc::LineSearch_traits::Vector operator()
-            (apsc::OptimizationCurrentValues const & values) override;
-        void reset() override
-        {firstTime=true;};
-      private:
-        apsc::OptimizationCurrentValues previousValues;
-        bool firstTime{true};
-        double const smallNumber=std::sqrt(std::numeric_limits<double>::epsilon());
-      };
+  {
+  public:
+    apsc::LineSearch_traits::Vector operator()
+    (apsc::OptimizationCurrentValues const & values) override;
+    void reset() override
+    {firstTime=true;};
+  private:
+    apsc::OptimizationCurrentValues previousValues;
+    bool firstTime{true};
+    double const smallNumber=std::sqrt(std::numeric_limits<double>::epsilon());
+  };
+  /*!
+   * Non-linear CG with Polak-Ribiere formula
+   */
+  class CGDirection: public DescentDirectionBase
+  {
+  public:
+    apsc::LineSearch_traits::Vector operator()
+    (apsc::OptimizationCurrentValues const & values) override;
+    void reset() override
+    {firstTime=true;};
+  private:
+    apsc::OptimizationCurrentValues previousValues;
+    bool firstTime{true};
+    //! I need to keep track of previous descent direction
+    apsc::LineSearch_traits::Vector prevDk;
+  };
 
 }// end namespace
 
