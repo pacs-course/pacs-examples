@@ -43,7 +43,8 @@ int main()
    //std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction = std::make_unique<apsc::GradientDirection>();
   //std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction = std::make_unique<apsc::BFGSIDirection>();
  //std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction = std::make_unique<apsc::BFGSDirection>();
- std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction = std::make_unique<apsc::BBDirection>();
+ // std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction = std::make_unique<apsc::BBDirection>();
+ std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction = std::make_unique<apsc::CGDirection>();
 
  optimizationOptions.maxIter=4000;
  optimizationOptions.relTol=1.e-6;
