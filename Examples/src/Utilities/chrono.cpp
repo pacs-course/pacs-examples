@@ -19,41 +19,46 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 #include "chrono.hpp"
-#include<iostream>
+#include <iostream>
 
-namespace Timings{
-  
-
-  void Chrono::start()
-  {
-    startTime=stopTime=MyClock::now();
-      }
-  
-  void Chrono::stop()
-  {
-    stopTime=MyClock::now();
-  }
-  
-  double Chrono::wallTime() const
-  {
-    using namespace std::chrono;
-    auto time_span=duration_cast<nanoseconds>(stopTime-startTime);
-    return time_span.count()/1000.;
-  }
-
-  double Chrono::wallTimeNow() const
-  {
-    using namespace std::chrono;
-    auto time_span=duration_cast<nanoseconds>(MyClock::now()-startTime);
-    return time_span.count()/1000.;
-  }
-
-  std::ostream & operator <<(std::ostream & out,Chrono const &c)
-  {
-    out<<"Elapsed Time= "<<std::scientific<<c.wallTime()<<std::defaultfloat<<" microsec"<<std::endl;
-    return out;
-  }
-  
+namespace Timings
+{
+void
+Chrono::start()
+{
+  startTime = stopTime = MyClock::now();
 }
 
+void
+Chrono::stop()
+{
+  stopTime = MyClock::now();
+}
 
+double
+Chrono::wallTime() const
+{
+  using namespace std::chrono;
+  auto time_span = duration_cast<nanoseconds>(stopTime - startTime);
+  return time_span.count() / 1000.;
+}
+
+double
+Chrono::wallTimeNow() const
+{
+  using namespace std::chrono;
+  auto time_span = duration_cast<nanoseconds>(MyClock::now() - startTime);
+  return time_span.count() / 1000.;
+}
+
+std::ostream &
+operator<<(std::ostream &out, Chrono const &c)
+{
+  auto oldf = out.flags();
+  out << "Elapsed Time= " << std::scientific << c.wallTime() << " microsec"
+      << std::endl;
+  out.flags(oldf);
+  return out;
+}
+
+}
