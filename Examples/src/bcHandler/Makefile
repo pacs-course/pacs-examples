@@ -23,16 +23,16 @@ MAKEFILEH_DIR=../../
 export DEBUG=yes
 #CXX=g++-4.9
 CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
-STANDARD=c++11
+STANDARD=c++17
 #
 LIBNAME=bcCond
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
 
 include $(MAKEFILEH_DIR)/Makefile.inc
-LIBRARIES+=-L. -l$(LIBNAME) -dynamic -L/usr/local/lib -lmuparser
+LIBRARIES+=-L. -l$(LIBNAME) -L$(PACS_LIB_DIR) -lpacs -lmuparserx
 LDLIBS+=$(LIBRARIES)
-INCLUDES=-I. -I(
+CPPFLAGS+=-I. -I$(PACS_INC_DIR)/muparserx
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC

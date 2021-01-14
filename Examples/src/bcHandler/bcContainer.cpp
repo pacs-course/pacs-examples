@@ -7,34 +7,27 @@
 #include "bcContainer.hpp"
 #include <algorithm>
 
-namespace FEM
+namespace apsc::FEM
 {
-  std::vector<BCContainer::const_iterator> extractBCWithType(BCContainer const & bcContainer,BCType const & type)
+  std::vector<BCBase> extractBCWithType(BCContainer const & bcContainer,BCType const & type)
   {
     isBCTypeEqual predicate(type);
-    std::vector<BCContainer::const_iterator> tmp;
-    for(auto i=bcContainer.cbegin();i<bcContainer.cend();++i)
+    std::vector<BCBase> tmp;
+    for(auto const & i:bcContainer)
     {
-      if (predicate(*i)) tmp.push_back(i);
+      if (predicate(i)) tmp.push_back(i);
     }
     return tmp;
   }
 
-  std::vector<BCContainer::const_iterator> extractBCWithName(BCContainer const & bcContainer,BCName const & type){
+  std::vector<BCBase> extractBCWithName(BCContainer const & bcContainer,BCName const & type){
     isBCNameEqual predicate(type);
-    std::vector<BCContainer::const_iterator> tmp;
-    for(auto i=bcContainer.cbegin();i<bcContainer.cend();++i)
-      if(predicate(*i))tmp.push_back(i);
+    std::vector<BCBase> tmp;
+    for(auto const & i : bcContainer)
+      if(predicate(i))tmp.push_back(i);
     return tmp;
   }
  
-  BCBase & addToBCContainer(BCType const & type, BCName const & name,
-			BCFun const & f, BCContainer & bcContainer)
-  {
-    bcContainer.emplace_back(type,name,f);
-    return bcContainer.back();
-  }
-
 }
 
 

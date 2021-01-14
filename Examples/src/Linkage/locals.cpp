@@ -1,8 +1,8 @@
 #include "globals.hpp"
-#include "locals.hpp"
-//! This function has local linkage
+//! This function has local linkage since is defined in a anonymous namespace
 /*!
   It is not seen outside this compilation unit!
+  @note no declaration in the header file!
  */
 namespace
 {
@@ -13,26 +13,31 @@ namespace
   }
 }
 
-//! Also this function has local linkage!
+//! Also this function has local linkage thanks to the static attribute
 /*!
   In C++ it is preferable to use unnamed namespaces.
+  @note no declaration in the header file!
  */
 static double fun3(double x)
 {
-  return x/2;
+  return Globals::Pi/2;
 }
 
 //! External linkage (default)
 double fun (double y)
 {
-  // I can use fun2 and fun3 here since thet are in the 
+  // I can use fun2 and fun3 here since they are in the
   // same translation unit
-  // I also use the namespace global struct
   double value=fun2(y)*fun3(y)*Globals::globalParameters.g2;
+  // Again a can use a Global variable
   if (Globals::globalParameters.negate)
     value=-value;
   return value;
 }
 
-void zeroGlobal(){ Globals::globalValue=0;}
+//! a function that operated on global variables
+void zeroGlobal(){
+  Globals::globalValue=0;
+  Globals::globalParameters.negate=true;
+}
 
