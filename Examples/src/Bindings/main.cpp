@@ -47,7 +47,7 @@ void gvect(Vector&& x)
 template<class T>
 void  gvect(T&& x)
 {
-  T v(std::forward<T>(x));
+  T v=std::forward<T>(x);
   std::cout<<"using void gvect<T>(T&&) with std::forward" <<
     " created vector size is "<<v.size()<<" Input vector size is now "<<x.size()<< std::endl;
 }

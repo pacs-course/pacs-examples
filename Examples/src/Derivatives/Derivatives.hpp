@@ -7,13 +7,23 @@ namespace apsc
   namespace DifferenceType
   {
     struct BACKWARD;// forward declaration
-
+    /*!
+     * It expresses the concept of a forward difference
+     */
     struct FORWARD{
+      //! I alternate among different typeswhen performing higher derivatives
       using otherType=BACKWARD;
     };
-    
+    /*!
+     * It expresses the concept of a backward difference
+     */
     struct BACKWARD{
       using otherType=FORWARD;
+    };
+
+    struct CENTERED
+    {
+      using otherType=CENTERED;
     };
   }
 
@@ -47,31 +57,42 @@ namespace apsc
       // from C++17 constexpr if statement
       if constexpr (std::is_same<DifferenceType::FORWARD,DT>::value)
         return (pDerivative(x+h)-pDerivative(x))/h;
-      else
+      else if constexpr (std::is_same<DifferenceType::BACKWARD,DT>::value)
         return (pDerivative(x)-pDerivative(x-h))/h;
+      else
+        return (pDerivative(x+h)-pDerivative(x-h))/(2*h);
     }
   private:
     PreviousDerivative pDerivative;
-    T h;
+    T const h;
   };
   
-  //! Specialization for first derivative
+  /*!
+   * Specialization for first derivative
+   * @tparam F A callable object type
+   * @tparam T The type of the varaible
+   * @tparam DT The difference type
+   */
  template<typename F, typename T, typename DT>
  class NthDerivative<1u,F,T,DT>
   {
   public:
     //! Constructor
-    NthDerivative(const F& f, const T & h):pDerivative{f}, h{h}{}
+    NthDerivative(const F& f, const T & h):f{f}, h{h}{}
     T operator()(const T& x) const
     {
+      //! This is C++17 syntax. Don't use a simple  if if you want efficiency!
       if constexpr (std::is_same<DifferenceType::FORWARD,DT>::value)
-        return (pDerivative(x+h)-pDerivative(x))/h;
+        return (f(x+h)-f(x))/h;
+      else if constexpr (std::is_same<DifferenceType::BACKWARD,DT>::value)
+        return (f(x)-f(x-h))/h;
       else
-        return (pDerivative(x)-pDerivative(x-h))/h;
+        return (f(x+h)-f(x-h))/(2*h);
     }
   private:
-    F pDerivative;
-    T h;
+    // Now I store the function
+    F const & f;
+    T const h;
   };
 
   //! Only for consistency: 0th derivative
@@ -84,15 +105,15 @@ namespace apsc
   {
   public:
     //! Constructor
-    NthDerivative(const F& f, const T & h):pDerivative{f}, h{h}{}
+    NthDerivative(const F& f, const T & h):f{f}, h{h}{}
     //! The call operator returns the value of the function
     T operator()(const T& x) const
     {
-      return pDerivative(x);
+      return f(x);
     }
   private:
-    F pDerivative;
-    T h;
+    F const & f;
+    T const h;
   };
 
   //! Utility to simplify the creation of a Nthderivative object
@@ -121,6 +142,7 @@ namespace apsc
    *  auto f =[](const double & x){return x*std::sin(x);};
    *  double h =0.1;
    *  auto d = apsc::makeBackwardDerivative<3>(f,h);
+   *  auto value = d(6.0) //3rd derivative at 6.0
    *  /endcode
    * /param f a callable function with the rigth signature
    * /param h the step for computing derivatives
@@ -130,7 +152,24 @@ namespace apsc
   {
     return  NthDerivative<N,F,T,DifferenceType::BACKWARD>{f,h};
   }
-  
+  //! Utility to simplify the creation of a Nthderivative object
+    /*
+     *  Example of usage:
+     *  /code
+     *  auto f =[](const double & x){return x*std::sin(x);};
+     *  double h =0.1;
+     *  auto d = apsc::makeBackwardDerivative<3>(f,h);
+     *  auto value = d(6.0) //3rd derivative at 6.0
+     *  /endcode
+     * /param f a callable function with the rigth signature
+     * /param h the step for computing derivatives
+     */
+    template<unsigned N, typename F, typename T>
+    auto makeCenteredDerivative(const F& f, const T& h)
+    {
+      return  NthDerivative<N,F,T,DifferenceType::CENTERED>{f,h};
+    }
+
     
 }
 #endif

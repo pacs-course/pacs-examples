@@ -1,0 +1,21 @@
+4
+left side
+Dirichlet
+t + sin(x[0])
+4
+0 1 2 3
+right side
+Neumann
+zero
+3
+4 5 6
+top side
+Dirichlet
+one
+1
+7
+bottom side
+Neumann
+cos(x[1])
+5
+8 9 10 11 12
