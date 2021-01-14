@@ -7,10 +7,8 @@
 
 #ifndef BOUND_COND_HPP_
 #define BOUND_COND_HPP_
-#include <string>
-#include <vector>
+#include "bcType_traits.hpp"
 #include <iostream>
-#include <functional>
 
   /*! \file bound_cond.hpp
    *  Boundary condition identifiers are formed by a BCType entry,
@@ -26,27 +24,8 @@
    *  key.
    */
 
-namespace FEM {
+namespace apsc::FEM {
 
-  //! The type. None means no type yet assigned
-  enum BCType { Dirichlet=1, Neumann=2, Robin=3, Other=4, None=99};
-  //! The name used to identify a boundary condition.
-  using BCName=std::string;
-  //! The type of the function  which imposes the bc (C++11 only).
-  using BCFun=std::function<double (double const t, double const * coord)>;
-
-  //! The zero function.
-  extern BCFun zerofun;
-
-  //! The one function.
-  extern BCFun onefun;
-
-  //! A helper function that translates a sting into a BCType.
-  BCType stringToBCType(BCName const & s);
-  
-  //! Type of the identifiers holding the index of the objects where the bc is imposed
-  using Id=std::size_t;
-  
 
   //! A class for holding BConditions
   /*!
@@ -72,52 +51,68 @@ namespace FEM {
   class BCBase
   {
   public:
-    //! Constructor using string as names
-    explicit  BCBase(BCType t=None,
-		     BCName n = BCName("Homogeneous"),
-		     BCFun fun = zerofun):
+    /*!
+     * A constructor that takes the BC type as the enumerator
+     * It works also as default constructor
+     * @param t The type
+     * @param n An optional description of the BC. For instance "left side"
+     * @param fun The function governing the BC (by default zero)
+     */
+    BCBase(BCType t=None, BCFun fun = zerofun, std::string description= std::string(""))
+           :
       M_t(t),
-      M_name(n),
+      M_description(description),
       M_fun(fun){};
-    //! Change the name
-    void set_name(BCName const & n)
+
+    /*!
+     * You may set a descrition of your BC, fr instance "left side"
+     * @param description The description
+     */
+    void set_description(std::string const & description)
     {
-      M_name=n;
+      M_description=description;
     }
-    //! Change the type
+    //! Set the type
     void set_type(BCType const & t)
     {
       M_t=t;
     }
-    //! Changes the function
+    //! Set the function
     void set_fun(BCFun const & f)
     {
       M_fun=f;
     }
+    //! Move the function
+    void set_fun(BCFun&& f)
+    {
+       M_fun=std::move(f);
+    }
     //! It sets the entities to a new value
     /*
-      \param e Any standard container of Ids that can be assigned to a vector<Id>
+      @param e Any standard container of Ids that can be assigned to a vector<Id>
      */
     template<typename EntityList>
     void set_entities(EntityList const& e)
     {
       M_entities.assign(e.cbegin(),e.cend());
     }
-
-    // Returns the name
-    BCName name()const {return this->M_name;}
+    // Returns the desscrition
+    std::string description()const {return this->M_description;}
     // Returns the type
     BCType type()const {return this->M_t;}
-    //! Returns the vector of entity index for any use (const version)
-    std::vector<int> const & entities() const {return M_entities;}
+    //! Returns the type as a string
+    BCName name()const;
+    //! Returns the vector of entity index for any use (read only!)
+    std::vector<Id> const & entities() const {return M_entities;}
     //! Applies boundary condition
-    double apply(double const t, double const * coord) const;
+    double apply(double const t, Coord const & coord) const;
+    //! Prints on a stream some info
     std::ostream & showMe(std::ostream & stream=std::cout) const;
   protected:
     BCType M_t;
-    BCName M_name;
+    std::string M_description;
     BCFun M_fun;
-    std::vector<int> M_entities;
+    std::vector<Id> M_entities;
   };
   
   //! A predicate to test if a bc has a given type.

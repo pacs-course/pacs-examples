@@ -1,5 +1,6 @@
 #include "muParserInterface.hpp"
 #include "muParserXInterface.hpp"
+#include "string_utility.hpp"
 #include<iostream>
 #include<string>
 
@@ -30,6 +31,7 @@ int main()
     if(expr=="quit") break;
     cout<<"Give me the values of t, x and y"<<std::endl;
     cin>>t>>x>>y;
+    Utility::cleanStream(cin);
     if(!cin.good()) printAndExit();
     try
       {
@@ -65,6 +67,7 @@ int main()
       if(expr=="quit") exit(0);
       cout<<"Give me the values of x[0], x[1] and x[2]"<<std::endl;
       cin>>x[0]>>x[1]>>x[2];
+      Utility::cleanStream(cin);
       if(!cin.good()) printAndExit();
       std::cout<<"Parsing expression"<<std::endl;
       mx.set_expression(expr);
