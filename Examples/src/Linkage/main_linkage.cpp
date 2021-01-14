@@ -1,7 +1,8 @@
 
 #include <iostream>
-#include "globals.hpp"
 #include "locals.hpp"
+#include "globals.hpp"
+
 //! a program to show linkage
 int main()
 {

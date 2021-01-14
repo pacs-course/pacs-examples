@@ -1,14 +1,14 @@
 #Integer overflow/underflow#
 
 Integer overflows and underflows produce unwanted results. And they
-cannot be detected!  Normally is not a problem... but beware!
+cannot be detected!  Beware!
 
 The nastier case is with unsigned integers. If you by mistake subtract
-to an insigned integer a value greater than its value... well you get
+to an unsigned integer a value greater than that of the insigned integer ... well you get
 an insigned integer whose value is certainly not what you expected.
 
 A classic example of this mistake is when you for some reason want to
-loop in an apposite direction a vector and you do something like
+loop a vector in reverse direction and you do something like
 
 ```
 for (std::size_t i=v.size()-1;i>=0u;--i){
