@@ -1,84 +1,101 @@
 #include "bcContainer.hpp"
-#include "muParserInterface.hpp"
+#include "string_utility.hpp"
 #include <string>
-#include <map>
+#include <iostream>
+#include <fstream>
+
+#include "bcBcMuParserInterface.hpp"
 
 //! @file An example of use of a container for boundary conditions
-
-// Normally this stuff is on a separate files or are read from files
-// I can use a lambda
-auto inflow= [](double const t, double const * coord){return t*coord[0];};
-// I can use a function object
-class setValue
-{
-public:
-  setValue(double v):value(v){};
-  
-  double operator()(const double, double const *)
-  {
-    return value;
-  }
-private:
-  double value;
-};
-
-//I can use a function
-
-double myfun(double const t, double const * coord)
-{
-  return (coord[0]+coord[1]);
-};
-
+//! It reads the definition of the bc from a file calle "bc.txt" with the following simple format
+//! Line 1: Number of boundary conditions
+//! then for each bc:
+//! The description For example: Top boundary
+//! The bc type as a string. For example Dirichlet
+//! The function: either zero or one or a string containing an expresssion, for example: t +cos(x[0])*sin(x[1])
+//! The number of entities associated to the bc
+//! The list of entities (also on more than one line)
+//!
 int main()
 {
-  using namespace FEM;
-  std::map<BCType,std::string> dictionary;
-  dictionary[Dirichlet]="Dirichlet";
-  dictionary[Neumann]="Neumann";
-
-  BCContainer bcContainer;
-  BCBase bc1(Dirichlet,"Wall 1",zerofun);
-  // add a list of identifiers
-  bc1.set_entities(std::vector<unsigned int>{0,4,8});
-  bcContainer.push_back(bc1);
-  // I can use the helper function to ass a b cond
-  {
-    auto & bc2=addToBCContainer(Neumann,"Far Field 1",myfun,bcContainer);
-    bc2.set_entities( std::vector<unsigned int>{1,2,3} );
-    // bc2 is now eliminated. I prefer it because the container data may be reallocated
-  }
-  addToBCContainer(Dirichlet,"Inflow",inflow,bcContainer);
-  bcContainer.back().set_entities(std::vector<unsigned int>{9,10,11});
-  addToBCContainer(Neumann,"Far Field 1",myfun,bcContainer);
-  bcContainer.back().set_entities(std::vector<unsigned int>{12,13,14});
-  setValue ten(10.0);
-  addToBCContainer(Dirichlet,"Outflow",ten,bcContainer);
-  bcContainer.back().set_entities(std::vector<unsigned int>{15,16});
-  addToBCContainer(Dirichlet,"back", MuParserInterface::muParserInterface("x+t"),bcContainer);
-  bcContainer.back().set_entities(std::vector<unsigned int>{20});
-  double t=10;
-  std::array<double,2> point{{0.,3.}};
-  std::cout<<"Content of bc container organized by type"<<std::endl;
-  
-  try{
-    for (auto typ : dictionary)
-      {
-	auto list=extractBCWithType(bcContainer,typ.first);
-	std::cout<<"******Condition type: "<<typ.second<<std::endl;
-	for (auto i : list)
-	  {
-	    i->showMe();
-	    std::cout<<std::endl;
-	    std::cout<<"Value at point "<<i->apply(t,point.data())<<std::endl<<std::endl;
-	  }
-      } 
-  }
-  catch (mu::Parser::exception_type &e)
+  using namespace apsc::FEM;
+  std::ifstream file("bc.txt");
+  if (file.bad())
     {
-      std::cout<<"******ERROR in evaluating expression******"<<std::endl;
-      MuParserInterface::printMuException(e);
-      std::cout<<"******************************************"<<std::endl;
-      std::cout<<std::endl;
+    std::cerr<<"ERROR while opening file";
+    return 2;
+    }
+  // read number of conditions
+  int numBC;
+  file>>numBC;
+  std::cout<<"The file contains data for "<<numBC<<" boundary conditions\n";
+  Utility::cleanStream(file);
+  apsc::FEM::BCContainer bCs;
+  bCs.reserve(numBC);
+  for (int i=0; i<numBC; ++i)
+    {
+      apsc::FEM::BCBase bc;
+      std::string line;
+      // read the description
+      std::getline(file,line);
+      bc.set_description(line);
+      std::cout<<"Reading BC with description "<<line<<std::endl;
+      // read the type (beware of spaces, I use trim just in case)
+      std::getline(file,line);
+      line = Utility::trim(line);
+      // Find the enum that corresponds to the string
+      auto bctype_p = apsc::FEM::stringToBCType.find(line);
 
+      if (bctype_p == apsc::FEM::stringToBCType.end())
+        {
+          std::cerr<<"ERROR: Bc Type "<<line<<" not found\n";
+          return 1;
+        }
+      bc.set_type(bctype_p->second);
+      // now the function to be passed as a muparserx object wrapped in astd::function
+      std::getline(file,line);
+      line=Utility::trim(line);
+      std::cout<<"Function: "<<line<<std::endl;
+      // Treas special cases where I use directly a predefined function
+      if (line=="zero")
+        {
+          bc.set_fun(apsc::FEM::zerofun);
+        }
+      else if (line=="one")
+        {
+          bc.set_fun(apsc::FEM::onefun);
+        }
+      else
+        {
+          // It's a muparserX expression
+          bc.set_fun(apsc::FEM::bcMuParserInterface{line});
+        }
+      // The antites associated
+      // first the number
+      // the the list
+      int numEntities;
+      std::vector<apsc::FEM::Id> Ids;
+      Ids.reserve(numEntities);
+      file>>numEntities;
+      for (int e=0;e<numEntities;++e)
+        {
+        Id entity;
+        file >> entity;
+        Ids.push_back(entity);
+        };
+      Utility::cleanStream(file);
+      bc.set_entities(Ids);
+      bCs.push_back(bc);
+    }
+
+  std::cout<<"-------------List --------------\n";
+  for (auto const & bc : bCs)
+    {
+      bc.showMe(std::cout);
+      // testing the function
+      // just to try if it works
+      auto res = bc.apply(3.,std::vector<double>{0.,0.,0.});
+      std::cout<<res<<std::endl;
     }
 }
+

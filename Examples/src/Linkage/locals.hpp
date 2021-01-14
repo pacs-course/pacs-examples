@@ -1,7 +1,7 @@
 #ifndef HH_LOCAL__HH
 #define HH_LOCAL__HH
-//! Declaration of a function (external linkage by default)
+//! Declaration of a function
 double fun(double);
-//! Declaration of a function that zeroes a global variable
+//! Declaration of a function
 void zeroGlobal();
 #endif

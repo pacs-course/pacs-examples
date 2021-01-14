@@ -2,34 +2,49 @@
 #include <fstream>
 #include <exception>
 #include <iostream>
+#include <limits>
 namespace Utility
 {
-std::string toupper(std::string & s)
+std::string toupper(std::string const & s)
 {
+  std::string res;
   // convert to upper case.`
   std::transform(s.begin(), 
 		 s.end(),
-		 s.begin(), 
+		 std::back_inserter(res),
 		 [](std::string::const_reference c)
 		 {
 		   return std::toupper(c,std::locale());
 		 } 
 		 );
-  return s;
+  return res;
 }
 
-std::string tolower(std::string & s)
+std::string tolower(std::string const & s)
 {
+  std::string res;
   // convert to upper case.`
   std::transform(s.begin(), 
 		 s.end(),
-		 s.begin(), 
+		 std::back_inserter(res),
 		 [](std::string::const_reference c)
 		 {
 		   return std::tolower(c,std::locale());
 		 } 
 		 );
-  return s;
+  return res;
+}
+
+
+
+std::istringstream nextLine(std::istream & stream){
+  std::string line;
+  std::getline(stream,line);
+  return std::istringstream(line);
+}
+void cleanStream(std::istream & istream)
+{
+  istream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 void GlobbedTextReader::read(std::string const & fileName)

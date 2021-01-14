@@ -21,7 +21,7 @@ We have (so far) implemented
 - Gradient scheme;
 - classic BFGS that approximates the Hessian;
 - BFGS that approximates the inverse of the Hessian directly;
-- Borzilai-Borwaain method.
+- Borzilai-Borwain method.
 
 We give a brief description of the main files
 

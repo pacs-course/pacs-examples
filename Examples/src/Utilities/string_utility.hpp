@@ -75,14 +75,47 @@ namespace Utility{
   /**
      @param s A string
      @return the modified string
-     @note s is also returned trimmed: after a call to 
-     toupper(a) string a is upper case!! 
    */
 
   /**@{*/
-  std::string toupper(std::string & s);
-  std::string tolower(std::string & s);
+  std::string toupper(std::string const & s);
+  std::string tolower(std::string const & s);
   /**@}*/
+
+
+  /*!
+   * A functor for comparing strings
+   */
+  struct compareNoCase
+  {
+  /*!
+   * @param a A string
+   * @param b A string
+   * @return the less operator a<b applied on the strings ignoring case
+   */
+  inline bool operator ()(std::string const & a, std::string const & b) const
+  {
+    return Utility::toupper(a)<Utility::toupper(b);
+  }
+  };
+
+  /*!
+   * A nice utility that reads an entire line and returns it into a stremstring
+   * @param stream An input stream
+   * @return an input string stream
+   */
+  std::istringstream nextLine(std::istream & stream);
+
+  /*!
+   * When consuming whitespace-delimited input (e.g. int n; std::cin >> n;) any whitespace
+   * that follows, including a newline character, will be left on the input stream.
+   * Then when switching to line-oriented input, the first line retrieved with getline
+   * will be just that whitespace. In the likely case that this is unwanted behaviour,
+   * possible solutions is to call this function passing the steam to be cleaned up.
+   *
+   * @param istream The input stream
+   */
+  void cleanStream(std::istream & istream);
 /*!
  * This is an helper class to allow the handling of a stringstream that holds a whole text file in a buffer. It is necessary
  * in order to have proper memory handling. No copy operations are available (but it can be moved) since it is meant only as to be an helper
