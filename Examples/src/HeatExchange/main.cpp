@@ -1,10 +1,11 @@
+#include "readParameters.hpp"
+#include "GetPot.hpp" // for reading parameters
+#include "gnuplot-iostream.hpp"// interface with gnuplot
+#include "thomas.hpp"
 #include <iostream> // input output
 #include <cmath> // (for sqrt)
 #include <vector>
 #include <tuple>
-#include "readParameters.hpp"
-#include "GetPot.hpp" // for reading parameters
-#include "gnuplot-iostream.hpp"// interface with gnuplot
 /*!
   @file main.cpp
   @brief Temperature distribution in a 1D bar.
@@ -12,16 +13,16 @@
   @detail
   We solve  \f$ -T^{\prime\prime}(x)+act*(T(x)-T_e)=0, 0<x<L \f$ with 
   boundary conditions \f$ T(0)=To; T^\prime(L)=0\f$
-    
-  **************************************************
+
+ **************************************************
   Linear finite elements
   Iterative resolution by Gauss Siedel.
-  **************************************************
-    
+ **************************************************
+
   Example adapted by Luca Formaggia from  a code found in 
   "Simulation numerique an C++" di I. Danaila, F. Hecht e
   O. Pironneau.
-*/
+ */
 //! helper function
 void printHelp()
 {
@@ -53,7 +54,7 @@ int main(int argc, char** argv)
 
   // read parameters
   const parameters param=readParameters(filename,verbose);
-  // Transfer parameters to local variables
+  // Transfer parameters to local variables, to avoid having towrite every time param.xx.
   // I use references to save memory (not really an issue here, it is just
   // to show a possible  use of references)
   const int&    itermax= param.itermax;   //max number of iteration for Gauss-Siedel
@@ -67,64 +68,81 @@ int main(int argc, char** argv)
   const auto& k=param.k;  // Thermal conductivity
   const auto& hc=param.hc; // Convection coefficient
   const auto& M=param.M; // Number of grid elements
+  const auto& solverType=param.solverType;
 #else
   // C++17 onwards version. This version works only with at least C++17
-  // A oneliner! This is called structured bindings
-  const auto & [itermax,toler,L,a1,a2,To,Te,k,hc,M] = readParameters(filename,verbose);
+  // A oneliner! This is called structured bindings. It works because parameter class is an aggregate!
+  const auto & [itermax,toler,L,a1,a2,To,Te,k,hc,M,solverType] = readParameters(filename,verbose);
 #endif
 
-  
+
   //! Precomputed coefficient for adimensional form of equation
   const auto act=2.*(a1+a2)*hc*L*L/(k*a1*a2);
 
   // mesh size
   const auto h=1./M;
-  
+
   // Solution vector
   std::vector<double> theta(M+1);
+
   
-  // Gauss Siedel is initialised with a linear variation
-  // of T
-  
-  for(int m=0;m <= M;++m)
-    theta[m]=(1.-m*h)*(To-Te)/Te;
-  
-  // Gauss-Seidel
-  // epsilon=||x^{k+1}-x^{k}||
-  // Stopping criteria epsilon<=toler
-  
-  int iter=0;
-  double xnew, epsilon;
-  // Gauss siedel iterations
-  // @todo replace with a direct solver
-  do
-    { epsilon=0.;
-      
-      // first M-1 row of linear system
-      for(int m=1;m < M;m++)
-        {   
-          xnew  = (theta[m-1]+theta[m+1])/(2.+h*h*act);
-          epsilon += (xnew-theta[m])*(xnew-theta[m]);
-          theta[m] = xnew;
+  if(solverType==1)
+    {
+      // Gauss-Seidel
+      // epsilon=||x^{k+1}-x^{k}||
+      // Stopping criteria epsilon<=toler
+      // Gauss Siedel is initialised with a linear variation
+      // of T
+
+      for(int m=0;m <= M;++m)
+        theta[m]=(1.-m*h)*(To-Te)/Te;
+
+      int iter=0;
+      double xnew, epsilon;
+      // Gauss siedel iterations
+      // @todo replace with a direct solver
+      do
+        { epsilon=0.;
+
+        // first M-1 row of linear system
+        for(int m=1;m < M;m++)
+          {
+            xnew  = (theta[m-1]+theta[m+1])/(2.+h*h*act);
+            epsilon += (xnew-theta[m])*(xnew-theta[m]);
+            theta[m] = xnew;
+          }
+
+        //Last row
+        xnew = theta[M-1];
+        epsilon += (xnew-theta[M])*(xnew-theta[M]);
+        theta[M]=  xnew;
+
+        iter=iter+1;
+        }while((sqrt(epsilon) > toler) && (iter < itermax) );
+
+      if(iter<itermax)
+        cout << "M="<<M<<"  Convergence in "<<iter<<" iterations"<<endl;
+      else
+        {
+          cerr << "NOT CONVERGING in "<<itermax<<" iterations "<<
+              "||dx||="<<sqrt(epsilon)<<endl;
+          status=1;
         }
-      
-      //Last row
-      xnew = theta[M-1]; 
-      epsilon += (xnew-theta[M])*(xnew-theta[M]);
-      theta[M]=  xnew; 
-      
-      iter=iter+1;     
-    }while((sqrt(epsilon) > toler) && (iter < itermax) );
-  
-  if(iter<itermax)
-    cout << "M="<<M<<"  Convergence in "<<iter<<" iterations"<<endl;
+    }
   else
     {
-      cerr << "NOT CONVERGING in "<<itermax<<" iterations "<<
-        "||dx||="<<sqrt(epsilon)<<endl;
-      status=1;
+      //Thomas algorithm
+      std::vector<double> a(M+1,1.);
+      std::vector<double> b(M+1,-1./(2.+h*h*act));
+      std::vector<double> c=b;
+      b.back()=-1;
+      c[0]=0;
+      std::vector<double> source(M+1,0.);
+      source[0]=(To-Te)/Te;
+      theta=apsc::thomasSolve(a,b,c,source);
     }
-
+  //Back to physical quantities
+  for (auto & t : theta) t=Te*(1+t);
   // Analitic solution
 
   vector<double> thetaa(M+1);
@@ -137,8 +155,6 @@ int main(int argc, char** argv)
   Gnuplot gp; // gnuplot iostream! Plots solution on the screen
   //             It may not work on virtual machines. Take it out in that case
   std::vector<double> coor(M+1);
-  std::vector<double> sol(M+1);
-  std::vector<double> exact(M+1);
 
   cout<<"Result file: result.dat"<<endl;
   ofstream f("result.dat");
@@ -147,19 +163,15 @@ int main(int argc, char** argv)
       // \t writes a tab
       // In gnuplot lines beginning with # are comments
       f<<"#node coordinate,  computed solution,  exact solution"<<std::endl;
-      f<<m*h*L<<"\t"<<Te*(1.+theta[m])<<"\t"<<thetaa[m]<<endl;
-      // An example of use of tie and tuples!
-      // put in vectors to use with gnuplot iostream
-      // A nice use of tie and make_tuple in combination.
-      std::tie(coor[m],sol[m],exact[m])=
-        std::make_tuple(m*h*L,Te*(1.+theta[m]),thetaa[m]);
+      f<<m*h*L<<"\t"<<theta[m]<<"\t"<<thetaa[m]<<endl;
+      coor[m]=m*h*L;
     }
   // Using temporary files (another nice use of tie)
   // Comment this statement if you are not using gnuplot iostream
   // to plot the solution directly on the terminal
-  gp<<"plot"<<gp.file1d(std::tie(coor,sol))<<
-    "w lp lw 2 title 'uh',"<< gp.file1d(std::tie(coor,exact))<<
-    "w l lw 2 title 'uex'"<<std::endl;
+  gp<<"plot"<<gp.file1d(std::tie(coor,theta))<<
+      "w lp lw 2 title 'uh',"<< gp.file1d(std::tie(coor,thetaa))<<
+      "w l lw 2 title 'uex'"<<std::endl;
   f.close();
   return status;
 }

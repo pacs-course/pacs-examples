@@ -15,30 +15,25 @@
  */
 namespace myfunctors
 {
-  //! A function/functor that takes a single argument is also called a
-  //! unary function/functor.
-  /*!  It is good practice to inherit from std::unary
-    function, so that it complies with the unary functors in the
-    standard library (It is not compulsory though)
+  /*!
+   *
+   * A functor (object function) that takes a single argument is also called a
+   * A unary functor.
+   *
+   * It is good practice to inherit from std::unary_function,
+   * so that it complies with the unary functors in the
+   * standard library (It is not compulsory though,! you can do without)
+   * This object function computes fifth root of a by Newton method. Definition in the cpp file
   */
   struct Sqrt5: public std::unary_function<double,double>
   {
-    //! Default constructor with default values
-    /*!
-      /param tol absoluto tolerance
-      /param mit max number of iterations
-      /param x   starting point
-     */
-    Sqrt5(double tol=1.e-6, unsigned int mit=100, double x=1.0):
-      maxiter(mit), tolerance(tol),x0(x){};
-    //! Computes fifth root of a by Newton method. Definition in the cpp file
     double operator ()(double a) const;
-    //! max number of iterations
-    unsigned int maxiter;
+    //! max number of iterations (default=100)
+    unsigned int maxiter=100;
     //! Absolute tolerance 
-    double tolerance;
+    double tolerance=1.e-6;
     //! Initial value. 
-    double x0;
+    double x0=1.0;
   };
   //! A predicate is a function or functor that defines a call operator
   //! returning a bool.
@@ -58,18 +53,11 @@ namespace myfunctors
   class Isgreater : public std::unary_function<double,bool>
   {
   public:
-    //! constructor. Default value is zero
-    Isgreater(double const & a=0.0):my_value{a}{};
-    void change_value(double const & a)
-    {
-      my_value=a;
-    }
+    Isgreater(double const & a):my_value{a}{};
     bool operator()(double const & b) const
     {
       return b > this->my_value; // this-> can be omitted
     }
-    double value()const {return my_value;}
-  private:
     double my_value;
   };
   //! A binary function takes 2 arguments.
@@ -79,7 +67,7 @@ namespace myfunctors
     necessary) you inherit three typedefs first_argument_type,
     second_argument_type and result_type.
   */
-  struct LessModulo10// : public std::binary_function<int,int,bool>
+  struct LessModulo10
   {
     //! the call operator implementing the operation
     /*!  Definition in-class (thus in the header file) because it is a
@@ -87,17 +75,7 @@ namespace myfunctors
       implicitely declared inline, you do not need to specify the
       inline keyword).
     */
-    bool operator()(int a, int b)const{ return a %10 < b %10;}
-    /*
-      Maybe you want to use the ne concept of constexpr function. In
-      this way if the operator is called with constant expression
-      arguments it is resolved run time.
-      For instance lm(3,4) will be set false at compile time!
-    */
-    /*
-      constexpr bool operator()(int const a, int const b)const 
-      { return a %10 < b %10;}
-    */
+    constexpr bool operator()(int a, int b)const{ return a %10 < b %10;}
   };
   //! A more complex functor: cross product
   /*!  

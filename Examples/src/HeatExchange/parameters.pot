@@ -19,4 +19,6 @@ k=0.164
 # Convection coefficient
 hc=200.0e-6
 # Number of elements
-M=11
+M=100
+#Solver type 0 direct 1 Gauss Siedel
+solverType=1
