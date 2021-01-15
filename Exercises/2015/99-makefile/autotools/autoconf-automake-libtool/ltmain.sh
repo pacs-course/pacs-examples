@@ -1,1 +1,0 @@
-/Applications/Octave.app/Contents/Resources/share/libtool/config/ltmain.sh
