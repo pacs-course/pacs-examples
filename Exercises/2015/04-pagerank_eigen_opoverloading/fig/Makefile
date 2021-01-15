@@ -1,3 +1,0 @@
-
-all:
-	cd tikz && make
