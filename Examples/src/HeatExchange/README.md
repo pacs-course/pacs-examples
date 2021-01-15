@@ -7,14 +7,14 @@ depending on a switch set in the parameter file, by default called `parameter.po
 Taken and heavily adapted from *"Simulation numerique an C++" of I. Danaila,
    F. Hecht e O. Pironneau, 2005*
    
-This example shows
- - The use of an aggregate to store the main parameter of the code, with default values;
+**This example illustrates**
+ - The use of an *aggregate* to store the main parameter of the code, with default values;
  - The use of `GetPot` to pass options in the command line;
  - The use of `GetPot` to read the parameters from a file, so you can change them with no need of recompiling;
- - A use of structured bindings;
+ - A use of *structured bindings*;
  - The Thomas algorithm for the solution of tridiagonal systems of equations;
- - The use of `gnuplot-iostream` to visualize the result directly from the program;
- - The use of gnuplot.
+ - The use of `gnuplot-iostream` to visualize results directly from the program;
+ - The use of `gnuplot`.
  
 Calling ``./plot.sh`` you are able to visualize the results, which are stored in result.dat.  
 
