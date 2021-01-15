@@ -14,9 +14,9 @@
 #define REAL double
 #endif
 typedef REAL Real;
+// I use complex as result type, for generality
 using result_type=std::complex<Real>;
-
-//! Computer the root of a quadratic polynomial using basic rule
+//! Computes the root of a quadratic polynomial using basic rule
 std::pair<result_type,result_type>
 quadraticRoot_simple(
                      Real const & a, Real const & b, Real const & c);
