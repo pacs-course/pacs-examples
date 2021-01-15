@@ -18,10 +18,12 @@ the same flexibility as traditional style polymorphism via virtual
 methods.
 
 
-It is used by the EIGEN library extensively. Indeed, it is the base for
+It is used by the EIGEN library extensively, and in many other high performance libraries. Indeed, it is the base for
 an efficient implementation of Expression Templates.
 
+**What do you learn from this example?**
 
+- An interesting (and rather surprising) template metaprogramming construct
 
 
 
