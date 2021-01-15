@@ -29,7 +29,7 @@ namespace Geometry
         polyFactory["Quadrilateral"]=[](){return std::make_unique<Quadrilateral>();};         
       }
     };
-    const LoadF loadf; // local variable
+    const LoadF loadf; // local variable when created loads the stuff
   }
 }
 
