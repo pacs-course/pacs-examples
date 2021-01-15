@@ -73,3 +73,8 @@ implementations of the standard library do not exploit the
 specialization).
 
 **Note 2:**  To get significant timings use a high degree polinomial, at least 20.
+
+#What do you learn with this example#
+
+- That the use of a elaborate algorithm can give a significant efficiency gain, even for apparently simple problems;
+- A use of the new (since C++17) parallel algorithms of the standard library; 
