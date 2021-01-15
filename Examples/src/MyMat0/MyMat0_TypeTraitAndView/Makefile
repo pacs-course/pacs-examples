@@ -13,7 +13,7 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-MAKEFILEH_DIR=../../
+MAKEFILEH_DIR=../../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
@@ -37,28 +37,12 @@ HEADERS=$(wildcard *.hpp)
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
-CXXFLAGS+=-fPIC
-LDFLAGS= $(OPTFLAGS) -Wl,-rpath,.
-LDLIBS=-L. -lFactory -ldl
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) library $(EXEC)
-
-library: libFactory.so libTS.so libQuad.so 
-
-libFactory.so: FactoryTraits.o
-	$(CXX) $(OPTFLAGS) -shared FactoryTraits.o  -o libFactory.so
-	
-libTS.so: TriangleAndSquare.o Polygon.o
-	$(CXX) $(OPTFLAGS) -shared TriangleAndSquare.o Polygon.o  -L. -lFactory -o libTS.so
-
-libQuad.so: Quadrilateral.o  Polygon.o
-	$(CXX) $(OPTFLAGS) -shared Quadrilateral.o Polygon.o  -L. -lFactory  -o libQuad.so
-
-
+all: $(DEPEND) $(EXEC)
 
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
@@ -66,13 +50,12 @@ clean:
 distclean:
 	$(MAKE) clean
 	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.bak *~ *.so
+	$(RM) *.out *.bak *~ Matrix.dat
 
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): main_poly.o Polygon.o loadPolyFactory.o
-
+$(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 

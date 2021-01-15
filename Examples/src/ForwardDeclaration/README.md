@@ -5,7 +5,7 @@ are needed. Here forward declaration is necessary because class `A` has
 a method that takes `B&`, while `B` stores a member of type `A`!
 
 Often this situation is a sign of poor design, but there are occasions
-where this type of "cross referencing" is necessary or useful.
+where this type of "cross referencing" is necessary.
 
 The type of the parameter of a function/method is an incomplete
 type. In other words, in the declaration of a function/method (not in
