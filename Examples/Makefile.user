@@ -26,19 +26,10 @@ PACS_ROOT=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
 mkEigenInc?=/usr/local/include/eigen3/
 EIGEN_DIR=$(mkEigenInc)
 
-# If you need extra directories. Leave as it is and chenge the specific Makefile (it is better)
+# If you need extra directories. Leave as it is and change the specific
+# Makefile.inc in the example directory (it is better)
 OTHER_LIB_DIR=
 OTHER_INC_DIR=
-#
-# You need trilinos at least 10.10. You may need to indicate where it is
-#
-TRILINOS_LIBDIR=-L/home/forma/lifev-env/trilinos-install/lib
-TRILINOS_INCDIR=-I/home/forma/lifev-env/trilinos-install/include
-#
-# Some istallations add trilinos_ to the name of the libraries
-# i.e. libtrilinos_teuchos.so. In that case set TRILINOS_SUFFIX=trilinos_
-# The
-TRILINOS_SUFFIX=# To make sure there is no space!
 #
 # Mpi directories for library and include files
 #
@@ -53,17 +44,18 @@ LIBRARIES=
 #
 # The C++ compiler (taken from an environmental variable)
 #
-CXX = g++ 
+#CXX = g++
 #CXX = icc
 #CXX = clang++
-#CXX = ${mkCxxCompiler}
+mkCxxCompiler?=g++
+CXX = ${mkCxxCompiler}
 #
 #CC=your favourite C compiler
 # do
 # If you need C to compiler but you still need the c++ linker to 
 #LINK.o = $(LINK.cc)
-# Since we are only uning c++ I set the linker LINK.o form object files
-# should use the c++ compiler make has no separate macro for the linker!
+# Since we are only uning c++ I set the linker LINK.o for object files
+# so that it uses the c++ compiler. make has no separate macro for the linker!
 LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
 #
 # If you are using intel compilers
@@ -110,13 +102,13 @@ ifeq ($(DEBUG),yes)
   LDFLAGS=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib# 
 else
   # Since aa 18-19 I have decided to indicate the libraries even if DEBUG=no.
-  # Remember however that normally release code does not contain the directories
-  # where the loader looks for libraris hardwired in the executables. Unless
-  # you take the responsibility of installing them in the right place.
+  # Remember however that normally release code does not have hardwired in the
+  # executables the directories where the loader looks for libraries.
+  # You take the responsibility of installing them in the right place.
   # But here I want to avoid students messing around with LD_LIBRARY_PATH
   # or ldconfig.
   LDFLAGS=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib#
-  OPTFLAGS=-O2 -funroll-loops #maybe you want -O3
+  OPTFLAGS=-O3 -funroll-loops #maybe you want -O3
   DEFINES+=-DNDEBUG
 endif
 # Add verbosity if needed
