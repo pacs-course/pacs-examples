@@ -38,7 +38,7 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 CXXFLAGS+=-fPIC
-LDFLAGS= $(OPTFLAGS)
+LDFLAGS= $(OPTFLAGS) -Wl,-rpath,.
 LDLIBS=-L. -lFactory -ldl
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc

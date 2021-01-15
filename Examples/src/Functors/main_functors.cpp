@@ -18,21 +18,22 @@ int main ()
   sqrt5.tolerance=1.e-5;
   std::cout<<"sqrt5(5)="<<sqrt5(5)<<" with tol=1e-5"<<std::endl;
   // you may also create the object on the fly and call the operator!
-  std::cout<<"sqrt5(5)="<<Sqrt5(1e-2, 50, 1.2)(5)<<" with tol=1e-2"<<std::endl;
+  sqrt5.tolerance=1.e-2;
+  std::cout<<"sqrt5(5)="<<sqrt5(5)<<" with tol=1e-2"<<std::endl;
   Isgreater ig(5.0);
   std::vector<int> v={1,2,3,4,6,7,8,18,25};
   auto found=std::find_if(v.begin(),v.end(),ig);
   if (found != v.end())
-    std::cout<<" first element greater than "<<ig.value()<<" is "<< *found<< std::endl;
+    std::cout<<" first element greater than "<<ig.my_value<<" is "<< *found<< std::endl;
   else
-    std::cout<<" value greater than "<<ig.value()<<" not found"<<std::endl;
+    std::cout<<" value greater than "<<ig.my_value<<" not found"<<std::endl;
   // let's change
-  ig.change_value(7);
+  ig.my_value=7;
   found=std::find_if(v.begin(),v.end(),ig);
   if (found != v.end())
-    std::cout<<" first element greater than "<<ig.value()<<" is "<<*found<<std::endl;
+    std::cout<<" first element greater than "<<ig.my_value<<" is "<<*found<<std::endl;
   else
-    std::cout<<" value greater than "<<ig.value()<<" not found"<<std::endl;
+    std::cout<<" value greater than "<<ig.my_value<<" not found"<<std::endl;
   // Let's order module 10 I create the object on the fly!
   std::sort(v.begin(),v.end(),LessModulo10());
   for (auto x : v) std::cout<<x<<" ";
