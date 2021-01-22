@@ -16,7 +16,12 @@
 #include "RKFTraits.hpp"
 namespace apsc
 {
-  //! Struct holding the result for the solver
+  /*!
+   * Structure holding the results of the integration
+   *
+   * @todo It can be made an internal structure of RKF. Indeed, it's use is intrinsically linked with the RKF class.
+   * @tparam KIND The type of traits to be used
+   */
   template <RKFKind KIND>
   struct RKFResult
   {
@@ -34,6 +39,11 @@ namespace apsc
     int contractions{0};
   };
 
+ /*!
+  * A calss for explicit Runge-Kutta Fehlberg type solution of ODEs
+  * @tparam B The Butcher table of the scheme. Must be defined following the scheme shown in ButcherRKF.hpp
+  * @tparam KIND The type of traits to be used: SCALAR, VECTOR, MATRIX
+  */
   template<class B,RKFKind KIND=RKFKind::SCALAR>
   class RKF : public RKFTraits<KIND>
   {
@@ -56,6 +66,7 @@ namespace apsc
      * @param hInit initial time step
      * @param tol desired global error max. norm
      * @param maxstep Safeguard to avoid too many steps (default 2000)
+     * @todo It would be better to group the parameters tol and maxStep into an (internal?) struct
      */
     RKFResult<KIND>
     operator()(double const & T0, double const & T, VariableType const & y0,
