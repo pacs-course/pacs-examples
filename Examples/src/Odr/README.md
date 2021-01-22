@@ -2,26 +2,26 @@
 
 This is an example of a very dangerous (and difficult to detect)
 error.  It is related to the relaxed One Definition Rule (odr) when
-dealing with template functions (or inline functions, if the compiler
-does not inline them...)
+dealing with template functions (or inline functions).
 
 The one definition rule says that I can have in a program only one
-definition for an object. For ordinary (not template, nor automatic
+definition of an object. For ordinary (not template, nor automatic
 return, not inline) functions, it means that if during the linking
 phase the compiler finds the definition of two identical functions it
-gives an error. **This error may happen if you, by mistake, have
-defined the function in a header file, and not in the source file.**
+gives an error. 
+**This error may happen if you, by mistake, have defined the function in a header file, and not in the source file.**
 
-However, the mechanism of instantiation of function templates makes it
+However, the mechanism of instantiation of function templates (or inline functions) makes it
 inevitable that all instances of template functions with the same
-arguments are compiled in all the translation units that instantiate
-them, *(thats why function template definitions must go in the header
-file).*
+arguments are compiled in all the translation units that instantiate/use
+them, *(thats why function template and inline function definitions must go in the header file).*
+Therefore for those object the ODR is relaxed.
 
 Example:
 
 file `myfun.hpp`:
-``` C++
+
+```C++
 template <class T>
 double myfun(const T & x){...}
 
@@ -29,8 +29,8 @@ double myfun(const T & x){...}
 
 
 file `f1.cpp`:
-``` C++
 
+```C++
 #include "myfun.hpp"
 ...
 double c=myfun(5.0) // will instantiate myfun(const double &)
@@ -41,6 +41,7 @@ double c=myfun(5.0) // will instantiate myfun(const double &)
 
 
 file `f2.cpp`:
+
 ``` C++
 #include "myfun.hpp"
 ...
@@ -53,7 +54,7 @@ Now we we link the object files (linking stage of the compilation process):
 
 `g++ main.o f1.o f2.o -o main`-> the linker finds two definitions of
                                  myfun(const double&) in the object files.
-                                 It is not a problem, it just chooses one.
+                                 *It is not a problem, it just chooses the first one, a function template does not obey the ODR*.
 
 The linker in this case will insert in the executable **only one copy of
 the compiled code for myfun(const double)**.In normal cases, like the
@@ -62,7 +63,7 @@ identical. But unfortunately **the linker does not check if they are identical!*
 
 In this example we show what can happen if one creates two function
 templates with the same name and parameters but with a different
-semantic (**something you should never do!**).
+semantic (**something you should never, never, I said never, do!**).
 
 In `three.hpp` I have the definition of a function template, called
 `three`, that just multiplies the input by 3.0.  In `newthree.hpp` I have
@@ -93,8 +94,7 @@ also fun2 instantiates `three()` with `T=double`. Perfectly fine. But if we
 have a main that uses both fun and fun2 we get something really nasty.
 
 The linker finds the function defined twice, but it is not an error
-since we have two instances of the same template function, *or at
-least this is what the linker assumes*.
+since we have two instances of the same template function, *the linke does not know that the two instances are infact different*.
 
 So, eventually in the main we have the code corresponding to only one
 of the two versions of three(double const). Which one?  It depends on
@@ -111,14 +111,16 @@ more than one identical instances of function templates, but they must
 be identical. Unfortunately the linker has no way to check it.
 
 Secondly, you should never write two function templates with the same
-name and parameters. **The use of namespaces may also help to avoid name
-clashes.**
+name and parameters. **The use of namespaces may also help to avoid name clashes.**
 
 Thirdly, a good rule is that you include the definition of the
 template in the header file where you declare a function or a class
 that you know makes use of a template function, even when it is not
 strictly necessary. Indeed, try to uncomment the `#include` statements in
 `fun.hpp` and `fun2.hpp` and see what happens. Now, the main does not even
-compile!  So you know that you have a problem to sort out: change the
-name of one of the two functions (or use namespaces to separate them,
-what matters is the full qualified name).
+compile!  Why? Well the compiler finds two definition of the same function template, and this is an error!.
+Relaxing the ODR rule applies to instances of function template (i.e. template functions) not the the template itself!
+
+
+So you know that you have a problem to sort out: change the
+name of one of the two functions (or use namespaces to separate them).
