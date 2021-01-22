@@ -3,7 +3,7 @@
 #include <algorithm>
 //#include "rk45.hpp"
 // use the new version
-#include "rk45.hpp"
+#include "RKF.hpp"
 namespace Geometry
 {
   MeshNodes Uniform::operator()() const
@@ -33,10 +33,23 @@ namespace Geometry
     int status;
     std::size_t maxSteps = 20000;
 
-    auto solution=
-      apsc::rk45(
-	   [this](double const & x,double const &){return 1./this->M_h(x);},
-	   t0,T,y0,h_initial,h_max,final_error,status,maxSteps);
+    auto fun=[this](double const & x,double const &){return 1./this->M_h(x);};
+    apsc::RKF<apsc::RKFScheme::RK45_t,apsc::RKFKind::SCALAR> solver{apsc::RKFScheme::RK45,fun};
+    // NOTE This part is a little cumbersome but needed to update from a previous version of the ODEs solver
+    // which returned the results in a different structure. I use a block scope to delete variables that are only used
+    // to interface with the new version of the RKF code
+    std::vector<std::pair<double,double>> solution;
+    {
+      auto RKFsolution=solver(t0,T,y0,h_initial,final_error,maxSteps);
+      if (RKFsolution.failed) std::cerr<<"MESH GENERATION HAD A PROBLEM. CONTINUING BUT CHECK!\n";
+      solution.reserve(RKFsolution.time.size());
+      for (auto i=0u; i< RKFsolution.time.size();++i)
+        {
+          solution.emplace_back(std::make_pair(RKFsolution.time[i],RKFsolution.y[i]));
+        }
+      // Here RKFResult is killed
+    }
+
     auto lastValue=solution.back().second;
     // make it an integer
     std::size_t numElements=std::max(static_cast<std::size_t>(std::round(lastValue)),static_cast<std::size_t>(2));
