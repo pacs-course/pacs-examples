@@ -6,18 +6,36 @@ that will be explained during the PACS (Programmazione Avanzata per il Calcolo
 Scientifico - Advanced Programming for Scientific Calculus) course at
 Politecnico di Milano.
 
-The software require a c++ compiler, i.e. gcc >= 5.0 or clang >= 5.
-gcc 9.2 is the one you find in the module system provided. But you may
-check the version of you compiler with the option -v Some examples have now been ported to c++17
+The repository contains submodules, so to check it out properly you have to type
+
+```
+git clone --recursive https://github.com/pacs-course/pacs-examples.git
+```
+
+or
+
+```
+git clone -- recursive git@github.com:pacs-course/pacs-examples.git
+```
+
+In the latter case you have to register your ssh keys on a github account.
+
+
+The software require a c++ compiler, i.e. gcc >= 8.0 or clang >= 8.
+You may check the version of you compiler with the option -v. Several examples have now been ported to c++17
 
 This directory contains some utilities:
 
 **  load_modules
 If you use the module system, typing
 
+```
 source load_modules
+```
 or
+```
 . load_modules.sh
+```
 
 will load the main modules used in the examples, a part hdf5 wich is used only on the example on iostreams (binary file).
 
@@ -25,8 +43,9 @@ will load the main modules used in the examples, a part hdf5 wich is used only o
 
 If you do not have used --recursive when cloning this repo and you want to use
 the git submodules containing third party software type:
-
+```
 ./install_modules
+```
 
 The file submodule_commands.txt contains some reminder of useful git commands for operating with submodules
 
