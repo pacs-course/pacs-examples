@@ -42,22 +42,18 @@ public:
 private:
   //! Counts the number of WS objects.
   /*!
-    Cannot be initialised in class since it is not const.
-    Only non statici or const static integral variable 
-    may be initialised in-class
-    Initialization in the cpp file
+    If you want to initialize in class a static member variable you have to declare it inline!
    */
   inline static int counter=0; 
   //! Stores the sum of the values.
   /*!
-     Cannot be initialised in class since it is not const and it is not an 
-     int. (so even if it was const we could not initilize it in class).
+      If you want to initialize in class a static member variable you have to declare it inline!
    */
   inline static double sum=0.0;
   //! The object value.
   /*!
-    It could be initialised in class, but since the constructor
-    takes a default value it will be initialised by the constructor
+    It could be in-class initialised, but since the constructor
+    takes a default value it will be initialized by the constructor
     directly.
    */
   double myValue;
