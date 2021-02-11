@@ -24,7 +24,7 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 export DEBUG=yes
 #CXX=g++-4.9
 #CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
-STANDARD=c++11
+STANDARD=c++17
 #
 #LIBNAME=Mesh1D
 DYNAMIC_LIBFILE=lib$(LIBNAME).so

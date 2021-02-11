@@ -3,6 +3,7 @@
 //!
 //! But you should understand the technique
 int main(){
+  using namespace apsc::Geometry2;
   Mesh<2> triangleMesh;
   using TriangleBoundaryType=Mesh<2>::BoundaryType;
   triangleMesh.addBElement(TriangleBoundaryType{});

@@ -1,7 +1,6 @@
 integrand=fsincos
 udflib=./libudf.so
-library=./libmyrules.so
-#rule=AdaptiveGauss3
+library=./libMonteCarloRules.so
 a=-1
 b=3
 nint=25

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 //! Helper function to read data from terminal
-namespace NumericalIntegration
+namespace apsc::NumericalIntegration
 {
   //! Reads parameters given as option
   //! @param argc number of options

@@ -42,6 +42,7 @@ OPTFLAGS = -g
 
 #
 LDFLAGS+=$(OPTFLAGS)
+LDLIBS=-L$(PACS_LIB_DIR) -Wl,-rpath,$(PACS_LIB_DIR) -lpacs
 CXXFLAGS+=$(OPTFLAGS)
 DEPEND=make.dep
 EXEC=esempioExtAss
@@ -75,10 +76,10 @@ clean:
 distclean: clean
 	$(RM) core *.log gmon.out
 
-optimize: chrono.o
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp chrono.o
-	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -I. -O2 -o esempio2 esempio.cpp chrono.o
-	$(CXX)  $(CPPFLAGS) $(CXXFLAGS) -I. -O3 -ffast-math  -funroll-loops -msse4 -mfpmath=sse -o esempio3 esempio.cpp chrono.o
+optimize:
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -I. -O0 -o esempio0 esempio.cpp $(LDFLAGS) $(LDLIBS)
+	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -I. -O2 -o esempio2 esempio.cpp $(LDFLAGS) $(LDLIBS)
+	$(CXX)  $(CPPFLAGS) $(CXXFLAGS) -I. -O3 -ffast-math  -funroll-loops -msse4 -mfpmath=sse -o esempio3 esempio.cpp $(LDFLAGS) $(LDLIBS)
 	@echo
 	@echo "**version with -O0"; ./esempio0;
 	@echo
@@ -88,8 +89,8 @@ optimize: chrono.o
 	@echo
 	@echo "**version with -O3  -ffast-math -funroll-loops -msse4 -mfpmath=sse"; ./esempio3;
 debug:
-	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -o esempio0_debug esempio.cpp chrono.cpp
-	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)   -o esempio1_debug esempio_errore.cpp chrono.cpp
+	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -o esempio0_debug esempio.cpp $(LDFLAGS) $(LDLIBS)
+	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)   -o esempio1_debug esempio_errore.cpp $(LDFLAGS) $(LDLIBS)
 
 leak:
 	 $(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Wall -g leak.cpp -o leak
@@ -115,12 +116,12 @@ massif:
 	ms_print massif.out > massif.txt
 
 coverage:
-	$(CXX) -g -fprofile-arcs -ftest-coverage chrono.cpp esempio.cpp -o esempio
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g -fprofile-arcs -ftest-coverage esempio.cpp -o esempio $(LDFLAGS) $(LDLIBS)
 	./esempio -i dati
 	gcov  --demangled-names ./esempio > summary.txt
 
 lcoverage:
-	$(CXX) -g -fprofile-arcs -ftest-coverage chrono.cpp esempio.cpp -o esempio
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g -fprofile-arcs -ftest-coverage esempio.cpp -o esempio $(LDFLAGS) $(LDLIBS)
 	./esempio -i dati
 	lcov --capture --directory . --output-file coverage.info
 	genhtml coverage.info --output-directory html

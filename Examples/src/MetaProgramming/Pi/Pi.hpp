@@ -3,7 +3,7 @@
 // Metaprogramming trick to compute Pi
 
 //! This namespace introduces helper functions that are used only locally
-namespace internals
+namespace apsc::internals
 {
   //! A template recursion for Pow. I do not want to call std::pow
   template<unsigned long B, unsigned long int E>
@@ -48,11 +48,11 @@ namespace internals
   
 }
 //! Some useful approximations of pi
-namespace MathConstants
+namespace apsc::MathConstants
 {
-  constexpr double Pi = internals::computePi<double,10ul>::value;
-  constexpr float Pi_f= internals::computePi<float,6ul>::value;
-  constexpr long double Pi_l = internals::computePi<long double,12ul>::value;
+  constexpr double Pi = apsc::internals::computePi<double,12ul>::value;
+  constexpr float Pi_f= apsc::internals::computePi<float,8ul>::value;
+  constexpr long double Pi_l = apsc::internals::computePi<long double,14ul>::value;
 }
 
 #endif

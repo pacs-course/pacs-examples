@@ -24,10 +24,8 @@ go into `../Utility` (if you have not already done so) and do
 
 to install `libpacs.so` with all support utilities:
 
-go into `../RK45` and do
+go into `../RKFSolver` and do
 
-    make clean
-    make dynamic DEBUG=no
     make install
 
 to install the `librk54.so` library (use `static` instead of `dynamic` if you wish to install the static library)
@@ -58,6 +56,8 @@ Then,
     
 makes a test the uses only the basis version.
 
-Similarly in the other directories. **In `AllDynamic\` you can only use
-dynamic libraries.**
+Similarly in the other directories. 
+
+**In** `AllDynamic\` **you can only use dynamic libraries. So make sure to run** `make alllibs; make install` **before using the code in** `AllDynamic`
+
 

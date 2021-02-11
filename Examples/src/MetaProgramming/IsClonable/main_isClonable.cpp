@@ -18,7 +18,7 @@ class NiftyContainer{
 public:
   void DoSomething(T* pObj)
   {
-    using namespace TypeTraits;
+    using namespace apsc::CloningTrait;
     if constexpr (isClonable<T>())
     {
       T* pNewObj = pObj->clone();
@@ -37,7 +37,7 @@ public:
 
 int main()
 {
-  using namespace TypeTraits;
+  using namespace apsc::CloningTrait;
   std::cout<<"C is clonable:  "<<std::boolalpha<< isClonable<C>()<<std::endl;
   NiftyContainer<C> ncc;
   C pc;

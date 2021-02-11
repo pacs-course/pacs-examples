@@ -27,14 +27,18 @@ namespace FVCode3D
   {
     return Eigen::saveMarket(M,filename,sym);
   }
-  //! Dumps all components of a SaddlePointMat
+  /*!
+   * Writes in the files M.mat, B.mat and T.mat the block-components of the saddle point matrix
+   * @param M The saddle point matrix
+   * @return
+   */
    bool dumpSaddlePointMatrix(const SaddlePointMat & M);
 
-   //! Dumps approximate Schur and approximate inner product matrices
+   //! Dumps the approximate Schur and approximate inner product matrices, in Shurapprox.mat and Mapprox.mat
    /*!
     * @param  M a Saddle Point Matrix
     * @param lumping if true the approximation is built with the lumped version of the
-    *        inner product matrix. Otherwise, the diagonal
+    * inner product matrix. Otherwise, the diagonal part
     */
     bool dumpApproximateSchurMatrix(const SaddlePointMat & M, bool lumped);
 

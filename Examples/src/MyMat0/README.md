@@ -69,7 +69,7 @@ blas, compile with BLAS=no, for instance compiling with
 but in this case the selection is made **run-time** and since the computation of the index will be made very often (everytime the Matrix is accessed!) this is 
 inefficient (run-time if statement are expensive). Tag-dispatching is instead resolved **compile-time**.
 
-**A final Note** C++17 has introduced compile-time if statement (`if constexpr`) which may replace the use of tag dispatching:
+**Note** C++17 has introduced compile-time if statement (`if constexpr`) which may replace the use of tag dispatching:
 
     
     size_type getIndex(size_type const i, size_type const j) const
@@ -80,9 +80,20 @@ inefficient (run-time if statement are expensive). Tag-dispatching is instead re
         // do something else
     }
 
-This `if` is resolved **compile-time**, so in this case we could have avoided tag-dispatching. But only since C++17. And there are still cases where tag-dispatching is better and, afre all, is not so complicated.
+This `if` is resolved **compile-time**, so in this case we could have avoided tag-dispatching. There are still cases where tag-dispatching is better and, afrer all, is not so complicated, so I decided to keep this version.
 
-**NOTE** The code uses the blas library if BLAS is set to yes in the `Makefile.inc` file. Check `Makefile.inc` to suit your needs.
+##Matrix multiplication##
+We also present different ways to perform matrix matrix multiplication depending on how the matrices are stored. We recall the basic, referring however to matrix times vector (since it is simpler). The idea is to perform the operations so that they are more *cache friendly*, that is to try to access elements contigous in memory, to exploit the "prefetching@ of data from memory to the cache. Now if you have to perform A*x, A being a matrix and v a vector, what is the best strategy "cachewise"? Well it depends. If the
+matrix is stored rowise it is better to perform the operation in the usual way, a loop over the row of the matrix forllowed by an internal loop that multiplies the elements
+of the row with the corresponding elements in the vector. But is the matrix is stored columnwise this means that the element of the matrix are not accesses contigously in memory. In that case it may be better to recall that multiplying a matrix times a vector is equivalent to make a linear combination of the columns of the matrix, with the element of the vector as coefficients of the linear combination. So you can perform a loop over the columns and multiply all column elements by the corresponding element in the vector. The same idea applied to the multiplication of two matrices, with the difference that here you have to consider 4 possibilities.
 
+**IMPORTANT NOTE** The code uses the blas library if BLAS is set to yes in the `Makefile.inc` file. Check `Makefile.inc` to suit your needs.
+
+#What do I learn here?#
+- A rather complete example of a full matrix;
+- The use of tag dispatching to select between different internal operations;
+- That performing oeration in a cache friently way may give improvements in the performance;
+- Some examples of function overloading to select automatically the best algorithm;
+- Interfacing with the some utilities of the blas library. The blas are tools for basic linear algebra operation, normally highly optimised. You should have in your system some standard blas implementation. If you want high performance blas you may use the [goto](http://www.csar.cfs.ac.uk/user_information/software/maths/goto.shtml). Anather alternative is to compile and install the [atlas](http://math-atlas.sourceforge.net/) that prodcue a blas library tuned for your computer!
 
 

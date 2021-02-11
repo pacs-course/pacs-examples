@@ -2,16 +2,16 @@
 #include <iostream>
 #include <random>
 #include "montecarlo.hpp"
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
 
   MonteCarlo::MonteCarlo(): max_iter(max_iter_def),
 			    error_level(error_level_def),M_lastError(0),
 			    M_cumulatedError(0),M_iterationsExceeded(false)
   {}
   
-  std::unique_ptr<QuadratureRule> MonteCarlo::clone() const
+  std::unique_ptr<QuadratureRuleBase> MonteCarlo::clone() const
   {
-    return std::unique_ptr<QuadratureRule>(new MonteCarlo(*this));
+    return std::unique_ptr<QuadratureRuleBase>(new MonteCarlo(*this));
   }
   
   void MonteCarlo::setError(double e){error_level=e;}

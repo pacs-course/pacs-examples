@@ -27,15 +27,23 @@
 }*/
 namespace LinearAlgebra{
 
-template <typename SpMat, int SelectionRule = Spectra::BOTH_ENDS >
+/*!
+ * Computes the eigenvalues of a sparse EIgen matrix using the tools provided by the SPECTRA library
+ * @tparam SpMat The sparse matrix
+ * @tparam SelectionRule  Which eigenvalue you prefer, according to the enum specified in spectra
+ * @param M The matrix
+ * @param numEigs The desired number of eigenvectors
+ * @return A vector of complex numbers containing the eigenvalues
+ */
+template <typename SpMat, Spectra::SortRule SelectionRule = Spectra::SortRule::BothEnds >
 Eigen::VectorXcd computeEigenValues(SpMat const & M, int numEigs)
 {
   Eigen::VectorXcd evalues;
   Spectra::SparseGenMatProd<double> op(M);
-  Spectra::GenEigsSolver< double, SelectionRule, Spectra::SparseGenMatProd<double> > eigs(&op, numEigs, 2*numEigs+1);
+  Spectra::GenEigsSolver<Spectra::SparseGenMatProd<double> > eigs{op, numEigs, 2*numEigs+1};
   eigs.init();
-  eigs.compute(2500,1.e-6);
-  if(eigs.info() != Spectra::SUCCESSFUL)
+  eigs.compute(SelectionRule, 2500,1.e-6);
+  if(eigs.info() != Spectra::CompInfo::Successful)
     {
       std::cerr<<"Eigenvalue computation not successful";
     }
@@ -44,22 +52,33 @@ Eigen::VectorXcd computeEigenValues(SpMat const & M, int numEigs)
   return evalues;
 }
 
-template <typename SpMat, int SelectionRule = Spectra::BOTH_ENDS >
+/*!
+ * Computes the eigenvalues of a symmetric EIgen matrix using the tools provided by the SPECTRA library
+ *
+ * @tparam SpMat The Eigen matrix type
+ * @tparam SelectionRule Which eigenvalue you prefer, according to the enum specified in spectra
+ * @param M The matrix
+ * @param numEigs The number of eigenvalues requested
+ * @param ncv The number of vectors for the Arnoldi iteration
+ * @param maxit The maximum number of iterations
+ * @param tol A tolerance
+ * @return A Eigen vector of doubles with the eigenvalues
+ */
+template <typename SpMat, Spectra::SortRule SelectionRule = Spectra::SortRule::BothEnds >
 Eigen::VectorXd computeSymEigenValues(SpMat const & M, int numEigs, long int ncv=20L, long int maxit=1500L, double tol=1.e-08)
 {
   Eigen::VectorXd evalues;
   Spectra::SparseSymMatProd<double> op(M);
 
-  Spectra::SymEigsSolver< double, SelectionRule, Spectra::SparseSymMatProd<double> >
-  eigs(&op, numEigs, ncv);
+  Spectra::SymEigsSolver<Spectra::SparseSymMatProd<double> > eigs(op, numEigs, ncv);
   eigs.init();
-  eigs.compute(maxit,tol);
+  eigs.compute(SelectionRule,maxit,tol);
   auto status=eigs.info();
-  if(status == Spectra::SUCCESSFUL)
+  if(status == Spectra::CompInfo::Successful)
     {
       evalues=eigs.eigenvalues();
     }
-  else if (status== Spectra::NOT_CONVERGING)
+  else if (status== Spectra::CompInfo::NotConverging)
     {
       std::cerr<<"Eigenvalue computation not converged.\n ";
       evalues=eigs.eigenvalues();

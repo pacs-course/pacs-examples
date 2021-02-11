@@ -22,15 +22,13 @@ namespace Geometry
 {
 
   //! A class that holds 2D points
-  /*! It also represents a vector in R2
+  /*! It can also represents a vector in R2
    */
   class Point2D
   {
   public:
     //! Constructor giving coordinates.
     Point2D(double xx=0.0, double yy=0.0):coor{xx,yy}{}
-    //! Copy constructor
-    Point2D(const Point2D&)=default;
     //! Returns coordinates in a array<double>.
     std::array<double,2> get() const { return coor;}
     //! Sets point coordinates

@@ -16,6 +16,10 @@ namespace FVCode3D
 {
  using PrecondBuilder=std::function<std::unique_ptr<preconditioner>()>;
  using PreconditionerFactory=std::unordered_map<PrecondSwitch,PrecondBuilder>;
+ /*!
+  * A simple factory for the preconditioners
+  * @return The factory (a std::map)
+  */
  PreconditionerFactory make_PreconditionerFactory()
  {
    using namespace FVCode3D;

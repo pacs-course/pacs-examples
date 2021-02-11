@@ -4,10 +4,6 @@
 	like `is_default_constructible` and `is_constructible`. Moreover, I use the runtime type identification techniques to interrogate the types, just
 	to check the results of the type traits, which however test properties of types **at compile time**.
 	
-* *Enable_if*  `std::enable_if` is one of the more complex type traits, its usage is not trivial, but it can be very useful when we wish to activate methods or functions only if the template parameter satisfies certain conditions. Here it is used to select 
-	which of the two versions of a method to enable. It can be done also in other ways: for instance, since I have just two choices I could
-	have used std::conditional. Moreover, maybe in this case I could have used overloding. So take it just as an example of `enable_if`.
-	
 * *GCD*	Different possible implementation of a function that computes the greatest common divisor between two integers. Note also the use of 
 	static_asset to verify some conditions run-time. **Note:** C++17 has added in the Standard library functions for greatest common denominator and minimum common divisor, so it is now better to use them.
 	
@@ -20,9 +16,6 @@
 
 * *Pi*  Computing Pi using a truncated series. You can specify the number of elements of the series you wish to use: recursion is used. 
 	You can also specify in a tempalte argument which type of float to store the result.
-	
-* *Pow*  Different recursion technique to compute the exponent function x^n when n is an integer. Here we show also an usage of type tagdispatching, 
-	that is the use of a struct that represent a value to select, via overloading, the correct function to call. **Note** C++17 has finally introduced a specialization of `std::pow()` for integer exponents.
 	
 * *Switch*	We show first how types stored in a class can be used to determine template derived types. A mesh class selects automatically 
 	the type of the boundary elements according to the type of the domain elements. We show also an approach where an integer representing

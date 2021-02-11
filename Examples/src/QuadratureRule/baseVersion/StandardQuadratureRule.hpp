@@ -2,8 +2,9 @@
 #define QUADRATURE_RULE_HPP
 #include <array>
 #include <utility>
+
 #include "QuadratureRuleBase.hpp"
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
   
   /*! \brief  A base class for standard quadrature rules.
     
@@ -25,7 +26,7 @@ namespace NumericalIntegration{
     method clone();
   */
   template<unsigned int NKNOTS>
-  class StandardQuadratureRule: public QuadratureRule
+  class StandardQuadratureRule: public QuadratureRuleBase
   {
   public:
     //! constructor
@@ -68,7 +69,7 @@ namespace NumericalIntegration{
       and assignment operators for classes that aggregate object of the
       QuadratureRule hierarchy by composition.
      */
-    virtual QuadratureRuleHandler clone() const override =0;
+    virtual std::unique_ptr<QuadratureRuleBase> clone() const override =0;
     // Applies the rule in the interval (a,b)
     double apply(FunPoint const & f, double const &a, double const& b) const override;
     virtual ~StandardQuadratureRule()=default;
@@ -82,7 +83,7 @@ namespace NumericalIntegration{
   
   template<unsigned int N>
   double 
-  NumericalIntegration::StandardQuadratureRule<N>::apply(
+  apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
 							 FunPoint const &f, 
 							 double const &a, 
 							 double const &b)const

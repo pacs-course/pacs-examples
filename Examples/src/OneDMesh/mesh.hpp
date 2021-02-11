@@ -20,7 +20,7 @@ namespace Geometry{
       \param gf the policy for generating mesh
     */
     Mesh1D(Geometry::OneDMeshGenerator const & gf):
-      myDomain(gf.getDomain()),myNodes(gf()){};
+      myDomain{gf.getDomain()},myNodes{gf()}{};
     //! Generate mesh (it will destroy old mesh)
     /*!
       @param mg a mesh generator
@@ -42,8 +42,10 @@ namespace Geometry{
       In case it is needed.
     */
     Domain1D domain() const {return myDomain;}
-    //! The mesh size.
-    double h() const;
+    //! The max mesh size.
+    double hmin() const;
+    //! The max mesh size.
+    double hmax() const;
   private:
     Domain1D myDomain;
     std::vector<double> myNodes;

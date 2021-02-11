@@ -3,7 +3,7 @@
 #include "helperfunction.hpp"
 #include "GetPot"
 //! Helper function to read data from terminal
-namespace NumericalIntegration
+namespace apsc::NumericalIntegration
 {
 
   void readParameters(const int argc, char** argv,

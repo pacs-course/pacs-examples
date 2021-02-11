@@ -122,7 +122,7 @@ namespace Eigen
       { 
         Index i(-1), j(-1);
         Scalar value; 
-        if( internal::GetMarketLine(line, M, N, i, j, value) ) 
+        if( internal::GetMarketLine(line.str(), M, N, i, j, value) )
         {
           ++ count;
           elements.push_back(T(i,j,value));
@@ -238,10 +238,11 @@ namespace
           }
         else
           { 
-            StorageIndex i(-1), j(-1);
+            StorageIndex i{0}, j(0);
             Scalar value; 
             std::stringstream line(buffer);
-            if(Eigen::internal::GetMarketLine(line, M,N,i, j, value) )
+            line>>i>>j>>value;
+            if(line.good())
             {
               ++count;
               elements.push_back(T(i,j,value));
@@ -330,7 +331,7 @@ namespace Eigen
         if (!std::is_same<std::complex<double>,Scalar>::value)
           {
             throw
-              std::runtime_error(std::string("read_MM_Matrix: wrong matrix type: it should store complex"));          
+              std::runtime_error(std::string("read_MM_Matrix: wrong matrix type: read_MM_Matrix is only for matrices of reals"));
           }
       }
       /*

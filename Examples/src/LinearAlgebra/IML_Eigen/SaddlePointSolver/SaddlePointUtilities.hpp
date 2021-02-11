@@ -54,8 +54,8 @@ struct TestParameters
   double EIGtol=1.e-8;
 };
 
-//! Map solvers to switch
-const std::map<std::string,SolverSwitch> getSolver=
+//! A global variable that maps a string to the enum that indicates the solver
+inline const std::map<std::string,SolverSwitch> getSolver=
     {
     {"umfpack",umfpack},
     {"gmres",gmres},
@@ -66,7 +66,8 @@ const std::map<std::string,SolverSwitch> getSolver=
     {"eigenvalues",eigenvalues}
    };
 
-const std::map<std::string,FVCode3D::PrecondSwitch> getPreconditioner
+//! A global variable that maps a string to the enum that indicates the solver
+inline const std::map<std::string,FVCode3D::PrecondSwitch> getPreconditioner
 {
   {"Diagonal", FVCode3D::Diagonal},
   {"BlockDiagonal",FVCode3D::BlockDiagonal},
@@ -76,7 +77,7 @@ const std::map<std::string,FVCode3D::PrecondSwitch> getPreconditioner
   {"Identity",FVCode3D::Identity},
 };
 
-//! Read parameters from getpot object
+//! Read parameters from a getpot object
 inline TestParameters read_parameters(GetPot const & ifl)
 {
   TestParameters r;
@@ -144,8 +145,13 @@ inline TestParameters read_parameters(GetPot const & ifl)
 
   return r;
 }
-// It is useful to write the parameters just to check
-
+/*!
+ * The name is misleading. It does not load anything. It sets the values needed by the
+ * preconditioner
+ * @param p the preconditioner
+ * @param m The matrix to which the preconditioner will be applied
+ * @param param The parameters
+ */
 inline void loadPreconditioner(FVCode3D::preconditioner & p, FVCode3D::SaddlePointMat const & m, TestParameters const & param)
 {
   p.setLumping(param.lumped);
@@ -154,7 +160,12 @@ inline void loadPreconditioner(FVCode3D::preconditioner & p, FVCode3D::SaddlePoi
   p.set_MaxIt(param.HSSMaxIter);
   p.set_tol(param.HSStol);
 }
-
+/*!
+ * Writes the current value of the parameters
+ * @param out an output stream
+ * @param p The parameter
+ * @param The output stream
+ */
 inline std::ostream & operator << (std::ostream & out, TestParameters const & p)
 {
   {

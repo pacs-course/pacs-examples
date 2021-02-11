@@ -30,7 +30,6 @@ namespace Geometry
     auto const h_max=(T-t0)/4.;
     auto const h_initial=h_max/100.;
     double constexpr final_error=1e-2;
-    int status;
     std::size_t maxSteps = 20000;
 
     auto fun=[this](double const & x,double const &){return 1./this->M_h(x);};

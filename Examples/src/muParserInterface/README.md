@@ -41,3 +41,6 @@ used for that purpose: `$(PACS_ROOT_DIR)/include` and
 `$(PACS_ROOT_DIR)/lib`. Necessary for other Examples that uses the
 interface.
 
+# What do I learn here? #
+- The basic usage of [muparser](https://github.com/beltoforion/muparser) and [muparserX](https://beltoforion.de/en/muparserx/)
+- An example on how to hide complex details (muparser and muparserX syntax is not trivial) and provide a simplified interface to the used. This is an simple example of a facade design pattern (the real facade design pattern is more complex though).
