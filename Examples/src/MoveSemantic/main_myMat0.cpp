@@ -9,37 +9,20 @@ LinearAlgebra::MyMat0<LinearAlgebra::ROWMAJOR> Hilbert(unsigned int n);
 int main()
 {
   using namespace LinearAlgebra;
-  // I create two matrices
-  MyMat0<COLUMNMAJOR> a;
-  //MyMat0 a;
-  a.resize(3,4);
-  MyMat0<> b(5,5);
-
-  b.fillRandom(12345);
-
-  std::cout<< "Testing copy constructors and move semantic"<<std::endl;
-  MyMat0<ROWMAJOR> t(a);
-  std::cout<<" This matrix should be equal to a"<<std::endl;
-  t.showMe();
-  MyMat0<ROWMAJOR> tc(std::move(t));
-  std::cout<<" This matrix should be also equal to a"<<std::endl;
-  tc.showMe();
-  std::cout<<" This matrix is now empty"<< std::endl;
-  t.showMe();
-  t=std::move(tc);
-  std::cout<<" Now it is back"<<std::endl;
-  t.showMe();
-  std::cout<<" And this is empty"<<std::endl;
-  tc.showMe();
 
   /* SHOW THE ADVANTAGES OF MOVE SEMANTIC */
-  constexpr unsigned int N=10000;
+  constexpr unsigned int N=5000;
   MyMat0<ROWMAJOR> matH=Hilbert(N);
   
   std::cout<<" Created a matrix of "<<N*N*8/1000000<<" Mbytes"<<std::endl;
+  std::cout<<" Created a second matrix of "<<N*N*8/1000000<<" Mbytes"<<std::endl;
+
+  MyMat0<ROWMAJOR> tc=Hilbert(N);
 
   // Swap with another matrix.
-
+  // move activate the move only if MyMat0 has move semantic activated
+  // If I have compiled with -DNOMOVE MyMat0 has not move semantic, so std::move does not move anything
+  // I do a normal copy!
   MyMat0<ROWMAJOR> tmp = std::move( matH);
   matH=std::move(tc);
   tc=std::move(tmp);

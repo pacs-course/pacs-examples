@@ -79,7 +79,6 @@ namespace Geometry{
      */
     Triangle():M_points{nullptr,nullptr,nullptr}{};
     //!Points are given (by reference or pointers)
-    */
     /*!\defgroup Constructors Constructors and assignement ops
       @{
     */

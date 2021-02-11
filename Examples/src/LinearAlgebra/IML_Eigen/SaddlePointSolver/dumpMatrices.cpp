@@ -9,6 +9,7 @@
 
 namespace FVCode3D
 {
+
 bool
 dumpSaddlePointMatrix (const SaddlePointMat& M)
 {

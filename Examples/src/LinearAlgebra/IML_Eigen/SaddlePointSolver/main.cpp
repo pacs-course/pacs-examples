@@ -140,14 +140,14 @@ main(int argc, char * argv[])
         std::clog<<"Non zero entries   :"<<A.nonZeros()<<std::endl;
         UFsolver.analyzePattern(A);
         UFsolver.factorize(A);
-        UFsolver.umfpackReportInfo();        
+        UFsolver.printUmfpackInfo();
         std::clog<<"Starting computations\n";
         timer.start();
         x= UFsolver.solve(b);
         timer.stop();
         std::clog<<timer;
 	std::clog<<"End computations\n";
-        UFsolver.umfpackReportStatus();	
+        UFsolver.printUmfpackInfo();
 
         maxit=0;
         tol=0.0;

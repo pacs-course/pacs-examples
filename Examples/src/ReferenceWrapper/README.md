@@ -21,3 +21,9 @@ function that takes the argument by value, like
     double fun(double x)
 
 there is no way to pass the argument as a reference.
+
+#What do I learn here#
+- How to pass by reference to a tempalte function that takes the template argument by value (but why have not you used
+`double fun(const T& x)` ?
+- The magic of reference wrappers, if you want a container of references!.
+ 

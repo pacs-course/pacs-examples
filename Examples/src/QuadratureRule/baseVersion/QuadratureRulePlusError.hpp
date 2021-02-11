@@ -4,7 +4,7 @@
 
 #include "QuadratureRuleBase.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
 
 
   /*!
@@ -26,12 +26,12 @@ namespace NumericalIntegration{
    */
 
   template<typename SQR>
-  class QuadratureRulePlusError final: public QuadratureRule
+  class QuadratureRulePlusError final: public QuadratureRuleBase
   {
   public:
     QuadratureRulePlusError();
     //! Cloning method.
-    QuadratureRuleHandler   clone() const override;
+    std::unique_ptr<QuadratureRuleBase>   clone() const override;
     //! Number of quadrature nodes. Delagates to the stored rules.
     int num_nodes()const {return _therule.num_nodes();}
     //! Coordinate of i-th node. Delegates to the stored rules.
@@ -76,8 +76,8 @@ namespace NumericalIntegration{
   {}
 
   template<typename SQR>
-  QuadratureRuleHandler QuadratureRulePlusError<SQR>::clone() const
-  { return  QuadratureRuleHandler(new QuadratureRulePlusError<SQR>(*this));}
+  std::unique_ptr<QuadratureRuleBase> QuadratureRulePlusError<SQR>::clone() const
+  { return  std::unique_ptr<QuadratureRuleBase>(new QuadratureRulePlusError<SQR>(*this));}
 
   /*! 
     In the apply method I am using the error formula in a strange way

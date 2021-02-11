@@ -1,8 +1,8 @@
 #Examples on function objects and lambdas#
 
-An object function or *functor* is a callable object implemented as a
+An object function, or *functor*, is a callable object implemented as a
 class or struct. A *callable object* is any object that can be called
-using the `()` call operator: a function or a lambda are other
+using the `()` call operator: functions or a lambda expressions are other
 examples of callable objects.
 
 Functors are useful particularly when their behaviour depends on the
@@ -21,3 +21,14 @@ AFunctor f;
 // maybe I change the state of f
 auto x = f(x); // calls the call operator
 ```
+
+#What do I learn here?#
+The concept of functors, which is very used by many standard algorithms.
+
+The standard library also provides son base classes from which you can publicly derive your functor if it is a 
+*unary function object*, or *binary function object* (i.e. a functur taking one or two arguments, respectively). 
+They are called `std::unary_function` and `std::binary_function`, and are tempalte class templatized with the argument and return type of your functor.
+
+Inheriting from those classes is not necessary, but it can be of help if you use the functor inside standard algorithms.
+
+

@@ -9,10 +9,16 @@ namespace Geometry{
     myNodes=g();
   };
   
-  double Mesh1D::h() const
-  { std::vector<double> tmp(myNodes.size()-1);
+  double Mesh1D::hmax() const
+  { std::vector<double> tmp(myNodes.size());
     std::adjacent_difference(myNodes.begin(),myNodes.end(),tmp.begin());
-    return * std::max_element(tmp.begin(),tmp.end());
+    return * std::max_element(++tmp.begin(),tmp.end());
+  }
+
+  double Mesh1D::hmin() const
+  { std::vector<double> tmp(myNodes.size());
+    std::adjacent_difference(myNodes.begin(),myNodes.end(),tmp.begin());
+    return * std::min_element(++tmp.begin(),tmp.end());
   }
 
   void  Mesh1D::reset(OneDMeshGenerator const & mg){

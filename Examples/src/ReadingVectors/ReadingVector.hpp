@@ -12,7 +12,7 @@
  *
  * You may fill a vector using the streaming operator
  * @tparam T the type stored in the vector (automatically deduced)
- * @tparam Args Additional vector argument (automatically deduced)
+ * @tparam Args Additional vector arguments (automatically deduced)
  * @param v the vector
  * @param i the value
  * @return The vector
@@ -28,7 +28,7 @@ std::vector<T,Args...> & operator << (std::vector<T,Args...> & v, T const & i)
  * Overloading the comma operator if you want the "Eigen style" way of filling vectors
  *
  * @tparam T the type stored in the vector (automatically deduced)
- * @tparam Args Additional vector argument (automatically deduced)
+ * @tparam Args Additional vector arguments (automatically deduced)
  * @param v the vector
  * @param i the value
  * @return The vector

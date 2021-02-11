@@ -8,9 +8,10 @@
 #ifndef EXAMPLES_SRC_QUADRATURERULE_BASEVERSION_GAUSS_RULE_HPP_
 #define EXAMPLES_SRC_QUADRATURERULE_BASEVERSION_GAUSS_RULE_HPP_
 
-#include "StandardQuadratureRule.hpp"
 #include <cmath>
-namespace NumericalIntegration{
+
+#include "StandardQuadratureRule.hpp"
+namespace apsc::NumericalIntegration{
   /*!
     \file numerical_rule.hpp
     \brief Some quadrature rules.
@@ -26,9 +27,9 @@ namespace NumericalIntegration{
     {
       {1,1},{-1./std::sqrt(3.),1./std::sqrt(3)},4
     }{}
-    QuadratureRuleHandler clone() const override
+    std::unique_ptr<QuadratureRuleBase> clone() const override
     {
-      return QuadratureRuleHandler(new GaussLegendre2p(*this));
+      return std::unique_ptr<QuadratureRuleBase>(new GaussLegendre2p(*this));
     }
   };
 
@@ -40,9 +41,9 @@ namespace NumericalIntegration{
      {
        {5./9.,8./9.,5./9.},{-std::sqrt(3./5.),0,std::sqrt(3./5.)},6
      }{}
-     QuadratureRuleHandler clone() const override
+     std::unique_ptr<QuadratureRuleBase> clone() const override
      {
-       return QuadratureRuleHandler(new GaussLegendre3p(*this));
+       return std::unique_ptr<QuadratureRuleBase>(new GaussLegendre3p(*this));
      }
    };
   //! Gauss  Lobatto rule 4pt
@@ -55,9 +56,9 @@ namespace NumericalIntegration{
 	{-1.,-1./std::sqrt(5.),1./std::sqrt(5),1.},
 	6
       }{}
-      QuadratureRuleHandler clone() const override
+      std::unique_ptr<QuadratureRuleBase> clone() const override
       {
-        return QuadratureRuleHandler(new GaussLobatto4p(*this));
+        return std::unique_ptr<QuadratureRuleBase>(new GaussLobatto4p(*this));
       }
     };
 
@@ -70,9 +71,9 @@ namespace NumericalIntegration{
          {1.10, 49./90, 32/45., 29./90, 1.10},
 	 {-1, -std::sqrt(3./7.),0,std::sqrt(3./7.),1},8
        }{}
-       QuadratureRuleHandler clone() const override
+       std::unique_ptr<QuadratureRuleBase> clone() const override
        {
-         return QuadratureRuleHandler(new GaussLobatto5p(*this));
+         return std::unique_ptr<QuadratureRuleBase>(new GaussLobatto5p(*this));
        }
      };
 
