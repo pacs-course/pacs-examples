@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace NumericalIntegration{
+namespace apsc::NumericalInte{
 
   /*!
     \class QuadratureRule

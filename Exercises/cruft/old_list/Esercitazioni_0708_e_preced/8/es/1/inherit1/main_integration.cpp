@@ -11,7 +11,7 @@
 
 #include "src/numerical_integration.hpp"
 
-using namespace NumericalIntegration;
+using namespace apsc::NumericalInte;
 
 
 double farctan(double const & x)
