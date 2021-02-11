@@ -1,6 +1,6 @@
 #include "numerical_integration.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalInte{
   
   QuadratureBase::QuadratureBase(double const & a,
 				 double const & b,

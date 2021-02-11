@@ -1,7 +1,7 @@
 #include "numerical_integration.hpp"
 #include <iostream>
 
-namespace NumericalIntegration{
+namespace apsc::NumericalInte{
   
   Quadrature::Quadrature(QuadratureRule & rule,
 			 double const & a,

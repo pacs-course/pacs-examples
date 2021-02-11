@@ -11,7 +11,7 @@
 
 #include "numerical_rule.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalInte{
 
   //! Type for function pointer (could use functors instead)
   typedef double (*FunPoint)(double const &);
