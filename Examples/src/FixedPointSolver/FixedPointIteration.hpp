@@ -8,6 +8,7 @@
 #ifndef SRC_NONLINSYSSOLVER_FIXEDPOINTITERATION_HPP_
 #define SRC_NONLINSYSSOLVER_FIXEDPOINTITERATION_HPP_
 #include "Accelerators.hpp"
+#include "VectorInterface.hpp"
 #include <tuple>
 #include <cmath>
 #include <memory>
@@ -28,8 +29,8 @@ struct FixedPointOptions
 
 //! A class for (possibly) accelerated fixed point iterations
 /*!
- * \tparam IterationFunction a system of equation that obeys the interface of NonLinearSystem contained in nonLinearSystem.hpp
- * \tparam Accelerator A template template parameter that identify an procedure to accelerate convergence.
+ * \tparam IterationFunction a system of equation that obeys the interface defined in FixedPointTraits<ARG>::ArgumentType
+ * \tparam Accelerator A template template parameter that identify a procedure to accelerate convergence.
  *
  */
   template <FixedPointArgumentType ARG, template<FixedPointArgumentType> class Accelerator=NoAccelerator>
@@ -80,7 +81,7 @@ struct FixedPointOptions
       while(iter<options.maxIter && currentDistance >options.tolerance)
         {
           current = this->accelerator(previous);
-          currentDistance=this->distance(current,previous);
+          currentDistance=std::sqrt(internals::squaredDistance(current,previous));
           previous=current;
           ++iter;
 #ifdef VERBOSE
@@ -97,13 +98,6 @@ struct FixedPointOptions
     IterationFunction phi;
     FixedPointOptions options;
     AcceleratorType accelerator;
-    double distance(ArgumentType const & current, ArgumentType const & previous)
-    {
-      double res{0.0};
-      for (std::size_t i=0; i<current.size();++i)
-        res+=(previous[i]-current[i])*(previous[i]-current[i]);
-      return std::sqrt(res);
-    }
   };
 
 }

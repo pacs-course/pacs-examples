@@ -6,5 +6,7 @@ extern "C"{
  double pluto(double const &);
  double one(double const &);
  double irregular(double const &);
+ // This uses muparser!
+ double parsedFunction(double const &);
 }
 #endif

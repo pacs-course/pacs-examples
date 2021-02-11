@@ -1,26 +1,26 @@
 #include "numerical_integration.hpp"
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
   
   
 // I need to copy the QuadratureRule not its handler!
-  Quadrature & Quadrature::operator=(Quadrature const & rhs){
+  /*Quadrature & Quadrature::operator=(Quadrature const & rhs){
     if(this!=&rhs){
-      _mesh=rhs._mesh;
+      mesh_=rhs.mesh_;
       // Resets the current value replacing with the pointer
       // returned by rhs._rule
-      _rule=rhs._rule->clone();
+      rule_=rhs.rule_->clone();
     }
     return *this;
   }
-
+*/
 
   double Quadrature::apply(FunPoint const & f) const
   {
     double result(0);
-    for(unsigned int i=0u;i<_mesh.numNodes()-1;++i){
-      double a=_mesh[i];
-      double b=_mesh[i+1];
-      result += _rule->apply(f,a,b);
+    for(unsigned int i=0u;i<mesh_.numNodes()-1;++i){
+      double a=mesh_[i];
+      double b=mesh_[i+1];
+      result += rule_->apply(f,a,b);
     }
     return result;
   }

@@ -13,6 +13,7 @@ do not need to run `make install` to have those facilities availabel to the othe
 #What do you lean with this example#
 - An example of a generic implemetation of the *object factory* design pattern. The key for a plugin-type architecture and, in general, useful when you have to select an element of a hierarchy of polymorphic object run time;
 - The use of generic programming to build a model for various implementations;
-- The use of *variadic templates* to pass to a function a variable number of arguments;
+- The use of *variadic templates* to pass a variable number of arguments to a function;
 - The creation of *exceptions* using the tools provided by the standard library;
-- The *Singleton* design pattern.
+- The *Singleton* design pattern. Object factories are indeed often (but not necessarily) implemented as Singletons since you want to be sure that the same factory provided objects in all your code. Remember that just making a class a Singleton does not guarantedd 100% that you have only one instance of the object in your code, it also depend on the linking process if you use the factory in shared libraries loaded dynamically. But is is an additional safeguard. The safest way is to make you factory a Singleton *and* a global(namespace) variable, as we will see in the example `NumericalQuadrature`. 
+

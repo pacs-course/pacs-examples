@@ -24,4 +24,4 @@
 
 * `Thomas` The Thomas algorithm for the solution of tridiagonal linear systems of equations. It's an algorithm with O(n) complexity
 
-*See also the README files in each folder.*
+*See also the README files in each folder. Note that in folders that are fork of third party software the README file explaining the example for the course is called README_PACS.md*

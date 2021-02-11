@@ -47,7 +47,7 @@ namespace LinearAlgebra
         for(size_type i=0; i<m1.nrow();++i)
           {
             size_type row_starts= m1.getIndex(i,0);
-            // ! can use parallel version!
+            // ! can use parallel version! it is called transform_reduce
             res(i,j) = std::inner_product(tmp.begin(),tmp.end(),m1.cbegin()+row_starts,T(0));
             /*
             for(size_type k=0; k<m2.nrow();++k)

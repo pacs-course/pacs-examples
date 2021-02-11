@@ -1,7 +1,7 @@
 #ifndef MONTECARLO_HPP
 #define MONTECARLO_HPP
 #include "QuadratureRuleBase.hpp"
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
   
   //! Implements montecarlo quadrature
   /*
@@ -12,11 +12,11 @@ namespace NumericalIntegration{
     (default 1.e-02) and the max number of sampling.
     
    */
-  class MonteCarlo final: public QuadratureRule
+  class MonteCarlo final: public QuadratureRuleBase
   {
   public:
     MonteCarlo();
-    std::unique_ptr<QuadratureRule> clone()const override;
+    std::unique_ptr<QuadratureRuleBase> clone()const override;
     double apply(FunPoint const &, double const & a,
              double const & b) const override;
     std::string name() const override {return "Montecarlo";}

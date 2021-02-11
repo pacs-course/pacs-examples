@@ -1,1 +1,0 @@
-LDLIBS+=-L$(PACS_ROOT)/lib -lpacs

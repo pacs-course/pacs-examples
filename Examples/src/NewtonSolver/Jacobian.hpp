@@ -42,28 +42,38 @@ namespace apsc
        The final keyword has been introduced in C++11 to stop
        a hierarchy. No class can be derived from it.
 
+       It allows some regularization, so the effective Jacobian is J + \lambda I
+
        @note This implementation is mildly dangerous, since it stores a pointer
        to the linear system and nobody ensures that the linear system will not
        be destroyed before the call method of this class is used! But we may consider
-       it a very unlikely event.
+       it a very unlikely event. So a prerequisite is that
+       the non linear system is existing and accessible.
+       An alternative is to use a shared pointer or a reference. But a simple pointer is the simplest solution
       */
      class DiscreteJacobian final: public JacobianBase
      {
      public:
        //! Constructor optionally takes the pointer to a non linear system.
-       DiscreteJacobian(NonLinearSystemType * sys=nullptr, double spacing=defaultTol):JacobianBase{sys},
-                                                M_tol{spacing}{};
+       /*!
+        * @param sys The non linear system
+        * @param spacing The spacing for the computation of the approximate derivative
+        */
+      DiscreteJacobian(NonLinearSystemType * sys=nullptr, double spacing=defaultTol):JacobianBase{sys},
+      M_tol{spacing}{};
+      //! Solves the system
+      /*!
+       * @param x the point where to evaluate the Jacobian
+       * @param b he right hand side of the system J(x) y=b
+       * @return The result
+       */
+      //!
+      ArgumentType solve(ArgumentType const & x, ArgumentType const & b) const override;
       //! Sets the spacing for computing finite differences
-       void setTol(double tol){M_tol=tol;}
-       //! Returns the tolerance currently used.
-       auto getTol()const {return M_tol;}
-       //! Solves the system
-       //!
-       //! Computes the Jacobian using finite differences.
-       //! /param x the point where to evaluate the Jacobian
-       //! /param b the right hand side of the system J(x) y=b
-       //! /return the result
-        ArgumentType solve(ArgumentType const & x, ArgumentType const & b) const override;
+      void setTol(double tol){M_tol=tol;}
+      //! Returns the tolerance currently used.
+      auto getTol()const {return M_tol;}
+
       double
       getLambda () const
       {
@@ -77,9 +87,9 @@ namespace apsc
 
      private:
        //! The current spacing
-       double M_tol;
+       double M_tol; // @todo maybe we can leave it public
        //! Regularization (if needed)
-       double lambda{0.0};
+       double lambda{0.0}; // @todo maybe you can leave it public
        //! Default tolerance.
        static double constexpr defaultTol=1e-4;
      };

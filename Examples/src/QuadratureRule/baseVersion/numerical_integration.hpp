@@ -1,8 +1,9 @@
 #ifndef NUMERICAL_INTEGRATION_HPP
 #define NUMERICAL_INTEGRATION_HPP
-#include "QuadratureRuleBase.hpp"
 #include "mesh.hpp"
-namespace NumericalIntegration{
+
+#include "QuadratureRuleBase.hpp"
+namespace apsc::NumericalIntegration{
   using namespace Geometry;
 
   /*!
@@ -25,25 +26,16 @@ namespace NumericalIntegration{
   class Quadrature
   {
   public:
-    typedef NumericalIntegration::FunPoint FunPoint;
+    typedef apsc::NumericalIntegration::FunPoint FunPoint;
     //!Constructor.
     /*!  
       \param rule A unique_ptr storing the rule.  
       \param mesh The 1D mesh (passed via universal reference)
      */
-    template <typename MESH> 
-    Quadrature(QuadratureRuleHandler && rule, MESH && mesh):
-      _rule(std::move(rule)),_mesh(std::forward<MESH>(mesh)){}
-      
-    //!Constructor that takes a const reference (I need to copy)
-    /*!  
-      Here  I take advantage of clone!
-      \param rule A unique_ptr storing the rule.  
-      \param mesh The 1D mesh (passed as universal reference)
-    */
-    template <typename MESH> 
-    Quadrature(QuadratureRuleHandler const & rule, MESH&& mesh):
-      _rule(rule->clone()),_mesh(std::forward<MESH>(mesh)){}
+    template <typename QuadHandler, typename MESH>
+    Quadrature(QuadHandler && rule, MESH && mesh):
+      rule_(std::forward<QuadHandler>(rule)),mesh_(std::forward<MESH>(mesh)){}
+
     //!A second constructor
     /*!  In this case we pass the object and we use the fact that the
       QuadratureRule classes are Clonable (that is they contain a
@@ -55,8 +47,8 @@ namespace NumericalIntegration{
       \param mesh The 1D mesh
      */ 
     template <typename MESH> 
-    Quadrature(const QuadratureRule & rule, MESH&& mesh):
-      _rule(rule.clone()),_mesh(std::forward<MESH>(mesh)){}
+    Quadrature(const QuadratureRuleBase & rule, MESH&& mesh):
+      rule_(rule.clone()),mesh_(std::forward<MESH>(mesh)){}
     //! Copy constructor.
     /*!
       \todo I could have used the Wrapper class in cloningUtilities.hpp and save
@@ -65,19 +57,19 @@ namespace NumericalIntegration{
       if I want to make the class copiable/movable with a deep copy, I need
       to write the operators myself, exploiting clone().
      */
-    Quadrature(Quadrature const & rhs): _rule(rhs._rule->clone()),  _mesh(rhs._mesh){}
+    Quadrature(Quadrature const & rhs)=default;
     //! Move constructor.
     Quadrature(Quadrature&& rhs)=default;
     //! Copy assignment.
-    Quadrature & operator=(Quadrature const &);
+    Quadrature & operator=(Quadrature const &)=default;
     //! Move assignment.
     Quadrature & operator=(Quadrature&&)=default;
     //! Calculates the integal on the passed integrand function.
     double apply(FunPoint const &) const;
-    QuadratureRule const & myRule()const {return *(_rule.get());}
+    QuadratureRuleBase const & myRule()const {return *(rule_.get());}
   protected:
-    QuadratureRuleHandler _rule;
-    Mesh1D _mesh;
+    QuadratureRuleHandler rule_;
+    Mesh1D mesh_;
   };
 
   /*
