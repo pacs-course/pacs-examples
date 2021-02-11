@@ -31,3 +31,5 @@ Instruction (to install the old version as a library, for other Examples)
 `make alllibs` will also create the executable with a test.
 
 `bash plot.sh` tu use gnuplot to show the result
+
+**NOTE** This is a relatively old implementation. It has been replaced by `RKFSolver`.
