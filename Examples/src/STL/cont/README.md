@@ -1,11 +1,8 @@
 # A few of examples on use of different containers#
 
-Some taken from the code associated to the book *The C++ Standard
-Library - A Tutorial and Reference, 2nd Edition by Nicolai
-M. Josuttis, Addison-Wesley, 2012*, an excellent reference on the
+Some taken from the code associated to the book *The C++ Standard Library - A Tutorial and Reference, 2nd Edition by Nicolai M. Josuttis, Addison-Wesley, 2012*, an excellent reference on the
 Standard Library (a new edition has come out extended to
-C++17). The full set of codes contained in the book are available on
-the web.
+C++17). The full set of codes contained in the book are [available on the web](http://www.cppstdlib.com/) with many more things!.
 
   * **deque1** It'a an example of `deque` the double ended queue standard
     container. It is a linear data structure where you
