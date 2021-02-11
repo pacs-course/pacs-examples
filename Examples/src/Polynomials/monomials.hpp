@@ -1,7 +1,7 @@
 #ifndef HH__MONOMIALS__HH
 #define HH__MONOMIALS__HH
 #include<type_traits>
-namespace LinearAlgebra
+namespace apsc::LinearAlgebra
 {
   namespace implementation
   {
@@ -9,13 +9,11 @@ namespace LinearAlgebra
     /*!  This implementation works also if the argument x is not a
       integral constant.  The optimization is up to the compiler since
       constexpr is only a "suggestion" to the compiler that the
-      expression may be optimized if the argument is a literal or a
-      constant value.
+      expression may be optimized if the argument is a constant expression.
       
       Note the use of integral_constant to select the correct overloaded
       function via tag dispatching.
     */
-    // In c++11 I can use std::integral_constant
     template<int N>
     using IntToType=std::integral_constant<unsigned int,N>;
     

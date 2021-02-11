@@ -16,11 +16,12 @@ namespace apsc
 /*! Implementation for vector<T> where T behaves like an array with 2 components
  * (key value).
  *
+ * @tparam A A type with operator[i] which for i=0 returns the key and for i=1 returns the value
  * @tparam CompOper Comparison operator
  * @tparam T the type stores in the array. it should behave as an array of 2
  * components. The first is the key, the second is the value
  * @param v a vector
- * @param keyVal the point to be interpolates
+ * @param keyVal the point to be interpolated
  * @param comp Comparison operator, defaults to less<T>
  * @return
  */
@@ -33,6 +34,7 @@ interp1D (std::vector<A> const &v, double const &keyVal,
     v.cbegin (), v.cend (), keyVal, [] (A const &x) { return x[0]; },
     [] (A const &x) { return x[1]; }, comp);
 }
+
 namespace internals
 {
 //! Maps vector of keys and vector of values in a single entity.

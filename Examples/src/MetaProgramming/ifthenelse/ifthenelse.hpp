@@ -5,7 +5,8 @@
  The C++11 standard library contains the trait std::conditional
  that does exactly the same thing
 */
-
+namespace apsc::TypeTraits
+{
 //! primary template: assumes the the boolean is true
 /*!
  * @note the third template parameter is not indicated becouse not
@@ -64,6 +65,6 @@ struct If_then_else<false, Ta, Tb> : is_same_type<Tb>
 {
 };
 
-
+}
 //
 #endif // IFTHENELSE_HPP

@@ -29,10 +29,10 @@ struct StandardLayout
     is equivalent to the synthetic one. But declaring
     a user-defined copy constructor I am making this struct not
     satysfying the requirement of a TriviallyCopyable class (even
-    if morally it is trivially copyable). But is still has standard layout.
+    if morally it is trivially copyable). But it is still has standard layout.
     
     @note Don't declare (or declare it default) the copy contructor if the
-    synthetic one is what you need!
+    synthetic one is what you need!!
    */
   StandardLayout(StandardLayout const & rhs):m_a(rhs.m_a),m_b(rhs.m_b){};
   int m_a;
@@ -45,20 +45,29 @@ int main()
   std::cout<< " Is it trivial?"<<std::endl;
   std::cout<< " Trivial:             "<<std::is_trivial<Trivial>::value<<std::endl;
   std::cout<< " TriviallyCopyable:   "<<std::is_trivial<TriviallyCopyable>::value<<std::endl;
-  std::cout<< " StandardLayout:      "<<std::is_trivial<StandardLayout>::value<<std::endl;
+  std::cout<< " StandardLayout:      "<<std::is_trivial<StandardLayout>::value<<std::endl<<std::endl;
 
   std::cout<< " Is it trivially copiable?"<<std::endl;
   std::cout<< " Trivial:             "<<std::is_trivially_copyable<Trivial>::value<<std::endl;
   std::cout<< " TriviallyCopyable:   "<<std::is_trivially_copyable<TriviallyCopyable>::value<<std::endl;
-  std::cout<< " StandardLayout:      "<<std::is_trivially_copyable<StandardLayout>::value<<std::endl;
+  std::cout<< " StandardLayout:      "<<std::is_trivially_copyable<StandardLayout>::value<<std::endl<<std::endl;
   
   std::cout<< " Has it standard layout?"<<std::endl;
   std::cout<< " Trivial:             "<<std::is_standard_layout<Trivial>::value<<std::endl;
   std::cout<< " TriviallyCopyable:   "<<std::is_standard_layout<TriviallyCopyable>::value<<std::endl;
-  std::cout<< " StandardLayout:      "<<std::is_standard_layout<StandardLayout>::value<<std::endl;
+  std::cout<< " StandardLayout:      "<<std::is_standard_layout<StandardLayout>::value<<std::endl<<std::endl;
 
-  // In a standard layout class I can do this
-  StandardLayout sl{5,3.14};// use uniform initialization
+  std::cout<< " Is it an aggregate?"<<std::endl;
+  std::cout<< " Trivial:             "<<std::is_aggregate<Trivial>::value<<std::endl;
+  std::cout<< " TriviallyCopyable:   "<<std::is_aggregate<TriviallyCopyable>::value<<std::endl;
+  std::cout<< " StandardLayout:      "<<std::is_aggregate<StandardLayout>::value<<std::endl<<std::endl;
+
+
+
+
+  // In a standard layout class I can do this:
+
+  StandardLayout sl{5,3.14};// use uniform initialization (agregates are a subset of standard layout types)
   int * psl = reinterpret_cast<int *>(&sl); // convert to pointer to first memeber
   // initialise with the dereferenced pointer
   StandardLayout s2=* (reinterpret_cast<StandardLayout*>(psl));

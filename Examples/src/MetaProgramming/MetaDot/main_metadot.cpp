@@ -3,6 +3,7 @@
 #include <complex>
 int main(){
   using std::array;
+  using namespace apsc::Operators;
   array<double,5> a={1.,1.,1.,1.,1.};
   array<double,5> b={1.1,2.1,3.1,4.1,5.1};
   //std::cout<<"a*b="<<metaDot<5>::apply(a,b)<<std::endl;

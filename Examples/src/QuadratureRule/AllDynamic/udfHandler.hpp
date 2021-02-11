@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include "QuadratureRuleBase.hpp"
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
   //! A class to simplify the management of loading funcions from a shared library
   /*!  Functions must have the signature determined by
     NumericalQuadrature::FunPoint or to be convertible to that
@@ -29,7 +29,7 @@ namespace NumericalIntegration{
   public:
     //! The type of function thet should be stored
     using fp_type=double (*)(double const &);
-    static_assert(std::is_convertible<fp_type,NumericalIntegration::FunPoint>::value,
+    static_assert(std::is_convertible<fp_type,apsc::NumericalIntegration::FunPoint>::value,
                   "The signature of the integrand function is not consistent");
     
     UdfHandler()=default;
@@ -44,7 +44,7 @@ namespace NumericalIntegration{
     //! Extract function from the library
     //! @param s function name
     //! @result The callable object storing the function
-    NumericalIntegration::FunPoint getFunction(std::string const & s) const;
+    apsc::NumericalIntegration::FunPoint getFunction(std::string const & s) const;
     //! Closes library
     void closeUdfLibrary();
   private:

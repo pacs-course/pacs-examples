@@ -7,6 +7,10 @@
 #include "SaddlePointMat.hpp"
 namespace FVCode3D
 {
+  /*!
+   * Construct a single Eigen matrix from the blocks
+   * @return An Eigen matrix
+   */
 SpMat
 SaddlePointMat::fullMatrix () const
 {
@@ -43,6 +47,9 @@ SaddlePointMat::fullMatrix () const
   return result;
 }
 
+/*!
+ * Clears the blocks of a block saddle point matrix. Needed if you need to free memory
+ */
 void
 SaddlePointMat::clear ()
 {

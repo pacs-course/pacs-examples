@@ -1,6 +1,6 @@
 #include "Adams_rule.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
 
   
   Simpson::Simpson():StandardQuadratureRule<3>{
@@ -8,8 +8,9 @@ namespace NumericalIntegration{
 }
   {}
   
-  QuadratureRuleHandler Simpson::clone()const { return 
-      QuadratureRuleHandler(new Simpson(*this));}
+  std::unique_ptr<QuadratureRuleBase> Simpson::clone()const {
+    return std::make_unique<Simpson>(*this);
+  }
   
   
   MidPoint::MidPoint():StandardQuadratureRule<1>
@@ -18,8 +19,8 @@ namespace NumericalIntegration{
     }
   {}
 
-  QuadratureRuleHandler MidPoint::clone() const { 
-    return QuadratureRuleHandler(new MidPoint(*this));
+  std::unique_ptr<QuadratureRuleBase> MidPoint::clone() const {
+    return std::make_unique<MidPoint>(*this);
   }
 
   Trapezoidal::Trapezoidal():StandardQuadratureRule<2>
@@ -28,8 +29,8 @@ namespace NumericalIntegration{
   }
   {}
   
-  QuadratureRuleHandler Trapezoidal::clone() const { 
-    return QuadratureRuleHandler(new Trapezoidal(*this));
+  std::unique_ptr<QuadratureRuleBase> Trapezoidal::clone() const {
+    return std::make_unique<Trapezoidal>(*this);
   }
   
 }

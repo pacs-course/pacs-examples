@@ -1,18 +1,11 @@
 #ifndef HH_QUADRATURERULEBASE_HH
 #define HH_QUADRATURERULEBASE_HH
+#include "QuadratureRuleTraits.hpp"
 #include <memory>
 #include <functional>
 #include <string>
 
-namespace NumericalIntegration{
-  
-  //! The type the integrand
-  using FunPoint=std::function<double (double const &)>;
-  
-  //! forward declaration
-  class QuadratureRule;
-  //! The type of the object holding the quadrature rule.
-  using QuadratureRuleHandler=std::unique_ptr<QuadratureRule>;
+namespace apsc::NumericalIntegration{
 
   //! The basis class for all the basic integration rules
   /*
@@ -24,7 +17,7 @@ namespace NumericalIntegration{
     Constructors and assignement operators
     are not defined since the synthetic ones are sufficient.
   */
-  class QuadratureRule
+  class QuadratureRuleBase
   {
   public:
     //! The class is clonable.
@@ -33,12 +26,12 @@ namespace NumericalIntegration{
       and assignment operators for classes that aggregate object of the
       QuadratureRule hierarchy by composition.
     */
-    virtual QuadratureRuleHandler clone() const =0;
+    virtual std::unique_ptr<QuadratureRuleBase> clone() const =0;
     // Applies the rule in the interval (a,b)
     
     virtual double apply(FunPoint const & f, double const &a, 
 			 double const & b)const=0;
-    virtual ~QuadratureRule()=default;
+    virtual ~QuadratureRuleBase()=default;
     /*! To be able to use the rule in the context of adaptive quadrature
       when I will load rules dynamically I need to enrich the interface 
       with these functions that in case of normal rules do just nothing.

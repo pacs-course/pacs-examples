@@ -29,10 +29,10 @@ void printHelp(){
 }
 
 //! Helper function
-void printList(QuadratureRuleFactory::RulesFactory const & rulesFactory, std::string const & quadlib)
+void printList(apsc::QuadratureRuleFactory::RulesFactory const & rulesFactory)
 {
   auto lista=rulesFactory.registered();
-  std::cout<<" The following rules are registered in "<<quadlib<<std::endl;
+  std::cout<<" The following rules are registered "<<std::endl;
   for (auto i : lista) std::cout<<i<<std::endl;
 }
 
@@ -40,8 +40,8 @@ int main(int argc, char** argv){
   
   using namespace Geometry;
   using namespace std;
-  using namespace NumericalIntegration;
-  using QuadratureRuleFactory::RulesFactory;
+  using namespace apsc::NumericalIntegration;
+  using apsc::QuadratureRuleFactory::RulesFactory;
   // Process options given to the program
   GetPot key_input(argc,argv);
   if (key_input.search(2, "--help", "-h")){
@@ -60,20 +60,44 @@ int main(int argc, char** argv){
     }
   GetPot   cl(inputFile.c_str());
   //get the factory: this is the correct way
-  RulesFactory const & rulesFactory=QuadratureRuleFactory::MyFactory;
+  RulesFactory const & rulesFactory=apsc::QuadratureRuleFactory::MyFactory;
   // This is wrong. You should get the global variable
   //RulesFactory const & rulesFactory=RulesFactory::Instance();
  // Load library with the rules
-  string quadlib=cl("library","libmyrules.so");
-  void * dylib=dlopen(quadlib.c_str(),RTLD_NOW);
-  if (dylib==nullptr){
-    cout<< "cannot find library" << quadlib <<endl;
-    cout<< dlerror();
-    exit(1);
-  }
+  auto nlibs = cl.vector_variable_size("library");
+  if (nlibs ==0)
+    {
+      cout<<"You need to specify at least one plugin library\n";
+      exit(1);
+    }
+  else
+    {
+      cout<<"Reading "<<nlibs<<" plugin libraries\n";
+    }
+  for (unsigned int i=0; i<nlibs;++i)
+    {
+      string quadlib=cl("library",i,"NONE");
+      if(quadlib == string("NONE"))
+        {
+          cout<<"Getpot file wrongly parsed,. Cannot read library\n";
+          exit(1);
+        }
+      else
+        {
+          cout<<"Reading plugin library "<<quadlib<<std::endl;
+        }
+      void * dylib=dlopen(quadlib.c_str(),RTLD_NOW);
+      if (dylib==nullptr)
+        {
+        cout<< "cannot find library" << quadlib <<endl;
+        cout<< dlerror();
+        exit(1);
+      }
+    }
+
   if (key_input.search(2, "--list", "-l"))
     {
-      printList(rulesFactory,quadlib);
+      printList(rulesFactory);
       exit(0);
     }
   // Now get the library with the functions to be integrated
@@ -90,7 +114,7 @@ int main(int argc, char** argv){
   string rule=cl("rule","Simpson");
   if(rule=="?")
     {
-       printList(rulesFactory,quadlib);
+       printList(rulesFactory);
        exit(0);
      }
   // Extract the rule. 
@@ -100,6 +124,12 @@ int main(int argc, char** argv){
     {
       theRule=rulesFactory.create(rule);
       std::string ruleKind{theRule->name()};
+
+      // Here we need to treat in a special way Adaptive and Montecarlo
+      // Alternatively, we may enrich the public interface of QuadratureRuleBase implementing
+      // virtual dummy methods (i.e. methods that do nothing) in the base class, overridden specifically
+      // in theadaptive variants and in Montecarlo. If we do this way we will always call setTargetError
+      // and setMaxIter. For the standard quadrature rule they do nothing.
       if (ruleKind=="Adaptive" || ruleKind=="Montecarlo")
         {
 	  double targetError=cl("targetError", 1.e-5);
@@ -116,7 +146,7 @@ int main(int argc, char** argv){
     {
       cout <<"Rule "<< rule<< "does not exist"<<endl;
       cout <<"Registered Rules are "<<endl;
-      printList(rulesFactory,quadlib);
+      printList(rulesFactory);
       std::exit(2); // exit with error status
     }
   //  get the rule

@@ -3,12 +3,13 @@
 #include <string>
 #include "Factory.hpp"
 #include "QuadratureRuleBase.hpp"
-namespace QuadratureRuleFactory
+namespace apsc::QuadratureRuleFactory
 {
   //!Specialization of Factory for QuadratureRules
   using RulesFactory= GenericFactory::Factory
     <
-    NumericalIntegration::QuadratureRule,std::string
+    apsc::NumericalIntegration::QuadratureRuleBase,
+    std::string
     >;
   //! My only factory
   extern RulesFactory& MyFactory;
@@ -23,13 +24,10 @@ namespace QuadratureRuleFactory
   {
     // get the factory
     RulesFactory & factory=MyFactory;
-    factory.add
-    (name,
-     []()
-     {
-      return
-	  NumericalIntegration::QuadratureRuleHandler
-	  {std::make_unique<ConcreteRule>()};
+    factory.add(
+        name,
+        []()
+        {return std::unique_ptr<apsc::NumericalIntegration::QuadratureRuleBase>{std::make_unique<ConcreteRule>()};
       }
     );
   }

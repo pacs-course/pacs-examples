@@ -19,3 +19,10 @@ Horner algorithm for computing polynomials that thanks to template
 programming, use of automatic type deduction and constexpr is able to
 operate with real and complex floating points, and resolves the
 computation statically if the arguments are constant expressions.
+
+#What do I learn here?#
+
+Some use of constexpr functions. Constexpr functions are implicitely inlined (thus they are defined in a header file) and have the property
+that the returned value can be computed directly at compile time if the arguments are constant expressions. There are limitations, well described on any C++ reference. And, remember, if the function is too complicated the compiler gives up trying to inline it, and it produces an ordinary function.
+
+*It makes sense to make constexpr short functions that you expect to be called a lot of time in your code. Otherwise, the gain is neglibible!*
