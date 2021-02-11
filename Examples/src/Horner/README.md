@@ -40,7 +40,7 @@ If you want to compile the parallel version of the example d
 
     make parallel
     
-while simple
+while simply
 
     make 
     
@@ -54,27 +54,23 @@ the Horner implementation is always faster that the standard one, both
 in the scalar and in the parallel version. The advantage of Horner
 increases as the polynomial degree increases. 
 
-
 The Makefile has been set so that you always compile with optimization
 activated.
 
-
+*Note* To use the multithread parallel algorithm of the standard libary you need to link you code qith the Intel treading building block (tbb) library.
+This is done automatically by the Makefile. Of course, you mast have `libtbb.so` installed in your system! Check!
 
 
 **Note 1:** Since ``std::pow(x,n)`` may be very expensive (since it
-treats also non-enteger exponents), I have implemented in
+treats also non-integer exponents), I have implemented in
 ``horner.cpp`` a function for elevation to power with integer
-exponents that just perfoms the required multiplications. This makes
-the comparison between standard and Horner algorithms fairer (Horner's
-algorithm does not need ``pow`` ). However, since c++17 there is an
-overloading of ``pow`` for integer exponents, so maybe there is no
-need of the specialised user-defined version anymore (but so far the
-implementations of the standard library do not exploit the
-specialization).
+exponents (constant expressions) that just perfoms the required multiplications. 
+Indeed, this procedure, if the exponent is not too high, is more efficient than the standard `pow` which has to solve a non-linear equation.
+However, since c++17 the standard library has an overloading of ``pow`` for (constexpr) integer exponents, so maybe there is no
+need of the specialised user-defined version anymore.
 
 **Note 2:**  To get significant timings use a high degree polinomial, at least 20.
 
-#What do you learn with this example#
-
-- That the use of a elaborate algorithm can give a significant efficiency gain, even for apparently simple problems;
+#What do you learn with this example?#
+- That the use of a more elaborate algorithm can give a significant efficiency gain, even for apparently simple problems;
 - A use of the new (since C++17) parallel algorithms of the standard library; 

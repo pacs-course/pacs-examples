@@ -1,7 +1,7 @@
 #ifndef __NUMERICAL_RULE_HPP
 #define __NUMERICAL_RULE_HPP
 #include "StandardQuadratureRule.hpp"
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
   /*!
     \file numerical_rule.hpp 
     \brief Some quadrature rules.
@@ -14,7 +14,7 @@ namespace NumericalIntegration{
   {
   public:
     Simpson();
-    QuadratureRuleHandler clone() const override;
+    std::unique_ptr<QuadratureRuleBase> clone() const override;
   };
 
   //! Midpoint rule
@@ -22,7 +22,7 @@ namespace NumericalIntegration{
   {
   public:
     MidPoint();
-    QuadratureRuleHandler clone()const override;
+    std::unique_ptr<QuadratureRuleBase> clone()const override;
   };
 
   //! Trapezoidal rule
@@ -30,7 +30,7 @@ namespace NumericalIntegration{
   {
   public:
     Trapezoidal();
-    QuadratureRuleHandler clone()const override;
+    std::unique_ptr<QuadratureRuleBase> clone()const override;
   };
 
   

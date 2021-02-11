@@ -12,7 +12,7 @@ by chosing the backward or forward alternative, not the centered ones. With the 
 
 - An example of use of recursion with templates;
 - A use of the type traits `std::is_same<>` to check a type;
-- The (c++17 extension) `if constexpr` construct, to select a conditioned branch  **at compile time**. Without `if constexpr` and `std::is_same<>` we could have resorted to a metaprogramming technique called `tag dispatching` , see `www.fluentcpp.com/2018/04/27/tag-dispatching/` (I have used tag dispatching in my `MyMat0` class for matrices to select the storage ordering);
+- The (c++17 extension) `if constexpr` construct, to select a conditioned branch **at compile time**. Without `if constexpr` and `std::is_same<>` we could have resorted to a metaprogramming technique called `tag dispatching` , see [here](www.fluentcpp.com/2018/04/27/tag-dispatching/). I have used tag dispatching in my `MyMat0` class for matrices to select the storage ordering;
 - We also show how to make helper functions to create specific instances and simplify the use of the tool.
 
 

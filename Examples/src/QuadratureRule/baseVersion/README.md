@@ -5,14 +5,13 @@ example on numerical integration seen at lecture.
 
 In particular:
 
-* `QuadratureRuleBase.hpp` Contains the declaration of the base class `Quadrule`, needed to all files that creates a concrete quadature rule
+* `QuadratureRuleTraits.hpp` The basic types used throughout the code;
 
+* `QuadratureRuleBase.hpp` Contains the declaration of the base class `QuadratureRuleBase`, needed to all files that creates a concrete quadature rule. It is a header only file that contains the code for the basis (abstract) class of standard quadrature rules `QuadratureRule`. It must be included by any file that defines a quadrature rule
 
-* `QuadratureRuleBase.hpp` is a header only file that contains the code for the basis (abstract) class of standard quadrature rules `QuadratureRule`. It must be included by any file that defines a quadrature rule
+* `StandardQuadratureRule.hpp` It contains the base class `StandardQuadratureRule`, derived from `QuadratureRule`, of all the standard quadrature rules.
 
-* `QuadratureRule.hpp` It contains the base class `StandardQuadratureRule`, derived from `QuadratureRule`, of all the standard quadrature rules.
-
-* `numerical_rule.hpp` Contains the declaration of some concrete standard quadrature rule.
+* `Adams_rule.hpp|cpp` and `Gauss_rule.hpp` Contain the definition of some concrete standard quadrature rule.
 
 * `QuadratureRuleWithError.hpp` is a header only file that contains a
   decorator to implement a standard quadrature rule with the
@@ -20,16 +19,14 @@ In particular:
 
 * `QuadratureRuleAdaptive.hpp` is an header only file that containes a decorator of  `StandardQuadratureRule` to implement adaptive numerical integration
 
-* `montecarlo.hpp` Defines the decorator of `QuadratureRule` that implements Montecarlo integration.
+* `montecarlo.hpp` Defines a decorator of `QuadratureRule` that implements Montecarlo integration.
 
 * `numerical_integration.hpp` contains the definition of the class
-  that implements composite quadrature rule. It uses a
-  `QuadratureRule` as policy to apply  a concrete rule on each
-  sub-interval.
+  that implements composite quadrature rule. It uses a quadrature rule
+  as policy to apply  a concrete rule on each sub-interval. It impements the Strategy design pattern.
 
 * `libquadrature` is the library that stores the code for composite quadrature rule. It depends on the library `libMesh1D`, and on GetPot so you have first
-to go to src/Utilities and then to src/OneDMesh, look at the README
-    files and remember to do `make install` in each directory.
+to go to `Utilities` and then to `OneDMesh`, look at the README files and install using `make install`. You also need `RKFSolver`, since it is required by `OneDMesh`, even if we are not using the RK solver here.
 
 * `libintegrands` is a library that stores some possible integrands
 
@@ -39,5 +36,11 @@ To do everything, including the test program:
     make alllibs (maybe with DEBUG=no)
     make install
     
-You may also have a look at `main.integration.cpp`,which stores the
-test program, and try to run it.
+You may also have a look at `main.integration.cpp`,which stores the test program, and try to run it.
+
+#What do I learn here? #
+- An example of polymorphism. All quadrature rules derive from a common base
+- An example of the **Decorator design pattern**, look [here](https://refactoring.guru/design-patterns/cpp) if you are interested in design patterns. Indeed, some rules are made by decorating existing classes. The Decorator patter is useful
+when you want to extend the capabilities of an existing hyerarchy of classes, uniformly over all of them; 
+- Another example of use of helper objects to enucleate a task, in this case reading parameters from a getpot file. When you have a well defined task enucleate it in an object (a class or a function). You will be able to verify the code separately, and reuse the it in other contexts more easily;
+

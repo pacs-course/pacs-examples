@@ -1,0 +1,1 @@
+LDLIBS+=-ltbb -L$(PACS_LIB_DIR) -lpacs

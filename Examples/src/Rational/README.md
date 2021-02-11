@@ -12,4 +12,6 @@ Not also that I can initialise a Rational using a `std::ratio<N,M>`
 object. `std::ratio` is a tool of the Standard Library to hold
 **constant rational numbers**.
 
+#What do I learn here?#
+- A rather complete example of overloading of arithmetic operators.
 

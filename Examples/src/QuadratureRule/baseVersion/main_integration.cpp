@@ -9,7 +9,7 @@
 #include "integrands.hpp"
 #include "montecarlo.hpp"
 #include "QuadratureRuleAdaptive.hpp"
-using namespace NumericalIntegration;
+using namespace apsc::NumericalIntegration;
 using namespace Geometry;
 
 

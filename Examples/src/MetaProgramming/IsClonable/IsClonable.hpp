@@ -8,7 +8,9 @@
   has the method clone(). I do not check the return type however
   (it can be done using std::is_same<> but is a little more involved).
 */
-namespace TypeTraits
+
+// A strange namespace name to avoid ambiguity with the version stored in CloningUtilities.hpp
+namespace apsc::CloningTrait
 {
   //! A template that takes anything
   /*!  

@@ -5,7 +5,7 @@
  *      Author: forma
  */
 #include "ruleFactory.hpp"
-namespace QuadratureRuleFactory
+namespace apsc::QuadratureRuleFactory
 {
   RulesFactory & MyFactory = RulesFactory::Factory::Instance();
 }
