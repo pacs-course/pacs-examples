@@ -211,3 +211,7 @@ make.dep
 /Examples/src/Parallel/MPI/01-HelloWorld/main_hello_world
 /Examples/lib/libmuparser.so.2.3.2
 /Examples/src/FixedPointSolver/main_FixedPoint
+/Examples/lib/cmake/muparser/muparser-targets-release.cmake
+/Examples/lib/cmake/muparser/muparser-targets.cmake
+/Examples/lib/cmake/muparser/muparserConfig.cmake
+/Examples/lib/cmake/muparser/muparserConfigVersion.cmake
