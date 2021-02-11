@@ -9,7 +9,7 @@
 
 #include <vector>
 
-namespace NumericalIntegration{
+namespace apsc::NumericalInte{
 
 
   //! Type for function pointers (could use functors instead)
