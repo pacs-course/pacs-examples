@@ -203,3 +203,11 @@ make.dep
 /Examples/src/STL/Reduce/mainReduce
 /Examples/src/STL/FileSystem/mainFSystem
 /Examples/src/Interp1D/main_interp
+/Examples/src/Utilities/test_JoinVectors
+/Examples/src/Utilities/test_is_complex
+/Examples/src/Utilities/test_is_eigen
+/Examples/src/MetaProgramming/IsClonable/main_isClonable
+/Examples/src/MetaProgramming/Pi/main_pi
+/Examples/src/Parallel/MPI/01-HelloWorld/main_hello_world
+/Examples/lib/libmuparser.so.2.3.2
+/Examples/src/FixedPointSolver/main_FixedPoint
