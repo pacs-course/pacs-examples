@@ -22,15 +22,20 @@ int main()
   using namespace std; // std names in the current scope
   int g=20; // it overrides
   int f=55;
-  cout<<"Local g "<< g<<", Global g "<<::g<<endl;
-  cout<<"pippo g "<< pippo::g<<", pluto g "<<pippo::pluto::g<<endl;
+  cout<<"Local g="<< g<<", Global g="<<::g<<endl;
+  cout<<"pippo g "<< pippo::g<<", pluto g="<<pippo::pluto::g<<endl;
   {
     double f=9.9;// overrides f in the outer scope, which is now inaccessible!
     // While the global f is still accessible using full qualified name
-    cout << "Local f "<<f<<", Global f "<<::f<<" Very local g"<<g<<endl;
+    cout << "Local f="<<f<<", Global f="<<::f<<" Very local g="<<g<<endl;
+    // also pippo::g and pippo::pluto::g ar still accessible with teyr qulified name!
+    cout << "pippo::g="<<pippo::g<<" pluto::g="<<pippo::pluto::g<<endl;
+
   }
   // for loops variables are in a local scope!
   for (int g=1;g<3;++g) cout<<g<<" ";
   cout<<endl;
   
+  // Suggestions: use long and significant names. Use namespace to reduce risk of name clashes.
+
 }

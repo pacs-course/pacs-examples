@@ -1,6 +1,6 @@
 #This directory contains several examples that uses templates#
 
-* `Compare/`  Using polisies to change comparison on strings
+* `Compare/`  Using policies to change comparison on strings
 
 * `ExplicitInstantiation/` A simple example that shows the explicit instantiation. Explicit instantiation of templates is a technique to save computing time by compiling largely used template instances only once.
 
@@ -16,3 +16,6 @@ techniques, *among which one that uses variadic templates*.
 * `traits/`  An example of the usage of traits (which are in fact also policies).
 
 * `VariadicTemplates` Some use of variadic templates and fold operators
+
+#What do I learn here#
+- Several aspects of template programming (and metaprogramming).

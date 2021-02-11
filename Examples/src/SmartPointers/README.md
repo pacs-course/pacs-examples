@@ -5,7 +5,7 @@
 * `enable_shared`. A simple class only to show the enable_shared
 utility of the standard library. It is a simple utility: if you
 inherit a class from `enable_shared<Class>` (it uses the Curiously
-Recurring Template technique) you anable the method
+Recurring Template technique) you enable the method
 `shared_from_this()` which produces a shared pointer to the object. It
 is a useful technique because it avoids to make mistakes. If you want
 to share a resource, you can create the shared pointer using this
@@ -19,7 +19,9 @@ working of smart pointers.  A Container class is composed
 polymorphically with an object of a polymorphic family, selected using
 a simple object factory .  A more complex example of composition with
 polimorphyc object, which uses clonable classes, is in
-`Utilities/test_clonable.cpp`: it employs a `Wrapper` class that
-simplify the composition with polymorphic object (provided they are
-clonable classes). Hve a look!
+`Utilities/CliningUtilities.hpp`: it employs a `PointerWrapper` class that
+simplifies the composition with polymorphic object (provided they are
+clonable classes). Have a look!
 
+#What do I get from this example?# 
+- An overview of smart pointer usage.

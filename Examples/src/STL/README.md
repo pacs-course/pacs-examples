@@ -18,8 +18,7 @@ Some updates have been made to introduce some C++17 goodies
 some example of structured bindings
 
 * `Optional/` the new optional template class of the standard library,
-that allows to mark a value as "unset value" in a safe way. Useful to
-mark missing data!
+that allows to mark a value as *unset value* in a safe way. *Useful to mark missing data!*
 
 * `Variant/` The variant template class (c++17) is a sophisticated and
 type-safe C++ extension of a union. It allows to have variables that
@@ -30,3 +29,13 @@ It contins also an example of use of `std::visit()`.
 * `Filesystem/` Utilities to examine the file system.
 
 * `Reduce/` Two new stl parallel algorithms
+
+* `Streams` A set of examples on streams, including binary i/o.
+
+#What do I lean here?#
+
+- A few standard algorithms, of the many;
+- The use of different comparison operators for ordered containers (an example of the Strategy design pattern).
+- The `optional` class template, very useful to treat missing data without dangerous tricks;
+- The new `filesystem` tools to transverse, exhamine and interact with the file system;
+- Structured bindings and `std::tie` for tuples
