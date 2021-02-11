@@ -1,6 +1,6 @@
 #include "numerical_rule.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalInte{
 
   QuadratureRule::QuadratureRule():_w(),_n(){};
 
