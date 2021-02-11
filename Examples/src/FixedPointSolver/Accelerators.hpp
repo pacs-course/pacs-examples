@@ -7,10 +7,11 @@
 
 #ifndef SRC_NONLINSYSSOLVER_ACCELERATORS_HPP_
 #define SRC_NONLINSYSSOLVER_ACCELERATORS_HPP_
+#include "FixedPointTraits.hpp"
+#include "VectorInterface.hpp"
 #include<memory>
 #include <functional>
 #include <cmath>
-#include "FixedPointTraits.hpp"
 //! \file Accelerators.hpp Different accelerators for fixed point iteration
 namespace apsc
 {
@@ -42,61 +43,11 @@ namespace apsc
     constexpr FPAcceleratorId getId(){return NoAcceleration;}
     //! The identifier is an attribute of the class. It may be tested on the type.
     static constexpr FPAcceleratorId id=NoAcceleration;
-  private:
+  protected:
+    //!@note I decided to store the function (composition). An alternative is aggregation (useful if IterationFunction is a big object)
     const IterationFunction & M_I;
   };
 
-  namespace AccelInternals
-  {
-    //! Helper function to express dot product
-    template <class T>
-    double dot (std::size_t len,T const & a, T const & b)
-    {
-      double res{0.0};
-      for (std::size_t i=0;i<len;++i)
-        res+=a[i]*b[i];
-      return res;
-    }
-    //! Helper function to compute squared norm
-    template <class T>
-    double squaredNorm(std::size_t len,T const & a)
-    {
-      return dot(len,a,a);
-    }
-    //! Helper function to add vectors
-    //! @todo It may be secialized for Eigen vectors
-    template <class T>
-    void plus(std::size_t len,T const & a, T const & b, T & res)
-    {
-      for (std::size_t i=0;i<len;++i)
-        res[i]=a[i]+b[i];
-    }
-    //! Helper function to subtract vectors
-    //! @todo It may be specialized for Eigen vectors
-    template <class T>
-    void minus(std::size_t len,T const & a, T const & b, T & res)
-    {
-      for (std::size_t i=0;i<len;++i)
-        res[i]=a[i]-b[i];
-    }
-    //! Helper function to scale a vector
-    template <class T>
-    void scale(std::size_t len, double a, T const & b, T & res)
-    {
-      for (std::size_t i=0;i<len;++i)
-        res[i]=a*b[i];
-    }
-    //! Helper function to compute squared distance among vectores
-    template <class T>
-    double squareDistance(std::size_t len,T const & a, T const & b)
-    {
-      double res{0.0};
-      for (std::size_t i=0;i<=len;++i)
-        res+=(a[i]-b[i])*(a[i]-b[i]);
-      return res;
-
-    }
-  }// end internals
 
   //! Alternate secant method
   /*!
@@ -131,7 +82,7 @@ namespace apsc
     constexpr FPAcceleratorId getId(){return id;}
     //! The identifier is an attribute of the class. It may be tested on the type.
     static constexpr FPAcceleratorId id=ASecant;
-  private:
+  protected:
     const IterationFunction & M_I;
     ArgumentType deltaXOld;
     ArgumentType xOld;
@@ -145,6 +96,7 @@ namespace apsc
   template <FixedPointArgumentType ARG>
   typename ASecantAccelerator<ARG>::ArgumentType  ASecantAccelerator<ARG>::operator()(ArgumentType const &x)
   {
+    using namespace apsc::internals;
     if (firstTime)
       {
         // set initial values
@@ -154,32 +106,31 @@ namespace apsc
         deltaXOld.resize(length);
         deltaXNew.resize(length);
         // compute \Delta x_n = phi(x_n)-x_n
-        AccelInternals::minus(length,xNew,x,deltaXOld);
+        this->deltaXOld = xNew - x;
         firstTime=false;
       }
     else
       {
         this->xNew=this->M_I(x);
         // compute \Delta x_n = phi(x_n)-x_n
-        AccelInternals::minus(length,xNew,x,deltaXNew);
+        deltaXNew = xNew-x;
         ArgumentType tmp(length);
         // \Delta x_n - \Delta x_{n-1}
-        AccelInternals::minus(length,deltaXNew,deltaXOld,tmp);
+        tmp = deltaXNew - deltaXOld;
         // Get ||\Delta x_n - \Delta x_{n-1}||^2
-        double norm2=AccelInternals::squaredNorm(length,tmp);
+        double norm2=squaredNorm(tmp);
         //to do: check norm2
         norm2 =1.0/norm2;
         ArgumentType tmp2(length);
         //! Scaling:  \Delta x_n - \Delta x_{n-1}/||\Delta x_n - \Delta x_{n-1}||^2
-        AccelInternals::scale(length,norm2,tmp,tmp2);
+        tmp2 = norm2*tmp;
         //! Do the dot product with \Delta x_n
-        double factor=AccelInternals::dot(length,tmp2,deltaXNew);
+        double factor=dot(tmp2,deltaXNew);
         // Save phi(X_n) for later use
         tmp2=xNew;
-        // scale (phi(x_n)-\phi(x_{n-1}) factor and subtract
+        // scale (phi(x_n)-\phi(x_{n-1}) by factor and subtract
         // 
-        for (std::size_t i=0;i<length;++i)
-          xNew[i]-=factor*(xNew[i]-phiOld[i]);
+        xNew = xNew -factor*(xNew - phiOld);
         phiOld=tmp2;
         deltaXOld=deltaXNew;
       }

@@ -7,10 +7,10 @@ namespace Geometry
 {
   //! A factory of Polygons
   /*!
-    I am using perfect forwrding, so that make_unique gets the
+    I am using perfect forwarding, so that make_unique gets the
     arguments with the same category as the ones of the function.
-    If you think it is unnecessaryly complicated, you may use
-    the simpler (but less efficint w.r.t. move semantic) version
+    If you think it is unnecessarily complicated, you may use
+    the simpler (but less efficient w.r.t. move semantic) version
     \code
     template<typename... Args>
   std::unique_ptr<AbstractPolygon> createPolygon(std::string name,const Args&... args)

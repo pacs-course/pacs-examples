@@ -8,6 +8,12 @@ A different version may use a different template parameter for the input variabl
 
 `v<<1;`
 
-will not compile sience `1` is an int. But of course I can do `v<<1.;`.
+will not compile since `1` is an int. But of course I can do `v<<1.;`.
 
 This is an example of complex overloading of operators by using templates. In fact, there is no need of this tool. Parameter list (brace) initialization already allow to initialize a vector in a simple way. But in other cases it may be useful to have little tools of this type.
+
+#What do I lean here?#
+- A curious usage of overloading the comma operator;
+- A use of variadic templates.
+
+**An important note:** you may avoid variadic templates in this example. C++17 introduced automatic deduction of class template parameters, so the correct extra template argument would be automaticall deduced. But I have left this example only to remind you that `std::vector` has at least 2 template parameters.

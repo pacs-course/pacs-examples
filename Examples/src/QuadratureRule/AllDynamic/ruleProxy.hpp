@@ -5,7 +5,7 @@
 #include "Proxy.hpp"
 
 //!Specialization of Factory and Proxy for QuadratureRules
-namespace QuadratureRuleFactory
+namespace apsc::QuadratureRuleFactory
 {
   template <typename ConcreteRule> using 
   RuleProxy=GenericFactory::Proxy<RulesFactory,ConcreteRule>;

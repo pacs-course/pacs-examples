@@ -5,9 +5,10 @@
 #include <queue>
 #include <utility>
 #include <iostream>
+
 #include "QuadratureRulePlusError.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
 
   /*!
     \brief Adaptive quadrature rules based on StandardQuadratureRule
@@ -17,7 +18,7 @@ namespace NumericalIntegration{
    */
   
   template <class SQR>
-  class QuadratureRuleAdaptive final: public QuadratureRule
+  class QuadratureRuleAdaptive final: public QuadratureRuleBase
   {
   public:
     //! Constructor.
@@ -32,7 +33,7 @@ namespace NumericalIntegration{
       The override qualifier helps to avoid error: this
       method must override a virtual method of the base class.
      */
-    QuadratureRuleHandler clone() const override;
+    std::unique_ptr<QuadratureRuleBase> clone() const override;
     //!
     /*!@{*/
     int num_nodes()const {return _therule.num_nodes();}
@@ -62,7 +63,8 @@ namespace NumericalIntegration{
   {}
 
   template <class SQR>
-  QuadratureRuleHandler QuadratureRuleAdaptive<SQR>::clone() const{ return  QuadratureRuleHandler(new QuadratureRuleAdaptive<SQR>(*this));}
+  std::unique_ptr<QuadratureRuleBase> QuadratureRuleAdaptive<SQR>::clone() const
+  {return  std::unique_ptr<QuadratureRuleBase>(new QuadratureRuleAdaptive<SQR>(*this));}
 
   /*!
     @detail In the apply method I use the facilities of the QudaratureRUlePlusError classes

@@ -41,7 +41,8 @@ int main()
     // if |lambda| >1 we have two fixed points, one of which is with  y=0 and is unstable, the other is stable
     //                and we converge to the second one
     // Try to change lambda and see what happens
-    double lambda=0.5;
+    double lambda=1.5;
+    std::pair<double,double> exact;
     phi=[lambda](FixedPointIterator::ArgumentType const & x){return std::vector<double>{lambda*std::sin(x[0]),std::cos(x[1])}; };
     
     FixedPointIterator iterate{phi};

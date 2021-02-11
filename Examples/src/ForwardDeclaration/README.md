@@ -4,7 +4,7 @@ This is a very simple example that indicates when forward declarations
 are needed. Here forward declaration is necessary because class `A` has
 a method that takes `B&`, while `B` stores a member of type `A`!
 
-Often this situation is a sign of poor design, but there are occasions
+Often this situation it's a sign of poor design, but there are occasions
 where this type of "cross referencing" is necessary.
 
 The type of the parameter of a function/method is an incomplete
@@ -19,5 +19,8 @@ the full definition of `A`, so we have to include the corresponding
 header file containing the full definition. Indeed, class `B` has a
 variable of type `A` as its member, therefore the compiler needs to
 know the size of `A` to deduce the size of `B`. Just a forward
-declaration of `A` is here be insufficient, and it would lead to a
+declaration of `A` is here insufficient, and it would lead to a
 compiler error.
+
+#What do I learn here?#
+That forward declaratiosn are sometimes necessary.

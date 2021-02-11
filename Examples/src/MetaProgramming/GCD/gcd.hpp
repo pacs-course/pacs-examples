@@ -4,20 +4,22 @@
 /*!
   @file gcd.hpp  greatest common divisor
  */
+namespace apsc
+{
 namespace Utility
 {
-  //! Primary template. Uses recursion.
   /*!
-   * Gdc<M,N> returns the greatest common divisor between N and M
-   * This version works also with standard older than c++11
+   * A first example of computation of the greatest common divisor of two integers
+   * in a static way (i.e. at compile time) using template specialization
+   *
+   * Gcd<M,N>::value returns the greatest common divisor of M and N
+   * @tparam M The first integral value
+   * @tparam N The second integral value
    */
   template <long unsigned int M, long unsigned int N>
   struct Gcd
   {
-    static_assert(
-                  M>=N,
-                  " First template argument cannot be smaller than the second"
-                  );
+    static_assert(M>=N," First template argument cannot be smaller than the second");
     static constexpr long unsigned int  value = Gcd<N,M%N>::value;
   };
   //! Specialization to close recursion
@@ -28,11 +30,17 @@ namespace Utility
     static constexpr long unsigned int value = M;
   };
 
- 
- using int_type=long unsigned int; 
+  /*!
+   * A template variable to imitate a feature of c++17
+   * Gcd_v<M,N> is a variable equal to the greater common divisor between M and N
+   */
+  template <long unsigned int M, long unsigned int N>
+  constexpr long unsigned int Gcd_v = Gcd<M,N>::value;
+
+
  //! Another implementation, it makes use of the
- //! new constexpr magic adn works with any integer types!. Needs at least C++11
- //! @note In c++17 you can use if constwexpr (or use std::gcd() directly!)
+ //! new constexpr magic adn works with any integer types. Needs at least C++11
+ //! @note Since c++17 you can use std::gcd, much better. This is only an example!
  template <class M, class N>
  auto constexpr  GCD(const M m , const N n) -> typename std::common_type<M,N>::type
   {
@@ -40,5 +48,5 @@ namespace Utility
   }   
   
 }
-
+}
 #endif

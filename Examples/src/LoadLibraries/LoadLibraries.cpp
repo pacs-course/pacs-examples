@@ -21,7 +21,7 @@ namespace apsc
 	  std::cerr<<" Cannot open plugin files"<<std::endl;
 	  return false;
 	}
-     while (pFile.good() && (! pFile.eof()) )
+     while (pFile.good() && (! pFile.eof()) && good)
 	{
 	  std::string line;
 	  //! get a line
@@ -33,25 +33,32 @@ namespace apsc
 	  if(start!=end)
 	    {
 	      std::string libName(start,end);
-	      // open the dynamic library
-	      void* sdl_library = dlopen(libName.c_str(), RTLD_NOW);
-	      // check if error
-	      if (sdl_library==nullptr)
-	          {
-	            std::cerr<<" Cannot load Library "<<libName <<" "<<dlerror()<<std::endl;
-	            good=false;
-	          }
-	        else
-	          {
-	            std::clog<<libName<<" Library opened"<<std::endl;
-	            loadedLibs.push_back(sdl_library);
-	          }
+	      good = loadSingleLibrary(libName);
 	    }
 	  else
 	    std::clog<<"Empty line in plugins file\n";
 	}
 	  return good;
    }
+
+  bool LoadLibraries::loadSingleLibrary(std::string  libName)
+  {
+    bool good=true;
+    // open the dynamic library
+    void* sdl_library = dlopen(libName.c_str(), RTLD_NOW);
+    // check if error
+    if (sdl_library==nullptr)
+      {
+        std::cerr<<" Cannot load Library "<<libName <<" "<<dlerror()<<std::endl;
+        good=false;
+      }
+    else
+      {
+        std::clog<<libName<<" Library opened"<<std::endl;
+        loadedLibs.push_back(sdl_library);
+      }
+    return good;
+  }
 
   void
   LoadLibraries::close ()

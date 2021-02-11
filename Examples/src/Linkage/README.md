@@ -11,4 +11,8 @@ You should try to avoid global variables, but sometimes they are useful, if not 
 What's instead the use of local functions? Well, sometimes you create a function that is meant to be  used only locally in the source code you are writing. It is not meant to be at disposal of all the translation units that compose your code. So, to reduce the risk of name clashes, you make them local.
 
 In the simple code in this directory we recall the ways in which in C++ we can create global variables or local function. Have a look.
+
+#What do I learn here?#
+- A first example of use of global variables (variables with global linkage)
+- A first example of use of local functions (functions with local linkage)
  

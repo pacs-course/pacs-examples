@@ -1,7 +1,7 @@
 #include <dlfcn.h>
 #include "udfHandler.hpp"
 
-namespace NumericalIntegration{
+namespace apsc::NumericalIntegration{
 
   void UdfHandler::openUdfLibrary(const std::string & s)
   {
