@@ -20,6 +20,11 @@ namespace Utilities
   {
     return bool(__cplusplus == 201402L);
   }
+   //! True if you are using c++20
+  constexpr bool is_cxx20()
+  {
+    return bool(__cplusplus == 202002L);
+  }
   //! True if you are using c++17
   constexpr bool is_cxx17()
   {
@@ -45,6 +50,11 @@ namespace Utilities
   constexpr bool is_atleast_cxx17()
   {
     return bool(__cplusplus >= 201703L);
+  }
+ //! True if you are using at least c++20
+  constexpr bool is_atleast_cxx17()
+  {
+    return bool(__cplusplus >= 202002L);
   }
   //! True if you are using at least c++98
   // Only to avoid compilation errors
@@ -74,6 +84,12 @@ namespace Utilities
     return false;
   }
 
+  //! True if you are using c++20
+  inline bool is_cxx20()
+  {
+    return false;
+  }
+
   //! True if you are using at least c++11
   inline bool is_atleast_cxx11()
   {
@@ -91,6 +107,12 @@ namespace Utilities
   }
   //! True if you are using at least c++17
   inline bool is_atleast_cxx17()
+  {
+    return false;
+  }
+
+  //! True if you are using at least c++20
+  inline bool is_atleast_cxx20()
   {
     return false;
   }
