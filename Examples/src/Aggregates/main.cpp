@@ -11,7 +11,7 @@
   With the C++11 standard we can initialize all sort of objects using the same
   syntax! It is very practical and it eases writing generic programs!
  */
-//! A simple struct.
+//! A simple struct that defines an aggregate
 struct m{
   int i;
   double j;
@@ -55,9 +55,10 @@ int main(){
   //  MyClass foo={1,3.0};// Also this form is ok unless the constructor 
                           // of MyClass is explicit! 
   
-  std::vector<MyClass> aV(10,{1,3.0});
-  // 10 Myclass objects initialized
+  // a vector with 10 Myclass objects initialized
   //  with MyCLass{1,3.0} are now stored in the vector
+  // Remember: vector is not an aggregate, but, in this case, its alements are aggregates!
+  std::vector<MyClass> aV(10,{1,3.0});
 
   std::pair<double, int> aPair{3.0,1};
   // An array with 3 pairs
