@@ -32,3 +32,6 @@ so you avoid ambiguity.
 **NOTE** Since C++17 aggregates can have base classes, provide
 inheritance is public and base classes are themselves aggregates. You
 see an example also of this new feature.
+
+#What do I learn here?#
+- Some features of aggregates (see `NoteOnAggregate.md` for details).

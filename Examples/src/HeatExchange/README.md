@@ -6,20 +6,31 @@ depending on a switch set in the parameter file, by default called `parameter.po
 
 Taken and heavily adapted from *"Simulation numerique an C++" of I. Danaila,
    F. Hecht e O. Pironneau, 2005* 
+
+** Note** This program makes use of the Thomas algorithm for the solution of a tridiagonal system of linear equations. To have it at disposal for the example you must first
+- go into the folder `Thomas`
+- do `make install`
+Otherwise the example will not compile.
+
+Then, as usual, in this directory `make` (`make DEBUG=no` if you want optimization) produces the executable, which is just called `main`.
  
-Calling ``./plot.sh`` you are able to visualize the results, which are stored in result.dat.  
+Calling ``./plot.sh`` you are able to visualize the result stored in `result.dat` offline.  
 
-Or you can launch gnuplot and then at the gnuplot prompt type
+Or you can launch `gnuplot` from the terminal and then at the gnuplot prompt type
 
-``
+```
 gnuplot> plot "result.dat" u 1:2 w lp lw 2 title "uh", "result.dat" u 1:3 w l lw 2title "uex"
-``
+```
+
 
 ``make heat_exchange.pdf`` produces a file with the description of the example.
 
+
+
+
 #What do you learn from this Example?#
-- A simple, but complete, finite element code;
-- The use of an *aggregate* to store the main parameter of the code, with default values;
+- A very simple, but complete, finite element code;
+- The use of an *aggregate* (here a `struct` with only public attributes)  to store the main parameter of the code, with default values;
 - The use of `GetPot` to pass options in the command line;
 - The use of `GetPot` to read the parameters from a file, so you can change them with no need of recompiling;
 - A use of *structured bindings*;
