@@ -82,7 +82,7 @@ int main(int argc, char** argv)
   // mesh size
   const auto h=1./M;
 
-  // Solution vector
+  // Solution vector this constructs a vector of size M+1
   std::vector<double> theta(M+1);
 
   
@@ -132,28 +132,27 @@ int main(int argc, char** argv)
   else
     {
       //Thomas algorithm
-      std::vector<double> a(M+1,1.);
-      std::vector<double> b(M+1,-1./(2.+h*h*act));
-      std::vector<double> c=b;
-      b.back()=-1;
-      c[0]=0;
-      std::vector<double> source(M+1,0.);
-      source[0]=(To-Te)/Te;
+      std::vector<double> a(M+1,1.);// a vector filled with 1.
+      std::vector<double> b(M+1,-1./(2.+h*h*act)); // a vector filled with values
+      std::vector<double> c=b;// The matrix is symmetric
+      b.back()=-1; // correction for Neumann bc
+      c[0]=0;  // correction for Dirichlet bc
+      std::vector<double> source(M+1,0.); // The rhs term. all zero since it is an homogeneous problem
+      source[0]=(To-Te)/Te; // correction for Dirichlet bc.
       theta=apsc::thomasSolve(a,b,c,source);
     }
   //Back to physical quantities
   for (auto & t : theta) t=Te*(1+t);
-  // Analitic solution
+  // Analytic solution
 
   vector<double> thetaa(M+1);
   for(int m=0;m <= M;m++)
     thetaa[m]=Te+(To-Te)*cosh(sqrt(act)*(1-m*h))/cosh(sqrt(act));
 
   // writing results with format
-  // x_i u_h(x_i) u(x_i) and lauch gnuplot 
+  // x_i u_h(x_i) u(x_i) and launch gnuplot
 
-  Gnuplot gp; // gnuplot iostream! Plots solution on the screen
-  //             It may not work on virtual machines. Take it out in that case
+
   std::vector<double> coor(M+1);
 
   cout<<"Result file: result.dat"<<endl;
@@ -166,6 +165,8 @@ int main(int argc, char** argv)
       f<<m*h*L<<"\t"<<theta[m]<<"\t"<<thetaa[m]<<endl;
       coor[m]=m*h*L;
     }
+  Gnuplot gp; // gnuplot iostream! Plots solution on the screen
+  // It may not work on virtual machines. Take it out in that case
   // Using temporary files (another nice use of tie)
   // Comment this statement if you are not using gnuplot iostream
   // to plot the solution directly on the terminal
