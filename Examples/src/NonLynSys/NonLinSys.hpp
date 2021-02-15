@@ -28,7 +28,7 @@ namespace apsc
    * @tparam Traits The trait defining all the basic type used in this class
    */
   template<typename R, template<typename> typename Traits=apsc::NonLinSysTraits::Vector >
-  class NonLynSys
+  class NonLinSys
   {
   public:
     using ScalarType = typename Traits<R>::ScalarType;
@@ -97,6 +97,7 @@ namespace apsc
                     [&](auto const & f){res.emplace_back(f(x));} );
       return res;
     }
+     std::size_t size()const {return system_.size();}
   private:
     SystemType system_;
   };
