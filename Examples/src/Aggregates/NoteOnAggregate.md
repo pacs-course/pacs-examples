@@ -29,11 +29,13 @@ they are static: *the following struct*:
 
 * no virtual member functions 
 
-**Note** The defintion has changed in the various version of the compiler. A full explanation is found on any good reference of C++
+* the member variables are either plain old data (int doube etc.) or aggregates
+
+**Note** The defintion has changed in the various version of C++. A full explanation is found on any good reference of C++
 
 ## What can you do with an aggregate? ##
 
-- You can use list (brace) initialization
+- You can use list (brace) initialization, which in this contest is called *aggregate initialization*.
 
 ```
 Agg a{3,4}; // Now Aggr.a=3 and Aggr.b=4
@@ -59,8 +61,9 @@ auto [i,j] = fun(...)//  i is equal to the value of member a of the Aggr object 
 ```
 - you can interface with C programs easily: an aggregate has standard memory layout
 
-## What you cannot do with an aggegate ##
+#An important point#
+Brace list initialization is avaliable also for vectors and the other dynamic containers of the standard library (like sets or lists). But **they are not aggregates**.
+In their case the brace initialization is possible because they have a special constructor that accepts a so called `initializer_list`, look [here](https://en.cppreference.com/w/cpp/utility/initializer_list) if you want details on initialiser lists. In a aggregate you do not have to specify any constructor and you have the brace initialization automatically (actually, if you have a constructor... the class in not an aggregate anymore!).
 
-All the more complex operations allowed for a full fledged class object.
 
 
