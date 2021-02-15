@@ -18,7 +18,7 @@ We can divide the examples in four categories:
   
 ## Basic Examples ##
   * `Aggregates` Show some feature of *aggregates*, a particular type of classes that have to satisfy some requirements, see [here for instance](https://en.cppreference.com/w/cpp/language/aggregate_initialization), and allow to very useful constructs
-  * `ArrayAndAggregates` The use of std::array (which is an aggregate) and uniform (brace) initialization
+  * `Arrays` Some examples of the use of std::array
   * `Bindings` The binding rule of references and also an example of use of `std::forward` and of the move semantic of `std::vector`
   * `CRTP` It shows how the Curiosly Recursive Template Pattern works. The example is simple, the feature less simple to understand (but not so difficult after all...).
   * `Constexpr` The use of constexpr functions compared with normal functions. You find here also `HornerConstexpr.hpp`, an implementation of 
@@ -76,6 +76,8 @@ We can divide the examples in four categories:
     * `Trivial` USe of type-traits to detect Trivial, Trivially-Constructable and StandardLayout types. With an example on how Trivially-Constructable and StandardLayout property may be useful.
     * `TypeTraitsC11` A set of programs that show some type-traits.
   * `MoveSemantic` A examples that uses [valgrind](https://valgrind.org/ "The valgrind site") to show the advantages of move semantic when handling large objects (you must have valgrind installed in your system).
+  * `NonLinSys` A class that holds a system of callable objects, where you can add the objects one at a time. It also contains a `FunctionFactory`, a factory of
+  callable objects. The latter may be used in a program where functions are given by the user and then used throughout the program, for instance functiosn that define boundary conditions.
   * `Parallel` Some examples of parallelization: in `Parallel/MPI` and `Parallel/OpenMP`
   * `Plugins` Two examples of plugin architecture
   * `ReadingVector` This is an example on how you can imitate the stange way used by Eigen to read a vector from a stream by overloading the
@@ -122,7 +124,7 @@ We can divide the examples in four categories:
   * `NewtonSolver` Solving F(x)=0. It supports Newton but also quasi-Newton shemes. Indeed it is very general. **Note** The use of a `callbak`, a technique to allow getting information on the internal state of a class, when needed. A complete and working example.
   * `OneDMesh`. A class for 1D meshes. Build with a structure that wants to mimic what you may have also in 2 o 3D meshes. It also implements an algorithm for non-uniform meshes, by specifying a spacing function.
   * `QuadratureRule/` Classes and techniques for numerical integration of univariate function. Offers also  exampled of dynamic loading of polymorphism, clonable classes, dynamic loading of libraries, decorator design pattern, templates. A complete and working example.
-  * `Regression`. An example of univariate regression. You can chose different polynomial models.
+  * `Regression`. An example of univariate linear regression. You can chose different polynomial models. At the moment only least square fitting is implemented.
   * `RKFSolver` Class template for explicit Runge Kutta embedded schemes for scalar ordinary differential equation (Cauchy problem). Support scalar, vectorial and matricial systems. Highly expandable.  A complete and working example.
     
   

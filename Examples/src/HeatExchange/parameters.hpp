@@ -23,7 +23,7 @@ struct parameters
   double hc=200e-6;
   //! Number of elements
   int M=100;
-  //! type of solver (0 direct, 1 Gauss Siedel
+  //! type of solver (0 direct, 1 Gauss Siedel)
   int solverType=0;
 };
 //! Prints parameters
