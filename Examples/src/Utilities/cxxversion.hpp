@@ -52,7 +52,7 @@ namespace Utilities
     return bool(__cplusplus >= 201703L);
   }
  //! True if you are using at least c++20
-  constexpr bool is_atleast_cxx17()
+  constexpr bool is_atleast_cxx20()
   {
     return bool(__cplusplus >= 202002L);
   }
