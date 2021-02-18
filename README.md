@@ -15,7 +15,7 @@ git clone --recursive https://github.com/pacs-course/pacs-examples.git
 or
 
 ```
-git clone -- recursive git@github.com:pacs-course/pacs-examples.git
+git clone --recursive git@github.com:pacs-course/pacs-examples.git
 ```
 
 In the latter case you have to register your ssh keys on a github account.
