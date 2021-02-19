@@ -17,8 +17,6 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]
-  schedule:
-    - cron: '43 21 * * 4'
 
 jobs:
   analyze:
@@ -34,6 +32,10 @@ jobs:
         # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
 
     steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libeigen3-dev libtbb-dev
+
     - name: Checkout repository
       uses: actions/checkout@v2
 
@@ -59,9 +61,14 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    # - run: |
-    #   make bootstrap
-    #   make release
+    - name: Compile libpacs
+      run: |
+        cd Examples
+        cp Makefile.user Makefile.inc
+        sed -i "24s|.*|PACS_ROOT=${PWD}|" Makefile.inc
+        sed -i "26s|.*|mkEigenInc?=/usr/include/eigen3/|" Makefile.inc
+        cd src/Utilities
+        make all
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
