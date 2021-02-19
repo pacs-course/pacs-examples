@@ -20,7 +20,7 @@ compilers and architecture. If you use gnu compilers, you must have
 architecture you need a recent version of the `tbb` libraries.
 
 To have the system correctly set for the parallel version, you need to set up correctly
-some variable in the **local** `Makefile.inc` file (or create tcorresponding environment variables)
+some variable in the **local** `Makefile.inc` file (or create corresponding environment variables)
 
 * `mkTbbLib` should contain the directory where `libtbb.so`
 resides. If you have a standard istallation you may put `/usr/lib`, If
@@ -71,6 +71,6 @@ need of the specialised user-defined version anymore.
 
 **Note 2:**  To get significant timings use a high degree polinomial, at least 20.
 
-#What do you learn with this example?#
+# What do you learn with this example?#
 - That the use of a more elaborate algorithm can give a significant efficiency gain, even for apparently simple problems;
 - A use of the new (since C++17) parallel algorithms of the standard library; 
