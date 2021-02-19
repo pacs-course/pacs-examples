@@ -46,7 +46,6 @@ double  horner(std::vector<double> const & a, double const & x){
 
 #ifdef PARALLELEXEC
 #warning "Using parallel implementation of std::transform"
-// NOT WORKING UNTIL IMPLEMENTED IN THE COMPILER
 //! Evaluates polynomial in a set of points (parallel version)
 std::vector<double>
 evaluatePoly(std::vector<double> const & points,
