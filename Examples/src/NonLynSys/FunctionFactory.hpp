@@ -16,17 +16,17 @@
 namespace apsc
 {
   /*!
-   * This is an example of a factory of functions You can add collable object that respect the argument and
-   * return type specified in the give traits, with an associated identifier (here given as a string).
+   * This is an example of a factory of functions You can add callable objects that respect the argument and
+   * return type specified in the given trait, with an associated identifier (here given as a string).
    * You can the retrieve the function corresponding to that identifier.
    *
    * @note it is an example of protected inheritance. I inherit from NonLinSys since the factory is an extension of it,
-   * but I do not want to expose all ethods of NonLinSys, in particular the method addToSystem. Indeed, otherwise
+   * but I do not want to expose all methods of NonLinSys, in particular the method addToSystem. Indeed, otherwise
    * it could add a function without identifier!.
    * @tparam R The scalar type
    * @tparam Traits The traits containing the main types used
    */
-  template<typename R, template<typename> typename Traits=apsc::NonLinSysTraits::Vector >
+  template<typename R, template<typename> typename Traits=apsc::NonLinSysTraits::VectorTraits >
    class FunctionFactory : protected apsc::NonLinSys<R,Traits>
     {
     public:
