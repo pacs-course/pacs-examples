@@ -27,7 +27,7 @@ namespace apsc
    * @tparam T The type of the arguments and return of the functions
    * @tparam Traits The trait defining all the basic type used in this class
    */
-  template<typename R, template<typename> typename Traits=apsc::NonLinSysTraits::Vector >
+  template<typename R, template<typename> typename Traits=apsc::NonLinSysTraits::VectorTraits >
   class NonLinSys
   {
   public:
