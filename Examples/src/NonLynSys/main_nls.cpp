@@ -9,30 +9,20 @@
 #include<iostream>
 #include<numeric>
 #include <cmath>
-// Here  we show how to change traits to have a scalar as argument and not a vector
-template<class Scalar>
-struct ScalarTrait
-    {
-      using ArgumentType=Scalar;
-      using ResultType=std::vector<Scalar>;
-      using ScalarType=Scalar;
-      using ScalarFunctionType = std::function<ScalarType (ArgumentType const &)>;
-      using VectorFunctionType = std::function<ResultType (ArgumentType const &)>;
-      using SystemType = std::vector<ScalarFunctionType>;
-    };
 
 int main()
 {
-// The greater common division and largest common multiplies with 2 to 100
-apsc::NonLinSys<unsigned int,ScalarTrait> nls;
-// I extract the type from the non linear system (not really necessary, I know it is an unsigned int)
-using ArgumentType=apsc::NonLinSys<unsigned int,ScalarTrait>::ArgumentType;
-for (unsigned int i=2; i<=100u;++i)
-  {
-    nls.addToSystem([i](ArgumentType const & x){return std::gcd(x,i);} );
-  }
-// gcd/lcm of 333 with 11
-  unsigned int res1 = nls(10u,333);
+  using namespace apsc::NonLinSysTraits;
+  // The greater common division and largest common multiplies with 2 to 100
+  apsc::NonLinSys<unsigned int,ScalarTraits> nls;
+  // I extract the type from the non linear system (not really necessary, I know it is an unsigned int)
+  using ArgumentType=apsc::NonLinSys<unsigned int,ScalarTraits>::ArgumentType;
+  for (unsigned int i=2; i<=100u;++i)
+    {
+      nls.addToSystem([i](ArgumentType const & x){return std::gcd(x,i);} );
+    }
+  // gcd/lcm of 333 with 11
+  unsigned int res1 = nls(10,333);
   auto res2 = nls(333);
   std::cout<<"gcd 333  and 11 "<<res1<<std::endl;
 
@@ -45,7 +35,7 @@ for (unsigned int i=2; i<=100u;++i)
     }
   std::cout<<std::endl;
 
-// The case of a system of two equation of two variable. I use the default trait
+  // The case of a system of two equation of two variable. I use the default trait
   apsc::NonLinSys<double> nlsd;
   using ArgumentTyped=apsc::NonLinSys<double>::ArgumentType;
   nlsd.addToSystem([] (ArgumentTyped const & x){return std::sin(x[0])+std::cos(x[1]);});
@@ -56,23 +46,23 @@ for (unsigned int i=2; i<=100u;++i)
     {
       std::cout<<y<<" ";
     }
- std::cout<<std::endl;
+  std::cout<<std::endl;
 
- // Now I try the function factory
- apsc::FunctionFactory<double,ScalarTrait> factory;
+  // Now I try the function factory
+  apsc::FunctionFactory<double,ScalarTraits> factory;
 
- // Add two functions
- factory.addToFactory("Function 1",[](double const &x){return std::sin(x);});
- factory.addToFactory("Function 2",[](double const &x){return std::cos(x);});
- // if uncomemnted I have an error
- // factory.addToFactory("Function 2",[](double const &x){return std::tan(x);});
-// Get one function with the identifier
- auto fun = factory.getFunction("Function 2");
- std::cout<<"Function 2(3.1415)="<<fun(3.1415)<<std::endl;
-// If uncommented I have an error
- //auto fun2 = factory.getFunction("Function 3");
- // Also if I uncomment th enext line I get an error. I cannot just add a function without a unique identifier
- //factory.addToSystem([](double const &x){return std::cos(x);});
+  // Add two functions
+  factory.addToFactory("Function 1",[](double const &x){return std::sin(x);});
+  factory.addToFactory("Function 2",[](double const &x){return std::cos(x);});
+  // if uncomemnted I have an error
+  // factory.addToFactory("Function 2",[](double const &x){return std::tan(x);});
+  // Get one function with the identifier
+  auto fun = factory.getFunction("Function 2");
+  std::cout<<"Function 2(3.1415)="<<fun(3.1415)<<std::endl;
+  // If uncommented I have an error
+  //auto fun2 = factory.getFunction("Function 3");
+  // Also if I uncomment th enext line I get an error. I cannot just add a function without a unique identifier
+  //factory.addToSystem([](double const &x){return std::cos(x);});
 
 
 
