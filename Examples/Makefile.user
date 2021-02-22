@@ -79,8 +79,13 @@ DEFINES=
 #
 #  OPTIMIZATION
 # Warning flags: Level of warning
-#
-WARNFLAGS=-Wall
+# -Wall main warnings activated
+# -Wextra some extra warnings activated
+# -Wsuggest-override  as the name says
+# -Wnon-virtual-dtor Warns if a class with virtual meths oda does not have virt dstructors
+# -Weffc++ Wanrs about violation of the coding style in Scott Mayer's Effective C++
+
+WARNFLAGS=-Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor
 #
 # Optimization flags : May be selected by using the variable RELEASE
 #

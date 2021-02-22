@@ -14,7 +14,7 @@ int main()
   // I open a block scope because I am lazy
   {
     std::vector<double> coeffv{2., 4., 7.};
-    std::array<double,3> coeffa{2., 4., 7.};
+    constexpr std::array<double,3> coeffa{2., 4., 7.};
     double x1 =12.3;
     constexpr double x2 = 12.3;
     // this will be inlined
@@ -26,7 +26,7 @@ int main()
   {
     std::vector<std::complex<double>> coeffv{{2.,1.},{4.,-2}, {7.,2.}};
     // you need these hidoeus triple parenthesis here.
-    std::array<std::complex<double>,3> coeffa{{{2.,1.},{4.,-2},{7.,2.}}};
+    constexpr std::array<std::complex<double>,3> coeffa{{{2.,1.},{4.,-2},{7.,2.}}};
     double x1 =12.3;
     constexpr double x2 = 12.3;
     // this will be inlined

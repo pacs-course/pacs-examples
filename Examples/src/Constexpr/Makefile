@@ -1,6 +1,6 @@
 #Assembly code
 include ../../Makefile.inc
-CXXFLAGS=-O3 -std=c++17
+#CXXFLAGS=-O3 -std=c++17
 OUTPUT=mainConstexprFunction mainNormalFunction mainConstexprFunction2  mainHornerConstexpr
 all : $(OUTPUT)
 mainConstexprFunction: mainConstexprFunction.o

@@ -1,4 +1,4 @@
-#include "GetPot.hpp"
+#include "GetPot"
 #include "readParameters.hpp"
 #include <fstream>
 parameters readParameters(std::string const & filename,bool verbose)

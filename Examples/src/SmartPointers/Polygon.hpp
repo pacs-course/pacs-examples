@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <array>
 
 /*!  @file Polygon.hpp 
   @briefThis is an example of class hierarchy that
@@ -19,40 +20,35 @@
 namespace Geometry
 {
   
-  using std::cout;
-  using std::endl;
-  using std::ostream;
-  using std::vector;
-  using std::pair;
-  
-
-  //! A class that holds points
+  //! A class that holds 2D points
   class Point2D
   {
   public:
+    using Coord = std::array<double,2>;
     //! Constructor giving coordinates.
-    Point2D(double xx=0.0, double yy=0.0):coor{xx,yy}{} //C++11 syntax
-    //! Constructor for anything that may be moved of copied into a pair
-    template<class C>
-    Point2D(C&& c):coor{std::forward<C>(c)} {}
-    //! Returns coordinates in a pair<double>.
-    std::pair<double,double> get() const { return coor;}
+    Point2D (double xx=0.0, double yy=0.0):coor{xx,yy}{} //C++11 syntax
+    //! Constructor that takes an array
+    Point2D (Coord const & c): coor{c} {}
+    //! Returns coordinates in an array
+    auto get() const { return coor;}
     //! Sets point coordinates
-    void set(double const &xx, double const &yy){
-      coor=std::make_pair(xx,yy);}
-    //! A setter that takes anything that can by copy- or moved-assigned to a pair
-    template <class C>
-    void set(C&& c){coor=std::forward<C>(c);}
+    void set(double const xx, double const yy){ coor={xx,yy};}
+    //! A setter that takes an array
+    void set(Coord const & c){coor=c;}
     //! x coordinate
-    double x() const {return coor.first;}
+    double x() const {return coor[0];}
     //! y coordinate
-    double y() const {return coor.second;}
+    double y() const {return coor[1];}
+    //! x coordinate, to write on
+    double & x() {return coor[0];}
+    //! y coordinate, to write on
+    double & y() {return coor[1];}
     //! Subtraction is implemented as an external friend function
     friend Point2D operator - (Point2D const & a, Point2D const & b);
     //! Addition is implemented as an external friend function
     friend Point2D operator + (Point2D const & a, Point2D const & b);
   private:
-    std::pair<double,double> coor;
+    Coord coor;
   };
 
   //! subtraction operator.
@@ -60,9 +56,9 @@ namespace Geometry
     It is defined in the header file because I want it to be
     inline.
   */
-  inline Point2D operator - (Point2D const & a, Point2D const & b){
-    return Point2D(std::make_pair(a.coor.first-b.coor.first,
-                   a.coor.second-b.coor.second));
+  inline Point2D operator - (Point2D const & a, Point2D const & b)
+  {
+    return Point2D{a.coor[0]-b.coor[0], a.coor[1]-b.coor[1]};
   }
 
   //! Addition operator.
@@ -71,20 +67,19 @@ namespace Geometry
     inline.
   */
   inline Point2D operator + (Point2D const & a, Point2D const & b){
-    return Point2D(std::make_pair(a.coor.first+b.coor.first,
-                   a.coor.second+b.coor.second));
+    return Point2D{a.coor[0]+b.coor[0],a.coor[1]+b.coor[1]};
   }
 
   //! Distance between points
   double distance(Point2D const & a, Point2D const & b);
  
-  //! Polygon vertices are just vectors of points.
-  typedef vector<Point2D> Vertices;
+
 
   //! Defines the common interface of polygons.
   class AbstractPolygon
   {
   public:
+    using Vertices=std::vector<Point2D>;
     //! Empty polygon
     AbstractPolygon():vertexes(),isconvex(false){};
     //! virtual destructor (is a base class)
@@ -103,12 +98,8 @@ namespace Geometry
     //! Returns the vertices (read only)
     Vertices const & theVertices()const {return vertexes;}
     //! Outputs some info on the polygon
-    virtual void showMe(ostream & out=cout) const;
-    //! The area of the polygon (with sign!).
-    /*!
-      It is a pure virtual function.
-      The implementation is left to the derived classes.
-    */
+    virtual void showMe(std::ostream & out=std::cout) const;
+    //! The area of the polygon (with sign!)..
     virtual double area() const=0;
   protected:
     //! Protected constructor taking vertices.
@@ -117,9 +108,9 @@ namespace Geometry
        the interface of AbstractPolygon, yet some derived classes may
        make use of it.
     */
-    AbstractPolygon(Vertices const & v);
+    AbstractPolygon(Vertices const & v): vertexes(v) {checkConvexity();}
     Vertices vertexes;
-    bool isconvex;
+    bool isconvex=false;
     //! Test convexity of the polygon
     void checkConvexity();
   };
@@ -143,11 +134,13 @@ namespace Geometry
       The area is positive if vertices are given in 
       counterclockwise order
      */
-    virtual double area() const;
+    virtual double area() const override;
     //! Set vertices for a Polygon.
     void set(Vertices const & v);
     //! Specialised version for generic polygons.
-    virtual void showMe(ostream & out=cout) const;
+    virtual void showMe(std::ostream & out=std::cout) const override;
+    //! Strange destructor to show what happens if you uses smart ptrs
+     ~Polygon(){std::cout<<"Destroying a generic polygon"<<std::endl;};
   };
 
   //! A square
@@ -165,13 +158,19 @@ namespace Geometry
       /param length The length of the side.
       /param angle In radians, tells how the square is  rotated. 
      */
-    Square(Point2D origin, double length,double angle=0.0);
+    Square(Point2D const & origin, double length,double angle=0.0);
+
+    void set(Point2D const & origin, double length,double angle=0.0)
+    {
+      // I am lazy so I use the constructor and copy;
+      *this = Square(origin, length,angle);
+    }
     //! Specialised version for squares
-    virtual double area() const;
+    double area() const override;
     //! Strange destructor to show what happens if you uses smart ptrs
     ~Square(){std::cout<<"Destroying a square"<<std::endl;};
     //! Specialised version for squares.
-    virtual void showMe(ostream & out=cout) const;
+    void showMe(std::ostream & out=std::cout) const override;
   };
   
   //! A triangle
@@ -187,12 +186,12 @@ namespace Geometry
      */
     Triangle(Vertices const &);
     //! Specialised for Triangles
-    virtual double area() const;
+    double area() const override;
     //
     //! Strange destructor to show what happens if you uses smart ptrs
     ~Triangle(){std::cout<<"Destroying a Triangle"<<std::endl;};
     //! Specialised for Triangles
-    virtual void showMe(ostream & out=cout) const;
+    void showMe(std::ostream & out=std::cout) const override;
   };
   
 }

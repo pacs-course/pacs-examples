@@ -1,5 +1,5 @@
 #include "readParameters.hpp"
-#include "GetPot.hpp" // for reading parameters
+#include "GetPot" // for reading parameters
 #include "gnuplot-iostream.hpp"// interface with gnuplot
 #include "thomas.hpp"
 #include <iostream> // input output
