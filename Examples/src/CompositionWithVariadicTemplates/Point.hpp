@@ -12,7 +12,13 @@ namespace Geometry
 template <typename Value, std::size_t N, typename... Extensions>
 class Point : public Extensions...
 {
-  // implicitely private
+  /*!
+   * I define the constructor to initialize the array with zero.
+   * I cannot do it otherwise
+   */
+public:
+  Point():M_coordinates{}{M_coordinates.fill(0);}
+private:
   std::array<Value, N> M_coordinates;
 
 public:
@@ -39,9 +45,6 @@ public:
       M_coordinates (std::forward<COO> (c)){};
   //! This if I want to pass just the coordinates (or if the point is simple)!
   Point (std::array<Value, N> const &c) : M_coordinates{c} {};
-
-  //! Since I have defined constructors I need to indicate the default
-  Point () = default;
 };
 
 //! A function for a Point

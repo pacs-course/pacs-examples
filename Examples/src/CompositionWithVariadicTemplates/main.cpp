@@ -2,6 +2,8 @@
 #include "Id.hpp"
 #include "Point.hpp"
 #include <iostream>
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 int
 main ()
 {

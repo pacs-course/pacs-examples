@@ -199,7 +199,7 @@ namespace Geometry
      */
     Square(Point2D origin, double length,double angle=0.0);
     // Specialised version for square
-    std::size_t size() const {return nVertices;}
+    std::size_t size() const override {return nVertices;}
     //! specialised version for Square
     bool checkConvexity() override {return isconvex=true;}
     //! Specialised version for squares
@@ -228,7 +228,7 @@ namespace Geometry
     //! Specialised for Triangles
     Triangle():AbstractPolygon{3}{isconvex=true;}
     // Specialised version for triangle
-    std::size_t size() const {return nVertices;}
+    std::size_t size() const override {return nVertices;}
     //! specialised version for Triangle
     bool checkConvexity() override{ return isconvex=true;};
     double area() const override;//! Specialised for Triangles

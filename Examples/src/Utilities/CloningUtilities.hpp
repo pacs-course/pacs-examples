@@ -329,7 +329,7 @@ namespace apsc
     }
 
     /*! Dereferencing operator. The PointerWrapper works like a pointer to T*/
-    const T *const
+    const T *
     operator->() const noexcept
     {
       return DataPtr.get();
