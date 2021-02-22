@@ -25,3 +25,5 @@ clonable classes). Have a look!
 
 #What do I get from this example?# 
 - An overview of smart pointer usage.
+- A (not so) simple design of a factory of polygons
+- A usage of enable_shared utility
