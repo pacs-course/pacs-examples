@@ -15,22 +15,23 @@ namespace Geometry{
   }
   // ********************* BASE CLASS **********************
   
-  AbstractPolygon::AbstractPolygon(Vertices const & v):vertexes(v){
-    this->checkConvexity();}
+
   
-  void AbstractPolygon::showMe(ostream & out)const
+  void
+  AbstractPolygon::showMe(std::ostream & out)const
   {
     if (this->size()==0){
-      out<< "empty polygon" << endl;
+      out<< "empty polygon" << std::endl;
     }
     else {
       out<<"Vertices:"<<std::endl;
-      out<<"    X     " << "   Y    "<<endl;
+      out<<"    X     " << "   Y    "<<std::endl;
       for (auto const & i : this->vertexes)
-	out<<i.x()<<" " << i.y()<<endl;
+	out<<i.x()<<" " << i.y()<<std::endl;
     }
-    if(this->isconvex) cout<<" Polygon is convex"<<endl;
-    else cout<<" Polygon is not convex"<<endl;
+    out<<" Area ="<<this->area()<<std::endl;
+    if(this->isconvex) out<<" Polygon is convex"<<std::endl;
+    else out<<" Polygon is not convex"<<std::endl;
   }
   
   void AbstractPolygon::checkConvexity()
@@ -82,9 +83,7 @@ namespace Geometry{
   
   // ****   POLYGON
   
-  Polygon::Polygon(Vertices const & v): AbstractPolygon(v) {
-    this->checkConvexity();
-  }
+  Polygon::Polygon(Vertices const & v): AbstractPolygon(v){};
   
   void  Polygon::set(Vertices const & v){
     this->vertexes=v;
@@ -104,7 +103,7 @@ namespace Geometry{
     // I am using C++11 sintax. decltype(expr) returns the
     // type of the expression expr. (I could have used Vertices::size_type, 
     // or just int, here I wanted to show some features of the new standard).
-    for (decltype(siz) i=0; i<siz;++i){
+    for (std::size_t i=0; i<siz;++i){
       // Current point I use references to avoid unnecessary construction
       // of objects
       Point2D const & p1(Ver[i]);
@@ -116,14 +115,15 @@ namespace Geometry{
     return 0.5*result;
   }
   
-  void Polygon::showMe(ostream & out)const
-  {
-    cout<<" A Generic Polygon"<<endl;
+  void
+    Polygon::showMe(std::ostream & out)const
+    {
+    out<<" A generic polygon"<<std::endl;
     AbstractPolygon::showMe(out);
-  }
+    }
 
   // ********************* SQUARE **********************
-  Square::Square(Point2D origin, double length, double angle){
+  Square::Square(Point2D const & origin, double length, double angle){
     this->isconvex=true;
     this->vertexes.reserve(4);
     vertexes.push_back(origin);
@@ -148,7 +148,7 @@ namespace Geometry{
     return v.x()*w.y()-v.y()*w.x();
     ;}
   
-  void Square::showMe(ostream & out) const
+  void Square::showMe(std::ostream & out) const
   {out<<"A Square"<<std::endl;
     AbstractPolygon::showMe(out);
   }
@@ -177,7 +177,7 @@ namespace Geometry{
     return 0.5*(v.x()*w.y()-v.y()*w.x());
     ;}
   
-  void Triangle::showMe(ostream & out) const{
+  void Triangle::showMe(std::ostream & out) const{
     out<<"A Triangle"<<std::endl;
     AbstractPolygon::showMe(out);
   }

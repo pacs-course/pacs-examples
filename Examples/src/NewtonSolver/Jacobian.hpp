@@ -104,7 +104,7 @@ namespace apsc
        //! /param b the right hand side of the system \f$\alpha^{-1} I y=b\f$
        //! /return the result
 
-       ArgumentType solve(ArgumentType const & x, ArgumentType const & b) const override
+       ArgumentType solve(ArgumentType const & /*x*/, ArgumentType const & b) const override
        {
          return this->lambda*b;
        }
