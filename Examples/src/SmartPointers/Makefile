@@ -47,12 +47,12 @@ EXEC=main_smart_pointers
 all: $(DEPEND) $(EXEC) $(simple)
 
 clean:
-	-\rm -f $(EXEC) $(OBJS) mainsimple.o mainsimple
+	$(RM) -f $(EXEC) $(OBJS) mainsimple.o mainsimple
 
 distclean:
 	$(MAKE) clean
-	-\rm -r -f ./doc
-	-\rm *.out *.bak *~
+	$(RM) -r -f ./doc
+	$(RM) *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)

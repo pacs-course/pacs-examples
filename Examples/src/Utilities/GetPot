@@ -349,28 +349,28 @@ private:
 
     //     -- if an argument is requested record it and the 'tag' the section branch to which 
     //        it belongs. Caution: both functions mark the sections as 'tagged'.
-    void __record_argument_request(const std::string& Arg);
-    void __record_variable_request(const std::string& Arg);
+    inline void __record_argument_request(const std::string& Arg);
+    inline void __record_variable_request(const std::string& Arg);
 
     // (*) helper functions ----------------------------------------------------
     //  build a GetPot instance
-    void __build(const std::string& FileName,
+    inline void __build(const std::string& FileName,
                  const std::string& CommentStart, const std::string& CommentEnd,
                  const std::string& FieldSeparator);
     //   split a string according to delimiters and elements are stored in a vector.
-    void __split(std::string str, std::vector<std::string>& vect, std::string delimiters = " \n\t");
+    inline void __split(std::string str, std::vector<std::string>& vect, std::string delimiters = " \n\t");
     //   set variable from inside GetPot (no prefix considered)
-    void __set_variable(const std::string& VarName, const std::string& Value);
+    inline void __set_variable(const std::string& VarName, const std::string& Value);
 
     //   -- produce three basic data vectors:
     //      - argument vector
     //      - nominus vector
     //      - variable dictionary
-    void __parse_argument_vector(const STRING_VECTOR& ARGV);
+    inline void __parse_argument_vector(const STRING_VECTOR& ARGV);
 
     //     -- helpers for argument list processing
     //        * search for a variable in 'variables' array
-    const variable*       __find_variable(const std::string&, const std::string& TypeName, 
+    inline const variable*       __find_variable(const std::string&, const std::string& TypeName, 
                                           bool ThrowExceptionF=GETPOT_SETTING_THROW_EXCEPTION_ON_DEFAULT) const;
     template <class T> T  __get(const StringOrCharP VarName, const char* Constraint,
                                 bool ThrowExceptionF) const;
@@ -382,29 +382,29 @@ private:
                                         T Default, bool ThrowExceptionF) const;
 
     //        * support finding directly followed arguments
-    const char*           __match_starting_string(const char* StartString);
+    inline const char*           __match_starting_string(const char* StartString);
     //        * support search for flags in a specific argument
-    bool                  __check_flags(const std::string& Str, const char* FlagList) const;
+    inline bool                  __check_flags(const std::string& Str, const char* FlagList) const;
     //        * type conversion if possible
     template <class T> T  __convert_to_type(const std::string& String, T Default, 
                                             bool ThrowExceptionF=GETPOT_SETTING_THROW_EXCEPTION_ON_DEFAULT) const;
 
     //        * provide a const char* to maintained copies of strings.
-    const char*        __get_const_char(const std::string& String) const;
+    inline const char*        __get_const_char(const std::string& String) const;
 
     //        * check for GetPot constraints
-    bool               __constraint_check(const std::string& Value, 
+    inline bool               __constraint_check(const std::string& Value, 
                                           const char*        ConstraintStr,
                                           bool               ThrowExceptionF) const;
-    bool               __constraint_check_OR(const std::string& Value,      const char** iterator) const;
-    bool               __constraint_check_AND(const std::string& Value,     const char** iterator) const;
-    bool               __constraint_check_PRIMARY(const std::string& Value, const char** iterator) const;
-    bool               __constrain_check_EQUAL_STRING(const char* viterator, const char** iterator) const;
+    inline bool               __constraint_check_OR(const std::string& Value,      const char** iterator) const;
+    inline bool               __constraint_check_AND(const std::string& Value,     const char** iterator) const;
+    inline bool               __constraint_check_PRIMARY(const std::string& Value, const char** iterator) const;
+    inline bool               __constrain_check_EQUAL_STRING(const char* viterator, const char** iterator) const;
     //        * prefix extraction
-    const std::string  __get_remaining_string(const std::string& String, 
+    inline const std::string  __get_remaining_string(const std::string& String, 
                                               const std::string& Start) const;
     //        * search for a specific string
-    bool               __search_string_vector(const STRING_VECTOR& Vec,
+    inline bool               __search_string_vector(const STRING_VECTOR& Vec,
                                               const std::string& Str) const;
 
     //     -- helpers to parse input file
@@ -415,25 +415,25 @@ private:
     //             into
     //                   my-variable='007 J. B.'
     //           3) interprete sections like '[../my-section]' etc.
-    void               __skip_whitespace(std::istream& istr);
-    const std::string  __get_next_token(std::istream& istr);
-    const std::string  __get_string(std::istream& istr);
-    const std::string  __get_until_closing_bracket(std::istream& istr);
+    inline void               __skip_whitespace(std::istream& istr);
+    inline const std::string  __get_next_token(std::istream& istr);
+    inline const std::string  __get_string(std::istream& istr);
+    inline const std::string  __get_until_closing_bracket(std::istream& istr);
 
-    STRING_VECTOR      __read_in_stream(std::istream& istr);
-    STRING_VECTOR      __read_in_file(const std::string& FileName);
-    std::string        __process_section_label(const std::string&  Section,
+    inline STRING_VECTOR      __read_in_stream(std::istream& istr);
+    inline STRING_VECTOR      __read_in_file(const std::string& FileName);
+    inline std::string        __process_section_label(const std::string&  Section,
                                                STRING_VECTOR&      section_stack);
 
     //      -- dollar bracket expressions
-    std::string               __DBE_expand_string(const std::string str);
-    std::string               __DBE_expand(const std::string str);
-    const GetPot::variable*   __DBE_get(const std::string str);
-    STRING_VECTOR             __DBE_get_expr_list(const std::string str, const unsigned ExpectedNumber);
+    inline std::string               __DBE_expand_string(const std::string str);
+    inline std::string               __DBE_expand(const std::string str);
+    inline const GetPot::variable*   __DBE_get(const std::string str);
+    inline STRING_VECTOR             __DBE_get_expr_list(const std::string str, const unsigned ExpectedNumber);
 
-    std::string     __double2string(const double& Value) const;
-    std::string     __int2string(const int& Value) const;
-    STRING_VECTOR   __get_section_tree(const std::string& FullPath);
+    inline std::string     __double2string(const double& Value) const;
+    inline std::string     __int2string(const int& Value) const;
+    inline STRING_VECTOR   __get_section_tree(const std::string& FullPath);
 };
 
 #ifdef GETPOT_SETTING_NAMESPACE
@@ -497,6 +497,8 @@ private:
 
 /* In case that a single header is intended, __GETPOT_INLINE is set to 'inline'
  * otherwise, it is set to 'empty', so that normal object code is produced.     */
+#define  __GETPOT_INLINE  inline
+
 #ifndef    __GETPOT_INLINE
 #   define __GETPOT_INLINE  /*empty*/
 #endif
@@ -537,7 +539,7 @@ public: static const char*  name()          { return "integer"; }
 };
 template <> class TypeInfo<std::string> : public TypeInfo<const char*> 
 { public: 
-    static const char*  convert(std::string& X) { return (const char*)"inadmissible"; } 
+    static const char*  convert(std::string& /*X*/) { return (const char*)"inadmissible"; } 
     static std::string  default_value()         { return std::string(""); }    
 };
 template <>   class TypeInfo<unsigned int>      : public TypeInfo<int> 
@@ -1062,8 +1064,8 @@ GetPot::__convert_to_type<int>(const std::string& String, int Default,
 
 // convert string to string, so that GetPot::read method can be generic (template).
 template <> __GETPOT_INLINE const char*
-GetPot::__convert_to_type<const char*>(const std::string& String, const char* Default,
-                                       bool ThrowExceptionF /* = GETPOT_SETTING_THROW_EXCEPTION_ON_DEFAULT */) const
+GetPot::__convert_to_type<const char*>(const std::string& String, const char* /*Default*/,
+                                       bool /*ThrowExceptionF  = GETPOT_SETTING_THROW_EXCEPTION_ON_DEFAULT */) const
 {
     return __get_const_char(String);
 }
@@ -1826,15 +1828,15 @@ GetPot::set_variable<const char*>(const StringOrCharP VarName, const char* Value
 }
 
 template <> __GETPOT_INLINE void
-GetPot::set_variable<double>(const StringOrCharP VarName, double Value, const bool Requested /* = true*/)
+GetPot::set_variable<double>(const StringOrCharP VarName, double Value, const bool /*Requested  = true*/)
 { __set_variable(VarName.content, __double2string(Value)); }
 
 template <> __GETPOT_INLINE void 
-GetPot::set_variable<int>(const StringOrCharP VarName, int Value, const bool Requested /* = true*/)
+GetPot::set_variable<int>(const StringOrCharP VarName, int Value, const bool /*Requested  = true*/)
 { __set_variable(VarName.content, __int2string(Value)); }
 
 template <> __GETPOT_INLINE void 
-GetPot::set_variable<bool>(const StringOrCharP VarName, bool Value, const bool Requested /* = true*/)
+GetPot::set_variable<bool>(const StringOrCharP VarName, bool Value, const bool /*Requested = true*/)
 { 
     if( true_string_list.size() == 0 || false_string_list.size() == 0 ) {
         throw std::runtime_error(GETPOT_STR_TRUE_FALSE_UNDEFINED);
