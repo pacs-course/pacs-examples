@@ -104,21 +104,21 @@ public:
 
   //! Set the ampha value for HSS precenditioner
   /*!
-   * @param itmax Max it value for CG
+   * @param Alpha Max it value for CG
    */
-  virtual void set_alpha(const Real alpha) {}
+  virtual void set_alpha(const Real) {}
 
   //! Set the max it value for CG
   /*!
    * @param itmax Max it value for CG
    */
-  virtual void set_MaxIt(const UInt itmax){}
+  virtual void set_MaxIt(const UInt){}
 
   //! Set the tolerance value for CG
   /*!
    * @param Tol tolerance value for CG
    */
-  virtual void set_tol(const Real Tol){}
+  virtual void set_tol(const Real){}
   //@}
   virtual ~preconditioner()=default;
 protected:

@@ -28,7 +28,7 @@ public:
     std::cout<<"Destroying a Derived1"<<std::endl;
   }
 private:
-  virtual void dummy(){};
+  virtual void dummy()override {};
   double aDouble;
 };
 
@@ -43,7 +43,7 @@ public:
     std::cout<<"Destroying a Derived2"<<std::endl;
   }
 private:
-  virtual void dummy(){};
+  virtual void dummy() override{};
   double aDouble;
 };
 

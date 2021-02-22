@@ -15,7 +15,7 @@ public:
 class Derived1: public Abstract
 {
 public:
-  void whoAmI()
+  void whoAmI() override
   {
     std::cout<<" I am Derived1"<<std::endl;
   }
@@ -24,7 +24,7 @@ public:
 class Derived2: public Abstract
 {
 public:
-  void whoAmI()
+  void whoAmI() override
   {
     std::cout<<" I am Derived2"<<std::endl;
   };
@@ -33,7 +33,7 @@ public:
 class Derived3: public Abstract
 {
 public:
-  void whoAmI()
+  void whoAmI() override
   {
     std::cout<<" I am Derived3"<<std::endl;
   };
