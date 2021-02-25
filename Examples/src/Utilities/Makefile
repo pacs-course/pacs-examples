@@ -65,7 +65,7 @@ endif
 
 alllibs: all
 
-all: $(DEPEND) library test
+all: $(DEPEND) library
 
 library:
 	make static

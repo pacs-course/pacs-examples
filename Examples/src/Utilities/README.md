@@ -6,8 +6,15 @@ you need to do
 
 to install them. `make` will produce a dynamic and a static library, called `libpacs.so` and `libpacs.a`, respectively. `make install` installs the header files in `PACS_ROOT/include` and the libraries into `PACS_ROOT/lib`. Use `make DEBUG=no` if you want the library code to be optimised.
 
+After you have installed the libraries you can run
 
-`make` also produces tests for most of the utilities.  *Remember to install the utilities, they are used by other examples!.*
+```
+make test
+```
+
+which produces tests for most of the utilities.  
+
+*Remember to install the utilities, they are used by other examples!.*
 
 **Note**: some utilities are in a nested namespace of the namespace apsc. Check it out looking at the code or at the examples.
 
