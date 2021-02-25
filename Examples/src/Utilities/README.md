@@ -46,8 +46,6 @@ semantic! The "pointed" class should be clonable. It means that you can use it t
 
 * `is_eigen` Type trait to check if a type is an Eigen vector or matrix
 
-* `SmartSummation` Some tools that implements way of making sums of vectors reducing roundoff error.
-
 * `StatisticsComputations` Some tools to compute basic statistics of a sample.
 
 * `joinVectors.hpp` A poor man implementation of the join() utility in python. It allows to join together standard vectors and iterate on all of them at the same time. Look at `test_joinVector.cpp` to see the possible usage. It is a nice example of variadic templates and iterators. The implementation can be bettered, in particular the design of the iterator. But it works (apparently).
@@ -64,8 +62,19 @@ Finally, some, like `gnuplot_iostream` and `GetPot` are just copies of tools ava
 In `CloningUtilities` and `joinVectors` you have classes that define a dereferencing operator (`*`) and an access via pointer operator
 (`->`). Something you do not find very often.
 
-`SmartSummation` shows techniques that are useful only on machines that
-do not respect the IEEE standrd fully, or if you use low precision
-arithmetic. But they show also a use of the `volatile` keyword to avoid the compiler to optimise
-constructs that should not be optimised to work as expected! The reduction of roundoff error do depend on operations that have to be performed
-that way! You cannot let the compiler to change the order of operation or do simplifications, pretending to be smart.
+## IMPORTANT NOTE ##
+Some utilities use the new parallel version of the algorithms of the standard library! So you have to make sure that the local Makefile.inc contains the right indication on where the libtbb library can be found. At the moment the local Makefile.inc is
+
+```
+# Change to suit your system
+mkTbbLib?=/usr/lib/x86_64-linux-gnu/
+mkTbbInc?=/usr/include
+LIBRARY_NAME=pacs
+STATIC_LIBFILE=lib$(LIBRARY_NAME).a
+DYNAMIC_LIBFILE=lib$(LIBRARY_NAME).so
+LDLIBS+=-L$(PACS_LIB_DIR) -lpacs -L${mkTbbLib} -ltbb
+CPPFLAGS+=-I$(mkTbbInc)
+.```
+
+If you use the module system `mkTbbLib` and `mkTbbInc` should be set to the right places. If not, make sure that you indicate the place where
+the `libtbb.so` and `tbb.h` are set. In an ubuntu system they are in the standard directories `/usr/lib/x86_64-linux-gnu/` and `/usr/include`

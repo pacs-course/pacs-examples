@@ -35,6 +35,13 @@ OTHER_INC_DIR=
 #
 MPI_LIBDIR=${mkOpenmpiLib}
 MPI_INCDIR=${mkOpenmpiInc}
+#
+# The location of the multithresing building block library and header files
+# necessary for the parallel version of the algorithms.
+
+mkTbbLib?=/usr/lib/x86_64-linux-gnu/
+mkTbbInc?=/usr/include
+
 
 #
 # Name of additional libraries
