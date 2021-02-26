@@ -32,3 +32,15 @@ The code uses the header `StatisticsComputations.hpp`, which is in the `Utility`
 - An utility to extract statistical information from a sample (univariate)
 - A use of `gnuplot-iostream`
 
+## Important ##
+
+`gnoplot-iostream` uses the boost libraries. So if you want the
+example to be working you must have the boost library (development
+version) installed. Not all of them infact, in Makefile.inc you see the one that are required: `boos-iostream`, `boost-system` and `boost-filesystem`.
+
+If you are using the modules you have all of them with
+
+```
+module load boost
+```
+
