@@ -8,8 +8,9 @@ Taken and heavily adapted from *"Simulation numerique an C++" of I. Danaila,
    F. Hecht e O. Pironneau, 2005* 
 
 ** Note** This program makes use of the Thomas algorithm for the solution of a tridiagonal system of linear equations. To have it at disposal for the example you must first
-- go into the folder `Thomas`
+- go into the folder `Utility`
 - do `make install`
+
 Otherwise the example will not compile.
 
 Then, as usual, in this directory `make` (`make DEBUG=no` if you want optimization) produces the executable, which is just called `main`.
