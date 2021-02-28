@@ -5,32 +5,24 @@
 #include "Polygon.hpp"
 namespace Geometry
 {
-  //! A factory of Polygons
+
   /*!
-    I am using perfect forwarding, so that make_unique gets the
-    arguments with the same category as the ones of the function.
-    If you think it is unnecessarily complicated, you may use
-    the simpler (but less efficient w.r.t. move semantic) version
-    \code
-    template<typename... Args>
-  std::unique_ptr<AbstractPolygon> createPolygon(std::string name,const Args&... args)
-     ...
-      return std::make_unique<Polygon>(args...);
-     ... //etc.
-    \endcode
+   * A simple factory of polygons that construct an element of the AbstractPolygon hierarchy using
+   * the default constructor
+   * @param name The name of the polygon
+   * @return A poligon
    */
-  template<typename... Args>
-  std::unique_ptr<AbstractPolygon> createPolygon(std::string const & name, Args&&... args)
-  {
-    if(name=="Polygon")
-      return std::make_unique<Polygon>(std::forward<Args>(args)...);
-    if(name=="Square")
-      return std::make_unique<Square>(std::forward<Args>(args)...);
-    if(name=="Triangle")
-      return std::make_unique<Triangle>(std::forward<Args>(args)...);
-    return std::unique_ptr<AbstractPolygon>();
-  }
-  
+std::unique_ptr<AbstractPolygon> createPolygon(std::string const & name)
+{
+  if(name=="Polygon")
+    return std::make_unique<Polygon>();
+  if(name=="Square")
+    return std::make_unique<Square>();
+  if(name=="Triangle")
+    return std::make_unique<Triangle>();
+  // this way I can check if I try to construct a non existent Polygon
+  return std::unique_ptr<AbstractPolygon>(nullptr);
+}
 }
 
 #endif
