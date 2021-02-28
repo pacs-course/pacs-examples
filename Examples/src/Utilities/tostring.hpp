@@ -4,7 +4,7 @@
 /*! @brief A simple utility the converts to sting.
 
   The boost library lexical_cast provides a very extensive set of tool to cast
-  expressions to a sting object. Her the scope is more limited. This utility
+  expressions to a sting object. Here the scope is more limited. This utility
   produces a string from anything for which the streaming operator 
   has been defined.
 
