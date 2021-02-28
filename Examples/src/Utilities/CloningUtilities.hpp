@@ -61,8 +61,8 @@ namespace apsc
     template <typename T> constexpr bool has_clone_v = isClonable<T>();
   } // end namespace TypeTraits
 
-  /*! A smart pointer that handles cloning for compusing with polymorphic objects
-   *
+ /*! A smart pointer that handles cloning for compusing with polymorphic objects
+  
  This class implements a generic wrapper around a unique pointer
  useful to support the bridge pattern. Its role is to ease the memory
  management of object which are composed polymorphycally in a class
@@ -129,7 +129,7 @@ namespace apsc
  But now we have to delegate to the class B the handling of the
  "cloning", by writing also specific copy constructors etc.
 
- Is ut it possible to have a "supersmart" pointer to which delegate
+ Is it possible to have a "supersmart" pointer to which delegate
  all the cloning business, so that the class UseB just needs to
  store one of those "supersmart" pointers? What I want is something
  that acts as a unique_ptr with respect to memory management (it is
@@ -145,7 +145,10 @@ namespace apsc
 
  Here a generic wrapper is implemented as a template class. The templete
  parameter T should be set to the BASE class of the hierarchy.
-
+ The interesting bit is that by use of implicit conversion and
+ overloading of the dereferencing operators * and -> makes the use
+ of the wrapper transparent!.
+ 
  In the previous example the situation would change in
 
  \code
@@ -164,9 +167,6 @@ namespace apsc
  \pre The parameter class T must have a virtual and constant
  clone() method with the indicated signature.
 
- The interesting bit is that by use of implicit conversion and
- overloading of the dereferencing operators * and -> makes the use
- of the wrapper transparent!.
 
  @tparam T the base class
    */

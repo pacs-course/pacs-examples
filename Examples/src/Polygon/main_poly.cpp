@@ -38,10 +38,15 @@ int main()
   for (auto k: pippo)std::cout<<k;
   
   // testing the factory
-  auto ppoly = createPolygon("Polygon",v);
+  auto ppoly = createPolygon("Polygon");
+  ppoly->setVertexes(v);
   ppoly->showMe();
   std::cout<<"Area: "<<ppoly->area()<<std::endl;
-  
+  auto anotherSquare = createPolygon("Square");
+  Vertices q{{0,0},{0,1},{1,1},{1,0}};
+  anotherSquare->setVertexes(q);
+  anotherSquare->showMe();
+  std::cout<<"Area: "<<anotherSquare->area()<<std::endl;
   
 }
   
