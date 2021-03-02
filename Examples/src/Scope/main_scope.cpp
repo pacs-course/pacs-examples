@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 /*! A simple exercise on the concept of scope.
 
 Are you able to guess what will be printed on the terminal?
@@ -10,16 +11,18 @@ int f=30;
 // Namespace variable
 namespace pippo
 {
-  int g=40;// it overrides ::g
+  int g=40;// it hides ::g
   namespace pluto
   {
-    int e=30; // it overrides pippo::e
-    int g=15; // it overrides ::g;
+    int e=30;
+    int g=15; // it hides ::g;
   }
 }
 int main()
 {
   using namespace std; // std names in the current scope
+  double vector=89.97;
+  std::vector<double> v={1.,2.};
   int g=20; // it overrides
   int f=55;
   cout<<"Local g="<< g<<", Global g="<<::g<<endl;
@@ -32,10 +35,12 @@ int main()
     cout << "pippo::g="<<pippo::g<<" pluto::g="<<pippo::pluto::g<<endl;
 
   }
+  cout<<" main scope f="<<f<<endl;
   // for loops variables are in a local scope!
   for (int g=1;g<3;++g) cout<<g<<" ";
   cout<<endl;
   
+  cout<<"g is equal"<<g<<endl;
   // Suggestions: use long and significant names. Use namespace to reduce risk of name clashes.
 
 }
