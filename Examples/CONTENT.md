@@ -19,7 +19,7 @@ We can divide the examples in four categories:
 ## Basic Examples ##
   * `Aggregates` Show some feature of *aggregates*, a particular type of classes that have to satisfy some requirements, see [here for instance](https://en.cppreference.com/w/cpp/language/aggregate_initialization), and allow to very useful constructs
   * `Arrays` Some examples of the use of std::array
-  * `Bindings` The binding rule of references and also an example of use of `std::forward` and of the move semantic of `std::vector`
+  * `Bindings` The binding rule of references and also an example of use of `std::forward` and of the move semantic of `std::vector`. See also `RefBindings`
   * `CRTP` It shows how the Curiosly Recursive Template Pattern works. The example is simple, the feature less simple to understand (but not so difficult after all...).
   * `Constexpr` The use of constexpr functions compared with normal functions. You find here also `HornerConstexpr.hpp`, an implementation of 
   Horner rule (see also `Horner` example) as a constexpr function
@@ -28,6 +28,7 @@ We can divide the examples in four categories:
   * `Horner` The Horner rule to compute polynomials efficiently
   * `IntegerOverflow` An example that shows how integer overflow produces non-intuitive results.
   * `Linkage` Use of `extern` to create variables with external linkage (i.e. global/namespace variable) and unnamed `namespace` and `static` specifiers to have functions with local linkage (i.e. visible only in the current translation unit).
+  * `LambdaExpr` Some examples on lambda expressions
   * `MoveSemantic_simple` An illustration of move semantic that shows which constructor/assignment operator is called
   on lvalues and rvalues
   * `Numeric_limits`. It uses almost all the facilities provided by `numeric_limits<>`, just to show what they do.
@@ -36,6 +37,7 @@ We can divide the examples in four categories:
   * `Preprocessor`. A simple example that shows what happens if you look at a code after having run the preprocessor. Just to show that `include` actually includes and that `-D` sets a preprocessor variable.
   * `RandomDistribution` An example of use of different random number engines and distribution of the standard library. It uses `gnuplot-iostream` to plot histograms on the screen. You must have `gnuplot` installed.
   * `Rational`. An example on operator overloading: a class for rational numbers.
+  * `RefBingings` Another example on reference bindings rules where I show all possibilities. See also `Bindings`
   * `ReferenceWrapper` Just to show that thanks to the reference wrapper utility you may store "references" in a container. Normally containers may contain only *first class objects*, not references, but reference wrappers come to a rescue.
   * `Scope` An old example on scoping rule.
   * `SimpleProgram` A simple program that adds two numbers. Just a little more complicated than `Hello World`.
