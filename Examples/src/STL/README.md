@@ -6,7 +6,7 @@ by Nicolai M. Josuttis, Addison-Wesley, 2012*
 
 Some updates have been made to introduce some C++17 goodies
 
-* `cont/` examples on the use of different containers
+* `cont/` examples on the use of different containers 
 
 * `set/`  use of sets with different comparison operators
 
@@ -31,6 +31,8 @@ It contins also an example of use of `std::visit()`.
 * `Reduce/` Two new stl parallel algorithms
 
 * `Streams` A set of examples on streams, including binary i/o.
+
+* `Map` A simple program that shows the main functionalities of `std::map`
 
 #What do I lean here?#
 
