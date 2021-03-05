@@ -22,6 +22,13 @@ struct S {
     // then d to rhs.d
     return std::tie(n, s, d) < std::tie(rhs.n, rhs.s, rhs.d);
   }
+   bool operator==(const S& rhs) const
+  {
+    // compares n to rhs.n,
+    // then s to rhs.s,
+    // then d to rhs.d
+    return std::tie(n, s, d) == std::tie(rhs.n, rhs.s, rhs.d);
+  }
 };
 
 int main()
