@@ -12,7 +12,11 @@
 #include <iostream>
 #include <complex>
 #include <string>
-#include "printtuple.hpp" 
+#include <set>
+#include <unordered_set>
+
+#include "HashTuple.hpp"
+#include "printtuple.hpp"
 using namespace std;
 // A function returning a tuple
 auto fun(double const & a)
@@ -71,5 +75,28 @@ int main()
   // In C++17 you can use structured bindings
   auto [message,xSquare,xCube]= fun(3.0);
   std::cout<< message<<" "<<xSquare<<" "<<xCube<<std::endl;
+
+  // You can craate set of tuples as long the type of the contained elements are all
+  // comparable, i.e. operator < is valid on them
+  using MyTuple =std::tuple<int,double,std::string>;
+  std::set<MyTuple> st;
+  st.insert({3,5.6,"Anna"});
+  st.insert({4,2.6,"Giorgio"});
+  st.insert({-1,7.6,"Mike"});
+  st.insert({9,5.10,"Elise"});
+  std::cout<<"Tuples in the set\n";
+for (auto v:st) std::cout<<v<<std::endl;
+// I can also use unordered sets with the utility hashTuple
+
+std::unordered_set<MyTuple,apsc::Utility::HashTuple<MyTuple> > ust;
+// fill with the same values
+ust.insert(st.begin(),st.end());
+std::cout<<"Tuples in the unordered\n";
+for (auto v:ust) std::cout<<v<<std::endl;
+
+
+
+
+
 
 }

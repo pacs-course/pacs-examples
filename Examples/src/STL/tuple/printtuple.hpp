@@ -34,7 +34,7 @@ namespace helpers
   //! partial specialization to end the recursion
   template <int MAX, typename... Args>
   struct PRINT_TUPLE<MAX,MAX,Args...> {
-    static void print (std::ostream& strm, const std::tuple<Args...>& t) {
+    static void print (std::ostream& , const std::tuple<Args...>&) {
     }
   };
 }
