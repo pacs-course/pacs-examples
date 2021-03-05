@@ -25,7 +25,7 @@ struct Operate
 // This part is only for the nerds of you (skip if you are not interested)
 // This is a class with which you can overload an arbitrary number of functors
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-// explicit deduction guide (not explained at lecture: it allows to cleate an overloaded object just using
+// explicit deduction guide (not explained at lecture: it allows to create an overloaded object just using
 // the constructor. Very nice, but it was too much for the course....). Moreover it is not necessary since C+=20.
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 // End nerdish part
