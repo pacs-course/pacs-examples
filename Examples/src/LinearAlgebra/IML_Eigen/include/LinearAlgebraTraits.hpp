@@ -4,7 +4,7 @@
 #include <Eigen/SparseLU>
 #include <memory>
 /*!
- * Adaptors to interface with Eugen
+ * Adaptors to interface with Eigen
  */
 namespace LinearAlgebra
 {
