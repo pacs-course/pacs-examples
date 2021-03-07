@@ -12,7 +12,7 @@ double eval(std::vector<double> const & a, double const & x);
 
 //! It evaluates a polynomial using horner rule
 /*!
-    \f$ y=(\ldots(a_nx+a_{n-1})x+a_{n-2})x\ldots +a_0   \f$
+    \f$ y=(\ldots(a_n x+a_{n-1})x+a_{n-2})x\ldots +a_0   \f$
     
     @param a vector containing the coefficients from lowest to highest order.
     @param x evaluation point.
