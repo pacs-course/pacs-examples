@@ -26,7 +26,7 @@ double integerPow(const double & x, int n)
 
 double eval (std::vector<double> const & a, double const & x){  
   double sum = a[0];
-  for (std::vector<double>::size_type k = 1; k<a.size(); ++k){ 
+  for (std::size_t k = 1; k<a.size(); ++k){ 
     sum += a[k]*integerPow(x,k);// Pow is expensive
     // If you want to test with the standard pow comment the
     // previous statement and uncomment the next one
@@ -55,7 +55,8 @@ evaluatePoly(std::vector<double> const & points,
   // for (std::size_t i=0;i<points.size();++i) result[i]=method(a,points[i]);
   // Here I use std::transform to have parallelism "for free"
   auto compute=[&a,&method] (double const & x){return method(a,x);};
-  std::transform(std::execution::par, points.begin(),points.end(),result.begin(),compute);
+  std::transform(std::execution::par, points.begin(),points.end(),
+                 result.begin(),compute);
   return result;
 }
 #else
