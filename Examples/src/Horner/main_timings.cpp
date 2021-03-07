@@ -35,14 +35,18 @@ int main() {
   double startx=0.00;
   double endx=1.00;
   double interval=0.5e-6;
-  int numinterval=int((endx-startx)/interval);
+  int numinterval=(endx-startx)/interval; // truncated if not integer!
   cout<<"Computing "<<numinterval<<" evaluation of polynomial"
       <<" with standard formula"<<endl;
   
   vector<double> points;
   points.reserve(numinterval+1);
   double x=startx;
-  for (int i=0; i <= numinterval; ++i,x+=interval)points.push_back(x);
+  for (int i=0; i <= numinterval; ++i)
+  {
+    points.push_back(x);
+    x+=interval;
+  }
   Chrono temporizzatore;
   temporizzatore.start();
   evaluatePoly(points,a,&eval);
