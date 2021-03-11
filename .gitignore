@@ -189,8 +189,8 @@ make.dep
 /Examples/src/Utilities/test_scientific_precision
 /Examples/src/SharedLibrary/libsmall.so.1.1
 /Examples/src/ReferenceWrapper/main_wrap
-/Exercises/2020/**/*.pdf
-/Exercises/2020/**/output*
+/Exercises/202*/**/*.pdf
+/Exercises/202*/**/output*
 /.cproject
 /.project
 /.settings/language.settings.xml
