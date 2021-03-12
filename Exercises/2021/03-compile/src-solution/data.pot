@@ -1,0 +1,15 @@
+# Tolerance for stopping criterion
+tol=1.0e-6
+#Maximum number of iterations
+max_iter=1000
+# GMRES restart level (only if using GMRES)
+gmres_levels=20
+# Estimate of minimum eigenvalue (symm matrix). Only if using Choleski iterations
+eigmin=1.0
+# Estimate of maximum eigenvalue (symm matrix). Only if using Choleski iterations
+eigmax=1.0
+# File with matrix
+matrixFileName = Pres_Poisson.mtx
+# Solver type among {umfpack, sparselu, gmres, cg, cheby, bicgstab, cgs,bicg,ir,qmr}
+#solver=cg
+solver=umfpack
