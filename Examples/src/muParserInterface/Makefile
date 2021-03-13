@@ -103,7 +103,7 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 	$(CXX) -shared $(LIB_OBJS) -o $(DYNAMIC_LIBFILE)
 
 $(DEPEND): $(SRCS)
-	-\rm $(DEPEND)
+	$(RM) $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
