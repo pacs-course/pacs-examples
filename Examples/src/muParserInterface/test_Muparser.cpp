@@ -1,3 +1,4 @@
+#pragma GCC diagnostic ignored "-Wsuggest-override"
 #include "muParserInterface.hpp"
 #include "muParserXInterface.hpp"
 #include "string_utility.hpp"
