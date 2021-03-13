@@ -13,7 +13,7 @@ they are static: *the following struct*:
     int a;
     int b;
     protected:
-    static const double c=3.5;
+    inline static const double c=3.5;
     };
 
 
@@ -29,7 +29,6 @@ they are static: *the following struct*:
 
 * no virtual member functions 
 
-* the member variables are either plain old data (int doube etc.) or aggregates
 
 **Note** The defintion has changed in the various version of C++. A full explanation is found on any good reference of C++
 
