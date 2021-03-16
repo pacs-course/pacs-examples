@@ -20,7 +20,7 @@ int main()
   array<double,2> coor;
   while (true)
     {
-    cout<< "Give me an expression possibly contaning variables t, x and y"<<std::endl;
+    cout<< "Give me an expression possibly containing variables t, x and y"<<std::endl;
     cout<< "(type quit to finish)"<<std::endl;
     while(expr.size()==0) // to filter out extra carriage returns
       {
@@ -38,7 +38,7 @@ int main()
       {
 	p.set_expression(expr);
 	coor={{x,y}};
-	cout<<"Result: "<<p(t,coor.data())<<std::endl;
+	cout<<"Result: "<<p(t,x,y)<<std::endl;
 	expr.clear();
       }
     catch (mu::Parser::exception_type &e)
