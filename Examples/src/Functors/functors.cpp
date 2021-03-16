@@ -32,7 +32,7 @@ namespace myfunctors
   Cross::Vector3D Cross::operator()(Cross::Vector3D const & a, Cross::Vector3D const & b)const
   {
     // ! call the constructor of array directly and return the temporary.
-    return Vector3D{a[1]*b[2]-a[2]*b[1], b[0]*a[2]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]};
+    return {a[1]*b[2]-a[2]*b[1], b[0]*a[2]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]};
   }
 
   double Cross::operator()(Cross::Vector3D const & a, Cross::Vector3D const & b,Cross::Vector3D const & c)const
