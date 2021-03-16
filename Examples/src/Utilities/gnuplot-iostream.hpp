@@ -35,6 +35,8 @@ THE SOFTWARE.
  * 	keys are pressed in the gnuplot window.  However, it would require a PTY reader thread.
  * 	Maybe temporary files read in a thread can replace PTY stuff.
  */
+// Ignore stupind warnings induced by the boost library
+#pragma GCC diagnostic ignored "-Wsuggest-override"
 
 #ifndef GNUPLOT_IOSTREAM_H
 #define GNUPLOT_IOSTREAM_H
