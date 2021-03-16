@@ -144,19 +144,16 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
       goOn=resid>check;
       ++iter;
       double yb = f(b);
+      if(std::abs(b)>std::abs(a))
+        {
+          std::swap(a,b);
+          std::swap(ya,yb);
+        }
       c = a - ya * (b - a) / (yb - ya);
       double yc = f(c);
       resid = std::abs(yc);
-      if (resid < std::abs(ya))
-        {
-          yb = yc;
-          b = c;
-        }
-      else
-        {
-          ya = yc;
-          a = c;
-        }
+      ya = yc;
+      a  = c;
     }
 
   return std::make_tuple(c, iter < maxIt);
@@ -184,7 +181,9 @@ bracketInterval(Function const &f, double x1, double h = 0.01,
                 unsigned int maxIter = 200)
 {
   constexpr double expandFactor = 1.5;
-  auto          hinit = h;
+  h=std::abs(h);
+  //auto          hinit = h;
+  auto          direction=1.0;
   auto             x2 = x1 + h;
   auto             y1 = f(x1);
   auto             y2 = f(x2);
@@ -195,18 +194,16 @@ bracketInterval(Function const &f, double x1, double h = 0.01,
       ++iter;
       if (std::abs(y2) > std::abs(y1))
         {
+          std::swap(y1,y2);
+          std::swap(x1,x2);
           // change direction
-          h *= (h>0.?-hinit:hinit);
         }
-      else
-        {
-          // direction seems good, move on
-          x1=x2;
-          y1=y2;
-          h *= expandFactor;
-        }
-      x2 = x1 + h;
+      direction=(y2>=0&&y1>=0)?-1.0:1.0;
+      x1 = x2;
+      y1 = y2;
+      x2 +=direction*h;
       y2 = f(x2);
+      h*=expandFactor;
     }
   return std::make_tuple(x1, x2, iter <= maxIter);
 }
