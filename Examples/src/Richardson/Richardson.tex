@@ -1,0 +1,217 @@
+\documentclass[10pt,a4paper,twoside]{article}
+\usepackage{a4wide}
+\setlength{\parindent}{0pt}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+\lstset{  
+  language=[ISO]C++,                       % The default language
+  basicstyle=\small\sf,                          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  lineskip=0ex, %  frame=single
+}
+\lstset{morekeywords={byte,string,constexpr}}
+
+\begin{document}
+    \section*{Richardson acceleration}
+    
+    It is used when you are constructing an approximation $y(h)$ of a quantity $y$ that depends on a parameter $h$ (discretization step) so that you may write
+    \begin{equation}
+    y = y(h) + ch^k +O(h^l),\quad \text{with } l>k.
+    \end{equation} 
+    We say that $y(h)$ is an approximation for $y$ at order $k$ with respect to $h$. We assume that $k$ is known. By neglecting the higher order term and performing simple algebraic manipulations
+    we discover that, chosen a $t>1$ (typically $t=2$) the function $y^R$ given by
+    \begin{equation}
+    y^R(h)=\frac{t^ky(h/t)-y(h)}{t^k-1}
+    \end{equation} 
+    provides an approximation of $y$ of order $l$, thus improving the order of convergence (at the price of an additional evaluation).
+    
+    In case we know the full expansion of the error:
+      \begin{equation}\label{eq:expansion}
+   y = y(h) + c_0h^k_0 + c_1h^k_1 +c_2h^k_2 + \ldots,\quad \text{with } k_j>k_{j-1},
+   \end{equation} 
+    where the $k_j$ are known (the $c_j$ of course not), recursive application of Richardson may give the following procedure. Given a $h$, $m\ge 0$ and $t>1$
+    \begin{equation}\label{eq:Richbase}
+    \begin{cases}
+    y^R_0=y(h);\\
+    y^R_{i+1}(h)=\dfrac{t^{k_i}y^R_i(h/t)-y^R_i(h)}{t^{k_i}-1}\quad i=0,\ldots m-1
+    \end{cases}
+    \end{equation}
+    and we have an error
+    \begin{equation}
+    y-y^R_m(h)=O(h^{k_m})
+    \end{equation}
+  
+  Moreover, the quantity $|y^R_{i+1}(h)- y^R_i(h)|$ is a measure of the error.
+    
+    An important note. If the expansion is correct, in \eqref{eq:Richbase} the denominator $t^{k_i}y^R_i(h/t)-y^R_i(h)$ will eventually lead to the difference of two nearby quantities: cancellation error? So normally one does not take $m$ too large. Another aspect is that we need to know the $k_i$. Of course one may assume that, for a linear converging $y(h)$ we have $k_0=1$ and 
+    $k_{j+1}=k_j+1$, i.e. a Taylor like expansion. But if you know that some coefficients in the Taylor expansion are missing (for instance, only odd or even coefficients are different from zero) it is better to exploit it!
+  
+  \subsection{A pseudo code}
+  Let's suppose that our approximation satifies \eqref{eq:expansion}, for simplicity we take here $t=2$, which is often the case. We choose an $h$ and a $m$, we want to get $y^R_m(h)$.
+  Well, let's do thing step by step to realize what I need. I indicate $Y_{j,k}=y^R_k(h/t^{j-k})=y^R_k(h/2^{j-k})$, thus $Y_{j,0}=y(h/2^j)$ and $Y_{k,k}=y^R_k(h)$
+ 
+  Let's look at the denominators of the formula \eqref{eq:Richbase} (the numerators are easy!)
+  
+\noindent$\bullet$ First step $i=0$
+  \[
+  y^R_0(h)=y(h) \rightarrow Y_{0,0}=y(h)
+  \]
+  That's easy. 
+  The second step ($i=1$) is
+  \[
+  y^R_1(h)=\frac{2^{k_0}y^R_0(h/2)-y^R_0(h)}{2^{k_0}-1} \rightarrow Y_{1,1}=\frac{2^{k_0}Y_{1,0}-Y_{0,0}}{2^{k_0}-1}
+  \]
+  
+\noindent$\bullet$ So the second step is then implemented as
+  \begin{enumerate}
+      \item Compute $Y_{1,0}=y(h/2)$;
+      \item Compute $Y_{1,1}=\frac{2^{k_0}Y_{1,0}-Y_{0,0}}{2^{k_0}-1}$
+  \end{enumerate}
+  
+The third  step ($i=2$) is a little harder
+ \[
+ y^R_2(h)=\frac{2^{k_1}y^R_1(h/2)-y^R_1(h)}{2^{k_1}-1} \rightarrow Y_{2,2}=\frac{2^{k_1}Y_{2,1}-Y_{1,1}}{2^{k_1}-1}
+ \]
+I need $y^R_1(h/2)$:
+\[
+y^R_1(h/2)=\frac{2^{k_0}y^R_0(h/4)-y^R_0(h/2)}{2^{k_0}-1}\rightarrow Y_{2,1}=\frac{2^{k_0}Y_{2,0}-Y_{1,0}}{2^{k_0}-1}
+\]
+Therefore 
+
+$\bullet$ \textbf{Step 3} reads:
+\begin{enumerate}
+    \item Compute $Y_{2,0}=y(h/4)$;
+    \item For $j=1,2$ compute $Y_{2,j}=\frac{2^{k_{j-1}}Y_{2,j-1}-Y_{1,j-1}}{2^{k_{j-1}}-1}$
+\end{enumerate}
+ 
+    
+In general, we need to built the $Y_{i,k}$ according to  the following algorithm:
+\paragraph{Algorithm 1}
+\begin{itemize}
+    \item For $i=0,\ldots,m$
+    \begin{enumerate}
+        \item $Y_{i,0}=y(h/2^i)$;
+        \item For $j=1,\ldots,i$
+        \begin{enumerate}
+            \item Compute $Y_{i,j}=\frac{2^{k_{j-1}}Y_{i,j-1}-Y_{i-1,j-1}}{2^{k_{j-1}}-1}$
+        \end{enumerate}
+    \end{enumerate}
+\item The final value is $y^R_m(h)=Y_{m,m}$
+\end{itemize}
+     
+We may note the following, 
+\begin{itemize}
+    \item Matrix $\mathbf{Y}\in\mathbb{R}^{m+1\times m+1}$ is lower triangular;
+    \item For each $i$ the algorithm requires just two rows of $\mathbf{Y}$, namely rows $i$ and the $i-1$. A part the very first step. So I need to store only 2 rows.
+\end{itemize}  
+\section{The example}
+The example is inspired by the Wikipedia page on RIchardson. It is a bit convoluted, but certainly more iteresting that accelerating the series for computing $\pi$. Suppose we are interested to the solution at the final time
+$y(T)$ of the differential equation
+\begin{equation}
+  \begin{cases}
+    y^\prime(t)=-y^2(t)\quad t\in (0,T],\\
+    y(0)=1.
+  \end{cases}
+\end{equation}
+Let's take $T=5$. We can solve numerically that equation with a numerical method, for instance Crank-Nicolson, on a sufficiently fine grid, and then get
+$y(T)$ as the final computed numerical solution. But, since we are looking only for the final value (by the way it is equal to $1.66666..$, so we can assess the error), it may be a waste of time having to compute the solution at all time steps. And we need a lot of time steps with Crank-Nicolson if we want a solution with 6 significant digits.
+
+An alternative is to use Richardson. I have written a rather generic Richardon class able to compute the RIcharson extrapolation, giving the
+coefficient $k_j$ (by default they are $k_j=j+1$) and a function \lstinline!double(double)! that represents $y(h)$. I have also written the code for Crank-Nicolson (not so complicated).
+
+Crank-Nicolson is a second order scheme (provided the forcing term is regular, as in our case), so I expect the error to behave as
+\[
+  y(T)-y_{CN}(t)= c_oh^2+c_1h^3+\ldots
+\]
+Thus, I give to the Richarson procedure $k_j=j+2$ for $j=0,\ldots,m$, where $m$ is the number of stages f Richardson I want to make. Here I take $t=2$, thich means that at each stage I have to reduce $h$ by one half. 
+
+
+The main points taken from the main:
+\begin{itemize}
+\item \lstinline!CrankNicolson! is a function with signature
+\begin{lstlisting}
+template <class Function>
+std::tuple<std::vector<double>, std::vector<double>>
+CrankNicolson(Function const &f, double y0, double t0, double T, unsigned int n)
+\end{lstlisting}
+It takes as input the forcing term, the initial value, initial and end time, and not $h$, but the number of intervals to be used,
+So, I need to define the forcing term
+\begin{lstlisting}
+  auto f=[](double y,double t){return -y*y;};
+\end{lstlisting}
+and the function $y(h)$ to pass to the \lstinline!Richardson! object. I use a lambda also here (I have called the function \lstinline!r! since
+\lstinline!y! was already used):
+\begin{lstlisting}
+  auto r = [&t0,&T,&f,&y0](double const & h)
+            {
+    unsigned n =(T-t0)/h;
+    std::vector<double> sol;
+    std::tie(std::ignore,sol) = apsc::CrankNicolson(f, y0, t0, T, n);
+    return sol.back();
+            };
+
+\end{lstlisting}
+It takes $h$, compute the corresponding number of intervals, and returns the last value of the solution computed by \lstinline!CrankNicolson!.
+I think that this example show the power of lambda expressions!
+\item \lstinline!Richardson! is a class template.
+\begin{lstlisting}
+  template<class Function=std::function<double(double const &)>>
+  class Richardson;
+\end{lstlisting}
+  which takes as template parameter the type of the function, defaulted to a function wrapper. Since I can initialize a function wrapper with a lambda expression, I give the constructor of the \lstinline!Richardson! object the lambda, without stating the template parameter (I use the default)
+\begin{lstlisting}
+  apsc::LinearAlgebra::Richardson richardson{r,k};
+\end{lstlisting}
+  Note that I could have stored the lambda expression directly! In this case the object is constructed as follows
+\begin{lstlisting}
+  apsc::LinearAlgebra::Richardson<decltype(r)> richardson{r,k};
+\end{lstlisting}
+  and the template argument is now the type of the lambda expression (remember that a lambda expression is in fact a function object). Indeed, this solution produces a slightly mor eefficient code since it avoids the additional indirection due to the call of a \lstinline!std::function!.
+\item I have used my \!Chrono! utility to compute the time, comparing it with that necessary for the solution with Crank-Nicolson
+  and $1000$ intervals (needed to get the desired accuracy!).
+  \item For the Richardson extrapolation, I start with just $4$ intervals for Crank-Nicolson and I use $M$ extrapolation levels (stages). 
+  \item Now the rest is rather standard and you ca
+   n look and understand the code by yourself and note that the error at each stage of Richardson decreases very rapidly. We get an error of order $10^{-7}$ with a time roughly half that used by Crank-Nicolson with $1000$ intervals. Not a great deal, but still a gain. Note: compile with \verb!make DEBUG=no!.
+\end{itemize}
+
+In conclusion, in this example you have in fact two codes, a solver for scalar $ODE$ that implements the Crank-Nicolson scheme, and the that for Richardson extrapolation.
+
+\subsection{A remark}
+For Richardon to be effective the initial $h$ should not be too big. But it can be still rather large. Here the initial $h$ is $5/4=1.25$. If you use a grater value, i.e. $h=5/2=2.5$ the Crank-Nicolson code fails because the code that solves the non-linear equation arising from the Crank-Nicolson step fails. I have used the secant method in \verb!basicZerofun.hpp! in the folder
+\verb!LinearAlgebra/Utilities!. Remember to go in that folder and do \verb!make install! otherwise you do not find the code for thesecant method.
+
+
+
+    
+    
+    
+   
+    
+\end{document}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
