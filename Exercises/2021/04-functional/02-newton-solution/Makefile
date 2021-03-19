@@ -2,7 +2,7 @@ CXX      ?= g++
 CXXFLAGS ?= -std=c++17
 CPPFLAGS ?= -O3 -I. -Wno-conversion-null -Wno-deprecated-declarations
 
-EXEC     = main
+EXEC     = main_fcn_ptr main_lambda main_getpot_lambda 
 LDFLAGS ?= 
 LIBS    ?= 
 

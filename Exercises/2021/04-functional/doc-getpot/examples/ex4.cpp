@@ -13,7 +13,7 @@ main(int argc, char **argv)
   GetPot            datafile(filename.c_str());
   const std::string section = "integration/domain/";
 
-  double a = datafile((section1 + "a").data(), 0.);
+  double a = datafile((section + "a").data(), 0.);
   /* ... */
   return 0;
 }
