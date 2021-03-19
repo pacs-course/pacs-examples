@@ -1,0 +1,6 @@
+fun = x^3+5*x+3
+prime = 3*x^2+5
+
+n_max_it = 100
+tol_fun  = 1e-14
+tol_x    = 1e-14
