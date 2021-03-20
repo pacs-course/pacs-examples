@@ -1,0 +1,142 @@
+\documentclass[10pt]{beamer}
+\usetheme{default}
+\setbeamercovered{invisible}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+    \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+
+\usepackage{listings}
+
+% User-defined colors.
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+% Settings for listing class.
+\lstset{
+  language=C++,                        % The default language
+  basicstyle=\small\ttfamily,          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries, % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed}, % Set string constant style
+  extendedchars=true % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  lineskip=0ex, %  frame=single
+}
+
+\usepackage{verbatim}
+
+\begin{document}
+    \title{GetPot}
+    \author{Pasquale Claudio Africa}
+    \date{19/03/2021}
+
+\begin{frame}[plain, noframenumbering]
+    \maketitle
+\end{frame}
+
+\begin{frame}{Intro to Getpot}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\textwidth]{images/GetPot_logo.jpg}
+    \end{figure}
+
+    \begin{block}{Web page}
+        \centering
+        \begin{itemize}
+            \item \url{http://getpot.sourceforge.net/}
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+
+\begin{frame}{GetPot}
+
+    GetPot is a \emph{header file only} library,
+    to facilitate command line and config file parsing.
+    Useful for changing algorithm parameters without recompiling
+     etc\ldots\\[1cm]
+
+    GetPot provides a class to parse \texttt{argc} and \texttt{argv}
+    in alternative to POSIX standard \texttt{getopt} (in \texttt{C}).
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{Passing parameters directly on the command line}
+
+    \lstinputlisting{./examples/ex1.cpp}
+
+    Parameters are read via the call \texttt{operator()} for the \texttt{GetPot} class.
+    It requires the name of the parameter to be read and the default value.
+    The type is deduced from the class of the default value.
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{Run}
+
+    \begin{verbatim}
+./main
+./main a=10 b=70
+./main b=70.5 n_intervals=100
+./main n_intervals=100 a=10
+    \end{verbatim}
+
+    \vspace{1cm}
+    
+   	Sorting of command line arguments is not relevant.
+
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{Configuration files}
+    \verbatiminput{./examples/data}
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{How to parse from C++}
+    \lstinputlisting{./examples/ex2.cpp}
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{How to parse from C++}
+    \lstinputlisting{./examples/ex3.cpp}
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{Why not both?}
+    The name of the config file may be passed on the command line
+        
+    \lstinputlisting{./examples/ex4.cpp}
+\end{frame}
+
+%---------------------------------------------------------------------------------
+
+\begin{frame}[fragile]{Run}
+    \begin{verbatim}
+./main -f data1
+./main --file data1
+./main
+    \end{verbatim}
+\end{frame}
+\end{document}
