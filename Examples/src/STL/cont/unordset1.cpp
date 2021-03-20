@@ -12,6 +12,7 @@
 #include <set>
 #include <vector>
 #include <numeric>
+#include <algorithm>
 #include "print.hpp"
 using namespace std;
 
@@ -42,6 +43,10 @@ int main()
     }
 
     // remove all negative values
+    /* // This requires C++20 
+    std::erase_if(coll.begin(),coll.end(),[](int i){return i<0;});
+    */
+    // The for-loop version (only possibility before C++20)
     for (auto pos=coll.begin(); pos!= coll.end(); ) {
         if (*pos < 0) {
             pos = coll.erase(pos);
@@ -50,5 +55,6 @@ int main()
             ++pos;
         }
     }
+    
     PRINT_ELEMENTS(coll);
 }
