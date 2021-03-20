@@ -165,7 +165,7 @@ namespace Geometry
     //! I inherit all constuctors of AbstractPolygon (C++17)
     using AbstractPolygon::AbstractPolygon;
     //! Destructor
-    virtual ~Polygon(){};
+    ~Polygon(){};
     /*!
       The area is positive if vertices are given in
       counterclockwise order
