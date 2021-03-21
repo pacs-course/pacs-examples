@@ -27,7 +27,7 @@ int main()
   std::cout<<"gcd 333  and 11 "<<res1<<std::endl;
 
   std::size_t k=0;
-  for (std::size_t i=2;i<100u;++i)
+  for (std::size_t i=2;i<=100u;++i)
     {
       auto z=res2[k++];
       if (z==1u)
@@ -41,7 +41,7 @@ int main()
   nlsd.addToSystem([] (ArgumentTyped const & x){return std::sin(x[0])+std::cos(x[1]);});
   nlsd.addToSystem([] (ArgumentTyped const & x){return std::sinh(x[0])+std::cosh(x[1]);});
   auto res=nlsd({3.4, 5.7}); // pass the vector 3.4, 5.7
-  std::cout<<"Resutl of the call to the system of functions:\n";
+  std::cout<<"Result of the call to the system of functions:\n";
   for (auto y:res)
     {
       std::cout<<y<<" ";
