@@ -167,7 +167,6 @@ namespace apsc
  \pre The parameter class T must have a virtual and constant
  clone() method with the indicated signature.
 
-
  @tparam T the base class
    */
   template <class T> class PointerWrapper
@@ -176,7 +175,7 @@ namespace apsc
     // Check if clone is present
     static_assert(TypeTraits::isClonable<T>(),
                   "template parameter of Wrapper must be a clonable class. "
-                  "clone() should return a unique_ptr");
+                  "You must have a virtual clone()const method that returns a unique_ptr<T>");
     // The type of the stored unique pointer
     using Ptr_t = std::unique_ptr<T>;
     /*! This class imitates that of the unique pointer so it exposes the same
