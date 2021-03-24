@@ -38,7 +38,7 @@ class RuntimeCmp {
 };
 
 // type of a set that uses this sorting criterion
-typedef set<int,RuntimeCmp> IntSet;
+using  IntSet=set<int,RuntimeCmp>;
 
 int main()
 {
