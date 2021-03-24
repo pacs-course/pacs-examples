@@ -68,8 +68,11 @@ int main()
     
     map<string,string> dict2{{"fool","crazy"},{"light","frivolous"},
                                                 {"smart","cool"}};
-    // I want to take out "car" form disct and insert it in dict2
-    // without useless memory operation
+    // I want to take out a key (and correspondint value) frome dict and
+    // insert them in dict2,
+    // without useless memory operation, and complete the operation only
+    // if the key is not already present in dict2
+    // (which is a map not a multimap)
     word="smart";
     auto node = dict.extract(word);
     if (node.empty())
