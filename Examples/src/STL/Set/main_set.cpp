@@ -46,8 +46,12 @@ int main()
   // you have to pass it through the constructor, since we need to pass its state. Otherwise,
   // the set builds one with the default constructor.
   set<int,decltype(compfun)> t{{1,2,3,4,5,6,7},compfun};
+  // But in this case you can also simply do (compfun is stateless and std::function is default-constructible
+  //  set<int,decltype(compfun)> t{{1,2,3,4,5,6,7}};
+
   // or use this alternative syntax.
   // set<int,decltype(compfun)> t={{1,2,3,4,5,6,7},compfun};
+
   for (auto i: t) cout<<i<<" ";
   cout<<endl;
   // using the functor (no need to give the functor explicitely as argument)

@@ -23,12 +23,13 @@ public:
   }
 };
 
+
 //! Compare by ignoring case.
 /*! We use the toupper function provided by <cctype> The new C+11
   standard provides a new toupper() function which support
   internationalization, i.e. font encoding different form ascii.
  */
-class NoCaseCompare {                                 // compare by ignoring case 
+class NoCaseCompare{
 public:
   bool operator () (std::string const & a, std::string const & b)
   {
@@ -37,7 +38,7 @@ public:
       if (std::toupper(a[i])!= std::toupper(b[i])) 
 	return std::toupper(a[i])<std::toupper(b[i]);
     }
-    return (a.size()<b.size());
+    return a.size()<b.size();
   }
 };
 
@@ -55,7 +56,7 @@ public:
       if (std::toupper(a[i],M_loc)!= std::toupper(b[i],M_loc)) 
 	return std::toupper(a[i],M_loc)<std::toupper(b[i],M_loc);
     }
-    return (a.size()<b.size());
+    return a.size()<b.size();
   }
 private:
   std::locale M_loc;
