@@ -81,11 +81,13 @@ int main()
   timer.stop();
   std::cout<<" Time taken:"<<timer.wallTime()<<" microsec"<<std::endl;
 
-  // This is the most complex form. It applies a binary operation to all couple of elements of the two ranges
-  // then a reduction applying a second bianary operation consecutively on the result.
+  // This is the most complex form.
+  // It applies a binary operation to all couple of elements of the two ranges
+  // then a reduction applying a second binary operation consecutively on the result.
   // For instance here we compute the 1-norm of the difference ||A-B||_1
   auto absDiff = [](const double & x, const double & y){return std::abs(x-y);};
 
+    timer.start();
   std::cout<<"|a-b|_1= "<<
           std::transform_reduce(EXECUTION, // execution policy
     		  std::begin(bigVector), // start first
@@ -95,7 +97,10 @@ int main()
 		  std::plus{}, // binary operation performd for reduction
 		  absDiff // binary operation performed on each couple of elements
 		  );
-   std::cout<<std::endl;
+  timer.stop();
+
+  std::cout<<std::endl;
+  std::cout<<" Time taken:"<<timer.wallTime()<<" microsec"<<std::endl;
 
 }
 
