@@ -9,14 +9,13 @@
 class newton_solver
 {
 public:
-  newton_solver(
-    const std::function<double(const double &)> &fun_,
-    const std::function<double(const double &)> &prime_,
-    const int                                    n_max_it_ = 100,
-    const double tol_fun_ = std::numeric_limits<double>::epsilon() *
-                            1000.0,
-    const double tol_x_ = std::numeric_limits<double>::epsilon() *
-                          1000.0)
+  newton_solver(const std::function<double(const double &)> &fun_,
+                const std::function<double(const double &)> &prime_,
+                const int                                    n_max_it_ = 100,
+                const double tol_fun_ = std::numeric_limits<double>::epsilon() *
+                                        1000.0,
+                const double tol_x_ = std::numeric_limits<double>::epsilon() *
+                                      1000.0)
     : fun(fun_)
     , prime(prime_)
     , n_max_it(n_max_it_)
