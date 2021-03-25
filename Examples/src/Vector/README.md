@@ -1,3 +1,6 @@
-# Basic usage of std::vector#
+# Some examples on the use of vector<T> #
 
-Some basics on `std::vector<>` a most flexible container...
+  * `Basics` An example on basic usage
+  * `Remove` An example on the use of remove
+  
+Look at the local `README.md` files for explanation.
