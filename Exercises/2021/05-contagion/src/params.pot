@@ -1,9 +1,18 @@
+[domain]
+  # Domain is [0, domain_size] x [0, domain_size].
+  domain_size = 1
+
+  # Pub size and location.
+  pub_size = 0.1
+
+  pub_x = 0.5
+  pub_y = 0.5
+
+  [../]
+
 [contagion]
   # Number of people.
   n_people = 200
-
-  # Domain is [0, domain_size] x [0, domain_size].
-  domain_size = 1
 
   # Number of timesteps per day.
   n_timesteps_per_day = 24
@@ -18,11 +27,6 @@
   # People get infected when another infected gets closer than r_infection.
   r_infection = 0.04
 
-  # Pub size and location.
-  pub_size = 0.1
-
-  pub_x = 0.5
-  pub_y = 0.5
   [../]
 
 [person]
