@@ -21,6 +21,9 @@
   # (= #days * n_timesteps_per_day).
   n_timesteps = 1440
 
+  # Number of people initially infected.
+  n_init_infected = 1
+
   # Fraction of people who practice social distancing.
   frac_sd = 0.75
 
