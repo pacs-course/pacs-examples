@@ -155,7 +155,7 @@ for it = 1:nt
 
         if strcmp(nextMove,'goToPub')
             
-            % Jump to pub and stay for <ntGoShopping> time steps
+            % Jump to pub and stay for <tGoToPub> time steps
             x(ia)           = xpub+rand(1)*pubsize;
             y(ia)           = ypub+rand(1)*pubsize;
             tGoToPub(ia) = -1;
