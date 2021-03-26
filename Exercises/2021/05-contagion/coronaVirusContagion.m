@@ -46,7 +46,7 @@ dtpause      = .01;    % simulation speed
 mkSize       = 6;
 writeGif     = 1;
 dtgif        = .2;
-gifName      = sprintf('contagion_shopping_dtGoToPub%i_dtHeal%i.gif',dtGoToPub,dtHeal);
+gifName      = sprintf('contagion_pub_dtGoToPub%i_dtHeal%i.gif',dtGoToPub,dtHeal);
 
 
 
@@ -86,8 +86,8 @@ iseed         = 1;
 isSick(iseed) = true;
 doesSD(iseed) = false;
 
-% Superpub
-tGoToPub  = randi(dtGoToPub,nagents,1);   % time until next shopping trip 
+% Pub
+tGoToPub  = randi(dtGoToPub,nagents,1);   % time until next pub trip 
 tAtPub    = zeros(nagents,1);
 isAtPub   = false(nagents,1);
 stayAtPub = false(nagents,1);
@@ -148,7 +148,7 @@ for it = 1:nt
         if tGoToPub(ia) >0 & ~doesSD(ia);               nextMove = 'takeStep'; end      % Keep walking 
         if tGoToPub(ia) >0 &  doesSD(ia);               nextMove = 'stayPut'; end       % Stay at home
         if isAtPub(ia)     & tAtPub(ia) <dtAtPub; nextMove = 'stayPut'; end             % Stay at pub
-        if isAtPub(ia)     & tAtPub(ia)==dtAtPub; nextMove = 'returnFromPub'; end       % Go back to where you were before shopping
+        if isAtPub(ia)     & tAtPub(ia)==dtAtPub; nextMove = 'returnFromPub'; end       % Go back to where you were before pub
         if tGoToPub(ia)==0                              nextMove = 'goToPub'; end       % Go to pub
         
         if verbose; fprintf(1,sprintf('Next action of agent %i at (%3.1f/%3.1f): %s\n',ia,x(ia),y(ia),nextMove)); end
@@ -163,7 +163,7 @@ for it = 1:nt
             
         elseif strcmp(nextMove,'returnFromPub')
             
-            % Return to position from before pub, and re-set shopping clocks
+            % Return to position from before pub, and re-set pub clocks
             x(ia)        = xbak(ia);
             y(ia)        = ybak(ia);
             tGoToPub(ia) = dtGoToPub;
