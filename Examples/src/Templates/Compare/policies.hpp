@@ -3,17 +3,15 @@
 #include <cctype> // for toupper()
 #include <algorithm>
 //! Normal compare (case sensitive)
-class CaseCompare {
-public:
+struct CaseCompare {
   //! I rely on the existing operator
-  static bool eq(char const & a, char const & b)
+  bool operator()(char const & a, char const & b) const
   { return a==b;}
 };
 
 //! Case insensitive compare (case sensitive)
 /*! 
-  It works on char * and std::string
-  Note, I am using the "vintage" form of std::toupper
+  Note, Here am using the "vintage" form of std::toupper
   that works only with C-locale characters (i.e. ascii characters)
   If you want something able to operate on different character sets
   you have to use the version of toupper in <locale>, which is slightly
@@ -24,13 +22,19 @@ public:
   return std::toupper(a,std::locale())==std::toupper(b,std::locale());
   \endcode
 
+However, in that case maybe you need to operate correctly with the character type
+of your character encoding locale. I leave this to the interested readers, here I am
+assuming that we are using the usual C-locale (the characters of the US keyboard)
 */
-class NoCaseCompare {
+struct NoCaseCompare {
 public:
   //! equality operator that ignore case of characters
-  static bool eq(char const  & a, char const & b)
+  bool operator()(char const  & a, char const & b) const
   { return std::toupper(a)==std::toupper(b);}
 };
+
+
+
 
 //! The hash function for string for case insensitive comparison.
 /*!

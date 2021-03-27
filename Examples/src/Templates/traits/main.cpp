@@ -4,7 +4,7 @@
 #include <array>
 //! \file magnitude.hpp
 /*!
-  A simple example of use of traits.
+  A simple example of use of traits (which are also policies in this case)
 
 */
 
