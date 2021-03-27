@@ -2,7 +2,8 @@
 #include <cmath> // for function exp  
 #include "interpolation.hpp"
 int main() {
-  using namespace FunctionApproximation;
+  using namespace apsc;
+  using namespace apsc::interpolationPolicy;
   using std::cout;
   using std::endl;
   using std::exp;
@@ -16,13 +17,14 @@ int main() {
   // px[0] = 5; px[1] = 7; px[2] = 6; px[3] = 6.6;
   // py[0] = 1; py[1] = -23; py[2] = -50; py[3] = -4;
   auto fun = [] (double const & x){return std::sin(x);};
+  // x coord between 1 and 6
   for (int i = 0; i < n; i++) {
     px[i] = 1 + i*6.0/(n-1); py[i] = fun( px[i] );
   }
   // the interpolators
-  FunctionApproximation::LagrangeInterpolator<double> lagr(px,py);
-  FunctionApproximation::NewtonInterpolator<double> newt(px,py);
-  FunctionApproximation::PiecewiseLinearInterpolator<double> plin(px,py);
+  LagrangeInterpolator lagr(px,py);
+  NewtonInterpolator  newt(px,py);
+  PiecewiseLinearInterpolator plin(px,py);
   std::vector<double> xc={1, 1.3, 1.9, 3.5, 8.0};
   
   auto resultl=interp1D(xc,lagr);
