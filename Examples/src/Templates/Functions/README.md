@@ -8,3 +8,7 @@ funct(T&&)` will exploit the "universal reference" technique and it
 can bind to any type of argument. But then, you have to use
 `std::forward` to separate rvalues from lvalues arguments.
 
+# What do I learn here #
+* A revision of function overloading and reference bindings.
+* That it is better not to mix free functions and template functions with the same name.
+
