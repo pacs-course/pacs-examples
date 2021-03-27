@@ -1,39 +1,63 @@
 // template metaprogram for Fibonacci numbers
+#include "chrono.hpp"
 #include "fibonacci.hpp"
 #include <iostream>
-#include "chrono.hpp"
 
-
-int main() {
+int
+main()
+{
   Timings::Chrono clock;
-  const int f3 = fib<3>::value;
-  const int f9 = fib<9>::value;
-  const int f10 =fib<10>::value;
-
-  std::cout << " f3 = " << f3 << '\n';
-  std::cout << " f9 = " << f9 << '\n';
-  std::cout << " f10= " << f10 << '\n';
-  std::cout<<" Now with the constexpr function"<<std::endl;
-  std::cout << " f3 = " << Fibonacci(3) << '\n';
-  std::cout << " f9 = " << Fibonacci(9) << '\n';
+  std::cout << " Time is in microseconds\n";
+  unsigned long int fibo;
+  std::cout << " Now with the recursive template" << std::endl;
   clock.start();
-  std::cout << " f40= " << Fibonacci(40) << '\n';
+  fibo = fib<3>::value;
   clock.stop();
-  std::cout<<"Time to evaluate F(40) with recursion and constexpr argument:"<<clock<<std::endl;
-  unsigned long l=999ul;
+  std::cout << " f3 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  clock.start();
+  fibo = fib<9>::value;
+  clock.stop();
+  std::cout << " f9 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  clock.start();
+  fibo = fib<40>::value;
+  clock.stop();
+  std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+  std::cout << " Now with the constexpr function and constexpr argument\n";
+  clock.start();
+  fibo = Fibonacci(3);
+  clock.stop();
+  std::cout << " f3 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  clock.start();
+  fibo = Fibonacci(9);
+  clock.stop();
+  std::cout << " f9 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  clock.start();
+  fibo = Fibonacci(40);
+  clock.stop();
+  std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  unsigned int l = 999u;
   while (true)
     {
-      std::cout << "Give me the index of the Fibonacci number you want (0=exit)"<<std::endl;
-      std::cin>>l;
-      if(l==0ul)break;
+      unsigned long int ff;
+      std::cout << "Give me the index of the Fibonacci number you want (0=exit)"
+                << std::endl;
+      std::cin >> l;
+      if (l == 0ul)
+        break;
       clock.start();
-      std::cout << " f"<<l<<"= " << Fibonacci(l) << '\n';
+      ff = Fibonacci(l);
       clock.stop();
-      std::cout<<"Time to evaluate F("<<l<<") with non constexpr argument and recursion:"<<clock<<std::endl;
+      std::cout << " f" << l << "= " << ff << '\n';
+      std::cout << "Time to evaluate F(" << l
+                << ") with non constexpr argument and recursion:" << clock.wallTime()
+                << std::endl;
       clock.start();
-      std::cout << " f"<<l<<"= " << FibonacciNR(l) << '\n';
+      ff = FibonacciNR(l);
       clock.stop();
-      std::cout<<"Time to evaluate F("<<l<<") with non recursive function:"<<clock<<std::endl;
- }
+      std::cout << " f" << l << "= " << ff << '\n';
+      std::cout << "Time to evaluate F(" << l
+                << ") with non recursive function:" << clock.wallTime() << std::endl;
+    }
   return 0;
 }
