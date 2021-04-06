@@ -60,7 +60,7 @@ int main()
   int n =10;
   //an int is trivially serializable
   binfile.write(reinterpret_cast<char*>(&n), sizeof n );
-  // A vector is easily serializable (but you vave to store the data)!
+  // A vector is easily serializable (but you need to store the numbe rof elements)
   // The number of elements has already been stored
   std::vector<double> v(n,10.0); // n elements
   binfile.write(reinterpret_cast<char*>(v.data()), v.size()*sizeof(double));
