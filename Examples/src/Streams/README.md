@@ -14,3 +14,5 @@
 * `redirect/` How to redirect a stream
 
 * `sstream` The magic of string streams.
+
+* `serialization` A primer on serialization of trivially constructible object

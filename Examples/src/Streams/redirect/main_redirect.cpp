@@ -27,12 +27,14 @@ int main()
       // Because after the previous read cin may have some trailing characters
       // still in the buffer (and certainly it has a \n).
       // This command looks a bit weird but does the job.
+      // You have an utilitu in Utility/string_utility.cpp if you do not want to
+      // remember this command!
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
       // get the whole line and put it into a string
       std::getline(std::cin,filename);
       // Using getline allows you to have file name with spaces in the name
       // SOMETHING YOU SHOULD AVOID!!!
-      // If replace getline by simply
+      // If you replace getline by simply
       // std::cin>>filename;
       // it works but only with file with sensible names and with sensible
       // I mean without spaces (as a good file name should be).
@@ -44,6 +46,7 @@ int main()
   std::cout<<line<<std::endl;
   // get back the normal buffer
   std::cout.rdbuf(cout_buff);
+  std::cout<<"The End\n";
   // close the file
   if (input==1)file.close();
 }
