@@ -16,7 +16,7 @@
  */
 namespace Utility{
   
-  //! Trim a string from left eliminating trailing spaces
+  //! Trims a string from left eliminating leading spaces
   /**
      @param a A string
      @return the trimmed string
@@ -100,7 +100,7 @@ namespace Utility{
   };
 
   /*!
-   * A nice utility that reads an entire line and returns it into a stremstring
+   * A nice utility that reads an entire line and returns it into a streamstring
    * @param stream An input stream
    * @return an input string stream
    */
@@ -147,7 +147,7 @@ namespace Utility{
      */
     void read(std::string const & fileName);
     /*!
-     * Allow extraction of the stared test using the classical streaming operator
+     * Allow extraction of the stored test using the classical streaming operator
      *
      * @tparam T the data type
      * @param data The data that will be read
@@ -158,7 +158,7 @@ namespace Utility{
     /*!
      * You can get the enclosed string stream to operate on it at wish.
      * @note you should extract it only by reference.
-     * @return a reference to the stringstrem associated to the text buffer (const version)
+     * @return a const reference to the stringstrem associated to the text buffer (const version)
      */
     std::stringstream const & globbedText() const {return MyGlobbedText;}
     /*!
