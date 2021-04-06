@@ -63,13 +63,13 @@ the identifier as key.
     \param name The identifier
     \param args The arguments pack to be passed to the builder. It may be empty
 
-    \note The defualt builder does not take any argument. This version is
-    provided in case the template is specialised with a builder that takes
-    arguments.
+    \note The default builder does not take any argument. This version is
+    provided in case the template is specialized with a builder that takes
+    arguments. The method is disabled if AsbtractProduct is void
   */
   template <typename... Args>
-  std::unique_ptr<AbstractProduct> create (Identifier const &name,
-                                           Args &&... args) const;
+  std::unique_ptr<AbstractProduct>
+  create (Identifier const &name, Args &&... args) const;
   /*!
      Returns the builder
   */
@@ -145,6 +145,7 @@ std::unique_ptr<AbstractProduct>
 Factory<AbstractProduct, Identifier, Builder>::create (Identifier const &name,
                                                        Args &&... args) const
 {
+  static_assert(!std::is_same_v<AbstractProduct,void>, "You should use get() not create() on FunctionFactories");
   // Use of std::forward to forward arguments to the constructor
   return this->get (name) (std::forward<Args> (args)...);
 }

@@ -41,11 +41,8 @@ int main()
 
   ofstream binfile ("file.dat",ios::binary);
   ofstream asciifile ("file.txt");
-  // The array
-  // This if you want to use old C-style dynamic arrays
-  //double * pippo=new double[DIM];
-  //
-  // But I refer vectors
+
+  std::cout<<" Data size is of "<<DIM<< " doubles\n";
   std::vector<double> v(DIM);// a big vector!
   // fill the vector with something
   for (auto & i:v) i=static_cast<double>(rand());

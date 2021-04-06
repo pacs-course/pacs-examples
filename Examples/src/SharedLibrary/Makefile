@@ -65,12 +65,12 @@ development:
 	$(MAKE) main LDLIBS=-Wl,-rpath,.
 
 clean:
-	$(RM) -f *.o main libsmall.so lib*.so.* 
+	$(RM) *.o main libsmall.so lib*.so.* 
 
 distclean:
 	$(MAKE) clean
-	$(RM) -r -f ./doc
-	$(RM) -f *.out *.bak *~ $(DEPEND)
+	$(RM) -r  ./doc
+	$(RM)  *.out *.bak *~ $(DEPEND)
 
 doc:
 	doxygen $(DOXYFILE)
