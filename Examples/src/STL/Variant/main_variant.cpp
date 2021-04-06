@@ -17,9 +17,9 @@ fun(int const & value)
 struct Operate
 {
   //! operator for string
-  void operator()(std::string const & x){std::cout<<x<<std::endl;};
+  void operator()(std::string const & x)const {std::cout<<x<<std::endl;};
   //! operator for int
-  void operator()(int const & x){std::cout<<10*x<<std::endl;}
+  void operator()(int const & x)const {std::cout<<10*x<<std::endl;}
 };
 
 // This part is only for the nerds of you (skip if you are not interested)
