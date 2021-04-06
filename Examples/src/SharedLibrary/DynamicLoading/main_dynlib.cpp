@@ -13,15 +13,18 @@ int main(){
     std::exit(1);
   }
 
-  std::cout<<"cube (1) ore square (2)?"<<std::endl;
   int answer;
+
+  std::cout<<"cube (1), square (2) or strangefun(3)?"<<std::endl;
   std::cin>>answer;
   Fun fn;
   if (answer ==1)
     // Unfortunately this is necessary. C is less type safe than C++!
     fn = reinterpret_cast<Fun>(dlsym(lib_handle,"cube"));
-  else
+  else if (answer==2)
     fn = reinterpret_cast<Fun>(dlsym(lib_handle,"square"));
+  else
+    fn = reinterpret_cast<Fun>(dlsym(lib_handle,"strangefun"));
 
   char* error=dlerror();
    

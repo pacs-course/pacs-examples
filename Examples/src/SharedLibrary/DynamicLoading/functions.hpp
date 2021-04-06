@@ -4,5 +4,6 @@
 extern "C"{
   double square(double x);
   double cube(double x);
+  double strangefun(double x);
 }
 #endif
