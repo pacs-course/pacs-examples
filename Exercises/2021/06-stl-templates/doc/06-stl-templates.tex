@@ -1,0 +1,180 @@
+\documentclass[10pt]{beamer}
+\usetheme{default}
+\setbeamercovered{invisible}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+    \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+
+\usepackage{listings}
+
+% User-defined colors.
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+% Settings for listing class.
+\lstset{
+  language=C++,                        % The default language
+  basicstyle=\small\ttfamily,          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries, % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed}, % Set string constant style
+  extendedchars=true % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  lineskip=0ex, %  frame=single
+}
+
+\begin{document}
+    \title{STL and templates}
+    \author{Pasquale Claudio Africa}
+    \date{09/04/2021}
+
+\begin{frame}[plain, noframenumbering]
+    \maketitle
+\end{frame}
+
+
+\begin{frame}{Exercise 1 - What is a sparse matrix?}
+\begin{itemize}
+\item A $N \times N$ sparse matrix is a matrix whose number of non-zero elements $N_\mathrm{nz}$ is $O(N)$. \\[3mm]
+\item The average number $m$ of non-zero elements per row (or column)
+is constant w.r.to the matrix size. \\[3mm]
+\item If the majority of matrix entries is $0$, {\it i.e.} if $m \ll N$ it is convenient to store only the non-zero elements.\\[3mm]
+\item The matrix-vector product (which is the basic ingredient of Krylov solvers) costs $O(N)$ rather than $O(N^{2})$.\\[3mm]
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 1 - Sparse matrix formats}
+Some (slightly revisited) classical data structures for sparse matrices
+
+\begin{equation*}
+A = 
+\begin{bmatrix}
+4  & -1 & 0  & 0\\
+-1 &  4 & -1 & 0\\
+0  & -1 &  4 & -1\\
+0  &  0 &  -1& 4
+\end{bmatrix}
+\end{equation*}
+
+\begin{itemize}
+\item [COO] (coordinates) or AIJ: \tiny
+\begin{lstlisting}
+std::vector<double>       A{4, -1, -1, ...};
+std::vector<unsigned int> I{0,  0,  1, ...};
+std::vector<unsigned int> J{0,  1,  0, ...};
+\end{lstlisting} \normalsize
+\item [triplet] vector:\tiny
+\begin{lstlisting}
+std::vector<std::tuple<int, int, double>> 
+t{{0, 0, 4}, {0, 1, -1}, {1, 0, -1}, ...};
+\end{lstlisting} \normalsize
+\item [CSR] (Compressed Sparse Row) or CRS (Compr. Row Storage) or Yale:\tiny
+\begin{lstlisting}
+std::vector<double>       val{4, -1, -1, 4, -1, -1, 4, -1, -1, 4};
+std::vector<unsigned int> col_idx{0, 1, 0, 1, 2, 1, 2, 3, 2, 3};
+std::vector<unsigned int> row_ptr{0, 2, 5, 8, 10}; // size: n_rows.
+\end{lstlisting} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 1 - Typical operations with sparse matrices} 
+\begin{itemize}
+\item Insertion: \\
+\lstinline|A[i][j] = x;|
+\item Deletion: \\
+\lstinline|A[i].erase(j);| or \lstinline|A.erase(i, j);|
+\item Random access: \\
+\lstinline|x = A[i][j]; A[i][j] += y;|
+\item Sequential traversing:
+\small\begin{lstlisting}
+for (row : A)
+  {
+    for (column : row)
+      std::cout << column.value << " ";
+    std::cout << std::endl;
+  }
+\end{lstlisting}\normalsize
+\item Matrix-vector multiplication:\\
+\lstinline|std::vector<double> y = A * x;|
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 1 - Inheriting from STL containers}
+\begin{itemize}
+\item The \texttt{C++} standard leaves a lot of freedom for implementation of containers.
+\item STL containers have non-virtual destructors.
+\item \href{http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines\#Rc-dtor-virtual}{C.35: A base class destructor should be either public and virtual, or protected and non-virtual.}
+\small\begin{lstlisting}
+class Base {
+public:
+ ~Base { do_something(); }; // Non-virtual.
+}
+
+class Derived : public Base {
+public:
+ MyComplexType member;
+ ~Derived { member.clear(); ... }
+}
+
+Base *var = new Derived;
+delete var; // Calls var::~Base() but not var::~Derived()!
+\end{lstlisting}\normalsize
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Exercise 1 - Sparse matrix class}
+\begin{itemize}
+\item Implement a \texttt{C++} class to represent a sparse matrix based on STL containers.
+\item Simplify random access, allocation, entry increment, sequential traversing.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Exercise 1 - Sparse matrix class}
+Implement the following methods:
+\begin{lstlisting}[basicstyle=\footnotesize]
+/// Convert row-oriented sparse matrix to AIJ format.
+void
+aij(std::vector<double> &      a,
+    std::vector<unsigned int> &i,
+    std::vector<unsigned int> &j);
+
+/// Convert row-oriented sparse matrix to CSR format.
+void csr(std::vector<double> &      a,
+         std::vector<unsigned int> &col_ind,
+         std::vector<unsigned int> &row_ptr);
+
+/// Stream operator.
+friend std::ostream &
+operator<<(std::ostream &stream,
+           sparse_matrix &M);
+
+/// Sparse matrix increment.
+void sparse_matrix::operator+=(sparse_matrix &other);
+
+/// Compute matrix-vector product.
+friend std::vector<double>
+operator*(sparse_matrix &M,
+          const std::vector<double> &x);
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Exercise 2 - Finite differences}
+Implement a \texttt{C++} template class to compute derivatives of any order of a given function (callable object) using recursive backward/forward first-order finite difference formulas.
+\end{frame}
+
+\end{document}
