@@ -6,9 +6,7 @@ main(int argc, char **argv)
   auto fun = [](const double &x) -> double {
     return std::pow(x, 3) + 5 * x + 3;
   };
-  auto prime = [](const double &x) -> double {
-    return 3 * std::pow(x, 2) + 5;
-  };
+  auto prime = [](const double &x) -> double { return 3 * std::pow(x, 2) + 5; };
 
   newton_solver solver(fun, prime);
   solver.solve(0.0);

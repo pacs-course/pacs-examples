@@ -1,0 +1,19 @@
+1. Read parameters from file and store them:
+   - domain parameters;
+   - contagion parameters;
+   - person parameters.
+
+2. Define rules for moving a single person and to change state (Susceptible, Infected, Recover):
+   - stay "home";
+   - walk (i.e. move of a step length = dr);
+   - go to the pub;
+   - return from the pub.
+
+3. Define rules for changing infection state (Susceptible, Infected, Recover):
+   - if I have been infected for n_timesteps_recover, I recover;
+   - if I'm still infected, I'm not home and someone is closer than "r_infection",
+     then they get infected.
+
+4. Loop over timesteps and handle interactions (2., 3.) among people.
+
+5. Output results to .csv file using output streams (and plot them).
