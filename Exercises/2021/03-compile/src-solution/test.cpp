@@ -1,6 +1,7 @@
 #include <stdlib.h> // System includes
-//#include <iostream.h>                       //
+
 #include <iostream> //
+
 using std::cerr;
 using std::cin;
 using std::cout;
@@ -106,7 +107,7 @@ operator<<(std::ostream &out, TestParameters const &p)
 }
 
 int
-main(int argc, char *argv[])
+main(int argc, char **argv)
 {
   // Parse command line with getpot
   GetPot indata(argc, argv);
