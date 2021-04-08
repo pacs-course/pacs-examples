@@ -10,7 +10,9 @@
 #include <iostream>
 #include <vector>
 
-int main(int argc, char **argv) {
+int
+main(int argc, char **argv)
+{
   unsigned int degree;
   std::cout << "Polynomial degree" << std::endl;
   std::cout << "=> ";
@@ -32,9 +34,9 @@ int main(int argc, char **argv) {
   }
   */
 
-  double x_0 = 0.00;
-  double x_f = 1.00;
-  double h = 0.5e-6;
+  double       x_0      = 0.00;
+  double       x_f      = 1.00;
+  double       h        = 0.5e-6;
   unsigned int n_points = static_cast<unsigned int>((x_f - x_0) / h);
 
   std::vector<double> points(n_points + 1);
