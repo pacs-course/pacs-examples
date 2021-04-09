@@ -1,7 +1,7 @@
 #include <cmath>
-#include "udf.hpp"
+#include "udfHandler.hpp"
 #include "muParserFunction.hpp"
-extern "C"
+namespace
 {
   double fsincos(double const & x)
   {
@@ -29,12 +29,28 @@ extern "C"
     return (x>=-0.5 && x<=0.5)?1.0:0.0;
   }
 
-  double parsedFunction(double const & x)
+  class parsedFunction
   {
-    // Here I need a static variable
-    static apsc::MuParserInterface::muParserFunction theFunction;
-    return theFunction(x);
-  }
+    apsc::MuParserInterface::muParserFunction theFunction{"parsedFunction.txt"};
+  public:
+    double operator()(const double & x)
+    {
+      return theFunction(x);
+    }
+  };
+
+  // load function objects to factory
+  __attribute__((constructor)) void
+  loadFunctionItems()
+  {
+    using namespace apsc::NumericalIntegration;
+    addIntegrandToFactory("fsincos",fsincos);
+    addIntegrandToFactory("pippo",pippo);
+    addIntegrandToFactory("pluto",pluto);
+    addIntegrandToFactory("one",one);
+    addIntegrandToFactory("irregular",irregular);
+    addIntegrandToFactory("parsedFunction",parsedFunction());
+ }
 
 }
 

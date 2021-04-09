@@ -18,10 +18,37 @@ namespace apsc::LinearAlgebra
   {
   public:
     //! Default constructor (array is zero initialized)
-    Polynomial(){M_coeff.fill(0);}
+    Polynomial(){M_coeff.fill(R(0));}
     // Constructor taking coefficients
     Polynomial(const std::array<R,N+1> & c):M_coeff{c}
     {}
+    //! I can initialize with a polynomial, but only if Degree<=
+    template<unsigned int M>
+    Polynomial(Polynomial<M,R> const & right) noexcept
+    {
+      static_assert(M<=N," Cannot assign a polynomial of higher degree");
+      M_coeff.fill(R(0));
+      std::copy(right.get_coeff().begin(),right.get_coeff().end(),M_coeff.begin());
+    }
+    //! For polynomial of the same type I use the implicit one
+    Polynomial(Polynomial<N,R> const &)=default;
+    //! Move constructor is the implicit one
+    Polynomial(Polynomial<N,R> &&)=default;
+    // I can also assign a polynomial of smaller degree
+    template<unsigned int M>
+    Polynomial & operator =(Polynomial<M,R> const & right) noexcept
+    {
+      static_assert(M<=N," Cannot assign a polynomial of higher degree");
+      M_coeff.fill(R(0));
+      std::copy(right.get_coeff.begin(),right.get_coeff().end(),M_coeff.begin());
+
+    }
+    //! Copy assignement is the implicit one
+    Polynomial & operator =(Polynomial<N,R> const &)=default;
+    //! Move assignement is the implicit one
+    Polynomial & operator =(Polynomial<N,R>&&)=default;
+
+
     //! Set coefficients
     void set_coeff(const std::array<R,N+1> & c)
     {
@@ -40,7 +67,7 @@ namespace apsc::LinearAlgebra
       But unfortunately it does not work if R=complex<Type> and T=Type. There is not
       implicit conversion Type -> complex<Type>, So in that case I need to pass the double.
      */
-    auto operator()(R const & x)const
+    auto constexpr operator()(R const & x)const noexcept
     {
       //(an*x + an-1)*x + .. + a_0
       auto sum=M_coeff[N];
@@ -48,6 +75,18 @@ namespace apsc::LinearAlgebra
         sum=sum*x + M_coeff[N-i];
       return sum;
     }
+
+    auto operator -() noexcept
+    {
+      for (unsigned int i = 0u;i<=N;++i) this->M_coeff[i]=-this->M_coeff[i];
+      return *this;
+    }
+
+     auto operator +() noexcept
+     {
+       return *this;
+     }
+
     //! The polynomial degree
     /*!
      *  implemented as a constexpr function since the degree is
@@ -153,7 +192,118 @@ namespace apsc::LinearAlgebra
     return out;
   }
 
+  template <unsigned int NDegree, unsigned int DDegree, typename R>
+  auto operator / (Polynomial<NDegree,R> const & Num, Polynomial<DDegree,R> const & Den)
+  {
+    auto [quot,rest] = polyDivide(Num,Den);
+    return quot;
+  }
 
+  template <unsigned int NDegree, unsigned int DDegree, typename R>
+   auto operator % (Polynomial<NDegree,R> const & Num, Polynomial<DDegree,R> const & Den)
+   {
+     auto [quot,rest] = polyDivide(Num,Den);
+     return rest;
+   }
+
+
+  template <unsigned int LDegree, unsigned int RDegree, typename R>
+    auto operator + (Polynomial<LDegree,R> const & left, Polynomial<RDegree,R> const & right) noexcept
+    {
+    constexpr unsigned int NMAX=std::max(LDegree,RDegree);
+     constexpr unsigned int NMIN=std::min(LDegree,RDegree);
+     Polynomial<NMAX,R> res;
+     if constexpr (NMAX==LDegree)
+         {
+         for (unsigned int i = NMIN+1;i<=NMAX;++i) res.get_coeff()[i]=left.get_coeff()[i];
+         }
+     else if (NMAX==RDegree)
+       {
+         for (unsigned int i = NMIN+1;i<=NMAX;++i) res.get_coeff()[i]=right.get_coeff()[i];
+       }
+     for (unsigned int i = 0u;i<=NMIN;++i) res.get_coeff()[i]=right.get_coeff()[i]+left.get_coeff()[i];
+     return res;
+   }
+
+  template <unsigned int LDegree, unsigned int RDegree, typename R>
+  auto operator - (Polynomial<LDegree,R> const & left, Polynomial<RDegree,R> const & right) noexcept
+  {
+    constexpr unsigned int NMAX=std::max(LDegree,RDegree);
+     constexpr unsigned int NMIN=std::min(LDegree,RDegree);
+     Polynomial<NMAX,R> res;
+     if constexpr (NMAX==LDegree)
+         {
+         for (unsigned int i = NMIN+1;i<=NMAX;++i) res.get_coeff()[i]=left.get_coeff()[i];
+         }
+     else if (NMAX==RDegree)
+       {
+         for (unsigned int i = NMIN+1;i<=NMAX;++i) res.get_coeff()[i]=-right.get_coeff()[i];
+       }
+     for (unsigned int i = 0u;i<=NMIN;++i) res.get_coeff()[i]=left.get_coeff()[i]-right.get_coeff()[i];
+     return res;
+  }
+
+  template <unsigned int LDegree, unsigned int RDegree, typename R>
+  auto operator * (Polynomial<LDegree,R> const & left, Polynomial<RDegree,R> const & right) noexcept
+   {
+    constexpr unsigned int NRES=LDegree*RDegree;
+    Polynomial<NRES,R> res;
+    for (unsigned int i = 0u;i<=LDegree;++i)
+      {
+        for (unsigned int j = 0u;j<=RDegree;++j)
+        res.get_coeff()[i*j] += left.get_coeff()[i]*right.get_coeff()[j];
+      }
+    return res;
+   }
+
+  template <unsigned int RDegree, typename R>
+  auto operator * (R const & scalar, Polynomial<RDegree,R> const & right) noexcept
+  {
+    Polynomial<RDegree,R> res;
+    for (unsigned int j = 0u;j<=RDegree;++j)
+      res.get_coeff()[j]=scalar*right.get_coeff()[j];
+    return res;
+  }
+
+  namespace internals
+  {
+  template <unsigned int RDegree, typename R,unsigned int Exp>
+  struct Pow
+  {
+   auto operator()(Polynomial<RDegree,R> const & p)
+    {
+     Pow<RDegree,R,Exp-1u> next;
+     return next(p)*p;
+    }
+  };
+
+  template <unsigned int RDegree, typename R>
+  struct Pow<RDegree,R,1u>
+  {
+    Polynomial<RDegree,R> operator()(Polynomial<RDegree,R> const & p)
+    {
+     return p;
+    }
+  };
+
+  template <unsigned int RDegree, typename R>
+  struct Pow<RDegree,R,0u>
+  {
+    Polynomial<0u,R> operator()(Polynomial<RDegree,R> const & p)
+    {
+     return Polynomial<0u,R>{{R(1)}};
+    }
+  };
+  }// end internals
+
+
+  template <unsigned int Exp,unsigned int RDegree, typename R>
+  //pow<Int>(p) elevates p to the Int power (Int>=1).
+  auto pow(Polynomial<RDegree,R> const & p)
+  {
+    internals::Pow<RDegree,R,Exp> compute;
+    return compute(p);
+  };
 
 }
 #endif

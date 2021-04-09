@@ -40,7 +40,7 @@ LIBLIB= -L$(PACS_LIB_DIR) -lquadrules -L. -lrulesFactory -lmuparser
 # Library with factory
 LIBNAME2=rulesFactory
 DYNAMIC_LIBFILE2=lib$(LIBNAME2).so
-LIB2_SRCS:=ruleFactory.cpp
+LIB2_SRCS:=ruleFactory.cpp udfHandler.cpp
 LIB2_OBJS:=$(LIB2_SRCS:.cpp=.o)
 LIB2_HEADERS:=$(LIB2_SRCS:.cpp=.hpp)
 
@@ -95,8 +95,8 @@ SRCS=$(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
 
-OTHER_OBJS:=udfHandler.o
-OTHER_SRCS:=udfHandler.cpp
+OTHER_OBJS:=
+OTHER_SRCS:=
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -169,8 +169,8 @@ $(DYNAMIC_LIBFILE5): $(LIB5_OBJS)
 $(DYNAMIC_LIBFILE2): $(LIB2_OBJS)
 	$(CXX) -shared $(LDFLAGS)  $(LIB2_OBJS) $(LIBD) -o $(DYNAMIC_LIBFILE2)
 
-$(DYNAMIC_LIBFILE3): $(LIB3_OBJS)
-	$(CXX) -shared $(LDFLAGS) $(LIB3_OBJS) -L$(PACS_LIB_DIR) -lmuparser -o $(DYNAMIC_LIBFILE3)
+$(DYNAMIC_LIBFILE3): $(DYNAMIC_LIBFILE2) $(LIB3_OBJS)
+	$(CXX) -shared $(LDFLAGS) $(LIB3_OBJS) -L$(PACS_LIB_DIR) -lmuparser $(DYNAMIC_LIBFILE2) -o $(DYNAMIC_LIBFILE3)
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)

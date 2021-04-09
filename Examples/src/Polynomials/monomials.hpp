@@ -19,7 +19,7 @@ namespace apsc::LinearAlgebra
     
     //! Overload for N=0
     template<class R>
-    constexpr R monomial(const R x, IntToType<0>)
+    constexpr R monomial(const R , IntToType<0>)
     {
       return 1;
     }

@@ -9,9 +9,9 @@
 #include <fstream>
 namespace apsc::MuParserInterface
 {
-  muParserFunction::muParserFunction() {
+  muParserFunction::muParserFunction(std::string filename) {
     this->M_parser.DefineVar("x",&M_x);
-    std::fstream theFunction{muParserFunction::filename, std::ios::in};
+    std::fstream theFunction{filename, std::ios::in};
     std::string expression;
     if(theFunction.fail() || theFunction.eof())
       {
