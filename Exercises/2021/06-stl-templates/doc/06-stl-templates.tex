@@ -78,8 +78,8 @@ std::vector<unsigned int> J{0,  1,  0, ...};
 \end{lstlisting} \normalsize
 \item [triplet] vector:\tiny
 \begin{lstlisting}
-std::vector<std::tuple<int, int, double>> 
-t{{0, 0, 4}, {0, 1, -1}, {1, 0, -1}, ...};
+std::vector<std::tuple<unsigned int, unsigned int, double>> 
+  t{{0, 0, 4}, {0, 1, -1}, {1, 0, -1}, ...};
 \end{lstlisting} \normalsize
 \item [CSR] (Compressed Sparse Row) or CRS (Compr. Row Storage) or Yale:\tiny
 \begin{lstlisting}
@@ -114,7 +114,7 @@ for (row : A)
 
 \begin{frame}[fragile]{Exercise 1 - Inheriting from STL containers}
 \begin{itemize}
-\item The \texttt{C++} standard leaves a lot of freedom for implementation of containers.
+\item The \texttt{C++} standard leaves a lot of freedom for the implementation of containers.
 \item STL containers have non-virtual destructors.
 \item \href{http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines\#Rc-dtor-virtual}{C.35: A base class destructor should be either public and virtual, or protected and non-virtual.}
 \small\begin{lstlisting}
