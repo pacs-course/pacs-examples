@@ -29,7 +29,8 @@ void printHelp(){
 }
 
 //! Helper function
-void printList(apsc::QuadratureRuleFactory::RulesFactory const & rulesFactory)
+template <class Factory>
+void printList(Factory const & rulesFactory)
 {
   auto lista=rulesFactory.registered();
   std::cout<<" The following rules are registered "<<std::endl;
@@ -46,7 +47,7 @@ int main(int argc, char** argv){
   GetPot key_input(argc,argv);
   if (key_input.search(2, "--help", "-h")){
     printHelp();
-    exit(0);
+    return 0;
   }
 
 
@@ -64,11 +65,12 @@ int main(int argc, char** argv){
   // This is wrong. You should get the global variable
   //RulesFactory const & rulesFactory=RulesFactory::Instance();
  // Load library with the rules
+  // @todo this part should be enucleated in a class!
   auto nlibs = cl.vector_variable_size("library");
   if (nlibs ==0)
     {
       cout<<"You need to specify at least one plugin library\n";
-      exit(1);
+      return 1;
     }
   else
     {
@@ -80,7 +82,7 @@ int main(int argc, char** argv){
       if(quadlib == string("NONE"))
         {
           cout<<"Getpot file wrongly parsed,. Cannot read library\n";
-          exit(1);
+          return 1;
         }
       else
         {
@@ -91,22 +93,76 @@ int main(int argc, char** argv){
         {
         cout<< "cannot find library" << quadlib <<endl;
         cout<< dlerror();
-        exit(1);
+        return 1;
       }
     }
 
   if (key_input.search(2, "--list", "-l"))
     {
       printList(rulesFactory);
-      exit(0);
+      return 0;
     }
   // Now get the library with the functions to be integrated
-  std::string userdeflib=cl("udflib","libudf.so");
-  // Handle the library and get the integrand function
-  UdfHandler integrands(userdeflib);
-  std::string fun_name=cl("integrand","myfun");
-  FunPoint f=integrands.getFunction(fun_name);
-  
+  // Het a handle to the factory
+  auto & myIntegrands = apsc::NumericalIntegration::myIntegrands;
+//@ to do enucleate this part: useless code repetition!
+  nlibs = cl.vector_variable_size("udflib");
+  if (nlibs ==0)
+    {
+      cout<<"You need to specify at least one integrand library\n";
+      return 1;
+    }
+  else
+    {
+      cout<<"Reading "<<nlibs<<" integrand libraries\n";
+    }
+  for (unsigned int i=0; i<nlibs;++i)
+    {
+      string intlib=cl("udflib",i,"NONE");
+      if(intlib == string("NONE"))
+        {
+          cout<<"Getpot file wrongly parsed,. Cannot read library\n";
+          return 1;
+        }
+      else
+        {
+          cout<<"Integrands library "<<intlib<<std::endl;
+        }
+      void * dylib=dlopen(intlib.c_str(),RTLD_NOW);
+      if (dylib==nullptr)
+        {
+        cout<< "cannot find library" << intlib <<endl;
+        cout<< dlerror();
+        return 1;
+      }
+    }
+  std::string fun_name=cl("integrand","NULL");
+  if (fun_name=="NULL")
+    {
+      std::cerr<<"Getpot file must contain integrand=integrandName\n";
+      std::cerr<<"Valid integrand in the FunctionFactory:\n";
+      printList(myIntegrands);
+      return 2;
+    }
+  else if(fun_name=="?")
+    {
+      printList(myIntegrands);     std::cerr<<"Valid integrand in the FunctionFactory:\n";
+      printList(myIntegrands);
+      return 0;
+    }
+
+
+  FunPoint f;
+  try
+  {
+      f=myIntegrands.get(fun_name);
+  }
+  catch (std::invalid_argument &)
+  {
+      std::cerr<<"Integrand not present. Factory provides\n";
+      printList(myIntegrands);
+  }
+
   // Load all other info
   double a=cl("a", 0.);
   double b=cl("b", 1 );
@@ -115,29 +171,24 @@ int main(int argc, char** argv){
   if(rule=="?")
     {
        printList(rulesFactory);
-       exit(0);
+       return 0;
      }
   // Extract the rule. 
   bool notThere(false);
-  QuadratureRuleHandler theRule; // alias to a unique_prt<QuadratureRule>
+  QuadratureRuleHandler theRule; // alias to a PointerWrapper<QuadratureRule>
   try
     {
       theRule=rulesFactory.create(rule);
-      std::string ruleKind{theRule->name()};
+      double targetError=cl("targetError", 1.e-5);
+      unsigned int maxIter=cl("maxIter", 1000);
+      theRule->setTargetError(targetError);
+      theRule->setMaxIter(maxIter);
 
-      // Here we need to treat in a special way Adaptive and Montecarlo
-      // Alternatively, we may enrich the public interface of QuadratureRuleBase implementing
-      // virtual dummy methods (i.e. methods that do nothing) in the base class, overridden specifically
-      // in theadaptive variants and in Montecarlo. If we do this way we will always call setTargetError
-      // and setMaxIter. For the standard quadrature rule they do nothing.
+      std::string ruleKind{theRule->name()};
       if (ruleKind=="Adaptive" || ruleKind=="Montecarlo")
         {
-	  double targetError=cl("targetError", 1.e-5);
-	  unsigned int maxIter=cl("maxIter", 1000);
 	  std::cout<<"target error="<<targetError<<" Max iterations="<<maxIter<<endl;
-          theRule->setTargetError(targetError);
-          theRule->setMaxIter(maxIter);
-        }
+         }
     }  catch (std::invalid_argument &)
     {
       notThere = true;
@@ -147,7 +198,7 @@ int main(int argc, char** argv){
       cout <<"Rule "<< rule<< "does not exist"<<endl;
       cout <<"Registered Rules are "<<endl;
       printList(rulesFactory);
-      std::exit(2); // exit with error status
+      return 2; // exit with error status
     }
   //  get the rule
   cout<<"Integral between "<<a<<" and "<<b <<" with "<< nint <<" intervals"<<endl;

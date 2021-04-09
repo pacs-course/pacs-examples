@@ -6,8 +6,8 @@ library='./libAdamsRules.so ./libGaussRules.so'
 a=-1
 b=3
 nint=25
-#rule=Trapezoidal
-rule=?
+rule=Trapezoidal
+#rule=?
 targetError=1.e-5
 maxIter=100
 

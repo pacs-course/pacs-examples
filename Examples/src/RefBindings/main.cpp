@@ -9,11 +9,13 @@ void fun(const std::vector<int> & a)
 
 }
 
+/*
 void fun(std::vector<int> & a)
 {
   std::cout<< "calling fun(std::vector<int>&) "<<a.size()<<std::endl;
 
 }
+*/
 void fun(std::vector<int>&& a)
 {
   auto c = std::move(a);
@@ -21,11 +23,13 @@ void fun(std::vector<int>&& a)
 }
 
 
+/*
 void fun(const std::vector<int>&& a)
 {
   auto c = std::move(a);
   std::cout<< "calling fun(const std::vector<int>&&) "<<c.size()<<std::endl;
 }
+*/
 // Universal references!
 template <typename V>
 void forwardToFun(V&& v)

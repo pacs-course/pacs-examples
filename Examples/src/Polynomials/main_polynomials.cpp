@@ -33,6 +33,13 @@ int main()
   auto [quot,rest] = PolyDivide(p1,p4);
   std::cout<<p1<<"=\n";
   std::cout<<"("<<p4<<")*("<<quot<<") + "<<rest<<std::endl;
+
+  auto p5= p1+3.0*p4 - p1*Polynomial<4,double>{{1.,2.,-5.,0.,1.}};
+  std::cout<<"p5="<<p5<<std::endl;
+
+  auto p6= pow<4>(p4);
+  std::cout<<"p4^4="<<p6<<std::endl;
+
 }
                                
  
