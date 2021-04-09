@@ -11,46 +11,23 @@
 #include <stdexcept>
 #include <type_traits>
 #include "QuadratureRuleBase.hpp"
+#include "Factory.hpp"
+
 namespace apsc::NumericalIntegration{
-  //! A class to simplify the management of loading funcions from a shared library
-  /*!  Functions must have the signature determined by
-    NumericalQuadrature::FunPoint or to be convertible to that
-    signature.
 
-    In particular the required signature is
-    @code
-    double ()(double const &)
-    @endcode
+  using IntegrandFactory= GenericFactory::FunctionFactory
+    <std::string,
+    apsc::NumericalIntegration::FunPoint
+    >;
 
-    Functions in the library should be set with C linkage using the 
-    extern 'C'{} block. Otherwise you should know their mangled name.
-  */
-  class UdfHandler{
-  public:
-    //! The type of function thet should be stored
-    using fp_type=double (*)(double const &);
-    static_assert(std::is_convertible<fp_type,apsc::NumericalIntegration::FunPoint>::value,
-                  "The signature of the integrand function is not consistent");
-    
-    UdfHandler()=default;
-    //! destructor closes library
-    ~UdfHandler();
-    //! Constructor that opens library
-    //! @param s library name
-    explicit UdfHandler(std::string const & s);
-    //! Opens the library
-    //! @param s the library name
-    void openUdfLibrary(std::string const & s);
-    //! Extract function from the library
-    //! @param s function name
-    //! @result The callable object storing the function
-    apsc::NumericalIntegration::FunPoint getFunction(std::string const & s) const;
-    //! Closes library
-    void closeUdfLibrary();
-  private:
-    //! The library handle
-    void * M_lib_handle=nullptr;
-  };
+  extern IntegrandFactory& myIntegrands;
+
+  template <class FunctionObject>
+  void addIntegrandToFactory(std::string const & name, FunctionObject&& integrand)
+  {
+    static_assert(std::is_convertible_v<FunctionObject,apsc::NumericalIntegration::FunPoint>,"Function object type not good for integrand\n");
+    myIntegrands.add(name,std::forward<FunctionObject>(integrand));
+  }
 
 }
 
