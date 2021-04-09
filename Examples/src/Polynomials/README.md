@@ -14,6 +14,8 @@ Things to note
 	- I have used references to access Polynomial members directly, in particular the coefficients;
 	- I have used **function template overloading** to treat the case of division by a constant polinomial. Whay it was necessary?
 	becouse I have used `unsigned int` as template parameter
+
+* I have implemented a whole set of operators, so that this polynomial class obays the standard rules of polynomial algebra. You can add and multiply polynomials, multiply with a scalar and also elevate the polynomial to an integer power.
 	     
 * I have also implemented a class template for computing monomials value at compile time.
 
@@ -28,8 +30,11 @@ you can write a `complex<double>` as, for instance, `2. + 3.i` (nice isn't it?).
 `x= 2.0L + 3.0il`. For `float` you have `if`.  Again, remember that also literals have a type, and you can specify it with a special suffix.
 
 #What do I learn from this example#
-- Some use of integral template parameters
-- The complex literals
+- Some use of integral template parameters;
+- Some use of template recursion;
+- Another example of operator overloading;
+- How the use of automatic return deduction can simplify life in generic programming;
+- The complex literals;
 - A way to compute the so called long polynomial division (inspired on a code available on [Rosetta Code](https://rosettacode.org/wiki/Rosetta_Code).
    
     

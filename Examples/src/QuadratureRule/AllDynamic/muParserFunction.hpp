@@ -14,11 +14,11 @@
   class muParserFunction
   {
   public:
-    muParserFunction();
+    muParserFunction()=default;
+    muParserFunction(std::string filename);
     ~muParserFunction();
     muParserFunction(muParserFunction const &);
     muParserFunction & operator=(muParserFunction const &);
-
     void set_expression(const std::string & e);
     //! A generic operator
     /*! Takes as II argument anything that can be addressed
