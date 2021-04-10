@@ -9,7 +9,7 @@ int main()
   double h=0.1;
 
   auto df= apsc::makeForwardDerivative<4>(f,h);
-  std::cout<<" Approx. fourth derivative of f=x^4 at x=5 is "<<df(5.)<<std::endl;
+  std::cout<<" Approx. fourth derivative of f=x^4 at x=5 is "<<df(5.)<<" Exact value "<<24<<std::endl;
   // but I can give any function object
   auto g=[](const double & x){return std::exp(x);};
   std::cout<<" Approx. third derivative of exp(x) (backward formula) at x=2 is "<<
