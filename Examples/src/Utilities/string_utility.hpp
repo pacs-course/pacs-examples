@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <utility>
 #include <memory>
 /*
   Part of this software has been taken from internet. I thank the 
@@ -24,8 +25,9 @@ namespace Utility{
      @note a is also returned trimmed: after a call to 
      ltrim(a) string a is trimmed!! 
    */
-  inline std::string &ltrim(std::string &s)
+  inline std::string ltrim(std::string sin)
   {
+    auto s = std::move(sin);
     auto const & loc = std::locale();
     s.erase(s.begin(), std::find_if(s.begin(), s.end(),
 				    [&loc]
@@ -47,7 +49,8 @@ namespace Utility{
      @note a is also returned trimmed: after a call to 
      ltrim(a) string a is trimmed!! 
    */
-    inline std::string &rtrim(std::string &s) {
+    inline std::string rtrim(std::string sin) {
+    auto s=std::move(sin);
     auto const & loc = std::locale();
     s.erase(std::find_if(s.rbegin(), s.rend(), 
 			 [&loc]
@@ -67,7 +70,7 @@ namespace Utility{
      @note a is also returned trimmed: after a call to 
      ltrim(a) string a is trimmed!! 
    */
-  static inline std::string &trim(std::string &s) {
+  inline std::string  trim(std::string s) {
     return ltrim(rtrim(s));
   }
   

@@ -26,9 +26,9 @@ public:
   */
   template <std::intmax_t N, std::intmax_t D>
   Rational(std::ratio<N,D> const &):Rational(N,D){};
-  // Copy/move operators not needed: automatica ones are fine.
+  // Copy/move operators not needed: automatic ones are fine.
   /* 
-    We might declare explicitely that the automatic 
+    We might declare explicitly that the automatic
     copy constructor is what we want by writing
     @code  
     Rational(Rational const &)=default;

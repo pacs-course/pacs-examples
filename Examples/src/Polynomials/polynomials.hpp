@@ -17,12 +17,12 @@ namespace apsc::LinearAlgebra
   class Polynomial
   {
   public:
-    //! Default constructor (array is zero initialized)
+    //! Default constructor (coefficients are zero initialized)
     Polynomial(){M_coeff.fill(R(0));}
     // Constructor taking coefficients
     Polynomial(const std::array<R,N+1> & c):M_coeff{c}
     {}
-    //! I can initialize with a polynomial, but only if Degree<=
+    //! I can initialize with another polynomial, but only if Degree<=
     template<unsigned int M>
     Polynomial(Polynomial<M,R> const & right) noexcept
     {
@@ -30,7 +30,7 @@ namespace apsc::LinearAlgebra
       M_coeff.fill(R(0));
       std::copy(right.get_coeff().begin(),right.get_coeff().end(),M_coeff.begin());
     }
-    //! For polynomial of the same type I use the implicit one
+    //! For polynomial of the same type I use the implicit copy-constructore
     Polynomial(Polynomial<N,R> const &)=default;
     //! Move constructor is the implicit one
     Polynomial(Polynomial<N,R> &&)=default;
@@ -47,8 +47,6 @@ namespace apsc::LinearAlgebra
     Polynomial & operator =(Polynomial<N,R> const &)=default;
     //! Move assignement is the implicit one
     Polynomial & operator =(Polynomial<N,R>&&)=default;
-
-
     //! Set coefficients
     void set_coeff(const std::array<R,N+1> & c)
     {
@@ -56,17 +54,11 @@ namespace apsc::LinearAlgebra
     }
     //! Get coefficients
     auto get_coeff()const noexcept {return M_coeff;}
-    //! Get coefficient as reference (an alternative getter).
+    //! Get coefficient as reference (a nicer alternative to setter).
     auto & get_coeff() noexcept {return M_coeff;}
 
     //! Evaluate polynomial with Horner rule
-    /*
-      A general version: now I can have coefficient
-      and values of different type as long as they are convertible.
-      thanks to common_type<A,B>
-      But unfortunately it does not work if R=complex<Type> and T=Type. There is not
-      implicit conversion Type -> complex<Type>, So in that case I need to pass the double.
-     */
+    //! @param x The evaluation point
     auto constexpr operator()(R const & x)const noexcept
     {
       //(an*x + an-1)*x + .. + a_0
@@ -75,13 +67,13 @@ namespace apsc::LinearAlgebra
         sum=sum*x + M_coeff[N-i];
       return sum;
     }
-
+    //! Unary minus
     auto operator -() noexcept
     {
       for (unsigned int i = 0u;i<=N;++i) this->M_coeff[i]=-this->M_coeff[i];
       return *this;
     }
-
+    //! Unary plus
      auto operator +() noexcept
      {
        return *this;
@@ -105,7 +97,7 @@ namespace apsc::LinearAlgebra
    * @tparam DDegree Degree of the denominator
    * @tparam R Type of polynomial scalar field
    * @param Num Numerator
-   * @param Den Denominato
+   * @param Den Denominator
    * @return A pair containing Quotient and Rest of the division
    * @pre NDegree>=DDegree
    * @pre Denominator must be a complete polynomial, i.e. the coefficient of highest degree must be !=0
@@ -155,7 +147,7 @@ namespace apsc::LinearAlgebra
   }
 
   /*!
-   * Polynomial division. Specialization for the division by a constant polynomial
+   * Polynomial division. Overload for the division by a constant polynomial (degree=0)
    * @tparam NDegree Degree of the numerator
    * @tparam R The type of the polynomial scalar field
    * @param Num The numerator
@@ -180,6 +172,14 @@ namespace apsc::LinearAlgebra
     return std::make_pair(Quotient,Rest);
   }
 
+  /*!
+   * Outputs the polynomial in a pretty-print way
+   * @tparam NDegree The degree
+   * @tparam R The field
+   * @param out The output stream
+   * @param p The polynomial
+   * @return The stream
+   */
   template <unsigned int NDegree, typename R>
   std::ostream & operator<<(std::ostream & out, Polynomial<NDegree,R>const & p)
   {
@@ -192,12 +192,28 @@ namespace apsc::LinearAlgebra
     return out;
   }
 
+  /*!
+   * Simple Division. Rest is discarded
+   * @param Num Numerator
+   * @param Den Denominator
+   * @return The result of the division (rest is discarded)
+   * * @pre NDegree>=DDegree
+   * @pre Denominator must be a complete polynomial, i.e. the coefficient of highest degree must be !=0
+   */
   template <unsigned int NDegree, unsigned int DDegree, typename R>
   auto operator / (Polynomial<NDegree,R> const & Num, Polynomial<DDegree,R> const & Den)
   {
     auto [quot,rest] = polyDivide(Num,Den);
     return quot;
   }
+  /*!
+    * The rest of the division. The quationt is discarded.
+    * @param Num Numerator
+    * @param Den Denominator
+    * @return The rest of the division (quotient is discarded)
+    * * @pre NDegree>=DDegree
+    * @pre Denominator must be a complete polynomial, i.e. the coefficient of highest degree must be !=0
+    */
 
   template <unsigned int NDegree, unsigned int DDegree, typename R>
    auto operator % (Polynomial<NDegree,R> const & Num, Polynomial<DDegree,R> const & Den)
@@ -206,11 +222,14 @@ namespace apsc::LinearAlgebra
      return rest;
    }
 
-
+/*!
+ * Polinomial addition
+ * @return
+ */
   template <unsigned int LDegree, unsigned int RDegree, typename R>
     auto operator + (Polynomial<LDegree,R> const & left, Polynomial<RDegree,R> const & right) noexcept
     {
-    constexpr unsigned int NMAX=std::max(LDegree,RDegree);
+     constexpr unsigned int NMAX=std::max(LDegree,RDegree);
      constexpr unsigned int NMIN=std::min(LDegree,RDegree);
      Polynomial<NMAX,R> res;
      if constexpr (NMAX==LDegree)
@@ -225,6 +244,9 @@ namespace apsc::LinearAlgebra
      return res;
    }
 
+  /*!
+   * Polinomial subtraction
+   */
   template <unsigned int LDegree, unsigned int RDegree, typename R>
   auto operator - (Polynomial<LDegree,R> const & left, Polynomial<RDegree,R> const & right) noexcept
   {
@@ -243,6 +265,9 @@ namespace apsc::LinearAlgebra
      return res;
   }
 
+  /*!
+   * Multiplication of 2 polynomials
+   */
   template <unsigned int LDegree, unsigned int RDegree, typename R>
   auto operator * (Polynomial<LDegree,R> const & left, Polynomial<RDegree,R> const & right) noexcept
    {
@@ -256,6 +281,9 @@ namespace apsc::LinearAlgebra
     return res;
    }
 
+  /*!
+   * (pre)-Multiplication with a scalar
+   */
   template <unsigned int RDegree, typename R>
   auto operator * (R const & scalar, Polynomial<RDegree,R> const & right) noexcept
   {
@@ -265,8 +293,14 @@ namespace apsc::LinearAlgebra
     return res;
   }
 
+  //! Stuff not for the general user
   namespace internals
   {
+    /*!
+     * A struct to support powers of polynomyals
+     * It uses template recursion
+     * @tparam Exp The exponent
+     */
   template <unsigned int RDegree, typename R,unsigned int Exp>
   struct Pow
   {
@@ -277,6 +311,7 @@ namespace apsc::LinearAlgebra
     }
   };
 
+  //! Specialization for exponent equal 1
   template <unsigned int RDegree, typename R>
   struct Pow<RDegree,R,1u>
   {
@@ -286,6 +321,7 @@ namespace apsc::LinearAlgebra
     }
   };
 
+  //! Specialization for Polynomial od degree 0
   template <unsigned int RDegree, typename R>
   struct Pow<RDegree,R,0u>
   {
@@ -297,8 +333,17 @@ namespace apsc::LinearAlgebra
   }// end internals
 
 
+  /*!
+   * Power of a polynomial
+   *
+   * Usage: pow<N>(p) (N>=1)
+   * @tparam Exp The exponent
+   * @tparam RDegree The degree of the polynomial
+   * @tparam R The scalar field
+   * @param p The polynomial
+   * @return p^Exp
+   */
   template <unsigned int Exp,unsigned int RDegree, typename R>
-  //pow<Int>(p) elevates p to the Int power (Int>=1).
   auto pow(Polynomial<RDegree,R> const & p)
   {
     internals::Pow<RDegree,R,Exp> compute;
