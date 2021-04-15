@@ -49,7 +49,7 @@ struct RKFTraits<RKFKind::VECTOR>
   }
 };
 
-//! Specialization for marices
+//! Specialization for matrices
 template <>
 struct RKFTraits<RKFKind::MATRIX>
 {
