@@ -6,7 +6,7 @@
 //! The class containing the prototype of a Butcher table for RKF
 //! methods
 /*!
- * A Butcher table (or Buttcher array) for an embedded Runge Kutta
+ * A Butcher table (or Butcher array) for an embedded Runge Kutta
  * method is defined by a matrix A and two vectors b1 and b2. Another
  * vector, called c is required but it may be computed as the row sum
  * of A
