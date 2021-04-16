@@ -16,7 +16,7 @@ main(int argc, char **argv)
     return y;
   };
 
-  auto jacobianFun = [](const ArgumentType &x) -> JacobianMatrixType {
+  auto jacobian_fun = [](const ArgumentType &x) -> JacobianMatrixType {
     JacobianMatrixType J(2, 2);
 
     J(0, 0) = 2 * (x[0] - 1);
