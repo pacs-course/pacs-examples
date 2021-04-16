@@ -3,12 +3,11 @@
 int
 main(int argc, char **argv)
 {
-  using ArgumentType       = NewtonTraits::ArgumentType;
-  using ReturnType         = NewtonTraits::ReturnType;
+  using VariableType       = NewtonTraits::VariableType;
   using JacobianMatrixType = NewtonTraits::JacobianMatrixType;
 
-  auto system = [](const ArgumentType &x) -> ReturnType {
-    ReturnType y(2);
+  auto system = [](const VariableType &x) -> VariableType {
+    VariableType y(2);
 
     y(0) = (x[0] - 1) * (x[0] - 1) + 0.1 * (x[1] - 5) * (x[1] - 5);
     y(1) = 1.5 - x[0] - 0.1 * x[1];
@@ -16,7 +15,7 @@ main(int argc, char **argv)
     return y;
   };
 
-  auto jacobian_fun = [](const ArgumentType &x) -> JacobianMatrixType {
+  auto jacobian_fun = [](const VariableType &x) -> JacobianMatrixType {
     JacobianMatrixType J(2, 2);
 
     J(0, 0) = 2 * (x[0] - 1);
