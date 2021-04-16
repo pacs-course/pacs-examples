@@ -30,7 +30,7 @@ public:
 
   /// This constructor accepts a non linear system and a unique
   /// pointer to the Jacobian base class.
-  Newton(T::NonLinearSystemType &&        system_,
+  Newton(T::NonLinearSystemType &&     system_,
          std::unique_ptr<JacobianBase> jac_,
          const NewtonOptions &         options_ = NewtonOptions())
     : system(std::forward<T::NonLinearSystemType>(system_))
@@ -40,8 +40,8 @@ public:
 
   template <class Jac>
   Newton(T::NonLinearSystemType &&system_,
-         Jac                   jac_,
-         const NewtonOptions & options_ = NewtonOptions())
+         Jac                      jac_,
+         const NewtonOptions &    options_ = NewtonOptions())
     : system(std::forward<T::NonLinearSystemType>(system_))
     , jac(std::make_unique<JacobianBase>(jac_))
     , options(options_)
@@ -60,7 +60,7 @@ public:
   solve(const T::VariableType &x0);
 
 private:
-  T::NonLinearSystemType           system;
+  T::NonLinearSystemType        system;
   std::unique_ptr<JacobianBase> jac;
   NewtonOptions                 options;
   NewtonResult                  result;
