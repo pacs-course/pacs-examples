@@ -52,9 +52,9 @@ Newton::solve(const T::VariableType &x0)
 
       // If residual does not decrease for two consecutive iterations
       // mark for stagnation.
-      bool no_decrease = (norm_res >= norm_res_old);
-      stagnation       = (no_decrease_old && no_decrease);
-      no_decrease_old  = no_decrease;
+      const bool no_decrease = (norm_res >= norm_res_old);
+      stagnation             = (no_decrease_old && no_decrease);
+      no_decrease_old        = no_decrease;
 
       // We stop on stagnation if we decided to.
       stop = (stagnation && stop_on_stagnation);
