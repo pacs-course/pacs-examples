@@ -9,12 +9,12 @@ class NewtonOptions
 {
 public:
   /// Tolerance on residual.
-  /// The iteration stops if @f$||F(x)|| < minRes@f$.
+  /// The iteration stops if @f$||F(x)|| < tol_res@f$.
   double tol_res = 1e-6;
 
   /// Tolerance on increment.
   /// The method stops if
-  /// @f$||x_{new}-x_{old}|| < tolerance@f$.
+  /// @f$||x_{new}-x_{old}|| < tol_incr@f$.
   double tol_incr = 1e-8;
 
   /// Max. number of iterations.
