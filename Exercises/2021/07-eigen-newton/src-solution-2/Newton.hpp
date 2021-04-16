@@ -120,7 +120,7 @@ Newton<Type>::solve(const typename T::VariableType &x0)
 
       // If residual does not decrease for two consecutive iterations
       // mark for stagnation.
-      bool no_decrease = (norm_res >= norm_res_old);
+      const bool no_decrease = (norm_res >= norm_res_old);
       stagnation       = (no_decrease_old && no_decrease);
       no_decrease_old  = no_decrease;
 
