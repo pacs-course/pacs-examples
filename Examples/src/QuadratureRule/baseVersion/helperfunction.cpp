@@ -57,10 +57,10 @@ namespace apsc::NumericalIntegration
   void printout(double const value,double const exact,double const error,
                 std::string const & title,std::ostream & out)
   {
-    std::cout<< "*** "<<title<<" ***"<<std::endl;
-    std::cout<< "Computed value "<<value<<std::endl;
-    std::cout<< "Error          "<<(exact-value)<<std::endl;
-    std::cout<< "Target error   "<<error<<std::endl<<std::endl;
+    out<< "*** "<<title<<" ***"<<std::endl;
+    out<< "Computed value "<<value<<std::endl;
+    out<< "Error          "<<(exact-value)<<std::endl;
+    out<< "Target error   "<<error<<std::endl<<std::endl;
   }
   
 }

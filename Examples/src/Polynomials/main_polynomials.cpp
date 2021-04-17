@@ -40,6 +40,8 @@ int main()
   auto p6= pow<4>(p4);
   std::cout<<"p4^4="<<p6<<std::endl;
 
+  std::cout<<"Second Derivative of previous polynomial\n";
+  std::cout<<der<2>(p6)<<std::endl;
 }
                                
  
