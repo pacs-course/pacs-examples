@@ -28,8 +28,6 @@ Quadrilateral::showMe(ostream &out) const
 
 namespace
 {
-// in principle I do not have to repeat the attribute here (it is sufficient in
-// the declaration in the hpp file) but it does not hurt.
 void __attribute__((constructor)) LoadF()
 {
   // add quadrilateral to the factory

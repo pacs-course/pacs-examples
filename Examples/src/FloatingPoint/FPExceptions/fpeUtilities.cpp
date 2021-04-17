@@ -4,6 +4,8 @@
 // Only some compilers have this feature however.
 // Ignore possible warnings
 #pragma STDC FENV_ACCESS ON
+namespace apsc
+{
 InvalidFPOperation::InvalidFPOperation(int flags):message{"FPE exceptions:"}
 {
   if (flags & FE_INVALID)
@@ -37,5 +39,5 @@ bool test_fpe_exception(bool on)
   else
     return false;
 }
-
+}// end namespace
 
