@@ -29,7 +29,7 @@ int main()
 #endif
     do
     {
-        std::cout << "Gimme 3 numbers a and b" << std::endl <<
+        std::cout << "Gimme 3 numbers a, b and c" << std::endl <<
                   "I will compute 1/a, log(b) and exp(c)" << std::endl;
         std::cin >> a >> b>>c;
         try
@@ -41,7 +41,7 @@ int main()
             double y = std::exp(c);
             std::cout << " exp(" << c << ") is " << y << std::endl;
             std::cout.flush();
-            test_fpe_exception (on);
+            apsc::test_fpe_exception (on);
           }
         catch (std::exception& x)
           {
@@ -51,11 +51,11 @@ int main()
           {
             std::cout << "Another (unknown) exception occurred" << std::endl;
           }
-	std::cout << "Do you want to exit? (Y for yes) default=no" << std::endl;
+	std::cout << "Do you want to exit? (Y or y for yes) anithing else=no" << std::endl;
 	std::string input;
 	cin.clear();
 	cin>>input;
-        theEnd = (input[0] == 'Y');
+        theEnd = (input== "Y" || input=="y");
     }
     while (!theEnd);
 }

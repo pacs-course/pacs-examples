@@ -60,7 +60,7 @@ namespace apsc::NumericalIntegration{
     protected:
 
     //! The underlying rule. static because it is common to all objects of the class
-    //! inlided so this is a definition (since C++17)
+    //! inlined so this is a definition (since C++17)
     inline static SQR _therule;
     //! Factor used in the calculation of the error estimate.
     double _factor;
