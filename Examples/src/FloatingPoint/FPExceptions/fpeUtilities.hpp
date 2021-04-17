@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <string>
 
+namespace apsc
+{
 //!This function may throw exceptions if a fpe has been raised.
 //! @param on if true means that exceptions will be thrown
 //! @return if on is false, returns true if a floating point exception has occurred
@@ -21,4 +23,5 @@ public:
 private:
   std::string message;
 };
+}// end namespace
 #endif
