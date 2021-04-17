@@ -3,7 +3,7 @@
 #define __TRAPFPE_HPP__
 /*! \file trapfpe.hpp An example of use of floating point environment
   
-  If included in your program it ensures that
+  If included in your main program it ensures that
   if the cpp macro FPE_ABORT  is set using -DFPE_ABORT,
   a floating point exceptions causes the program to abort.
  */

@@ -19,7 +19,7 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 # You may have an include file also in the current directory
 #
 -include Makefile.inc
-
+LDLIBS=-lfpe
 # Say no if you want full optimization
 export DEBUG=yes
 #CXX=g++-4.9
@@ -106,9 +106,9 @@ all:
 depend: $(DEPEND)
 
 static:
-	$(MAKE) $(LIBRARY) LIBTYPE=STATIC 
+	$(MAKE) library LIBTYPE=STATIC 
 dynamic:
-	$(MAKE) $(LIBRARY) LIBTYPE=DYNAMIC
+	$(MAKE) library LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
@@ -128,7 +128,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(LIBRARY) $(EXEC_OBJS) $(OTHER_OBJS)
+$(EXEC): $(EXEC_OBJS) $(OTHER_OBJS)
 #	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
 
 #$(EXEC_OBJS): $(EXEC_SRCS)
