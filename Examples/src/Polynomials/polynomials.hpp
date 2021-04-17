@@ -183,12 +183,11 @@ namespace apsc::LinearAlgebra
   template <unsigned int NDegree, typename R>
   std::ostream & operator<<(std::ostream & out, Polynomial<NDegree,R>const & p)
   {
-    out<<p.get_coeff().front()<<"+";
-    for (auto i=1u;i<p.degree();++i)
+    out<<p.get_coeff().front();
+    for (auto i=1u;i<=p.degree();++i)
       {
-        out<<p.get_coeff()[i]<<"x^"<<i<<"+";
+        out<<"+"<<p.get_coeff()[i]<<"x^"<<i;
       }
-    out<<p.get_coeff().back()<<"x^"<<NDegree;
     return out;
   }
 
@@ -293,7 +292,8 @@ namespace apsc::LinearAlgebra
     return res;
   }
 
-  //! Stuff not for the general user
+
+ //! Stuff not for the general user
   namespace internals
   {
     /*!
@@ -304,7 +304,7 @@ namespace apsc::LinearAlgebra
   template <unsigned int RDegree, typename R,unsigned int Exp>
   struct Pow
   {
-   auto operator()(Polynomial<RDegree,R> const & p)
+   auto operator()(Polynomial<RDegree,R> const & p)const
     {
      Pow<RDegree,R,Exp-1u> next;
      return next(p)*p;
@@ -315,7 +315,7 @@ namespace apsc::LinearAlgebra
   template <unsigned int RDegree, typename R>
   struct Pow<RDegree,R,1u>
   {
-    Polynomial<RDegree,R> operator()(Polynomial<RDegree,R> const & p)
+    Polynomial<RDegree,R> operator()(Polynomial<RDegree,R> const & p)const
     {
      return p;
     }
@@ -343,12 +343,51 @@ namespace apsc::LinearAlgebra
    * @param p The polynomial
    * @return p^Exp
    */
-  template <unsigned int Exp,unsigned int RDegree, typename R>
+  /*template <unsigned int Exp,unsigned int RDegree, typename R>
   auto pow(Polynomial<RDegree,R> const & p)
   {
     internals::Pow<RDegree,R,Exp> compute;
     return compute(p);
   };
+*/
+
+// A simpler version (since c++17)
+  template <unsigned int Exp,unsigned int RDegree, typename R>
+    auto pow(Polynomial<RDegree,R> const & p)
+    {
+    if constexpr (Exp==0u)
+      return Polynomial<0u,R>{{R(1)}};
+    else if constexpr (Exp==1u)
+      return p;
+    else
+      return p*pow<Exp-1u>(p);
+    };
+
+  /*!
+     * Derivative of a Polynomial
+     * Usage: der<N>(p) (N>=0)
+     *
+     * @author Sergio Mauricio Vanegas Arias
+     * @tparam M The derivative order
+     * @tparam RDegree The degree of the polynomial
+     * @tparam R The scalar field
+     * @param p The polynomial
+     * @return \f$\frac{d^{M}(p)}{dx^{M}}\f$
+     */
+    template <unsigned M, unsigned RDegree, typename R>
+    auto der(Polynomial<RDegree, R> const & p)
+    {
+      if constexpr (M == 0u)
+        return p;
+      else if constexpr (RDegree < M)
+        return Polynomial<0u,R>{{R(0)}};
+      else{
+        std::array<R, RDegree> C;
+        for(size_t i = 1; i <= RDegree; ++i)
+          C[i-1] = i * p.get_coeff()[i];
+        return der<M-1>(Polynomial<RDegree-1, R>{C});
+      }
+    };
 
 }
 #endif

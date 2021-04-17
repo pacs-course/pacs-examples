@@ -36,8 +36,8 @@ namespace apsc::NumericalIntegration{
       when I will load rules dynamically I need to enrich the interface 
       with these functions that in case of normal rules do just nothing.
     */
-    virtual void setTargetError(double const a){}
-    virtual void setMaxIter(unsigned int n){}
+    virtual void setTargetError(double const){}
+    virtual void setMaxIter(unsigned int){}
     //! a string that identify the general type of quadrature rules
     virtual std::string name() const=0;
   };
