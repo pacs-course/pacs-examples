@@ -1,0 +1,75 @@
+\documentclass[10pt]{beamer}
+\usetheme{default}
+\setbeamercovered{invisible}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+    \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+
+\usepackage{listings}
+
+% User-defined colors.
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+% Settings for listing class.
+\lstset{
+  language=C++,                        % The default language
+  basicstyle=\small\ttfamily,          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries, % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed}, % Set string constant style
+  extendedchars=true % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  lineskip=0ex, %  frame=single
+}
+
+\begin{document}
+    \title{A Runge-Kutta-Fehlberg solver\protect\\using traits and \texttt{Eigen}\\protect\\(part I)}
+    \author{Pasquale Claudio Africa}
+    \date{23/04/2021}
+
+\begin{frame}[plain, noframenumbering]
+    \maketitle
+\end{frame}
+
+\begin{frame}{RKF solver}
+This example (a modified version of \texttt{Examples/src/RKFSolver}) is about a set of tools that implements embedded Runge-Kutta-Fehlberg methods to solve non-linear scalar and vector Ordinary Differential Equations, based on the \texttt{Eigen} library.
+\vfill
+Consider an ODE of the form
+\begin{equation*}
+\frac{\mathrm{d} y}{\mathrm{d} y} = f(t, y),
+\end{equation*}
+and consider the coefficients \(b_i, b_i^*, a_{ij}, c_i\) to be given in the form of a Butcher tableau.
+We recall that, at each time step \(t_n\), an embedded RKF method of order \(p\) consists of the following steps.
+\begin{enumerate}
+\item Compute the high-order solution \(y_{n+1} = y_{n} + h \sum_{i=1}^p b_i k_i\), where \(k_i = f\left(t_n + c_i h_n, y_n + \sum_{j=1}^{i-1}a_{ij}k_j\right)\), and \(h_n = t_{n+1} - t_n\).
+\item Compute the low-order solution \(y_{n+1}^* = y_{n} + h \sum_{i=1}^p b_i^* k_i\).
+\item Compute the error \(\varepsilon_{n+1} = y_{n+1} - y_{n+1}^* = h\sum_{i=1}^p(b_i - b_i^*)k_i\).
+\item Adapt the step size \(h_{n+1} = \tau_{n} h_{n}\), where \(\tau_{n}\) is a prescribed reduction (\(<1\))/expansion (\(>1\)) factor depending on whether \(\varepsilon_{n+1}\) is larger or smaller than a prescribed tolerance.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{RKF solver}
+The code structure is the following:
+\begin{itemize}
+\item \texttt{ButcherRKF} contains the definition of the Butcher tableaux for the most common RKF methods.
+\item \texttt{RKFTraits} defines the basic structure that enable to statically select the type of the equation(s) to be solved (\textit{i.e.} scalar, vector, matrix).
+\item \texttt{RKFResult} is a data structure containing the output of the RKF solver.
+\item \texttt{RKF} implements a generic RKF solver interface, filling a proper \texttt{RKFResult} object.
+\end{itemize}
+\end{frame}
+
+\end{document}
