@@ -215,3 +215,9 @@ make.dep
 /Examples/lib/cmake/muparser/muparser-targets.cmake
 /Examples/lib/cmake/muparser/muparserConfig.cmake
 /Examples/lib/cmake/muparser/muparserConfigVersion.cmake
+/Examples/src/FloatingPoint/FPExceptions/core
+/Examples/src/FloatingPoint/FPExceptions/main_fpe
+/Examples/src/GenericFactory/main_testAbstractFactory
+/Examples/src/Plugins/FactoryPlugin/main_poly
+/Examples/src/STL/Variant/main_variant
+/Examples/src/Streams/Serialization/main_serialization
