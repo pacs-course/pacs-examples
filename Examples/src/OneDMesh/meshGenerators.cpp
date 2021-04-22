@@ -52,7 +52,7 @@ namespace Geometry
     auto lastValue=solution.back().second;
     // make it an integer
     std::size_t numElements=std::max(static_cast<std::size_t>(std::round(lastValue)),static_cast<std::size_t>(2));
-    if(numElements>M_num_elements) throw std::runtime_error("VariableSize: too many elements");
+    if(numElements>M_num_elements) throw std::runtime_error("__FILE__,__LINE__: too many elements");
     // rescale
     using pDouble=std::pair<double,double>;
     double scaling=numElements/lastValue;
@@ -76,7 +76,7 @@ namespace Geometry
 				    return value.second >i;
 				  }
 				  );
-	if (found == solution.end()) throw std::runtime_error("variableSize: Something wrong: cannot find node!");
+	if (found == solution.end()) throw std::runtime_error("__FILE__,__LINE__: Something wrong: cannot find node!");
 	pos          = found-1;
 	auto xpos1 = pos->first;
 	auto ypos1 = pos->second;
@@ -84,7 +84,7 @@ namespace Geometry
 	auto ypos2 = found->second;
 	// Linear interpolation
 	// Division by zero should not happen. But.. just in case
-	if((ypos2-ypos1)==0) throw std::runtime_error("variableSize: something wring in the spacing function h");
+	if((ypos2-ypos1)==0) throw std::runtime_error("__FILE__,__LINE__: something wrong in the spacing function h");
 	auto xpos=(xpos1*(ypos2-i)+xpos2*(i-ypos1))/(ypos2-ypos1);
 	mesh.push_back(xpos);
       }
