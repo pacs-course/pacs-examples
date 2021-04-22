@@ -25,6 +25,7 @@ int main()
 
   auto res = allSum(x,3,6,8.5,-3);
   std::cout<<" The sum is "<<res<<std::endl;
+  std::cout<<" The mean is "<<apsc::allMean(x,3,6,8.5,-3)<<std::endl;
 
   std::cout<<" The product is "<<apsc::allProd(x,3,6,8.5,-3)<<std::endl;
 
