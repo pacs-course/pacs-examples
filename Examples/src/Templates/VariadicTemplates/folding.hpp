@@ -19,14 +19,21 @@ namespace apsc
     return (... && args) ;
   }
 
-  //! Make a sum of arguments (if it makes sense
+  //! Make a sum of arguments (if it makes sense)
   template<typename... Args>
    auto allSum(Args const &... args)
   {
     return (args +...);
   }
 
-  //! Make product of arguments (if it makes sense
+  //! Compute the average of arguments (if it makes sense)
+  template<typename... Args>
+   auto allMean(Args const &... args)
+  {
+    return (args +...) / sizeof...(args);
+  }
+
+  //! Make product of arguments (if it makes sense)
     template<typename... Args>
      auto allProd(Args const &... args)
     {
