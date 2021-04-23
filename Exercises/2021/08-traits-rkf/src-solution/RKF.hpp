@@ -243,7 +243,7 @@ RKF<ButcherType, ProblemType>::RKFstep(const double &      t,
   const auto &c  = table.c;
 
   // The first step is always an Euler step.
-  K[0] = function(t, y) * h;
+  K[0] = function(t, y);
   for (unsigned int i = 1; i < n_stages; ++i)
     {
       const double time = t + c[i] * h;
@@ -252,15 +252,15 @@ RKF<ButcherType, ProblemType>::RKFstep(const double &      t,
       for (unsigned int j = 0; j < i; ++j)
         value += A[i][j] * K[j];
 
-      K[i] = function(time, value) * h;
+      K[i] = function(time, value);
     }
 
   VariableType v1 = y;
   VariableType v2 = y;
   for (unsigned int i = 0; i < n_stages; ++i)
     {
-      v1 += K[i] * b1[i];
-      v2 += K[i] * b2[i];
+      v1 += h * K[i] * b1[i];
+      v2 += h * K[i] * b2[i];
     }
 
   return std::make_pair(v1, v2);
