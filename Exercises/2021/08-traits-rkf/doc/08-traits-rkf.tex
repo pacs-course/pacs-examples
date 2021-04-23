@@ -37,7 +37,7 @@
 }
 
 \begin{document}
-    \title{A Runge-Kutta-Fehlberg solver\protect\\using traits and \texttt{Eigen}\\protect\\(part I)}
+    \title{A Runge-Kutta-Fehlberg solver\protect\\using traits and \texttt{Eigen}\protect\\(part I)}
     \author{Pasquale Claudio Africa}
     \date{23/04/2021}
 
@@ -50,7 +50,7 @@ This example (a modified version of \texttt{Examples/src/RKFSolver}) is about a 
 \vfill
 Consider an ODE of the form
 \begin{equation*}
-\frac{\mathrm{d} y}{\mathrm{d} y} = f(t, y),
+\frac{\mathrm{d} y}{\mathrm{d} t} = f(t, y),
 \end{equation*}
 and consider the coefficients \(b_i, b_i^*, a_{ij}, c_i\) to be given in the form of a Butcher tableau.
 We recall that, at each time step \(t_n\), an embedded RKF method of order \(p\) consists of the following steps.
