@@ -55,9 +55,9 @@ Consider an ODE of the form
 and consider the coefficients \(b_i, b_i^*, a_{ij}, c_i\) to be given in the form of a Butcher tableau.
 We recall that, at each time step \(t_n\), an embedded RKF method of order \(p\) consists of the following steps.
 \begin{enumerate}
-\item Compute the high-order solution \(y_{n+1} = y_{n} + h \sum_{i=1}^p b_i k_i\), where \(k_i = f\left(t_n + c_i h_n, y_n + \sum_{j=1}^{i-1}a_{ij}k_j\right)\), and \(h_n = t_{n+1} - t_n\).
-\item Compute the low-order solution \(y_{n+1}^* = y_{n} + h \sum_{i=1}^p b_i^* k_i\).
-\item Compute the error \(\varepsilon_{n+1} = y_{n+1} - y_{n+1}^* = h\sum_{i=1}^p(b_i - b_i^*)k_i\).
+\item Compute the high-order solution \(y_{n+1} = y_{n} + h_n \sum_{i=1}^p b_i k_i\), where \(k_i = f\left(t_n + c_i h_n, y_n + h_n\sum_{j=1}^{i-1}a_{ij}k_j\right)\), and \(h_n = t_{n+1} - t_n\).
+\item Compute the low-order solution \(y_{n+1}^* = y_{n} + h_n \sum_{i=1}^p b_i^* k_i\).
+\item Compute the error \(\varepsilon_{n+1} = y_{n+1} - y_{n+1}^* = h_n \sum_{i=1}^p(b_i - b_i^*)k_i\).
 \item Adapt the step size \(h_{n+1} = \tau_{n} h_{n}\), where \(\tau_{n}\) is a prescribed reduction (\(<1\))/expansion (\(>1\)) factor depending on whether \(\varepsilon_{n+1}\) is larger or smaller than a prescribed tolerance.
 \end{enumerate}
 \end{frame}
