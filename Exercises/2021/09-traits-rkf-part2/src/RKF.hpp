@@ -233,7 +233,7 @@ RKF<ButcherType, ProblemType>::RKFstep(const double &      t,
                                        const double &      h) const
   -> std::pair<VariableType, VariableType>
 {
-  auto constexpr n_stages = ButcherType::n_stages();
+  constexpr auto n_stages = ButcherType::n_stages();
 
   std::array<VariableType, n_stages> K;
 
@@ -250,7 +250,7 @@ RKF<ButcherType, ProblemType>::RKFstep(const double &      t,
 
       VariableType value = y;
       for (unsigned int j = 0; j < i; ++j)
-        value += A[i][j] * K[j];
+        value += h * A[i][j] * K[j];
 
       K[i] = function(time, value);
     }
