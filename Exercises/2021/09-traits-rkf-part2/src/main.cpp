@@ -17,7 +17,7 @@ main(int argc, char **argv)
     const double       y0          = 1;
     const double       h0          = 0.2;
     const double       tolerance   = 1e-4;
-    const unsigned int n_max_steps = 10000;
+    const unsigned int n_max_steps = 1e4;
 
     RKF<RKFScheme::RK23_t, RKFType::Scalar> solver(RKFScheme::RK23, f);
 
@@ -56,8 +56,6 @@ main(int argc, char **argv)
       return out;
     };
 
-    RKF<RKFScheme::RK45_t, RKFType::Vector> solver(RKFScheme::RK45, f);
-
     const double t0 = 0;
     const double tf = 40;
 
@@ -67,9 +65,11 @@ main(int argc, char **argv)
 
     const double       h0          = 0.2;
     const double       tolerance   = 1e-4;
-    const unsigned int n_max_steps = 5000;
+    const unsigned int n_max_steps = 5e3;
 
-    auto solution = solver(t0, tf, y0, h0, tolerance, n_max_steps);
+    RKF<RKFScheme::RK45_t, RKFType::Vector> solver(RKFScheme::RK45, f);
+
+    const auto solution = solver(t0, tf, y0, h0, tolerance, n_max_steps);
 
     std::cout << std::boolalpha;
     std::cout << "*** Van der Pol oscillator ***" << std::endl

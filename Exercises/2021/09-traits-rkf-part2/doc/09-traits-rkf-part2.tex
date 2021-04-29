@@ -45,14 +45,14 @@
     \maketitle
 \end{frame}
 
-\begin{frame}{Homeworks}
+\begin{frame}{Refactoring the RKF solver}
 Starting from the solution to the previous lab:
 \begin{enumerate}
-\item use the provided solver to solve the Lorenz system (\url{https://en.wikipedia.org/wiki/Lorenz_system}) and plot its solution both as a function of time and in the phase space;
-\item implement the Fehlberg12 and the Dormand-Prince methods (\url{https://en.wikipedia.org/wiki/List_of_Runge\%E2\%80\%93Kutta_methods\#Embedded_methods}) and test them on the Lorenz system;
 \item modify the constructor of the \texttt{RKF} class so that the chosen RKF method has a default value;
-\item define a class to handle the input options for the \texttt{RKF} class, and provide the corresponding setter/getter methods and possibly a method to parse options from file;
-\item implement the factory pattern to the \texttt{ButcherArray} class, so that the actual method can be polymorphically chosen at runtime.
+\item define a class to handle the input options for the \texttt{RKF} class, provide the corresponding setter method and a method to parse options from a GetPot file;
+\item use the RKF solver to solve the Lorenz system (\url{https://en.wikipedia.org/wiki/Lorenz_system}) and plot its solution both as a function of time and in the phase space;
+\item implement the Fehlberg12 and the Dormand-Prince methods (\url{https://en.wikipedia.org/wiki/List_of_Runge\%E2\%80\%93Kutta_methods\#Embedded_methods}) and test them on the Lorenz system;
+\item implement a factory for the \texttt{ButcherArray} class, so that the actual method can be polymorphically selected at runtime from the GetPot file.
 \end{enumerate}
 \end{frame}
 
