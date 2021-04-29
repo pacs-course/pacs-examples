@@ -16,13 +16,13 @@ template <unsigned int N_STAGES>
 class ButcherArray
 {
 public:
-  /// The actual Butcher array A.
+  /// The actual Butcher table A.
   using Table_t = std::array<std::array<double, N_STAGES>, N_STAGES>;
 
   /**
    * Constructor.
    *
-   * @param a_     Array A.
+   * @param A_     Table A.
    * @param b1_    Array b1 (low order).
    * @param b2_    Array b2 (high order).
    * @param order_ Order of the method (the highest one).

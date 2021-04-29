@@ -56,8 +56,6 @@ main(int argc, char **argv)
       return out;
     };
 
-    RKF<RKFScheme::RK45_t, RKFType::Vector> solver(/* ??? */, f);
-
     const double t0 = 0;
     const double tf = 40;
 
@@ -67,7 +65,9 @@ main(int argc, char **argv)
 
     const double       h0          = 0.2;
     const double       tolerance   = 1e-4;
-    const unsigned int n_max_steps = 5000;
+    const unsigned int n_max_steps = 5e3;
+
+    RKF<RKFScheme::RK45_t, RKFType::Vector> solver(/* ??? */, f);
 
     const auto solution = solver(t0, tf, y0, h0, tolerance, n_max_steps);
 
