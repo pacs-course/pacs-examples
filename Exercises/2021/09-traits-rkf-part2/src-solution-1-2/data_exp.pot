@@ -1,0 +1,9 @@
+t0 = 0
+tf = 10
+
+y0 = 1
+
+h0 = 0.2
+
+tolerance   = 1e-4
+n_max_steps = 1e4
