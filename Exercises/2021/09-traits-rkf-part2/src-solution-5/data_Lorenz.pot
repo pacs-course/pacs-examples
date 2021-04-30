@@ -1,0 +1,11 @@
+t0 = 0
+tf = 100
+
+y0 = '1 1 1'
+
+h0 = 0.1
+
+tolerance   = 1e-4
+n_max_steps = 1e6
+
+solver_type = RK45
