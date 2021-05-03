@@ -1,6 +1,7 @@
 #include <vector>
 #include<iostream>
-typedef std::vector<double> Vet;
+#include <memory>
+using Vet=std::vector<double>;
 //! Sums to R the convolution of A and B
 //! Does not work if you alias the last two arguments
 void covol(Vet const & A, Vet const & B , Vet & R)
@@ -26,20 +27,16 @@ void covol2(Vet const & A, Vet const & B , Vet & R)
   }
 }
 //! Sums to R the convolution of A and B
-//! This version is argument alias proof! But uses more memory
-/*!
-  @note I could have  returned the new R with the return statement.
-  I just wanted to maintain the same signature as the previous functions.
- */
-void covol3(Vet const  A, Vet const  B , Vet & R)
+//! This version is argument alias proof (and also exception safe)! But it uses more memory
+//! Unless you move the arguments
+Vet covol3(Vet A, Vet B, Vet R)
 {
-  Vet Rt=R; // copy content of R
   for (unsigned int i=0; i<A.size();++i){
     double tmp=A[i];
     for(unsigned int k=B.size()-1; k!=0;-- k)
-      Rt[i]+=tmp*B[k];
+      R[i]+=tmp*B[k];
   }
-  R=Rt; // return the result
+  return R; // return the result
 }
 
 
@@ -55,7 +52,7 @@ int main()
   covol2(R,B,R);
   std::cout<<R[50]<<std::endl;
   R=A;
-  covol3(R,B,R);
+  R=covol3(R,B,R);
   std::cout<<R[50]<<std::endl;
 
 }
