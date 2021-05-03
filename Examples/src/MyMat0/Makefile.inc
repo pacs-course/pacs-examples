@@ -17,3 +17,4 @@ else
   CPPFLAGS+=${BLAS_INC_DIR}
   LDLIBS+=-L$(PACS_LIB_DIR) -lpacs $(BLAS_LIB_DIR) -l$(BLAS_LIB_NAME)
 endif
+export
