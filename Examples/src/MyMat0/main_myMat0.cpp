@@ -47,8 +47,8 @@ int main()
   std::cout<<"Norm1, NOrmInf and NormF of a: "<<a.norm1()<<" "<<a.normInf()<<" "<<a.normF()<<std::endl;
 
   // Testing different implementation of matrix/matrix
-  constexpr int NR=600;
-  constexpr int NC=600;
+  constexpr int NR=1000;
+  constexpr int NC=1000;
   {
     // Creating 2 big matrices
     std::cout<<"Creating two big matrices ROWMAJOR ROWMAJOR"<<std::endl;
@@ -63,7 +63,7 @@ int main()
     auto res1=matMul(A,B);
     watch.stop();
     std::cout<<"NormF="<<res1.normF()<<std::endl;
-   double t1=watch.wallTime();
+    double t1=watch.wallTime();
     std::cout<<watch;
     std::cout<< "Optimized Matrix Moltiplication"<<"\n";
     watch.start();

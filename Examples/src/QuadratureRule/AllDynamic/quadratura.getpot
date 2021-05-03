@@ -1,12 +1,13 @@
 #integrand=fsincos
 integrand=parsedFunction
 udflib=./libudf.so
-library='./libAdamsRules.so ./libGaussRules.so'
-#rule=AdaptiveGauss3
+#library='./libAdamsRules.so ./libGaussRules.so'
+library='./libMontecarloRules.so'
+rule=Montecarlo
 a=-1
 b=3
 nint=25
-rule=Trapezoidal
+#rule=Trapezoidal
 #rule=?
 targetError=1.e-5
 maxIter=100
