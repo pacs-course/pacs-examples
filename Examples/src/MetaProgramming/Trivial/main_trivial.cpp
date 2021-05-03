@@ -77,10 +77,9 @@ int main()
 
 
 
+  StandardLayout sl{5,3.14};// use uniform initialization
   // In a standard layout class I can do this:
-
-  StandardLayout sl{5,3.14};// use uniform initialization (agregates are a subset of standard layout types)
-  int * psl = reinterpret_cast<int *>(&sl); // convert to pointer to first memeber
+  int * psl = reinterpret_cast<int *>(&sl); // convert to pointer to first member
   // initialise with the dereferenced pointer
   StandardLayout s2=* (reinterpret_cast<StandardLayout*>(psl));
   std::cout<<"The following two values should be equal:\n";
@@ -95,7 +94,7 @@ int main()
   // A trivially copyable item can be serialised in a direct way
   TriviallyCopyable tc{7,8.9};
   constexpr auto m=sizeof(TriviallyCopyable);
-  // a buffer of m bytes
+  // a buffer of m bytes (since c++17 I can use byte instread of char)
   char buffer[m];
   // copy into the buffer using memcpy
   std::memcpy(buffer,&tc,m);
