@@ -46,6 +46,10 @@ public:
         c[i] += v;
   }
 
+  /// It's always a good practice to declare a virtual destructor for
+  /// polymorphic classes.
+  virtual ~ButcherArray() = default;
+
   /// Number of stages.
   unsigned int n_stages;
 
