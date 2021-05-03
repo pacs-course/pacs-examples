@@ -1,4 +1,4 @@
-#include "IsClonable.hpp"
+#include "CloningUtilities.hpp"
 #include <iostream>
 #include <iomanip>
 #include <type_traits>
@@ -18,7 +18,7 @@ class NiftyContainer{
 public:
   void DoSomething(T* pObj)
   {
-    using namespace apsc::CloningTrait;
+    using namespace apsc::TypeTraits;
     if constexpr (isClonable<T>())
     {
       T* pNewObj = pObj->clone();
@@ -37,7 +37,7 @@ public:
 
 int main()
 {
-  using namespace apsc::CloningTrait;
+  using namespace apsc::TypeTraits;
   std::cout<<"C is clonable:  "<<std::boolalpha<< isClonable<C>()<<std::endl;
   NiftyContainer<C> ncc;
   C pc;
