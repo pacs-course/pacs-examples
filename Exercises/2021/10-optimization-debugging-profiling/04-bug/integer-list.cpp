@@ -4,7 +4,6 @@
 int
 main(int argc, char **argv)
 {
-  using namespace std;
   int c = 1;
 
   // create a new list
