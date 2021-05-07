@@ -6,13 +6,13 @@ class Node
 public:
   // constructors / destructor
   Node()
-    : next(NULL)
-    , previous(NULL)
+    : next(nullptr)
+    , previous(nullptr)
   {}
 
   Node(int a)
-    : next(NULL)
-    , previous(NULL)
+    : next(nullptr)
+    , previous(nullptr)
     , data(a)
   {}
 
@@ -137,7 +137,7 @@ public:
   }
 
   // find first node with a specified value in sublist starting from
-  // this node return NULL if not found
+  // this node return nullptr if not found
   Node *
   find(int value)
   {
@@ -152,7 +152,7 @@ public:
           return t;
       }
 
-    return NULL;
+    return nullptr;
   }
 
   // print the data in the sublist starting from this node
