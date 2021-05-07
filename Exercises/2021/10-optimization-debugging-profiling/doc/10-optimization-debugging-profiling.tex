@@ -74,18 +74,10 @@
     \end{enumerate}
 \end{frame}
 
-\begin{frame}{Memory layout}
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{images/memory_layout.png}
-        \caption{Typical memory layout of a computer.}
-    \end{figure}
-\end{frame}
-
 \begin{frame}{Exercise 2 - Optimization techniques\footnote{See also: \url{https://github.com/ArtemKovera/code-optimization-techniques}}}
     \begin{enumerate}
         \item Implement a function that allocates a \texttt{std::vector} and, taking an index as an input, simply returns the corresponding value. Compare the performance with respect to declaring the vector \texttt{static}.
-        \item Implement a function that multiplies all element in a \texttt{std::vector} by looping over all its elements and returns the result. Compare the performance with respect to rewriting the loop using unrolling.
+        \item Implement a function that multiplies all elements in a \texttt{std::vector} by looping over all its elements and returns the result. Compare the performance with respect to rewriting the loop using unrolling.
         \item Optimize the memory occupation of an object of class \texttt{Class1} by properly aligning/padding the data structure.
     \end{enumerate}
 \end{frame}
@@ -102,8 +94,8 @@ class MyClass
     \end{lstlisting}
     \begin{figure}
         \centering
-        \only<1>{\includegraphics[width=0.75\textwidth]{images/padding_pre.jpg}}
-        \only<2>{\includegraphics[width=0.75\textwidth]{images/padding_post.jpg}}
+        \only<1>{\includegraphics[width=0.7\textwidth]{images/padding_pre.jpg}}
+        \only<2>{\includegraphics[width=0.7\textwidth]{images/padding_post.jpg}}
         \caption{How data is \alt<1>{\textbf{not}}{actually} stored.}
     \end{figure}
 \end{frame}
@@ -129,6 +121,14 @@ Starting from the provided implementation of the class for dense matrices (and c
 \item Naive implementation of matrix-matrix multiplication is slow because it has low \textit{data locality}, simply transposing the left matrix factor improves performance significantly\footnote{See also: \textit{M. Kowarschik, C. Weiß. (2002). Lecture Notes in Computer Science. 213-232. DOI: 10.1007/3-540-36574-5\_10} for further details.}.\\[3mm]
 \item The \lstinline{\#include "test_matrix_mult.hpp"} header provides timing utilities, \lstinline{tic()} and \lstinline{toc(x)} macros start and stop the timer.
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Matrix-matrix multiplication: access patterns}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{images/access_patterns.png}
+        \caption{Access patterns.}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Matrix-matrix multiplication: loop tiling}

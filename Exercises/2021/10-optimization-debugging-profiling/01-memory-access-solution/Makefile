@@ -2,7 +2,7 @@ CXX      ?= g++
 CXXFLAGS ?= -std=c++17
 CPPFLAGS ?= -O3 -Wall
 
-EXEC     = 01-static 02-loop-unrolling 03-data-alignment
+EXEC     = 01-base 02-pointers 03-random
 LDFLAGS ?=
 LIBS    ?=
 
