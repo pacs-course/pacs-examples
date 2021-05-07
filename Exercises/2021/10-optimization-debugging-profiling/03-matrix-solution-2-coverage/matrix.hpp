@@ -47,7 +47,7 @@ public:
     data.resize(rows * cols, 0.0);
   };
 
-  matrix(matrix const &) = default;
+  matrix(const matrix &) = default;
 
   unsigned int
   get_rows() const
