@@ -6,13 +6,13 @@ class Node
 public:
   // constructors / destructor
   Node()
-    : next(NULL)
-    , previous(NULL)
+    : next(nullptr)
+    , previous(nullptr)
   {}
 
   Node(int a)
-    : next(NULL)
-    , previous(NULL)
+    : next(nullptr)
+    , previous(nullptr)
     , data(a)
   {}
 
@@ -30,7 +30,7 @@ public:
   }
 
   int
-  getData(void)
+  getData()
   {
     return data;
   }
@@ -42,7 +42,7 @@ public:
   }
 
   Node *
-  getNext(void)
+  getNext()
   {
     return next;
   }
@@ -54,7 +54,7 @@ public:
   }
 
   Node *
-  getPrevious(void)
+  getPrevious()
   {
     return previous;
   }
@@ -62,21 +62,21 @@ public:
   // list capabilities
   // return true if node is the first of the list, false otherwise
   bool
-  isFirst(void)
+  isFirst()
   {
     return !previous;
   }
 
   // return true if node is the last of the list, false otherwise
   bool
-  isLast(void)
+  isLast()
   {
     return !next;
   }
 
   // return the size of the sublist starting from this node
   int
-  size(void)
+  size()
   {
     Node *t   = this;
     int   ret = 1;
@@ -116,7 +116,7 @@ public:
 
   // remove this node from the list
   void
-  erase(void)
+  erase()
   {
     previous->setNext(next);
     next->setPrevious(previous);
@@ -131,7 +131,7 @@ public:
   }
 
   // find first node with a specified value in sublist starting from
-  // this node return NULL if not found
+  // this node return nullptr if not found
   Node *
   find(int value)
   {
@@ -146,12 +146,12 @@ public:
           return t;
       }
 
-    return NULL;
+    return nullptr;
   }
 
   // print the data in the sublist starting from this node
   void
-  print(void)
+  print()
   {
     Node *t = this;
     while (!t->isLast())
