@@ -12,7 +12,7 @@ int main()
   a.reserve(10000);
   cout<<"Capacity ="<<a.capacity()<<endl;
   for (unsigned int i=0;i<10000;++i)a.push_back(2*i);
-  cout<<" Dynamically adding another doubles to the vector<>"<<endl;
+  cout<<" Dynamically adding another double to the vector<>"<<endl;
   a.push_back(1);
   cout<<"Capacity ="<<a.capacity()<<endl;
   // something to waste time
