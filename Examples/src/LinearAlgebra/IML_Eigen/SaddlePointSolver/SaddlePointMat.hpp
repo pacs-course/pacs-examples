@@ -188,7 +188,7 @@ namespace FVCode3D
         *
         * @return the norm
         */
-      Real norm(){return std::sqrt(this->squaredNorm());}
+      Real norm()const {return std::sqrt(this->squaredNorm());}
           //! Get the number of non zero
       /*!
        * @return the number of non zero

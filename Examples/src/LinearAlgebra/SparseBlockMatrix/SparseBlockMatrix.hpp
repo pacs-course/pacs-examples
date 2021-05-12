@@ -26,7 +26,8 @@ namespace apsc
    * @tparam N The number of block columns
    * @tparam storageOrder The type of ordiering for the stored Eigen matrices
    *
-   * @note So fa the class is not default-construcible, far safety reason. To make it default constructible we need some care.
+   * @note So far the class is not default-construcible, far safety reason.
+   * To make it default constructible we need some care.
    * It is however copy constructible/assignable and move-constructible/assignable.
    * we
    */
@@ -47,21 +48,21 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
   //! @todo it may be changed by adding a further template argument to SpMat definition of in the trait
   using Index=Eigen::Index;
   //! A structure that holds the indexes of a block. For simplicity I gather row and column index in a struct.
-  //! You may use the aggregate initializationto specify a block as {i,j}
+  //! You may use the aggregate initialization to specify a block as {i,j}
   struct Indexes
   {
     Index row;
     Index col;
   };
   /*!
-   * The constructor. It takes in inut two arrays containing the size of the block rows and columns. The block {i,j}
-   * will store a zero matrix with rowSizes[i] rows and colSizes[j] comlumns.
+   * The constructor. It takes in input two arrays containing the size of the block rows and columns.
+   * The block {i,j} will store a zero matrix with rowSizes[i] rows and colSizes[j] comlumns.
    *
    * @param rowSizes The rows of each block row.
    * @param colSizes The columens of each block column.
    */
   SparseBlockMatrix(std::array<Index, M> rowSizes, std::array<Index, N> colSizes);
-
+  SparseBlockMatrix();
 
   /*!
    *  Set the block by copying or moving a given matrix
@@ -77,9 +78,9 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
   void setBlock(Indexes const & blockPosition, Mat&& matrix);
 
   /*!
-   * A block may be the transope of another block. In this case we just store the pointer to the
+   * A block may be the transpose of another block. In this case we just store the pointer to the
    * original block. So when extracting a block {i,j} transpose to a block {k,l} you actually get block {k,l}!
-   * To see if it is transposed use isTransopse().
+   * To see if it is transposed use isTranspose().
    *
    * @param blockPosition The block which is the transpose of another block
    * @param toBlock The block of which it it the transpose
@@ -96,6 +97,7 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
   {
     return *(theMatrices[theBlock.row][theBlock.col]);
   }
+
 
   /*!
    * Gets the block, const version.
@@ -135,7 +137,19 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
  * @param nonZeroes the nonZeroes expected for the block
  */
   void reserve(Indexes const & block, Index nonZeroes){this->getBlock(block).reserve(nonZeroes);}
-/*!
+  /*!
+   * Resizes the matrices to the sizes indicated.
+   *
+   * Normally called after a default construction of the block matrix.
+   * Existing matrices are initialized to zero. Memory is freed.
+   * Transpose information is eliminated (set to false). So if you have
+   * transposed blocks you have to call addTranspose again.
+   * @param rowSizes Array of row block size
+   * @param colSizes Array of col block size
+   */
+  void resize(std::array<Index, M> rowSizes, std::array<Index, N> colSizes);
+
+  /*!
  * The offset of the block rows in the global matrix
  * @param i The block row index
  * @return The offset
@@ -162,6 +176,22 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
    * @return The full matrix
    */
   SpMat fullMatrix() const;
+
+  //! Squared Frobenius norm
+  double squaredNorm()const
+  {
+    double res{0.0};
+    for (unsigned int i=0; i<M; ++i)
+        for (unsigned int j=0; j<N; ++j)
+            res+=this->getBlock({i,j}).squaredNorm();
+    return res;
+  }
+  //! Frobenius norm
+  double norm() const
+  {
+    return std::sqrt(this->squaredNorm());
+  }
+
  private:
   //! The container of the pointers to the block matrices
   std::array<std::array<std::shared_ptr<SpMat>,M>,N> theMatrices;
@@ -318,14 +348,23 @@ template <typename T, unsigned int M, unsigned int N,
      theMatrices[row][col]=theMatrices[toBlock.row][toBlock.col];
   }
 
+  namespace internals
+  {
+    template <class A, class  B>
+    std::tuple<Eigen::Index,Eigen::Index> computeTotals(A const & rowSizes, B const & colSizes)
+    {
+      return std::make_tuple(
+          std::accumulate(colSizes.begin(),colSizes.end(),Eigen::Index{0}),
+          std::accumulate(rowSizes.begin(),rowSizes.end(),Eigen::Index{0})
+      );
+    }
+  }
+
   template <typename T, unsigned int M, unsigned int N, int storageOrder>
   inline SparseBlockMatrix<T, M, N, storageOrder>::SparseBlockMatrix(
     std::array<Index, M> rowSizes, std::array<Index, N> colSizes)
   {
-    Index start=0;
-    totalCols = std::accumulate(colSizes.begin(),colSizes.end(),start );
-    totalRows = std::accumulate(rowSizes.begin(),rowSizes.end(),start );
-
+    std::tie(totalCols,totalRows)=internals::computeTotals(rowSizes,colSizes);
     theRowSizes=rowSizes;
     theColSizes=colSizes;
     for (Index i=0; i<M;++i)
@@ -342,6 +381,54 @@ template <typename T, unsigned int M, unsigned int N,
     theColOffset[0]=0;
     for (Index j=1; j<N;++j)theColOffset[j]=theColOffset[j-1]+colSizes[j-1];
   }
+
+  template <typename T, unsigned int M, unsigned int N, int storageOrder>
+   void SparseBlockMatrix<T, M, N, storageOrder>::resize(
+     std::array<Index, M> rowSizes, std::array<Index, N> colSizes)
+   {
+     std::tie(totalCols,totalRows)=internals::computeTotals(rowSizes,colSizes);
+     theRowSizes=rowSizes;
+     theColSizes=colSizes;
+     for (Index i=0; i<M;++i)
+       {
+         for (Index j=0; j<N;++j)
+           {
+             if (transpose[i][j])
+                 theMatrices[i][j] = std::make_shared<SpMat>( rowSizes[i], colSizes[j] );
+             else
+               {
+                 theMatrices[i][j]->resize( rowSizes[i], colSizes[j] );
+                 theMatrices[i][j]->data().squeeze();
+               }
+             transpose[i][j]=false;
+           }
+       }
+     // Compute offfsets
+     theRowOffset[0]=0;
+     for (Index i=1; i<M;++i)theRowOffset[i]=theRowOffset[i-1]+rowSizes[i-1];
+     theColOffset[0]=0;
+     for (Index j=1; j<N;++j)theColOffset[j]=theColOffset[j-1]+colSizes[j-1];
+   }
+
+
+  template <typename T, unsigned int M, unsigned int N, int storageOrder>
+    inline SparseBlockMatrix<T, M, N, storageOrder>::SparseBlockMatrix()
+  {
+    totalCols=0u;
+    totalRows=0u;
+    theRowSizes.fill(0);
+    theColSizes.fill(0);
+    for (Index i=0; i<M;++i)
+      {
+        for (Index j=0; j<N;++j)
+          {
+            theMatrices[i][j] = std::make_shared<SpMat>();
+            transpose[i][j]=false;
+          }
+      }
+    theRowOffset.fill(0);
+    theColOffset.fill(0);
+ }
 
  template <typename T, unsigned int M, unsigned int N,
               int storageOrder>
@@ -379,6 +466,7 @@ template <typename T, unsigned int M, unsigned int N,
       }
    return res;
   }
+
 
 
 
