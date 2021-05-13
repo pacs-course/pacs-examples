@@ -162,8 +162,8 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
    */
   auto colOffset(Index j)const {return theColOffset[j];}
   /*!
-   * To enquire if the block is in fact the transpose of the actual block.
-   * @param block The bloco indexes {i,j}
+   * To enquire if the block is in fact the transpose of an actual block.
+   * @param block The block indexes {i,j}
    * @return true if it is the transpose
    */
   bool isTranspose(Indexes const & block)const { return transpose[block.row][block.col];}
@@ -192,6 +192,18 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
     return std::sqrt(this->squaredNorm());
   }
 
+  void makeCompressed()
+    {
+      for (int i=0; i<M; ++i)
+          for (int j=0; j<N; ++j)
+            if(!this->isTranspose({i,j}))
+              this->getBlock({i,j}).makeCompressed();
+    }
+  //! Clears memory
+void clear()
+{
+  this->resize({0,0},{0,0});
+}
  private:
   //! The container of the pointers to the block matrices
   std::array<std::array<std::shared_ptr<SpMat>,M>,N> theMatrices;
