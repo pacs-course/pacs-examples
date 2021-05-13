@@ -8,7 +8,9 @@
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_IML_EIGEN_SADDLEPOINTSOLVER_SADDLEPOINTMAT_HPP_
 #define EXAMPLES_SRC_LINEARALGEBRA_IML_EIGEN_SADDLEPOINTSOLVER_SADDLEPOINTMAT_HPP_
 #include "BasicType.hpp"
+#include "SparseBlockMatrix.hpp"
 #include <Eigen/Sparse>
+#include <stdexcept>
 namespace FVCode3D
 {
   //! Class for assembling a saddle point matrix.
@@ -61,11 +63,15 @@ namespace FVCode3D
        */
       template <typename SMAT>
       SaddlePointMat(SMAT&& Mmat, SMAT&& Bmat, SMAT&& Tmat,bool isSymUndef=true):
-        isSymUndef{isSymUndef},
-        M{std::forward<SpMat>(Mmat)},
-        B{std::forward<SpMat>(Bmat)},
-        T{std::forward<SpMat>(Tmat)} {}
-
+        isSymUndef{isSymUndef},matrixData{{Mmat.rows(),Bmat.rows()},{Mmat.cols(),Bmat.rows()}}
+      {
+        if (!isSymUndef)
+          throw std::runtime_error("This version supports only symmetric saddle point matrices");
+        matrixData.setBlock({0,0},std::forward<SMAT>(Mmat));
+        matrixData.setBlock({1,0},std::forward<SMAT>(Bmat));
+        matrixData.setBlock({1,1},std::forward<SMAT>(Tmat));
+        matrixData.addTranspose({0,1},{1,0});
+      }
     //! Construct a saddle point matrix
       /*!
        * @param Mdim M block dimension
@@ -73,9 +79,13 @@ namespace FVCode3D
        * @param Bcol B block col
        */
      SaddlePointMat(const UInt Mdim,const UInt Brow, bool isSymUndef=true):
-                  isSymUndef(isSymUndef), M(Mdim,Mdim), B(Brow,Mdim), T(Brow,Brow) {}
+                  isSymUndef(isSymUndef), matrixData{{Eigen::Index(Mdim),Eigen::Index(Brow)},{Eigen::Index(Mdim),Eigen::Index(Brow)}}
+     {
+       if (!isSymUndef)
+                 throw std::runtime_error("This version supports only symmetric saddle point matrices");
+     }
 
-          //@}
+  //@}
 
       //! @name Methods
       //!@{
@@ -89,30 +99,31 @@ namespace FVCode3D
      template <typename SMAT>
       void Set(SMAT&& Mmat, SMAT&& Bmat, SMAT&& Tmat)
           {
-                  M = std::forward<SpMat>(Mmat);
-                  B = std::forward<SpMat>(Bmat);
-                  T = std::forward<SpMat>(Tmat);
+       matrixData.setBlock({0,0},std::forward<SMAT>(Mmat));
+       matrixData.setBlock({1,0},std::forward<SMAT>(Bmat));
+       matrixData.setBlock({1,1},std::forward<SMAT>(Tmat));
+       matrixData.addTranspose({0,1},{1,0});
           }
 
           //! Set the flag isSymUndef
       /*!
        * @param coeff The flag to be set 1=is  Sym Undef -1 is UnSym pdef
        */
-      void Set_isSymUndef(const int coeff)
-          {
-                  isSymUndef = coeff;
-          }
+     void Set_isSymUndef(const int coeff)
+     {
+       isSymUndef = coeff;
+       if (!isSymUndef)
+         throw std::runtime_error("This version supports only symmetric saddle point matrices");
+     }
 
           //! Compress the block matrices
       /*!
        * Compress the block matrices M, B and T
        */
       void makeCompressed()
-          {
-                  M.makeCompressed();
-                  B.makeCompressed();
-                  T.makeCompressed();
-                  };
+     {
+        matrixData.makeCompressed();
+     };
       //!@}
 
       //! @name Get Methods
@@ -122,42 +133,44 @@ namespace FVCode3D
        * @return A const reference to the M block
        */
       const SpMat & getM() const
-          {return M;}
+          {return matrixData.getBlock({0,0});
+          }
 
       //! Get M block
       /*!
        * @return A reference to the M block
        */
       SpMat & getM()
-          {return M;}
+          {return matrixData.getBlock({0,0});
+          }
 
       //! Get B block (read only)
       /*!
        * @return A const reference to the B block
        */
       const SpMat & getB() const
-          {return B;}
+          {return matrixData.getBlock({1,0});}
 
       //! Get B block
       /*!
        * @return A reference to the B block
        */
       SpMat & getB()
-          {return B;}
+          {return matrixData.getBlock({1,0});}
 
       //! Get T block (read only)
       /*!
        * @return A const reference to the T block
        */
       const SpMat & getT() const
-          {return T;}
+          {return matrixData.getBlock({1,1});}
 
       //! Get T block
       /*!
        * @return A reference to the T block
        */
       SpMat & getT()
-          {return T;}
+          {return matrixData.getBlock({1,1});}
       //!@}
 
      //! @name Methods
@@ -170,9 +183,7 @@ namespace FVCode3D
       */
       void resize(const UInt Mdim,const UInt Brow)
           {
-                  M.resize(Mdim,Mdim);
-                  B.resize(Brow,Mdim);
-                  T.resize(Brow,Brow);
+        matrixData.resize({Eigen::Index(Mdim),Eigen::Index(Brow)},{Eigen::Index(Mdim),Eigen::Index(Brow)});
           }
       /*!
        * Frobenius norm of the matrix sqared
@@ -181,7 +192,7 @@ namespace FVCode3D
        */
       Real squaredNorm()const
       {
-        return M.squaredNorm()+2*B.squaredNorm()+T.squaredNorm();
+        return matrixData.squaredNorm();
       }
       /*!
         * Frobenius norm of the matrix
@@ -193,7 +204,7 @@ namespace FVCode3D
       /*!
        * @return the number of non zero
        */
-      UInt nonZeros() const { return M.nonZeros()+2*B.nonZeros()+T.nonZeros(); }
+      UInt nonZeros() const { return matrixData.nonZeros(); }
       //!@}
 
       //! @name Operators
@@ -205,32 +216,21 @@ namespace FVCode3D
        */
       Vector operator * (const Vector & x) const
           {
-        Vector result(M.rows()+B.rows());
-        result.head(M.rows()) = M*x.head(M.cols()) + B.transpose()*x.tail(B.rows());
-        if (isSymUndef==true)
-          result.tail(B.rows())= B*x.head(M.cols()) + T*x.tail(B.rows());
-        else
-          result.tail(B.rows())= -(B*x.head(M.cols()) + T*x.tail(B.rows()));
-        return result;
+        return matrixData * x;
           }
       //! Clears matrix and frees memory
-      void clear();
+      void clear(){matrixData.clear();}
       /*!
        * @return the full matrix
        */
-       SpMat fullMatrix() const;
+       SpMat fullMatrix() const
+       {return matrixData.fullMatrix();};
       //!@}
 
       //! A flag indicating if it is sym-undef or defpos-unsym
          bool  isSymUndef=true;
   private:
-    //@toto LF Store as references
-          //! The M block matrix
-          SpMat     M;
-          //! The B block matrix
-          SpMat    B;
-          //! The T block matrix
-          SpMat    T;
+         apsc::SparseBlockMatrix<double,2,2> matrixData;
   };
 
 
