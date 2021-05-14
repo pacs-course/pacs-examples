@@ -1,8 +1,3 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <mpi.h>
 
 #include <iostream>
@@ -33,11 +28,14 @@ main(int argc, char **argv)
       return 1;
     }
 
-  unsigned int num_iterations  = 10;
-  int          ping_pong_count = 0;
+  const unsigned int num_iterations = 10;
 
-  int partner_rank = !mpi_rank;
+  int ping_pong_count = 0;
 
+  const int partner_rank = !mpi_rank; // 0 --> 1, 1 --> 0.
+
+  // The MPI_Status struct contains the following members:
+  // MPI_SOURCE, MPI_TAG, MPI_ERROR.
   MPI_Status status;
 
   for (unsigned int i = 0; i < num_iterations; ++i)
@@ -46,25 +44,20 @@ main(int argc, char **argv)
         {
           ++ping_pong_count;
 
-          MPI_Send(
-            &ping_pong_count, 1, MPI_INT, partner_rank, 0, mpi_comm);
+          MPI_Send(&ping_pong_count, 1, MPI_INT, partner_rank, 0, mpi_comm);
 
           std::cout << "Ping! Rank " << mpi_rank << " ---> rank "
-                    << partner_rank << " (count = " << ping_pong_count
-                    << ")." << std::endl;
+                    << partner_rank << " (count = " << ping_pong_count << ")."
+                    << std::endl;
         }
-      else // if (mpi_rank == 1)
+      else
         {
-          MPI_Recv(&ping_pong_count,
-                   1,
-                   MPI_INT,
-                   partner_rank,
-                   0,
-                   mpi_comm,
-                   &status);
+          MPI_Recv(
+            &ping_pong_count, 1, MPI_INT, partner_rank, 0, mpi_comm, &status);
 
+          // "status.MPI_SOURCE" equals "partner_rank".
           std::cout << "Pong! Rank " << mpi_rank << " <--- rank "
-                    << partner_rank << " (count = " << ping_pong_count
+                    << status.MPI_SOURCE << " (count = " << ping_pong_count
                     << ")." << std::endl;
         }
     }

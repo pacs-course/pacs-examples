@@ -1,8 +1,3 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <mpi.h>
 
 #include <algorithm>
@@ -11,14 +6,13 @@
 #include <random>
 #include <vector>
 
-/*
- * The length of a passed array, if not known a priori, can also be
- * determined using the MPI_Probe function. MPI_Probe can query a
- * message without actually receiving it. MPI_Probe will block,
- * waiting for a message with a given tag and sender, then retrieve
- * the status of the message. Then MPI_Recv can be used to retrieve
- * the message using an array of the length calculated using the
- * status.
+/**
+ * The length of a passed array, if not known a priori, can also be determined
+ * using the MPI_Probe function. MPI_Probe can query a message without actually
+ * receiving it. MPI_Probe will block, waiting for a message with a given tag
+ * and sender, then retrieve the status of the message. Then MPI_Recv can be
+ * used to retrieve the message using an array of the length calculated using
+ * the status.
  */
 int
 main(int argc, char **argv)
@@ -60,14 +54,13 @@ main(int argc, char **argv)
       // Pick a random number to decide how long our message will be.
       std::uniform_int_distribution<int> randi(1, max_length);
 
-      int array_length = randi(engine);
+      const int array_length = randi(engine);
 
-      MPI_Send(
-        array.data(), array_length, MPI_DOUBLE, 1, 10, mpi_comm);
-      std::cout << "Process 0 sent " << array_length
-                << " numbers to process 1." << std::endl
-                << "    Last number sent: " << array[array_length - 1]
-                << "." << std::endl
+      MPI_Send(array.data(), array_length, MPI_DOUBLE, 1, 10, mpi_comm);
+      std::cout << "Process 0 sent " << array_length << " numbers to process 1."
+                << std::endl
+                << "    Last number sent: " << array[array_length - 1] << "."
+                << std::endl
                 << std::endl;
     }
   else // if (mpi_rank == 1)
@@ -87,19 +80,18 @@ main(int argc, char **argv)
       MPI_Recv(array.data(),
                array_length,
                MPI_DOUBLE,
-               status.MPI_SOURCE,
-               status.MPI_TAG,
+               MPI_ANY_SOURCE, // Or, more properly, status.MPI_SOURCE.
+               MPI_ANY_TAG,    // Or, more properly, status.MPI_TAG.
                mpi_comm,
                MPI_STATUS_IGNORE);
 
-      std::cout << "Process 1 received " << array_length
-                << " numbers." << std::endl
-                << "    Last number received: "
-                << array[array_length - 1] << "." << std::endl
-                << "    Message source: rank " << status.MPI_SOURCE
-                << "." << std::endl
-                << "    Message tag:    " << status.MPI_TAG << "."
+      std::cout << "Process 1 received " << array_length << " numbers."
                 << std::endl
+                << "    Last number received: " << array.back() << "."
+                << std::endl
+                << "    Message source: rank " << status.MPI_SOURCE << "."
+                << std::endl
+                << "    Message tag:    " << status.MPI_TAG << "." << std::endl
                 << std::endl;
     }
 

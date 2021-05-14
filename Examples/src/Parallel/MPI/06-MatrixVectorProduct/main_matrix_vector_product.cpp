@@ -1,37 +1,31 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <mpi.h>
 #include <omp.h>
 
 #include <algorithm>
-#include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <vector>
 
-static clock_t c_start, c_diff;
-static double  c_sec;
-#define tic() c_start = clock();
-#define toc(x)                                      \
-  c_diff = clock() - c_start;                       \
-  c_sec  = (double)c_diff / (double)CLOCKS_PER_SEC; \
-  std::cout << x << c_sec << " [s]" << std::endl;
+static double c_start, c_diff;
+#define tic() c_start = MPI_Wtime();
+#define toc(x)                    \
+  c_diff = MPI_Wtime() - c_start; \
+  std::cout << x << c_diff << " [s]" << std::endl;
 
 /**
  * Parallel matrix-vector product.
  *
- * Data are generated randomly by rank 0 and then broadcasted.
- * Each rank is assigned a sub-block of the input matrix (split by
- * rows, without overlap) and computes the local matrix-vector
- * product. Finally, the results are collected back by rank 0, which
- * prints them to output.
+ * Data are generated randomly by rank 0 and then broadcasted. Each rank is
+ * assigned a sub-block of the input matrix (split by rows, without overlap) and
+ * computes the local matrix-vector product. Finally, the results are collected
+ * back by rank 0, which prints them to output.
  *
- * This example makes use of hybrid
- * shared/distributed parallelization through OpenMP and MPI.
+ * This example makes use of hybrid shared/distributed parallelization through
+ * OpenMP and MPI.
+ *
+ * Running, e.g., on a matrix of size 10^4 x 10^3 should show good scalability
+ * properties.
  */
 int
 main(int argc, char **argv)
@@ -49,11 +43,10 @@ main(int argc, char **argv)
 #pragma omp parallel master
   if (mpi_rank == 0)
     std::cout << "Number of processes: " << mpi_size
-              << ", number of threads: " << omp_get_num_threads()
-              << std::endl;
+              << ", number of threads: " << omp_get_num_threads() << std::endl;
 
   // Set to true to print matrix, vector and result.
-  bool print = false;
+  const bool print = false;
 
   unsigned int n_rows;
   unsigned int n_cols;
@@ -74,15 +67,13 @@ main(int argc, char **argv)
 
   if (mpi_rank == 0)
     {
-      std::cout << std::endl
-                << "Enter the number of matrix rows:" << std::endl;
+      std::cout << std::endl << "Enter the number of matrix rows:" << std::endl;
       std::cin >> n_rows;
 
       if (n_rows < 1)
         {
-          std::cerr
-            << "ERROR: Number of rows should be greater than 1."
-            << std::endl;
+          std::cerr << "ERROR: Number of rows should be greater than 1."
+                    << std::endl;
 
           return 1;
         }
@@ -92,9 +83,8 @@ main(int argc, char **argv)
 
       if (n_cols < 1)
         {
-          std::cerr
-            << "ERROR: Number of columns should be greater than 1."
-            << std::endl;
+          std::cerr << "ERROR: Number of columns should be greater than 1."
+                    << std::endl;
 
           return 1;
         }
@@ -107,8 +97,10 @@ main(int argc, char **argv)
 
   vector.resize(n_cols);
 
-  unsigned int count     = n_rows / mpi_size;
-  int          remainder = n_rows - count * mpi_size;
+  const unsigned int count     = n_rows / mpi_size;
+  const int          remainder = n_rows - count * mpi_size;
+
+  tic();
 
   if (mpi_rank == 0)
     {
@@ -117,9 +109,9 @@ main(int argc, char **argv)
 
       // Generate matrix.
       matrix.resize(n_rows * n_cols);
-      std::generate(matrix.begin(), matrix.end(), [&engine, &rand]() {
-        return rand(engine);
-      });
+#pragma omp parallel for shared(matrix)
+      for (auto &v : matrix)
+        v = rand(engine);
 
       if (print)
         {
@@ -134,10 +126,10 @@ main(int argc, char **argv)
           std::cout << std::endl;
         }
 
-      // Generate vector.
-      std::generate(vector.begin(), vector.end(), [&engine, &rand]() {
-        return rand(engine);
-      });
+        // Generate vector.
+#pragma omp parallel for shared(vector)
+      for (auto &v : vector)
+        v = rand(engine);
 
       if (print)
         {
@@ -167,15 +159,13 @@ main(int argc, char **argv)
         }
     }
 
-  MPI_Bcast(vector.data(), n_cols, MPI_DOUBLE, 0, mpi_comm);
+  MPI_Bcast(vector.data(), vector.size(), MPI_DOUBLE, 0, mpi_comm);
 
-  tic();
-
-  unsigned int n_rows_local =
+  const unsigned int n_rows_local =
     (mpi_rank < remainder) ? (count + 1) : count;
 
-  std::cout << "Number of rows on rank " << mpi_rank << ": "
-            << n_rows_local << std::endl;
+  std::cout << "Number of rows on rank " << mpi_rank << ": " << n_rows_local
+            << std::endl;
 
   std::vector<double> matrix_local(n_rows_local * n_cols);
   MPI_Scatterv(matrix.data(),
@@ -183,7 +173,7 @@ main(int argc, char **argv)
                send_start_idx.data(),
                MPI_DOUBLE,
                matrix_local.data(),
-               n_rows_local * n_cols,
+               matrix_local.size(),
                MPI_DOUBLE,
                0,
                mpi_comm);
@@ -203,7 +193,7 @@ main(int argc, char **argv)
     result.resize(n_rows);
 
   MPI_Gatherv(result_local.data(),
-              n_rows_local,
+              result_local.size(),
               MPI_DOUBLE,
               result.data(),
               recv_counts.data(),
