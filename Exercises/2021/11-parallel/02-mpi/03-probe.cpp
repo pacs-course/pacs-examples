@@ -6,7 +6,7 @@
 #include <random>
 #include <vector>
 
-/*
+/**
  * The length of a passed array, if not known a priori, can also be determined
  * using the MPI_Probe function. MPI_Probe can query a message without actually
  * receiving it. MPI_Probe will block, waiting for a message with a given tag

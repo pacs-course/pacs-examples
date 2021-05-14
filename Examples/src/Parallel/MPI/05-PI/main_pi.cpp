@@ -1,31 +1,23 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <mpi.h>
 #include <omp.h>
 
 #include <cmath>
-#include <ctime>
 #include <iomanip>
 #include <iostream>
 
-static clock_t c_start, c_diff;
-static double  c_sec;
-#define tic() c_start = clock();
-#define toc(x)                                      \
-  c_diff = clock() - c_start;                       \
-  c_sec  = (double)c_diff / (double)CLOCKS_PER_SEC; \
-  std::cout << x << c_sec << " [s]" << std::endl;
+static double c_start, c_diff;
+#define tic() c_start = MPI_Wtime();
+#define toc(x)                    \
+  c_diff = MPI_Wtime() - c_start; \
+  std::cout << x << c_diff << " [s]" << std::endl;
 
 /**
- * This exercise presents a simple program to determine the value of
- * pi. The algorithm suggested here is chosen for its simplicity. The
- * method evaluates the integral of 4 / (1 + x^2) between 0 and 1
- * using the composite midpoint rule. Each process adds up every
- * n-th interval. Finally, the sums computed by each process are
- * added together using a reduction.
+ * This exercise presents a simple program to determine the value of pi. The
+ * algorithm suggested here is chosen for its simplicity. The method evaluates
+ * the integral of 4 / (1 + x^2) over the interval (0, 1) using the composite
+ * midpoint rule. Each process adds up every p-th interval (where p is the
+ * number of processes. Finally, the sums computed by each process are added
+ * together using a reduction.
  *
  * This example makes use of hybrid shared/distributed parallelization
  * through OpenMP and MPI.
@@ -46,34 +38,34 @@ main(int argc, char **argv)
 #pragma omp parallel master
   if (mpi_rank == 0)
     std::cout << "Number of processes: " << mpi_size
-              << ", number of threads: " << omp_get_num_threads()
-              << std::endl;
+              << ", number of threads: " << omp_get_num_threads() << std::endl;
 
   tic();
 
-  const unsigned int n = 1e8;
+  const unsigned int n = 1e9;
   const double       h = 1.0 / n;
 
   double sum = 0.0;
 
 #pragma omp parallel for reduction(+ : sum)
-  for (unsigned int i = mpi_rank + 1; i <= n; i += mpi_size)
+  for (unsigned int i = mpi_rank; i < n; i += mpi_size)
     {
-      double x = h * (i - 0.5);
+      const double x = h * (i + 0.5);
       sum += 4.0 / (1.0 + x * x);
     }
 
-  double pi_local = h * sum;
+  double pi = h * sum;
+  MPI_Allreduce(MPI_IN_PLACE, &pi, 1, MPI_DOUBLE, MPI_SUM, mpi_comm);
 
-  double pi;
-  MPI_Reduce(&pi_local, &pi, 1, MPI_DOUBLE, MPI_SUM, 0, mpi_comm);
+  // The previous lines could be replaced by, e.g.:
+  // const double pi_local = h * sum;
+  // double pi;
+  // MPI_Reduce(&pi_local, &pi, 1, MPI_DOUBLE, MPI_SUM, 0, mpi_comm);
 
   if (mpi_rank == 0)
     {
       std::cout << std::setprecision(16) << "pi = " << pi
-                << ", error = "
-                << std::fabs(pi - 3.141592653589793238462643)
-                << std::endl;
+                << ", error = " << std::abs(pi - M_PI) << std::endl;
     }
 
   // Trick to get output sorted by rank id.
@@ -82,7 +74,7 @@ main(int argc, char **argv)
     {
       if (mpi_rank == rank)
         {
-          toc("Time elapsed on rank " + std::to_string(rank) + ": ");
+          toc("Time elapsed on rank " + std::to_string(mpi_rank) + ": ");
         }
 
       MPI_Barrier(mpi_comm);
