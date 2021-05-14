@@ -1,50 +1,49 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <omp.h>
 
 #include <iostream>
+#include <vector>
 
 int
 main(int argc, char **argv)
 {
-  constexpr size_t N = 5;
+  const size_t n = 10;
 
-  int a[N];
-  int b[N];
+  std::vector<int> a(n);
+  std::vector<int> b(n);
 
   // Serial version.
-  for (size_t i = 0; i < N; ++i)
+  for (size_t i = 0; i < n; ++i)
     {
       a[i] = i;
-      b[i] = 2 * 1;
+      b[i] = 2 * i;
     }
 
   std::cout << "Serial:" << std::endl;
   int serial_checksum = 0;
-  for (size_t i = 0; i < N - 1; ++i)
+  for (size_t i = 0; i < n - 1; ++i)
     {
       a[i] = a[i + 1] + b[i];
 
-      std::cout << "i = " << i << ", a[" << i << "] = a[" << i + 1
-                << "] + b[" << i << "] = " << a[i + 1] << " + "
-                << b[i] << " = " << a[i] << std::endl;
+      std::cout << "i = " << i << ", a[" << i << "] = a[" << i + 1 << "] + b["
+                << i << "] = " << a[i + 1] << " + " << b[i] << " = " << a[i]
+                << std::endl;
 
       serial_checksum += a[i];
     }
 
   // Parallel version.
-  for (size_t i = 0; i < N; ++i)
+  for (size_t i = 0; i < n; ++i)
     {
       a[i] = i;
-      b[i] = 2 * 1;
+      b[i] = 2 * i;
     }
 
+  int thread_id;
   int n_threads;
-#pragma omp parallel shared(a, b, n_threads)
+#pragma omp parallel shared(a, b, n_threads) private(thread_id)
   {
+    thread_id = omp_get_thread_num();
+
 #pragma omp master
     {
       n_threads = omp_get_num_threads();
@@ -54,28 +53,28 @@ main(int argc, char **argv)
     }
 #pragma omp barrier
 
-#pragma omp for
-    for (size_t i = 0; i < N - 1; ++i)
+#pragma omp for // schedule(dynamic, 6)
+    for (size_t i = 0; i < n - 1; ++i)
       {
         /**
          * Possible data race: if another thread overwrites a[i + 1]
-         * before the current thread computes a[i],
-         * the result will be wrong.
+         * (or a[i - 1]) before the current thread computes a[i],
+         * the result will likely be wrong.
          */
         a[i] = a[i + 1] + b[i];
 
 #pragma omp critical
         {
-          std::cout << "i = " << i << ", a[" << i << "] = a[" << i + 1
-                    << "] + b[" << i << "] = " << a[i + 1] << " + "
-                    << b[i] << " = " << a[i] << std::endl;
+          std::cout << "thread " << thread_id << ", i = " << i << ", a[" << i
+                    << "] = a[" << i + 1 << "] + b[" << i << "] = " << a[i + 1]
+                    << " + " << b[i] << " = " << a[i] << std::endl;
         }
       }
   }
 
   int parallel_checksum = 0;
 #pragma omp parallel for reduction(+ : parallel_checksum)
-  for (size_t i = 0; i < N - 1; ++i)
+  for (size_t i = 0; i < n - 1; ++i)
     {
       parallel_checksum += a[i];
     }
