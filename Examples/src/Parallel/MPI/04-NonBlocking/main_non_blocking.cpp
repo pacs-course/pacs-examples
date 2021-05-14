@@ -1,16 +1,10 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <mpi.h>
 
 #include <iostream>
 #include <vector>
 
 /**
- * Solution to deadlock of main_deadlock.cpp using non-blocking
- * communication.
+ * Solution to deadlock of 04-deadlock.cpp using non-blocking communication.
  * The vector "to_receive" in rank 0 is replaced with
  * the vector "to_send" in rank 1, and vice-versa.
  */
@@ -37,17 +31,18 @@ main(int argc, char **argv)
       return 1;
     }
 
-  std::vector<double> to_send(100, mpi_rank);
-  std::vector<double> to_receive(100, mpi_rank);
+  const std::vector<double> to_send(100, mpi_rank);
 
-  int tag_send    = (mpi_rank == 0) ? 10 : 20;
-  int tag_receive = (mpi_rank == 0) ? 20 : 10;
+  std::vector<double> to_receive(100);
 
-  int partner_rank = !mpi_rank;
+  const int tag_send    = (mpi_rank == 0) ? 10 : 20;
+  const int tag_receive = (mpi_rank == 0) ? 20 : 10;
 
-  MPI_Request request;
-  MPI_Status  status;
-  int         ready;
+  const int partner_rank = !mpi_rank; // 0 --> 1, 1 --> 0.
+
+  std::vector<MPI_Request> requests(mpi_size);
+  std::vector<MPI_Status>  statuses(mpi_size);
+  int                      ready;
 
   MPI_Irecv(to_receive.data(),
             to_receive.size(),
@@ -55,36 +50,38 @@ main(int argc, char **argv)
             partner_rank,
             tag_receive,
             mpi_comm,
-            &request);
+            &requests[0]);
 
-  MPI_Test(&request, &ready, MPI_STATUS_IGNORE);
-  std::cout << "Test on rank " << mpi_rank
-            << ": non-blocking communication "
+  MPI_Isend(to_send.data(),
+            to_send.size(),
+            MPI_DOUBLE,
+            partner_rank,
+            tag_send,
+            mpi_comm,
+            &requests[1]);
+
+  // Test for all requests to complete.
+  MPI_Testall(mpi_size, requests.data(), &ready, MPI_STATUS_IGNORE);
+  std::cout << "Test on rank " << mpi_rank << ": non-blocking communications "
             << (ready ? "" : "not yet ") << "completed." << std::endl;
 
-  MPI_Send(to_send.data(),
-           to_send.size(),
-           MPI_DOUBLE,
-           partner_rank,
-           tag_send,
-           mpi_comm);
+  // Wait for all communications to finish.
+  MPI_Waitall(mpi_size, requests.data(), statuses.data());
 
-  // Wait for the communication to end.
-  MPI_Wait(&request, &status);
+  // Test again: all requests complete after calling MPI_Waitall.
+  MPI_Testall(mpi_size, requests.data(), &ready, MPI_STATUS_IGNORE);
+  std::cout << "Wait on rank " << mpi_rank << ": non-blocking communications "
+            << (ready ? "" : "not yet ") << "completed." << std::endl;
 
-  std::cout << "Wait on rank " << mpi_rank
-            << ": non-blocking communication completed." << std::endl
-            << std::endl;
-
+  // statuses[0] contains the outcome of MPI_Irecv.
   int recv_count;
-  MPI_Get_count(&status, MPI_DOUBLE, &recv_count);
+  MPI_Get_count(&statuses[0], MPI_DOUBLE, &recv_count);
 
   std::cout << "Process " << mpi_rank << " received " << recv_count
             << " numbers." << std::endl
-            << "    Message source: rank " << status.MPI_SOURCE << "."
+            << "    Message source: rank " << statuses[0].MPI_SOURCE << "."
             << std::endl
-            << "    Message tag:    " << status.MPI_TAG << "."
-            << std::endl
+            << "    Message tag:    " << statuses[0].MPI_TAG << "." << std::endl
             << std::endl;
 
   MPI_Finalize();
