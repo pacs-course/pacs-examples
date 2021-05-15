@@ -1,26 +1,27 @@
 # Tolerance for stopping criterion
-tol=5.e-6
+tol=1.8e-7
 #Maximum number of iterations
 max_iter=10000
 # GMRES restart level (only if using GMRES)
 gmres_levels=50
 # The M B and T matrix
-MMatrixname=matrices/300k/M.mat #The M matrix
-BMatrixname=matrices/300k/B.mat #The B matrix
-TMatrixname=matrices/300k/T.mat #The T matrix
+MMatrixname=matrices/600k/M.mat #The M matrix
+BMatrixname=matrices/600k/B.mat #The B matrix
+TMatrixname=matrices/600k/T.mat #The T matrix
 #MMatrixname=matrices/network1/M.mat #The M matrix
 #BMatrixname=matrices/network1/B.mat #The M matrix
 #TMatrixname=matrices/network1/T.mat #The M matrix
 #
 # Solver type among {umfpack, sparselu, gmres, fgmres, gmresr, minres, tminres, eigenvalues}
 # if solver=eigenvalues max/min only eigenvalues are computed for the given matrices. Otherwise the solver is launched (no computation of eigvalues)
-solver=gmres
+solver=gmresr
 #solver=umfpack
 #solver=eigenvalues
 # Preconditioner type among {Diagonal,BlockDiagonal,BlockTriangular, 
 # ILU, HSS, Identity}
-#preconditioner=DoubleSaddlePoint
-preconditioner=ILU
+preconditioner=DoubleSaddlePoint
+#preconditioner=BlockDiagonal
+#preconditioner=ILU
 # use symmetric undefinite format (1) or unsymmetric definite format (0)
 isSymUndef=1
 # use lumped mass matrix approximation (1) or diagonal part approximation (0)
