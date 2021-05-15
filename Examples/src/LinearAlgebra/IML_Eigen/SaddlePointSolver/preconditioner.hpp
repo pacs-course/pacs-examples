@@ -544,7 +544,7 @@ public:
     Vector solve(const Vector & r) const override;
     //@}
 
-private:
+protected:
       //! The B block matrix
     const SpMat *              Bptr=nullptr;
     const SpMat *              Cptr=nullptr;
@@ -557,6 +557,18 @@ private:
     //! Cholesky factorization
     Eigen::SimplicialLDLT<SpMat, Eigen::Upper> Schur_chol;
     Eigen::SimplicialLDLT<SpMat, Eigen::Upper> BAB_chol;
+};
+
+class DoubleSaddlePointSym_preconditioner: public DoubleSaddlePoint_preconditioner
+{
+public:
+  using DoubleSaddlePoint_preconditioner::DoubleSaddlePoint_preconditioner;
+  using DoubleSaddlePoint_preconditioner::set;
+  //! @name Solve Methods
+  //@{
+  //! Solve the linear system Pz=r
+      Vector solve(const Vector & r) const override;
+  //@}
 };
 
 }

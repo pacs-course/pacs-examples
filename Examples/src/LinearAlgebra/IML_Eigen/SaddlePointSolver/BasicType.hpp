@@ -70,7 +70,7 @@ namespace FVCode3D
   //! Type for eigen triplets
   typedef Eigen::Triplet<Real> Triplet;
 
-  enum PrecondSwitch {Diagonal, BlockDiagonal, BlockTriangular, ILU, HSS, Identity, DoubleSaddlePoint};
+  enum PrecondSwitch {Diagonal, BlockDiagonal, BlockTriangular, ILU, HSS, Identity, DoubleSaddlePoint, DoubleSaddlePointSym};
 
 } // namespace FVCode3D
 
