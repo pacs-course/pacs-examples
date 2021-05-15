@@ -115,7 +115,7 @@ main(int argc, char * argv[])
   auto precond_ptr = factory[testParameters.precondSwitch]();
   FVCode3D::preconditioner & precond=*precond_ptr;
 
-  if(testParameters.precondSwitch==FVCode3D::DoubleSaddlePoint)
+  if(testParameters.precondSwitch==FVCode3D::DoubleSaddlePoint || testParameters.precondSwitch==FVCode3D::DoubleSaddlePointSym)
     saddlePointMat.convertToDoubleSaddlePoint();
 
   loadPreconditioner(precond, saddlePointMat, testParameters);

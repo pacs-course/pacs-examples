@@ -31,7 +31,8 @@ namespace FVCode3D
    factory[ILU]=[](){return std::make_unique<ILU_preconditioner>();};
    factory[HSS]=[](){return std::make_unique<HSS_preconditioner>();};
    factory[DoubleSaddlePoint]=[](){return std::make_unique<DoubleSaddlePoint_preconditioner>();};
-  return factory;
+   factory[DoubleSaddlePointSym]=[](){return std::make_unique<DoubleSaddlePointSym_preconditioner>();};
+return factory;
 }
 }
 
