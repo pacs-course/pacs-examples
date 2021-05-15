@@ -30,7 +30,8 @@ namespace FVCode3D
    factory[BlockTriangular]=[](){return std::make_unique<BlockTriangular_preconditioner>();};
    factory[ILU]=[](){return std::make_unique<ILU_preconditioner>();};
    factory[HSS]=[](){return std::make_unique<HSS_preconditioner>();};
-   return factory;
+   factory[DoubleSaddlePoint]=[](){return std::make_unique<DoubleSaddlePoint_preconditioner>();};
+  return factory;
 }
 }
 

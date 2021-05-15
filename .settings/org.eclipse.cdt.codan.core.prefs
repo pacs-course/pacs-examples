@@ -67,6 +67,8 @@ org.eclipse.cdt.codan.internal.checkers.MultipleDeclarationsProblem=-Warning
 org.eclipse.cdt.codan.internal.checkers.MultipleDeclarationsProblem.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Multiple variable declaration\\")"}
 org.eclipse.cdt.codan.internal.checkers.NamingConventionFunctionChecker=-Info
 org.eclipse.cdt.codan.internal.checkers.NamingConventionFunctionChecker.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Name convention for function\\")",pattern\=>"^[a-z]",macro\=>true,exceptions\=>()}
+org.eclipse.cdt.codan.internal.checkers.NoDiscardProblem=Warning
+org.eclipse.cdt.codan.internal.checkers.NoDiscardProblem.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Return value not evaluated\\")",macro\=>true}
 org.eclipse.cdt.codan.internal.checkers.NonVirtualDestructorProblem=Warning
 org.eclipse.cdt.codan.internal.checkers.NonVirtualDestructorProblem.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Class has a virtual method and non-virtual destructor\\")"}
 org.eclipse.cdt.codan.internal.checkers.OverloadProblem=Error
