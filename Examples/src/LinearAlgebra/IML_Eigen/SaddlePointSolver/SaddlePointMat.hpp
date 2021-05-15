@@ -11,6 +11,7 @@
 #include "SparseBlockMatrix.hpp"
 #include <Eigen/Sparse>
 #include <stdexcept>
+#include <iostream>
 namespace FVCode3D
 {
   //! Class for assembling a saddle point matrix.
@@ -63,7 +64,7 @@ namespace FVCode3D
        */
       template <typename SMAT>
       SaddlePointMat(SMAT&& Mmat, SMAT&& Bmat, SMAT&& Tmat,bool isSymUndef=true):
-        isSymUndef{isSymUndef},matrixData{{Mmat.rows(),Bmat.rows()},{Mmat.cols(),Bmat.rows()}}
+        isSymUndef{isSymUndef},matrixData{{Mmat.rows(),Bmat.rows(),0},{Mmat.cols(),Bmat.rows(),0}}
       {
         if (!isSymUndef)
           throw std::runtime_error("This version supports only symmetric saddle point matrices");
@@ -79,13 +80,16 @@ namespace FVCode3D
        * @param Bcol B block col
        */
      SaddlePointMat(const UInt Mdim,const UInt Brow, bool isSymUndef=true):
-                  isSymUndef(isSymUndef), matrixData{{Eigen::Index(Mdim),Eigen::Index(Brow)},{Eigen::Index(Mdim),Eigen::Index(Brow)}}
+                  isSymUndef(isSymUndef), matrixData{{Eigen::Index(Mdim),Eigen::Index(Brow),0},{Eigen::Index(Mdim),Eigen::Index(Brow),0}}
      {
        if (!isSymUndef)
                  throw std::runtime_error("This version supports only symmetric saddle point matrices");
      }
+     //@}
 
-  //@}
+     Eigen::Index rows()const {return matrixData.rows();}
+     Eigen::Index cols()const {return matrixData.cols();}
+
 
       //! @name Methods
       //!@{
@@ -229,12 +233,63 @@ namespace FVCode3D
 
       //! A flag indicating if it is sym-undef or defpos-unsym
          bool  isSymUndef=true;
+/*!
+ * Converts the matrix to a double saddle point structire
+ */
+         void convertToDoubleSaddlePoint();
+
+         //! Returns the contained block matrix as constant reference
+
+         apsc::SparseBlockMatrix<double,3,3> const & sparseBlockMatrix() const
+         {
+           return matrixData;
+         }
+
   private:
-         apsc::SparseBlockMatrix<double,2,2> matrixData;
+         apsc::SparseBlockMatrix<double,3,3> matrixData;
   };
 
+  inline void SaddlePointMat::convertToDoubleSaddlePoint()
+  {
+    auto nVel = matrixData.cols({0,0});
+    auto const & T=matrixData.getBlock({1,1});
+    UInt nFrac=0;
+    for (int k =0; k< T.outerSize();++k)
+    {
+        for (SpMat::InnerIterator it(T,k); it; ++it)
+          {
+            if (it.value() != 0.0)
+              {
+                ++nFrac;
+                break;
+              }
+          }
+    }
+    if (T.rows()<Eigen::Index(nFrac)) throw std::runtime_error("Something strange: matrix T inconsistent");
+    UInt nCell= T.rows()-nFrac;
+    std::swap(matrixData.getBlock({2,2}),matrixData.getBlock({1,1}));
+    SpMat & Ttilde=matrixData.getBlock({2,2});
+    Ttilde=Ttilde.bottomRightCorner(nFrac,nFrac);
+    matrixData.getBlock({2,0})=matrixData.getBlock({1,0}).bottomLeftCorner(nFrac,nVel);
+    matrixData.getBlock({1,0})=matrixData.getBlock({1,0}).topLeftCorner(nCell,nVel);
+    matrixData.addTranspose({0,2},{2,0});
+    matrixData.getBlock({1,1}).resize(nCell,nCell);
+    matrixData.getBlock({1,2}).resize(nCell,nFrac);
+    matrixData.getBlock({2,1}).resize(nFrac,nCell);
+    matrixData.changeOffsets({nVel,Eigen::Index(nCell),Eigen::Index(nFrac)},{nVel,Eigen::Index(nCell),Eigen::Index(nFrac)});
+/*
+    for (auto i=0;i<3;++i)
+      for (auto j=0;j<3;++j)
+        {
+          std::clog<<"Block ("<<i<<","<<j<<")\n";
+          std::clog<<"Rows declared"<<matrixData.rows({i,j})<<"Effective "<<matrixData.getBlock({i,j}).rows()<<std::endl;;
+          std::clog<<"Cols declared"<<matrixData.cols({i,j})<<"Effective "<<matrixData.getBlock({i,j}).cols()<<std::endl;
 
-}
+        }
+*/
+  }
+
+}// end namespace
 
 
 
