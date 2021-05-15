@@ -252,4 +252,16 @@ Vector
   return z;
  }
 
+  Vector
+  DoubleSaddlePointSym_preconditioner::solve (const Vector &r) const
+  {
+    auto const & B=*Bptr;
+    auto const & C=*Cptr;
+    Vector z(nVel+nCell+nFrac);
+    z.segment(nVel+nCell,nFrac)=Schur_chol.solve(-r.segment(nVel+nCell,nFrac));
+    z.segment(nVel,nCell)      =BAB_chol.solve(-r.segment(nVel,nCell));
+    z.segment(0,nVel)          =Md_inv*(r.segment(0,nVel));
+    return z;
+  }
+
 }
