@@ -126,8 +126,8 @@ main(int argc, char **argv)
           std::cout << std::endl;
         }
 
-        // Generate vector.
 #pragma omp parallel for shared(vector)
+      // Generate vector.
       for (auto &v : vector)
         v = rand(engine);
 
