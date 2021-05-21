@@ -7,9 +7,11 @@
 
 static double c_start, c_diff;
 #define tic() c_start = MPI_Wtime();
-#define toc(x)                    \
-  c_diff = MPI_Wtime() - c_start; \
-  std::cout << x << c_diff << " [s]" << std::endl;
+#define toc(x)                                       \
+  {                                                  \
+    c_diff = MPI_Wtime() - c_start;                  \
+    std::cout << x << c_diff << " [s]" << std::endl; \
+  }
 
 /**
  * This exercise presents a simple program to determine the value of pi. The

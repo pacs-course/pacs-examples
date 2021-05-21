@@ -9,9 +9,11 @@
 
 static double c_start, c_diff;
 #define tic() c_start = MPI_Wtime();
-#define toc(x)                    \
-  c_diff = MPI_Wtime() - c_start; \
-  std::cout << x << c_diff << " [s]" << std::endl;
+#define toc(x)                                       \
+  {                                                  \
+    c_diff = MPI_Wtime() - c_start;                  \
+    std::cout << x << c_diff << " [s]" << std::endl; \
+  }
 
 /**
  * Parallel matrix-vector product.
@@ -26,6 +28,10 @@ static double c_start, c_diff;
  *
  * Running, e.g., on a matrix of size 10^4 x 10^3 should show good scalability
  * properties.
+ *
+ * The bottleneck in the computational time is constructing the matrix on rank 0
+ * and scattering it to other ranks: in real applications each rank would build
+ * its own "local" matrix.
  */
 int
 main(int argc, char **argv)
@@ -52,7 +58,7 @@ main(int argc, char **argv)
   unsigned int n_cols;
 
   std::vector<double> matrix;
-  std::vector<double> vector;
+  std::vector<double> rhs;
   std::vector<double> result;
 
   // Vectors to store the number of elements to send to each
@@ -95,23 +101,35 @@ main(int argc, char **argv)
   MPI_Bcast(&n_rows, 1, MPI_INT, 0, mpi_comm);
   MPI_Bcast(&n_cols, 1, MPI_INT, 0, mpi_comm);
 
-  vector.resize(n_cols);
+  rhs.resize(n_cols);
+  if (mpi_rank == 0)
+    result.resize(n_rows);
 
   const unsigned int count     = n_rows / mpi_size;
   const int          remainder = n_rows - count * mpi_size;
 
-  tic();
+  const unsigned int n_rows_local =
+    (mpi_rank < remainder) ? (count + 1) : count;
+
+  std::cout << "Number of rows on rank " << mpi_rank << ": " << n_rows_local
+            << std::endl;
+
+  std::vector<double> matrix_local(n_rows_local * n_cols);
+
+  std::vector<double> result_local(n_rows_local, 0.0);
 
   if (mpi_rank == 0)
     {
+      tic();
+
       std::random_device                     engine;
       std::uniform_real_distribution<double> rand(0, 1);
 
       // Generate matrix.
       matrix.resize(n_rows * n_cols);
 #pragma omp parallel for shared(matrix)
-      for (auto &v : matrix)
-        v = rand(engine);
+      for (auto &m : matrix)
+        m = rand(engine);
 
       if (print)
         {
@@ -126,15 +144,15 @@ main(int argc, char **argv)
           std::cout << std::endl;
         }
 
-        // Generate vector.
-#pragma omp parallel for shared(vector)
-      for (auto &v : vector)
+#pragma omp parallel for shared(rhs)
+      // Generate rhs.
+      for (auto &v : rhs)
         v = rand(engine);
 
       if (print)
         {
-          std::cout << "Vector:" << std::endl;
-          for (const auto &v : vector)
+          std::cout << "RHS:" << std::endl;
+          for (const auto &v : rhs)
             {
               std::cout << std::setw(12) << v;
             }
@@ -157,17 +175,15 @@ main(int argc, char **argv)
 
           start_idx += recv_counts[i];
         }
+
+      std::cout << std::endl;
+      toc("Assemble matrix: time elapsed on rank " + std::to_string(mpi_rank) +
+          ": ");
     }
 
-  MPI_Bcast(vector.data(), vector.size(), MPI_DOUBLE, 0, mpi_comm);
+  tic();
+  MPI_Bcast(rhs.data(), rhs.size(), MPI_DOUBLE, 0, mpi_comm);
 
-  const unsigned int n_rows_local =
-    (mpi_rank < remainder) ? (count + 1) : count;
-
-  std::cout << "Number of rows on rank " << mpi_rank << ": " << n_rows_local
-            << std::endl;
-
-  std::vector<double> matrix_local(n_rows_local * n_cols);
   MPI_Scatterv(matrix.data(),
                send_counts.data(),
                send_start_idx.data(),
@@ -178,19 +194,49 @@ main(int argc, char **argv)
                0,
                mpi_comm);
 
-  std::vector<double> result_local(n_rows_local, 0.0);
+  MPI_Barrier(mpi_comm);
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank && mpi_rank == 0)
+        std::cout << std::endl;
+      MPI_Barrier(mpi_comm);
 
+      if (rank == mpi_rank)
+        {
+          toc("Scatter: time elapsed on rank " + std::to_string(mpi_rank) +
+              ": ");
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
+
+  tic();
 #pragma omp parallel for shared(result_local)
   for (unsigned int i = 0; i < n_rows_local; ++i)
     {
       for (unsigned int j = 0; j < n_cols; ++j)
         {
-          result_local[i] += matrix_local[i * n_cols + j] * vector[j];
+          result_local[i] += matrix_local[i * n_cols + j] * rhs[j];
         }
     }
 
-  if (mpi_rank == 0)
-    result.resize(n_rows);
+  MPI_Barrier(mpi_comm);
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank && mpi_rank == 0)
+        std::cout << std::endl;
+      MPI_Barrier(mpi_comm);
+
+      if (rank == mpi_rank)
+        {
+          toc("Matrix-vector product: time elapsed on rank " +
+              std::to_string(mpi_rank) + ": ");
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
+
+  tic();
 
   MPI_Gatherv(result_local.data(),
               result_local.size(),
@@ -213,7 +259,20 @@ main(int argc, char **argv)
     }
 
   MPI_Barrier(mpi_comm);
-  toc("Time elapsed on rank " + std::to_string(mpi_rank) + ": ");
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank && mpi_rank == 0)
+        std::cout << std::endl;
+      MPI_Barrier(mpi_comm);
+
+      if (rank == mpi_rank)
+        {
+          toc("Gather: time elapsed on rank " + std::to_string(mpi_rank) +
+              ": ");
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
 
   MPI_Finalize();
 
