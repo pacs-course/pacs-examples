@@ -6,7 +6,7 @@ LINK.o := $(LINK.cc) # Use C++ linker.
 
 DEPEND = make.dep
 
-EXEC = 01-hello_world_simple 02-hello_world_advanced 03-data_race 04-pi 05-pi_reduction
+EXEC = 01-hello_world_simple 01-hello_world_advanced 02-data_race 03-pi 03-pi_reduction
 SRCS = # $(wildcard *.cpp)
 OBJS = # $(SRCS:.cpp=.o)
 
