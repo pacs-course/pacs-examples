@@ -50,7 +50,7 @@ T operator * (std::array<T,N>const & a,std::array<T,N> const & b)
 }
 
  /*!
-  * A different implementation (since C++14). More flexible: it treats also complex numbers!
+  * A different implementation (since C++17). More flexible: it treats also complex numbers!
   * @tparam N The size of the array
   * @tparam T1 The type stored in the first array
   * @tparam T2 The type stored in the second array
