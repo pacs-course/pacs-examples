@@ -32,8 +32,9 @@ template <class T> struct is_complex<std::complex<T>> : public std::true_type
 };
 
 //! to be consistent with C++17 style
-template <class T> inline bool constexpr is_complex_v = is_complex<T>::value;
-
+  template <class T> inline bool constexpr is_complex_v = is_complex<T>::value;
+  template <class T > using is_complex_t = typename  is_complex<T>::type;
+  
 } // end namespace TypeTraits
 } // end namespace apsc
 #endif
