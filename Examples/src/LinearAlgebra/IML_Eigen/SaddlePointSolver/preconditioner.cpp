@@ -49,6 +49,29 @@ ComputeApproximateSchur (const SaddlePointMat &SP, const DiagMat &D)
   return res;
 }
 
+SpMat
+  ComputeApproximateSchurDSP (const SaddlePointMat &Mat, const DiagMat &D)
+  {
+  apsc::SparseBlockMatrix<double,3,3> const & matrix=Mat.sparseBlockMatrix();
+  SpMat res =-matrix.getBlock({0,2})*D*matrix.getBlock({0,2}).transpose();
+  res+=matrix.getBlock({2,2});
+  return res;
+  }
+
+SpMat
+  BamBt (const SaddlePointMat &Mat, const DiagMat &D)
+  {
+  apsc::SparseBlockMatrix<double,3,3> const & matrix=Mat.sparseBlockMatrix();
+  return -matrix.getBlock({1,0})*D*matrix.getBlock({1,0}).transpose();
+  }
+
+SpMat
+  BamCt (const SaddlePointMat &Mat, const DiagMat &D)
+  {
+  apsc::SparseBlockMatrix<double,3,3> const & matrix=Mat.sparseBlockMatrix();
+  return matrix.getBlock({1,0})*D*matrix.getBlock({2,0}).transpose();
+  }
+
 
 Vector
 diagonal_preconditioner::solve (const Vector &r) const
@@ -216,5 +239,29 @@ HSS_preconditioner::solve (const Vector &r) const
     (omega1 - B.transpose () * z.tail (Ncell + Nfrac)) / alpha;
   return z;
 }
+
+Vector
+ DoubleSaddlePoint_preconditioner::solve (const Vector &r) const
+ {
+  auto const & B=*Bptr;
+  auto const & C=*Cptr;
+  Vector z(nVel+nCell+nFrac);
+  z.segment(nVel+nCell,nFrac)=Schur_chol.solve(r.segment(nVel+nCell,nFrac));
+  z.segment(nVel,nCell)      =BAB_chol.solve(r.segment(nVel,nCell)+BAmC*z.segment(nVel+nCell,nFrac));
+  z.segment(0,nVel)          =Md_inv*(r.segment(0,nVel)-B.transpose()*z.segment(nVel,nCell)-C.transpose()*z.segment(nVel+nCell,nFrac));
+  return z;
+ }
+
+  Vector
+  DoubleSaddlePointSym_preconditioner::solve (const Vector &r) const
+  {
+    auto const & B=*Bptr;
+    auto const & C=*Cptr;
+    Vector z(nVel+nCell+nFrac);
+    z.segment(nVel+nCell,nFrac)=Schur_chol.solve(-r.segment(nVel+nCell,nFrac));
+    z.segment(nVel,nCell)      =BAB_chol.solve(-r.segment(nVel,nCell));
+    z.segment(0,nVel)          =Md_inv*(r.segment(0,nVel));
+    return z;
+  }
 
 }
