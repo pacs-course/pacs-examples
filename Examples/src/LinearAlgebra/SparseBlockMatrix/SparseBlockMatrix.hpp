@@ -88,6 +88,16 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
   void addTranspose(Indexes const & blockPosition, Indexes toBlock);
 
   /*!
+   * Clears the block, leaving dimensions unchanged!
+   * @param block
+   */
+  void clearBlock(Indexes block)
+  {
+    auto const & [i,j] = block;
+    theMatrices[i][j]=std::make_shared<SpMat>( theRowSizes[i], theColSizes[j] );
+    transpose[i][j]=false;
+  }
+  /*!
    * Gets the block. To check if the actual block is the transpose use isTranspose().
    *
    * @param theBlock The block in the form {i,j}
@@ -150,6 +160,16 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
   void resize(std::array<Index, M> rowSizes, std::array<Index, N> colSizes);
 
   /*!
+   * Changes the block dimensions and offsets without touching the matrix.
+   *
+   * Use only if you know wwhat you are doing!.
+   * @param rowSizes Array of row block size
+   * @param colSizesArray of col block size
+   */
+  void changeOffsets(std::array<Index, M> rowSizes, std::array<Index, N> colSizes);
+
+
+  /*!
  * The offset of the block rows in the global matrix
  * @param i The block row index
  * @return The offset
@@ -162,8 +182,8 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
    */
   auto colOffset(Index j)const {return theColOffset[j];}
   /*!
-   * To enquire if the block is in fact the transpose of the actual block.
-   * @param block The bloco indexes {i,j}
+   * To enquire if the block is in fact the transpose of an actual block.
+   * @param block The block indexes {i,j}
    * @return true if it is the transpose
    */
   bool isTranspose(Indexes const & block)const { return transpose[block.row][block.col];}
@@ -192,6 +212,18 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
     return std::sqrt(this->squaredNorm());
   }
 
+  void makeCompressed()
+    {
+      for (unsigned int i=0; i<M; ++i)
+          for (unsigned int j=0; j<N; ++j)
+            if(!this->isTranspose({i,j}))
+              this->getBlock({i,j}).makeCompressed();
+    }
+  //! Clears memory
+void clear()
+{
+  this->resize({0,0},{0,0});
+}
  private:
   //! The container of the pointers to the block matrices
   std::array<std::array<std::shared_ptr<SpMat>,M>,N> theMatrices;
@@ -410,6 +442,19 @@ template <typename T, unsigned int M, unsigned int N,
      for (Index j=1; j<N;++j)theColOffset[j]=theColOffset[j-1]+colSizes[j-1];
    }
 
+  template <typename T, unsigned int M, unsigned int N, int storageOrder>
+     void SparseBlockMatrix<T, M, N, storageOrder>::changeOffsets(
+       std::array<Index, M> rowSizes, std::array<Index, N> colSizes)
+     {
+       std::tie(totalCols,totalRows)=internals::computeTotals(rowSizes,colSizes);
+       theRowSizes=rowSizes;
+       theColSizes=colSizes;
+       // Compute offfsets
+       theRowOffset[0]=0;
+       for (Index i=1; i<M;++i)theRowOffset[i]=theRowOffset[i-1]+rowSizes[i-1];
+       theColOffset[0]=0;
+       for (Index j=1; j<N;++j)theColOffset[j]=theColOffset[j-1]+colSizes[j-1];
+     }
 
   template <typename T, unsigned int M, unsigned int N, int storageOrder>
     inline SparseBlockMatrix<T, M, N, storageOrder>::SparseBlockMatrix()
