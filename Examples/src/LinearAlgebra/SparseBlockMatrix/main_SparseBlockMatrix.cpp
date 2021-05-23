@@ -49,7 +49,6 @@ int main()
   std::cout<<"with full\n"<<y*F<<std::endl;
   std::cout<<"Norm ="<< A.norm()<<std::endl;
   }
-  {
   //SparseBlockMatrix<double,2,2> A({2,4},{2,4});
   SparseBlockMatrix<double,2,2> A;
   A.resize({2,4},{2,4});
@@ -87,8 +86,25 @@ int main()
   std::cout<<"res==\n"<<y*A<<std::endl;
   std::cout<<"with full\n"<<y*F<<std::endl;
   std::cout<<"Norm ="<< A.norm()<<std::endl;
-  }
 
+  auto B=A;
+  // output
+   std::cout<<"b00=\n"<<B.getBlock({0,0})<<std::endl;
+   std::cout<<"b01=\n"<<B.getBlock({0,1})<<std::endl;
+   std::cout<<"b10=\n"<<B.getBlock({1,0}).transpose()<<std::endl;
+   std::cout<<"b11=\n"<<B.getBlock({1,1})<<std::endl;
+   F=B.fullMatrix();
+   std::cout<<"Full Matrix=\n"<<F<<std::endl;
+   SparseBlockMatrix<double,2,2>::ColVector xx;
+   xx.resize(B.cols());
+   xx=SparseBlockMatrix<double,2,2>::ColVector::Ones(A.cols());
+   res = B*xx;
+   std::cout<<"res==\n"<<res<<std::endl;
+   std::cout<<"with full\n"<<F*xx<<std::endl;
+   y=SparseBlockMatrix<double,2,2>::RowVector::Ones(A.rows());
+   std::cout<<"res==\n"<<y*B<<std::endl;
+   std::cout<<"with full\n"<<y*F<<std::endl;
+   std::cout<<"Norm ="<< B.norm()<<std::endl;
 
 }
 
