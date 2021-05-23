@@ -42,7 +42,6 @@ main(int argc, char **argv)
 
   std::vector<MPI_Request> requests(mpi_size);
   std::vector<MPI_Status>  statuses(mpi_size);
-  int                      ready;
 
   MPI_Irecv(to_receive.data(),
             to_receive.size(),
@@ -61,6 +60,7 @@ main(int argc, char **argv)
             &requests[1]);
 
   // Test for all requests to complete.
+  int ready;
   MPI_Testall(mpi_size, requests.data(), &ready, MPI_STATUS_IGNORE);
   std::cout << "Test on rank " << mpi_rank << ": non-blocking communications "
             << (ready ? "" : "not yet ") << "completed." << std::endl;

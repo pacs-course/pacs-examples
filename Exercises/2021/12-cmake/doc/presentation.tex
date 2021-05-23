@@ -1,0 +1,446 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usetheme{focus}
+
+\definecolor{main}{HTML}{015697}
+\definecolor{background}{HTML}{f8fbff}
+
+\usepackage{pifont}
+\newcommand{\pro}{\textcolor{example}{\ding{51}}}
+\newcommand{\con}{\alert{\ding{55}}}
+
+\usepackage{minted}
+\setminted{bgcolor=main!10!background}
+\usemintedstyle{manni}
+
+\title{Introduction to CMake}
+\author{Pasquale Africa}
+\institute{Politecnico di Milano}
+\date{2021-05-21}
+\titlegraphic{}
+
+\begin{document}
+\begin{frame}[plain]{}
+    \maketitle
+\end{frame}
+
+\section{Build systems}
+\begin{frame}{Purposes}
+    Build systems are a way to deploy software.
+    \vfill
+    They are used to
+    \begin{enumerate}
+        \item provide others a way to configure \textbf{your} own project;
+        \item configure and install third-party software on your system.
+    \end{enumerate}
+    \vfill
+    \textbf{Configure} means
+    \begin{itemize}
+        \item meet dependencies
+        \item build
+        \item test
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Build systems available}
+    \begin{itemize}
+    \item \textbf{CMake}\footnote{\url{https://cmake.org/}}
+    \begin{itemize}
+    \item[\pro] Easy to learn, great support for multiple IDEs, cross-platform
+    \item[\con] Does not perform automatic compilation test for met dependencies.
+    \end{itemize}
+    \item \textbf{GNU Autotools}\footnote{\url{https://www.gnu.org/software/automake/manual/}}
+    \begin{itemize}
+    \item[\pro] Excellent support for legacy Unix platforms, large selection of existing modules.
+    \item[\con] Slow, hard to use correctly, painful to debug, poor support for non-Unix platforms.
+    \end{itemize}
+    \item \textbf{Meson}\footnote{\url{https://mesonbuild.com/}}, \textbf{Bazel}\footnote{\url{https://bazel.build/}}, \textbf{SCons}\footnote{\url{https://scons.org/}}, \dots
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Let's try}
+Unload the \texttt{mk} module system (\texttt{module purge}), install dependencies then compile and install.\\
+\textbf{Doxygen} {\small (\url{https://github.com/doxygen/doxygen})}
+\begin{minted}{bash}
+cd /path/to/doxygen/src/
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/opt/doxygen ../
+make -j<N>
+(sudo) make install
+\end{minted}
+\textbf{GNU Scientific Library} {\small (\url{https://www.gnu.org/software/gsl/})}
+\begin{minted}{bash}
+cd /path/to/gsl/src/
+./configure --prefix=/opt/gsl --enable-shared --disable-static
+make -j<N>
+(sudo) make install
+\end{minted}
+\end{frame}
+
+\begin{frame}{Why CMake?}
+\begin{itemize}
+    \item More packages use CMake than any other system
+    \item almost every IDE supports CMake (or vice-versa)
+    \item really cross-platform, no better choices for Windows
+    \item extensible, modular design
+\end{itemize}
+\vfill
+\pause
+Who else is using CMake?
+\begin{itemize}
+    \item Netflix
+    \item HDF Group, ITK, VTK, Paraview (visualization tools)
+    \item Armadillo, CGAL, LAPACK, Trilinos (linear algebra and algorithms)
+    \item deal.II, Gmsh (FEM analysis)
+    \item KDE, Qt, ReactOS (user interfaces and operating systems)
+    \item \dots
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Resources}
+\begin{itemize}
+    \item Official documentation\\
+    \url{https://cmake.org/cmake/help/latest/}
+    \vfill
+    \item Modern CMake\\
+    \url{https://cliutils.gitlab.io/modern-cmake/}
+    \vfill
+    \item{It's time to do CMake right}\\
+    \url{https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right/}
+    \vfill
+    \item Effective Modern CMake\\ \url{https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1}
+    \vfill
+    \item More Modern CMake\\ \url{https://www.youtube.com/watch?v=y7ndUhdQuU8&feature=youtu.be}
+\end{itemize}
+\end{frame}
+
+\section{CMake basics}
+\begin{frame}[fragile]{CMake 101}
+The root of a project using CMake must contain a \textbf{\texttt{CMakeLists.txt}} file.
+
+\begin{minted}{cmake}
+cmake_minimum_required(VERSION 3.12)
+
+# This is a comment.
+project(MyProject VERSION 1.0
+                  DESCRIPTION "A very nice project"
+                  LANGUAGES CXX)
+\end{minted}
+Please use a CMake version more recent than your compiler (at least \(\geq 3.0\)).
+\vfill
+Command names are \textbf{case-insensitive}.
+\end{frame}
+
+\begin{frame}[fragile]{CMake 101}
+Configure:
+\begin{minted}{bash}
+cmake -S /path/to/src/ -B build [options...]
+# Or:
+# mkdir build && cd build
+# cmake /path/to/src/ [options...]
+\end{minted}
+Compile:
+\begin{minted}{bash}
+cd /path/to/build/
+make -j<N>
+\end{minted}
+To print a list of variable values:
+\begin{minted}{bash}
+cd build
+cmake /path/to/src/ -L
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Targets}
+CMake is all about targets and properties. An executable is a target, a library is a target. Your application is built as a collection of targets depending on each other.
+
+\begin{minted}{cmake}
+# Header files are optional.
+add_executable(my_exec my_main.cpp my_header.h)
+
+# Options are STATIC, SHARED (dynamic) or MODULE (plugins).
+add_library(my_lib STATIC my_class.cpp my_class.h)
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Target properties}
+Target can be associated various properties\footnote{\url{https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html}}:
+\begin{minted}{cmake}
+add_library(my_lib STATIC my_class.cpp my_class.h)
+target_include_directories(my_lib PUBLIC include_dir)
+# "PUBLIC" propagates the property to
+# other targets depending on "my_lib".
+target_link_libraries(my_lib PUBLIC another_lib)
+
+add_executable(my_exec my_main.cpp my_header.h)
+target_link_libraries(my_exec my_lib)
+target_compile_features(my_exec cxx_std_20)
+# Last command is equivalent to
+# set_target_properties(my_exec PROPERTIES CXX_STANDARD 20)
+\end{minted}
+\end{frame}
+
+\section{Interact with the outside world}
+\begin{frame}[fragile]{Local variables}
+\begin{minted}{cmake}
+set(LIB_NAME "my_lib")
+
+# List items are space- or semicolon-separated.
+set(SRCS "my_class.cpp;my_main.cpp")
+set(INCLUDE_DIRS "include_one;include_two")
+
+add_library(${LIB_NAME} STATIC ${SRCS} my_class.h)
+target_include_directories(${LIB_NAME} PUBLIC ${INCLUDE_DIRS})
+
+add_executable(my_exec my_main.cpp my_header.h)
+target_link_libraries(my_exec ${LIB_NAME})
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Cache variables}
+Cache variables are used to interact with the command line:
+\begin{minted}{cmake}
+# "VALUE" is just the default value.
+set(MY_CACHE_VARIABLE "VALUE" CACHE STRING "Description")
+
+# Boolean specialization.
+option(MY_OPTION "This is settable from the command line" OFF)
+\end{minted}
+
+Then:
+\begin{minted}{bash}
+cmake /path/to/src/ \
+  -DMY_CACHE_VARIABLE="SOME_CUSTOM_VALUE" \
+  -DMY_OPTION=OFF
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Useful variables}
+\begin{description}
+    \item[\texttt{CMAKE\_SOURCE\_DIR}]: top-level source directory
+    \item[\texttt{CMAKE\_BINARY\_DIR}]: top-level build directory
+\end{description}
+\vspace{0.4cm}
+If the project is organized in sub-folders:
+\begin{description}
+    \item[\texttt{CMAKE\_CURRENT\_SOURCE\_DIR}]: current source directory being processed
+    \item[\texttt{CMAKE\_CURRENT\_BINARY\_DIR}]: current build directory
+\end{description}
+\vspace{0.2cm}
+\begin{minted}{cmake}
+# Options are "Release", "Debug",
+# "RelWithDebInfo", "MinSizeRel"
+set(CMAKE_BUILD_TYPE Release)
+
+set(CMAKE_CXX_COMPILER "/path/to/c++/compiler")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Environment variables}
+\begin{minted}{cmake}
+# Read.
+message("PATH is set to: $ENV{PATH}")
+
+# Write.
+set(ENV{variable_name} value)
+\end{minted}
+
+(although it is generally a good idea to avoid them).
+\end{frame}
+
+\begin{frame}[fragile]{Control flow}
+\begin{minted}{cmake}
+if("${variable}")
+    # True if variable is not false-like
+else()
+    # Note that undefined variables would be `""` thus false
+endif()
+\end{minted}
+\vfill
+The following operators can be used.
+\vfill
+Unary: \texttt{NOT}, \texttt{TARGET}, \texttt{EXISTS} (file), \texttt{DEFINED}, etc.\\
+Binary: \texttt{STREQUAL}, \texttt{AND}, \texttt{OR}, \texttt{MATCHES} (regular expression), \dots
+\vfill
+Parentheses can be used to group.
+\end{frame}
+
+\begin{frame}[fragile]{Branch selection}
+Useful for switching among different implementations or version of any third-party library.
+\vfill
+\texttt{my\_main.cpp}:
+\begin{minted}{c++}
+#ifdef USE_ARRAY
+    std::array<double, 100> my_array;
+#else
+    std::vector<double> my_array;
+#endif
+\end{minted}
+
+How to select the correct branch?
+\end{frame}
+
+\begin{frame}[fragile]{Pre-processor flags}
+\texttt{CMakeLists.txt}:
+\begin{minted}{cmake}
+target_compile_definitions(my_exec PRIVATE USE_ARRAY=1)
+\end{minted}
+Or let user set the desired flag:
+\begin{minted}{cmake}
+option(WITH_ARRAY "Use std::array instead of std::vector" ON)
+
+if(WITH_ARRAY)
+    target_compile_definitions(my_exec PRIVATE USE_ARRAY=1)
+endif()
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Modify files depending on variables}
+\texttt{print\_version.hpp.in}:
+\begin{minted}{c++}
+void print_version() {
+  std::cout << "Version number: " << @MY_PROJECT_VERSION@
+            << std::endl;
+}
+\end{minted}
+\texttt{CMakeLists.txt}:
+\begin{minted}{c++}
+set(MY_PROJECT_VERSION 1.2.0)
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/print_version.hpp.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/print_version.hpp")
+\end{minted}
+See also: \texttt{\#cmakedefine}.
+\end{frame}
+
+\begin{frame}[fragile]{Print messages and debug}
+Content of variables is printed with
+\begin{minted}{cmake}
+message("MY_VAR is: ${MY_VAR}")
+\end{minted}
+\vfill
+Error messages can be printed with
+\begin{minted}{cmake}
+message(FATAL_ERROR "MY_VAR has wrong value: ${MY_VAR}")
+\end{minted}
+\vfill
+Commands being executed are printed with
+\begin{minted}{bash}
+cmake /path/to/src/ -B build --trace-source=CMakeLists.txt
+make VERBOSE=1
+\end{minted}
+\end{frame}
+
+\section{Advanced CMake}
+\begin{frame}[fragile]{Looking for third-party libraries}
+CMake looks for \textbf{module files} \texttt{FindPackage.cmake} in the directories specified in \texttt{CMAKE\_PREFIX\_PATH}.
+\vfill
+\begin{minted}{cmake}
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH} /path/to/module/")
+
+# Specify "REQUIRED" if library is mandatory.
+find_package(Boost 1.50 COMPONENTS filesystem graph)
+\end{minted}
+\vfill
+If the library is not located in a system folder, often a hint can be provided:
+\begin{minted}{bash}
+cmake /path/to/src/ -DBOOST_ROOT=/path/to/boost
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Using third-party libraries}
+Once the library is found, proper variables are populated.
+\begin{minted}{cmake}
+if(${Boost_FOUND})
+    target_include_directories(my_lib PUBLIC
+                               ${Boost_INCLUDE_DIRS})
+    
+    target_link_directories(my_lib PUBLIC
+                            ${Boost_LIBRARY_DIRS})
+    # Old CMake versions:
+    # link_directories(${Boost_LIBRARY_DIRS})
+    
+    target_link_libraries(my_lib ${Boost_LIBRARIES})
+endif()
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Compilation test}
+CMake can try to compile a source and save the exit status in a local variable.
+\begin{minted}{cmake}
+try_compile(
+    HAVE_ZIP
+    "${CMAKE_BINARY_DIR}/temp"
+    "${CMAKE_SOURCE_DIR}/tests/test_zip.cpp"
+    LINK_LIBRARIES ${ZIP_LIBRARY}
+    CMAKE_FLAGS
+        "-DINCLUDE_DIRECTORIES=${ZIP_INCLUDE_PATH}"
+        "-DLINK_DIRECTORIES=${ZIP_LIB_PATH}")
+
+# See also.
+try_run(...)
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Execution test}
+CMake can run specific executables and check their exit status to determine (un)successful runs.
+\begin{minted}{cmake}
+include(CTest)
+enable_testing()
+add_test(NAME MyTest COMMAND my_test_executable)
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Organize a large project}
+\begin{minted}{cmake}
+cmake_minimum_required(VERSION 3.12)
+project(ExampleProject VERSION 1.0 LANGUAGES CXX)
+
+find_package(...)
+
+add_subdirectory(src)
+add_subdirectory(apps)
+add_subdirectory(tests)
+\end{minted}
+\end{frame}
+
+\section{Tip: how to organize a large project}
+\begin{frame}[fragile, focus]
+\Large
+\begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+        \begin{verbatim}
+./
+  src/
+    CMakeLists.txt
+    my_lib.{hpp,cpp}
+  apps/
+    CMakeLists.txt
+    my_app.cpp
+  tests/
+    CMakeLists.txt
+    my_test.cpp
+        \end{verbatim}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+        \begin{verbatim}
+
+  cmake/
+    FindSomeLib.cmake
+  doc/
+    Doxyfile.in
+  scripts/
+    do_something.sh
+  .gitignore
+  README.md
+  LICENSE.md
+  CMakeLists.txt
+        \end{verbatim}
+    \end{column}
+\end{columns}
+\end{frame}
+% Fix for fragile last frame.
+\addtocounter{framenumber}{1}
+\end{document}
