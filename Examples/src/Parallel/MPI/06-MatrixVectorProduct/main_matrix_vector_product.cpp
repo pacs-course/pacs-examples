@@ -1,37 +1,37 @@
-/**
- * @author Pasquale Claudio Africa <pasqualeclaudio.africa@polimi.it>
- * @date 2020
- */
-
 #include <mpi.h>
 #include <omp.h>
 
 #include <algorithm>
-#include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <vector>
 
-static clock_t c_start, c_diff;
-static double  c_sec;
-#define tic() c_start = clock();
-#define toc(x)                                      \
-  c_diff = clock() - c_start;                       \
-  c_sec  = (double)c_diff / (double)CLOCKS_PER_SEC; \
-  std::cout << x << c_sec << " [s]" << std::endl;
+static double c_start, c_diff;
+#define tic() c_start = MPI_Wtime();
+#define toc(x)                                       \
+  {                                                  \
+    c_diff = MPI_Wtime() - c_start;                  \
+    std::cout << x << c_diff << " [s]" << std::endl; \
+  }
 
 /**
  * Parallel matrix-vector product.
  *
- * Data are generated randomly by rank 0 and then broadcasted.
- * Each rank is assigned a sub-block of the input matrix (split by
- * rows, without overlap) and computes the local matrix-vector
- * product. Finally, the results are collected back by rank 0, which
- * prints them to output.
+ * Data are generated randomly by rank 0 and then broadcasted. Each rank is
+ * assigned a sub-block of the input matrix (split by rows, without overlap) and
+ * computes the local matrix-vector product. Finally, the results are collected
+ * back by rank 0, which prints them to output.
  *
- * This example makes use of hybrid
- * shared/distributed parallelization through OpenMP and MPI.
+ * This example makes use of hybrid shared/distributed parallelization through
+ * OpenMP and MPI.
+ *
+ * Running, e.g., on a matrix of size 10^4 x 10^3 should show good scalability
+ * properties.
+ *
+ * The bottleneck in the computational time is constructing the matrix on rank 0
+ * and scattering it to other ranks: in real applications each rank would build
+ * its own "local" matrix.
  */
 int
 main(int argc, char **argv)
@@ -49,17 +49,16 @@ main(int argc, char **argv)
 #pragma omp parallel master
   if (mpi_rank == 0)
     std::cout << "Number of processes: " << mpi_size
-              << ", number of threads: " << omp_get_num_threads()
-              << std::endl;
+              << ", number of threads: " << omp_get_num_threads() << std::endl;
 
   // Set to true to print matrix, vector and result.
-  bool print = false;
+  const bool print = false;
 
   unsigned int n_rows;
   unsigned int n_cols;
 
   std::vector<double> matrix;
-  std::vector<double> vector;
+  std::vector<double> rhs;
   std::vector<double> result;
 
   // Vectors to store the number of elements to send to each
@@ -74,15 +73,13 @@ main(int argc, char **argv)
 
   if (mpi_rank == 0)
     {
-      std::cout << std::endl
-                << "Enter the number of matrix rows:" << std::endl;
+      std::cout << std::endl << "Enter the number of matrix rows:" << std::endl;
       std::cin >> n_rows;
 
       if (n_rows < 1)
         {
-          std::cerr
-            << "ERROR: Number of rows should be greater than 1."
-            << std::endl;
+          std::cerr << "ERROR: Number of rows should be greater than 1."
+                    << std::endl;
 
           return 1;
         }
@@ -92,9 +89,8 @@ main(int argc, char **argv)
 
       if (n_cols < 1)
         {
-          std::cerr
-            << "ERROR: Number of columns should be greater than 1."
-            << std::endl;
+          std::cerr << "ERROR: Number of columns should be greater than 1."
+                    << std::endl;
 
           return 1;
         }
@@ -105,21 +101,35 @@ main(int argc, char **argv)
   MPI_Bcast(&n_rows, 1, MPI_INT, 0, mpi_comm);
   MPI_Bcast(&n_cols, 1, MPI_INT, 0, mpi_comm);
 
-  vector.resize(n_cols);
+  rhs.resize(n_cols);
+  if (mpi_rank == 0)
+    result.resize(n_rows);
 
-  unsigned int count     = n_rows / mpi_size;
-  int          remainder = n_rows - count * mpi_size;
+  const unsigned int count     = n_rows / mpi_size;
+  const int          remainder = n_rows - count * mpi_size;
+
+  const unsigned int n_rows_local =
+    (mpi_rank < remainder) ? (count + 1) : count;
+
+  std::cout << "Number of rows on rank " << mpi_rank << ": " << n_rows_local
+            << std::endl;
+
+  std::vector<double> matrix_local(n_rows_local * n_cols);
+
+  std::vector<double> result_local(n_rows_local, 0.0);
 
   if (mpi_rank == 0)
     {
+      tic();
+
       std::random_device                     engine;
       std::uniform_real_distribution<double> rand(0, 1);
 
       // Generate matrix.
       matrix.resize(n_rows * n_cols);
-      std::generate(matrix.begin(), matrix.end(), [&engine, &rand]() {
-        return rand(engine);
-      });
+#pragma omp parallel for shared(matrix)
+      for (auto &m : matrix)
+        m = rand(engine);
 
       if (print)
         {
@@ -134,15 +144,15 @@ main(int argc, char **argv)
           std::cout << std::endl;
         }
 
-      // Generate vector.
-      std::generate(vector.begin(), vector.end(), [&engine, &rand]() {
-        return rand(engine);
-      });
+#pragma omp parallel for shared(rhs)
+      // Generate rhs.
+      for (auto &v : rhs)
+        v = rand(engine);
 
       if (print)
         {
-          std::cout << "Vector:" << std::endl;
-          for (const auto &v : vector)
+          std::cout << "RHS:" << std::endl;
+          for (const auto &v : rhs)
             {
               std::cout << std::setw(12) << v;
             }
@@ -165,45 +175,71 @@ main(int argc, char **argv)
 
           start_idx += recv_counts[i];
         }
+
+      std::cout << std::endl;
+      toc("Assemble matrix: time elapsed on rank " + std::to_string(mpi_rank) +
+          ": ");
     }
 
-  MPI_Bcast(vector.data(), n_cols, MPI_DOUBLE, 0, mpi_comm);
-
   tic();
+  MPI_Bcast(rhs.data(), rhs.size(), MPI_DOUBLE, 0, mpi_comm);
 
-  unsigned int n_rows_local =
-    (mpi_rank < remainder) ? (count + 1) : count;
-
-  std::cout << "Number of rows on rank " << mpi_rank << ": "
-            << n_rows_local << std::endl;
-
-  std::vector<double> matrix_local(n_rows_local * n_cols);
   MPI_Scatterv(matrix.data(),
                send_counts.data(),
                send_start_idx.data(),
                MPI_DOUBLE,
                matrix_local.data(),
-               n_rows_local * n_cols,
+               matrix_local.size(),
                MPI_DOUBLE,
                0,
                mpi_comm);
 
-  std::vector<double> result_local(n_rows_local, 0.0);
+  MPI_Barrier(mpi_comm);
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank && mpi_rank == 0)
+        std::cout << std::endl;
+      MPI_Barrier(mpi_comm);
 
+      if (rank == mpi_rank)
+        {
+          toc("Scatter: time elapsed on rank " + std::to_string(mpi_rank) +
+              ": ");
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
+
+  tic();
 #pragma omp parallel for shared(result_local)
   for (unsigned int i = 0; i < n_rows_local; ++i)
     {
       for (unsigned int j = 0; j < n_cols; ++j)
         {
-          result_local[i] += matrix_local[i * n_cols + j] * vector[j];
+          result_local[i] += matrix_local[i * n_cols + j] * rhs[j];
         }
     }
 
-  if (mpi_rank == 0)
-    result.resize(n_rows);
+  MPI_Barrier(mpi_comm);
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank && mpi_rank == 0)
+        std::cout << std::endl;
+      MPI_Barrier(mpi_comm);
+
+      if (rank == mpi_rank)
+        {
+          toc("Matrix-vector product: time elapsed on rank " +
+              std::to_string(mpi_rank) + ": ");
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
+
+  tic();
 
   MPI_Gatherv(result_local.data(),
-              n_rows_local,
+              result_local.size(),
               MPI_DOUBLE,
               result.data(),
               recv_counts.data(),
@@ -223,7 +259,20 @@ main(int argc, char **argv)
     }
 
   MPI_Barrier(mpi_comm);
-  toc("Time elapsed on rank " + std::to_string(mpi_rank) + ": ");
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank && mpi_rank == 0)
+        std::cout << std::endl;
+      MPI_Barrier(mpi_comm);
+
+      if (rank == mpi_rank)
+        {
+          toc("Gather: time elapsed on rank " + std::to_string(mpi_rank) +
+              ": ");
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
 
   MPI_Finalize();
 
