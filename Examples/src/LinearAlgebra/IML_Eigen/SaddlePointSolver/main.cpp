@@ -68,6 +68,10 @@ main(int argc, char * argv[])
   std::clog<<"Non zero entries:"<<T.nonZeros()<<std::endl;
   // assign to saddle point matrix
   FVCode3D::SaddlePointMat saddlePointMat(M,B,T,testParameters.isSymUndef);
+  std::cout<<"Matrix norm"<<saddlePointMat.norm()<<std::endl;
+
+  //saddlePointMat.convertToDoubleSaddlePoint();
+  //std::cout<<"Matrix norm"<<saddlePointMat.norm()<<std::endl;
   M.resize(0,0);
   B.resize(0,0);
   T.resize(0,0);
@@ -102,13 +106,18 @@ main(int argc, char * argv[])
   saddlePointMat.makeCompressed();
   // Create the right hand side so that the solution is a vector of 1s
   //
-  SpVec e=SpVec::Random(saddlePointMat.getM().rows()+saddlePointMat.getB().rows());
+  SpVec e=SpVec::Random(saddlePointMat.rows());
   SpVec b=saddlePointMat * e;
-  SpVec x(saddlePointMat.getM().rows()+saddlePointMat.getB().rows());
+  SpVec x(saddlePointMat.rows());
+
   x.fill(0.);// Start from 0.
   FVCode3D::PreconditionerFactory factory= FVCode3D::make_PreconditionerFactory();
   auto precond_ptr = factory[testParameters.precondSwitch]();
   FVCode3D::preconditioner & precond=*precond_ptr;
+
+  if(testParameters.precondSwitch==FVCode3D::DoubleSaddlePoint || testParameters.precondSwitch==FVCode3D::DoubleSaddlePointSym)
+    saddlePointMat.convertToDoubleSaddlePoint();
+
   loadPreconditioner(precond, saddlePointMat, testParameters);
 
   // Status
