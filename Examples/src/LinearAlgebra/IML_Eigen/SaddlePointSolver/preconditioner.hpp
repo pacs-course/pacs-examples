@@ -47,6 +47,36 @@ DiagMat ComputeApproximateInverseInnerProd(const SaddlePointMat & Mat, bool lump
  */
 SpMat ComputeApproximateSchur(const SaddlePointMat & Mat, const DiagMat & D);
 
+//! Computes the approximate Shur complement -T-CA-1Ct using a diagonal approximate inverse for the double saddle point
+//! version
+/*!
+ * @param Mat A saddle point matrix
+ * @param D a diagonal matrix that represents an approximate inverse of the inner product matrix
+ * @return the approximate Shur complement
+ *
+ */
+SpMat ComputeApproximateSchurDSP(const SaddlePointMat & Mat, const DiagMat & D);
+
+
+//! Computes the -BA-1Bt term using a diagonal approximate inverse for the double saddle point
+//! version
+/*!
+ * @param Mat A saddle point matrix
+ * @param D a diagonal matrix that represents an approximate inverse of the inner product matrix
+ * @return the approximate Shur complement
+ *
+ */
+SpMat BamBt(const SaddlePointMat & Mat, const DiagMat & D);
+
+//! Computes the CA-1Ct term using a diagonal approximate inverse for the double saddle point
+//! version
+/*!
+ * @param Mat A saddle point matrix
+ * @param D a diagonal matrix that represents an approximate inverse of the inner product matrix
+ * @return the approximate Shur complement
+ *
+ */
+SpMat BamCt(const SaddlePointMat & Mat, const DiagMat & D);
 
 //! A version that does it all
 /*!
@@ -458,12 +488,87 @@ private:
     //! Vector to scale M
     Vector scaledM;
      //! The alpha coeff of the scheme (default value)
-    static constexpr Real      alpha_default = 1e-2;
+    inline static constexpr Real      alpha_default = 1e-2;
     //! The max it for CG (default value)
-    static constexpr UInt      MaxIt_default = 300;
+    inline static constexpr UInt      MaxIt_default = 300;
     //! The tolerance for CG (default value)
-    static constexpr Real      tol_default = 1e-2;
+    inline static constexpr Real      tol_default = 1e-2;
                       
+};
+
+class DoubleSaddlePoint_preconditioner: public preconditioner
+{
+public:
+    //! @name Constructor & Destructor
+    //@{
+  DoubleSaddlePoint_preconditioner(const SaddlePointMat & SP):
+    Bptr{&SP.sparseBlockMatrix().getBlock({1,0})},
+    Cptr{&SP.sparseBlockMatrix().getBlock({2,0})},
+    nVel{SP.sparseBlockMatrix().rows({0,0})},
+    nCell{SP.sparseBlockMatrix().rows({1,0})},
+    nFrac{SP.sparseBlockMatrix().rows({2,0})}
+ {
+      Md_inv = ComputeApproximateInverseInnerProd(SP,this->lumped);
+      Schur_chol.compute(ComputeApproximateSchurDSP(SP, Md_inv));
+      BAB_chol.compute(BamBt(SP, Md_inv));
+      BAmC = BamCt(SP, Md_inv);
+    }
+      //! Empty-Constructor
+    DoubleSaddlePoint_preconditioner()=default;
+      //@}
+
+    //! @name Assemble Methods
+    //@{
+      //! Assemble the the inverse diag of M and the SC
+    /*!
+     * @param Mat The saddle point mat
+     *
+     */
+    void set(const SaddlePointMat & SP) override
+       {
+        nCell=SP.sparseBlockMatrix().rows({1,0});
+        nVel=SP.sparseBlockMatrix().rows({0,0});
+        nFrac=SP.sparseBlockMatrix().rows({2,0});
+        Bptr=&SP.sparseBlockMatrix().getBlock({1,0});
+        Cptr=&SP.sparseBlockMatrix().getBlock({2,0});
+        Md_inv = ComputeApproximateInverseInnerProd(SP,this->lumped);
+        Schur_chol.compute(ComputeApproximateSchurDSP(SP, Md_inv));
+        BAB_chol.compute(BamBt(SP, Md_inv));
+        BAmC = BamCt(SP, Md_inv);
+       }
+    //@}
+
+    //! @name Solve Methods
+    //@{
+    //! Solve the linear system Pz=r
+    Vector solve(const Vector & r) const override;
+    //@}
+
+protected:
+      //! The B block matrix
+    const SpMat *              Bptr=nullptr;
+    const SpMat *              Cptr=nullptr;
+    SpMat BAmC;
+    Eigen::Index nVel;
+    Eigen::Index nCell;
+    Eigen::Index nFrac;
+   //! The inverse of the diagonal of M
+    DiagMat                    Md_inv;
+    //! Cholesky factorization
+    Eigen::SimplicialLDLT<SpMat, Eigen::Upper> Schur_chol;
+    Eigen::SimplicialLDLT<SpMat, Eigen::Upper> BAB_chol;
+};
+
+class DoubleSaddlePointSym_preconditioner: public DoubleSaddlePoint_preconditioner
+{
+public:
+  using DoubleSaddlePoint_preconditioner::DoubleSaddlePoint_preconditioner;
+  using DoubleSaddlePoint_preconditioner::set;
+  //! @name Solve Methods
+  //@{
+  //! Solve the linear system Pz=r
+      Vector solve(const Vector & r) const override;
+  //@}
 };
 
 }

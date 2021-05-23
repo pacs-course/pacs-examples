@@ -75,6 +75,8 @@ inline const std::map<std::string,FVCode3D::PrecondSwitch> getPreconditioner
   {"ILU",FVCode3D::ILU},
   {"HSS",FVCode3D::HSS},
   {"Identity",FVCode3D::Identity},
+  {"DoubleSaddlePoint",FVCode3D::DoubleSaddlePoint},
+  {"DoubleSaddlePointSym",FVCode3D::DoubleSaddlePointSym}
 };
 
 //! Read parameters from a getpot object
