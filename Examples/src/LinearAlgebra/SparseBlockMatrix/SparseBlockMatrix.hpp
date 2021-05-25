@@ -17,7 +17,7 @@
 namespace apsc
 {
   /*!
-   * Class for setting a block matrix whose blocks are spaerse Matrices
+   * Class for setting a block matrix whose blocks are sparse Matrices
    * When created you have a zero sparse matrix, i.e. a block matrix whose blocks are
    * zero sparse matrices with the specified dimensions
    * @note This class has no default constructor, for safaty reasons. You avoid dangling pointers.
@@ -59,7 +59,7 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
    * The block {i,j} will store a zero matrix with rowSizes[i] rows and colSizes[j] comlumns.
    *
    * @param rowSizes The rows of each block row.
-   * @param colSizes The columens of each block column.
+   * @param colSizes The columns of each block column.
    */
   SparseBlockMatrix(std::array<Index, M> rowSizes, std::array<Index, N> colSizes);
   SparseBlockMatrix();
@@ -162,7 +162,7 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
   /*!
    * Changes the block dimensions and offsets without touching the matrix.
    *
-   * Use only if you know wwhat you are doing!.
+   * Use only if you know what you are doing!.
    * @param rowSizes Array of row block size
    * @param colSizesArray of col block size
    */
@@ -176,7 +176,7 @@ template<typename T, unsigned int M, unsigned int N, int storageOrder=Eigen::Col
  */
   auto rowOffset(Index i)const {return theRowOffset[i];}
   /*!
-   * The offset of the block columss in the global matrix
+   * The offset of the block columns in the global matrix
    * @param i The block column index
    * @return The offset
    */
