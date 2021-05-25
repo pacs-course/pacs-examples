@@ -306,9 +306,9 @@ namespace Eigen
   template<typename SparseMatrixType>
   SparseMatrixType read_MM_Matrix(const std::string& filename)
   {
-    typedef typename SparseMatrixType::Scalar Scalar;
+    //typedef typename SparseMatrixType::Scalar Scalar;
     // more C++11 syntax
-    // using Scalar=typename SparseMatrixType::Scalar
+    using Scalar=typename SparseMatrixType::Scalar;
     bool iscomplex(false);
     bool isvector(false);
     int sym;
