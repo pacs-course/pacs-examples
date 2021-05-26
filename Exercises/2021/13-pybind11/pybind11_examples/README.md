@@ -132,7 +132,9 @@ project(example)
 add_subdirectory(pybind11)
 pybind11_add_module(example example.cpp)
 ```
+
 or:
+
 ```cmake
 cmake_minimum_required(VERSION 2.8.12)
 project(example)
@@ -163,14 +165,6 @@ or:
 ```cmake
 find_package(EIGEN3 REQUIRED)
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
-```
-
-### Using the C++14 standard
-
-The C++14 standard can be used by including the following in `CMakeLists.txt`:
-
-```cmake
-set(CMAKE_CXX_STANDARD 14)
 ```
 
 ## setup.py
@@ -247,13 +241,13 @@ c++ -O3 -shared -std=gnu++11 -I /usr/local/Cellar/eigen/3.3.1/include/eigen3 -I 
 
 ## [06_class-numpy-eigen](06_class-numpy-eigen)
 
-A custom `CustomVectorXd` class with one function `mul`. This class uses the Eigen library. It also includes a default argument.
+A custom `CustomVectorXd` class with one function `multiply`. This class uses the Eigen library. It also includes a default argument.
 
 Furthermore, this example has a function `trans` (totally unrelated to the custom `CustomVectorXd` class). It's purpose is to show how to return a new `Eigen::VectorXi` (or NumPy-array).
 
 ## [07_cpp-overload-scalar](07_cpp-overload-scalar)
 
-One overloaded function `mul`. This function acts 'differently' if it is called with `int` arguments or `double` arguments. Notice that the default behavior of pybind11 is quite robust. When calling the function with one `int` and one `double` argument, the module will choose the `double` version of `mul` (and will cast the `int` argument to a `double`).
+One overloaded function `multiply`. This function acts 'differently' if it is called with `int` arguments or `double` arguments. Notice that the default behavior of pybind11 is quite robust. When calling the function with one `int` and one `double` argument, the module will choose the `double` version of `multiply` (and will cast the `int` argument to a `double`).
 
 To compile, make sure that the C++14 standard is used, for example by including `-std=c++14` as compiler argument.
 

@@ -33,7 +33,8 @@ namespace py = pybind11;
 
 // wrap C++ function with NumPy array IO
 py::array
-py_length(py::array_t<double, py::array::c_style | py::array::forcecast> array)
+py_length(
+  const py::array_t<double, py::array::c_style | py::array::forcecast> &array)
 {
   // check input dimensions
   if (array.ndim() != 2)
