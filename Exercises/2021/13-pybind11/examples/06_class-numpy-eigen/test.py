@@ -1,5 +1,5 @@
 import numpy as np
-import example
+import example_06_class_numpy_eigen as example
 
 A = np.arange(10)
 
