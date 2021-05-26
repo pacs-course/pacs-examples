@@ -10,14 +10,14 @@
 // ----------------
 
 Eigen::MatrixXd
-mul(const Eigen::MatrixXd &xs, double fac)
+multiply(const Eigen::MatrixXd &xs, double fac)
 {
   std::cout << "Double" << std::endl;
   return fac * xs;
 }
 
 Eigen::MatrixXi
-mul(const Eigen::MatrixXi &xs, int fac)
+multiply(const Eigen::MatrixXi &xs, int fac)
 {
   std::cout << "Int" << std::endl;
   return fac * xs;
@@ -35,6 +35,7 @@ PYBIND11_MODULE(example, m)
 
   // N.B. the order here is crucial, in the reversed order every "int" is
   // converted to a "double"
-  m.def("mul", py::overload_cast<const Eigen::MatrixXi &, int>(&mul));
-  m.def("mul", py::overload_cast<const Eigen::MatrixXd &, double>(&mul));
+  m.def("multiply", py::overload_cast<const Eigen::MatrixXi &, int>(&multiply));
+  m.def("multiply",
+        py::overload_cast<const Eigen::MatrixXd &, double>(&multiply));
 }

@@ -7,17 +7,17 @@
 // regular C++ header
 // ------------------
 
-// a custom vector-class, with one method "mul"
+// a custom vector-class, with one method "multiply"
 class CustomVectorXd
 {
-private:
-  Eigen::VectorXd m_data;
-
 public:
   CustomVectorXd(const Eigen::VectorXd &data);
 
   Eigen::VectorXd
-  mul(double factor = 1.);
+  multiply(double factor = 1.);
+
+private:
+  Eigen::VectorXd m_data;
 };
 
 // ----------------
@@ -31,7 +31,7 @@ CustomVectorXd::CustomVectorXd(const Eigen::VectorXd &data)
 
 // return the custom vector, multiplied by a factor
 Eigen::VectorXd
-CustomVectorXd::mul(double factor)
+CustomVectorXd::multiply(double factor)
 {
   return factor * m_data;
 }
@@ -63,9 +63,12 @@ PYBIND11_MODULE(example, m)
 
   m.def("trans", &trans);
 
+  // "__repr__()" or "__str__()" are invoked whenever
+  // print(array)
+  // is called from Python on an object "array" of type "CustomVectorXd".
   py::class_<CustomVectorXd>(m, "CustomVectorXd")
     .def(py::init<Eigen::VectorXd>())
-    .def("mul", &CustomVectorXd::mul, pybind11::arg("factor") = 1.)
+    .def("multiply", &CustomVectorXd::multiply, pybind11::arg("factor") = 1.)
     .def("__repr__",
          [](const CustomVectorXd &a) { return "<example.CustomVectorXd>"; });
 }
