@@ -6,7 +6,7 @@
 // ----------------
 
 Matrix<double>
-mul(const Matrix<double> &A, const Matrix<double> &B)
+multiply(const Matrix<double> &A, const Matrix<double> &B)
 {
   if (A.shape() != B.shape())
     throw std::length_error("Matrix 'A' and 'B' are inconsistent");
@@ -29,5 +29,5 @@ PYBIND11_MODULE(example, m)
 {
   m.doc() = "pybind11 example plugin";
 
-  m.def("mul", &mul);
+  m.def("multiply", &multiply);
 }

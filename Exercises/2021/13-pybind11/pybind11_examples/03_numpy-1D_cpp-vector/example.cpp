@@ -25,10 +25,11 @@ multiply(const std::vector<double> &input)
 
 namespace py = pybind11;
 
-// wrap C++ function with NumPy array IO
+// wrap C++ function with NumPy array IO.
+// C-style means row-major (vs. F(ortran)-style, column-major).
 py::array_t<int>
 py_multiply(
-  py::array_t<double, py::array::c_style | py::array::forcecast> array)
+  const py::array_t<double, py::array::c_style | py::array::forcecast> &array)
 {
   // allocate std::vector (to pass to the C++ function)
   std::vector<double> array_vec(array.size());

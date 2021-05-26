@@ -7,14 +7,14 @@
 // ----------------
 
 double
-mul(double a, double b)
+multiply(double a, double b)
 {
   std::cout << "Double" << std::endl;
   return a * b;
 }
 
 int
-mul(int a, int b)
+multiply(int a, int b)
 {
   std::cout << "Int" << std::endl;
   return a * b;
@@ -30,6 +30,6 @@ PYBIND11_MODULE(example, m)
 {
   m.doc() = "pybind11 example plugin";
 
-  m.def("mul", py::overload_cast<int, int>(&mul));
-  m.def("mul", py::overload_cast<double, double>(&mul));
+  m.def("multiply", py::overload_cast<int, int>(&multiply));
+  m.def("multiply", py::overload_cast<double, double>(&multiply));
 }

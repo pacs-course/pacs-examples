@@ -7,8 +7,8 @@
 // example replacing all occurrences of "Eigen::MatrixXd" with "MatD", with the
 // following definition:
 //
-//  typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic,
-//  Eigen::RowMajor> MatD;
+// using MatD = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic,
+//                            Eigen::RowMajor>;
 
 // ----------------
 // regular C++ code

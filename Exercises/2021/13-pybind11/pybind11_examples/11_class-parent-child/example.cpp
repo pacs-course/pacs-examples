@@ -12,35 +12,35 @@ class Animal
 {
 public:
   virtual std::string
-  talk(int n_times) = 0;
+  talk(int n_times) const = 0;
 };
 
 // derived class
 class Dog : public Animal
 {
 public:
-  std::string
-  talk(int n_times) override;
+  virtual std::string
+  talk(int n_times) const override;
 };
 
 // derived class
 class Cat : public Animal
 {
 public:
-  std::string
-  talk(int n_times) override;
+  virtual std::string
+  talk(int n_times) const override;
 };
 
 // function that takes the parent and all derived classes
 std::string
-talk(Animal &animal, int n_times = 1);
+talk(const Animal &animal, int n_times = 1);
 
 // ----------------
 // regular C++ code
 // ----------------
 
 inline std::string
-Dog::talk(int n_times)
+Dog::talk(int n_times) const
 {
   std::string result;
 
@@ -52,7 +52,7 @@ Dog::talk(int n_times)
 
 
 inline std::string
-Cat::talk(int n_times)
+Cat::talk(int n_times) const
 {
   std::string result;
 
@@ -64,7 +64,7 @@ Cat::talk(int n_times)
 
 
 std::string
-talk(Animal &animal, int n_times)
+talk(const Animal &animal, int n_times)
 {
   return animal.talk(n_times);
 }
@@ -80,8 +80,8 @@ public:
   using Animal::Animal;
 
   // trampoline (one for each virtual function)
-  std::string
-  talk(int n_times) override
+  virtual std::string
+  talk(int n_times) const override
   {
     PYBIND11_OVERLOAD_PURE(
       std::string, /* Return type */

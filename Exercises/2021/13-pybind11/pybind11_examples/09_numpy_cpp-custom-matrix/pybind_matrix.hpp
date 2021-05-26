@@ -1,7 +1,7 @@
 #ifndef PYBIND_MATRIX_HPP
 #define PYBIND_MATRIX_HPP
 
-#include "matrix.h"
+#include "matrix.hpp"
 
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
