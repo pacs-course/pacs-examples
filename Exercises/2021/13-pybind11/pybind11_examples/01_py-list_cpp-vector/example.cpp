@@ -38,7 +38,13 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(example, m)
 {
+  // Print doc by calling
+  // help(example)
+  // from Python.
   m.doc() = "pybind11 example plugin";
 
+  // Print help by calling
+  // help(example.modify)
+  // from Python.
   m.def("modify", &modify, "Multiply all entries of a list by 2.0");
 }

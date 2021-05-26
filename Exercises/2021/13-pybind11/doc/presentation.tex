@@ -33,11 +33,16 @@
     \textbf{Documentation}: \url{https://pybind11.readthedocs.io/en/stable/index.html}.
 \end{frame}
 
-\begin{frame}{Examples}
+\begin{frame}[fragile]{Examples}
     This directory is a clone of \url{https://github.com/tdegeus/pybind11_examples}.
     \vfill
-    The examples have been re-adapted in order to include dependencies from the \texttt{mk} modules (\texttt{Python}, \texttt{pybind11}, \texttt{Eigen}, \dots).\\
-    Please remind to \texttt{module load pybind11} before going on.
+    The examples have been re-adapted in order to include dependencies from the \texttt{mk} modules (\texttt{Python}, \texttt{pybind11}, \texttt{Eigen}, \dots).
+    \vfill
+    Please remember to run
+    \begin{minted}{bash}
+module load pybind11
+    \end{minted}
+    before starting.
 \end{frame}
 
 \begin{frame}[fragile]{How to compile and run}
@@ -45,7 +50,7 @@
     \begin{minted}{bash}
 cd /path/to/example/
 mkdir build && cd build
-cmake -Dpybind11_DIR=${mkPybind11Prefix} ../
+cmake -Dpybind11_DIR=${mkPybind11Prefix} ..
 make
     \end{minted}
     Run:
@@ -73,8 +78,11 @@ python3 setup.py install [--user]
 pip install [--user] [--verbose] .
     \end{minted}
     The dynamic module will be installed in your local \texttt{Python} path, \textit{e.g.}:
+{
+    \small
     \begin{minted}{bash}
-export PYTHONPATH+=:~/.local/lib/python3.*/site-packages/
+export PYTHONPATH+=:${HOME}/.local/lib/python3.8/site-packages/
     \end{minted}
+}
 \end{frame}
 \end{document}

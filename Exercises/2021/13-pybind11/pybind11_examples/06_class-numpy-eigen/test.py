@@ -7,7 +7,9 @@ print('A = \n',A)
 
 array = example.CustomVectorXd(A)
 
-print('array.mul(default) = \n'   ,array.mul()          )
-print('array.mul(factor=100) = \n',array.mul(factor=100))
+print('print(array) = \n', array)
+
+print('array.multiply(default) = \n'   ,array.multiply()          )
+print('array.multiply(factor=100) = \n',array.multiply(factor=100))
 
 print('trans(A) = \n',example.trans(A))

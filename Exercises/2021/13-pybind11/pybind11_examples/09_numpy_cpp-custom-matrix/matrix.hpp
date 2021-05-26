@@ -8,11 +8,6 @@
 template <class T>
 class Matrix
 {
-private:
-  std::vector<T>      m_data;    // data array
-  std::vector<size_t> m_shape;   // number of entries in each dimensions
-  std::vector<size_t> m_strides; // stride length for each index
-
 public:
   // default constructor
   // -------------------
@@ -48,10 +43,10 @@ public:
     int size = m_shape[0] * m_shape[1] * m_shape[2];
 
     for (int i = 0; i < m_data.size(); i++)
-      m_data[i] = (T)0;
+      m_data[i] = static_cast<T>(0);
 
     while (m_data.size() < size)
-      m_data.push_back((T)0);
+      m_data.push_back(static_cast<T>(0));
 
     if (data != NULL)
       for (int i = 0; i < size; i++)
@@ -183,6 +178,11 @@ public:
 
     return i + 1;
   };
+
+private:
+  std::vector<T>      m_data;    // data array
+  std::vector<size_t> m_shape;   // number of entries in each dimensions
+  std::vector<size_t> m_strides; // stride length for each index
 
 }; // class Matrix
 
