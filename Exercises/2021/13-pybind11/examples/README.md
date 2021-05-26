@@ -161,7 +161,9 @@ find_package(PkgConfig)
 pkg_check_modules(EIGEN3 REQUIRED eigen3)
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
 ```
-or:
+
+or
+
 ```cmake
 find_package(EIGEN3 REQUIRED)
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
@@ -173,10 +175,16 @@ A file `setup.py` can be added to your library. You can then compile and install
 
 ```bash
 python3 setup.py build
-python3 setup.py install
+python3 setup.py install [--user]
 ```
 
-An example of `setup.py` using CMake is provided in [06_class-numpy-eigen_setup](06_class-numpy-eigen_setup).
+or
+
+```bash
+pip install [--user] [--verbose] .
+```
+
+An example of `setup.py` using CMake is provided in [06_class-numpy-eigen](06_class-numpy-eigen).
 
 # Examples
 

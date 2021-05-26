@@ -57,7 +57,7 @@ trans(const Eigen::VectorXi &array)
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(example, m)
+PYBIND11_MODULE(example_06_class_numpy_eigen, m)
 {
   m.doc() = "pybind11 example plugin";
 
@@ -70,5 +70,5 @@ PYBIND11_MODULE(example, m)
     .def(py::init<Eigen::VectorXd>())
     .def("multiply", &CustomVectorXd::multiply, pybind11::arg("factor") = 1.)
     .def("__repr__",
-         [](const CustomVectorXd &a) { return "<example.CustomVectorXd>"; });
+         [](const CustomVectorXd &a) { return "<example_06_class_numpy_eigen.CustomVectorXd>"; });
 }
