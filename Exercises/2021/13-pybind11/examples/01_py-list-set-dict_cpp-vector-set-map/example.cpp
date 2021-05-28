@@ -30,6 +30,24 @@ modify(const std::vector<double> &input)
   return output;
 }
 
+template <class KeyType, class ValueType>
+std::map<KeyType, ValueType>
+create_map(const std::set<KeyType> &keys, const std::vector<ValueType> &values)
+{
+  assert(keys.size() == values.size());
+
+  std::map<KeyType, ValueType> output;
+
+  size_t i = 0;
+  for (const auto &key : keys)
+    {
+      output[key] = values[i];
+      ++i;
+    }
+
+  return output;
+}
+
 // ----------------
 // Python interface
 // ----------------
@@ -47,4 +65,14 @@ PYBIND11_MODULE(example, m)
   // help(example.modify)
   // from Python.
   m.def("modify", &modify, "Multiply all entries of a list by 2.0");
+
+  // Binding templates requires explicit instantiation.
+  // A std::map is bound into a Python dictionary.
+  // A std::set is bound into a Python set.
+  m.def("create_map",
+        &create_map<int, double>,
+        "Create a map of double numbers from a list of integer keys");
+  m.def("create_map",
+        &create_map<std::string, int>,
+        "Create a map of integer numbers from a list of string keys");
 }
