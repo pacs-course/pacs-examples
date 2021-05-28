@@ -7,7 +7,7 @@
 // Regular C++ code
 // ----------------
 
-// multiply all entries by 2.0
+// Multiply all entries by 2.0.
 // input:  std::vector ([...]) (read only)
 // output: std::vector ([...]) (new copy)
 std::vector<double>
@@ -23,13 +23,15 @@ modify(const std::vector<double> &input)
   // N.B. this is equivalent to (but there are also other ways to do the same)
   //
   // std::vector<double> output(input.size());
-  //
-  // for ( size_t i = 0 ; i < input.size() ; ++i )
+
+  // for (size_t i = 0; i < input.size(); ++i)
   //   output[i] = 2. * input[i];
 
   return output;
 }
 
+// Create a map given a set of keys and the corresponding values.
+// Keys and value types are specified as template parameters.
 template <class KeyType, class ValueType>
 std::map<KeyType, ValueType>
 create_map(const std::set<KeyType> &keys, const std::vector<ValueType> &values)
