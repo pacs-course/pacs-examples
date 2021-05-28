@@ -13,7 +13,7 @@
         - [Using the C++14 standard](#using-the-c14-standard)
     - [setup.py](#setuppy)
 - [Examples](#examples)
-    - [01_py-list_cpp-vector](#01_py-list_cpp-vector)
+    - [01_py-list-set-dict_cpp-vector-set-map](#01_py-list-set-dict_cpp-vector-set-map)
     - [02_py-nested-list_cpp-nested-vector](#02_py-nested-list_cpp-nested-vector)
     - [03_numpy-1D_cpp-vector](#03_numpy-1d_cpp-vector)
     - [04_numpy-2D_cpp-vector](#04_numpy-2d_cpp-vector)
@@ -191,16 +191,21 @@ An example of `setup.py` using CMake is provided in [06_class-numpy-eigen](06_cl
 
 # Examples
 
-## [01_py-list_cpp-vector](01_py-list_cpp-vector)
+## [01_py-list-set-dict_cpp-vector-set-map](01_py-list-set-dict_cpp-vector-set-map)
 
-This example features one function `modify` that takes a list (read-only), multiplies all entries by two, and returns it as a list of doubles (see [`example.cpp`](01_py-list_cpp-vector/example.cpp)). From Python this function is contained in a simple module `example` (see [`test.py`](01_py-list_cpp-vector/test.py)).
+This example features one function `modify` that takes a list (read-only), multiplies all entries by two, and returns it as a list of doubles (see [`example.cpp`](01_py-list-set-dict_cpp-vector-set-map/example.cpp)).
 
-The purpose of this example is to show how to make a function accept a list, how to convert this to the standard C++ `std::vector`, and how to return a new `std::vector` (or list). Note that the actual operation is not very important, it is the interface that is illustrated.
+Also a template function creating a `std::map` given the lists of keys and values is shown.
 
-To compile, either employ CMake, whereby the compilation instructions are read from [`CMakeLists.txt`](01_py-list_cpp-vector/CMakeLists.txt) by subsequently:
+From Python these functions are contained in a simple module `example` (see [`test.py`](01_py-list_cpp-vector/test.py)).
+
+The purpose of this example is to show how to make a function accept a list/set, how to convert this to the standard C++ `std::vector`/`std::set`, and how to return a new `std::vector` or `std::map`. Note that the actual operation is not very important, it is the interface that is illustrated.
+
+To compile, either employ CMake, whereby the compilation instructions are read from [`CMakeLists.txt`](01_py-list-set-dict_cpp-vector-set-map/CMakeLists.txt) by subsequently:
 
 ```bash
-cmake .
+mkdir build && cd build
+cmake ..
 make
 ```
 
@@ -216,11 +221,9 @@ Run the example by:
 python3 test.py
 ```
 
->   To run with Python 2, simply replace the two occurrences of "python3" above with "python". To modify the CMake instructions find more [online](http://pybind11.readthedocs.io/en/master/compiling.html?highlight=cmake).
-
 ## [02_py-nested-list_cpp-nested-vector](02_py-nested-list_cpp-nested-vector)
 
-Same as the [previous example](#01py-listcpp-vector), but with a nested list.
+Same as the [previous example](#01_py-list-set-dict_cpp-vector-set-map), but with a nested list.
 
 ## [03_numpy-1D_cpp-vector](03_numpy-1D_cpp-vector)
 
@@ -238,7 +241,7 @@ Two functions `det` and `inv` that use the Eigen library.
 
 The purpose of this example is to show how trivial the interaction between C++/Eigen and Python/NumPy is.
 
-To compile using CMake and to run, follow the instructions [above](#01py-listcpp-vector) (whereby the Eigen headers are included in [`CMakeLists.txt`](05_numpy-2D_cpp-eigen/CMakeLists.txt). To compile directly, additionally the Eigen headers have to be included:
+To compile using CMake and to run, follow the instructions [above](#01_py-list-set-dict_cpp-vector-set-map) (whereby the Eigen headers are included in [`CMakeLists.txt`](05_numpy-2D_cpp-eigen/CMakeLists.txt). To compile directly, additionally the Eigen headers have to be included:
 
 ```bash
 c++ -O3 -shared -std=gnu++11 -I /path/to/eigen -I ./pybind11/include `python3-config --cflags --ldflags --libs` example.cpp -o example.so -fPIC
