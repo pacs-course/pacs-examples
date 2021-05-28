@@ -98,13 +98,13 @@ make install
 Thereafter compile with 
 
 ```bash
-clang++ -I/path/to/eigen/instalation ...
+g++ -isystem /path/to/eigen/installation ...
 ```
 
 Note that, when properly configured (which is normally the case), pkg-config can be used to keep track of the paths:
 
 ```bash
-clang++ `pkg-config --cflags eigen3` ...
+g++ `pkg-config --cflags eigen3` ...
 ```
 
 Or one can use CMake (see below).
@@ -116,7 +116,10 @@ Or one can use CMake (see below).
 If you have a simple library you might want to do everything yourself. In this case you compile your C++ source to a shared object which is linked to Python. This boils down to 
 
 ```bash
-c++ -O3 -shared -std=gnu++11 -I ./pybind11/include `python3-config --cflags --ldflags --libs` example.cpp -o example.so -fPIC
+g++ -std=gnu++11 -O3 -shared -fPIC \
+    -isystem /path/to/pybind11/include \
+    `python3-config --cflags --ldflags --libs` \
+    example.cpp -o example.so
 ```
 
 ## CMake
@@ -280,4 +283,3 @@ This example features a way to interface with an enumerator in C++. In principle
 This example contains a classical example where one or more classes are derived from a certain parent or template. This particular example contains two animals, a `Dog` and a `Cat`, that are both derived from a generic `Animal` class. There is a function `talk` that accepts the generic `Animal` and thus any of the derived classes. 
 
 This particular case requires more involved interface, as is described in [the documentation](http://pybind11.readthedocs.io/en/stable/advanced/classes.html).
-

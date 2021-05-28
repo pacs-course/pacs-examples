@@ -45,7 +45,25 @@ module load pybind11
     before starting.
 \end{frame}
 
-\begin{frame}[fragile]{How to compile and run}
+\begin{frame}[fragile]{How to compile}
+    \begin{minted}{bash}
+g++ -std=gnu++11 -O3 -shared -fPIC \
+    -isystem /path/to/pybind11/include \
+    `python3-config --cflags --ldflags --libs` \
+    example.cpp -o example.so
+    \end{minted}
+    or, better, write a \texttt{CMakeLists.txt} like:
+    \begin{minted}{cmake}
+cmake_minimum_required(VERSION 2.8.12)
+project(example)
+
+find_package(pybind11 REQUIRED)
+include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
+pybind11_add_module(example example.cpp)
+    \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{How to compile (using CMake) and run}
     Compile:
     \begin{minted}{bash}
 cd /path/to/example/
