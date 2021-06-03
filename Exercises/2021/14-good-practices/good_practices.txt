@@ -1,0 +1,54 @@
+A (very personal) list of golden rules:
+
+1) choose coding style conventions (whatever they are) and stick to them:
+  - https://en.wikipedia.org/wiki/Indentation_style
+  - https://google.github.io/styleguide/cppguide.html
+  - https://www.dealii.org/current/doxygen/deal.II/CodingConventions.html
+
+2) use a third-party tool for automatic code indentation, e.g.:
+  - astyle: http://astyle.sourceforge.net/
+  - clang-format: https://clang.llvm.org/docs/ClangFormat.html
+
+3) always write a good documentation, even if you are just experimenting:
+  - Doxygen: https://www.doxygen.nl/index.html
+
+  - "A wrong documentation is worse than no documentation at all!"
+  - "There is no tomorrow.
+     You will never go back and add comments or clean the code tomorrow."
+
+4) communicate and collaborate with your teammates:
+  - Slack: https://slack.com/
+  - Trello: https://trello.com/
+  - ...
+
+5) use CI/CD (Continuous Integration/Continuous Deployment) tools:
+  - Docker: https://www.docker.com/
+5.1) static analysis tools may reveal hidden bugs:
+    - cpplint: https://github.com/cpplint/cpplint
+    - cppcheck: http://cppcheck.sourceforge.net/
+5.2) coverage:
+    - gcov + lcov
+5.3) unit testing:
+    - Google Test: https://github.com/google/googletest
+    - Boost.Test: https://www.boost.org/doc/libs/1_76_0/libs/test/doc/html/index.html
+
+6) choose a proper git workflow and stick to it:
+  - https://www.atlassian.com/git/tutorials/comparing-workflows
+For example:
+6.1) always check what you are adding/committing
+6.2) new features/bugfixes are developed in dedicated branches
+6.3) every branch pulls frequently from the main branch
+6.4) open a "Merge/Pull Request" to review and merge features into the main branch
+
+7) always start from a simple case, which is easy to test and to debug:
+   generalizations and optimizations may come at a later time
+
+8) code duplication is evil:
+  - https://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)
+
+9) updates are there to improve the pre-existing version:
+  - don't use dated compilers and libraries,
+    stay up-to-date also with the most recent language standards
+
+10) "Source code is primarily human-to-human communication,
+     and only secondarily human-to-computer communication."
