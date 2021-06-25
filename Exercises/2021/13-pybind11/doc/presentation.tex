@@ -1,0 +1,106 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usetheme{focus}
+
+\definecolor{main}{HTML}{015697}
+\definecolor{background}{HTML}{f8fbff}
+
+\usepackage{pifont}
+\newcommand{\pro}{\textcolor{example}{\ding{51}}}
+\newcommand{\con}{\alert{\ding{55}}}
+
+\usepackage{minted}
+\setminted{bgcolor=main!10!background}
+\usemintedstyle{manni}
+
+\title{Introduction to pybind11}
+\author{Pasquale Africa}
+\institute{Politecnico di Milano}
+\date{2021-05-28}
+\titlegraphic{}
+
+\begin{document}
+\begin{frame}[plain]{}
+    \maketitle
+\end{frame}
+
+\begin{frame}{Introduction}
+    \textit{\textbf{\texttt{pybind11}} is a lightweight header-only library that exposes \texttt{C++} types in \texttt{Python} and vice versa, mainly to create \texttt{Python} bindings of existing \texttt{C++} code.}
+    \vfill
+    \textit{Its goals and syntax are similar to the excellent Boost.Python library by David Abrahams: to minimize boilerplate code in traditional extension modules by inferring type information using compile-time introspection.}
+    \vfill
+    \textit{The main issue with Boost.Python is that Boost is an enormously large and complex suite of utility libraries that works with almost every \texttt{C++} compiler in existence. This compatibility has its cost: arcane template tricks and workarounds are necessary to support the oldest and buggiest of compiler specimens. Now that \texttt{C++11}-compatible compilers are widely available, this heavy machinery has become an excessively large and unnecessary dependency.}.
+    \vfill
+    \textbf{Documentation}: \url{https://pybind11.readthedocs.io/en/stable/index.html}.
+\end{frame}
+
+\begin{frame}[fragile]{Examples}
+    This directory is a clone of \url{https://github.com/tdegeus/pybind11_examples}.
+    \vfill
+    The examples have been re-adapted and extended. By default all dependencies (\texttt{Python}, \texttt{pybind11}, \texttt{Eigen}, \dots) are included from the \texttt{mk} modules.
+    \vfill
+    Please remember to run
+    \begin{minted}{bash}
+module load pybind11 eigen
+    \end{minted}
+    before starting.
+\end{frame}
+
+\begin{frame}[fragile]{How to compile}
+    \begin{minted}{bash}
+g++ -std=gnu++11 -O3 -shared -fPIC \
+    -isystem /path/to/pybind11/include \
+    $(python3-config --cflags --ldflags --libs) \
+    example.cpp -o example.so
+    \end{minted}
+    or, better, write a \texttt{CMakeLists.txt} like:
+    \begin{minted}{cmake}
+cmake_minimum_required(VERSION 2.8.12)
+project(example)
+
+find_package(pybind11 REQUIRED)
+include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
+pybind11_add_module(example example.cpp)
+    \end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{How to compile (using CMake) and run}
+    Compile:
+    \begin{minted}{bash}
+cd /path/to/example/
+mkdir build && cd build
+cmake -Dpybind11_DIR=${mkPybind11Prefix} ..
+make
+    \end{minted}
+    Run:
+    \begin{minted}{bash}
+cd /path/to/example/
+PYTHONPATH+=:$(pwd)/build python3 test.py
+# Or:
+# export PYTHONPATH+=:$(pwd)/build
+# python3 test.py
+    \end{minted}
+    
+    See also \texttt{pybind11\_examples/README.md} for further details.
+\end{frame}
+
+\begin{frame}[fragile]{\texttt{setup.py}}
+    If a \texttt{setup.py} file is provided then the following commands become available:
+    \begin{minted}{bash}
+# Build.
+python3 setup.py build
+
+# Install.
+python3 setup.py install [--user]
+
+# Build and install.
+pip install [--user] [--verbose] .
+    \end{minted}
+    The dynamic module will be installed in your local \texttt{Python} path, \textit{e.g.}:
+{
+    \small
+    \begin{minted}{bash}
+export PYTHONPATH+=:${HOME}/.local/lib/python3.8/site-packages/
+    \end{minted}
+}
+\end{frame}
+\end{document}
