@@ -38,6 +38,9 @@ List of the utilities:
 
 * `readCSV` A class to read csv files. Useful if you have data in a speadsheet and you want to load it into a C++ code.
 
+* `setUtilities` Three utilities to simplify operations on set represented by an ordered container. They are built on top of the analogous
+utilities of the Standard Library
+
 * `cxxversion` To test with which version of C++ you are compiling your code
 
 * `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class T containes the (usually virtual) method
