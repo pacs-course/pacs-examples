@@ -15,7 +15,8 @@
   It has been changed to make it more readable using some C++11 fetures. Even if may be less efficient
   than original code.
  */
-namespace Utility{
+namespace Utility
+{
   
   //! Trims a string from left eliminating leading spaces
   /**
@@ -120,14 +121,16 @@ namespace Utility{
    */
   void cleanStream(std::istream & istream);
 /*!
- * This is an helper class to allow the handling of a stringstream that holds a whole text file in a buffer. It is necessary
- * in order to have proper memory handling. No copy operations are available (but it can be moved) since it is meant only as to be an helper
+ * This is an helper class to allow the handling of a stringstream that holds a whole text file in a buffer.
+ *  \
+ * Reading the file is faster since it is read in a whole block. At the price of more memory usage.
+ *
+ * No copy operations are available (but it can be moved) since it is meant only as to be an helper
  * class and the copy could be ambiguous (do you want deep or shallow copy of the text buffer?).
  *
  * You can extract the read data from the buffer using the streaming operator or by accessing (by reference) the stored
  * stringstream
  *
- *  Reading the file is faster since it is read in a whole block. At the price of more memory usage.
  *
  */
   class GlobbedTextReader
@@ -213,5 +216,28 @@ namespace Utility{
    */
   std::vector<std::string> chop (std::stringstream  & sstream);
 
+
+  /*!
+  Compute the Levenshtein edit distance between two strings.
+
+  Levenshtein distance is the number of edits necessary to pass from one
+  string to the other. If zero the strings are identical
+
+  Re-adapted from a code of Jonathan Wood, found on
+  http://www.blackbeltcoder.com/
+  
+  @note This function should be used only with small strings. It
+  builds internally a matrix (in the form of vectors of vectors) of
+  size the product of the string sizes+1. If you want a more memory
+  efficient algorithm, you can modify this algoritm noting ther in
+  fact you just need a tridiagonal matrix, but things gets a little
+  more compicated. The advantage of this algorithm is its simplicity
+
+  @param a First string 
+  @param b Second string 
+  @return The Levenshtein distance. Higher distance stings are more different
+  
+  */
+  unsigned int stringDistance(std::string const & a, std::string const &b);
 }
 #endif

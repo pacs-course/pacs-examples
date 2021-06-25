@@ -1,5 +1,6 @@
 #include "string_utility.hpp"
 #include <iostream>
+#include <vector>
 int main()
 {
   using namespace std;
@@ -29,4 +30,14 @@ int main()
   auto lines = Utility::chop(sstream);
   sstream.str("");// clear buffer
   for (auto l : lines) std::cout<<l<<std::endl;
+  std::cout<<" Now testing string distance\n";
+  std::vector<std::string> v1{"Luca","John","cat","plain"};
+  std::vector<std::string> v2{"Lucia","Mary","cut","plane"};
+  std::cout<<"String1\tString2\tDistance\n";
+  for (auto i=0u;i<v1.size();++i)
+    {
+      std::cout<<v1[i]<<"\t"<<v2[i]<<"\t"<<Utility::stringDistance(v1[i],v2[i])<<std::endl;
+    }
+
+
 }
