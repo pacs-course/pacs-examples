@@ -95,4 +95,34 @@ std::vector<std::string> chop (std::stringstream & sstream)
     return result;
 }
 
+  unsigned int stringDistance(std::string const & a, std::string const &b)
+  {
+    std::vector<std::vector<unsigned int>> d;
+    // resize matrix
+    d.resize(a.size()+1u);
+    for (auto & v : d)v.resize(b.size()+1u,0u);
+
+    // initialize matrix first row and column
+    for (auto i=0u; i<=a.size();++i)
+      d[i][0] = i;
+    for (auto j =0u; j<=b.size(); ++j)
+      d[0][j] = j;
+    
+    for (auto i=1u; i<=a.size();++i)
+    {
+      for (auto j =1u; j<=b.size(); ++j)
+      {
+        if(a[i-1u]==b[j-1u])
+        {
+          d[i][j] = d[i-1u][j-1u];
+        }
+        else
+        {
+          d[i][j]=
+            std::min({d[i-1u][j-1u], d[i][j-1u], d[i-1u][j-1u]})+1u;
+        }
+      }
+    }
+    return d[a.size()][b.size()];
+  } 
 }
