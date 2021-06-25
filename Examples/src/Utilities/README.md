@@ -34,7 +34,9 @@ List of the utilities:
 
 * `scientific_precision` A function that sets the precision of a stream to the maximum value for a floating point. It contains also stream manipulators for the same purpose.
 
-* `string_utility` Some extra utilities for strings: trimming (eliminate useless blanks) and lower-upper conversion.
+* `string_utility` Some extra utilities for strings: trimming (eliminate useless blanks) and lower-upper conversion. We have recetly added utilities for reading a whole text file in a buffer (it is faster, though potentially memory consuming, and an utility that computed the Levenshtein edit distance between two strings.
+
+* `readCSV` A class to read csv files. Useful if you have data in a speadsheet and you want to load it into a C++ code.
 
 * `cxxversion` To test with which version of C++ you are compiling your code
 
