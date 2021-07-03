@@ -9,6 +9,7 @@
 #define EXAMPLES_SRC_NONLYNSYS_NONLINSYSTRAITS_HPP_
 #include <vector>
 #include <functional>
+#include "Eigen/Core"
 namespace apsc
 {
   namespace NonLinSysTraits
@@ -28,6 +29,19 @@ namespace apsc
       using VectorFunctionType = std::function<ResultType (ArgumentType const &)>;
       using SystemType = std::vector<ScalarFunctionType>;
     };
+
+    template<class Scalar>
+    struct EigenVectorTraits
+    {
+      using ArgumentType=Eigen::Matrix<Scalar,Eigen::Dynamic,1>;
+      using ResultType=ArgumentType;
+      using ScalarType=Scalar;
+      using ScalarFunctionType = std::function<ScalarType (ArgumentType const &)>;
+      using VectorFunctionType = std::function<ResultType (ArgumentType const &)>;
+      using SystemType = std::vector<ScalarFunctionType>;
+    };
+
+
     /*!
      * Here  we show how to change traits to have a scalar as argument and not a vector
      *
