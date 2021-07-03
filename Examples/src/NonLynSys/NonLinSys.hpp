@@ -36,6 +36,28 @@ namespace apsc
     using ArgumentType = typename Traits<R>::ArgumentType;
     using ResultType = typename Traits<R>::ResultType;
     using SystemType = typename Traits<R>::SystemType;
+
+    /*!
+     * If you know the size of the system better reserve the space
+     * @param numEqs  Number of equations (0= no reserve)
+     */
+    NonLinSys(std::size_t numEqs=0u)
+    {
+      this->reserve(numEqs);
+    }
+    /*!
+     * If you know the size of the system better reserve the space
+     * @param numEqs  Number of equations (0= no reserve)
+     */
+    void reserve(std::size_t numEqs)
+    {
+      if (numEqs>0u)
+        {
+          system_.reserve(numEqs);
+          res_.resize(numEqs);
+        }
+    }
+
  /*!
      * Adds a function to the system
      * @tparam scalarfunction A function wrapper type.
@@ -81,10 +103,13 @@ namespace apsc
      * @param x The argument
      * @return The computed vector value
      */
-     ResultType operator()(const ArgumentType & x) const
+     ResultType const & operator()(const ArgumentType & x) const
     {
-      ResultType res;
-      res.reserve(system_.size());
+      // Make sure that the elements are there
+      // otherwise I cannot use the parallel algorithms because
+      // of data race when increasing size
+      // This statement needs a mutable res_
+      res_.resize(system_.size());
       /*
        for (auto const & fun: system_)
         {
@@ -92,14 +117,21 @@ namespace apsc
         }
         */
       // Using parallel algorithms
-      std::for_each(std::execution::par,
-                    system_.begin(),system_.end(),
-                    [&](auto const & f){res.emplace_back(f(x));} );
-      return res;
+#pragma omp parallel for
+      for (std::size_t i=0; i<system_.size(); ++i)
+        {
+          res_[i]=system_[i](x);
+        }
+      return res_;
     }
-     std::size_t size()const {return system_.size();}
-  private:
+     /*!
+      * @return Current number of equations
+      */
+     std::size_t numEqs()const {return system_.size();}
+
+  protected:
     SystemType system_;
+    mutable ResultType res_;
   };
 
 }

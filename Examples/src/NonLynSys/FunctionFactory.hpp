@@ -31,13 +31,15 @@ namespace apsc
     {
     public:
     //! The methods of NonLinSys I want expose to the public
-    using apsc::NonLinSys<R,Traits>::size;
+    using apsc::NonLinSys<R,Traits>::numEqs;
+    //! for compatibility with earlier version
+    auto size(){return numEqs();}
     // Overloading a base function
     template <typename scalarfunction>
     void addToFactory(std::string const & s,scalarfunction&& f)
     {
       apsc::NonLinSys<R,Traits>::addToSystem(std::forward<scalarfunction>(f));
-      auto [it,success] = functionPos_.insert({s,size()-1u});
+      auto [it,success] = functionPos_.insert({s,numEqs()-1u});
       if(!success)
         {
           throw std::runtime_error(
