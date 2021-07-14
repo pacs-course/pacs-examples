@@ -27,7 +27,7 @@ namespace apsc
       //! /return the result
       virtual ArgumentType solve(ArgumentType const & x, ArgumentType const & b) const=0;
       //! Sets the non linear system.
-      void setNonLinSys(NonLinearSystemType const * s){M_sys=s;};
+      virtual void setNonLinSys(NonLinearSystemType const * s){M_sys=s;};
       virtual ~JacobianBase(){};
       protected:
       //! The non-linear system
@@ -70,8 +70,8 @@ namespace apsc
       //!
       ArgumentType solve(ArgumentType const & x, ArgumentType const & b) const override;
       //! Sets the spacing for computing finite differences
-      void setTol(double tol){M_tol=tol;}
-      //! Returns the tolerance currently used.
+      void setTol(double tol=defaultTol){M_tol=tol;}
+      //! Returns the spacing currently used.
       auto getTol()const {return M_tol;}
 
       double
@@ -80,26 +80,33 @@ namespace apsc
         return lambda;
       }
 
-      void setLambda(double lambda)
+      void setLambda(double lambda=defaultLambda)
       {
         this->lambda = lambda;
       }
 
+      //! sets spacing and parameter
+      void setParameters(double tol=defaultTol,double lambda=defaultLambda)
+      {
+        setTol(tol);
+        setLambda(lambda);
+      }
+
      private:
        //! The current spacing
-       double M_tol; // @todo maybe we can leave it public
+       double M_tol=defaultTol; // @todo maybe we can leave it public
        //! Regularization (if needed)
-       double lambda{0.0}; // @todo maybe you can leave it public
+       double lambda=defaultLambda; // @todo maybe you can leave it public
        //! Default tolerance.
        static double constexpr defaultTol=1e-4;
+       static double constexpr defaultLambda=1.0;
      };
   //! The identityJacobian just scales the residual by a factor defaulted to 1
      class IdentityJacobian final: public JacobianBase
      {
      public:
-       //! inherit base constructor
        using JacobianBase::JacobianBase;
-       //! Returns the rhs b scaled by lambda
+      //! Returns the rhs b scaled by lambda
        //! /param x (not used)
        //! /param b the right hand side of the system \f$\alpha^{-1} I y=b\f$
        //! /return the result
@@ -176,19 +183,24 @@ namespace apsc
     //! I have to give an inital matrix, approximation of the Jacobian
     //!
     //! \param B the initial approximation of the Jacobian
-    BroydenB (JacobianMatrixType const & B) : B{B}{ }
+    BroydenB (JacobianMatrixType const & B) : B{B},firstTime{false}{ }
     //!
     //! Sets the inital matrix, approximation of the Jacobian
     //!
     //! It can be used also for restarting purposes. When given the matrix
     //! the method restarts from the new iteration given in the method solve()
     //!
-    //! \param B the initial approximation of the Jacobian
-    void setB (const JacobianMatrixType& previousB)
+    //! \param newB the initial approximation of the Jacobian
+    void setB (const JacobianMatrixType& newB=JacobianMatrixType{})
     {
-      this->B = previousB;
-      this->firstTime=true;
+      this->B = newB;
+      this->firstTime=false;
     }
+    void setNonLinSys(NonLinearSystemType const * s) override
+    {
+      JacobianBase::setNonLinSys(s);
+      firstTime=true;
+    };
     //!
     //! Solves \f$B(x) d = b\f$
     //! \param x The point to compute residual
@@ -234,19 +246,25 @@ namespace apsc
      //! I have to give an inital matrix, approximation of the Jacobian
      //!
      //! \param B the initial approximation of the Jacobian
-     BroydenG (JacobianMatrixType const & B) : B{B}{ }
+     BroydenG (JacobianMatrixType const & B) : B{B}, firstTime{false}{ }
      //!
      //! Sets the inital matrix, approximation of the Jacobian
      //!
      //! It can be used also for restarting purposes. When given the matrix
      //! the method restarts from the new iteration given in the method solve()
      //!
-     //! \param B the initial approximation of the Jacobian
-     void setB (const JacobianMatrixType& previousB)
+     //! \param newB the initial approximation of the Jacobian
+     void setB (const JacobianMatrixType& newB=JacobianMatrixType{})
      {
-       this->B = previousB;
-       this->firstTime=true;
+       this->B = newB;
+       this->firstTime=false;
      }
+
+     void setNonLinSys(NonLinearSystemType const * s) override
+      {
+        JacobianBase::setNonLinSys(s);
+        firstTime=true;
+      };
      //!
      //! Solves \f$B(x) d = b\f$
      //! \param x The point to compute residual
@@ -272,7 +290,74 @@ namespace apsc
      //! const methods, but this entry is changed by solve!
       mutable bool firstTime=true;
    };
- }
+   //! Implements Eirola_Nevanlinna method
+    //!
+    //! A quasi-Newton method
+    //! that uses a formula for updating an approximation of the inverse of the Jacobian.
+    //! The formula makes use of the last two values of the solution and of the value of the function
+    //! so that the computed approximation "converges" to the actual Jacobian
+    //!
+   class Eirola_Nevanlinna : public JacobianBase
+   {
+   public:
+     //! If no initial matrix is give, we take the identity.
+     //!
+     //! Since I do not know at this stage the dimension of the
+     //! system, the actual computation of the identity matrix is done
+     //! the first time solve() is called.
+     using JacobianBase::JacobianBase;
+     //!
+     //! I have to give an inital matrix, approximation of the Jacobian
+     //!
+     //! \param B the initial approximation of the Jacobian
+     Eirola_Nevanlinna(JacobianMatrixType const & B) : B{B},firstTime{false}{ }
+     //!
+     //! Sets the inital matrix, approximation of the Jacobian
+     //!
+     //! It can be used also for restarting purposes. When given the matrix
+     //! the method restarts from the new iteration given in the method solve()
+     //!
+     //! \param newB the initial approximation of the Jacobian
+     void setB (const JacobianMatrixType& newB=JacobianMatrixType{})
+     {
+       this->B = newB;
+       this->firstTime=false;
+     }
+
+     void setNonLinSys(NonLinearSystemType const * s) override
+     {
+       JacobianBase::setNonLinSys(s);
+       firstTime=true;
+     };
+     //!
+     //! Solves \f$B(x) d = b\f$
+     //! \param x The point to compute residual
+     //! \param b The right hand side
+     //! \return The result of the application of the inverse Jacobian to the residual
+     ArgumentType solve(ArgumentType const & x, ArgumentType const & b) const override;
+   private:
+     //! The Jacobian Matrix
+     //!
+     //! It is marked mutable since I decided to set solve() as a
+     //! const methods, but this entry may be changed by solve!
+     mutable JacobianMatrixType B;
+     //! solution computed at the previous step
+     //! It is marked mutable since I decided to set solve() as a
+     //! const methods, but this entry is changed by solve!
+     mutable ArgumentType previousX;
+     //! value of the function at the previous step
+     //! It is marked mutable since I decided to set solve() as a
+     //! const methods, but this entry is changed by solve!
+     mutable ArgumentType previousR;
+     //! used to identify the first time solve() is called
+     //! It is marked mutable since I decided to set solve() as a
+     //! const methods, but this entry is changed by solve!
+     mutable bool firstTime=true;
+   };
+
+
+
+}
 /*
 Copyright 2020 <Luca Formaggia, Carlo de Falco>
 All rights reserved.

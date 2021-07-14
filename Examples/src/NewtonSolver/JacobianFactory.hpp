@@ -20,7 +20,8 @@ namespace apsc
   //! I explicitely indicate the numbering, only to facilitate the identification
   //! of the integer corresponding to thee enum (if I want to read it from a file, for instance)
   //!
-  enum JacobianKind {DISCRETEJACOBIAN=0, IDENTITYJACOBIAN=1, FULLJACOBIAN=2, BROYDENB=3, BROYDENG=4};
+  enum JacobianKind {DISCRETEJACOBIAN=0, IDENTITYJACOBIAN=1,
+    FULLJACOBIAN=2, BROYDENB=3, BROYDENG=4, EIROLANEVANLINNA=5};
 
   //! A simple factory that returns a JacobianBase polymorphic object wrapped in a unique_prt
   //!
@@ -28,26 +29,29 @@ namespace apsc
   //! /param args Optional arguments to be forwarded to the constructor
   //!
   template <typename ...Args>
-  std::unique_ptr<apsc::JacobianBase> make_Jacobian(JacobianKind kind, Args&&... args)
+  std::unique_ptr<apsc::JacobianBase> make_Jacobian(JacobianKind kind)
   {
     switch(kind)
     {
       case DISCRETEJACOBIAN:
-        return std::make_unique<apsc::DiscreteJacobian>(std::forward<Args>(args)...);
+        return std::make_unique<apsc::DiscreteJacobian>();
         break;
       case IDENTITYJACOBIAN:
-         return std::make_unique<apsc::IdentityJacobian>(std::forward<Args>(args)...);
+         return std::make_unique<apsc::IdentityJacobian>();
          break;
        case FULLJACOBIAN:
-         return std::make_unique<apsc::FullJacobian>(std::forward<Args>(args)...);
+         return std::make_unique<apsc::FullJacobian>();
          break;
        case BROYDENB:
-         return std::make_unique<apsc::BroydenB>(std::forward<Args>(args)...);
+         return std::make_unique<apsc::BroydenB>();
          break;
        case BROYDENG:
-         return std::make_unique<apsc::BroydenG>(std::forward<Args>(args)...);
+         return std::make_unique<apsc::BroydenG>();
          break;
-      default:
+       case EIROLANEVANLINNA:
+         return std::make_unique<apsc::Eirola_Nevanlinna>();
+         break;
+     default:
          throw std::runtime_error("Error in JacobianKind: You must specify a valid type");
     }
   }
