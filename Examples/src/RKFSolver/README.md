@@ -1,18 +1,21 @@
-#Function for explicit Runge Kutta (Fehlberg type) adaptive time integration#
+#Function for Runge Kutta (Fehlberg type) adaptive time integration#
 
-For scalar or vector ODE of the form dy/dt = f(y,t)
+**New version July 2021** Extended to treat also DIRK (Diagonally
+Implicit) schemes. Only for vectorial problem (but you can still solve
+scalar problems if you set the dimension of the vector to 1). This now
+version needs the updated version of the `Newton` class, available in
+`NewtonSolver` (follow the instruction in that folder to install it).
 
-You have two version of the code. One in rk45.[hc]pp is an simple version
-where you find the classic RK45 scheme (Runge Kutta embedded Order 4 and
-5) for scalar problems. It is implemented as a function and the coefficients are
-hard coded. It is used by other examples and is rather efficient.
 
-A new version is contained in RKF.[hc]pp (and includes
+
+For scalar or vector or matrix ODE of the form dy/dt = f(y,t)
+
+The main class is contained in RKF.[hc]pp (and includes
 `Butcher.[hc]pp)`. It is a template class that accepts as template
 parameter a Butcher array. The structure of the Butcher array is given
 in the template struct `ButcherArray`, templated with the total number
 of stages of the method. This allows to implement different methods,
-indeed I have implemented both `RK45` and `RK23`.
+indeed I have implemented  `RK45` and `RK23` and many others, and you can add more! 
 
 Instruction (to install the old version as a library, for other Examples)
 
@@ -24,8 +27,8 @@ Instruction (to install the old version as a library, for other Examples)
 The test solves a simple scalar ode using both the function and the template class version, and a vectorial problem (Van der Pol equations). The results are printes in the files
 
 * `result.dat`  Produced by the code implemented as a function;
-* `result2.dat` Produced by the code implemented as an instance of the RKF class;
 * `resultVDP.dat` Solution of the vectorial problem produced by an instance of the RKF class.
+* `resultstiff.dat` Solution of a stiff problem.
 
 Some scripts are provided that use gnuplot to show the results
 
@@ -38,11 +41,7 @@ time step and the length of the desired integration interval. This can
 be very restictive, you can change to more relaxed (but maybe less
 accurate) techniques.
 
-**Important note** Is the problemi is stiff the methods here provided
-are inadequate. In a stiff problem the method will fail becouse it set
-the time step very small for stability reasons. You may guess that
-your problem may be stiff when it fails because it reaces the maximal
-number of time steps. You may try to increase that number (it is the
-last argument in the call operator), but if the probelm is very stiff
-you need to use A-stable (and thus implicit) methods. You may refer to
-more advanced libraries for this purpose.
+**Important note** Is the problem is stiff the explicit methods are inadequate.
+You have to use a DIRK scheme
+
+**Some Explanations** Are included in the aTex file you find in this folder.

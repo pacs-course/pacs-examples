@@ -55,6 +55,7 @@ apsc::Newton::solve (const ArgumentType& x0)
   bool stagnation =  false;
   bool stop       =  false;
   bool previousNoDecrease=false;
+
 // I always do at least 1 step. I might eventually check if the residual is already small
   do
     {
