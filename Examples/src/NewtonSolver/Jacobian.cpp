@@ -49,7 +49,9 @@ apsc::BroydenB::solve (const ArgumentType& x, const ArgumentType& r) const
     {
       if(B.rows()==0)
         {
-          B=BroydenB::JacobianMatrixType::Identity(x.size(),x.size());
+          ArgumentType dx=-r;
+          ArgumentType dr=r-M_sys->operator()(x+dx);
+          B=(dx.norm()/dr.norm())* BroydenB::JacobianMatrixType::Identity(x.size(),x.size());
         }
       firstTime=false;
     }
@@ -58,7 +60,7 @@ apsc::BroydenB::solve (const ArgumentType& x, const ArgumentType& r) const
       ArgumentType s=x-previousX; // step
       ArgumentType dr=r-previousR; // residual difference
       auto factor=1./(dr.norm()*dr.norm());
-      B = B + factor*(s-B*dr)*dr.transpose();
+      B += factor*(s-B*dr)*dr.transpose();
     }
   previousX=x;
   previousR=r;
@@ -73,7 +75,9 @@ apsc::BroydenG::solve (const ArgumentType& x, const ArgumentType& r) const
     {
       if(B.rows()==0)
         {
-          B=BroydenB::JacobianMatrixType::Identity(x.size(),x.size());
+          ArgumentType dx=-r;
+          ArgumentType dr=r-M_sys->operator()(x+dx);
+          B=(dx.norm()/dr.norm())*BroydenG::JacobianMatrixType::Identity(x.size(),x.size());
         }
       firstTime=false;
     }
@@ -88,3 +92,31 @@ apsc::BroydenG::solve (const ArgumentType& x, const ArgumentType& r) const
   previousR=r;
   return B *r;
 };
+
+apsc::Eirola_Nevanlinna::ArgumentType
+apsc::Eirola_Nevanlinna::solve (const ArgumentType& x, const ArgumentType& r) const
+{
+  // If I have not given the matrix, we take the identity
+  if(firstTime)
+    {
+      if(B.rows()==0)
+        {
+          ArgumentType dx=-r;
+          ArgumentType dr=r-M_sys->operator()(x+dx);
+          B=(dx.norm()/dr.norm())*Eirola_Nevanlinna::JacobianMatrixType::Identity(x.size(),x.size());
+        }
+      firstTime=false;
+    }
+  else
+    {
+      ArgumentType p =-B*r;
+      ArgumentType q= M_sys->operator()(x+p)-r;
+      auto factor=1./(p.transpose()*B*q);
+      B += factor*(p-B*q)*(p.transpose()*B);
+    }
+  previousX=x;
+  previousR=r;
+  return B *r;
+};
+
+

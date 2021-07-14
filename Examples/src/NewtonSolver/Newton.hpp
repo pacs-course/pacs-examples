@@ -29,6 +29,9 @@ namespace apsc
   {
   public:
     Newton()=default;
+    //! I can pass options and jacobian. This is usefule for classes that store a Newton object
+    Newton(std::unique_ptr<JacobianBase> j,NewtonOptions opt=NewtonOptions{}): Jacobian_ptr{std::move(j)},
+        options{opt} {};
     //!This class not meant to be copy constructible
     //! The implementation of copy constructor would require a mechanism
     //! for the deep copy of the Jacobian, which is passed as a unique pointer
@@ -93,12 +96,14 @@ namespace apsc
     {
       return nonLinSys;
     }
-    //! Set the non linear system
+    //! Update the non linear system
+    template<class NLS>
     void
-    setNonLinSys (const NonLinearSystemType& nonLinSys)
+    setNonLinSys (NLS&& nonLinSystem)
     {
-      this->nonLinSys = nonLinSys;
+      this->nonLinSys = std::forward<NLS>(nonLinSystem);
       this->state=NewtonState{};
+      Jacobian_ptr->setNonLinSys(&nonLinSys);
     }
 
     apsc::NewtonResult solve(ArgumentType const & x0);
