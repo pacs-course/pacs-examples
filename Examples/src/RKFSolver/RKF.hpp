@@ -13,6 +13,8 @@
 #include <cmath>
 #include <iostream>
 #include "ButcherRKF.hpp" // not strictly needed here but it simplifies things
+#include "Newton.hpp"
+#include "JacobianFactory.hpp"
 #include "RKFTraits.hpp"
 namespace apsc
 {
@@ -39,19 +41,21 @@ namespace apsc
     int contractions{0};
   };
 
- /*!
-  * A calss for explicit Runge-Kutta Fehlberg type solution of ODEs
-  * @tparam B The Butcher table of the scheme. Must be defined following the scheme shown in ButcherRKF.hpp
-  * @tparam KIND The type of traits to be used: SCALAR, VECTOR, MATRIX
-  */
+  /*!
+   * A calss for explicit Runge-Kutta Fehlberg type solution of ODEs
+   * @tparam B The Butcher table of the scheme. Must be defined following the scheme shown in ButcherRKF.hpp
+   * @tparam KIND The type of traits to be used: SCALAR, VECTOR, MATRIX
+   */
   template<class B,RKFKind KIND=RKFKind::SCALAR>
   class RKF : public RKFTraits<KIND>
   {
   public:
     using VariableType=typename RKFTraits<KIND>::VariableType;
     using Function= typename RKFTraits<KIND>::ForcingTermType;
+    //! Constructor just taking the function
+    RKF(Function const & f):M_f{f}{};
     //! Constructor passing butcher table and forcing function
-    RKF(B const & bt, Function const & f):M_f(f),ButcherTable(bt){};
+    RKF(B const & bt, Function const & f):M_f{f},ButcherTable(bt){};
     //! Default constructor
     RKF()=default;
     //! Set the forcing function
@@ -71,9 +75,27 @@ namespace apsc
     RKFResult<KIND>
     operator()(double const & T0, double const & T, VariableType const & y0,
                double const & hInit, double const & tol, int maxStep=2000) const;
+    /*!
+     * Kept public to simplify handling
+     * Mutable because I should be free to modify it also on a const object
+     */
+    mutable apsc::Newton newtonSolver{apsc::make_Jacobian(apsc::BROYDENG),newtonOptions};
   private:
     Function M_f;
     B ButcherTable;
+    // The default options for the quasi newton solver
+    static constexpr
+    apsc::NewtonOptions newtonOptions{
+      1.e-10, // tolerance on step \f$||x_{new}-x_{old}||<tolerance\$
+      1.e-10, // tolerance on residual
+      100, // max iterations
+      true, // backtracking is on
+      false, // don't stop on stagnation
+      1.e-4,// parameter for 1st wolfe condition (backtracking)
+      0.5,// Reduction coefficient (backtracking)
+      4,// Max number backstep
+      1. // initial lambda
+    };
     /*! Function for a single step. It is private since is used only internally.
      *
      * @note
@@ -89,8 +111,8 @@ namespace apsc
      * @param h time step
      * @return values computed with the two rules
      */
-   auto RKFstep(const double & tstart, const VariableType & y0, const double & h) const ->
-       std::pair<VariableType,VariableType>;
+    auto RKFstep(const double & tstart, const VariableType & y0, const double & h) const ->
+        std::pair<VariableType,VariableType>;
   };
 
   //! streaming operators to dump the results in gnuplot format
@@ -98,9 +120,9 @@ namespace apsc
   inline std::ostream & operator << (std::ostream & out, RKFResult<RKFKind::SCALAR> const & res);
   inline std::ostream & operator << (std::ostream & out, RKFResult<RKFKind::VECTOR> const & res);
 
-//   ***********************************************
-//   ******    IMPLEMENTATIONS OF TEMPLATE FUNCTIONS
-//   ***********************************************
+  //   ***********************************************
+  //   ******    IMPLEMENTATIONS OF TEMPLATE FUNCTIONS
+  //   ***********************************************
 
   template<class B, RKFKind KIND>
   RKFResult<KIND>
@@ -108,100 +130,157 @@ namespace apsc
                             const VariableType & y0, const double& hInit, const double& tol,
                             int maxSteps) const
   {
-  RKFResult<KIND> res;
-  // Useful alias to simplify typing
-  std::vector<double> & time=res.time;
-  std::vector<VariableType> & y=res.y;
-  auto & expansions=res.expansions;
-  auto & contractions=res.contractions;
-  auto & estimatedError=res.estimatedError;
-  estimatedError=0.0; // set initial error to zero
-  auto & failed=res.failed;
-  failed=false; // set failed to false
-  //  reserve some space according to data
-  int expectedSteps=std::min(std::max(1,1+static_cast<int>((T-T0)/hInit)),maxSteps);
-  time.reserve(expectedSteps);
-  y.reserve(expectedSteps);
-  // push initial step
-  time.push_back(T0);
-  y.push_back(y0);
-  // to check if a step has been rejected
-  bool rejected(false);
-  // fraction of time step if error greater than tolerance
-  double constexpr reductionFactor=0.95;
-  // I expand at most doubling h, for safety
-  double constexpr expansionFactor=2.;
-  // Now I need a factor to specify when I can enlarge the time step
-  // to avoid reducing and expanding the time step repeatedly
-  // I need to take into account the order of the scheme is >2
-  double factor;
-  if (ButcherTable.order <=2)
-    factor=1.0;
-  else
-    factor= 1./(ButcherTable.order-1);
-  // Iteration counter
-  int iter=0;
-  // I want to check that the time step does not go ridiculosly small
-  double hmin=100*(T-T0)*std::numeric_limits<double>::epsilon();
-  double h=std::max(hInit,hmin);
-  double t=T0;
-  VariableType ycurr=y0;
-  double delta=T-T0;
-  while (t<T && iter<=maxSteps)
-    {
-      ++iter;
-      // The low precision solution
-      VariableType ylow;
-      // The high precision solution
-      VariableType yhigh;
-      // I compute the amount of error per time step
-      // since I want to control the final error
-      // But I also have to avoid overdoing, otherwise I will
-      // never expand the step!
-      double errorPerTimeStep=tol*h/delta;
-      // Check if new time step will cross the final time step
-      if(t+h>=T)
-	{
-	  h=T-t; // fix h
-	  if (h<hmin) // test is new step very small
-	    {
-	      // step ridicuously small. We are at the end, stop here
-	      ylow=ycurr;
-	      yhigh=ycurr;
-	    }
-	  else
-	    std::tie(ylow,yhigh)=RKFstep(t,ycurr,h); //last step
-	}
-      else
-	    std::tie(ylow,yhigh)=RKFstep(t,ycurr,h); //step
-      double currentError=this->norm(ylow-yhigh);
-      double mu=std::pow(errorPerTimeStep/currentError,factor);// very expensive:alternative take factor=1 always
-      if(currentError<=errorPerTimeStep)
-        {
-          //fine set new point!
-          t=t+h;
-          time.push_back(t);
-          y.push_back(yhigh);
-          ycurr=yhigh;
-          estimatedError+=currentError;
-          // Expand next step if error very small, step not previously rejected and I am not at the end
-          if((mu>=1.0) && !rejected && (t<T))
-            {
-              h*=std::min(expansionFactor,mu); //alternative use only expansion factor
-              ++expansions;
-            }
-          rejected=false;
-        }
-      else
-        {
-          rejected=true;
-          h*=mu*reductionFactor;// a little more to be sure. Alternative use only reductionFactor
-          ++contractions;
-          h= h<=hmin? hmin: h;
-        }
+    RKFResult<KIND> res;
+    // Useful alias to simplify typing
+    std::vector<double> & time=res.time;
+    std::vector<VariableType> & y=res.y;
+    auto & expansions=res.expansions;
+    auto & contractions=res.contractions;
+    auto & estimatedError=res.estimatedError;
+    estimatedError=0.0; // set initial error to zero
+    auto & failed=res.failed;
+    failed=false; // set failed to false
+    //bool expanded =false; // keep track of expansions
+    //  reserve some space according to data. It may help reduce memory reallocations
+    int expectedSteps=std::min(std::max(1,1+static_cast<int>((T-T0)/hInit)),maxSteps);
+    time.reserve(expectedSteps);
+    y.reserve(expectedSteps);
+    // push initial step
+    time.push_back(T0);
+    y.push_back(y0);
+    // to check if a step has been rejected
+    bool rejected(false);
+    // safety factor if error greater than tolerance
+    double constexpr reductionFactor=0.98;
+    // I expand at most expansionfactor h, for safety
+    double constexpr expansionFactor=4.;
+    // I reduce at most a fraction, for safety
+    double constexpr maxreduction=0.1;
+    //
+    // Now I need a factor to specify when I can enlarge the time step
+    // to avoid reducing and expanding the time step repeatedly
+    // I need to take into account the order of the scheme is >2
+    double factor_contraction=1./(ButcherTable.order);
+    double factor_expansion=1./(ButcherTable.order+1.0);
+
+    double timeInterval=T-T0;
+    if(timeInterval <=0)
+      {
+        std::cerr<<"Time interval must me greater than zero\n";
+        return res;
+      }
+
+    // Iteration counter
+    int iter=0;
+    // I want to check that the time step does not go ridiculosly small
+    // @todo make it a variable member!
+    double hmin=100*timeInterval*std::numeric_limits<double>::epsilon();
+    double h=std::max(hInit,hmin);
+    double t=T0;
+    VariableType ycurr=y0;
+    bool minimalh=false;
+    //int oscilla=0;
+    while (t<T && iter<=maxSteps)
+      {
+        ++iter;
+        // The low precision solution
+        VariableType yprimal;
+        // The high precision solution
+        VariableType ytest;
+        // I compute the amount of error per time step
+        // since I want to control the final error
+        // But I also have to avoid overdoing, so for low order
+        // schemes I use tol to control the LTE and not tol*h
+        double errorPerTimeStep= ButcherTable.order==1 ?tol:tol*(h/timeInterval);
+        //double errorPerTimeStep=tol*h/timeInterval;
+        //if (ButcherTable.implicit())
+        //{
+        //  auto options=newtonSolver.getOptions();
+        //  options.minRes=errorPerTimeStep;
+        //  options.tolerance=0.1*errorPerTimeStep;
+        //  newtonSolver.setOptions(options);
+        // Check if new time step will cross the final time step and we are not expandin
+        /* if(t+h>=T && !expanded)
+          {
+            h=T-t; // fix h
+            if (h<hmin) // test is new step very small
+              {
+                // step ridicuously small. We are at the end, stop here
+                yprimal=ycurr;
+                ytest=ycurr;
+              }
+            else
+              {
+                std::tie(yprimal,ytest)=RKFstep(t,ycurr,h); //last step
+              }
+            t=T;
+            time.push_back(t);
+            y.push_back(yprimal);
+            estimatedError+=this->norm(yprimal-ytest);
+          }
+        else // perform next step
+        */
+          {
+            std::tie(yprimal,ytest)=RKFstep(t,ycurr,h); //step
+            double currentError=this->norm(yprimal-ytest);
+            double ratio = errorPerTimeStep/currentError;
+            double mu=std::max(maxreduction,std::pow(ratio,factor_contraction));// very expensive:alternative take factor=1 always
+            //     if(currentError<=errorPerTimeStep)
+            if(ratio>=1.0)
+              {
+                //fine set new point!
+                t+=h;
+                time.push_back(t);
+                y.push_back(yprimal);
+                ycurr=yprimal;
+                estimatedError+=currentError;
+                h = std::min(h,T-t);
+                // Expand next step if error small, step not previously rejected and I am not at the end
+                //if(rejected)++oscilla;
+                if(!rejected && (t<T))
+                  {
+                    auto mu2=std::pow(ratio,factor_expansion);
+                    h*=std::min(expansionFactor,mu2); //alternative use only expansion factor
+                    h=std::min(h,T-t);// cannot go over T
+                    //expanded=true;
+                    ++expansions;
+                  }
+                rejected=false;
+              }
+            else
+              {
+                //expanded=false;
+                if (h<=hmin)
+                  {
+                    // we are at the minimum we have to accept it
+                    t=t+h;
+                    time.push_back(t);
+                    y.push_back(yprimal);
+                    ycurr=yprimal;
+                    estimatedError+=currentError;
+                    rejected=false;
+                    minimalh=true;
+                  }
+                else
+                  {
+                    // step is rejected!
+                    rejected=true;
+                    h*=mu*reductionFactor;// a little more to be sure. Alternative use only reductionFactor
+                    ++contractions;
+                    h= h<=hmin? hmin: h;
+                  }
+              }
+          }
+      }
+    if(iter>maxSteps){
+        failed=true;
+        std::cerr<<"RKF: Max number of steps exceeded\n";
     }
-  if(iter>maxSteps) failed=true;
-  return res;
+    if(minimalh){
+        std::cerr<<"RKF used minimal value for h="<<hmin<<" Error may be grater than expected\n";
+    }
+    //std::cout<<"Oscillazioni="<<oscilla<<std::endl;
+    return res;
   }
 
   // Note that I use trailing return type syntax here since otherwise I had to write
@@ -220,14 +299,38 @@ namespace apsc
     std::array<double,Nstages> const & c{ButcherTable.c};
     std::array<double,Nstages> const & b1{ButcherTable.b1};
     std::array<double,Nstages> const & b2{ButcherTable.b2};
-    //! The first step is always an Euler step
-    K[0]=M_f(tstart,y0)*h;
-    for (unsigned int i=1;i<Nstages;++i)
+    //@todo Test if implicit no KIND=MATRIX
+    //@todo Identify if implicit outside this heavily used routine!
+    for (unsigned int i=0;i<Nstages;++i)
       {
         double time=tstart+c[i]*h;
         VariableType value=y0;
         for (unsigned int j=0;j<i;++j)value+=A[i][j]*K[j];
-        K[i]=M_f(time,value)*h;
+        if (A[i][i]!=0.0)
+          {
+            if constexpr (KIND==apsc::RKFKind::VECTOR)
+                    {
+                // implicit (at the moment I support only DIRK!
+                auto fun= [&value,&time,&A,&i,&h,this] (VariableType const& x)
+                        ->VariableType
+                        {return M_f(time,value+h*A[i][i]*x)-x; };
+                newtonSolver.setNonLinSys(fun);
+                auto result = newtonSolver.solve(M_f(time,value));
+                if (!result.converged)
+                  {
+                    std::cerr<<"Solution of non-linear problem failed\n";
+                    std::cerr<<"Last residual "<<result.residualNorm<<std::endl;
+                  }
+                K[i]=result.solution*h;
+                    }
+            else
+              {
+                std::cerr<<" cannot use implicit RK if KIND is not VECTOR\n";
+                std::exit(1);
+              }
+          }
+        else
+          K[i]=M_f(time,value)*h;
       }
     VariableType v1=y0;
     VariableType v2=y0;
@@ -239,52 +342,52 @@ namespace apsc
     return std::make_pair(v1,v2);
   }
 
-std::ostream&
-operator << (std::ostream& out, const RKFResult<RKFKind::SCALAR> & res)
-{
-  out<<"# Number ot time steps:"<<res.time.size()<<" N. contractions:"<<res.contractions<<" N. expansions:"<<res.expansions<<std::endl;
-  out<<"#   t    y   Estimated error="<<res.estimatedError<<std::endl;
-  double hmin=res.time[1]-res.time[0];
-  double hmax=hmin;
-  for (unsigned int i=0;i<res.time.size()-1;++i)
-    {
-      auto delta=res.time[i+1]-res.time[i];
-      hmax=std::max(hmax,delta);
-      hmin=std::min(hmin,delta);
-    }
-  out<<"# hmin:"<<hmin<<" hmax:"<<hmax<<std::endl;
-  std::size_t i=0;
-  for (auto const & t: res.time)
-    out<<t<<" "<<res.y[i++]<<"\n";
-  return out;
-}
+  std::ostream&
+  operator << (std::ostream& out, const RKFResult<RKFKind::SCALAR> & res)
+  {
+    out<<"# Number ot time steps:"<<res.time.size()<<" N. contractions:"<<res.contractions<<" N. expansions:"<<res.expansions<<std::endl;
+    out<<"#   t    y   Estimated error="<<res.estimatedError<<std::endl;
+    double hmin=res.time[1]-res.time[0];
+    double hmax=hmin;
+    for (unsigned int i=0;i<res.time.size()-1;++i)
+      {
+        auto delta=res.time[i+1]-res.time[i];
+        hmax=std::max(hmax,delta);
+        hmin=std::min(hmin,delta);
+      }
+    out<<"# hmin:"<<hmin<<" hmax:"<<hmax<<std::endl;
+    std::size_t i=0;
+    for (auto const & t: res.time)
+      out<<t<<" "<<res.y[i++]<<"\n";
+    return out;
+  }
 
-std::ostream&
-operator << (std::ostream& out, const RKFResult<RKFKind::VECTOR> & res)
-{
-  out<<"# Number ot time steps:"<<res.time.size()<<" N. contractions:"<<res.contractions<<" N. expansions:"<<res.expansions<<std::endl;
-  out<<"#   t    y(0)...   Estimated error="<<res.estimatedError<<std::endl;
-  double hmin=res.time[1]-res.time[0];
-  double hmax=hmin;
-  for (unsigned int i=0;i<res.time.size()-1;++i)
-    {
-      auto delta=res.time[i+1]-res.time[i];
-      hmax=std::max(hmax,delta);
-      hmin=std::min(hmin,delta);
-    }
-  out<<"# hmin:"<<hmin<<" hmax:"<<hmax<<std::endl;
-  std::size_t i=0;
-  for (auto const & t: res.time)
-    {
-      out<<t<<" ";
-      apsc::RKFTraits<RKFKind::VECTOR>::VariableType const & yy = res.y[i];
-      ++i;
-      for (int k =0; k< yy.size(); ++k)
-        out<<yy[k]<<" ";
-      out<<"\n";
-    }
-  return out;
-}
+  std::ostream&
+  operator << (std::ostream& out, const RKFResult<RKFKind::VECTOR> & res)
+  {
+    out<<"# Number ot time steps:"<<res.time.size()<<" N. contractions:"<<res.contractions<<" N. expansions:"<<res.expansions<<std::endl;
+    out<<"#   t    y(0)...   Estimated error="<<res.estimatedError<<std::endl;
+    double hmin=res.time[1]-res.time[0];
+    double hmax=hmin;
+    for (unsigned int i=0;i<res.time.size()-1;++i)
+      {
+        auto delta=res.time[i+1]-res.time[i];
+        hmax=std::max(hmax,delta);
+        hmin=std::min(hmin,delta);
+      }
+    out<<"# hmin:"<<hmin<<" hmax:"<<hmax<<std::endl;
+    std::size_t i=0;
+    for (auto const & t: res.time)
+      {
+        out<<t<<" ";
+        apsc::RKFTraits<RKFKind::VECTOR>::VariableType const & yy = res.y[i];
+        ++i;
+        for (int k =0; k< yy.size(); ++k)
+          out<<yy[k]<<" ";
+        out<<"\n";
+      }
+    return out;
+  }
 
 
 }// end namespace
