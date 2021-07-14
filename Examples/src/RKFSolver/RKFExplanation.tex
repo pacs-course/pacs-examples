@@ -1,0 +1,173 @@
+\documentclass[10pt,a4paper,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{a4wide}
+
+\title{Embedded RK solver, some implementation aspects}
+\author{Luca Formaggia}
+\date{8 July 2021}
+\begin{document}
+    \maketitle
+    
+    Runge-Kutta embedded methods are methods for solving (systems of) ordinary differential equations of the form
+    \[
+    \begin{cases}
+    y^\prime(t)=f(t,y(t)) & t\in (t_0,T]\\
+    y(0)=y_0 & \text{given}
+    \end{cases}
+    \]
+Here, $y$ is in general a vector of $\mathbb{R}^d$. If $d=1$ we have a \emph{scalar problem}.
+We mention that indeed $y$ can also be a matrix of a complex number/vector. Here we assume it is a vector of real number (the discussion however extends to scalar problems and even problems in the complex plane.)
+
+
+Runge Kutta methods are one-step multistage methods. They are defined through the \emph{extended Butcher's tableau} (or Butcher's array)
+\[
+B=\begin{array}{c|c}
+\mathbf{c}& \mathbf{A}\\
+\hline
+& \mathbf{b}^T\\
+& \hat{\mathbf{b}}^T
+\end{array}
+\]
+where $\mathbf{A}\in\mathbb{R}^{s\times s}$, while $\mathbf{c}$, $\mathbf{b}$ and $\hat{\mathbf{b}}$ are vectors of $\mathbb{R}^s$ and $s>0$ the number of \emph{stages}.
+For consistency considerations, we must have $c_i=\sum_{j=1}^s A_{ij}$.
+The presence of the two vectors $\mathbf{b}$ and $\hat{\mathbf{b}}$ characterize the embedded formula (the standard formula has just one vector $\mathbf{b}$).
+
+
+The solution in a step $t^n\to t^{n+1}=t^n+h$, being $h$ the time step size, is obtained by solving the following problem,
+
+\begin{align}\label{eq:rk1}
+&\mathbf{K}_i = f(t+c_ih,\mathbf{y}_n+h\sum_j A_{ij}\mathbf{K}_j)\quad i=1,\ldots,s,\\
+\label{eq:rkt}
+&\mathbf{y}_{n+1}=\mathbf{y}_n + h \mathbf{K}\mathbf{b},\\\label{eq:rk3}
+&\hat{\mathbf{y}}_{n+1}=\mathbf{y}_n + h \mathbf{K}\hat{\mathbf{b}}.
+\end{align}
+
+Here $K\in\mathbb{R}^{d\times s}$, with $\mathbf{K})i$ the $i$=th column and $\mathbf{y}_n\in\mathbb{R}^d$ the approximated solution at time $t^n$.
+
+If $\mathbf{A}$ is \emph{strictly} lower diagonal ($A_{ij}=0$ if $j\ge i$), then the  computation of $\mathbf{K}_i$ in ~\eqref{eq:rk1} is \emph{explicit}, i.e does not require the solution of any non-linear system, but solving in succession, for $i=1,\ldots s$,
+\[
+\mathbf{K}_i = f(t_n+c_ih,\mathbf{y}_n+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j).
+\]
+(Note that $\mathbf{K}_1=f(t_n,\mathbf{y}_n)$).
+
+Otherwise the method is implicit and step~\eqref{eq:rk1} involve the solution of a non-linear system of $s\times d$ unknnown (the coefficients of $\mathbf{K}$.).
+
+There is an intermediate possibility. When $\mathbf{A}$ is \emph{lower triangular} (but not \emph{strictly lower triangular}) then the RK scheme is \emph{linearly} or \emph{diagonally} implicit
+(DIRK schemes). In this case, \eqref{eq:rk1} involves the solution of $s$ nonlinear systems of size $d$, solved in succession:
+\[
+\mathbf{K}_i - f(t+c_ih,\mathbf{y}_n+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j +hA_{ii}\mathbf{K}_i)=\mathbf{0}\quad i=1,\ldots,s\\\label{eq:rk2ex}
+\]
+Finally, a subclass of the DIRK schemes are the ESDIRK~\cite{jorgensenFamilyESDIRKIntegration2018} (explicit singly diagonal implicit) schemes, where $\mathbf{A}$ is lower triangular but the first row is zero. It means that the first stage is explicit and you have to solve only $s-1$ implicit stages at each time step. 
+\smallskip
+
+Equations~\eqref{eq:rkt} and~\eqref{eq:rk3} provide two different approximations of $\mathbf{y}(t^{n+1})$, the first is called the \emph{primal}, and is the one actually used to advance the numerical solution, the second is instead used to \emph{compute an extimate of the local truncation error (LTE)}.
+\section{Computation of the estimate of the LTE}
+The trick is that the coefficients of the Butcher tableau are given such that relations \eqref{eq:rkt} and~\eqref{eq:rk3} provide an approximation of \emph{different order}, typically the two orders differ by $1$. So lets assume that $\mathbf{y}_{n+1}$ is the solution of \emph{lower order} $p$ (we will see later $\mathbf{y}$ that it can be the opposite). Therefore, $\hat{\mathbf{y}}_{n+1}$ is of order $p+1$. 
+
+We recall that the \emph{order} of the method (more precisely the order of consistency) if the order of the \emph{truncation error} which bounds, under condition of regularity of $f$, the \emph{order of convergence}. Indeed we have that, indicating with $\tau_p(h)$ the truncation error of the low order scheme, and with $N$ the final step
+\begin{equation}\label{eq:converg}
+\Vert \mathbf{y}_{N}-\mathbf{y}(T)\Vert \le C_T \tau_p,
+\end{equation}
+for a $C_T>0$.
+We remind again, that that result holds for sufficiently small $h$ and under conditions on the regularity of $f$, but here we assume it to be valid. You may also have similar results in other norms.
+
+A scheme is of order $p$ when $\tau_p=O(h^p)$.
+
+The \emph{local truncation error} (LTE) is the error carried out on a \emph{single step} and is equal to $\boldsymbol{\tau}_{p,n}(h) h$, where $\boldsymbol{\tau}_{p,n}(h)$ is related to the truncation error by 
+\begin{equation}\label{eq:trunc}
+\tau_p=\max_n \Vert\boldsymbol{\tau}_{p,n}(h)\Vert.
+\end{equation}
+
+Thus, we have 
+\begin{equation}\label{eq:ltelow}
+\mathbf{y}_{n+1}-\mathbf{y}(t^n) = \boldsymbol\tau_{p,n}(h) h =O(h^{p+1}).
+\end{equation}
+
+Analogously, since $\hat{\mathbf{y}}$ is an approximation of order $p+1$,
+\begin{equation}\label{eq:ltehigh}
+\hat{\mathbf{y}}_{n+1}-\mathbf{y}(t^n) =O(h^{p+2}).
+\end{equation}
+Therefore, subtracting~\eqref{eq:ltehigh} from~\eqref{eq:ltelow}, taking the norm and assuming $h$ sufficiently small so that we can neglect higher order terms, we obtain,
+\begin{equation}\label{eq:delta}
+\Delta_n=\Vert \hat{\mathbf{y}}_{n+1}-\mathbf{y}_{n+1} \Vert\simeq \Vert \boldsymbol\tau_{p,n}(h)\Vert  h= O(h^{p+1}).
+\end{equation}
+Therefore, $\Delta$ can be used as an \emph{estimate of the local truncation error of the lower order scheme}.
+\section{Controlling the error}
+The relations of the previous section will tell us how to control the error using the estimate provided by $\Delta_n$. The expression for the error~\eqref{eq:converg}
+ leads us to the idea of controlling $\tau_p$ and~\eqref{eq:trunc} to the fact that this can be obtained if at each time step we control $\Vert\boldsymbol{\tau}_{p,n}$.
+ 
+ Therefore let's call $e$ the \emph{desired $\tau_p$}. The objective is to have 
+ $\tau_p\simeq e$. At the $n$-th step we can compute $\Delta_n$ and observe that, from~\eqref{eq:delta},
+\begin{equation}\label{eq:deltah}
+\Delta_n/h \simeq \Vert \boldsymbol\tau_{p,n}(h)\Vert \simeq C h^{p}
+\end{equation}
+while the step $h_e$ necessary (under the approximation of the error estimate) to have a final error proportional to $e$ satisfies
+\begin{equation}\label{eq:errordes}
+e\simeq C h_e^p.
+\end{equation}
+So the strategy is as follows. Since we need computable estimates we make the approximation 
+of considering the  $C$ in~\eqref{eq:deltah} and~\eqref{eq:errordes} identical and replace $\simeq$ with equalities. 
+
+After computing $\Delta_n$ with the latest value of $h$ (at the first step we use an $h$ of choice) we calculate the ratio
+\[
+r=\dfrac{eh}{\Delta_n}
+\]
+
+If $r>1$ the step $h$ is too large. Then ~\eqref{eq:deltah} and~\eqref{eq:errordes} suggest that the "good" $h$ to control the error is
+\begin{equation}\label{eq:contraction}
+h_e = \left(\dfrac{1}{r}\right)^{1/p}=\left(\dfrac{eh}{\Delta_n}\right)^{1/p}.
+\end{equation}
+So, we \emph{reject} the step and repeat the computations with $h=h_e$, where $h_e$ is computed with the previous formula.
+
+If $r\le 1$ the step can be accepted. Yet, if $r<1$ it may be worthwile to increase $h$ since the current one is too small for the given target error. However, expansions are always more critical, since we may end up to a too large $h$. So, in this case we prefer to control the local truncation error, and not the global one. Thus for $r \le 1$ we \emph{accept the step} and for the next step we correct $h$ by setting it equal to $h_e$ given by
+\begin{equation}\label{eq:expansion}
+h_e = \left(\dfrac{1}{r}\right)^{1/(p+1)}=\left(\dfrac{eh}{\Delta_n}\right)^{1/(p+1)}.
+\end{equation}
+The last expression is indeed conservative, since it will increase $h$ less than the 
+use of~\eqref{eq:contraction}.
+
+Moreover, to be even more conservative, one uses also some safety factors $\alpha_c>1$ and $\alpha_e<1$ (typically $1.01$ and $0.98$) and the algorithm for error control at each time step is as follows
+\begin{enumerate}
+    \item Compute $\Delta_n$ and $r=\dfrac{eh}{\Delta_n}$.
+    \item If $r\le 1$ accept the step, compute $\mathbf{y}_{n+1}$ and set
+    \[
+    h = \alpha_e\left(\dfrac{eh}{\Delta_n}\right)^{1/(p+1)}.
+    \]
+    \item if $r<1$ \emph{reject} the step and repeat it with
+    \[
+    h = \alpha_c\left(\dfrac{eh}{\Delta_n}\right)^{1/p}.
+    \]
+\end{enumerate}
+
+\section{Choice of the primal scheme}
+We have seen thet the embedded RK method provides two approximations, one of order $p$ and one of order $p+1$ (in general order $q>p$, but $q=p+1$ is the usual situation). The estimate based on $\Delta_n$ is an estimate for the \emph{lower order scheme}, so it would be natural to update
+the solution using the lower order scheme. In other word, use the lower order scheme as primal.
+
+For instance, the scheme $RK4(5)$ is an embedded RK scheme with primal scheme of $4$-th order and it uses a scheme of $5$-th order only to compute the error estimate.
+
+Yet, one may wonder whether not to use the higher order scheme as primal. After all we have at disposal a more accurate approximation, so why not use it?
+
+Indeed, the RK5(4) is also an embedded RK method that uses schemes of order $4$ and $5$, but, differently from RK4(5), uses the latter as primal (i.e. to advance the solution).
+
+Some considerations are however necessary. Consistency error is not the only thing to take into account, we should consider also stability. Depending on how the method has been constructed (there are many RK embedded schemes around, see~\cite{RungeKuttaMethods2016}) the higher order scheme may or may not have worse stability properties than the lower order one.
+
+This is particularly true in DIRK and ESDIRK schemes (which are implicit). One wants to use an implicit scheme to have $A$ or $L$-stability in order to treat stiff problems. So the choice of which scheme to select as primal really depends on the properties of the specific method and often in implicit DIRK it is the lower order scheme that guarantees $A$-stability.
+
+
+\bibliographystyle{plain}
+\bibliography{rk.bib}
+
+
+
+
+
+
+
+
+
+\end{document}

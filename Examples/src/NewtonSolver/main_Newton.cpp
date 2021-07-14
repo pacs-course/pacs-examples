@@ -34,7 +34,8 @@ int main()
     return J;
   };
   */
-  auto nonLinFun= [](const ArgumentType & x) -> ArgumentType
+
+     auto nonLinFun= [](const ArgumentType & x) -> ArgumentType
     {
     constexpr double pi=3.141592653589793238;
     ArgumentType y(3);
@@ -57,20 +58,37 @@ int main()
     J(2,1)=-x[0]*std::exp(x[0]*x[1]);
     J(2,2)=20.;
    return J;
+ };
+
+  /* auto nonLinFun= [](const ArgumentType & x) -> ArgumentType
+  {
+  constexpr double pi=3.141592653589793238;
+  ArgumentType y(1);
+  y(0)=3*x[0]-std::cos(x[0])-0.5;
+  return y;
   };
 
+auto jacobianFun = [](const ArgumentType & x)->JacobianType
+    {
+  JacobianType J(1,1);
+  J(0,0)=3+std::sin(x[0]);
+ return J;
+};
+*/
   apsc::FullJacobian J(jacobianFun);
 
   apsc::NewtonOptions newtonOptions;
   // Change something
   newtonOptions.backtrackOn=true;
-  newtonOptions.stopOnStagnation=true;
+  newtonOptions.stopOnStagnation=false;
   apsc::NewtonVerbose newtonSolver(nonLinFun,J,newtonOptions);
 
   //ArgumentType x0(2);
   //x0<< 0., 0.; // Eigen Syntax
   ArgumentType x0(3);
   x0<< 0., 0., 0.; // Eigen Syntax
+  //ArgumentType x0(1);
+  //x0<< 0.; // Eigen Syntax
 
   // Open a scope so that the structured bindings object is eventually deleted
   {
@@ -79,6 +97,15 @@ int main()
   std::cout<<std::boolalpha<<"Newton Solution has converged: "<<converged<<" last iteration:"<<iter
       <<" last residual:"<<resNorm<< " has stagnated:"<<stagnated<<std::endl;
   }
+// now with discrete jacobian
+  newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::DISCRETEJACOBIAN));
+  {
+   auto [solution,resNorm, stepLen, iter, converged, stagnated] = newtonSolver.solve(x0);
+
+   std::cout<<std::boolalpha<<"Newton Solution with discrete jacobian has converged: "<<converged<<" last iteration:"<<iter
+       <<" last residual:"<<resNorm<< " has stagnated:"<<stagnated<<std::endl;
+   }
+
   // Now with Broyden
   newtonOptions.maxIter=100; // increase max iterations
   newtonSolver.setOptions(newtonOptions);
@@ -98,13 +125,15 @@ int main()
          <<" last residual:"<<resNorm<< " has stagnated:"<<stagnated<<std::endl;
    }
    // Now with just Richardson (Picard iterations)
-    newtonOptions.maxBackSteps=8; // increase max backstep
-    newtonSolver.setOptions(newtonOptions);
-    newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::IDENTITYJACOBIAN));
+    //newtonOptions.maxBackSteps=8; // increase max backstep
+    //newtonSolver.setOptions(newtonOptions);
+    //apsc::IdentityJacobian I;
+    //I.setLambda(0.01);
+    newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::EIROLANEVANLINNA));
     {
     auto [solution,resNorm, stepLen, iter, converged, stagnated] =newtonSolver.solve(x0);
 
-    std::cout<<std::boolalpha<<"Richardon Solution has converged: "<<converged<<" last iteration:"<<iter
+    std::cout<<std::boolalpha<<"E-N Solution has converged: "<<converged<<" last iteration:"<<iter
           <<" last residual:"<<resNorm<< " has stagnated:"<<stagnated<<std::endl;
     }
 
