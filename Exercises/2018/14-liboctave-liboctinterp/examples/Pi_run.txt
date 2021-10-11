@@ -1,1 +1,0 @@
-mpirun --hostfile $HOSTFILE -np $NUMBER_OF_MPI_NODES octave --eval "pkg load openmpi_ext; Pi ()"
