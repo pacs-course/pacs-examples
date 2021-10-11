@@ -13,6 +13,7 @@
 #include <limits>
 #include <tuple>
 #include <algorithm>
+#include <complex>
 namespace apsc
 {
 /*!
@@ -30,7 +31,7 @@ namespace apsc
  */
 template <class Function>
 double
-chord(Function const &f, double a, double b, double tol = 1.e-6,
+regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
       double tola = 1.e-10)
 {
   double ya = f(a);
@@ -144,11 +145,6 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
       goOn=resid>check;
       ++iter;
       double yb = f(b);
-      if(std::abs(b)>std::abs(a))
-        {
-          std::swap(a,b);
-          std::swap(ya,yb);
-        }
       c = a - ya * (b - a) / (yb - ya);
       double yc = f(c);
       resid = std::abs(yc);
@@ -156,7 +152,7 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
       a  = c;
     }
 
-  return std::make_tuple(c, iter < maxIt);
+  return std::make_tuple(c, (iter < maxIt));
 }
 
 /*!
