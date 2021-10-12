@@ -3,81 +3,79 @@
 
 namespace ET
 {
-  
+/*!
+ * @namespace Operation
+ * this namespace contains all defined operations
+ */
+namespace Operation
+{
   /*!
-   * @namespace Operation
-   * this namespace contains all defined operations
+   * @struct Plus
+   * sum
    */
-  namespace Operation
+  template <typename T> struct Plus
   {
-    
-    /*!
-     * @struct Plus
-     * sum
-     */
-    template <typename T>
-    struct Plus
+    T
+    operator()(T const &e1, T const &e2) const
     {
-      T operator() ( T const& e1, T const& e2 ) const
-      {
-        return ( e1 + e2 );
-      }
-    };
-    
-    /*!
-     * @struct Minus
-     * difference
-     */
-    template <typename T>
-    struct Minus
+      return (e1 + e2);
+    }
+  };
+
+  /*!
+   * @struct Minus
+   * difference
+   */
+  template <typename T> struct Minus
+  {
+    T
+    operator()(T const &e1, T const &e2) const
     {
-      T operator() ( T const& e1, T const& e2 ) const
-      {
-        return ( e1 - e2 );
-      }
-    };
-    
-    /*!
-     * @struct Multiply
-     * multiplication
-     */
-    template <typename T>
-    struct Multiply
+      return (e1 - e2);
+    }
+  };
+
+  /*!
+   * @struct Multiply
+   * multiplication
+   */
+  template <typename T> struct Multiply
+  {
+    T
+    operator()(T const &e1, T const &e2) const
     {
-      T operator() ( T const& e1, T const& e2 ) const
-      {
-        return ( e1 * e2 );
-      }
-    };
-    
-    /*!
-     * @struct Divide
-     * division
-     */
-    template <typename T>
-    struct Divide
+      return (e1 * e2);
+    }
+  };
+
+  /*!
+   * @struct Divide
+   * division
+   */
+  template <typename T> struct Divide
+  {
+    T
+    operator()(T const &e1, T const &e2) const
     {
-      T operator() ( T const& e1, T const& e2 ) const
-      {
-        return ( e1 / e2 );
-      }
-    };
-    
-    /*!
-     * @struct Exp
-     * exponential
-     */
-    template <typename T>
-    struct Exp
+      return (e1 / e2);
+    }
+  };
+
+  /*!
+   * @struct Exp
+   * exponential
+   */
+  template <typename T> struct Exp
+  {
+    T
+    operator()(T const &e) const
     {
-      T operator() ( T const& e ) const
-      {
-        return std::exp ( e );
-      }
-    };
-    
-  } // namespace Operation
-  
+      return std::exp(e);
+    }
+  };
+
+} // namespace Operation
+
 } // namespace ET
 
 #endif // _OPERATION_HPP_

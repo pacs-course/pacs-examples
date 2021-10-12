@@ -41,7 +41,7 @@ main(int argc, char **argv)
   using namespace std; // avoid std::
   int    status(0);    // final program status
   GetPot cl(argc, argv);
-  if (cl.search(2, "-h", "--help"))
+  if(cl.search(2, "-h", "--help"))
     {
       printHelp();
       return 0;
@@ -63,7 +63,7 @@ main(int argc, char **argv)
   // just to show a possible  use of references)
   const int &itermax = param.itermax; // max number of iteration for
                                       // Gauss-Siedel
-  const double &toler = param.toler; // Tolerance for stopping criterion
+  const double &toler = param.toler;  // Tolerance for stopping criterion
   // Here I use auto (remember that you need const and & if you want constant
   // references)
   const auto &L = param.L;   // Bar length
@@ -92,7 +92,7 @@ main(int argc, char **argv)
   // Solution vector this constructs a vector of size M+1
   std::vector<double> theta(M + 1);
 
-  if (solverType == 1)
+  if(solverType == 1)
     {
       // Gauss-Seidel
       // epsilon=||x^{k+1}-x^{k}||
@@ -100,7 +100,7 @@ main(int argc, char **argv)
       // Gauss Siedel is initialised with a linear variation
       // of T
 
-      for (int m = 0; m <= M; ++m)
+      for(int m = 0; m <= M; ++m)
         theta[m] = (1. - m * h) * (To - Te) / Te;
 
       int    iter = 0;
@@ -112,7 +112,7 @@ main(int argc, char **argv)
           epsilon = 0.;
 
           // first M-1 row of linear system
-          for (int m = 1; m < M; m++)
+          for(int m = 1; m < M; m++)
             {
               xnew = (theta[m - 1] + theta[m + 1]) / (2. + h * h * act);
               epsilon += (xnew - theta[m]) * (xnew - theta[m]);
@@ -126,9 +126,9 @@ main(int argc, char **argv)
 
           iter = iter + 1;
         }
-      while ((sqrt(epsilon) > toler) && (iter < itermax));
+      while((sqrt(epsilon) > toler) && (iter < itermax));
 
-      if (iter < itermax)
+      if(iter < itermax)
         cout << "M=" << M << "  Convergence in " << iter << " iterations"
              << endl;
       else
@@ -153,12 +153,12 @@ main(int argc, char **argv)
       theta = apsc::thomasSolve(a, b, c, source);
     }
   // Back to physical quantities
-  for (auto &t : theta)
+  for(auto &t : theta)
     t = Te * (1 + t);
   // Analytic solution
 
   vector<double> thetaa(M + 1);
-  for (int m = 0; m <= M; m++)
+  for(int m = 0; m <= M; m++)
     thetaa[m] =
       Te + (To - Te) * cosh(sqrt(act) * (1 - m * h)) / cosh(sqrt(act));
 
@@ -172,7 +172,7 @@ main(int argc, char **argv)
   // In gnuplot lines beginning with # are comments
   // \t writes a tab
   f << "#node coordinate\tcomputed solution\texact solution" << std::endl;
-  for (int m = 0; m <= M; m++)
+  for(int m = 0; m <= M; m++)
     {
       f.setf(std::ios::left, std::ios::adjustfield);
       f.width(16);

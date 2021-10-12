@@ -47,4 +47,4 @@ loadFactoryItems()
   addRuleToFactory<MidPoint>("MidPoint");
   addRuleToFactory<QuadratureRuleAdaptive<Simpson>>("AdaptiveSimpson");
 }
-}
+} // namespace

@@ -33,13 +33,14 @@ CrankNicolsonStep(Function const &f, double y0, double t0, double h)
   };
   //    auto[ya,yb,status]=apsc::bracketInterval(fStep, y0, h);
   //    if(status==false) std::cerr<<" Cannot bracket zero\n";
-  double yb = y0 + h*fn;
+  double yb = y0 + h * fn;
   auto [y1, status2] = apsc::secant(fStep, y0, yb, 1.e-8, 1.e-10, 200);
-  if (status2 == false)
+  if(status2 == false)
     {
       std::cerr << " Cannot find solution with h=" << h << "\n";
-      std::tie(y1, status2) = apsc::secant(fStep, y0, y0+0.01*h*fn, 1.e-8, 1.e-10, 200);
-      if (status2 == false)
+      std::tie(y1, status2) =
+        apsc::secant(fStep, y0, y0 + 0.01 * h * fn, 1.e-8, 1.e-10, 200);
+      if(status2 == false)
         std::cerr << " Failed also at second attempt! Reduce h!\n";
     }
   return y1;
@@ -56,7 +57,7 @@ CrankNicolson(Function const &f, double y0, double t0, double T, unsigned int n)
   t.reserve(n + 1);
   y.push_back(y0);
   t.push_back(t0);
-  for (std::size_t i = 0; i < n; ++i)
+  for(std::size_t i = 0; i < n; ++i)
     {
       auto yn = CrankNicolsonStep(f, y.back(), t.back(), h);
       y.push_back(yn);
@@ -64,5 +65,5 @@ CrankNicolson(Function const &f, double y0, double t0, double T, unsigned int n)
     }
   return {t, y};
 }
-} // and namespace apcs
+} // namespace apsc
 #endif

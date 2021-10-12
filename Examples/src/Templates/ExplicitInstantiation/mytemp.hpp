@@ -6,26 +6,33 @@
   @note  It works only with C++11
  */
 //! A class template
-template
-<typename T>
-class Myclass{
+template <typename T> class Myclass
+{
 public:
-  Myclass(T const &i):my_data(i){}
+  Myclass(T const &i) : my_data(i) {}
   double fun();
+
 private:
   T my_data;
 };
 
-template
-<typename T>
-double Myclass<T>::fun(){return 1./my_data;}
+template <typename T>
+double
+Myclass<T>::fun()
+{
+  return 1. / my_data;
+}
 
 //! A function template
-template
-<typename T> double func(T const &a){return 0.5*a*a;}
+template <typename T>
+double
+func(T const &a)
+{
+  return 0.5 * a * a;
+}
 
 //! Extern explicit template instantiations
-extern template class Myclass<double>; 
-extern template class Myclass<int>; 
-extern template double func<double>(double const &); 
+extern template class Myclass<double>;
+extern template class Myclass<int>;
+extern template double func<double>(double const &);
 #endif

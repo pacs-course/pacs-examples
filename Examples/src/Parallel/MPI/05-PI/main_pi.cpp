@@ -38,7 +38,7 @@ main(int argc, char **argv)
   MPI_Comm_size(mpi_comm, &mpi_size);
 
 #pragma omp parallel master
-  if (mpi_rank == 0)
+  if(mpi_rank == 0)
     std::cout << "Number of processes: " << mpi_size
               << ", number of threads: " << omp_get_num_threads() << std::endl;
 
@@ -50,7 +50,7 @@ main(int argc, char **argv)
   double sum = 0.0;
 
 #pragma omp parallel for reduction(+ : sum)
-  for (unsigned int i = mpi_rank; i < n; i += mpi_size)
+  for(unsigned int i = mpi_rank; i < n; i += mpi_size)
     {
       const double x = h * (i + 0.5);
       sum += 4.0 / (1.0 + x * x);
@@ -64,7 +64,7 @@ main(int argc, char **argv)
   // double pi;
   // MPI_Reduce(&pi_local, &pi, 1, MPI_DOUBLE, MPI_SUM, 0, mpi_comm);
 
-  if (mpi_rank == 0)
+  if(mpi_rank == 0)
     {
       std::cout << std::setprecision(16) << "pi = " << pi
                 << ", error = " << std::abs(pi - M_PI) << std::endl;
@@ -72,9 +72,9 @@ main(int argc, char **argv)
 
   // Trick to get output sorted by rank id.
   MPI_Barrier(mpi_comm);
-  for (int rank = 0; rank < mpi_size; ++rank)
+  for(int rank = 0; rank < mpi_size; ++rank)
     {
-      if (mpi_rank == rank)
+      if(mpi_rank == rank)
         {
           toc("Time elapsed on rank " + std::to_string(mpi_rank) + ": ");
         }

@@ -50,6 +50,6 @@ protected:
   bool     isconvex;
   Vertices vertexes;
 };
-}
+} // namespace Geometry
 
 #endif

@@ -7,46 +7,44 @@
 #include "BadEnemies.hpp"
 #include <iostream>
 
-void BadSuperMonster::speak()
+void
+BadSuperMonster::speak()
 {
-	std::cout<<" I am a Bad SuperMonster and I'll kill you"<<std::endl;
+  std::cout << " I am a Bad SuperMonster and I'll kill you" << std::endl;
 }
 
-
-
-void BadMonster::speak()
+void
+BadMonster::speak()
 {
-	std::cout<<" I am a Bad Monster and I'll kill you"<<std::endl;
+  std::cout << " I am a Bad Monster and I'll kill you" << std::endl;
 }
 
-
-
-void BadSoldier::speak()
+void
+BadSoldier::speak()
 {
-	std::cout<<" I am a Bad Soldier and I'll kill you"<<std::endl;
+  std::cout << " I am a Bad Soldier and I'll kill you" << std::endl;
 }
 
-std::unique_ptr<Enemy> AdvancedLevelEnemyFactory::MakeMonster()
+std::unique_ptr<Enemy>
+AdvancedLevelEnemyFactory::MakeMonster()
 {
-	return std::make_unique<BadMonster>();
+  return std::make_unique<BadMonster>();
 }
 
-
-
-std::unique_ptr<Enemy> AdvancedLevelEnemyFactory::MakeSuperMonster()
+std::unique_ptr<Enemy>
+AdvancedLevelEnemyFactory::MakeSuperMonster()
 {
-	return std::make_unique<BadSuperMonster>();
+  return std::make_unique<BadSuperMonster>();
 }
 
-
-
-std::unique_ptr<Enemy> AdvancedLevelEnemyFactory::MakeSoldier()
+std::unique_ptr<Enemy>
+AdvancedLevelEnemyFactory::MakeSoldier()
 {
-	return std::make_unique<BadSoldier>();
+  return std::make_unique<BadSoldier>();
 }
 
-std::unique_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory(){
+std::unique_ptr<AbstractEnemyFactory>
+BuildAdvancedLevelEnemyFactory()
+{
   return std::unique_ptr<AbstractEnemyFactory>(new AdvancedLevelEnemyFactory);
 }
-
-

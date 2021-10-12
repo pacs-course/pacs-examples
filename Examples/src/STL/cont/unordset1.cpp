@@ -8,53 +8,58 @@
  * This software is provided "as is" without express or implied
  * warranty, and with no claim as to its suitability for any purpose.
  */
-#include <unordered_set>
-#include <set>
-#include <vector>
-#include <numeric>
-#include <algorithm>
 #include "print.hpp"
+#include <algorithm>
+#include <numeric>
+#include <set>
+#include <unordered_set>
+#include <vector>
 using namespace std;
 
-int main()
+int
+main()
 {
-    // create and initialize unordered set
-  std::unordered_set<int> coll = { 1,2,3,5,7,11,13,17,19,77 };
+  // create and initialize unordered set
+  std::unordered_set<int> coll = {1, 2, 3, 5, 7, 11, 13, 17, 19, 77};
 
-    // print elements
-    // - elements are in arbitrary order
-    PRINT_ELEMENTS(coll);
+  // print elements
+  // - elements are in arbitrary order
+  PRINT_ELEMENTS(coll);
 
-    // insert some additional elements
-    // - might cause rehashing and create different order
-    coll.insert({-7,17,33,-11,17,19,1,13});
-    PRINT_ELEMENTS(coll);
+  // insert some additional elements
+  // - might cause rehashing and create different order
+  coll.insert({-7, 17, 33, -11, 17, 19, 1, 13});
+  PRINT_ELEMENTS(coll);
 
-    // remove element with specific value
-    coll.erase(33);
+  // remove element with specific value
+  coll.erase(33);
 
-    // insert sum of all existing values
-    coll.insert(accumulate(coll.begin(),coll.end(),0));
-    PRINT_ELEMENTS(coll);
-    
-    // check if value 19 is in the set
-    if (coll.find(19) != coll.end()) {
-        cout << "19 is available" << endl;
+  // insert sum of all existing values
+  coll.insert(accumulate(coll.begin(), coll.end(), 0));
+  PRINT_ELEMENTS(coll);
+
+  // check if value 19 is in the set
+  if(coll.find(19) != coll.end())
+    {
+      cout << "19 is available" << endl;
     }
 
-    // remove all negative values
-    /* // This requires C++20 
-    std::erase_if(coll.begin(),coll.end(),[](int i){return i<0;});
-    */
-    // The for-loop version (only possibility before C++20)
-    for (auto pos=coll.begin(); pos!= coll.end(); ) {
-        if (*pos < 0) {
-            pos = coll.erase(pos);
+  // remove all negative values
+  /* // This requires C++20
+  std::erase_if(coll.begin(),coll.end(),[](int i){return i<0;});
+  */
+  // The for-loop version (only possibility before C++20)
+  for(auto pos = coll.begin(); pos != coll.end();)
+    {
+      if(*pos < 0)
+        {
+          pos = coll.erase(pos);
         }
-        else {
-            ++pos;
+      else
+        {
+          ++pos;
         }
     }
-    
-    PRINT_ELEMENTS(coll);
+
+  PRINT_ELEMENTS(coll);
 }

@@ -6,13 +6,14 @@
  */
 
 #include "readCSV.hpp"
-#include <iostream>
 #include <fstream>
-int main()
+#include <iostream>
+int
+main()
 {
   using namespace Utility;
   std::ifstream db("test.csv");
-  ReadCSV reader;
+  ReadCSV       reader;
   // Every record has at least 3 tokens
   reader.setMinTokens(3u);
   // I set to 4 the minumn number of records.
@@ -29,5 +30,3 @@ int main()
   // Write!
   reader.writeAllRecords(std::cout);
 }
-
-

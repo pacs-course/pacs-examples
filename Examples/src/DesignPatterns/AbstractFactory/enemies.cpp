@@ -6,27 +6,18 @@
  */
 #include "enemies.hpp"
 
+void
+Enemy::speak()
+{}
 
+void
+Soldier::speak()
+{}
 
-void Enemy::speak()
-{
-}
+void
+Monster::speak()
+{}
 
-
-
-void Soldier::speak()
-{
-}
-
-
-
-void Monster::speak()
-{
-}
-
-
-
-void SuperMonster::speak()
-{
-}
-
+void
+SuperMonster::speak()
+{}

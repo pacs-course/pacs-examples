@@ -55,19 +55,19 @@ public:
   {
     auto const &                           A = my_B.A;
     std::array<double, Butcher::Nstages()> b;
-    if (Level == 1)
+    if(Level == 1)
       b = my_B.b1;
     else
       b = my_B.b2;
     std::array<complex, Butcher::Nstages()> K;
     K.fill(z);
-    for (unsigned int stage = 1u; stage < my_B.Nstages(); ++stage)
+    for(unsigned int stage = 1u; stage < my_B.Nstages(); ++stage)
       {
-        for (unsigned int j = 0; j < stage; ++j)
+        for(unsigned int j = 0; j < stage; ++j)
           K[stage] += z * A[stage][j] * K[j];
       }
     complex res{1., 0.};
-    for (unsigned int stage = 0; stage < my_B.Nstages(); ++stage)
+    for(unsigned int stage = 0; stage < my_B.Nstages(); ++stage)
       res += b[stage] * K[stage];
     return res;
   }
@@ -94,8 +94,8 @@ public:
    * r(x) = c + xe^{i \alpha}
    * \f]
    *
-   * The center point is by default \f$c= -1 + 0i\f$ but may be changed. It should be
-   * a point \bf inside \bf the region of absolute stability.
+   * The center point is by default \f$c= -1 + 0i\f$ but may be changed. It
+   * should be a point \bf inside \bf the region of absolute stability.
    *
    * @param angle The angle \f$ \alpha\f$
    * @param centerPoint The centerpoint \f$ c\f$.
@@ -117,21 +117,19 @@ public:
     complex res = centerPoint + x * e;
     return std::make_tuple(res, status);
   };
-/*!
-   * It finds two \f! x_1 \f$ and \f$ x_4 \f$ in the complex plane where \f$ |R(r(x)|-1\le 0 \f$
-   * and \f$ |R(r(x))|-1 \ge 0 \f$, respectively.
-   * It operated along a line starting from centerPoint \f$ c\f$ with angle \f$ \alpha\f$.
-   * \f[
-   * r(x) = c + xe^{i \alpha}
-   * \f]
+  /*!
+   * It finds two \f! x_1 \f$ and \f$ x_4 \f$ in the complex plane where \f$
+   * |R(r(x)|-1\le 0 \f$ and \f$ |R(r(x))|-1 \ge 0 \f$, respectively. It
+   * operated along a line starting from centerPoint \f$ c\f$ with angle \f$
+   * \alpha\f$. \f[ r(x) = c + xe^{i \alpha} \f]
    *
-   * The center point is by default \f$c= -1 + 0i\f$ but may be changed. It should be
-   * a point \bf inside \bf the region of absolute stability.
+   * The center point is by default \f$c= -1 + 0i\f$ but may be changed. It
+   * should be a point \bf inside \bf the region of absolute stability.
    *
- * @param angle The angle \f$ \lapha \f$
- * @param centerPoint The center point
- * @return A pair containing the two points.
- */
+   * @param angle The angle \f$ \lapha \f$
+   * @param centerPoint The center point
+   * @return A pair containing the two points.
+   */
   std::pair<double, double>
   bracket(double angle, complex const &centerPoint = {-1., 0.})
   {
@@ -145,7 +143,7 @@ public:
       return std::abs(this->operator()(centerPoint + x * e)) - 1.0;
     };
     unsigned int iTry = 0;
-    while (f(x1) * f(x2) > 0 && iTry < nTry)
+    while(f(x1) * f(x2) > 0 && iTry < nTry)
       {
         x1 = x2;
         x2 += step;
@@ -156,7 +154,8 @@ public:
    * Computes a numSamples point at the border of the stability region.
    *
    * @param numSamples The number of points
-   * @param centerPoint The center point used in the construction @see{computeLimit}
+   * @param centerPoint The center point used in the construction
+   * @see{computeLimit}
    * @return A vector of conplex with the found points.
    */
   std::vector<complex>
@@ -168,17 +167,17 @@ public:
     constexpr double     end = pi;
     std::vector<complex> result;
     result.reserve(numSamples);
-    for (unsigned int i = 0; i < numSamples; ++i)
+    for(unsigned int i = 0; i < numSamples; ++i)
       {
         double angle = start + i * (end - start) / (numSamples - 1);
         auto [x, status] = computeLimit(angle, centerPoint);
-        if (status == true)
+        if(status == true)
           {
             result.emplace_back(x);
           }
         else
           {
-            if (options.verbose)
+            if(options.verbose)
               {
                 std::cerr << "Point at angle " << angle << " Not found\n";
               }
@@ -194,13 +193,13 @@ public:
   struct Options
   {
     //! Relative tolerance
-    double       tol = 1.e-4;
+    double tol = 1.e-4;
     //! Absolute tolerance
-    double       tola = 1.e-10;
+    double tola = 1.e-10;
     //! Max number of iterations
     unsigned int maxIt = 150;
     //! Verbose output for computeStabilityRegion.
-    bool         verbose = false;
+    bool verbose = false;
   };
   /*!
    * Contains the optional parameters to find the zero of a scalar function
@@ -211,6 +210,6 @@ private:
   Butcher my_B;
 };
 
-} // end namespace
+} // namespace apsc
 
 #endif /* EXAMPLES_SRC_RKFSOLVER_COMPUTERFORRK_HPP_ */

@@ -37,13 +37,13 @@ Square::diagLen() const
 
 namespace
 {
-//! This will register the objects in the factory automatically when the library
-//! is loaded
-void __attribute__((constructor)) LoadF()
-{
-  // add triangle and square to the factory
-  polyFactory["Triangle"] = []() { return std::make_unique<Triangle>(); };
-  polyFactory["Square"] = []() { return std::make_unique<Square>(); };
-}
-}
-}
+  //! This will register the objects in the factory automatically when the
+  //! library is loaded
+  void __attribute__((constructor)) LoadF()
+  {
+    // add triangle and square to the factory
+    polyFactory["Triangle"] = []() { return std::make_unique<Triangle>(); };
+    polyFactory["Square"] = []() { return std::make_unique<Square>(); };
+  }
+} // namespace
+} // namespace Geometry

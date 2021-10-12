@@ -41,11 +41,11 @@ main()
 
   std::cout << "Content of caseCompare set (size=" << caseCompare.size()
             << "):\n";
-  for (auto const &v : caseCompare)
+  for(auto const &v : caseCompare)
     std::cout << v << " ";
   std::cout << "\nContent of noCaseCompare set (size=" << noCaseCompare.size()
             << "):\n";
-  for (auto const &v : noCaseCompare)
+  for(auto const &v : noCaseCompare)
     std::cout << v << " ";
   std::cout << std::endl;
 }

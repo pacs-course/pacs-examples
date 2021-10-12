@@ -28,15 +28,15 @@ Quadrilateral::showMe(ostream &out) const
 
 namespace
 {
-struct LoadF
-{
-  LoadF()
+  struct LoadF
   {
-    polyFactory["Quadrilateral"] = []() {
-      return std::make_unique<Quadrilateral>();
-    };
-  }
-};
-const LoadF loadf; // local variable when created loads the stuff
-}
-}
+    LoadF()
+    {
+      polyFactory["Quadrilateral"] = []() {
+        return std::make_unique<Quadrilateral>();
+      };
+    }
+  };
+  const LoadF loadf; // local variable when created loads the stuff
+} // namespace
+} // namespace Geometry

@@ -7,8 +7,5 @@
 #include "ruleFactory.hpp"
 namespace apsc::QuadratureRuleFactory
 {
-  RulesFactory & MyFactory = RulesFactory::Factory::Instance();
+RulesFactory &MyFactory = RulesFactory::Factory::Instance();
 }
-
-
-

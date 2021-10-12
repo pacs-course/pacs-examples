@@ -37,27 +37,28 @@ main()
   clock.stop();
   std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
   unsigned int l = 999u;
-  while (true)
+  while(true)
     {
       unsigned long int ff;
       std::cout << "Give me the index of the Fibonacci number you want (0=exit)"
                 << std::endl;
       std::cin >> l;
-      if (l == 0ul)
+      if(l == 0ul)
         break;
       clock.start();
       ff = Fibonacci(l);
       clock.stop();
       std::cout << " f" << l << "= " << ff << '\n';
       std::cout << "Time to evaluate F(" << l
-                << ") with non constexpr argument and recursion:" << clock.wallTime()
-                << std::endl;
+                << ") with non constexpr argument and recursion:"
+                << clock.wallTime() << std::endl;
       clock.start();
       ff = FibonacciNR(l);
       clock.stop();
       std::cout << " f" << l << "= " << ff << '\n';
       std::cout << "Time to evaluate F(" << l
-                << ") with non recursive function:" << clock.wallTime() << std::endl;
+                << ") with non recursive function:" << clock.wallTime()
+                << std::endl;
     }
   return 0;
 }

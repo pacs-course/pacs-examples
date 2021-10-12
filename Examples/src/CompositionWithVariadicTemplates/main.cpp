@@ -5,7 +5,7 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
 int
-main ()
+main()
 {
   // to save typing the full qualified names
   using namespace Identifier;
@@ -24,17 +24,17 @@ main ()
 
   a[0] = 1;
   a[1] = 5;
-  b.setId (9);
-  c.setBcType (BcType::Dirichlet);
-  auto res = dot (a, b);
+  b.setId(9);
+  c.setBcType(BcType::Dirichlet);
+  auto res = dot(a, b);
   /// auto res2=dot(a,e); ERROR dimension differs!!!
-  Id ident (5);
+  Id ident(5);
   // I am passing the point and the constructor for the Id!
   std::array<double, 2> praw = std::array<double, 2>{0., 1.5};
   Poin2dWithId          pwi{praw, ident};
-  std::cout << pwi.getId () << std::endl;
+  std::cout << pwi.getId() << std::endl;
   Poin2dWithId z;
-  std::cout << z.getId () << std::endl;
-  Poin2dWithId K (std::array<double, 2>{0., 2.}, 3);
-  std::cout << K.getId () << std::endl;
+  std::cout << z.getId() << std::endl;
+  Poin2dWithId K(std::array<double, 2>{0., 2.}, 3);
+  std::cout << K.getId() << std::endl;
 }

@@ -13,15 +13,15 @@ main()
   // load the libraries (plugins)
   loadPolyFactory loadPlugins("plugins.txt");
   // Try the factory
-  while (true)
+  while(true)
     {
       string answer;
       cout << "Quadrilateral, Triangle, Square or END?" << endl;
       cin >> answer;
-      if (answer == "END")
+      if(answer == "END")
         break;
       auto where = polyFactory.find(answer);
-      if (where != polyFactory.end())
+      if(where != polyFactory.end())
         {
           // Second entry of *where is the builder function!
           // I dereference it and I call the () operator: I get a Polygon

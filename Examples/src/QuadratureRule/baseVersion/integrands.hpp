@@ -4,8 +4,8 @@
 /*! \file integrands.hpp
   \brief contains the integrand funcctions
  */
-const double pi=2*std::atan(1.0);
-double fsincos(double const &);
+const double pi = 2 * std::atan(1.0);
+double       fsincos(double const &);
 //! Exact solution for testing
-double exact(double const& a, const double & b);
+double exact(double const &a, const double &b);
 #endif

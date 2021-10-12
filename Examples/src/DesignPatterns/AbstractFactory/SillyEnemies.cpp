@@ -7,46 +7,48 @@
 #include "SillyEnemies.hpp"
 #include <iostream>
 
-void SillySuperMonster::speak()
+void
+SillySuperMonster::speak()
 {
-	std::cout<<" I am a Silly SuperMonster and I'll kill you (or at least I try)"<<std::endl;
+  std::cout
+    << " I am a Silly SuperMonster and I'll kill you (or at least I try)"
+    << std::endl;
 }
 
-
-
-void SillyMonster::speak()
+void
+SillyMonster::speak()
 {
-	std::cout<<" I am a Silly Monster and I'll kill you (or at least I try)"<<std::endl;
+  std::cout << " I am a Silly Monster and I'll kill you (or at least I try)"
+            << std::endl;
 }
 
-
-
-void SillySoldier::speak()
+void
+SillySoldier::speak()
 {
-	std::cout<<" I am a Silly Soldier and I'll kill you (or at least I try)"<<std::endl;
+  std::cout << " I am a Silly Soldier and I'll kill you (or at least I try)"
+            << std::endl;
 }
 
-std::unique_ptr<Enemy> EasyLevelEnemyFactory::MakeSuperMonster()
+std::unique_ptr<Enemy>
+EasyLevelEnemyFactory::MakeSuperMonster()
 {
-	return std::make_unique<SillySuperMonster>();
+  return std::make_unique<SillySuperMonster>();
 }
 
-
-
-std::unique_ptr<Enemy> EasyLevelEnemyFactory::MakeMonster()
+std::unique_ptr<Enemy>
+EasyLevelEnemyFactory::MakeMonster()
 {
-	return std::make_unique<SillyMonster>();
+  return std::make_unique<SillyMonster>();
 }
 
-
-
-std::unique_ptr<Enemy> EasyLevelEnemyFactory::MakeSoldier()
+std::unique_ptr<Enemy>
+EasyLevelEnemyFactory::MakeSoldier()
 {
-	return std::make_unique<SillySoldier>();
+  return std::make_unique<SillySoldier>();
 }
 
-std::unique_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory(){
+std::unique_ptr<AbstractEnemyFactory>
+BuildEasyLevelEnemyFactory()
+{
   return std::unique_ptr<AbstractEnemyFactory>(new EasyLevelEnemyFactory);
 }
-
-

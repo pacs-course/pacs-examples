@@ -16,33 +16,32 @@ main()
   double a = 0;
   double b = 3;
   {
-    auto res=apsc::bisection(fun,a,b,1.e-4);
-    std::cout<<"Bisection result "<<res<<std::endl;
+    auto res = apsc::bisection(fun, a, b, 1.e-4);
+    std::cout << "Bisection result " << res << std::endl;
   }
   {
-    auto res=apsc::chord(fun,a,b,1.e-4);
-    std::cout<<"Chord result "<<res<<std::endl;
+    auto res = apsc::chord(fun, a, b, 1.e-4);
+    std::cout << "Chord result " << res << std::endl;
   }
   {
-    b=-1;
-    auto [res,status] = apsc::secant(fun,a,b);
-    std::cout<<"Secant result "<<res<<" Status"<<status<<std::endl;
+    b = -1;
+    auto [res, status] = apsc::secant(fun, a, b);
+    std::cout << "Secant result " << res << " Status" << status << std::endl;
   }
   {
-    b=-1;
-    auto [x1,x2,s1] = apsc::bracketInterval(fun,a);
-    std::cout<<"Bracket found:"<<" a="<<x1<<" b="<<x2<<" with status="<<s1<<"\n";
-    auto res = apsc::bisection(fun,x1,x2,1.e-4);
-    std::cout<<"Bisection result "<<res<<std::endl;
+    b = -1;
+    auto [x1, x2, s1] = apsc::bracketInterval(fun, a);
+    std::cout << "Bracket found:"
+              << " a=" << x1 << " b=" << x2 << " with status=" << s1 << "\n";
+    auto res = apsc::bisection(fun, x1, x2, 1.e-4);
+    std::cout << "Bisection result " << res << std::endl;
   }
   {
-    b=-1;
-    auto [x1,x2,s1] = apsc::bracketInterval(fun,a);
-    std::cout<<"Bracket found:"<<" a="<<x1<<" b="<<x2<<" with status="<<s1<<"\n";
-    auto [res,status] = apsc::brent_search(fun,x1,x2,1.e-4);
-    std::cout<<"Brent result "<<res<<std::endl;
+    b = -1;
+    auto [x1, x2, s1] = apsc::bracketInterval(fun, a);
+    std::cout << "Bracket found:"
+              << " a=" << x1 << " b=" << x2 << " with status=" << s1 << "\n";
+    auto [res, status] = apsc::brent_search(fun, x1, x2, 1.e-4);
+    std::cout << "Brent result " << res << std::endl;
   }
-
-
-
 }

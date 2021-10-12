@@ -2,7 +2,7 @@
 #define WRAPPER_H
 #include <memory>
 /*! \file wrapper.hpp
-  
+
   The class in this file implements a generic wrapper (hadle) for the
   bridge pattern (i.e. to implement delegation by aggregation using a
   polymorphic hiararchy).  Its role is to ease the memory management of
@@ -10,20 +10,20 @@
   rule.  It is a modification of the class presented by Mark Joshi in his
   book "c++ dsign patterns and derivative pricing", Cambridge Press. This
   version mekes use of std::unique_ptr to ease the handling of the pointers.
-  
+
   We make an example to illustrate the problem. The general structure
   without the wrapper would be
 
   \verbatim
 
   A hierarchy of classes which implements a certain rule
-  
+
   class B;
-  
+
   class D1: public B ......
 
   A class that uses that rule by containement:
-  
+
   class UseB{
     public:
     UseB(B *, ..); The constructor takes a pointer (or a reference)
@@ -76,76 +76,90 @@
     \endverbatim
 
 
-    
+
     The interesting bit is that by use of implicit conversion and
     overloading of the dereferencing operators * and -> makes the use of
     the wrapper transparent!. The routine that instantiate useB require
     little if no change at all.
-    
+
 */
 
-
 /*! The handle (wrapper)
-  
+
 \pre The parameter class T must have a virtual method with the
 signature T * clone() const. Beware that T must be the base class and
 that the method clone () must be const
 */
-template< class T>
-class Wrapper
+template <class T> class Wrapper
 {
 public:
-
-  Wrapper():DataPtr(0){}
+  Wrapper() : DataPtr(0) {}
 
   /*! This constuctor takes a reference to an object of type T. It is
     essential for the working of the handle since it defines the
     conversion T& -> Wrapper<T> and thus the conversion from any reference
     to a class derived from T.
   */
-  Wrapper(const T& inner): DataPtr(inner.clone()){}
+  Wrapper(const T &inner) : DataPtr(inner.clone()) {}
   /*! Move constructor defaults
-    
+
    */
-  Wrapper(T&& inner)=default;
-  
+  Wrapper(T &&inner) = default;
+
   /*!
     The copy constructor grabs a clone of the object stored
     in the other handle
    */
-  Wrapper(const Wrapper<T>& original):
-    DataPtr((original.DataPtr.get() !=0) ? original.DataPtr->clone() : 0){}
-  
+  Wrapper(const Wrapper<T> &original)
+    : DataPtr((original.DataPtr.get() != 0) ? original.DataPtr->clone() : 0)
+  {}
+
   /*! Move constructor defaults
    */
-  Wrapper& operator=(Wrapper<T>&&)=default;
+  Wrapper &operator=(Wrapper<T> &&) = default;
   /*!
     The assignement operator grabs a clone of the object stored
     in the other handle and resets the current pointer (i.e. it frees
     the memory if required)
    */
-  Wrapper& operator=(const Wrapper<T>& original)
+  Wrapper &
+  operator=(const Wrapper<T> &original)
   {
-    if (this != &original)
-      DataPtr.reset((original.DataPtr.get() !=0) ? original.DataPtr->clone() : 0);
+    if(this != &original)
+      DataPtr.reset((original.DataPtr.get() != 0) ? original.DataPtr->clone()
+                                                  : 0);
     return *this;
   }
-  
-  //! auto_ptr<T> takes care of deleting the data. Nothing to be done!
-  ~Wrapper(){}
 
-  
+  //! auto_ptr<T> takes care of deleting the data. Nothing to be done!
+  ~Wrapper() {}
+
   //@{
   /*! The handle should work like a pointer to T*/
-  inline const T& operator*() const{return *DataPtr;}
-  inline T&       operator*(){ return *DataPtr;}
+  inline const T &
+  operator*() const
+  {
+    return *DataPtr;
+  }
+  inline T &
+  operator*()
+  {
+    return *DataPtr;
+  }
   //@}
   //@{
   /*! The handle should work like a pointer to T*/
-  inline const T* const operator->() const{ return DataPtr.get();}
-  inline T*             operator->(){ return DataPtr.get();}
+  inline const T *const
+  operator->() const
+  {
+    return DataPtr.get();
+  }
+  inline T *
+  operator->()
+  {
+    return DataPtr.get();
+  }
   //@}
-  
 
 private:
   std::unique_ptr<T> DataPtr;
@@ -166,5 +180,4 @@ private:
  * Mark Joshi makes no representations about the suitability of this
  * software for any purpose. It is provided "as is" without express or
  * implied warranty.
-*/
-
+ */
