@@ -1,0 +1,3 @@
+#/bin/bash
+CLANG_FORMAT_DIR=/usr/bin
+${CLANG_FORMAT_DIR}/clang-format --style=file --verbose -i $*
