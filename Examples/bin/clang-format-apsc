@@ -1,4 +1,0 @@
-#!/bin/bash
-# change next line
-CLANG_BINDIR=/usr/bin
-${CLANG_BINDIR}/clang-format --style=file $*
