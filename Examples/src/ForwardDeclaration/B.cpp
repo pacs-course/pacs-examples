@@ -4,4 +4,7 @@
 //! to show that the problem of forward declaration not being possible
 //! is not related to the definition of the method.
 double
-B::funny(){return M_a.f(*this);} 
+B::funny()
+{
+  return M_a.f(*this);
+}

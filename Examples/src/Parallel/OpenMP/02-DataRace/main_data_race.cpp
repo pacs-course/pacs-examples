@@ -12,7 +12,7 @@ main(int argc, char **argv)
   std::vector<int> b(n);
 
   // Serial version.
-  for (size_t i = 0; i < n; ++i)
+  for(size_t i = 0; i < n; ++i)
     {
       a[i] = i;
       b[i] = 2 * i;
@@ -20,7 +20,7 @@ main(int argc, char **argv)
 
   std::cout << "Serial:" << std::endl;
   int serial_checksum = 0;
-  for (size_t i = 0; i < n - 1; ++i)
+  for(size_t i = 0; i < n - 1; ++i)
     {
       a[i] = a[i + 1] + b[i];
 
@@ -32,7 +32,7 @@ main(int argc, char **argv)
     }
 
   // Parallel version.
-  for (size_t i = 0; i < n; ++i)
+  for(size_t i = 0; i < n; ++i)
     {
       a[i] = i;
       b[i] = 2 * i;
@@ -54,7 +54,7 @@ main(int argc, char **argv)
 #pragma omp barrier
 
 #pragma omp for // schedule(dynamic, 6)
-    for (size_t i = 0; i < n - 1; ++i)
+    for(size_t i = 0; i < n - 1; ++i)
       {
         /**
          * Possible data race: if another thread overwrites a[i + 1]
@@ -74,7 +74,7 @@ main(int argc, char **argv)
 
   int parallel_checksum = 0;
 #pragma omp parallel for reduction(+ : parallel_checksum)
-  for (size_t i = 0; i < n - 1; ++i)
+  for(size_t i = 0; i < n - 1; ++i)
     {
       parallel_checksum += a[i];
     }

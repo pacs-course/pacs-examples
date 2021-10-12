@@ -7,143 +7,148 @@
 
 #ifndef NONLINSYSSOLVER_NEWTON_HPP_
 #define NONLINSYSSOLVER_NEWTON_HPP_
-#include <memory>
-#include <limits>
-#include "NewtonMethodsSupport.hpp"
 #include "Jacobian.hpp"
+#include "NewtonMethodsSupport.hpp"
+#include <limits>
+#include <memory>
 
 namespace apsc
 {
-
-  //! This class implements Newton method
-  //!
-  //! It gets the definition of the main types from NonLinSolverTraits. This is a way to make sure that also
-  //! the Jacobian uses the same types, since it inherits form NonLinSolverTraits as well.
-  //!
-  //! I have chosen a particular construction. The non linear system to be solved is composed into the class as private member,
-  //! while I have a unique_ptr to the Jacobian base class. In this way also the jacobian is composed into the class. However,
-  //! As a result the class is not copy-constructible not copy-assignable. To have copy operators that perform deep copy I shoul
-  //! implement a clone() method in the Jacobian classes.
-  //!
-  class Newton: public apsc::NewtonTraits
+//! This class implements Newton method
+//!
+//! It gets the definition of the main types from NonLinSolverTraits. This is a
+//! way to make sure that also the Jacobian uses the same types, since it
+//! inherits form NonLinSolverTraits as well.
+//!
+//! I have chosen a particular construction. The non linear system to be solved
+//! is composed into the class as private member, while I have a unique_ptr to
+//! the Jacobian base class. In this way also the jacobian is composed into the
+//! class. However, As a result the class is not copy-constructible not
+//! copy-assignable. To have copy operators that perform deep copy I shoul
+//! implement a clone() method in the Jacobian classes.
+//!
+class Newton : public apsc::NewtonTraits
+{
+public:
+  Newton() = default;
+  //! I can pass options and jacobian. This is usefule for classes that store a
+  //! Newton object
+  Newton(std::unique_ptr<JacobianBase> j, NewtonOptions opt = NewtonOptions{})
+    : Jacobian_ptr{std::move(j)}, options{opt} {};
+  //! This class not meant to be copy constructible
+  //! The implementation of copy constructor would require a mechanism
+  //! for the deep copy of the Jacobian, which is passed as a unique pointer
+  Newton(Newton const &) = delete;
+  //! This class not meant to be copy assignable.
+  Newton &operator=(Newton const &) = delete;
+  //! It can be moved constructed
+  Newton(Newton &&n) = default;
+  //! It can be move assigned
+  Newton &operator=(Newton &&) = default;
+  //! This constructor accepts a non linear system and a unique pointer to the
+  //! Jacobian base class
+  template <class NLS>
+  Newton(NLS &&nls, std::unique_ptr<JacobianBase> j,
+         NewtonOptions opt = NewtonOptions{})
+    : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(std::move(j)),
+      options(opt)
   {
-  public:
-    Newton()=default;
-    //! I can pass options and jacobian. This is usefule for classes that store a Newton object
-    Newton(std::unique_ptr<JacobianBase> j,NewtonOptions opt=NewtonOptions{}): Jacobian_ptr{std::move(j)},
-        options{opt} {};
-    //!This class not meant to be copy constructible
-    //! The implementation of copy constructor would require a mechanism
-    //! for the deep copy of the Jacobian, which is passed as a unique pointer
-    Newton(Newton const &)=delete;
-    //!This class not meant to be copy assignable.
-    Newton & operator=(Newton const &)=delete;
-    //! It can be moved constructed
-    Newton(Newton&& n)=default;
-    //! It can be move assigned
-    Newton & operator=(Newton&&)=default;
-    //! This constructor accepts a non linear system and a unique pointer to the Jacobian base class
-    template<class NLS>
-    Newton(NLS&& nls, std::unique_ptr<JacobianBase> j,NewtonOptions opt=NewtonOptions{}):
-    nonLinSys(std::forward<NLS>(nls)),Jacobian_ptr(std::move(j)),options(opt)
-    {
-      // I need to connect the Jacobian to the linear system
-      Jacobian_ptr->setNonLinSys(&nonLinSys);
-    }
-    //! This constructor accepts a non linear system and a concrete Jacobian object
-    template<class NLS, class JAC>
-    Newton(NLS&& nls, JAC const j,NewtonOptions opt=NewtonOptions{}):
-    nonLinSys(std::forward<NLS>(nls)),Jacobian_ptr(std::make_unique<JAC>(j)),
-    options(opt)
-        {
-      // I need to connect the Jacobian to the non linear system
-      Jacobian_ptr->setNonLinSys(&nonLinSys);
-        }
+    // I need to connect the Jacobian to the linear system
+    Jacobian_ptr->setNonLinSys(&nonLinSys);
+  }
+  //! This constructor accepts a non linear system and a concrete Jacobian
+  //! object
+  template <class NLS, class JAC>
+  Newton(NLS &&nls, JAC const j, NewtonOptions opt = NewtonOptions{})
+    : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(std::make_unique<JAC>(j)),
+      options(opt)
+  {
+    // I need to connect the Jacobian to the non linear system
+    Jacobian_ptr->setNonLinSys(&nonLinSys);
+  }
 
-    //! You can change the Jacobian. Note that it is moved
-    //! You have to explicitly move if it is not a rvalue!
-    //! For instance:
-    //! \code
-    //!   myNewton.setJacobianPtr(std::move(passedPointer));
-    //! \endcode
-    void
-    setJacobianPtr (std::unique_ptr<JacobianBase> jacobianPtr)
-    {
-      Jacobian_ptr=std::move(jacobianPtr);
-      // Connect Jacobian to the non-linear system
-      Jacobian_ptr->setNonLinSys(&nonLinSys);
-      // Reset the state so I can reuse the object
-      this->state=NewtonState{};
-    }
-    //! You can get the options
-    const NewtonOptions&
-    getOptions () const
-    {
-      return options;
-    }
-    //! You can set options
-    void
-    setOptions (const NewtonOptions& options)
-    {
-      this->options = options;
-      this->state=NewtonState{};
+  //! You can change the Jacobian. Note that it is moved
+  //! You have to explicitly move if it is not a rvalue!
+  //! For instance:
+  //! \code
+  //!   myNewton.setJacobianPtr(std::move(passedPointer));
+  //! \endcode
+  void
+  setJacobianPtr(std::unique_ptr<JacobianBase> jacobianPtr)
+  {
+    Jacobian_ptr = std::move(jacobianPtr);
+    // Connect Jacobian to the non-linear system
+    Jacobian_ptr->setNonLinSys(&nonLinSys);
+    // Reset the state so I can reuse the object
+    this->state = NewtonState{};
+  }
+  //! You can get the options
+  const NewtonOptions &
+  getOptions() const
+  {
+    return options;
+  }
+  //! You can set options
+  void
+  setOptions(const NewtonOptions &options)
+  {
+    this->options = options;
+    this->state = NewtonState{};
+  }
 
-    }
+  //! Get a copy of the non linear system
+  NonLinearSystemType
+  getNonLinSys() const
+  {
+    return nonLinSys;
+  }
+  //! Update the non linear system
+  template <class NLS>
+  void
+  setNonLinSys(NLS &&nonLinSystem)
+  {
+    this->nonLinSys = std::forward<NLS>(nonLinSystem);
+    this->state = NewtonState{};
+    Jacobian_ptr->setNonLinSys(&nonLinSys);
+  }
 
-    //! Get a copy of the non linear system
-    NonLinearSystemType
-    getNonLinSys () const
-    {
-      return nonLinSys;
-    }
-    //! Update the non linear system
-    template<class NLS>
-    void
-    setNonLinSys (NLS&& nonLinSystem)
-    {
-      this->nonLinSys = std::forward<NLS>(nonLinSystem);
-      this->state=NewtonState{};
-      Jacobian_ptr->setNonLinSys(&nonLinSys);
-    }
+  apsc::NewtonResult solve(ArgumentType const &x0);
+  virtual ~Newton() = default;
 
-    apsc::NewtonResult solve(ArgumentType const & x0);
-    virtual ~Newton()=default;
-  protected:
-    virtual void callback()const {};
-    //! Internal structure giving the state
-    //! Used for callback
-    struct NewtonState
-    {
-      //! The last computed solution
-      NewtonTraits::ReturnType currentSolution;
-      //! The current number of iterations
-      unsigned int currentIteration{0u};
-      //! The current residualNorm (set initially to a big number)
-      double currentResidualNorm=std::numeric_limits<double>::max();
-      //! current step length (set initially to a big number)
-      double currentStepLength=std::numeric_limits<double>::max();
-        };
-
-    NonLinearSystemType nonLinSys;
-    std::unique_ptr<JacobianBase> Jacobian_ptr;
-    NewtonOptions options;
-    NewtonState state;
+protected:
+  virtual void callback() const {};
+  //! Internal structure giving the state
+  //! Used for callback
+  struct NewtonState
+  {
+    //! The last computed solution
+    NewtonTraits::ReturnType currentSolution;
+    //! The current number of iterations
+    unsigned int currentIteration{0u};
+    //! The current residualNorm (set initially to a big number)
+    double currentResidualNorm = std::numeric_limits<double>::max();
+    //! current step length (set initially to a big number)
+    double currentStepLength = std::numeric_limits<double>::max();
   };
 
-  //! An example of  use of callback()
-  //!
-  //! A verbose version of Newton
-  //!
-  struct NewtonVerbose: public Newton
-  {
-    //! Inherit constructors
-    using Newton::Newton;
-    //! Specialization of callback()
-    void callback() const override;
-  };
+  NonLinearSystemType           nonLinSys;
+  std::unique_ptr<JacobianBase> Jacobian_ptr;
+  NewtonOptions                 options;
+  NewtonState                   state;
 };
 
-
+//! An example of  use of callback()
+//!
+//! A verbose version of Newton
+//!
+struct NewtonVerbose : public Newton
+{
+  //! Inherit constructors
+  using Newton::Newton;
+  //! Specialization of callback()
+  void callback() const override;
+};
+}; // namespace apsc
 
 #endif /* NONLINSYSSOLVER_NEWTON_HPP_ */
 /*

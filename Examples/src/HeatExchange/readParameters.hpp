@@ -7,5 +7,5 @@
   @param filename The getopot file with the new parameter values
   @param verbose Prints some information on the parameters
  */
-parameters readParameters(std::string const & filename, bool verbose=false);
+parameters readParameters(std::string const &filename, bool verbose = false);
 #endif

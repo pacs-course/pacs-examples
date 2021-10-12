@@ -37,14 +37,14 @@ Square::diagLen() const
 
 namespace
 {
-struct LoadF
-{
-  LoadF()
+  struct LoadF
   {
-    polyFactory["Triangle"] = []() { return std::make_unique<Triangle>(); };
-    polyFactory["Square"] = []() { return std::make_unique<Square>(); };
-  }
-};
-const LoadF loadf; // local variable
-}
-}
+    LoadF()
+    {
+      polyFactory["Triangle"] = []() { return std::make_unique<Triangle>(); };
+      polyFactory["Square"] = []() { return std::make_unique<Square>(); };
+    }
+  };
+  const LoadF loadf; // local variable
+} // namespace
+} // namespace Geometry

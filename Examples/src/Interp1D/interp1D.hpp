@@ -55,54 +55,56 @@ namespace apsc
  * @param extractKey The actual functor for extraction of key
  * @param extractValue The actual functor for extraction of values
  * @param comp The comparison operator for keys (defaulted to std::less<Key>()
- * @return the value found in correspondence of keyVal. Type is automatically deduced.
+ * @return the value found in correspondence of keyVal. Type is automatically
+ * deduced.
  * @pre I need to have at least two interpolation nodes.
  * @pre Interpolation nodes must be distinct and sorted.
  * @pre Iterators must be (at least) bidirectional.
- * @throw a runtime standard exception if I do not have at least 2 interpolation nodes
+ * @throw a runtime standard exception if I do not have at least 2 interpolation
+ * nodes
  */
 template <typename RAIterator, typename Key, typename ExtractKey,
           typename ExtractValue, typename CompareKey = std::less<Key>>
 auto
-interp1D (RAIterator const &begin, RAIterator const &end, Key const &keyVal,
-          ExtractKey const &extractKey, ExtractValue const &extractValue,
-          CompareKey const &comp = std::less<Key> ())
+interp1D(RAIterator const &begin, RAIterator const &end, Key const &keyVal,
+         ExtractKey const &extractKey, ExtractValue const &extractValue,
+         CompareKey const &comp = std::less<Key>())
 {
   // I avoid users using wrong iterators
   // I nice use of iterator_traits and iterator_tags
   using category = typename std::iterator_traits<RAIterator>::iterator_category;
-  static_assert (std::is_same_v<category, std::bidirectional_iterator_tag> ||
-                   std::is_same_v<category, std::random_access_iterator_tag>,
-                 "Iterators must be (at least) bidirectional");
+  static_assert(std::is_same_v<category, std::bidirectional_iterator_tag> ||
+                  std::is_same_v<category, std::random_access_iterator_tag>,
+                "Iterators must be (at least) bidirectional");
   // I need at least two point for interpolating anything. This checks also that
   // end is after begin!
-  if (std::distance (begin, end) < 1)
-    throw std::runtime_error (
+  if(std::distance(begin, end) < 1)
+    throw std::runtime_error(
       "Interp1D: I need at least 2 points to interpolate!");
 
   RAIterator a{begin};
   RAIterator b{end};
   // bisection
-  for (auto dis = std::distance (a, b); dis > 1;)
+  for(auto dis = std::distance(a, b); dis > 1;)
     {
-      RAIterator c = std::next (a, dis / 2); // midpoint
-      if (comp (keyVal, extractKey (*c)))    // keyVal on the left of c
+      RAIterator c = std::next(a, dis / 2); // midpoint
+      if(comp(keyVal, extractKey(*c)))      // keyVal on the left of c
         b = c;
       else // keyVal on the right of c or on c
         a = c;
-      dis = std::distance (a, b); // recompute distance
+      dis = std::distance(a, b); // recompute distance
     }
   //! interval found
-  b = std::next (a, 1); // get other end of interval
-  if (b == end)         // complex situation I need to go back of 1
+  b = std::next(a, 1); // get other end of interval
+  if(b == end)         // complex situation I need to go back of 1
     {
       b = a;
-      std::advance (a, -1); // here I need bi-directionality!
+      std::advance(a, -1); // here I need bi-directionality!
     }
-  auto valueLeft = extractValue (*a);
-  Key  keyLeft = extractKey (*a);
-  auto valueRight = extractValue (*b);
-  Key  keyRight = extractKey (*b);
+  auto valueLeft = extractValue(*a);
+  Key  keyLeft = extractKey(*a);
+  auto valueRight = extractValue(*b);
+  Key  keyRight = extractKey(*b);
   auto len = keyRight - keyLeft;
   // I assume no nodes are repeated
   auto coeffRight = (keyVal - keyLeft) / len;
@@ -110,6 +112,6 @@ interp1D (RAIterator const &begin, RAIterator const &end, Key const &keyVal,
   return valueLeft * coeffLeft + valueRight * coeffRight;
 }
 
-}
+} // namespace apsc
 
 #endif /* EXAMPLES_SRC_INTERP1D_INTERP1D_HPP_ */

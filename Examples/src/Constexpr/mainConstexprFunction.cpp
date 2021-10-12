@@ -1,7 +1,7 @@
 #include "twoFunctions.hpp"
-int main()
+int
+main()
 {
-    constexpr double a=5.0;
-    auto b = cubeconst(a);
+  constexpr double a = 5.0;
+  auto             b = cubeconst(a);
 }
-

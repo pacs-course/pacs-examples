@@ -25,48 +25,48 @@ namespace LinearAlgebra
 {
 template <class Matrix, class Vector, class Preconditioner>
 int
-BiCG (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
-      int &max_iter, typename Vector::Scalar &tol)
+BiCG(const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
+     int &max_iter, typename Vector::Scalar &tol)
 {
   using LinearAlgebra::dot;
   using LinearAlgebra::norm;
   using Real = typename Vector::Scalar;
 
   Real   resid;
-  Real   rho_1 (0.), rho_2 (0.), alpha (0.), beta (0.);
+  Real   rho_1(0.), rho_2(0.), alpha(0.), beta(0.);
   Vector z, ztilde, p, ptilde, q, qtilde;
 
-  Real   normb = norm (b);
+  Real   normb = norm(b);
   Vector r = b - A * x;
   Vector rtilde = r;
 
   // I need left preconditioner.
 
-  Matrix         At = A.transpose ();
-  Preconditioner Mt (At);
+  Matrix         At = A.transpose();
+  Preconditioner Mt(At);
 
-  if (normb == 0.0)
+  if(normb == 0.0)
     normb = 1;
 
-  if ((resid = norm (r) / normb) <= tol)
+  if((resid = norm(r) / normb) <= tol)
     {
       tol = resid;
       max_iter = 0;
       return 0;
     }
 
-  for (int i = 1; i <= max_iter; i++)
+  for(int i = 1; i <= max_iter; i++)
     {
-      z = M.solve (r);
-      ztilde = Mt.solve (rtilde);
-      rho_1 = dot (z, rtilde);
-      if (rho_1 == 0)
+      z = M.solve(r);
+      ztilde = Mt.solve(rtilde);
+      rho_1 = dot(z, rtilde);
+      if(rho_1 == 0)
         {
-          tol = norm (r) / normb;
+          tol = norm(r) / normb;
           max_iter = i;
           return 2;
         }
-      if (i == 1)
+      if(i == 1)
         {
           p = z;
           ptilde = ztilde;
@@ -79,13 +79,13 @@ BiCG (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
         }
       q = A * p;
       qtilde = At * ptilde;
-      alpha = rho_1 / dot (ptilde, q);
+      alpha = rho_1 / dot(ptilde, q);
       x += alpha * p;
       r -= alpha * q;
       rtilde -= alpha * qtilde;
 
       rho_2 = rho_1;
-      if ((resid = norm (r) / normb) < tol)
+      if((resid = norm(r) / normb) < tol)
         {
           tol = resid;
           max_iter = i;
@@ -96,5 +96,5 @@ BiCG (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   tol = resid;
   return 1;
 }
-} // end namespace
+} // namespace LinearAlgebra
 #endif

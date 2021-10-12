@@ -6,9 +6,10 @@
 
 class B; // Try to take it out
 // This is not good, try it
-// #include "B.hpp" 
+// #include "B.hpp"
 //! A class with a method that takes a reference to B
-class A{
+class A
+{
 public:
   //! Here the compiler needs only an incomplete (forward) declaration
   //! Beware: Cannot have definition here! In the definition I use

@@ -21,32 +21,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #ifndef _CHRONO_H_INCLUDE_
 #define _CHRONO_H_INCLUDE_
-#include<chrono>
-#include<iosfwd>
+#include <chrono>
+#include <iosfwd>
 
-namespace Timings{
+namespace Timings
+{
+class Chrono
+{
+public:
+  using MyClock = std::chrono::high_resolution_clock;
+  using MyTimePoint = std::chrono::time_point<MyClock>;
 
-  
-  class Chrono
-  {
-  public:
-    using MyClock=std::chrono::high_resolution_clock;
-    using MyTimePoint=std::chrono::time_point<MyClock>;
-  private:
-    MyTimePoint startTime{MyClock::now()};
-    MyTimePoint stopTime{MyClock::now()};
-  public:
-    //! Outputs time from last start and stop
-    friend std::ostream & operator <<(std::ostream &,Chrono const &);
-    //! Starts/reset  counting time
-    void start();
-    //! Stops counting time
-    void stop();
-    //!Outputs wall time between last start and stop (in microseconds)
-    double wallTime() const;
-    //!Outputs wall time between last start and now! (in microseconds)
-    double wallTimeNow() const;
-  };
-}
+private:
+  MyTimePoint startTime{MyClock::now()};
+  MyTimePoint stopTime{MyClock::now()};
+
+public:
+  //! Outputs time from last start and stop
+  friend std::ostream &operator<<(std::ostream &, Chrono const &);
+  //! Starts/reset  counting time
+  void start();
+  //! Stops counting time
+  void stop();
+  //! Outputs wall time between last start and stop (in microseconds)
+  double wallTime() const;
+  //! Outputs wall time between last start and now! (in microseconds)
+  double wallTimeNow() const;
+};
+} // namespace Timings
 
 #endif

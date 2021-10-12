@@ -35,6 +35,6 @@ private:
   std::vector<void *> loadedLibs;
 };
 
-}
+} // namespace Geometry
 
 #endif /* EXAMPLES_SRC_FACTORYPLUGIN_LOADPOLYFACTORY_HPP_ */

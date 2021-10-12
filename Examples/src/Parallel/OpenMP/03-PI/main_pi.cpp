@@ -19,7 +19,7 @@ main(int argc, char **argv)
 
   double x;
   double sum = 0.0;
-  double pi  = 0.0;
+  double pi = 0.0;
 
 /**
  * We declare x as private, i.e. each thread keeps its own copy.
@@ -46,7 +46,7 @@ main(int argc, char **argv)
  * for a description of all possible scheduling types.
  */
 #pragma omp for schedule(static)
-    for (unsigned int i = 0; i < n; ++i)
+    for(unsigned int i = 0; i < n; ++i)
       {
         x = h * (i + 0.5);
         sum += 4.0 / (1.0 + x * x);

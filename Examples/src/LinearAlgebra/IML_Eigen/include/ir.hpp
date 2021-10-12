@@ -23,8 +23,8 @@ namespace LinearAlgebra
 {
 template <class Matrix, class Vector, class Preconditioner>
 int
-IR (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
-    int &max_iter, typename Vector::Scalar &tol)
+IR(const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
+   int &max_iter, typename Vector::Scalar &tol)
 {
   using LinearAlgebra::dot;
   using LinearAlgebra::norm;
@@ -33,26 +33,26 @@ IR (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   Real   resid;
   Vector z;
 
-  Real   normb = norm (b);
+  Real   normb = norm(b);
   Vector r = b - A * x;
 
-  if (normb == 0.0)
+  if(normb == 0.0)
     normb = 1;
 
-  if ((resid = norm (r) / normb) <= tol)
+  if((resid = norm(r) / normb) <= tol)
     {
       tol = resid;
       max_iter = 0;
       return 0;
     }
 
-  for (int i = 1; i <= max_iter; i++)
+  for(int i = 1; i <= max_iter; i++)
     {
-      z = M.solve (r);
+      z = M.solve(r);
       x += z;
       r = b - A * x;
 
-      if ((resid = norm (r) / normb) <= tol)
+      if((resid = norm(r) / normb) <= tol)
         {
           tol = resid;
           max_iter = i;
@@ -63,5 +63,5 @@ IR (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   tol = resid;
   return 1;
 }
-} // end nmespace
+} // namespace LinearAlgebra
 #endif

@@ -18,14 +18,16 @@
  * @return The vector
  *
  */
-template<class T, class ...Args>
-std::vector<T,Args...> & operator << (std::vector<T,Args...> & v, T const & i)
+template <class T, class... Args>
+std::vector<T, Args...> &
+operator<<(std::vector<T, Args...> &v, T const &i)
 {
   v.emplace_back(i);
   return v;
 }
 /*!
- * Overloading the comma operator if you want the "Eigen style" way of filling vectors
+ * Overloading the comma operator if you want the "Eigen style" way of filling
+ * vectors
  *
  * @tparam T the type stored in the vector (automatically deduced)
  * @tparam Args Additional vector arguments (automatically deduced)
@@ -39,6 +41,5 @@ std::vector<T,Args...> & operator , (std::vector<T,Args...> & v, T const & i)
   v.emplace_back(i);
   return v;
 };
-
 
 #endif /* EXAMPLES_SRC_READINGVECTORS_READINGVECTOR_HPP_ */

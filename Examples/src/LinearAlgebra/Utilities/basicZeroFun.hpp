@@ -8,12 +8,12 @@
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICZEROFUN_HPP_
 #define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICZEROFUN_HPP_
 #include "extendedAssert.hpp"
+#include <algorithm>
 #include <cmath>
+#include <complex>
 #include <iostream>
 #include <limits>
 #include <tuple>
-#include <algorithm>
-#include <complex>
 namespace apsc
 {
 /*!
@@ -32,7 +32,7 @@ namespace apsc
 template <class Function>
 double
 regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
-      double tola = 1.e-10)
+            double tola = 1.e-10)
 {
   double ya = f(a);
   double yb = f(b);
@@ -43,7 +43,7 @@ regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
   double           c{a};
   double           incr = std::numeric_limits<double>::max();
   constexpr double small = 10.0 * std::numeric_limits<double>::epsilon();
-  while (std::abs(yc) > tol * resid0 + tola && incr > small)
+  while(std::abs(yc) > tol * resid0 + tola && incr > small)
     {
       double incra = -ya / (yb - ya);
       double incrb = 1. - incra;
@@ -52,7 +52,7 @@ regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
       c = a + incra * delta;
       // std::cout << c << std::endl;
       yc = f(c);
-      if (yc * ya < 0.0)
+      if(yc * ya < 0.0)
         {
           yb = yc;
           b = c;
@@ -88,7 +88,7 @@ regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
  */
 template <class Function>
 double
-bisection(Function const &f, double a, double b, double tol=1.e-5)
+bisection(Function const &f, double a, double b, double tol = 1.e-5)
 {
   double ya = f(a);
   double yb = f(b);
@@ -96,11 +96,11 @@ bisection(Function const &f, double a, double b, double tol=1.e-5)
   SURE_ASSERT(ya * yb < 0, "Function must change sign at the two end values");
   double yc{ya};
   double c{a};
-  while (std::abs(delta) > 2 * tol)
+  while(std::abs(delta) > 2 * tol)
     {
       c = (a + b) / 2.;
       yc = f(c);
-      if (yc * ya < 0.0)
+      if(yc * ya < 0.0)
         {
           yb = yc;
           b = c;
@@ -112,7 +112,7 @@ bisection(Function const &f, double a, double b, double tol=1.e-5)
         }
       delta = b - a;
     }
-  return (a+b)/2.;
+  return (a + b) / 2.;
 }
 /*!
  * Computes the zero of a scalar function with the method of the secant
@@ -139,17 +139,17 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
   double       c{a};
   unsigned int iter{0u};
   double       check = tol * resid + tola;
-  bool goOn=resid>check;
-  while (goOn && iter < maxIt)
+  bool         goOn = resid > check;
+  while(goOn && iter < maxIt)
     {
-      goOn=resid>check;
+      goOn = resid > check;
       ++iter;
       double yb = f(b);
       c = a - ya * (b - a) / (yb - ya);
       double yc = f(c);
       resid = std::abs(yc);
       ya = yc;
-      a  = c;
+      a = c;
     }
 
   return std::make_tuple(c, (iter < maxIt));
@@ -177,29 +177,29 @@ bracketInterval(Function const &f, double x1, double h = 0.01,
                 unsigned int maxIter = 200)
 {
   constexpr double expandFactor = 1.5;
-  h=std::abs(h);
-  //auto          hinit = h;
-  auto          direction=1.0;
-  auto             x2 = x1 + h;
-  auto             y1 = f(x1);
-  auto             y2 = f(x2);
-  unsigned int     iter = 0u;
+  h = std::abs(h);
+  // auto          hinit = h;
+  auto         direction = 1.0;
+  auto         x2 = x1 + h;
+  auto         y1 = f(x1);
+  auto         y2 = f(x2);
+  unsigned int iter = 0u;
   // get initial decrement direction
-  while ((y1 * y2 > 0) && (iter < maxIter))
+  while((y1 * y2 > 0) && (iter < maxIter))
     {
       ++iter;
-      if (std::abs(y2) > std::abs(y1))
+      if(std::abs(y2) > std::abs(y1))
         {
-          std::swap(y1,y2);
-          std::swap(x1,x2);
+          std::swap(y1, y2);
+          std::swap(x1, x2);
           // change direction
         }
-      direction=(y2>=0&&y1>=0)?-1.0:1.0;
+      direction = (y2 >= 0 && y1 >= 0) ? -1.0 : 1.0;
       x1 = x2;
       y1 = y2;
-      x2 +=direction*h;
+      x2 += direction * h;
       y2 = f(x2);
-      h*=expandFactor;
+      h *= expandFactor;
     }
   return std::make_tuple(x1, x2, iter <= maxIter);
 }
@@ -219,90 +219,95 @@ bracketInterval(Function const &f, double x1, double h = 0.01,
  * @note It the interval brackets the zero convergence should be guaranteed.
  */
 template <class Function>
-std::tuple<double,bool> brent_search(const Function & f, double a, double b, double tol=1.e-5, unsigned maxIter=200)
+std::tuple<double, bool>
+brent_search(const Function &f, double a, double b, double tol = 1.e-5,
+             unsigned maxIter = 200)
 {
   auto ya = f(a);
   auto yb = f(b);
   // First check.
-  if ((ya*yb) >= 0.0)
+  if((ya * yb) >= 0.0)
     {
-      if (ya==0.)
-        return {a,true};
-      else if (yb==0.)
-        return {b,true};
+      if(ya == 0.)
+        return {a, true};
+      else if(yb == 0.)
+        return {b, true};
       else
-        return {a,false}; // precondition not met
+        return {a, false}; // precondition not met
     };
   //
-  if(std::abs(ya)<std::abs(yb))
+  if(std::abs(ya) < std::abs(yb))
     {
-      std::swap(a,b);
-      std::swap(ya,yb);
+      std::swap(a, b);
+      std::swap(ya, yb);
     }
   //
-    auto c  = a;
-    auto d  = c;
-    auto yc = ya;
-    bool mflag{true};
-    auto   s=b;
-    auto   ys=yb;
-    unsigned iter{0u};
-    do
-      {
-//
-        if(ya != yc and yb != yc)
-          {
-            auto yab = ya-yb;
-            auto yac = ya-yc;
-            auto ycb = yc-yb;
-            // inverse quadratic interpolation
-            s = a*ya*yc/(yab*yac)+ b*ya*yc/(yab*ycb)-c*ya*yb/(yac*ycb);
-          }
-        else
-          {
-            // secant
-            s = b -yb*(b-a)/(yb-ya);
-          }
-//
-        if ( ( (s-3*(a+b)/4)*(s-b)>=0 ) or                           // condition 1
-             ( mflag  and (std::abs(s-b)>=0.5*std::abs(b-c) ) ) or  // condition 2
-             ( !mflag and (std::abs(s-b)>= 0.5*std::abs(c-d)) ) or // condition 3
-             (  mflag and (std::abs(b-c) < tol) ) or               // condition 4
-             ( !mflag and (std::abs(c-d) <tol) )                 // condition 5
-            )
-          {
-            mflag=true;
-            s = 0.5*(a+b); // back to bisection step
-            }
-        else
-          mflag=false;
- //
-        ys = f(s);
-        d  = c;
-        c  = b;
-        yc = yb;
-//
-        if( ya*ys <0 )
-          {
-            b  = s;
-            yb = ys;
-          }
-        else
-          {
-            a  = s;
-            ya = ys;
-          }
-//
-        if(std::abs(ya) < std::abs(yb))
-          {
-            std::swap(a,b  );
-            std::swap(ya,yb);
-          }
-//
+  auto     c = a;
+  auto     d = c;
+  auto     yc = ya;
+  bool     mflag{true};
+  auto     s = b;
+  auto     ys = yb;
+  unsigned iter{0u};
+  do
+    {
+      //
+      if(ya != yc and yb != yc)
+        {
+          auto yab = ya - yb;
+          auto yac = ya - yc;
+          auto ycb = yc - yb;
+          // inverse quadratic interpolation
+          s = a * ya * yc / (yab * yac) + b * ya * yc / (yab * ycb) -
+              c * ya * yb / (yac * ycb);
         }
-    while (ys!=0. && std::abs(b-a)>tol && iter<maxIter);
-    return {s,iter<maxIter};
+      else
+        {
+          // secant
+          s = b - yb * (b - a) / (yb - ya);
+        }
+      //
+      if(((s - 3 * (a + b) / 4) * (s - b) >= 0) or // condition 1
+         (mflag and
+          (std::abs(s - b) >= 0.5 * std::abs(b - c))) or // condition 2
+         (!mflag and
+          (std::abs(s - b) >= 0.5 * std::abs(c - d))) or // condition 3
+         (mflag and (std::abs(b - c) < tol)) or          // condition 4
+         (!mflag and (std::abs(c - d) < tol))            // condition 5
+      )
+        {
+          mflag = true;
+          s = 0.5 * (a + b); // back to bisection step
+        }
+      else
+        mflag = false;
+      //
+      ys = f(s);
+      d = c;
+      c = b;
+      yc = yb;
+      //
+      if(ya * ys < 0)
+        {
+          b = s;
+          yb = ys;
+        }
+      else
+        {
+          a = s;
+          ya = ys;
+        }
+      //
+      if(std::abs(ya) < std::abs(yb))
+        {
+          std::swap(a, b);
+          std::swap(ya, yb);
+        }
+      //
+    }
+  while(ys != 0. && std::abs(b - a) > tol && iter < maxIter);
+  return {s, iter < maxIter};
 }
-} // end namespace
+} // namespace apsc
 
 #endif /* EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICZEROFUN_HPP_ */

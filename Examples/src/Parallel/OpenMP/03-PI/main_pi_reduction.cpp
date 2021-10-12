@@ -22,7 +22,7 @@ main(int argc, char **argv)
    * thread is summed by the end of the parallel block.
    */
 #pragma omp parallel for schedule(static), private(x), reduction(+ : sum)
-  for (unsigned int i = 0; i < n; ++i)
+  for(unsigned int i = 0; i < n; ++i)
     {
       x = h * (i + 0.5);
       sum += 4.0 / (1.0 + x * x);

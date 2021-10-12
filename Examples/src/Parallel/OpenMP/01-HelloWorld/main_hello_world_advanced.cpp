@@ -27,7 +27,6 @@ main(int argc, char **argv)
 #pragma omp critical
     std::cout << "Hello World from thread " << thread_id << "!" << std::endl;
 
-
 // Let's wait until all threads reach the following line.
 #pragma omp barrier
 

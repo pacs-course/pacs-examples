@@ -6,23 +6,20 @@
  */
 #include "AbstractEnemyFactory.hpp"
 
-
-std::unique_ptr<Enemy> AbstractEnemyFactory::MakeSoldier()
+std::unique_ptr<Enemy>
+AbstractEnemyFactory::MakeSoldier()
 {
   return std::unique_ptr<Enemy>();
 }
 
-
-
-std::unique_ptr<Enemy> AbstractEnemyFactory::MakeMonster()
+std::unique_ptr<Enemy>
+AbstractEnemyFactory::MakeMonster()
 {
   return std::unique_ptr<Enemy>();
 }
 
-
-
-std::unique_ptr<Enemy> AbstractEnemyFactory::MakeSuperMonster()
+std::unique_ptr<Enemy>
+AbstractEnemyFactory::MakeSuperMonster()
 {
   return std::unique_ptr<Enemy>();
 }
-

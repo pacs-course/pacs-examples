@@ -56,4 +56,4 @@ Polygon::scale(double const &xfactor, double const &yfactor)
   // to be implemented
 }
 
-}
+} // namespace Geometry

@@ -24,6 +24,6 @@ public:
   // other stuff in the future...
 };
 
-}
+} // namespace Geometry
 
 #endif /* EXAMPLES_SRC_FACTORYPLUGIN_QUADRILATERAL_HPP_ */

@@ -9,12 +9,13 @@
 #define ABSTRACTENEMYFACTORY_HPP_
 #include "enemies.hpp"
 #include <memory>
-class AbstractEnemyFactory{
+class AbstractEnemyFactory
+{
 public:
-	 virtual std::unique_ptr<Enemy> MakeSoldier()=0;
-	 virtual std::unique_ptr<Enemy> MakeMonster()=0;
-	 virtual std::unique_ptr<Enemy> MakeSuperMonster()=0;
-	 virtual ~AbstractEnemyFactory()=default;
+  virtual std::unique_ptr<Enemy> MakeSoldier() = 0;
+  virtual std::unique_ptr<Enemy> MakeMonster() = 0;
+  virtual std::unique_ptr<Enemy> MakeSuperMonster() = 0;
+  virtual ~AbstractEnemyFactory() = default;
 };
 
 typedef std::unique_ptr<AbstractEnemyFactory> (*BuildEnemyFactory)();

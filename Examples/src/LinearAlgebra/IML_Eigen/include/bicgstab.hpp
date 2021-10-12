@@ -26,72 +26,72 @@ namespace LinearAlgebra
 {
 template <class Matrix, class Vector, class Preconditioner>
 int
-BiCGSTAB (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
-          int &max_iter, typename Vector::Scalar &tol)
+BiCGSTAB(const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
+         int &max_iter, typename Vector::Scalar &tol)
 {
   using LinearAlgebra::dot;
   using LinearAlgebra::norm;
   using Real = typename Vector::Scalar;
 
   Real   resid;
-  Real   rho_1 (0.), rho_2 (0.), alpha (0.), beta (0.), omega (0.);
+  Real   rho_1(0.), rho_2(0.), alpha(0.), beta(0.), omega(0.);
   Vector p, phat, s, shat, t, v;
 
-  Real   normb = norm (b);
+  Real   normb = norm(b);
   Vector r = b - A * x;
   Vector rtilde = r;
 
-  if (normb == 0.0)
+  if(normb == 0.0)
     normb = 1;
 
-  if ((resid = norm (r) / normb) <= tol)
+  if((resid = norm(r) / normb) <= tol)
     {
       tol = resid;
       max_iter = 0;
       return 0;
     }
 
-  for (int i = 1; i <= max_iter; i++)
+  for(int i = 1; i <= max_iter; i++)
     {
-      rho_1 = dot (rtilde, r);
-      if (rho_1 == 0)
+      rho_1 = dot(rtilde, r);
+      if(rho_1 == 0)
         {
-          tol = norm (r) / normb;
+          tol = norm(r) / normb;
           return 2;
         }
-      if (i == 1)
+      if(i == 1)
         p = r;
       else
         {
           beta = (rho_1 / rho_2) * (alpha / omega);
           p = r + beta * (p - omega * v);
         }
-      phat = M.solve (p);
+      phat = M.solve(p);
       v = A * phat;
-      alpha = rho_1 / dot (rtilde, v);
+      alpha = rho_1 / dot(rtilde, v);
       s = r - alpha * v;
-      if ((resid = norm (s) / normb) < tol)
+      if((resid = norm(s) / normb) < tol)
         {
           x += alpha * phat;
           tol = resid;
           return 0;
         }
-      shat = M.solve (s);
+      shat = M.solve(s);
       t = A * shat;
-      omega = dot (t, s) / dot (t, t);
+      omega = dot(t, s) / dot(t, t);
       x += alpha * phat + omega * shat;
       r = s - omega * t;
 
       rho_2 = rho_1;
-      if ((resid = norm (r) / normb) < tol)
+      if((resid = norm(r) / normb) < tol)
         {
           tol = resid;
           max_iter = i;
           return 0;
         }
-      if (omega == 0)
+      if(omega == 0)
         {
-          tol = norm (r) / normb;
+          tol = norm(r) / normb;
           return 3;
         }
     }
@@ -99,5 +99,5 @@ BiCGSTAB (const Matrix &A, Vector &x, const Vector &b, const Preconditioner &M,
   tol = resid;
   return 1;
 }
-} // end namespace
+} // namespace LinearAlgebra
 #endif
