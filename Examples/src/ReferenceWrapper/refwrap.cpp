@@ -1,5 +1,6 @@
 #include "refwrap.hpp"
-void apsc::timesThree(double & r)
+void
+apsc::timesThree(double &r)
 {
-  r *=3;
+  r *= 3;
 }

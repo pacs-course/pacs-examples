@@ -7,10 +7,12 @@
    are declared extern in mytemp.hpp has NOT been generated
    (the symbols are undefined).
 */
-int main(){
+int
+main()
+{
   Myclass<double> a(5.0);
-  Myclass<int> b(5);
-  Myclass<char> c('A');
-  double d=func(5.0);// call on a double
-  double e=func(5);// call on a int
+  Myclass<int>    b(5);
+  Myclass<char>   c('A');
+  double          d = func(5.0); // call on a double
+  double          e = func(5);   // call on a int
 }

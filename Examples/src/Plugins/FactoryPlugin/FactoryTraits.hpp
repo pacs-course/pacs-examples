@@ -23,6 +23,6 @@ using PolyFactory = std::map<PolyId, PolyBuilder>;
 //! The object storing the factory. Defined in the source file (must be stored
 //! in a shared lib)
 extern PolyFactory polyFactory;
-}
+} // namespace Geometry
 
 #endif /* EXAMPLES_SRC_FACTORYPLUGIN_FACTORYTRAITS_HPP_ */

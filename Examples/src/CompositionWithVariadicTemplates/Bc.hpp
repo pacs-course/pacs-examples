@@ -16,15 +16,15 @@ protected:
 
 public:
   BcType
-  getBcType () const
+  getBcType() const
   {
     return M_type;
   }
   void
-  setBcType (BcType type)
+  setBcType(BcType type)
   {
     M_type = type;
   }
 };
-} // end namespace
+} // namespace BoundaryConditions
 #endif

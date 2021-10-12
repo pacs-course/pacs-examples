@@ -2,13 +2,14 @@
 #include "CloningUtilities.hpp"
 #include <iostream>
 #include <unordered_set>
-//A nonclonable class
-class NoClone{
+// A nonclonable class
+class NoClone
+{
 public:
   int a;
 };
 
-//A hierarchy of clonable classes
+// A hierarchy of clonable classes
 //! the base class
 /*!
   I want the hiearchy to be clonable so I set clone() method.
@@ -16,52 +17,67 @@ public:
 class Base
 {
 public:
-  virtual void whoAmI()const =0;
-  virtual void setValue(double const &)=0;
-  virtual std::unique_ptr<Base> clone()const =0;
-  virtual ~Base()=default;
+  virtual void                  whoAmI() const = 0;
+  virtual void                  setValue(double const &) = 0;
+  virtual std::unique_ptr<Base> clone() const = 0;
+  virtual ~Base() = default;
 };
 
 //! Derived class
-class Derived1: public Base
+class Derived1 : public Base
 {
 public:
-  Derived1(double const x=0.):value_{x}
+  Derived1(double const x = 0.) : value_{x}
   {
-  std::cout<<"I am a new Derived1\n";
+    std::cout << "I am a new Derived1\n";
   };
-  void setValue(double const & inp)override {value_=inp;}
-  void whoAmI()const  override
+  void
+  setValue(double const &inp) override
   {
-    std::cout<<" I am a Derived1 and I store "<<value_<<std::endl;
+    value_ = inp;
   }
-  std::unique_ptr<Base> clone() const override
+  void
+  whoAmI() const override
   {
-    std::cout<<"I am Derived1 and I have been cloned\n";
+    std::cout << " I am a Derived1 and I store " << value_ << std::endl;
+  }
+  std::unique_ptr<Base>
+  clone() const override
+  {
+    std::cout << "I am Derived1 and I have been cloned\n";
     return std::make_unique<Derived1>(*this);
   };
+
 private:
-  double value_=1.0;
+  double value_ = 1.0;
 };
 
-class Derived2: public Base
+class Derived2 : public Base
 {
 public:
-  Derived2(double const x=0.):value_{x}{
-    std::cout<<"I am a new Derived2\n";
+  Derived2(double const x = 0.) : value_{x}
+  {
+    std::cout << "I am a new Derived2\n";
   };
-  void setValue(double const & inp)override {value_=inp;}
-  void whoAmI() const override
+  void
+  setValue(double const &inp) override
   {
-    std::cout<<" I am a Derived2 and I store "<<value_<<std::endl;
+    value_ = inp;
   }
-  std::unique_ptr<Base> clone() const override
+  void
+  whoAmI() const override
   {
-    std::cout<<"I am Derived2 and I have been cloned\n";
+    std::cout << " I am a Derived2 and I store " << value_ << std::endl;
+  }
+  std::unique_ptr<Base>
+  clone() const override
+  {
+    std::cout << "I am Derived2 and I have been cloned\n";
     return std::make_unique<Derived2>(*this);
   };
+
 private:
-  double value_=2.0;
+  double value_ = 2.0;
 };
 
 //! Now the container class
@@ -81,90 +97,104 @@ public:
   /*
     /param[in] i if i=1 the resource is of type Derived1, otherwise Derived2
    */
-  void chooseResource(int i)
+  void
+  chooseResource(int i)
   {
-    if(i==1)
+    if(i == 1)
       {
-        resource_=apsc::make_PointerWrapper<Base,Derived1>();
-      }else
+        resource_ = apsc::make_PointerWrapper<Base, Derived1>();
+      }
+    else
       {
-        resource_=apsc::make_PointerWrapper<Base,Derived2>();
+        resource_ = apsc::make_PointerWrapper<Base, Derived2>();
       }
   }
   // ! I can access the resource by reference
-  Base & resource(){return *resource_;}
-  Base const & resource()const {return *resource_;}
+  Base &
+  resource()
+  {
+    return *resource_;
+  }
+  Base const &
+  resource() const
+  {
+    return *resource_;
+  }
+
 private:
   apsc::PointerWrapper<Base> resource_;
 };
 // This will generate all non-template methods (to check if they compile!)
 template class apsc::PointerWrapper<Base>;
 
-int main()
+int
+main()
 {
   //! Testing has_clone
-  std::cout<<std::boolalpha;
-  std::cout<<"In NoClone clonable?  "<<apsc::TypeTraits::has_clone<NoClone>()<<std::endl;
-  std::cout<<"In Derived2 clonable? "<<apsc::TypeTraits::has_clone<Derived2>()<<std::endl;
-  std::cout<<std::endl;
+  std::cout << std::boolalpha;
+  std::cout << "In NoClone clonable?  "
+            << apsc::TypeTraits::has_clone<NoClone>() << std::endl;
+  std::cout << "In Derived2 clonable? "
+            << apsc::TypeTraits::has_clone<Derived2>() << std::endl;
+  std::cout << std::endl;
   Container A;
   A.chooseResource(1);
   A.resource().setValue(99.);
-  std::cout<<"The resource in A is: (should be Derived1)";
+  std::cout << "The resource in A is: (should be Derived1)";
   A.resource().whoAmI();
-  Container B{A};// B contains A COPY of the resource of A
-  std::cout<<"The resource in B is: (should be Derived1)";
+  Container B{A}; // B contains A COPY of the resource of A
+  std::cout << "The resource in B is: (should be Derived1)";
   B.resource().whoAmI();
   // I can change the value
   B.resource().setValue(55.);
-  std::cout<<"Now the resource in B is: (should be Derived1)";
+  std::cout << "Now the resource in B is: (should be Derived1)";
   B.resource().whoAmI();
   // But in A is unchenged, since A own its own resource uniquely (it is a
   // composition).
-  std::cout<<"The resource in A is still: (should be Derived1)";
+  std::cout << "The resource in A is still: (should be Derived1)";
   A.resource().whoAmI();
 
   // It works also with assignement
   Container C;
-  C=B;
+  C = B;
   B.resource().setValue(100.);
-  std::cout<<"Now the resource in B is: (value changed)";
+  std::cout << "Now the resource in B is: (value changed)";
   B.resource().whoAmI();
-  std::cout<<"But, the resource in C is still: (same as old B)";
+  std::cout << "But, the resource in C is still: (same as old B)";
   C.resource().whoAmI();
   // Move semantic is implemented
-  C=std::move(A);
+  C = std::move(A);
   // Now the resource of A is empty and C has stolen it
   // The resource previously contained in C has been deleted and memory freed
-  std::cout<<"C has stolen resource from A: ";
+  std::cout << "C has stolen resource from A: ";
   C.resource().whoAmI();
   // Clearly I can choose (also run time) the concrete type
   Container D;
   D.chooseResource(2);
-  std::cout<<"The resource in D is: (should be Derived 2)";
+  std::cout << "The resource in D is: (should be Derived 2)";
   D.resource().whoAmI();
 
   // Testing some part of PointerWrapper code
 
-  apsc::PointerWrapper<Base> wb=apsc::make_PointerWrapper<Base,Derived1>();
-  std::cout<<"The resource in wb is: ";
+  apsc::PointerWrapper<Base> wb = apsc::make_PointerWrapper<Base, Derived1>();
+  std::cout << "The resource in wb is: ";
   wb->whoAmI();
-  wb=apsc::make_PointerWrapper<Derived2,Derived2>();
-  std::cout<<"The resource in wb is now (now is Derived2): ";
+  wb = apsc::make_PointerWrapper<Derived2, Derived2>();
+  std::cout << "The resource in wb is now (now is Derived2): ";
   wb->whoAmI();
-  apsc::PointerWrapper<Base> wz=apsc::make_PointerWrapper<Base,Derived1>(4);
-  std::cout<<"The resource in wz is: ";
+  apsc::PointerWrapper<Base> wz = apsc::make_PointerWrapper<Base, Derived1>(4);
+  std::cout << "The resource in wz is: ";
   wz->whoAmI();
-  apsc::PointerWrapper<Base> wc=apsc::make_PointerWrapper<Derived1,Derived1>(55);
-  std::cout<<"The resource in wc is: (should be Derived1)";
+  apsc::PointerWrapper<Base> wc =
+    apsc::make_PointerWrapper<Derived1, Derived1>(55);
+  std::cout << "The resource in wc is: (should be Derived1)";
   wz->whoAmI();
-  std::cout<<"tesing some operator\n";
+  std::cout << "tesing some operator\n";
 
-  std::cout<<std::boolalpha<<(wz==wc)<<" "<<(wz<wc)<<std::endl;
+  std::cout << std::boolalpha << (wz == wc) << " " << (wz < wc) << std::endl;
 
-  std::cout<<" Testing the hash\n";
-  std::unordered_set<apsc::PointerWrapper<Base>> sw{wb,wc,wz};
-  for (auto const & z:sw)z->whoAmI();
+  std::cout << " Testing the hash\n";
+  std::unordered_set<apsc::PointerWrapper<Base>> sw{wb, wc, wz};
+  for(auto const &z : sw)
+    z->whoAmI();
 }
-
-

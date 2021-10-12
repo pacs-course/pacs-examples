@@ -8,23 +8,27 @@
 #ifndef MESHREADERS_HPP_
 #define MESHREADERS_HPP_
 #include "MeshTria.hpp"
-namespace Fem{
-  class MeshReadSimple: public Fem::MeshReader {
-  public:
-    MeshReadSimple(bool verbose=false):MeshReader(verbose){};
-    int read(MeshTria & m, std::string const & filename);
-  };
-  
-  class MeshReadTriangle: public Fem::MeshReader {
-  public:
-    MeshReadTriangle(bool verbose=false):MeshReader(verbose){};
-    int read(MeshTria&, std::string const & filename);
-  };
-  
-  class DummyMesh: public Fem::MeshReader {
-  public:
-    DummyMesh(bool verbose=false):MeshReader(verbose){};
-    int read(MeshTria&, std::string const & filename);
-  };
-}
+namespace Fem
+{
+class MeshReadSimple : public Fem::MeshReader
+{
+public:
+  MeshReadSimple(bool verbose = false) : MeshReader(verbose){};
+  int read(MeshTria &m, std::string const &filename);
+};
+
+class MeshReadTriangle : public Fem::MeshReader
+{
+public:
+  MeshReadTriangle(bool verbose = false) : MeshReader(verbose){};
+  int read(MeshTria &, std::string const &filename);
+};
+
+class DummyMesh : public Fem::MeshReader
+{
+public:
+  DummyMesh(bool verbose = false) : MeshReader(verbose){};
+  int read(MeshTria &, std::string const &filename);
+};
+} // namespace Fem
 #endif /* MESHREADERS_HPP_ */

@@ -34,8 +34,7 @@ namespace GenericFactory
   construction of the exception.
 */
 template <typename AbstractProduct, typename Identifier,
-          typename Builder =
-            std::function<std::unique_ptr<AbstractProduct> ()> >
+          typename Builder = std::function<std::unique_ptr<AbstractProduct>()> >
 class Factory
 {
 public:
@@ -54,7 +53,7 @@ the identifier as key.
   */
   using Builder_type = Builder;
   //! Method to access the only instance of the factory
-  static Factory &Instance ();
+  static Factory &Instance();
   //! Get the rule with given name .
   /*!
     The pointer is null if no rule is present.
@@ -68,32 +67,32 @@ the identifier as key.
     arguments. The method is disabled if AsbtractProduct is void
   */
   template <typename... Args>
-  std::unique_ptr<AbstractProduct>
-  create (Identifier const &name, Args &&... args) const;
+  std::unique_ptr<AbstractProduct> create(Identifier const &name,
+                                          Args &&... args) const;
   /*!
      Returns the builder
   */
-  Builder get (Identifier const &name) const;
+  Builder get(Identifier const &name) const;
   //
   //! Register the given rule.
-  void add (Identifier const &, Builder_type const &);
+  void add(Identifier const &, Builder_type const &);
   //! Returns a list of registered rules.
-  std::vector<Identifier> registered () const;
+  std::vector<Identifier> registered() const;
   //! Unregister a rule.
   void
-  unregister (Identifier const &name)
+  unregister(Identifier const &name)
   {
-    _storage.erase (name);
+    _storage.erase(name);
   }
 
 private:
   typedef std::map<Identifier, Builder_type> Container_type;
   //! Made private since it is a Singleton
-  Factory () = default;
+  Factory() = default;
   //! Deleted since it is a Singleton
-  Factory (Factory const &) = delete;
+  Factory(Factory const &) = delete;
   //! Deleted since it is a Singleton
-  Factory &operator= (Factory const &) = delete;
+  Factory &operator=(Factory const &) = delete;
   //! It contains the actual object factory.
   Container_type _storage;
 };
@@ -111,7 +110,7 @@ using FunctionFactory = Factory<void, Identifier, FunType>;
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
 Factory<AbstractProduct, Identifier, Builder> &
-Factory<AbstractProduct, Identifier, Builder>::Instance ()
+Factory<AbstractProduct, Identifier, Builder>::Instance()
 {
   // We use the Meyer's trick to istantiate the factory as Singleton
   static Factory theFactory;
@@ -120,18 +119,17 @@ Factory<AbstractProduct, Identifier, Builder>::Instance ()
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
 Builder
-Factory<AbstractProduct, Identifier, Builder>::get (
-  Identifier const &name) const
+Factory<AbstractProduct, Identifier, Builder>::get(Identifier const &name) const
 {
-  auto f = _storage.find (name);
-  if (f == _storage.end ())
+  auto f = _storage.find(name);
+  if(f == _storage.end())
     {
       std::stringstream idAsString;
       // I am assuming that identifier has a output streaming operator
       idAsString << name;
       std::string out =
-        "Identifier " + idAsString.str () + " is not stored in the factory";
-      throw std::invalid_argument (out);
+        "Identifier " + idAsString.str() + " is not stored in the factory";
+      throw std::invalid_argument(out);
     }
   else
     {
@@ -142,42 +140,43 @@ Factory<AbstractProduct, Identifier, Builder>::get (
 template <typename AbstractProduct, typename Identifier, typename Builder>
 template <typename... Args>
 std::unique_ptr<AbstractProduct>
-Factory<AbstractProduct, Identifier, Builder>::create (Identifier const &name,
-                                                       Args &&... args) const
+Factory<AbstractProduct, Identifier, Builder>::create(Identifier const &name,
+                                                      Args &&... args) const
 {
-  static_assert(!std::is_same_v<AbstractProduct,void>, "You should use get() not create() on FunctionFactories");
+  static_assert(!std::is_same_v<AbstractProduct, void>,
+                "You should use get() not create() on FunctionFactories");
   // Use of std::forward to forward arguments to the constructor
-  return this->get (name) (std::forward<Args> (args)...);
+  return this->get(name)(std::forward<Args>(args)...);
 }
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
 void
-Factory<AbstractProduct, Identifier, Builder>::add (Identifier const &  name,
-                                                    Builder_type const &func)
+Factory<AbstractProduct, Identifier, Builder>::add(Identifier const &  name,
+                                                   Builder_type const &func)
 {
-  auto f = _storage.insert (std::make_pair (name, func));
-  if (f.second == false)
+  auto f = _storage.insert(std::make_pair(name, func));
+  if(f.second == false)
     {
       std::stringstream idAsString;
       idAsString << name;
       std::string message =
-        std::string ("Double registration in Factory of id: ") +
-        idAsString.str () + std::string (" is not allowed");
-      throw std::invalid_argument (message);
+        std::string("Double registration in Factory of id: ") +
+        idAsString.str() + std::string(" is not allowed");
+      throw std::invalid_argument(message);
     }
 }
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
 std::vector<Identifier>
-Factory<AbstractProduct, Identifier, Builder>::registered () const
+Factory<AbstractProduct, Identifier, Builder>::registered() const
 {
   std::vector<Identifier> tmp;
-  tmp.reserve (_storage.size ());
-  for (auto const &i : _storage)
-    tmp.push_back (i.first);
+  tmp.reserve(_storage.size());
+  for(auto const &i : _storage)
+    tmp.push_back(i.first);
   return tmp;
 }
 
-} // end namespace
+} // namespace GenericFactory
 
 #endif /* BC_FACTORY1_HPP_ */

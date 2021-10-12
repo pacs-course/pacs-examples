@@ -27,9 +27,9 @@ main(int argc, char **argv)
   int mpi_size;
   MPI_Comm_size(mpi_comm, &mpi_size);
 
-  if (mpi_size != 2)
+  if(mpi_size != 2)
     {
-      if (mpi_rank == 0)
+      if(mpi_rank == 0)
         std::cerr << "ERROR: This program is only "
                      "meant to be run on 2 processes."
                   << std::endl;
@@ -37,7 +37,7 @@ main(int argc, char **argv)
       return 1;
     }
 
-  if (mpi_rank == 0)
+  if(mpi_rank == 0)
     {
       const int max_length = 100;
 
@@ -47,9 +47,8 @@ main(int argc, char **argv)
       std::vector<double> array(max_length);
 
       std::uniform_real_distribution<double> rand(0, 1);
-      std::generate(array.begin(), array.end(), [&engine, &rand]() {
-        return rand(engine);
-      });
+      std::generate(array.begin(), array.end(),
+                    [&engine, &rand]() { return rand(engine); });
 
       // Pick a random number to decide how long our message will be.
       std::uniform_int_distribution<int> randi(1, max_length);
@@ -77,13 +76,10 @@ main(int argc, char **argv)
       // Allocate some memory to put the message buffer into.
       // The result is converted back again to an std::vector.
       std::vector<double> array(array_length);
-      MPI_Recv(array.data(),
-               array_length,
-               MPI_DOUBLE,
+      MPI_Recv(array.data(), array_length, MPI_DOUBLE,
                MPI_ANY_SOURCE, // Or, more properly, status.MPI_SOURCE.
                MPI_ANY_TAG,    // Or, more properly, status.MPI_TAG.
-               mpi_comm,
-               MPI_STATUS_IGNORE);
+               mpi_comm, MPI_STATUS_IGNORE);
 
       std::cout << "Process 1 received " << array_length << " numbers."
                 << std::endl

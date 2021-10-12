@@ -8,32 +8,32 @@
 #ifndef ENEMIES_HPP_
 #define ENEMIES_HPP_
 
-
-class Enemy{
-public:
-	virtual void speak()=0;
-	virtual ~Enemy()=default;
-};
-
-class Soldier: public Enemy
+class Enemy
 {
 public:
-	virtual void speak() override;
-	virtual ~Soldier()=default;
+  virtual void speak() = 0;
+  virtual ~Enemy() = default;
 };
 
-class Monster: public Enemy
+class Soldier : public Enemy
 {
 public:
-    virtual void speak() override;
-    virtual ~Monster()=default;
+  virtual void speak() override;
+  virtual ~Soldier() = default;
 };
 
-class SuperMonster: public Enemy
+class Monster : public Enemy
 {
 public:
-    virtual void speak() override;
-    virtual ~SuperMonster()=default;
+  virtual void speak() override;
+  virtual ~Monster() = default;
+};
+
+class SuperMonster : public Enemy
+{
+public:
+  virtual void speak() override;
+  virtual ~SuperMonster() = default;
 };
 
 #endif /* ENEMIES_HPP_ */

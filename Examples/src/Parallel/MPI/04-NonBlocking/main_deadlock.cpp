@@ -25,9 +25,9 @@ main(int argc, char **argv)
   int mpi_size;
   MPI_Comm_size(mpi_comm, &mpi_size);
 
-  if (mpi_size != 2)
+  if(mpi_size != 2)
     {
-      if (mpi_rank == 0)
+      if(mpi_rank == 0)
         std::cerr << "ERROR: This program is only "
                      "meant to be run on 2 processes."
                   << std::endl;
@@ -43,14 +43,14 @@ main(int argc, char **argv)
 
   MPI_Status status;
 
-  if (mpi_rank == 0)
+  if(mpi_rank == 0)
     {
       std::cout << "Rank " << mpi_rank << " waiting to receive..." << std::endl;
 
       // If a send operation is blocking, then the operation will not terminate
       // until the message has been received by the destination.
-      MPI_Recv(
-        &number_to_receive, 1, MPI_INT, partner_rank, 20, mpi_comm, &status);
+      MPI_Recv(&number_to_receive, 1, MPI_INT, partner_rank, 20, mpi_comm,
+               &status);
 
       std::cout << "Rank " << mpi_rank << " received." << std::endl;
 
@@ -64,8 +64,8 @@ main(int argc, char **argv)
     {
       std::cout << "Rank " << mpi_rank << " waiting to receive..." << std::endl;
 
-      MPI_Recv(
-        &number_to_receive, 1, MPI_INT, partner_rank, 10, mpi_comm, &status);
+      MPI_Recv(&number_to_receive, 1, MPI_INT, partner_rank, 10, mpi_comm,
+               &status);
 
       std::cout << "Rank " << mpi_rank << " received." << std::endl;
 

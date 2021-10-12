@@ -2,60 +2,62 @@
 #include "../MM_readers.hpp"
 #include "../Utilities.hpp"
 #include <Eigen/Core>
-#include <string>
 #include <fstream>
-int main(int argc, char * argv[])
+#include <string>
+int
+main(int argc, char *argv[])
 {
   using namespace Eigen;
   // This is necessary if you wat the use the << operator on CooData objects
   // I still have to understand why. It seems that the name lookup procedure
   // is not working well on templated operators.
   using namespace LinearAlgebra;
-  if (argc < 2)
+  if(argc < 2)
     {
-      std::cerr<<" Usage testMM_readers MM_filename [GraphInfoFile]"<<std::endl;
-      std::cerr<<" GraphInfoFile defaults to adjacency.dat"<<std::endl;
+      std::cerr << " Usage testMM_readers MM_filename [GraphInfoFile]"
+                << std::endl;
+      std::cerr << " GraphInfoFile defaults to adjacency.dat" << std::endl;
       return 1;
     }
   std::string outFileName;
-  if (argc == 2)
+  if(argc == 2)
     {
-      outFileName="adjacency.dat";
+      outFileName = "adjacency.dat";
     }
   else
     {
-      outFileName=argv[2];
+      outFileName = argv[2];
     }
   std::string matrixFile(argv[1]);
   // Some useful alias
-  using SpMat=Eigen::SparseMatrix<double>;
+  using SpMat = Eigen::SparseMatrix<double>;
   // Read matrix
-  SpMat A=Eigen::read_MM_Matrix<SpMat>(matrixFile);
+  SpMat A = Eigen::read_MM_Matrix<SpMat>(matrixFile);
   // COnvert matrix
-  auto AC=LinearAlgebra::extractCooData(A);
+  auto                          AC = LinearAlgebra::extractCooData(A);
   LinearAlgebra::AdjacencyGraph adGraph(AC);
-  std::ofstream outFile(outFileName);
-  adGraph.info(outFile,false);
-  auto AR=computeRCMK(A);
-  
-  //std::cout<<"Prima:\n"<<A<<std::endl;
-  //std::cout<<"Dopo:\n"<<AR<<std::endl;
-  auto adrGraph=AdjacencyGraph{LinearAlgebra::extractCooData(AR)};
-  adrGraph.info(outFile,false);
+  std::ofstream                 outFile(outFileName);
+  adGraph.info(outFile, false);
+  auto AR = computeRCMK(A);
+
+  // std::cout<<"Prima:\n"<<A<<std::endl;
+  // std::cout<<"Dopo:\n"<<AR<<std::endl;
+  auto adrGraph = AdjacencyGraph{LinearAlgebra::extractCooData(AR)};
+  adrGraph.info(outFile, false);
   outFile.close();
   std::ofstream originalFile("Original.mat");
-  LinearAlgebra::outputForOctave(originalFile,A);
+  LinearAlgebra::outputForOctave(originalFile, A);
   originalFile.close();
   std::ofstream processedFile("Processed.mat");
-  LinearAlgebra::outputForOctave(processedFile,AR);
+  LinearAlgebra::outputForOctave(processedFile, AR);
   processedFile.close();
-  
+
   /*
   using SpMatR=Eigen::SparseMatrix<double,RowMajor>;
   //  using SpMatC=Eigen::SparseMatrix<double,RowMajor>;
   std::vector<Eigen::Triplet<double>> trip;
   // Create a simple matrix
-  
+
   trip.push_back({0,0,1.});
   trip.push_back({0,3,2.});
   trip.push_back({1,0,3.});
@@ -86,7 +88,7 @@ int main(int argc, char * argv[])
   indices[1]=0;
   indices[2]=2;
   indices[3]=3;
-  
+
   //Eigen::PermutationMatrix<Dynamic,Dynamic> P(indices);
   SpMat BP=LinearAlgebra::applySymmetricPermutation(B,indices);
   //BP=B.twistedBy(indices.asPermutation());

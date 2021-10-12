@@ -18,9 +18,9 @@ main(int argc, char **argv)
   int mpi_size;
   MPI_Comm_size(mpi_comm, &mpi_size);
 
-  if (mpi_size != 2)
+  if(mpi_size != 2)
     {
-      if (mpi_rank == 0)
+      if(mpi_rank == 0)
         std::cerr << "ERROR: This program is only "
                      "meant to be run on 2 processes."
                   << std::endl;
@@ -38,9 +38,9 @@ main(int argc, char **argv)
   // MPI_SOURCE, MPI_TAG, MPI_ERROR.
   MPI_Status status;
 
-  for (unsigned int i = 0; i < num_iterations; ++i)
+  for(unsigned int i = 0; i < num_iterations; ++i)
     {
-      if (mpi_rank == ping_pong_count % 2)
+      if(mpi_rank == ping_pong_count % 2)
         {
           ++ping_pong_count;
 
@@ -52,8 +52,8 @@ main(int argc, char **argv)
         }
       else
         {
-          MPI_Recv(
-            &ping_pong_count, 1, MPI_INT, partner_rank, 0, mpi_comm, &status);
+          MPI_Recv(&ping_pong_count, 1, MPI_INT, partner_rank, 0, mpi_comm,
+                   &status);
 
           // "status.MPI_SOURCE" equals "partner_rank".
           std::cout << "Pong! Rank " << mpi_rank << " <--- rank "

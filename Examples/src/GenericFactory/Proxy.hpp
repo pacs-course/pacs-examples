@@ -33,14 +33,14 @@ public:
     builder type must take no arguments and have a return type that accepts a
     pointer to the ConcreteProduct as argument.
   */
-  Proxy (Identifier_type const &name);
+  Proxy(Identifier_type const &name);
 
   /*! This version takes also the builder. It does not use the builder already
     provided by the class.To be used in case on incompatibilities.
     @param name The identifier
     @param builder The builder
    */
-  Proxy (Identifier_type const &name, Builder_type const &b);
+  Proxy(Identifier_type const &name, Builder_type const &b);
 
   //! The in-built builder. Must comply with the signature.
   /*!
@@ -53,9 +53,9 @@ public:
     that behaves like a unique_prt).
    */
   static Result_type
-  Build ()
+  Build()
   {
-    return Result_type (new ConcreteProduct ());
+    return Result_type(new ConcreteProduct());
   }
   //! This is a more explicit version
   //    static std::unique_ptr<AbstractProduct_type> Build(){
@@ -63,30 +63,30 @@ public:
   //}
 
 private:
-  Proxy (Proxy const &) = delete;            //
-  Proxy &operator= (Proxy const &) = delete; //
+  Proxy(Proxy const &) = delete;            //
+  Proxy &operator=(Proxy const &) = delete; //
 };
 
 template <typename F, typename C>
-Proxy<F, C>::Proxy (Identifier_type const &name)
+Proxy<F, C>::Proxy(Identifier_type const &name)
 {
   // get the factory. First time creates it.
-  Factory_type &factory (Factory_type::Instance ());
+  Factory_type &factory(Factory_type::Instance());
   // Insert the builder. The & is not needed, but it does not hurt.
-  factory.add (name, &Proxy<F, C>::Build);
+  factory.add(name, &Proxy<F, C>::Build);
   std::clog << "Added " << name << " to factory" << std::endl;
 }
 
 template <typename F, typename C>
-Proxy<F, C>::Proxy (Identifier_type const &name, Builder_type const &b)
+Proxy<F, C>::Proxy(Identifier_type const &name, Builder_type const &b)
 {
   // get the factory. First time creates it.
-  Factory_type &factory (Factory_type::Instance ());
+  Factory_type &factory(Factory_type::Instance());
   // Insert the builder. The & is not needed, but it does not hurt.
-  factory.add (name, b);
+  factory.add(name, b);
   std::clog << "Added " << name << " to factory" << std::endl;
 }
 
-}
+} // namespace GenericFactory
 
 #endif /* RULESHANDLER_HPP_ */

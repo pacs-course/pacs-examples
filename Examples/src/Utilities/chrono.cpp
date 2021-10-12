@@ -61,4 +61,4 @@ operator<<(std::ostream &out, Chrono const &c)
   return out;
 }
 
-}
+} // namespace Timings

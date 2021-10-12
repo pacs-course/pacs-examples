@@ -39,6 +39,6 @@ public:
   double diagLen() const;
 };
 
-}
+} // namespace Geometry
 
 #endif /* EXAMPLES_SRC_FACTORYPLUGIN_TRIANGLEANDSQUARE_HPP_ */

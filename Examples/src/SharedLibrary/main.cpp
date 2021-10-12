@@ -1,8 +1,9 @@
-#include <iostream>
-#include <cstdlib>
 #include "smalllib.hpp"
+#include <cstdlib>
+#include <iostream>
 using namespace std;
-int main()
+int
+main()
 {
   foo one;
 }

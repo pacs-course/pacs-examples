@@ -28,12 +28,12 @@ Quadrilateral::showMe(ostream &out) const
 
 namespace
 {
-void __attribute__((constructor)) LoadF()
-{
-  // add quadrilateral to the factory
-  polyFactory["Quadrilateral"] = []() {
-    return std::make_unique<Quadrilateral>();
-  };
-}
-}
-}
+  void __attribute__((constructor)) LoadF()
+  {
+    // add quadrilateral to the factory
+    polyFactory["Quadrilateral"] = []() {
+      return std::make_unique<Quadrilateral>();
+    };
+  }
+} // namespace
+} // namespace Geometry
