@@ -1,5 +1,6 @@
+---
 Language:        Cpp
-# BasedOnStyle:  GNU
+#BasedOnStyle:  GNU
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: false
@@ -59,7 +60,7 @@ Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 DisableFormat:   false
 ExperimentalAutoDetectBinPacking: false
-FixNamespaceComments: false
+FixNamespaceComments: true
 ForEachMacros:
   - foreach
   - Q_FOREACH
@@ -84,7 +85,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MacroBlockBegin: ''
 MacroBlockEnd:   ''
 MaxEmptyLinesToKeep: 1
-NamespaceIndentation: None
+NamespaceIndentation: Inner
 ObjCBinPackProtocolList: Auto
 ObjCBlockIndentWidth: 2
 ObjCSpaceAfterProperty: false
@@ -108,7 +109,7 @@ SpaceBeforeAssignmentOperators: true
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
-#SpaceBeforeParens: ControlStatementsExceptForEachMacros
+SpaceBeforeParens: Never
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
