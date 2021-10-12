@@ -63,7 +63,7 @@ org.eclipse.cdt.codan.internal.checkers.MissReferenceProblem=-Warning
 org.eclipse.cdt.codan.internal.checkers.MissReferenceProblem.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Missing reference return value in assignment operator\\")"}
 org.eclipse.cdt.codan.internal.checkers.MissSelfCheckProblem=-Warning
 org.eclipse.cdt.codan.internal.checkers.MissSelfCheckProblem.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Missing self check in assignment operator\\")"}
-org.eclipse.cdt.codan.internal.checkers.MultipleDeclarationsProblem=-Warning
+org.eclipse.cdt.codan.internal.checkers.MultipleDeclarationsProblem=Warning
 org.eclipse.cdt.codan.internal.checkers.MultipleDeclarationsProblem.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Multiple variable declaration\\")"}
 org.eclipse.cdt.codan.internal.checkers.NamingConventionFunctionChecker=-Info
 org.eclipse.cdt.codan.internal.checkers.NamingConventionFunctionChecker.params={launchModes\=>{RUN_ON_FULL_BUILD\=>true,RUN_ON_INC_BUILD\=>true,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>false,RUN_AS_YOU_TYPE\=>true,RUN_ON_DEMAND\=>true},suppression_comment\=>"@suppress(\\"Name convention for function\\")",pattern\=>"^[a-z]",macro\=>true,exceptions\=>()}
@@ -237,3 +237,4 @@ org.wangzw.plugin.cppstyle.cpplint.whitespace.tab=Error
 org.wangzw.plugin.cppstyle.cpplint.whitespace.tab.params={fileScope\=>inclusion\=>("*.cc","*.h","*.cpp","*.cu","*.cuh","*.hpp"),exclusion\=>(),launchModes\=>{RUN_ON_FULL_BUILD\=>false,RUN_ON_INC_BUILD\=>false,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>true,RUN_AS_YOU_TYPE\=>false,RUN_ON_DEMAND\=>true},suppression_comment\=>null}
 org.wangzw.plugin.cppstyle.cpplint.whitespace.todo=Error
 org.wangzw.plugin.cppstyle.cpplint.whitespace.todo.params={fileScope\=>inclusion\=>("*.cc","*.h","*.cpp","*.cu","*.cuh","*.hpp"),exclusion\=>(),launchModes\=>{RUN_ON_FULL_BUILD\=>false,RUN_ON_INC_BUILD\=>false,RUN_ON_FILE_OPEN\=>false,RUN_ON_FILE_SAVE\=>true,RUN_AS_YOU_TYPE\=>false,RUN_ON_DEMAND\=>true},suppression_comment\=>null}
+useParentScope=false
