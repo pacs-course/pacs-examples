@@ -13,3 +13,7 @@
 [submodule "Extras/muparserx"]
 	path = Extras/muparserx
 	url = git@github.com:lformaggia/muparserx.git
+[submodule "Extras/json"]
+	path = Extras/json
+	url = git@github.com:lformaggia/json.git
+	branch = PACS
