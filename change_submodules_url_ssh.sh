@@ -3,6 +3,7 @@ git config --file=.gitmodules submodule.Examples/src/LinearAlgebra/spectra.url g
 git config --file=.gitmodules submodule.Examples/src/LinearAlgebra/redsvd-h.url git@github.com:lformaggia/redsvd-h.git
 git config --file=.gitmodules submodule.Extras/muparser.url git@github.com:lformaggia/muparser.git
 git config --file=.gitmodules submodule.Extras/muparserx.url git@github.com:lformaggia/muparserx.git
+git config --file=.gitmodules submodule.Extras/json.url git@github.com:lformaggia/json.git
 git submodule sync
 git submodule update --recursive --remote
 
