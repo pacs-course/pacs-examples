@@ -47,3 +47,52 @@ readParameters(std::string const &filename, bool verbose)
     }
   return values;
 }
+
+parameters
+readParameters_json(std::string const &filename, bool verbose)
+{
+  // Parameter default constructor fills it with the defaults values
+  parameters defaults;
+  // checks if file exixts and is readable
+  std::ifstream check(filename);
+  if(!check)
+    {
+      std::cerr << "ERROR: Parameter file " << filename << " does not exist"
+                << std::endl;
+      std::cerr << "Reverting to default values." << std::endl;
+      if(verbose)
+        std::cout << defaults;
+      check.close();
+      return defaults;
+    }
+  else
+    check.close();
+
+  std::ifstream jfile(filename);
+  nlohmann::json ifile;
+  jfile>>ifile;
+  parameters values;
+  // Read parameters from getpot ddata base
+  values.itermax = ifile.extract("itermax", defaults.itermax);
+  values.toler = ifile.extract("toler", defaults.toler);
+  values.L = ifile.extract("L", defaults.L);
+  values.a1 = ifile.extract("a1", defaults.a1);
+  values.a2 = ifile.extract("a2", defaults.a2);
+  values.To = ifile.extract("To", defaults.To);
+  values.Te = ifile.extract("Te", defaults.Te);
+  values.k = ifile.extract("k", defaults.k);
+  values.hc = ifile.extract("hc", defaults.hc);
+  values.M = ifile.extract("M", defaults.M);
+  values.solverType = ifile.extract("solverType", defaults.solverType);
+  if(verbose)
+    {
+      std::cout << "PARAMETER VALUES IN JSON FILE"
+                << "\n";
+      std::cout<<std::setw(4)<<ifile;
+      std::cout << std::endl;
+      std::cout << "ACTUAL VALUES"
+                << "\n"
+                << values;
+    }
+  return values;
+}

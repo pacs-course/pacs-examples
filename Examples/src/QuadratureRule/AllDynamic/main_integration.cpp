@@ -1,12 +1,12 @@
-#include "GetPot"
-#include "numerical_integration.hpp"
-#include "ruleProxy.hpp"
-#include "udfHandler.hpp"
 #include <dlfcn.h>
 #include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
+#include "QuadParameters.hpp"
+#include "numerical_integration.hpp"
+#include "ruleProxy.hpp"
+#include "udfHandler.hpp"
 void
 printHelp()
 {
@@ -58,7 +58,6 @@ main(int argc, char **argv)
       printHelp();
       return 0;
     }
-
   // Get the input file
   std::string           inputFile = key_input("InputFile", "quadratura.getpot");
   std::filesystem::path filepath(inputFile);
@@ -67,14 +66,24 @@ main(int argc, char **argv)
       std::cerr << "Input file " << inputFile << " does not exists\n";
       return 1;
     }
-  GetPot cl(inputFile.c_str());
+  bool jsonFile=(inputFile.find(".json") != std::string::npos);
+
+  // get the parameters
+  QuadParameters parameters;
+  if(jsonFile)
+    parameters=readQuadParameters_json(inputFile);
+  else
+    parameters=readQuadParameters_GP(inputFile);
+
   // get the factory: this is the correct way
   RulesFactory const &rulesFactory = apsc::QuadratureRuleFactory::MyFactory;
   // This is wrong. You should get the global variable
   // RulesFactory const & rulesFactory=RulesFactory::Instance();
   // Load library with the rules
   // @todo this part should be enucleated in a class!
-  auto nlibs = cl.vector_variable_size("library");
+
+  // Check if the quad libraries exists and open them
+  auto nlibs = parameters.library.size();
   if(nlibs == 0)
     {
       cout << "You need to specify at least one plugin library\n";
@@ -82,20 +91,12 @@ main(int argc, char **argv)
     }
   else
     {
-      cout << "Reading " << nlibs << " plugin libraries\n";
+      cout << "Opening " << nlibs << " plugin libraries\n";
     }
   for(unsigned int i = 0; i < nlibs; ++i)
     {
-      string quadlib = cl("library", i, "NONE");
-      if(quadlib == string("NONE"))
-        {
-          cout << "Getpot file wrongly parsed,. Cannot read library\n";
-          return 1;
-        }
-      else
-        {
-          cout << "Reading plugin library " << quadlib << std::endl;
-        }
+      string quadlib = parameters.library[i];
+      cout << "Reading plugin library " << quadlib << std::endl;
       void *dylib = dlopen(quadlib.c_str(), RTLD_NOW);
       if(dylib == nullptr)
         {
@@ -111,10 +112,10 @@ main(int argc, char **argv)
       return 0;
     }
   // Now get the library with the functions to be integrated
-  // Het a handle to the factory
+  // Get a handle to the factory
   auto &myIntegrands = apsc::NumericalIntegration::myIntegrands;
   //@ to do enucleate this part: useless code repetition!
-  nlibs = cl.vector_variable_size("udflib");
+  nlibs = parameters.udflib.size();
   if(nlibs == 0)
     {
       cout << "You need to specify at least one integrand library\n";
@@ -126,16 +127,8 @@ main(int argc, char **argv)
     }
   for(unsigned int i = 0; i < nlibs; ++i)
     {
-      string intlib = cl("udflib", i, "NONE");
-      if(intlib == string("NONE"))
-        {
-          cout << "Getpot file wrongly parsed,. Cannot read library\n";
-          return 1;
-        }
-      else
-        {
-          cout << "Integrands library " << intlib << std::endl;
-        }
+      string intlib = parameters.udflib[i];
+      cout << "Integrands library " << intlib << std::endl;
       void *dylib = dlopen(intlib.c_str(), RTLD_NOW);
       if(dylib == nullptr)
         {
@@ -144,11 +137,13 @@ main(int argc, char **argv)
           return 1;
         }
     }
-  std::string fun_name = cl("integrand", "NULL");
+
+  // get the integrand
+  std::string fun_name = parameters.integrand;
   if(fun_name == "NULL")
     {
       std::cerr << "Getpot file must contain integrand=integrandName\n";
-      std::cerr << "Valid integrand in the FunctionFactory:\n";
+      std::cerr << "Valid integrands in the FunctionFactory:\n";
       printList(myIntegrands);
       return 2;
     }
@@ -172,10 +167,11 @@ main(int argc, char **argv)
     }
 
   // Load all other info
-  double a = cl("a", 0.);
-  double b = cl("b", 1);
-  int    nint = cl("nint", 10);
-  string rule = cl("rule", "Simpson");
+  double a = parameters.a;
+  double b = parameters.b;
+  int    nint = parameters.nint;
+  // the rule
+  string rule = parameters.rule;
   if(rule == "?")
     {
       printList(rulesFactory);
@@ -187,8 +183,8 @@ main(int argc, char **argv)
   try
     {
       theRule = rulesFactory.create(rule);
-      double       targetError = cl("targetError", 1.e-5);
-      unsigned int maxIter = cl("maxIter", 1000);
+      double       targetError = parameters.targetError;
+      unsigned int maxIter = parameters.maxIter;
       theRule->setTargetError(targetError);
       theRule->setMaxIter(maxIter);
 

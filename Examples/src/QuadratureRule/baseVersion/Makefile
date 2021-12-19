@@ -127,7 +127,7 @@ exec: $(EXEC)
 
 library:  $(LIBRARY) $(LIBRARY2) $(LIBRARY3)
 
-install:
+install: alllibs
 	cp $(LIB_HEADERS) $(LIB2_HEADERS) $(PACS_INC_DIR)
 	mv -f $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(STATIC_LIBFILE2) $(DYNAMIC_LIBFILE2) $(PACS_LIB_DIR)
 clean:

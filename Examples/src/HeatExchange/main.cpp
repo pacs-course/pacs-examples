@@ -40,6 +40,7 @@ main(int argc, char **argv)
 {
   using namespace std; // avoid std::
   int    status(0);    // final program status
+  bool jsonfile{false};
   GetPot cl(argc, argv);
   if(cl.search(2, "-h", "--help"))
     {
@@ -50,6 +51,17 @@ main(int argc, char **argv)
   bool verbose = cl.search(1, "-v");
   // Get file with parameter values
   string filename = cl.follow("parameters.pot", "-p");
+  auto pos = filename.find(".json");
+  if(pos != std::string::npos)
+  {
+    jsonfile=true;
+    std::cout<<"Json input file\n";
+  }
+  else
+  {
+    jsonfile=false;
+    std::cout<<"Getpot input file\n";
+  }
   cout << "Reading parameters from " << filename << std::endl;
 #if __cplusplus < 201703L
   // This version is perfectly fine and
@@ -57,7 +69,12 @@ main(int argc, char **argv)
   // may make things simpler
 
   // read parameters
-  const parameters param = readParameters(filename, verbose);
+//  const parameters param = readParameters(filename, verbose);
+  parameters param;
+  if(jsonfile)
+    param= readParameters_json(filename, verbose);
+  else
+    param = readParameters(filename, verbose);
   // Transfer parameters to local variables, to avoid having towrite every time
   // param.xx. I use references to save memory (not really an issue here, it is
   // just to show a possible  use of references)
@@ -79,8 +96,14 @@ main(int argc, char **argv)
   // C++17 onwards version. This version works only with at least C++17
   // A oneliner! This is called structured bindings. It works because parameter
   // class is an aggregate!
-  const auto &[itermax, toler, L, a1, a2, To, Te, k, hc, M, solverType] =
-    readParameters(filename, verbose);
+  parameters param;
+    if(jsonfile)
+      param= readParameters_json(filename, verbose);
+    else
+      param=   readParameters(filename, verbose);
+
+    const auto &[itermax, toler, L, a1, a2, To, Te, k, hc, M, solverType] = param;
+     
 #endif
 
   //! Precomputed coefficient for adimensional form of equation
