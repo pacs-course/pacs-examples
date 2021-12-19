@@ -1,0 +1,15 @@
+{
+    "MMAX":501,
+    "L":40.0,
+    "a1":4.0,
+    "a2":50.0,
+    "To":46.0,
+    "Te":20.0,
+    "k":0.164,
+    "itermax":1000000,
+    "hc":200.0E-6,
+    "M":10,
+    "toler":1.0E-8,
+    "solverType":1,
+    "docstring":"File for Example HeatExchange"
+}
