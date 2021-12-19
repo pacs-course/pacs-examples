@@ -95,8 +95,8 @@ SRCS=$(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
 
-OTHER_OBJS:=
-OTHER_SRCS:=
+OTHER_OBJS:=QuadParameters.o
+OTHER_SRCS:=QuadParameters.cpp
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -133,7 +133,7 @@ dynamic:
 #	$(RM) -f *.o
 	$(MAKE) library LIBTYPE=DYNAMIC
 
-exec: $(EXEC)
+exec: alllib $(EXEC)
 
 library:   $(LIBRARY2) $(LIBRARY) $(LIBRARY3) $(LIBRARY4) $(LIBRARY5)
 
