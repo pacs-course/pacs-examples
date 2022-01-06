@@ -61,21 +61,22 @@ Change the protocol of the submodules to ssh. You should not need it!
 ## SOME USEFUL ENVIRONMENTAL VARIABLES ##
 
 If you do not use the modules system employed in the course it is better to set some environmental variables.
-This allows some examples to compile without the need to touch the Makefile. *if you do not know how to set an environmental variable read any good Unix/Linux tutorial*.
+This allows some (only a few!) examples to compile without the need to touch the Makefile. *if you do not know how to set an environmental variable read any good Unix/Linux tutorial*. 
 
-Here I report them with also the value I am using in my computer. 
+Here I report them with also the value I am using in my computer.
 
-mkSuitesparseInc=/usr/include/suitesparse/  # The directory where the suitesparse package is installed 
-mkSuitesparseLib=/usr/lib/x86_64-linux-gnu
-mkCCompiler=gcc
-mkCxxCompiler=g++
-mkTbbInc=/usr/include
-mkHdf5Inc=/usr/include/hdf5/serial/
-mkEigenHome=/usr/local/include/eigen3
-mkEigenInc=/usr/local/include/eigen3
-mkTbbLib=/usr/lib/x86_64-linux-gnu/
-mkBoostInc=/usr/local/boost_1_72_0/include
-mkBoostLib=/usr/local/boost_1_72_0/lib
-mkOpenmpiLib=/usr/lib/x86_64-linux-gnu
-mkCgalInc=/usr/include
+- `mkSuitesparseInc=/usr/include/suitesparse/`  # The directory where the suitesparse headers are installed 
+- `mkSuitesparseLib=/usr/lib/x86_64-linux-gnu`  # The directory where the suitesparse libraries are installed
+- `mkCCompiler=gcc`   # The C compiler
+- `mkCxxCompiler=g++` # The C++ compiler
+- `mkTbbInc=/usr/include` # Where the libraries for multithreding support are stored
+- `mkTbbLib=/usr/lib/x86_64-linux-gnu/` # Header files for multithreding support are stored
+- `mkHdf5Inc=/usr/include/hdf5/serial/` # hdf header files
+- `mkEigenHome=/usr/local/include/eigen3` # The header files of the eigen library
+- `mkEigenInc=/usr/local/include/eigen3`  # The header files of the eigen library
+- `mkBoostInc=/usr/local/boost_1_72_0/include` # Boost lib header files
+- `mkBoostLib=/usr/local/boost_1_72_0/lib` # Boost libraries
+- `mkOpenmpiLib=/usr/lib/x86_64-linux-gnu` # MPI libraries
+- `mkCgalInc=/usr/include`                 # Cgal include files
+- `mkCgalLib=/usr/lib/x86_64-linux-gnu`    # Cgal libraries
 
