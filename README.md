@@ -3,7 +3,7 @@ EXAMPLES AND EXERCISES FOR PACS COURSE
 
 This repo contains source code and descriptions for the examples and exercises
 that will be explained during the PACS (Programmazione Avanzata per il Calcolo
-Scientifico - Advanced Programming for Scientific Calculus) course at
+Scientifico - Advanced Programming for Scientific Computing) course at
 Politecnico di Milano.
 
 The repository contains submodules, so to check it out properly you have to type
@@ -21,8 +21,10 @@ git clone --recursive git@github.com:pacs-course/pacs-examples.git
 In the latter case you have to register your ssh keys on a github account.
 
 
-The software require a c++ compiler, i.e. gcc >= 8.0 or clang >= 8.
+The software requires a c++ compiler, i.e. gcc >= 8.0 or clang >= 8.
 You may check the version of you compiler with the option -v. Several examples have now been ported to c++17
+and some examples of c++20 are being added. Check wether your compile support those standards. You may have a look
+on https://en.cppreference.com/w/cpp/compiler_support
 
 This directory contains some utilities:
 
@@ -55,4 +57,25 @@ Change the protocol of the submodules to https. You should not need it!
 
 ** change_submodules_url_ssh.sh
 Change the protocol of the submodules to ssh. You should not need it!
+
+## SOME USEFUL ENVIRONMENTAL VARIABLES ##
+
+If you do not use the modules system employed in the course it is better to set some environmental variables.
+This allows some examples to compile without the need to touch the Makefile. *if you do not know how to set an environmental variable read any good Unix/Linux tutorial*.
+
+Here I report them with also the value I am using in my computer. 
+
+mkSuitesparseInc=/usr/include/suitesparse/  # The directory where the suitesparse package is installed 
+mkSuitesparseLib=/usr/lib/x86_64-linux-gnu
+mkCCompiler=gcc
+mkCxxCompiler=g++
+mkTbbInc=/usr/include
+mkHdf5Inc=/usr/include/hdf5/serial/
+mkEigenHome=/usr/local/include/eigen3
+mkEigenInc=/usr/local/include/eigen3
+mkTbbLib=/usr/lib/x86_64-linux-gnu/
+mkBoostInc=/usr/local/boost_1_72_0/include
+mkBoostLib=/usr/local/boost_1_72_0/lib
+mkOpenmpiLib=/usr/lib/x86_64-linux-gnu
+mkCgalInc=/usr/include
 
