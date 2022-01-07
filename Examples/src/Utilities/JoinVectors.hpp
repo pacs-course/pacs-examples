@@ -77,7 +77,7 @@ public:
 
   /*!
    * Extracts the values at the i-th position of the joined vectors (non-const
-   * version) It shows a nic euse of std::apply to generate a tuple of
+   * version) It shows a nice euse of std::apply to generate a tuple of
    * references.
    * @param i The index of the values to be extracted
    * @return A tuple of references to the elements in the joined vector at the

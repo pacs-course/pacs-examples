@@ -21,48 +21,50 @@
 #
 
 # The directory where the examples reside (you HAVE to change this)
-PACS_ROOT=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
+PACS_ROOT?=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
 # The directory with the Eigen (leave blank if they are in a standard directory)
 mkEigenInc?=/usr/local/include/eigen3/
 EIGEN_DIR=$(mkEigenInc)
-
-# If you need extra directories. Leave as it is and change the specific
-# Makefile.inc in the example directory (it is better)
-OTHER_LIB_DIR=
-OTHER_INC_DIR=
 #
 # Mpi directories for library and include files
 #
+mkOpenmpiLib?=/usr/lib/x86_64-linux-gnu
+mkOpenmpiInc?=/usr/include
 MPI_LIBDIR=${mkOpenmpiLib}
 MPI_INCDIR=${mkOpenmpiInc}
 #
-# The location of the multithresing building block library and header files
-# necessary for the parallel version of the algorithms.
-
-mkTbbLib?=/usr/lib/x86_64-linux-gnu/
-mkTbbInc?=/usr/include
-
-
+# C++ native parallelization support with g++ needs the TBB libraries
 #
-# Name of additional libraries
+mkTbbInc?=/usr/include
+mkTbbLib?=/usr/lib/x86_64-linux-gnu/
+TBB_LIBDIR=${mkTbbLib}
+TBB_INCDIR=${mkTbbIn}
+#
+# Boost libraries
+# 
+mkBoostInc?=/usr/include/boost/
+mkBoostLib?=/usr/lib/x86_64-linux-gnu/
+BOOST_INCDIR=mkBoostInc
+BOOST_LIBDIR=mkBoostLib
+#
+# Name of additional libraries (set by the local Makefile.inc if necessary)
 #
 LIBRARIES=
+# Extra directories. Set by local Makefile.inc if required
+OTHER_LIB_DIR=
+OTHER_INC_DIR=
 
 #
 # The C++ compiler (taken from an environmental variable)
 #
-#CXX = g++
-#CXX = icc
-#CXX = clang++
 mkCxxCompiler?=g++
 CXX = ${mkCxxCompiler}
 #
-#CC=your favourite C compiler
-# do
-# If you need C to compiler but you still need the c++ linker to 
-#LINK.o = $(LINK.cc)
+mkCCompiler?=gcc
+CC = ${mkCxxCompiler}
+
 # Since we are only uning c++ I set the linker LINK.o for object files
-# so that it uses the c++ compiler. make has no separate macro for the linker!
+# so that it uses the c++ compiler. Make has no separate macro for the linker!
 LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
 #
 # If you are using intel compilers
@@ -76,7 +78,7 @@ endif
 # if not installed in the standard directories.
 #
 ifeq ($(findstring clang, $(CXX)),clang)
-OTHER_LIB_DIR+=
+ OTHER_LIB_DIR+=
 endif
 #
 #  DEFINES: Possible -DXX statements
@@ -100,7 +102,14 @@ WARNFLAGS=-Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor
 # -g       generate code suitable for the debugger
 # -p       generate code suitable for the profiler
 # -O       attemp code optimizations
+####
 #
+# Common file for Doxygen documentation
+export DOXYFILE=$(PACS_ROOT)/DoxyfileCommon
+##
+# ************ END USER MODIFIABLE PART *****************
+##
+
 ifdef RELEASE
 DEBUG=no
 else
@@ -127,17 +136,15 @@ endif
 ifeq ($(VERBOSE),yes)
   VERBOSITY=-DVERBOSE
 endif
-
 #
 # Flags for standard 
 #
-# if you want c++14
 STANDARD=c++17
-$STANDARD=c++11
+# 
+# Location of
+# Doxygen configuration file
+#
 export STDFLAGS=-std=$(STANDARD)
-##
-#  END USER MODIFIABLE PART
-##
 #
 # PACS libraries are stored here
 #
@@ -156,11 +163,6 @@ export OTHER_LIB_DIR
 export OTHER_INC_DIR
 export CC
 export CXX
-# 
-# Location of
-# Doxygen configuration file
-#
-export DOXYFILE=$(PACS_ROOT)/DoxyfileCommon
 #
 # Compose options
 #
@@ -188,7 +190,6 @@ export CCFLAGS=$(CXXFLAGS)
 #
 #header files
 export LDFLAGS+=$(OPTFLAGS) 
-#export LDLIBS=$(LIBRARIES)
 export DEPEND=make.dep
 # to avoid nasty warnings
 export ARFLAGS=rsU

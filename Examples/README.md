@@ -1,67 +1,71 @@
-# Course on Advanced programming for scientific computing Politecnico
-# di Milano Copyright Luca Formaggia 2012
+# Course on Advanced programming for scientific computing #
+## Mathematical Engineering, Politecnico di Milano ##
+## Copyright Luca Formaggia 2012-2021 ##
 
- **Changes AA 18019**
+## LICENCING ##
+The software contained in the subfolders of this directory is free-software released under a GNU General Public Licens (GPL). The details of the licence are availabe in the `COPYRIGHT` file in the root directory.
 
-To semplify linking of dynamic libraries now I use in all cases the
- option -Wl-rpath=$(PACS_LIB_DIR), so that shared libs and
- executables that load dynamic libraries created by the Examples do
- not need to set LD_LIBRARY_PATH to work. Remember however that in
- general this is not the standard situation, dynamic libraries should
- be loaded following the loader rules explained in the lecture about
- static and dynamic libraries.
 
- *Note:* maybe some examples still follow the previous rule,
- where compiling with make target DEBUG=no(optimization activated)
- did not activate the -Wl,-rpath option above.
-
- **end Changes AA18-19**
-
-#DOCUMENTATION#
+## CONTENT ##
 
 Here you find the examples given in the course
 
-`doc` -> possible additional documentation
+`doc` -> Possible additional documentation
 
-`lib` -> possible general libraries needed to compile some example
+`lib` -> Possible libraries needed to compile some example
 
 `include` -> General include files
 
 `src` -> Directory with the example sources
 
-#INSTALLATION#
+`astyle_scripts_and_hooks` Some tools to beautify your code, based on [Artistic Style](http://astyle.sourceforge.net/) (you mast install astyle if you wish to use the tools in this directory).
 
-to compile the examples the first operation to be made is to copy the
-file Makefile.user to Makefile.inc with
+`clang-format_scripts_and_hooks` Some tools to beautify your code, based on [clang-format](https://www.electronjs.org/docs/latest/development/clang-format) (you must have clang-tools installed! if you want to use the utilities in this directory).
 
-$ cp Makefile.user Makefile.inc
+
+## HOW TO COMPILE AND INSTALL THE EXAMPLES: THE FIRST STEP ##
+
+To compile the examples the first operation to be made is to copy the
+file `Makefile.user` to `Makefile.inc`:
+
+
+    $ cp Makefile.user Makefile.inc
+
 
 and edit the latter to suit your system.
 
-All Makefiles of the examples include the file Makefile.inc in this
-directory and possibly the Makefile.inc file local to the example
+(Almost) all `Makefiles` of the examples include the file `Makefile.inc` of this
+directory and possibly a `Makefile.inc` file local to the example
 under consideration.  You may modify those files to suit your need.
 
-In particular, the user may modify the Makefile.inc to change some
-compilation options. The main Makefile.inc also sets the `PACS_ROOT`
-variable, which should indicate the same directory where this `README.md`
-file is kept (with full path, i.e. the path should start with `/`).  
+In particular, the user may modify the `Makefile.inc` to change some
+compilation options. 
 
-You may change it to adapt the compilation process to your local settings by
-editing the file (better choice) or by setting an environmental
-variable with the same name: by setting the command 
-```
-export PACS_ROOT=myExampleDir 
-```
-in the `.profile` or `.bashrc` file in your home directory.
+The main `Makefile.inc` also sets the `PACS_ROOT`
+variable, which **should indicate the same directory where this** `README.md`
+**file is kept** (with the full path, i.e. the path should start with `/`).
+**A  trick:**  on your terminal type `pwd` and copy/paste the result.!
 
-`Makefile.inc` is included in all the makefiles and it defines and
+As an example:
+
+    PACS_ROOT=/home/myname/pacs/Examples/
+
+Alternatively to editing the file, you may set an environmental
+variable with the same name using the command 
+
+
+    export PACS_ROOT=/home/myname/pacs/Examples/ 
+
+in the `.profile` or in the `.bashrc` file in your home directory (see Note
+at the end of the file). The file `Makefile.inc` is included in all the Makefiles and defines and
 exports the following make macros:
 
 - `PACS_ROOT` the directory where the Examples resides
 - `CXX` the c++ compiler of choice
 - `STANDARD` contains the C++ standard used in compilation
 - `MPI_LIBDIR` and `MPI_INCDIR` where to find mpi libraries and header files, respectively
+- `TBB_LIBDIR` and `TBB_INCDIR`  where the threading building block libraries for c++ parallel ulitities are stored (libraries and header files).
+- `EIGEN_DIR` The directory containing the headers of the eigen library for linear algebra
 - `PACS_INC_DIR` and `PACS_LIB_DIR` directory for library and include files used by the examples, respectively
 - `DOXYFILE` Location of the configuration file for DOxygen used in the examples
 - `CPPFLAGS` Flags for the cpp preprocessor
@@ -76,9 +80,9 @@ defined in the common `Makefile.inc`
 
 I recall that any macro may be overrlued by specifying it when calling make
 Example:
-```
-make CXXFLAGS+=-DSOMETHING LDFLAGS=SOMETHINGELSE
-```
+
+    make CXXFLAGS+=-DSOMETHING LDFLAGS=SOMETHINGELSE
+
 or by editing the corresponding `Makefile` (or, better, the `Makefile.inc`)
 
 All examples are provided with a `Makefile` which accepts the following
@@ -95,22 +99,11 @@ doxygen configuration for all examples
 - `install` -installs everithing in `PACS_LIB_DIR` and `PACS_INC_DIR`
 
 Being all the first target of (almost all) the makefiles, to compile
-the examples is often sufficient to type make. with make doc you
+the examples is often sufficient to type `make`. with `make doc` you
 compile the documentation.
 
-                *****   IMPORTANT  ****
 
-To install some utilities used by different examples you must go to
-src/Utilities and do
-
-make
-make install
-
-in this way a library called libpacs.a (and ist dyanamic equivalent
-libpacs.so) is installed in PACS_LIB_DIR and some header files are
-installed in PACS_INC_DIR
-
-# WORKING WITH MODULES (but also if you do not use them...)#
+## WORKING WITH MODULES (but also if you do not use them...) ##
 
 If you are using modules, some environmental variables are set by the
 module system and will be inherited from the main `Makefile.inc` (the
@@ -119,14 +112,16 @@ one that you have created by copying Makefile.user).  In particular
 - `mkEigenInc`    Where the Eigen libraries (infact the header files) is stored
 - `mkOpenmpiLib`  The directory with the mpi libraries
 - `mkOpenmpiInc`  The directory with the mpi headers
+- `mkTbbInc`  Include files for the threding building block libraries (needed for parallel algorithms)
+- `mkTbbLib`  Library files for the threading building block libraries (needed for parallel algorithms)
 - `mkCxxCompiler` The c++ compiler of your choice
+- `mkEigenHome`      Where the Eigen files are kept (normally equal to MkEigenInc)
 
 Other important environment variables set up by the module system that may be 
 not  used in `Makefile.user` but may be used by other makefiles of the examples are
 
-- `mkEigenHome`      Where the Eigen files are kept (normally equal to MkEigenInc)
 - `mkClangSystemBin`  The directory holding all clang compiler executables 
-- `mkCCompiler`       The C compiler of your choiche
+- `mkCCompiler`       The C compiler of your choice
 - `mkSuitesparseLib`  Directory holding the libraries of the suitesparse suite (umfpack for instance)
 - `mkSuitesparseInc`  Directory holding the header files of the suitesparse suite (umfpack for instance)
 - `mkCgalLib`         Directory with the CGAL libraries (computational geometry libraries)
@@ -137,44 +132,116 @@ not  used in `Makefile.user` but may be used by other makefiles of the examples 
 
 So, you have two main choices
 
-1) You use the module system provided with the virtual machine. Then
-in your Makefile.inc you have to set only PACS_ROOT, all other
+  * You use the module system provided with the virtual machine. Then
+in your `Makefile.inc` you have to set only `PACS_ROOT`, all other
 variables are set by the module system.  I recall that if you want to
 see all environmental variables set by the modules you may do (all
-variables starts with mk)
+variables starts with `mk`):
 
+-------------------------------------------------------------------------------
+
+```
 env | grep mk 
+```
 
-2) You do not use the module system. Then you have again two choices
- 
-   2.a) You set the various macro in your Makefile.inc (and possibly the other Makefiles, if needed) by yourself
+-------------------------------------------------------------------------------
 
-   2.b) You simulate the module environment by creating the environmental variables: you have to put in the `.profile `file in your home directory the corresponding instructions
-        for the bash (the `~/.profile` file is read by the bash shell every time you do a login). For example, in my `.profile` I have
+  * You do not use the module system. Then you have again two choices
+   * You set the various macro in your `Makefile.inc` (and possibly the other Makefiles, if needed) by yourself
+   * You simulate the module environment by creating the environmental variables: you have to put in the `.profile `file in your home directory the corresponding instructions
+        for the bash (the `~/.profile` file is read by the bash shell every time you do a login).  For example, in my `.profile` I have:
 
-        export mkEigenInc=/usr/local/include/eigen3
-        export mkEigenHome=/usr/local/include/eigen3
-        export mkOpenmpiLib=
-        export mkClangSystemBin=/opt/clang3.7.1/bin
-        export mkCCompiler=gcc
-        export mkCxxCompiler=/opt/clang3.7.1/bin/clang++
-        export mkSuitesparseLib=/usr/lib/x86_64-linux-gnu
-        export mkSuitesparseInc=/usr/include/suitesparse/
-        export mkCgalLib=/usr/lib
-        export mkCgalInc=/usr/include
-        export mkBoostInc=/usr/local/boost_1_57_0/include
-        export mkBoostLib=/usr/local/boost_1_57_0/lib
-        
+-------------------------------------------------------------------------------
 
-        
-        Remember that after you have modified your .profile file you
-        need to do a new login (i.e. open a new shell) for the changes
-        to be effective.
+    export mkSuitesparseInc=/usr/include/suitesparse/
+    export mkSuitesparseLib=/usr/lib/x86_64-linux-gnu
+    export mkCCompiler=gcc
+    export mkCxxCompiler=g++
+    export mkTbbInc=/usr/include
+    export mkTbbLib=/usr/lib/x86_64-linux-gnu/
+    export mkHdf5Inc=/usr/include/hdf5/serial/
+    export mkEigenHome=/usr/local/include/eigen3
+    export mkEigenInc=/usr/local/include/eigen3
+    export mkBoostInc=/usr/local/boost_1_72_0/include
+    export mkBoostLib=/usr/local/boost_1_72_0/lib
+    export mkOpenmpiLib=/usr/lib/x86_64-linux-gnu
+    export mkOpenmpiInc=/usr/include
+    export mkCgalInc=/usr/include
+    export mkCgalLib=/usr/lib/x86_64-linux-gnu
 
-#FURTHER INFO#
+
+-------------------------------------------------------------------------------
+
+Remember that after you have modified your .profile file you need to do a new login for the changes to be effective (see note at the end of the file)
+
+## SECOND STEP: INSTALL UTILITIES ##
+
+The examples require some common utilities that are contained in `src/Utilities/`. So it is simpler if we compile and install them once for all.
+
+You must go to `src/Utilities` and do
+
+    make
+    make install
+
+
+This way, a library called libpacs.a (and ist dynamic equivalent
+libpacs.so) is installed in `PACS_LIB_DIR` and some header files are
+installed in `PACS_INC_DIR`
+
+
+## FURTHER INFO ##
 
 - An overview of the examples is in the `CONTENT.md` file
 - The bash script `directories.sh` creates a searcheable
 tree, `directory.html` of the subfolder `src` that may be parsed with
 a browser. To run it you must have the unix utility `tree`
 installed. Anyway, a copy of `directories.html` is present in this directory.
+
+## The content of `src` Directory ##
+A description of the examples in the `src` directory is founr in `CONTENT.md`.
+
+
+### A note on `.bashrc` or `.profile` (or `.bash_profile`) ### 
+
+To control the settings of your Linux environment everytime you login
+the (hidden) file `.bash_profile` (or `.profile` if you are using its
+old, but still valid, name) in your home directory is sourced (its
+content is run as if typed on a terminal). Everytime you open a bash
+shell the `.bashrc` file is sourced. 
+
+What's the difference? Well today people prefer to put everything in
+the `.bashrc` file, but in principle envronmental variables
+definitions should be put in the `.profile` (or `.bash_profile`),
+while `.bashrc` should be reserved for command alias or customization
+that need to change wether you are in a interactive shell (terminal)
+or not (batch job). 
+
+A practical difference is that if you change `.profile` (or `.bash_profile`)
+the changes become operative only after a new login. 
+Changes in `.bashrc` becomes active just by opening a new terminal.
+
+If this is too confusing for you, replace `.profile` with `.bashrc` in
+my instructions above and everithing will wark the same way in
+practice.
+
+If you want to know more (and discover that you have also
+`.bash_login`) go
+[here](https://www.baeldung.com/linux/bashrc-vs-bash-profile-vs-profile),
+or look to any good Unix reference manual.
+
+
+**Changes AA 18-19**
+
+To semplify linking of dynamic libraries now I use in all cases the
+ option -Wl-rpath=$(PACS_LIB_DIR), so that shared libs and executables
+ that load dynamic libraries created by the Examples do not need to
+ set LD_LIBRARY_PATH to work. Remember however that in general this is
+ not the standard situation, dynamic libraries should be loaded
+ following the loader rules explained in the lecture about static and
+ dynamic libraries.
+
+ *Note:* maybe some examples still follow the previous rule,
+ where compiling with make target DEBUG=no(optimization activated)
+ did not activate the -Wl,-rpath option above.
+
+ **end Changes AA18-19**

@@ -7,13 +7,19 @@
 
 #ifndef EXAMPLES_SRC_LOADLIBRARIES_LOADLIBRARIES_HPP_
 #define EXAMPLES_SRC_LOADLIBRARIES_LOADLIBRARIES_HPP_
+#include <dlfcn.h>
 #include <string>
-#include <vector>
+#include <map>
 namespace apsc
 {
 /*!
- * An utility to load dynamic libraries by name and keep them in a common
+ * @brief An utility to load dynamic libraries by name and keep them in a common
  * repository
+ *
+ * The object of this class must be in the accessible for all time the libraries
+ * are used. Indeed it applied the RAII principle and the descructor closes the
+ * libraries. When a dynamic library is closed the symbols it provides are not
+ * accessible anymore.
  *
  */
 class LoadLibraries
@@ -30,15 +36,21 @@ public:
   //! the file should contain the name of the libraries, one for each line
   //! @param fileName file containing the name of the libraries to load
   //! @return a bool: if true everything is ok
-  bool load(std::string fileName);
+  bool load(std::string fileName,int mode=RTLD_NOW);
   //! Loads a single library given its name and adds it to the repository
-  bool loadSingleLibrary(std::string libName);
-  //! close all libraries and empties the repo
+  bool loadSingleLibrary(std::string libName,int mode=RTLD_NOW);
+  //! closes all libraries and empties the repo
   void close();
+  //! close a specific library. If library not present it is a NoOp.
+  void close(std::string libname);
+  //! Gets the handle to a specific library. Returns nullptr if library not present.
+  void * getLibraryHandle(std::string libName) const;
+  //! destructor closes the libraries
+  ~LoadLibraries() { this->close(); }
 
 private:
   // The handler of all libraries
-  std::vector<void *> loadedLibs;
+  std::map<std::string,void *> loadedLibs;
 };
 
 } // namespace apsc
