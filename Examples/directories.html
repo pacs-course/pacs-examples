@@ -30,7 +30,7 @@
 	<h1>Directory structure of the examples</h1><p>
 	<a class="NORM" href="./src">./src</a><br>
 	├── <a class="DIR" href="./src/Aggregates/">Aggregates</a><br>
-	├── <a class="DIR" href="./src/ArraysAndAggregates/">ArraysAndAggregates</a><br>
+	├── <a class="DIR" href="./src/Arrays/">Arrays</a><br>
 	├── <a class="DIR" href="./src/bcHandler/">bcHandler</a><br>
 	├── <a class="DIR" href="./src/Bindings/">Bindings</a><br>
 	├── <a class="DIR" href="./src/CompositionWithVariadicTemplates/">CompositionWithVariadicTemplates</a><br>
@@ -45,14 +45,13 @@
 	├── <a class="DIR" href="./src/ExpressionTemplates/">ExpressionTemplates</a><br>
 	│   ├── <a class="DIR" href="./src/ExpressionTemplates/Algebra/">Algebra</a><br>
 	│   └── <a class="DIR" href="./src/ExpressionTemplates/Integral/">Integral</a><br>
-	├── <a class="DIR" href="./src/FactoryPlugin/">FactoryPlugin</a><br>
-	├── <a class="DIR" href="./src/FactoryPluginII/">FactoryPluginII</a><br>
 	├── <a class="DIR" href="./src/FixedPointSolver/">FixedPointSolver</a><br>
 	├── <a class="DIR" href="./src/FloatingPoint/">FloatingPoint</a><br>
 	│   ├── <a class="DIR" href="./src/FloatingPoint/FinDiff/">FinDiff</a><br>
 	│   ├── <a class="DIR" href="./src/FloatingPoint/FPComparison/">FPComparison</a><br>
 	│   ├── <a class="DIR" href="./src/FloatingPoint/FPExceptions/">FPExceptions</a><br>
-	│   └── <a class="DIR" href="./src/FloatingPoint/FPfailut/">FPfailut</a><br>
+	│   ├── <a class="DIR" href="./src/FloatingPoint/FPFailure/">FPFailure</a><br>
+	│   └── <a class="DIR" href="./src/FloatingPoint/QuadraticRoot/">QuadraticRoot</a><br>
 	├── <a class="DIR" href="./src/ForwardDeclaration/">ForwardDeclaration</a><br>
 	├── <a class="DIR" href="./src/Functors/">Functors</a><br>
 	├── <a class="DIR" href="./src/GenericFactory/">GenericFactory</a><br>
@@ -61,7 +60,7 @@
 	├── <a class="DIR" href="./src/Horner/">Horner</a><br>
 	├── <a class="DIR" href="./src/IntegerOverflow/">IntegerOverflow</a><br>
 	├── <a class="DIR" href="./src/Interp1D/">Interp1D</a><br>
-	├── <a class="DIR" href="./src/Libraries/">Libraries</a><br>
+	├── <a class="DIR" href="./src/LambdaExpr/">LambdaExpr</a><br>
 	├── <a class="DIR" href="./src/LinearAlgebra/">LinearAlgebra</a><br>
 	│   ├── <a class="DIR" href="./src/LinearAlgebra/CppNumericalSolvers/">CppNumericalSolvers</a><br>
 	│   ├── <a class="DIR" href="./src/LinearAlgebra/IML_Eigen/">IML_Eigen</a><br>
@@ -79,17 +78,14 @@
 	│   └── <a class="DIR" href="./src/Mesh/Test/">Test</a><br>
 	├── <a class="DIR" href="./src/MetaProgramming/">MetaProgramming</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/DecltypeDeclVal/">DecltypeDeclVal</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/Enable_if/">Enable_if</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/GCD/">GCD</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/ifthenelse/">ifthenelse</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/IsClonable/">IsClonable</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/MetaDot/">MetaDot</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/Pi/">Pi</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/Pow/">Pow</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/SwitchType/">SwitchType</a><br>
 	│   ├── <a class="DIR" href="./src/MetaProgramming/transposeView/">transposeView</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/Trivial/">Trivial</a><br>
-	│   └── <a class="DIR" href="./src/MetaProgramming/TypeTraitsC11/">TypeTraitsC11</a><br>
+	│   └── <a class="DIR" href="./src/MetaProgramming/Trivial/">Trivial</a><br>
 	├── <a class="DIR" href="./src/MoveSemantic/">MoveSemantic</a><br>
 	├── <a class="DIR" href="./src/MoveSemantic_simple/">MoveSemantic_simple</a><br>
 	├── <a class="DIR" href="./src/MultiCity/">MultiCity</a><br>
@@ -97,28 +93,31 @@
 	├── <a class="DIR" href="./src/MyMat0/">MyMat0</a><br>
 	│   └── <a class="DIR" href="./src/MyMat0/MyMat0_TypeTraitAndView/">MyMat0_TypeTraitAndView</a><br>
 	├── <a class="DIR" href="./src/NewtonSolver/">NewtonSolver</a><br>
+	├── <a class="DIR" href="./src/NonLynSys/">NonLynSys</a><br>
 	├── <a class="DIR" href="./src/Numeric_Limits/">Numeric_Limits</a><br>
 	├── <a class="DIR" href="./src/Odr/">Odr</a><br>
 	├── <a class="DIR" href="./src/OneDMesh/">OneDMesh</a><br>
 	├── <a class="DIR" href="./src/OptimizationAndProfiling/">OptimizationAndProfiling</a><br>
-	│   └── <a class="DIR" href="./src/OptimizationAndProfiling/html/">html</a><br>
 	├── <a class="DIR" href="./src/Parallel/">Parallel</a><br>
 	│   ├── <a class="DIR" href="./src/Parallel/MPI/">MPI</a><br>
-	│   └── <a class="DIR" href="./src/Parallel/OpenMP/">OpenMP</a><br>
+	│   ├── <a class="DIR" href="./src/Parallel/OpenMP/">OpenMP</a><br>
+	│   └── <a class="DIR" href="./src/Parallel/ParallelSTL/">ParallelSTL</a><br>
+	├── <a class="DIR" href="./src/Plugins/">Plugins</a><br>
+	│   ├── <a class="DIR" href="./src/Plugins/FactoryPlugin/">FactoryPlugin</a><br>
+	│   └── <a class="DIR" href="./src/Plugins/FactoryPluginII/">FactoryPluginII</a><br>
 	├── <a class="DIR" href="./src/Polygon/">Polygon</a><br>
 	├── <a class="DIR" href="./src/Polynomials/">Polynomials</a><br>
 	├── <a class="DIR" href="./src/Preprocessor/">Preprocessor</a><br>
-	├── <a class="DIR" href="./src/QuadraticRoot/">QuadraticRoot</a><br>
 	├── <a class="DIR" href="./src/QuadratureRule/">QuadratureRule</a><br>
 	│   ├── <a class="DIR" href="./src/QuadratureRule/AllDynamic/">AllDynamic</a><br>
 	│   └── <a class="DIR" href="./src/QuadratureRule/baseVersion/">baseVersion</a><br>
 	├── <a class="DIR" href="./src/RandomDistibutions/">RandomDistibutions</a><br>
 	├── <a class="DIR" href="./src/Rational/">Rational</a><br>
 	├── <a class="DIR" href="./src/ReadingVectors/">ReadingVectors</a><br>
+	├── <a class="DIR" href="./src/RefBindings/">RefBindings</a><br>
 	├── <a class="DIR" href="./src/ReferenceWrapper/">ReferenceWrapper</a><br>
 	├── <a class="DIR" href="./src/Regression/">Regression</a><br>
-	│   ├── <a class="DIR" href="./src/Regression/auto/">auto</a><br>
-	│   └── <a class="DIR" href="./src/Regression/doc/">doc</a><br>
+	├── <a class="DIR" href="./src/Richardson/">Richardson</a><br>
 	├── <a class="DIR" href="./src/RK45/">RK45</a><br>
 	├── <a class="DIR" href="./src/RKFSolver/">RKFSolver</a><br>
 	│   └── <a class="DIR" href="./src/RKFSolver/RKStability/">RKStability</a><br>
@@ -131,12 +130,15 @@
 	├── <a class="DIR" href="./src/STL/">STL</a><br>
 	│   ├── <a class="DIR" href="./src/STL/cont/">cont</a><br>
 	│   ├── <a class="DIR" href="./src/STL/FileSystem/">FileSystem</a><br>
+	│   ├── <a class="DIR" href="./src/STL/Map/">Map</a><br>
 	│   ├── <a class="DIR" href="./src/STL/Optional/">Optional</a><br>
 	│   ├── <a class="DIR" href="./src/STL/Reduce/">Reduce</a><br>
 	│   ├── <a class="DIR" href="./src/STL/Set/">Set</a><br>
 	│   ├── <a class="DIR" href="./src/STL/SetEdge/">SetEdge</a><br>
 	│   ├── <a class="DIR" href="./src/STL/Sort/">Sort</a><br>
+	│   ├── <a class="DIR" href="./src/STL/SortAndPermute/">SortAndPermute</a><br>
 	│   ├── <a class="DIR" href="./src/STL/tuple/">tuple</a><br>
+	│   ├── <a class="DIR" href="./src/STL/UnorderedMap/">UnorderedMap</a><br>
 	│   └── <a class="DIR" href="./src/STL/Variant/">Variant</a><br>
 	├── <a class="DIR" href="./src/Streams/">Streams</a><br>
 	│   ├── <a class="DIR" href="./src/Streams/binary_io/">binary_io</a><br>
@@ -145,6 +147,7 @@
 	│   ├── <a class="DIR" href="./src/Streams/redirect/">redirect</a><br>
 	│   ├── <a class="DIR" href="./src/Streams/Serialization/">Serialization</a><br>
 	│   └── <a class="DIR" href="./src/Streams/sstream/">sstream</a><br>
+	├── <a class="DIR" href="./src/StringLiterals/">StringLiterals</a><br>
 	├── <a class="DIR" href="./src/Templates/">Templates</a><br>
 	│   ├── <a class="DIR" href="./src/Templates/Compare/">Compare</a><br>
 	│   ├── <a class="DIR" href="./src/Templates/ExplicitInstantiation/">ExplicitInstantiation</a><br>
@@ -156,11 +159,13 @@
 	│   └── <a class="DIR" href="./src/Templates/VariadicTemplates/">VariadicTemplates</a><br>
 	├── <a class="DIR" href="./src/Utilities/">Utilities</a><br>
 	└── <a class="DIR" href="./src/Vector/">Vector</a><br>
+	&nbsp;&nbsp;&nbsp; ├── <a class="DIR" href="./src/Vector/Basics/">Basics</a><br>
+	&nbsp;&nbsp;&nbsp; └── <a class="DIR" href="./src/Vector/Remove/">Remove</a><br>
 	<br><br>
 	</p>
 	<p>
 
-127 directories
+132 directories
 	<br><br>
 	</p>
 	<hr>
