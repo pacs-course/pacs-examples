@@ -58,25 +58,15 @@ Change the protocol of the submodules to https. You should not need it!
 ** change_submodules_url_ssh.sh
 Change the protocol of the submodules to ssh. You should not need it!
 
-## SOME USEFUL ENVIRONMENTAL VARIABLES ##
+## WHAT DO DO NEXT? ##
 
-If you do not use the modules system employed in the course it is better to set some environmental variables.
-This allows some (only a few!) examples to compile without the need to touch the Makefile. *if you do not know how to set an environmental variable read any good Unix/Linux tutorial*. 
+- Go to the `Extras/` directory that contains additional software used by some examples and follow the instructions in the local `README.md` file.
+- Go to the `Examples/` directory and follow the instructions in the local `README.md` file. 
 
-Here I report them with also the value I am using in my computer.
+## What ELSE? ##
 
-- `mkSuitesparseInc=/usr/include/suitesparse/`  # The directory where the suitesparse headers are installed 
-- `mkSuitesparseLib=/usr/lib/x86_64-linux-gnu`  # The directory where the suitesparse libraries are installed
-- `mkCCompiler=gcc`   # The C compiler
-- `mkCxxCompiler=g++` # The C++ compiler
-- `mkTbbInc=/usr/include` # Where the libraries for multithreding support are stored
-- `mkTbbLib=/usr/lib/x86_64-linux-gnu/` # Header files for multithreding support are stored
-- `mkHdf5Inc=/usr/include/hdf5/serial/` # hdf header files
-- `mkEigenHome=/usr/local/include/eigen3` # The header files of the eigen library
-- `mkEigenInc=/usr/local/include/eigen3`  # The header files of the eigen library
-- `mkBoostInc=/usr/local/boost_1_72_0/include` # Boost lib header files
-- `mkBoostLib=/usr/local/boost_1_72_0/lib` # Boost libraries
-- `mkOpenmpiLib=/usr/lib/x86_64-linux-gnu` # MPI libraries
-- `mkCgalInc=/usr/include`                 # Cgal include files
-- `mkCgalLib=/usr/lib/x86_64-linux-gnu`    # Cgal libraries
+  * `Exercises/` Directory with the exercises of the course, subdivided by year! Enjoy!
+  
+
+
 

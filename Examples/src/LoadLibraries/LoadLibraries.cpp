@@ -6,14 +6,13 @@
  */
 #include "../LoadLibraries/LoadLibraries.hpp"
 
-#include <dlfcn.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 namespace apsc
 {
 bool
-LoadLibraries::load(std::string fileName)
+LoadLibraries::load(std::string fileName, int mode)
 {
   bool          good = true;
   std::ifstream pFile(fileName);
@@ -37,7 +36,7 @@ LoadLibraries::load(std::string fileName)
       if(start != end)
         {
           std::string libName(start, end);
-          good = loadSingleLibrary(libName);
+          good = loadSingleLibrary(libName, mode);
         }
       else
         std::clog << "Empty line in plugins file\n";
@@ -46,22 +45,32 @@ LoadLibraries::load(std::string fileName)
 }
 
 bool
-LoadLibraries::loadSingleLibrary(std::string libName)
+LoadLibraries::loadSingleLibrary(std::string libName, int mode)
 {
   bool good = true;
-  // open the dynamic library
-  void *sdl_library = dlopen(libName.c_str(), RTLD_NOW);
-  // check if error
-  if(sdl_library == nullptr)
+  auto found = (loadedLibs.find(libName) == loadedLibs.end());
+  if(found)
     {
-      std::cerr << " Cannot load Library " << libName << " " << dlerror()
-                << std::endl;
-      good = false;
+      std::cerr << libName << "WARNING: Library " << libName
+                << " already existing."
+                << "Cannot open the same library twice" << std::endl;
     }
   else
     {
-      std::clog << libName << " Library opened" << std::endl;
-      loadedLibs.push_back(sdl_library);
+      // open the dynamic library
+      void *sdl_library = dlopen(libName.c_str(), mode);
+      // check if error
+      if(sdl_library == nullptr)
+        {
+          std::cerr << " Cannot load Library " << libName << " " << dlerror()
+                    << std::endl;
+          good = false;
+        }
+      else
+        {
+          std::clog << libName << " Library opened" << std::endl;
+          loadedLibs.insert({libName, sdl_library});
+        }
     }
   return good;
 }
@@ -70,11 +79,38 @@ void
 LoadLibraries::close()
 {
   // close all hold libraries
-  for(auto l : this->loadedLibs)
+  for(auto [n, l] : this->loadedLibs)
     dlclose(l);
-  // free vector
+  // free map
   this->loadedLibs.clear();
-  this->loadedLibs.shrink_to_fit();
 }
+  
+void
+LoadLibraries::close(std::string libName)
+{
+  auto found = loadedLibs.find(libName);
+  if(found != loadedLibs.end())
+  {
+    dlclose(found->second);
+    loadedLibs.erase(found);
+  }
+  // if lib not present is a NoOp.
+}
+
+void *
+LoadLibraries::getLibraryHandle(std::string libName) const
+{
+  auto found = loadedLibs.find(libName);
+  if(found == loadedLibs.end())
+    {
+      return nullptr;
+    }
+  else
+    {
+      return found->second;
+    }
+}
+
+  
 
 } // namespace apsc
