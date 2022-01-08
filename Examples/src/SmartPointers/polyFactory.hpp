@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 namespace Geometry
 {
 //! To drive the factory
@@ -29,14 +30,14 @@ enum class Shape
 */
 template <Shape SHAPE, class... Args>
 std::unique_ptr<AbstractPolygon>
-polyFactory(Args... args)
+polyFactory(Args&&... args)
 {
   if constexpr(SHAPE == Shape::Triangle)
-    return std::make_unique<Triangle>(args...);
+    return std::make_unique<Triangle>(std::forward<Args>(args)...);
   else if constexpr(SHAPE == Shape::Square)
-    return std::make_unique<Square>(args...);
+    return std::make_unique<Square>(std::forward<Args>(args)...);
   else if constexpr(SHAPE == Shape::Polygon)
-    return std::make_unique<Polygon>(args...);
+    return std::make_unique<Polygon>()(std::forward<Args>(args)...);
   else
     return nullptr; // To avoid compiler complains
 }

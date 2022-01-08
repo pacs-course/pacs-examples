@@ -8,6 +8,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <complex>
 /*!
  * A class to show the use of lambda expressions the uses the
  * object of the class
@@ -65,6 +66,19 @@ csin(double x)
   return [x](double y) { return x * std::sin(y); };
 }
 
+// Since C++17 You can have template lambdas and automatic lambdas!!
+template<unsigned int N>
+auto power = [](auto x)
+{
+  if constexpr (N==0u)
+    // I assume that there is an constructor that may take 1 as argument
+      return decltype(x)(1);
+  else if constexpr (N==1u)
+      return x;
+  else
+      return x*power<N-1u>(x);
+};
+
 int
 main()
 {
@@ -80,8 +94,10 @@ main()
   // passing by value and by reference: the main difference
   // here the z in the scope of the lambda ia a copy of z
   auto l1 = [z](const double &y) { return z * y; };
-  // here the z in the scope of the lambda ia a reference (an alias) of z
-  auto l2 = [&z](const double &y) { return z * y; };
+  // here the z in the scope of the lambda is a reference (an alias) of z
+  // I also use an alternative sintax where I specify the return type (normally not needed,
+  // but sometimes necessary).
+  auto l2 = [&z](const double &y) -> double { return z * y; };
 
   // constexpr are automatically included in a lambda expession!
   // and a lambda expression may use another lambda expression!
@@ -94,7 +110,7 @@ main()
   std::cout << " Now I change z\n";
   z = -3.5;
   // The value of the z local to l1 is unchanged. It is a copy of z at the
-  // moment of the cration of the lambda expression. While l2 stores a reference
+  // moment of the creation of the lambda expression. While l2 stores a reference
   // ... therefore:
   std::cout << "l1(5) and l2(5)" << l1(5) << " " << l2(5) << std::endl;
   // Using a function returning a lambda
@@ -102,4 +118,13 @@ main()
   double w = f1(2.0);    // w = 4*sin(2)
   std::cout << " w=" << w << " is equal to 4*sin(2)=" << 4. * std::sin(2.)
             << std::endl;
+
+
+  std::cout<< "5.3^5= "<<power<5>(5.3)<<std::endl;
+  // The power of automatic lambdas (and in general automatic deduction of types)
+  std::complex d{3.,8.};
+  std::cout<< "(3+8i)^3= "<<power<5>(d)<<std::endl;
+
+
+
 }

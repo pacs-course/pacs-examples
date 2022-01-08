@@ -158,7 +158,7 @@ main()
     std::sort(std::execution::par, b.begin(), b.end(), std::greater<>());
     watch.stop();
     std::cout << "sorting a vectors of " << b.size()
-              << " element with sequential execution\n";
+              << " element with parallel execution\n";
     std::cout << watch << std::endl;
   }
 
