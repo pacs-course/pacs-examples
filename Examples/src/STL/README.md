@@ -30,9 +30,14 @@ It contins also an example of use of `std::visit()`.
 
 * `Reduce/` Two new stl parallel algorithms
 
+* `SortAndPermute` An useful utility if you need to sort a vector and keep track of the performed
+permutation to be able to apply it to other vectors.
+
 * `Streams` A set of examples on streams, including binary i/o.
 
 * `Map` A simple program that shows the main functionalities of `std::map`
+
+
 
 #What do I lean here?#
 

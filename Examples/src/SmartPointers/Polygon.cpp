@@ -25,10 +25,9 @@ AbstractPolygon::showMe(std::ostream &out) const
   else
     {
       out << "Vertices:" << std::endl;
-      out << "    X     "
-          << "   Y    " << std::endl;
+      out << "\tX\t\tY" << std::endl;
       for(auto const &i : this->vertexes)
-        out << i.x() << " " << i.y() << std::endl;
+        out << "\t"<<i.x() << "\t\t" << i.y() << std::endl;
     }
   out << " Area =" << this->area() << std::endl;
   if(this->isconvex)

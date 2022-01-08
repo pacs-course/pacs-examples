@@ -24,7 +24,6 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 export DEBUG=yes
 #CXX=g++-4.9
 #CC=$(CXX)# I am not using C compiler here, simpler to set it equal to c++
-STANDARD=c++17
 #
 DYNAMIC_LIBFILE=lib$(LIBNAME).so
 STATIC_LIBFILE=lib$(LIBNAME).a
@@ -64,7 +63,7 @@ endif
 #
 
 # get all files *.cpp
-SRCS=$(wildcard *.cpp)
+SRCS=main.cpp LoadLibraries.cpp
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # object file for a library if needed
@@ -74,7 +73,7 @@ LIB_HEADERS=$(LIB_SRCS:.cpp=.hpp)
 OTHER_OBJS=
 OTHER_SRCS=
 # get all headers in the working directory
-HEADERS=$(wildcard *.hpp)
+HEADERS=LoadLibraries.hpp
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
@@ -119,7 +118,19 @@ dynamic:
 	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
 	$(MAKE) exec LIBTYPE=DYNAMIC
 
-exec: $(EXEC)
+exec: supportlib libFactory.so $(EXEC)
+
+supportlib: lib1.so lib2.so
+
+libFactory.so: libFactory.cpp libtraits.hpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -fPIC -shared -o libFactory.so libFactory.cpp
+
+lib1.so: lib1.cpp libtraits.hpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -fPIC -shared -o lib1.so lib1.cpp
+lib2.so: lib2.cpp libtraits.hpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -fPIC -shared -o lib2.so lib2.cpp
+	
+	
 
 library:  $(LIBRARY)
 
@@ -127,7 +138,7 @@ install:
 	cp $(HEADERS) $(PACS_INC_DIR)
 	cp $(STATIC_LIBFILE) $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
-	$(RM) -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS) lib1.so lib2.so libFactory.so
 
 distclean:
 	$(MAKE) clean
@@ -137,7 +148,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(LIBRARY) $(EXEC_OBJS) $(OTHER_OBJS)
+$(EXEC): $(EXEC_OBJS) $(OTHER_OBJS)
 #	$(CXX) $(EXEC_OBJS) $(OTHER_OBJS) $(LDFLAGS) $(LDLIBS) -o $(EXEC)
 
 #$(EXEC_OBJS): $(EXEC_SRCS)
