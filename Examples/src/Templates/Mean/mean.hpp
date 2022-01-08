@@ -29,7 +29,7 @@ auto
 mean(std::vector<T> const &a, std::vector<T> const &b)
 {
   // If the arguments are vectors of integers, we return a vector of double!
-  using RetType = std::common_type_t<double, T>; // C++14 syntax!
+  using RetType = std::common_type_t<double, T>;
   std::vector<RetType> res(a.size());
   for(std::size_t i = 0; i < a.size(); ++i)
     res[i] = mean(a[i], b[i]);

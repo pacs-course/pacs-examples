@@ -48,7 +48,7 @@ bool
 LoadLibraries::loadSingleLibrary(std::string libName, int mode)
 {
   bool good = true;
-  auto found = (loadedLibs.find(libName) == loadedLibs.end());
+  auto found = (loadedLibs.find(libName) != loadedLibs.end());
   if(found)
     {
       std::cerr << libName << "WARNING: Library " << libName
@@ -84,16 +84,16 @@ LoadLibraries::close()
   // free map
   this->loadedLibs.clear();
 }
-  
+
 void
 LoadLibraries::close(std::string libName)
 {
   auto found = loadedLibs.find(libName);
   if(found != loadedLibs.end())
-  {
-    dlclose(found->second);
-    loadedLibs.erase(found);
-  }
+    {
+      dlclose(found->second);
+      loadedLibs.erase(found);
+    }
   // if lib not present is a NoOp.
 }
 
@@ -110,7 +110,5 @@ LoadLibraries::getLibraryHandle(std::string libName) const
       return found->second;
     }
 }
-
-  
 
 } // namespace apsc
