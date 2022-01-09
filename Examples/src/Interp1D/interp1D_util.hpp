@@ -16,14 +16,12 @@ namespace apsc
 /*! Implementation for vector<T> where T behaves like an array with 2 components
  * (key value).
  *
- * @tparam A A type with operator[i] which for i=0 returns the key and for i=1
- * returns the value
- * @tparam CompOper Comparison operator
- * @tparam T the type stores in the array. it should behave as an array of 2
- * components. The first is the key, the second is the value
- * @param v a vector
+ * @tparam A A type with operator[i] which for i=0 returns the key (x coordinate)
+ *  and for i=1 returns the value (y coordinate)
+ * @tparam CompOper Comparison operator. Defaults to less<double>
+ * @param v a vector with the interpolation points
  * @param keyVal the point to be interpolated
- * @param comp Comparison operator, defaults to less<T>
+ * @param comp Comparison operator, defaults to less<double>()
  * @return
  */
 template <typename A, typename CompOper = std::less<double>>
@@ -104,13 +102,13 @@ namespace internals
 //
 
 /*!
- *  Implementation when interpolation nodes and values are stores in two
+ *  Implementation when interpolation nodes and values are stored in two
  * different vectors
  *
  * @tparam T  The type of values to be interpolated
  * @tparam CompOper The comparison operator among keys (default less<double>)
  * @param keys The vector containing the keys (interpolation nodes)
- * @param values The vector containing the values
+ * @param values The vector containing the values (interpolation values)
  * @param keyVal The value of the key where I have to interpolate
  * @param comp The comparison operator (defaulted to less<double>{}).
  * @return
