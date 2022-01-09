@@ -24,4 +24,8 @@
 
 * `Thomas` The Thomas algorithm for the solution of tridiagonal linear systems of equations. It's an algorithm with O(n) complexity
 
+* `ZeroOfPolynomial` An implementation of the Newton-Horner algorithms for finding the zeroes of a polynomial.
+It works also for polynomial on the complex field. 
+
+
 *See also the README files in each folder. Note that in folders that are fork of third party software the README file explaining the example for the course is called README_PACS.md*

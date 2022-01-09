@@ -18,20 +18,21 @@ main()
     {0.65, -10.0}, {0.7, -8.0}, {0.8, 4.0}};
   std::vector<double> keys = {0, 0.1, 0.35, 0.7, 0.75, 0.8, 0.9};
   // print it out:
+  std::cout<<"Interpolation points\nx\ty\n";
   for(auto i : v)
-    std::cout << i[0] << " " << i[1] << std::endl;
-  // interpolate
+    std::cout << i[0] << "\t" << i[1] << std::endl;
+  std::cout<<"interpolate!"<<std::endl;
   for(auto key : keys)
     {
       double xin = apsc::interp1D(v, key);
       std::cout << "Value at " << key << " equal to " << xin << std::endl;
     }
   // To check if it works also with other comparison opts
-  std::cout << "\nreverse ordering\n";
+  std::cout << "\nreverse ordering\nx\ty\n";
   std::vector<std::array<double, 2> > vr{v.rbegin(), v.rend()}; // reverse vecto
   // print it out:
   for(auto i : vr)
-    std::cout << i[0] << " " << i[1] << std::endl;
+    std::cout << i[0] << "\t" << i[1] << std::endl;
   // now is from largest to smaller. less<T> is inconsistent: I have to use
   // std::greater
   for(auto key : keys)

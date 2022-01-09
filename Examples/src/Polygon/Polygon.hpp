@@ -259,7 +259,7 @@ public:
   bool
   checkConvexity() override
   {
-    return isconvex = true;
+    return true;
   }
   //! Specialised version for squares
   double area() const override;

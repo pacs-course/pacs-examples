@@ -3,7 +3,7 @@
 /*! A simple exercise on the concept of scope.
 
 Are you able to guess what will be printed on the terminal?
-*/
+ */
 
 // Global variables (in the global scope)
 int g = 10;
@@ -11,12 +11,12 @@ int f = 30;
 // Namespace variable
 namespace pippo
 {
-int g = 40; // it hides ::g
-namespace pluto
-{
-  int e = 30;
-  int g = 15; // it hides ::g;
-} // namespace pluto
+  int g = 40; // it hides ::g
+  namespace pluto
+  {
+    int e = 30;
+    int g = 15; // it hides ::g;
+  } // namespace pluto
 } // namespace pippo
 int
 main()
@@ -30,10 +30,10 @@ main()
   cout << "pippo g " << pippo::g << ", pluto g=" << pippo::pluto::g << endl;
   {
     double f =
-      9.9; // overrides f in the outer scope, which is now inaccessible!
+        9.9; // overrides f in the outer scope, which is now inaccessible!
     // While the global f is still accessible using full qualified name
     cout << "Local f=" << f << ", Global f=" << ::f << " Very local g=" << g
-         << endl;
+        << endl;
     // also pippo::g and pippo::pluto::g ar still accessible with teyr qulified
     // name!
     cout << "pippo::g=" << pippo::g << " pluto::g=" << pippo::pluto::g << endl;
