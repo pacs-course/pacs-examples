@@ -236,7 +236,7 @@ operator/(Polynomial<NDegree, R> const &Num, Polynomial<DDegree, R> const &Den)
   return quot;
 }
 /*!
- * The rest of the division. The quationt is discarded.
+ * The rest of the division. The quotient is discarded.
  * @param Num Numerator
  * @param Den Denominator
  * @return The rest of the division (quotient is discarded)
@@ -409,7 +409,7 @@ pow(Polynomial<RDegree, R> const &p)
 
 /*!
  * Derivative of a Polynomial
- * Usage: der<N>(p) (N>=0)
+ * Usage: der<M>(p) (M>=0)
  *
  * @author Sergio Mauricio Vanegas Arias
  * @tparam M The derivative order
