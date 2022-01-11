@@ -194,7 +194,9 @@ export DEPEND=make.dep
 # to avoid nasty warnings
 export ARFLAGS=rsU
 # Rule to generate pdf from latex files
+# Twice to solve undefined labels
 %.pdf:%.tex
+	pdflatex $<
 	pdflatex $<
 
 
