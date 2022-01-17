@@ -10,36 +10,24 @@ namespace Utility
 {
   /*!
    * A first example of computation of the greatest common divisor of two
-   * integers in a static way (i.e. at compile time) using template
-   * specialization
+   * integers in a static way (i.e. at compile time) using template function overloading
    *
-   * Gcd<M,N>::value returns the greatest common divisor of M and N
-   * @tparam M The first integral value
-   * @tparam N The second integral value
+   * Gcd<10,3>() returns greater common divisor between 10 and 3
    */
-  template <long unsigned int M, long unsigned int N> struct Gcd
+  template <unsigned M, unsigned N>
+  unsigned Gcd()
   {
     static_assert(M >= N,
                   " First template argument cannot be smaller than the second");
-    static constexpr long unsigned int value = Gcd<N, M % N>::value;
-  };
-  //! Specialization to close recursion
-  template <long unsigned int M> struct Gcd<M, 0ul>
-  {
-    static_assert(M != 0ul, "gcd between 0 and 0 not allowed");
-    static constexpr long unsigned int value = M;
+    if constexpr (N == 0u)
+        return M;
+    else
+      return Gcd<N, M % N>();
   };
 
-  /*!
-   * A template variable to imitate a feature of c++17
-   * Gcd_v<M,N> is a variable equal to the greater common divisor between M and
-   * N
-   */
-  template <long unsigned int M, long unsigned int N>
-  constexpr long unsigned int Gcd_v = Gcd<M, N>::value;
 
   //! Another implementation, it makes use of the
-  //! new constexpr magic adn works with any integer types. Needs at least C++11
+  //! constexpr magic and works with any integer types.
   //! @note Since c++17 you can use std::gcd, much better. This is only an
   //! example!
   template <class M, class N>

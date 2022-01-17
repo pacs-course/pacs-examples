@@ -31,8 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <cmath> // for isnan and isfinite
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <string>
+// numbers has been introduced in C++20
+#if __cplusplus >= 202002L
+#include <numbers>
+#endif
 /*!
  * \file numeric_limits.cpp
  *  An example of numeric_limits
@@ -172,7 +177,7 @@ main()
        << endl;
   cout.setf(ios::scientific);
   auto maxprec = numeric_limits<double>::digits10;
-  cout.precision(maxprec + 1);
+  cout.precision(maxprec);
   cout << " We test if epsilon is what it is meant to be!\n";
   double one(1.0);
   cout << " 1 + eps  = " << one + numeric_limits<double>::epsilon() << endl;
@@ -193,4 +198,27 @@ main()
   cout << "You can test if a number is infinity:\n";
   double z = 1. / 0.;
   cout << " Is 1./0. equal to Inf?: " << !std::isfinite(z) << std::endl;
+
+#if __cplusplus >= 202002L
+  cout<<"\n***    Now some c++20 goodies. Predefined constants ***\n";
+  using namespace std::numbers;
+  std::cout<<"Pi (double)        "<<pi<<std::endl;
+  std::cout<<"e  (double)        "<<e<<std::endl;
+  std::cout<<"sqr(2)(double)     "<<sqrt2<<std::endl;
+
+  maxprec = numeric_limits<long double>::digits10;
+  cout.precision(maxprec);
+  std::cout<<"Pi (long double)   "<<pi_v<long double><<std::endl;
+  std::cout<<"e  (long double)   "<<e_v<long double><<std::endl;
+  std::cout<<"sqr(2)(long double)"<<sqrt2_v<long double><<std::endl;
+  maxprec = numeric_limits<float>::digits10;
+  cout.precision(maxprec);
+  std::cout<<"Pi (float)         "<<pi_v<float><<std::endl;
+  std::cout<<"e  (float)         "<<e_v<float><<std::endl;
+  std::cout<<"sqr(2)(float)      "<<sqrt2_v<float><<std::endl;
+#endif
+
+
+
+
 }

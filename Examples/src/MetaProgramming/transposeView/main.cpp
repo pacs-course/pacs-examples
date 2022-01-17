@@ -1,3 +1,4 @@
+#include <vector>
 #include "Eigen/Dense"
 #include "transposeView.hpp"
 #include <iostream>
@@ -21,6 +22,29 @@ template <> struct Matrix_Traits<const Eigen::Matrix3f>
   using size_type = Eigen::Matrix3f::Index;
 };
 } // namespace apsc::LinearAlgebra
+
+// To show the flexibility of my transpose view I create another matricx class
+// APMMatrix stands for A Poor Man Matrix
+
+class APMMatrix
+{
+public:
+  APMMatrix(std::size_t nr, std::size_t nc):nrow{nr},ncol{nc}{
+    data.resize(nrow*ncol);
+  }
+  double operator()(std::size_t r,std::size_t c) const
+  {
+    return data[c+ncol*r];
+  }
+  double & operator()(std::size_t r,std::size_t c)
+   {
+     return data[c+ncol*r];
+   }
+private:
+  std::size_t nrow;
+  std::size_t ncol;
+  std::vector<double> data;
+};
 
 int
 main()
@@ -58,8 +82,7 @@ main()
   // thanks to the deduction guide The template argument is automatically
   // deduced thanks to the deduction guide!
 
-  apsc::LinearAlgebra::TransposedView anotherView(
-    m); // this is a view to a const matrix
+  apsc::LinearAlgebra::TransposedView anotherView{m}; // this is a view to a const matrix
   std::cout << "Matrix build with the deduction guide\n";
   for(auto i = 0; i < 3; ++i)
     {
@@ -69,4 +92,18 @@ main()
         }
       std::cout << std::endl;
     }
+
+  // To show that it works also with my poor man matrix
+
+  APMMatrix poorMe{4,5};
+  poorMe(2,3)=10;
+  poorMe(3,2)=100;
+  std::cout<<"original  PMatrix elements: (2,3)="<<poorMe(2,3)<<" (3,2)="<<poorMe(3,2)<<std::endl;
+  apsc::LinearAlgebra::TransposedView poorMet{poorMe};
+  std::cout<<"Transpose PMatrix elements: (2,3)="<<poorMet(2,3)<<" (3,2)="<<poorMet(3,2)<<std::endl;
+
+
+
+
+
 }

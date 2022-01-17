@@ -46,8 +46,7 @@ public:
    */
   JoinVectors(std::vector<Types> &... args) : data(&args...) {}
   // Copy and move constuctor
-  JoinVectors<Types...>(JoinVectors<Types...> const &) = default;
-  JoinVectors<Types...>(JoinVectors<Types...> &&) = default;
+
 
   /*! Set the vectors to be joined
    * @param args The vectors
