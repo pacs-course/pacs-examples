@@ -1,3 +1,5 @@
+# You have to set the threading building clok libraries if you fant parallel algorithm with g++
+
 mkTbbLib?=/usr/lib/x86_64-linux-gnu/
 mkTbbInc?=/usr/include
 

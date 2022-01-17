@@ -34,10 +34,11 @@ public:
   /*!
    * @code
     using value_type=
-    typename std::remove_reference<
-    typename std::remove_cv<
-    decltype(std::declval<Matrix>()(0,0))
-    >::type>::type;
+    std::remove_reference_t<
+      std::remove_cv_t<
+        decltype(std::declval<Matrix>()(0,0))
+       >
+    >;
     @endcode
   */
 private:
@@ -49,14 +50,28 @@ public:
   /*!
    The non const version is enabled only if the viewed matrix
     is non-const.
+    Uncomment if you want this version of the solution to the problem.
   */
-  template <typename T = Matrix>
-  std::enable_if_t<!std::is_const_v<T>, value_type &>
+  // template <typename T = Matrix>
+  // std::enable_if_t<!std::is_const_v<T>, value_type &>
+  // operator()(size_type r, size_type c)
+  // {
+  //   return ref(c, r);
+  // }
+
+  /*!
+   * A possible alternative is to have the non const operator return
+   * a const reference if the stored matrix is const. Uncomment it if you want this version.
+   */
+  std::conditional_t<std::is_const_v<Matrix>, const value_type &, value_type &>
   operator()(size_type r, size_type c)
   {
     return ref(c, r);
   }
 
+  /*! 
+   * This is the const version. The only available on a const view.
+   */
   const value_type
   operator()(size_type r, size_type c) const
   {
@@ -67,10 +82,17 @@ private:
   Matrix &ref;
 };
 /*!
- This is a deduction guide.
- */
+ This is a deduction guide. It allows to have the correct constructor if you pass a const matrix without specifieng the 
+ template argument!
+\code
+const Matrix M;
+...
+TransposedView tr{M}; // generates a TransposedView<const Matrix> !
+\endcode 
+*/
 template <typename Matrix>
 TransposedView(const Matrix &) -> TransposedView<const Matrix>;
+
 template <typename Matrix> TransposedView(Matrix &) -> TransposedView<Matrix>;
 
 /*!

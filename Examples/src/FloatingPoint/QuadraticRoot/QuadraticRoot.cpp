@@ -20,11 +20,13 @@ quadraticRoot_simple(const Real &a, const Real &b, const Real &c)
     }
   else
     {
-      result_type discriminant(b * b - 4 * a * c);
+      result_type discriminant{b * b - 4 * a * c};
       discriminant = std::sqrt(discriminant);
       result_type x1 = (-b + discriminant) / (2 * a);
       result_type x2 = (-b - discriminant) / (2 * a);
       return std::make_pair(x1, x2);
+      // you can also do (if you prefer)
+      // return {x1,x2}
     }
 }
 

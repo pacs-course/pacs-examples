@@ -7,9 +7,7 @@ main()
   using namespace apsc::Utility;
   using namespace std;
   cout << " Greatest common divisor between 399 and 120 is "
-       << Gcd<399, 120>::value << endl;
-  cout << " Greatest common divisor between 569 and 120 is "
-       << Gcd_v<569, 120> << endl;
+       << Gcd<399, 120>() << endl;
   // Just to show constexpr
   constexpr unsigned long n = 399;
   constexpr unsigned long m = 120;
