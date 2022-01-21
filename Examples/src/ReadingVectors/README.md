@@ -10,7 +10,7 @@ A different version may use a different template parameter for the input variabl
 
 will not compile since `1` is an int. But of course I can do `v<<1.;`.
 
-This is an example of complex overloading of operators by using templates. In fact, there is no need of this tool. Parameter list (brace) initialization already allow to initialize a vector in a simple way. But in other cases it may be useful to have little tools of this type.
+This is an example of complex overloading of operators by using templates. In fact, there is no need of this tool. Parameter list (brace) initialization already allow to initialize a vector in a simple way. But in other cases it may be useful to have little tools of this type. For instance, the streaming operator can be used also run-time and when the size of the vector is not known beforehand.
 
 #What do I lean here?#
 - A curious usage of overloading the comma operator;

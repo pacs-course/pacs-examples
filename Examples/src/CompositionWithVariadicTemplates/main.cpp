@@ -1,6 +1,7 @@
 #include "Bc.hpp"
 #include "Id.hpp"
 #include "Point.hpp"
+#include "Extensions.hpp"
 #include <iostream>
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
@@ -8,18 +9,22 @@ int
 main()
 {
   // to save typing the full qualified names
-  using namespace Identifier;
-  using namespace Geometry;
-  using namespace BoundaryConditions;
+  using namespace apsc;
+  using namespace apsc::FEM;
+  using namespace apsc::Geometry;
 
+  // A point
   using Point2dSimple = Point<double, 2>;
+  //Another point
   using Point3dSimple = Point<double, 3>;
-  using Poin2dWithId = Point<double, 2, Id>;
-  using Poin2dWithIdAndBc = Point<double, 2, Id, Bc>;
+  // Composing a Point with an Id
+  using Point2dWithId = Extension<Point2dSimple, Id>;
+  // A point with ID and BC marker
+  using Point2dWithIdAndBc = Extension<Point2dSimple, Id, Bc>;
 
-  Point2dSimple     a;
-  Poin2dWithId      b;
-  Poin2dWithIdAndBc c;
+  Point2dSimple     a{{7.,8.}}; // giving the coordinates
+  Point2dWithId      b; //Default constructed
+  Point2dWithIdAndBc c;
   Point3dSimple     e;
 
   a[0] = 1;
@@ -31,10 +36,12 @@ main()
   Id ident(5);
   // I am passing the point and the constructor for the Id!
   std::array<double, 2> praw = std::array<double, 2>{0., 1.5};
-  Poin2dWithId          pwi{praw, ident};
+  Point2dSimple         psi{praw};
+  Point2dWithId          pwi{praw, ident};
+  pwi.setId(4);
   std::cout << pwi.getId() << std::endl;
-  Poin2dWithId z;
+  Point2dWithIdAndBc z{praw,10,BcType::Neumann};
   std::cout << z.getId() << std::endl;
-  Poin2dWithId K(std::array<double, 2>{0., 2.}, 3);
+  Point2dWithId K(std::array<double, 2>{0., 2.}, 3);
   std::cout << K.getId() << std::endl;
 }

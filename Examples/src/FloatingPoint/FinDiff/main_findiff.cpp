@@ -22,21 +22,12 @@ std::string filename("double.dat");
 constexpr Real a = 100.0;
 constexpr Real b = 4.0;
 
-//! \f$ a e^{bx}\f$
-template <class T>
-T
-funct(T const &x)
-{
-  return a * std::exp(b * x);
-}
+// I use lambdas and I exploit the fact that constexpr are capured automatically!
+//! \f$ f(x)=a e^{bx}\f$
+auto funct= [](auto const & x){return a * std::exp(b * x);};
+//! \f$ f^\prime(x)= ab e^{bx}\f$
+auto dfunct= [](auto const & x){return a * b* std::exp(b * x);};
 
-//! Derivative of \f$ a e^{bx}\f$
-template <class T>
-T
-dfunct(T const &x)
-{
-  return a * b * std::exp(b * x);
-}
 
 //! Tests of accuracy of finite differences
 /*!
@@ -47,10 +38,6 @@ dfunct(T const &x)
 int
 main()
 {
-  // get the actual function
-  auto fun = funct<Real>;
-  auto dfun = dfunct<Real>;
-  auto funcx = funct<std::complex<Real>>;
   // Get roundoff unit
   const Real u = 0.5 * std::numeric_limits<Real>::epsilon();
   std::cout << "Roundoff unit=" << u << std::endl;
@@ -91,15 +78,15 @@ main()
     {
       spacing.emplace_back(h);
       // Second order formula
-      Real dn = half * (fun(x + h) - fun(x - h)) / h;
+      Real dn = half * (funct(x + h) - funct(x - h)) / h;
       // Fourth order formula
-      Real dn4 = (twelvth * fun(x - 2 * h) - twothird * fun(x - h) -
-                  twelvth * fun(x + 2 * h) + twothird * fun(x + h)) /
+      Real dn4 = (twelvth * funct(x - 2 * h) - twothird * funct(x - h) -
+                  twelvth * funct(x + 2 * h) + twothird * funct(x + h)) /
                  h;
       // with(out) a difference!
-      Real dncx = std::imag(funcx({x, h})) / h;
+      Real dncx = std::imag(funct(std::complex<Real>{x, h})) / h;
       // Exact value
-      Real de = dfun(x);
+      Real de = dfunct(x);
       // Save results
       derNumer.emplace_back(dn);
       der4Numer.emplace_back(dn4);
@@ -107,15 +94,18 @@ main()
       Error.emplace_back(std::abs(de - dn));
       Error4.emplace_back(std::abs(de - dn4));
       Errorcx.emplace_back(std::abs(de - dncx));
-      roundoffErrorEstimate.emplace_back(std::abs(u * dfun(x) * x / h));
+      roundoffErrorEstimate.emplace_back(std::abs(u * dfunct(x) * x / h));
       h /= 2.;
     }
   // Write data
   std::ofstream file(filename.c_str());
+  file.width(15);
+  file<<"# h\t d2\t e2\t estim\t d4\t without_a diff\n";
   for(unsigned int i = 0; i < n; ++i)
     {
-      file << spacing[i] << " " << derNumer[i] << " " << Error[i] << " "
-           << roundoffErrorEstimate[i] << " " << Error4[i] << " " << Errorcx[i]
+      file.width(15);
+      file << std::scientific<< spacing[i] << "\t" << derNumer[i] << "\t" << Error[i] << "\t"
+           << roundoffErrorEstimate[i] << "\t" << Error4[i] << "\t" << Errorcx[i]
            << std::endl;
     }
   file.close();

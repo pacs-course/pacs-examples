@@ -1,5 +1,8 @@
 #include <iosfwd>
 #include <ratio> // from c++11 only!
+#if __cplusplus >= 202002L
+#include <compare> // for c++20 style comparison operators
+#endif
 namespace apsc
 {
 //! A simple class that represent a rational number
@@ -87,8 +90,35 @@ public:
   friend Rational operator-(Rational const &, Rational const &);
   friend Rational operator*(Rational const &, Rational const &);
   friend Rational operator/(Rational const &, Rational const &);
-  friend bool     operator<(Rational const &, Rational const &);
   //@}
+
+#if __cplusplus >= 202002L
+/*!
+ * If we use c++20 we can define all 4 comparison operators in one go using spaceship.
+ * I will then use the spaceship operator for integers (provided by the standard lib)
+ * for the comparison.
+ * Operator is friend to access private data directly and I use automatic return since
+ * I will just use the ordering type returned by the spacship operator on integers (in fact, is a
+ * std::strong_ordeting)
+ */
+friend auto operator <=> (Rational const &, Rational const &);
+/*!
+ * @brief Equivalence operator
+ * Since we store the rational always normalized I can use the default:
+ * two Rationals are equivalent if both numerator and denominator are equal.
+ */
+friend bool operator ==(Rational const &, Rational const &)=default;
+#else
+  //! @brief Comparison operator
+  //!
+  //! In a pre c++20 code (but it is still perfectly valid!!) the best way to define
+  //! consistent relational operators is to define the < operator and then all the others
+  //! consistently. Here < is friend to allow accessing private data.
+  //! @param
+  //! @param
+  //! @return
+  friend bool     operator<(Rational const &, Rational const &);
+#endif
   //! Streaming operator to output rationals in a nice way.
   friend std::ostream &operator<<(std::ostream &, Rational const &);
   //! Streaming operator to input rationals in a nice way.
@@ -99,7 +129,12 @@ private:
   //! Helper function to normalize the internal rational.
   void M_normalize();
 };
-
+#if __cplusplus >= 202002L
+inline auto operator <=> (Rational const & a, Rational const & b)
+    {
+  return a.M_n*b.M_d <=> b.M_n*a.M_d;
+    }
+#else
 //* Logical operator definition (inlined for efficiency)
 //! The less-than operator
 inline bool
@@ -137,4 +172,5 @@ operator>=(Rational const &l, Rational const &r)
 {
   return !(l < r);
 }
+#endif
 } // namespace apsc
