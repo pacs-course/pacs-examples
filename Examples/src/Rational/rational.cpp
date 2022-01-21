@@ -29,7 +29,7 @@ Rational::operator++()
 }
 
 Rational
-Rational::operator++(int i)
+Rational::operator++(int)
 {
   Rational temp(*this);
   this->   operator++();
@@ -44,7 +44,7 @@ Rational::operator--()
 }
 
 Rational
-Rational::operator--(int i)
+Rational::operator--(int)
 {
   Rational temp{*this};
   this->   operator--();

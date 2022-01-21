@@ -5,6 +5,7 @@
 int
 main()
 {
+  using namespace apsc::Utilities;
   { // block for laziness
     std::vector<int> a;
     a << 1, 2, 3, 4; // eigen style

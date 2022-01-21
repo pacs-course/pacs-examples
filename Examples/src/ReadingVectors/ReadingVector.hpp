@@ -7,6 +7,8 @@
 #include <vector>
 #ifndef EXAMPLES_SRC_READINGVECTORS_READINGVECTOR_HPP_
 #define EXAMPLES_SRC_READINGVECTORS_READINGVECTOR_HPP_
+namespace apsc::Utilities
+{
 /*!
  * @brief Overloading of the streaming operator to fill std::vectors
  *
@@ -41,5 +43,5 @@ std::vector<T,Args...> & operator , (std::vector<T,Args...> & v, T const & i)
   v.emplace_back(i);
   return v;
 };
-
+}
 #endif /* EXAMPLES_SRC_READINGVECTORS_READINGVECTOR_HPP_ */

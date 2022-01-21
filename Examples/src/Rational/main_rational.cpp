@@ -1,5 +1,6 @@
 #include "rational.hpp"
 #include <iostream>
+#include <iomanip>
 
 //===============================================
 int
@@ -8,9 +9,9 @@ main()
   using namespace std;
   using namespace apsc; // my namespace
   cout << "Size of a Rational=" << sizeof(Rational) << " bytes" << endl;
-  Rational a(-15, 6);
-  Rational b(6);
-  Rational c(b);
+  Rational a{-15, 6};
+  Rational b{6,40};
+  Rational c{b};
   Rational d;
   c = Rational(1);
   double aa = a;
@@ -24,9 +25,10 @@ main()
   cout << a + 1 << endl;           // it converts a to double
   cout << a + Rational(1) << endl; // explicit conversion!
 
-  // std::ratio<3,4> threeQuarter;
-  // Rational tq(threeQuarter);
-  // cout<< tq<<endl;
+  std::ratio<3,4> threeQuarter;
+  Rational tq(threeQuarter);
+  cout<< tq<<endl;
+  std::cout<<std::boolalpha<<"is "<<tq<<" smaller than "<< b<<"? "<<(tq<b)<<std::endl;
   // Rational mu=std::micro();
   // cout<<" A micro is "<<mu<<endl;
 
