@@ -15,35 +15,22 @@
 */
 namespace apsc
 {
-namespace implementation
-{
-  // To use in tag dispatching
-  template <int N> using IntToType = std::integral_constant<int, N>;
-
-  //! Overload for N=0
-  template <class R>
-  constexpr R
-  pow(const R x, IntToType<0>)
-  {
-    return 1;
-  }
-
-  //! Recursive call
-  template <int N, class R>
-  constexpr R
-  pow(const R x, IntToType<N>)
-  {
-    return pow(x, IntToType<N - 1>{}) * x;
-  }
-
-} // end namespace implementation
-
-//! the actual function
 template <int N, class R>
 constexpr R
 pow(const R x)
 {
-  return implementation::pow(x, implementation::IntToType<N>{});
+  if constexpr(N == 0)
+    {
+      return 1;
+    }
+  else if constexpr(N == 1u)
+    {
+      return x;
+    }
+  else
+    {
+      return x * pow<N - 1u>(x);
+    }
 }
 
 } // end namespace apsc

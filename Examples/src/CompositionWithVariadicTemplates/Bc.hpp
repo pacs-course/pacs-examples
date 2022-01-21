@@ -1,7 +1,7 @@
 #ifndef _HH_BC_HH_
 #define _HH_BC_HH_
 //! A class holding boundary conditions
-namespace BoundaryConditions
+namespace apsc::FEM
 {
 enum class BcType
 {
@@ -15,6 +15,7 @@ protected:
   BcType M_type;
 
 public:
+  Bc(BcType type=BcType::Dirichlet):M_type{type}{};
   BcType
   getBcType() const
   {
@@ -26,5 +27,5 @@ public:
     M_type = type;
   }
 };
-} // namespace BoundaryConditions
+} // namespace apsc::Geometry
 #endif

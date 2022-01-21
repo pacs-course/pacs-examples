@@ -2,63 +2,48 @@
 #define __HH_POINT_HH__
 #include <array>
 #include <type_traits>
-namespace Geometry
+namespace apsc::Geometry
 {
-// @todo This example can be done better by leaving Point as a simple
-// class and creating a Composer template class that composes by public
-// inheritance all template parameters.
-//
-//! A simple extendable class that represents a point
-template <typename Value, std::size_t N, typename... Extensions>
-class Point : public Extensions...
-{
-  /*!
-   * I define the constructor to initialize the array with zero.
-   * I cannot do it otherwise
-   */
-public:
-  Point() : M_coordinates{} { M_coordinates.fill(0); }
 
-private:
-  std::array<Value, N> M_coordinates;
-
-public:
-  using value_t = Value;
-  static const std::size_t Dim = N;
-
-  Value
-  operator[](std::size_t i) const
-  {
-    return M_coordinates[i];
-  }
-
-  Value &
-  operator[](std::size_t i)
-  {
-    return M_coordinates[i];
-  }
-
-  Point(Point const &) = default;
-
-  //! Complex part: a constructor taking the point coordinates and composites
-  //! objects
-  /*
-     Skip reading it the first time
-     enable_if is necessary because if I use point with zero or 1 argument this
-     definition will fail.
+ /*!
+   * @class Point
+  * @brief A class that represents a point
+  *
+  * @tparam Value The type of the point coordinates
+  * @tparam N The dimension of the space
   */
-  template <typename COO, typename... T,
-            typename std::enable_if_t<sizeof...(T) != 0, int> = 0>
-  Point(COO &&c, T &&... ext)
-    : Extensions(std::forward<T>(ext))...,
-      M_coordinates(std::forward<COO>(c)){};
-  //! This if I want to pass just the coordinates (or if the point is simple)!
-  Point(std::array<Value, N> const &c) : M_coordinates{c} {};
-};
+template <typename Value, std::size_t N>
+class Point
+  {
+  public:
+    using value_t = Value;
+    static constexpr  std::size_t Dim = N;
+
+    //! constructor
+    Point()=default;
+    //! constructor taking the coordinates of the point
+    Point(std::array<Value, N> const &c) : M_coordinates{c} {};
+
+    Value
+    operator[](std::size_t i) const
+    {
+      return M_coordinates[i];
+    }
+
+    Value &
+    operator[](std::size_t i)
+    {
+      return M_coordinates[i];
+    }
+
+  private:
+      // Initialize with zero
+    std::array<Value, N> M_coordinates={};
+  };
 
 //! A function for a Point
 /*!
-  It works for any composite Point provided that:
+  It works for any Point provided that:
   \l the type of the coordinates is the same
   \li the dimension is the same
 */

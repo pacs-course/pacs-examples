@@ -1,5 +1,7 @@
 #include "GetPot"               // for reading parameters
+#ifdef GNUPLOT
 #include "gnuplot-iostream.hpp" // interface with gnuplot
+#endif
 #include "readParameters.hpp"
 #include "thomas.hpp"
 #include <cmath>    // (for sqrt)
@@ -202,6 +204,8 @@ main(int argc, char **argv)
       f << m * h * L << "\t\t" << theta[m] << "\t\t" << thetaa[m] << "\n";
       coor[m] = m * h * L;
     }
+  // If you have gnuplot iostream you get the plot on the screen
+#ifdef GNUPLOT
   Gnuplot gp; // gnuplot iostream! Plots solution on the screen
   // It may not work on virtual machines. Take it out in that case
   // Using temporary files (another nice use of tie)
@@ -210,6 +214,7 @@ main(int argc, char **argv)
   gp << "plot" << gp.file1d(std::tie(coor, theta)) << "w lp lw 2 title 'uh',"
      << gp.file1d(std::tie(coor, thetaa)) << "w l lw 2 title 'uex'"
      << std::endl;
+#endif
   f.close();
   return status;
 }

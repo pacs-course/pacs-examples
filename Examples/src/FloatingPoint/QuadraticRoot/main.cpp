@@ -64,8 +64,6 @@ TryAgain:
           cin.clear();
           while(!cin.eof())
             cin.ignore();
-          //! Clear again so that eof flag is reset.
-          cin.clear();
           // Normally you should try to avoid goto's but this
           // is one of the few cases where a goto makes the code
           // easier to read.
