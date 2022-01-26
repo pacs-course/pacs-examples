@@ -188,6 +188,22 @@ This way, a library called libpacs.a (and ist dynamic equivalent
 libpacs.so) is installed in `PACS_LIB_DIR` and some header files are
 installed in `PACS_INC_DIR`
 
+If you then do `make exec` you should compile the program that test the utilities. If everthing is fine compilation should complete with no errors. You may have al look at the tests and try to execute them.
+
+More advanced examples may use also the Utilities in `LinearAlgebraUtil`. Go in that directory and  do just:
+
+    make install
+
+to install everything in the `Examples/include` directory.
+Here the tests have been collected in the subfolder `test`, but the rule is the same, go there, type `make`
+
+Have a look at the tests becouse thay contian information on how to use the utilities!
+
+**NOTE** Some test use the native parallel programming of c++ that, at
+least with gnu and LLVM compiler, requires haning the multithreading
+building block library installed and link to the `libtbb.so`
+library. Check that the library is installed in your system (it's
+available on all Linux distribution, but not necessarily by default!).
 
 ## FURTHER INFO ##
 

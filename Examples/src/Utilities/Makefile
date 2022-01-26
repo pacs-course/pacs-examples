@@ -68,9 +68,9 @@ alllibs: all
 all: $(DEPEND) library
 
 library:
-	make static
-	make clean
-	make dynamic
+	$(MAKE) static
+	$(MAKE) clean
+	$(MAKE) dynamic
 
 install:
 	cp $(HEADERS) $(PACS_INC_DIR)
