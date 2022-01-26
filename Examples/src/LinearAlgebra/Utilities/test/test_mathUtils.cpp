@@ -42,6 +42,29 @@ main()
             << std::endl;
   std::cout << " normInf of a Eigen vector " << apsc::math_util::normInf(e1)
             << std::endl;
+  std::cout << " normInf of a complex  " << apsc::math_util::normInf(c1)
+             << std::endl;
   std::cout << " normInf of a complex vector " << apsc::math_util::normInf(vc2)
             << std::endl;
+
+  std::cout << " norm2 of a double " << apsc::math_util::norm2(a)
+             << std::endl;
+   std::cout << " norm2 of a vectors " << apsc::math_util::norm2(v1)
+             << std::endl;
+   std::cout << " norm2 of a Eigen vector " << apsc::math_util::norm2(e1)
+             << std::endl;
+   std::cout << " norm2 of a complex " << apsc::math_util::norm2(c1)
+              << std::endl;
+   std::cout << " norm2 of a complex vector " << apsc::math_util::norm2(vc2)
+                   << std::endl;
+
+
+   using namespace apsc::math_util::vectorOperators;
+   std::cout<<"First  vector="<<v1<<std::endl;
+   std::cout<<"Second vector="<<v2<<std::endl;
+   std::cout<<"Sum          ="<<(v2+v1)<<std::endl;
+   std::cout<<"Difference   ="<<(v1-v2)<<std::endl;
+   std::cout<<"First vector * 5  ="<<(v1*5.)<<std::endl;
+   std::cout<<"Distance   ="<<apsc::math_util::squaredDistance(v1,v2)<<std::endl;
+
 }

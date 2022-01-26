@@ -59,7 +59,7 @@ public:
   //! This constructor accepts a non linear system and a concrete Jacobian
   //! object
   template <class NLS, class JAC>
-  Newton(NLS &&nls, JAC const j, NewtonOptions opt = NewtonOptions{})
+  Newton(NLS &&nls, JAC  j, NewtonOptions opt = NewtonOptions{})
     : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(std::make_unique<JAC>(j)),
       options(opt)
   {

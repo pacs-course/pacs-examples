@@ -142,17 +142,53 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
   bool         goOn = resid > check;
   while(goOn && iter < maxIt)
     {
-      goOn = resid > check;
       ++iter;
       double yb = f(b);
       c = a - ya * (b - a) / (yb - ya);
       double yc = f(c);
       resid = std::abs(yc);
+      goOn = resid > check;
       ya = yc;
       a = c;
     }
 
   return std::make_tuple(c, (iter < maxIt));
+}
+/*!
+ * Computes the zero of a scalar function with the Newton
+ * It stops when \f$|f(x)|\le tol|f(a)| + tola
+ *
+ * @tparam Function double(double)
+ * @param f The function
+ * @param df the derivative
+ * @param a Initial point
+ * @param tol relative tolerance
+ * @param tola absolute tolerance
+ * @param maxIt maximum number of iterations
+ * @return The approximation of the zero of f and a status (false if not
+ * converging)
+ *
+ */
+template <class Function, class Dfunction>
+std::tuple<double, bool>
+Newton(Function const &f, Dfunction const & df, double a, double tol = 1e-4,
+       double tola = 1.e-10, unsigned int maxIt = 150)
+{
+  double       ya = f(a);
+  double       resid = std::abs(ya);
+  unsigned int iter{0u};
+  double       check = tol * resid + tola;
+  bool         goOn = resid > check;
+  while(goOn && iter < maxIt)
+    {
+      ++iter;
+      a += - ya/df(a);
+      ya = f(a);
+      resid = std::abs(ya);
+      goOn = resid > check;
+    }
+
+  return std::make_tuple(a, (iter < maxIt));
 }
 
 /*!

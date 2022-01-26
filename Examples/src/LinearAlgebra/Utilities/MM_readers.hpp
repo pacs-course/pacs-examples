@@ -15,6 +15,7 @@
 #define HH_EIGEN__MM_READERS_HPP
 #include "Eigen/Core"
 #include <exception>
+#include <regex>
 
 #if(EIGEN_MAJOR_VERSION < 3) || (EIGEN_WORLD_VERSION < 3)
 #error "I need EIGEN at least Version 3.3.X"
@@ -22,7 +23,9 @@
 
 #include "unsupported/Eigen/SparseExtra"
 // This is for version 3.3.3 or less only
-#if(EIGEN_MINOR_VERSION <= 3)
+#if(EIGEN_MAJOR_VERSION == 3) && (EIGEN_MINOR_VERSION <= 3)
+#warning Old eigen version  EIGEN_MINOR_VERSION
+
 namespace Eigen
 {
 /*!

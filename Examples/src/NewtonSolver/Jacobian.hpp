@@ -22,10 +22,10 @@ class JacobianBase : public NewtonTraits
 public:
   //! Takes a pointer to an existing non linear system
   JacobianBase(NonLinearSystemType const *nls = nullptr) : M_sys{nls} {};
-  //! Solves the system \f$J^{-1}(x) b\f$
+  //! Solves the system \f$J(x)z= b\f$
   //! /param x the point where to evaluate the Jacobian
   //! /param b the right hand side of the system J(x) y=b
-  //! /return the result
+  //! /return the result z
   virtual ArgumentType solve(ArgumentType const &x,
                              ArgumentType const &b) const = 0;
   //! Sets the non linear system.
@@ -37,26 +37,27 @@ public:
   virtual ~JacobianBase(){};
 
 protected:
-  //! The non-linear system
-  /*!
-   * Since it is a small object I just use composition
-   */
+  //! A pointer to the non-linear system
   NonLinearSystemType const *M_sys;
 };
 
 //! Computes the jacobian by finite differences.
 /*!
-  The final keyword has been introduced in C++11 to stop
-  a hierarchy. No class can be derived from it.
+  Final class that implements the following approximation of
+  the Jacobian
 
-  It allows some regularization, so the effective Jacobian is J + \lambda I
+  \f[
+      J = (F(x+h)-F(x-h))/2|h| + \lambda I
+  \f]
+
+  where \f$\lambda I\f$ is a possible regularization.
 
   @note This implementation is mildly dangerous, since it stores a pointer
   to the linear system and nobody ensures that the linear system will not
   be destroyed before the call method of this class is used! But we may consider
   it a very unlikely event. So a prerequisite is that
   the non linear system is existing and accessible.
-  An alternative is to use a shared pointer or a reference. But a simple pointer
+  An alternative is to use a shared pointer or a reference. But a pointer
   is the simplest solution
  */
 class DiscreteJacobian final : public JacobianBase
@@ -65,12 +66,13 @@ public:
   //! Constructor optionally takes the pointer to a non linear system.
   /*!
    * @param sys The non linear system
-   * @param spacing The spacing for the computation of the approximate
+   * @param spacing The spacing |h| for the computation of the approximate
    * derivative
    */
   DiscreteJacobian(NonLinearSystemType *sys = nullptr,
-                   double               spacing = defaultTol)
-    : JacobianBase{sys}, M_tol{spacing} {};
+                   double               spacing = defaultTol,
+                   double               lambda  = defaultLambda)
+    : JacobianBase{sys}, tol{spacing}, lambda{lambda} {};
   //! Solves the system
   /*!
    * @param x the point where to evaluate the Jacobian
@@ -80,49 +82,29 @@ public:
   //!
   ArgumentType solve(ArgumentType const &x,
                      ArgumentType const &b) const override;
-  //! Sets the spacing for computing finite differences
-  void
-  setTol(double tol = defaultTol)
-  {
-    M_tol = tol;
-  }
-  //! Returns the spacing currently used.
-  auto
-  getTol() const
-  {
-    return M_tol;
-  }
 
-  double
-  getLambda() const
-  {
-    return lambda;
-  }
-
-  void
-  setLambda(double lambda = defaultLambda)
-  {
-    this->lambda = lambda;
-  }
-
-  //! sets spacing and parameter
   void
   setParameters(double tol = defaultTol, double lambda = defaultLambda)
   {
-    setTol(tol);
-    setLambda(lambda);
+    this->tol=tol;
+    this->lambda=lambda;
   }
-
-private:
-  //! The current spacing
-  double M_tol = defaultTol; // @todo maybe we can leave it public
+  //! The current spacing |h|
+  double tol = defaultTol;
   //! Regularization (if needed)
-  double lambda = defaultLambda; // @todo maybe you can leave it public
+  double lambda = defaultLambda;
+private:
   //! Default tolerance.
   static double constexpr defaultTol = 1e-4;
-  static double constexpr defaultLambda = 1.0;
+  static double constexpr defaultLambda = 0.0;
 };
-//! The identityJacobian just scales the residual by a factor defaulted to 1
+
+
+/*!
+ * The identityJacobian just scales the residual by a factor defaulted to 1
+ * by default \f$\lambda\f$ is one.
+ * It applies \f$ J=\lambda^{-1}Ib\f$
+ */
 class IdentityJacobian final : public JacobianBase
 {
 public:
@@ -137,20 +119,6 @@ public:
   {
     return this->lambda * b;
   }
-  //! get the scaling factor
-  double
-  getLambda() const
-  {
-    return lambda;
-  }
-  //! Set the scaling factor
-  void
-  setLambda(double lambda = 1.0)
-  {
-    this->lambda = lambda;
-  }
-
-private:
   double lambda = 1.0;
 };
 

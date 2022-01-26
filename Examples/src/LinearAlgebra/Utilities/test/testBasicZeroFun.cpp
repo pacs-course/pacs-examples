@@ -20,14 +20,21 @@ main()
     std::cout << "Bisection result " << res << std::endl;
   }
   {
-    auto res = apsc::chord(fun, a, b, 1.e-4);
-    std::cout << "Chord result " << res << std::endl;
+    auto res = apsc::regulaFalsi(fun, a, b, 1.e-4);
+    std::cout << "regulaFalsi result " << res << std::endl;
   }
   {
     b = -1;
     auto [res, status] = apsc::secant(fun, a, b);
     std::cout << "Secant result " << res << " Status" << status << std::endl;
   }
+  {
+    a=-1;
+    auto df=[](double x) { return 3*x * x; };
+    auto [res, status] = apsc::Newton(fun, df, a);
+    std::cout << "Newton result " << res << " Status" << status << std::endl;
+  }
+
   {
     b = -1;
     auto [x1, x2, s1] = apsc::bracketInterval(fun, a);
@@ -44,4 +51,5 @@ main()
     auto [res, status] = apsc::brent_search(fun, x1, x2, 1.e-4);
     std::cout << "Brent result " << res << std::endl;
   }
+
 }

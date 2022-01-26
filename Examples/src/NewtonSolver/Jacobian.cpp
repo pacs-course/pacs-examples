@@ -17,12 +17,12 @@ apsc::DiscreteJacobian::solve(const ArgumentType &x,
     {
       ArgumentType x1(x);
       ArgumentType x2(x);
-      x1[i] -= M_tol;
-      x2[i] += M_tol;
+      x1[i] -= tol;
+      x2[i] += tol;
       ArgumentType r1 = (*M_sys)(x1);
       ArgumentType r2 = (*M_sys)(x2);
       r2 -= r1;              // r2-r1 -> r2
-      r2 = r2 / (2 * M_tol); // Finite difference
+      r2 = r2 / (2 * tol); // Finite difference
       J.col(i) = r2;         // fill i-th column
     }
   if(this->lambda != 0.0)
