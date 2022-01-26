@@ -27,6 +27,26 @@ gnuplot> plot "result.dat" u 1:2 w lp lw 2 title "uh", "result.dat" u 1:3 w l lw
 ``make heat_exchange.pdf`` produces a file with the description of the example.
 
 
+## Note ##
+The code uses `gnuplot-iostream` to plot the result on the screen directly. However, if you use a virtual machine you may have problems if the graphic card is not well supported. Moreover `gnuplot-iostream` requires the `boost` libraries, which should be installed on your system. If you waant to disable it just delete the **local** `Makefile.inc` file. If you do not use `gnuplot-iostream` you can still plot the results with gnuplot as a post processing, using the script `plot.sh`:
+	
+	bash ./plot.sh
+
+of simply `,/plot.sh` since the file should be executable.
+
+`gnoplot-iostream` uses the boost libraries. So if you want the example to be working you must have the boost library (development
+version) installed. Not all of them infact, in Makefile.inc you see the one that are required: `boos-iostream`, `boost-system` and `boost-filesystem`.
+
+On a Debian based Linux distribution normally the command
+
+	sudo apt-get install libboost-dev
+should install all boost libraries. Look at the documentation of your distribution.
+
+If you are using the modules you have all of them with
+
+```
+module load boost
+```
 
 
 #What do you learn from this Example?#
@@ -34,19 +54,10 @@ gnuplot> plot "result.dat" u 1:2 w lp lw 2 title "uh", "result.dat" u 1:3 w l lw
 - The use of an *aggregate* (here a `struct` with only public attributes)  to store the main parameter of the code, with default values;
 - The use of `GetPot` to pass options in the command line;
 - The use of `GetPot` to read the parameters from a file, so you can change them with no need of recompiling;
+- The use of a json file reader to do the same with a json file;
 - A use of *structured bindings*;
 - The Thomas algorithm for the solution of tridiagonal systems of equations;
 - The use of `gnuplot-iostream` to visualize results directly from the program;
 - The use of `gnuplot`.
 
-## Important ##
 
-`gnoplot-iostream` uses the boost libraries. So if you want the
-example to be working you must have the boost library (development
-version) installed. Not all of them infact, in Makefile.inc you see the one that are required: `boos-iostream`, `boost-system` and `boost-filesystem`.
-
-If you are using the modules you have all of them with
-
-```
-module load boost
-```

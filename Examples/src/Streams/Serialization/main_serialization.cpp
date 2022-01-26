@@ -136,6 +136,7 @@ main()
   // I use another file stream (input in this case)
 
   std::ifstream infile("file.dat", std::ios::binary);
+  For instance, serialization of a `std::vector`
 
   // Read dimension of vector
   int l;

@@ -18,8 +18,6 @@
   large) sparse matrices. A modification of that in
   `https://github.com/yixuan/spectra.git`.
 
-* `Utilities` Some various utilities.
-
 * `SparseBlockMatrix` A set of utilities to create and handle general block matrices whose blocks are sparse Eigen matrices
 
 * `Thomas` The Thomas algorithm for the solution of tridiagonal linear systems of equations. It's an algorithm with O(n) complexity

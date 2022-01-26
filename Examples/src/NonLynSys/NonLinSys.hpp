@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <execution>
 #include <utility>
+#include <type_traits>
 namespace apsc
 {
 /*!
@@ -36,7 +37,7 @@ public:
   using ScalarFunctionType = typename Traits<R>::ScalarFunctionType;
   using ArgumentType = typename Traits<R>::ArgumentType;
   using ResultType = typename Traits<R>::ResultType;
-  using SystemType = typename Traits<R>::SystemType;
+  using FunctionContainerType = typename Traits<R>::FunctionContainerType;
 
   /*!
    * If you know the size of the system better reserve the space
@@ -53,7 +54,6 @@ public:
     if(numEqs > 0u)
       {
         system_.reserve(numEqs);
-        res_.resize(numEqs);
       }
   }
 
@@ -67,6 +67,8 @@ public:
   void
   addToSystem(scalarfunction &&f)
   {
+    static_assert(std::is_convertible_v<scalarfunction,typename Traits<R>::ScalarFunctionType>,
+                  "Cannot add a function with wrong signature!");
     system_.emplace_back(std::forward<scalarfunction>(f));
   }
   /*!
@@ -106,13 +108,13 @@ public:
    * @param x The argument
    * @return The computed vector value
    */
-  ResultType const &
+  ResultType
   operator()(const ArgumentType &x) const
   {
-    // Make sure that the elements are there
+    // Make sure that the elements are creted
     // otherwise I cannot use the parallel algorithms because
     // of data race when increasing size
-    // This statement needs a mutable res_
+    ResultType res_;
     res_.resize(system_.size());
     /*
      for (auto const & fun: system_)
@@ -138,8 +140,7 @@ public:
   }
 
 protected:
-  SystemType         system_;
-  mutable ResultType res_;
+  FunctionContainerType         system_;
 };
 
 } // namespace apsc

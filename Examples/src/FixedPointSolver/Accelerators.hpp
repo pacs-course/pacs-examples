@@ -67,8 +67,11 @@ protected:
 //! Alternate secant method
 /*!
  * This is a two-level acceleration method equivalent to a two level Anderson
- * method \f[ x_{n+1}=\phi(x_n)-\frac{(\Delta x_n -\Delta x_{n-1})\cdot\Delta
- * x_n}{||\Delta x_n -\Delta x_{n-1}||^2}(\phi(x_n)-\phi(x_{n-1}) \f]
+ * method
+ * \f[
+ * x_{n+1}=\phi(x_n)-\frac{(\Delta x_n -\Delta x_{n-1})\cdot\Delta
+ * x_n}{||\Delta x_n -\Delta x_{n-1}||^2}(\phi(x_n)-\phi(x_{n-1})
+ * \f]
  *
  * V. Eyert, A Comparative Study on Methods for Convergence Acceleration of
  * Iterative Vector Sequences, Journal of Computational Physics 124 (1996)
