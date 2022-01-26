@@ -13,7 +13,7 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-MAKEFILEH_DIR=../../../
+MAKEFILEH_DIR=../../
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # I add the flag U to be sure the update is correct
@@ -88,25 +88,19 @@ EXEC_SRCS:=$(exe_sources)
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .PHONY: all clean distclean doc static dynamic depend install exec library
 
-.DEFAULT_GOAL = all
+.DEFAULT_GOAL = install
+
+
 
 all:
-	@echo "make alllibs makes static and dynamic libraries"
-	@echo "make static makes static library"
-	@echo "make dynamic makes dynamic library"
-	@echo "make depend just makes dependency file"
-	@echo "make clean cleans all but not not library"
-	@echo "make distclean cleans all"
 	@echo "make install installs"
-	@echo "macro DEBUG=no  deactivates debugging"
-	@echo "macro FPEABORT=yes  activates abort on FPE"
-	@echo "Default debug setting:" $(DEBUG)
+
 
 alllibs:
+	$(MAKE) clean
 	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC
 	$(MAKE) clean
 	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
-depend: $(DEPEND)
 
 static:
 	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC 
@@ -120,12 +114,7 @@ exec: $(EXEC)
 library:  $(LIBRARY)
 
 install:
-	$(MAKE) DEBUG=no static
-	$(MAKE) clean
-	$(MAKE) DEBUG=no dynamic
 	cp $(HEADERS) $(PACS_INC_DIR)
-	cp $(STATIC_LIBFILE) $(PACS_LIB_DIR)
-	cp $(DYNAMIC_LIBFILE) $(PACS_LIB_DIR)
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
 
@@ -155,13 +144,6 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 #$(LIB_OBJS): $(LIB_SRCS)
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -fPIC -c $?
 
-$(DEPEND): $(SRCS)
-	$(RM) $(DEPEND)
-	for f in $(SRCS); do \
-	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
-	done
-
--include $(DEPEND)
 
 
 
