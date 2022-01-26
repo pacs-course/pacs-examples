@@ -10,12 +10,30 @@ We can divide the examples into four categories:
 - **Full Examples** Examples where a specific numerical problem is treated in a (relative) depth;
 
 ## Utilities##
-  * `Utilities` A set of utilities that you may use also in your code. All described in the local `README.md` file
-  * `GenericFactory`. Copied also in `Utility`, it is a generic object factory. You may use and specialize it for your needs.
-  * `muParserInterface` Some examples on how to interface with [MuParser](https://beltoforion.de/article.php?a=muparser) and [MuParseX](https://beltoforion.de/article.php?a=muparserx) libraries
-  for parsing mathematical expressions. Use them as a guideline if you plan to use these tools. The source of the libraries are contained in the `Extra` folder: you need to installation them before being able to compile the example. 
-  * `LinearAlgebra/Utilities` Utilities related to linear algebra and other numerical algorithms (see the local `README.md` file for more details)
-  * `LoadLibraries` An utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). I simplifies recolling all the toools to access dynamic libraries and it implements the RAII principle.
+  - `Utilities` A set of utilities that you may use also in your code. All described in the local `README.md` file. 
+  **You should go in the directory and type**
+
+``` 
+    make
+    make install
+```
+
+since several examples make use of the utilities.
+  
+  - `LinearAlgebraUtil` A second set of utilities more specialised for linear algebra (but not only). Have a look there are several goodies.  **You should go in the directory and type**
+
+```
+    make
+    make install
+```
+
+since several examples make use of the utilities.
+
+- `GenericFactory`. Copied also in `Utility`, it is a generic object factory. You may use and specialize it for your needs.
+- `muParserInterface` Some examples on how to interface with [MuParser](https://beltoforion.de/article.php?a=muparser) and [MuParseX](https://beltoforion.de/article.php?a=muparserx) libraries
+  for parsing mathematical expressions. Use them as a guideline if you plan to use these tools. The source of the libraries are contained in the 
+`Extra` folder: you need to installation them before being able to compile the example. 
+- `LoadLibraries` An utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). I simplifies recolling all the toools to access dynamic libraries and it implements the RAII principle.
   
 ## Basic Examples ##
   * `Aggregates` Show some feature of *aggregates*, a particular type of classes that have to satisfy some requirements, see [here for instance](https://en.cppreference.com/w/cpp/language/aggregate_initialization), and allow very useful constructs.
