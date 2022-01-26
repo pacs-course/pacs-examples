@@ -13,13 +13,14 @@
 #include "NonLinSys.hpp"
 #include <exception>
 #include <map>
+#include <type_traits>
 namespace apsc
 {
 /*!
- * This is an example of a factory of functions You can add callable objects
- * that respect the argument and return type specified in the given trait, with
- * an associated identifier (here given as a string). You can the retrieve the
- * function corresponding to that identifier.
+ * This is an example of a factory of functions built on top of NonLinSys.
+ * You can add callable objects that respect the argument and return type specified
+ * in the given trait, with an associated identifier (here given as a string).
+ * You can the retrieve the function corresponding to that identifier.
  *
  * @note it is an example of protected inheritance. I inherit from NonLinSys
  * since the factory is an extension of it, but I do not want to expose all
@@ -41,25 +42,42 @@ public:
   {
     return numEqs();
   }
-  // Overloading a base function
-  template <typename scalarfunction>
+/*!
+ * @brief adds a function to the factory
+ *
+ * @tparam FUN The type of a functor compliant with the Trait
+ * @param s A string used as identifier of the function
+ * @param f The function to store. It can be any callable object complieant with the trait
+ */
+  template <typename FUN>
   void
-  addToFactory(std::string const &s, scalarfunction &&f)
+  addToFactory(std::string const &s, FUN &&f)
   {
-    apsc::NonLinSys<R, Traits>::addToSystem(std::forward<scalarfunction>(f));
+    using namespace std::string_literals;
+    static_assert(std::is_convertible_v<FUN,typename Traits<R>::ScalarFunctionType>,
+                  "Cannot add a function with wrong signature!");
+    // Here I need this, since I am in a template mathod and I have to recall a base method
+    // Alternative: use the full qualified name; apsc::NonLinSys<R, Traits>::addToSystem
+    this->addToSystem(std::forward<FUN>(f));
     auto [it, success] = functionPos_.insert({s, numEqs() - 1u});
     if(!success)
       {
+        // Note the use of the string literal to be able to use +. Alternative: create a string with std::string
         throw std::runtime_error(
-          std::string{
-            "Cannot insert function with same identifier twice. Identifier="} +
-          s);
+            "Cannot insert function with same identifier twice. Identifier="s + s);
       }
   }
 
+  /*!
+   * @brief Get a function from the factory
+   *
+   * @param s the string
+   * @return the function (a callable object of the type specified in the Trait).
+   */
   auto
   getFunction(std::string const &s) const
   {
+    using namespace std::string_literals;
     auto it = functionPos_.find(s);
     if(it != functionPos_.end())
       {
@@ -67,8 +85,9 @@ public:
       }
     else
       {
+        // note the string literal s to be able to use +
         throw std::runtime_error(
-          std::string{"Cannot find function with identifier="} + s);
+          "Cannot find function with identifier="s + s);
       }
   }
 

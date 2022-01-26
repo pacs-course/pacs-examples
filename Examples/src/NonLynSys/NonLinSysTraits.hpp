@@ -21,12 +21,18 @@ namespace NonLinSysTraits
    */
   template <class Scalar> struct VectorTraits
   {
+    //! The type of the function argument
     using ArgumentType = std::vector<Scalar>;
+    //! The type of the system result
     using ResultType = std::vector<Scalar>;
+    //! The type of the result of a single equation
     using ScalarType = Scalar;
+    //! The type of the single function
     using ScalarFunctionType = std::function<ScalarType(ArgumentType const &)>;
+    //! The type that can be used to wrap the whole system
     using VectorFunctionType = std::function<ResultType(ArgumentType const &)>;
-    using SystemType = std::vector<ScalarFunctionType>;
+    //!  The container where the single functions are stored
+    using FunctionContainerType = std::vector<ScalarFunctionType>;
   };
 
   template <class Scalar> struct EigenVectorTraits
@@ -36,7 +42,7 @@ namespace NonLinSysTraits
     using ScalarType = Scalar;
     using ScalarFunctionType = std::function<ScalarType(ArgumentType const &)>;
     using VectorFunctionType = std::function<ResultType(ArgumentType const &)>;
-    using SystemType = std::vector<ScalarFunctionType>;
+    using FunctionContainerType = std::vector<ScalarFunctionType>;
   };
 
   /*!
@@ -54,7 +60,7 @@ namespace NonLinSysTraits
     using ScalarType = Scalar;
     using ScalarFunctionType = std::function<ScalarType(ArgumentType const &)>;
     using VectorFunctionType = std::function<ResultType(ArgumentType const &)>;
-    using SystemType = std::vector<ScalarFunctionType>;
+    using FunctionContainerType = std::vector<ScalarFunctionType>;
   };
 
 } // namespace NonLinSysTraits

@@ -57,17 +57,8 @@ increases as the polynomial degree increases.
 The Makefile has been set so that you always compile with optimization
 activated.
 
-*Note* To use the multithread parallel algorithm of the standard libary you need to link you code qith the Intel treading building block (tbb) library.
+**Note** To use the multithread parallel algorithm of the standard libary you need to link you code qith the Intel treading building block (tbb) library.
 This is done automatically by the Makefile. Of course, you mast have `libtbb.so` installed in your system! Check!
-
-
-**Note 1:** Since ``std::pow(x,n)`` may be very expensive (since it
-treats also non-integer exponents), I have implemented in
-``horner.cpp`` a function for elevation to power with integer
-exponents (constant expressions) that just perfoms the required multiplications. 
-Indeed, this procedure, if the exponent is not too high, is more efficient than the standard `pow` which has to solve a non-linear equation.
-However, since c++17 the standard library has an overloading of ``pow`` for (constexpr) integer exponents, so maybe there is no
-need of the specialised user-defined version anymore.
 
 **Note 2:**  To get significant timings use a high degree polinomial, at least 20.
 

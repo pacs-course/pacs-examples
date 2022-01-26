@@ -10,3 +10,4 @@ to store functions that may be recalled on demand.
 - Another usage of std::function and lambda expressions
 - The use of traits and an example of template template parameters
 - An example of a function factory (a particular object factory)
+- A simple use of parallelization using openMP

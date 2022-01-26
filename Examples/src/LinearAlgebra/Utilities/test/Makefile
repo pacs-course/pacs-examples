@@ -1,5 +1,7 @@
 include ../../../../Makefile.inc
-CPPFLAGS+=-I..
+# I need -I.. at the beginning
+OCPPFLAGS:=$(CPPFLAGS)
+CPPFLAGS=-I.. $(OCPPFLAGS)
 
 all: $(DEPEND) testMM_readers  testCooWrite testAdjacency testRotatingVector testBasicZeroFun testBasicMinFun test_mathUtils test_RotatingMatrix test_polyzero
 
@@ -30,7 +32,6 @@ test_mathUtils.o: test_mathUtils.cpp ../mathUtils.hpp
 
 test_RotatingMatrix.o: test_RotatingMatrix.cpp ../RotatingMatrix.hpp
 
-test_polyzero.o: test_polyzero.cpp ../polyHolder.hpp
 
 ../Utilities.o: ../Utilities.cpp ../Utilities.hpp
 

@@ -16,9 +16,8 @@
 // to use them
 //
 // This file provides adapters in the form of function to enable to use
-// std::vector and Eigen vectors in a seamless way. This way the
-// FixedPointSolver classes may use std::vector or Eigen::VectorxD to store the
-// variables. The code is the same thanks to the adapters.
+// std::vector and Eigen vectors in a seamless way. This way we have a common interface
+// to several utilities between std::vector and Eigen::VectorXd
 
 namespace apsc::internals
 {
@@ -93,7 +92,7 @@ squaredNorm(const Eigen::MatrixBase<Derived> &a)
   return a.squaredNorm();
 }
 /*!
- * The overload of sqaredNorm vor vector
+ * The overload of sqaredNorm for vector
  * @tparam T The type stored in the vector
  * @param a the vector
  * @return the squared norm
@@ -122,7 +121,7 @@ operator+(std::vector<T> const &a, std::vector<T> const &b)
   // parallel! A note: the non parallel version can be made more efficient...
   // but then I cannot use std::transform
   std::transform(a.begin(), a.end(), b.begin(), res.begin(),
-                 [](T const &x, T const &y) { return x + y; });
+                 std::plus<T>());
   /* a non parallel version with a simple loop, made more efficient (less
   operations) std::vector<T> res=a; for (std::size_t i=0u;i<a.size();++i)
     res[i]+=b[i]; // add-assign!
@@ -138,7 +137,7 @@ operator-(std::vector<T> const &a, std::vector<T> const &b)
   // I use std::transform because, by adding an execution policy I can make it
   // parallel! the seme considerations for the + version apply here.
   std::transform(a.begin(), a.end(), b.begin(), res.begin(),
-                 [](T const &x, T const &y) { return x - y; });
+                 std::minus<T>());
   return res;
 }
 /*!

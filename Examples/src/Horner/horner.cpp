@@ -16,14 +16,6 @@
  Since std::pow() is very expensive I create my version for integer
  powers.
  */
-double
-integerPow(const double &x, int n)
-{
-  double res{x};
-  for(int i = 2; i != n + 1; ++i)
-    res *= x;
-  return res;
-}
 
 double
 eval(std::vector<double> const &a, double const &x)
@@ -31,7 +23,7 @@ eval(std::vector<double> const &a, double const &x)
   double sum = a[0];
   for(std::size_t k = 1; k < a.size(); ++k)
     {
-      sum += a[k] * integerPow(x, k); // Pow is expensive
+      sum += a[k] * std::pow(x, k); // Pow is expensive
       // If you want to test with the standard pow comment the
       // previous statement and uncomment the next one
       // sum += a[k]*std::pow(x,k);// Pow is expensive
