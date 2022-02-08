@@ -240,3 +240,4 @@ make.dep
 /Examples/share/cmake/muparserx/muparserxConfig.cmake
 /Examples/share/cmake/muparserx/muparserxConfigVersion.cmake
 /Examples/src/Utilities/test_csvReader
+/.externalToolBuilders/org.eclipse.texlipse.builder.TexlipseBuilder.launch
