@@ -88,8 +88,8 @@ doc:
 
 test: $(EXEC)
 
+$(EXEC):%: %.o
 
-#$(EXEC):
 
 $(OBJS): $(SRCS)
 
