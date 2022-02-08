@@ -15,32 +15,48 @@
 #include <numeric>
 namespace apsc
 {
-  /*!
-   * @struct SortAndPermuteTraits
-   * @brief A trait that defines common types for the utilities in this file
-   */
-  struct
-  SortAndPermuteTraits
-  {
-    using PermutationType=std::vector<std::size_t>;
-  };
-  /*!
+/*
    * @fn  sortAndPermute(Container&, CompOp=CompOp())
-   * @brief Declaration of helper function
-   *
-   * This is a helper function to simplify the use of the utility SortAndPermute.
-   *
+   * @brief Sorts a squential container and returns the permutation vector
+   *   *
    * @pre Container must be a stl compliant  random access container (a vector or array)
    * @tparam Container The type of the container to sort
    * @tparam CompOp The comparison operator for sorting
    * @param v The container to sort
    * @param comparison functor
-   * @return A vector containing the permutation
+   * @return A vector of integers containing the permutation
    */
-
   template<typename Container,typename CompOp=std::less<typename Container::value_type>>
-  auto sortAndPermute(Container &, CompOp comparison=CompOp());
-/*!
+  std::vector<std::size_t> sortAndPermute(Container &, CompOp comparison=CompOp());
+
+  /*!
+    * @fn Cont2 applyPermutation(const Cont2&, permutation const &p)
+    * @brief Applies the permutation to another container
+    *
+    * @pre The container size should be equal to the saze of the sorted container
+    * @tparam Cont2 The container type
+    * @param cont2 The container
+    * @param p The permutation vector
+    * @return The container with the elements permuted
+    */
+   template< class Cont2>
+   Cont2 applyPermutation(Cont2 const & cont2, std::vector<std::size_t> const & p);
+
+   /*!
+     * @fn void applyPermutationInPlace(Cont2&, permutation const& p)
+     * @brief Applies permutation in place to another container
+     *
+     * @pre The container size should be equal to the saze of the sorted container
+     * @tparam Cont2 The container type
+     * @param cont2 A reference to the container that will be permuted in place.
+     * @param p The permutation vector
+     */
+    template< class Cont2>
+      void applyPermutationInPlace(Cont2 & cont2, std::vector<std::size_t> const & p);
+
+
+
+  /*!
  * @class SortAndPermute
  * @brief Allows to sort a sequential direct access container and extract the permutation
  *
@@ -56,7 +72,7 @@ class SortAndPermute
 {
 public:
   using value_type = typename Container::value_type;
-  using PermutationType=SortAndPermuteTraits::PermutationType;
+  using PermutationType=std::vector<size_t>;
 
   /*!
    * @fn  SortAndPermute(CONT&&, const CompOper&=CompOper())
@@ -94,7 +110,7 @@ public:
 
   /*!
    * @fn void operator ()()
-   * @brief It performs the actual permutation.
+   * @brief It performs the sorting and  permutation.
    *
    */
   void operator()();
@@ -111,7 +127,7 @@ public:
   }
 
 
-  friend auto sortAndPermute<>(Container &, CompOper);
+  friend PermutationType sortAndPermute<>(Container &, CompOper);
 private:
   Container data_;
   CompOper comparison;
@@ -127,7 +143,7 @@ private:
   };
 };
 
-
+//   ********************    IMPLEMENTATIONS   ********************
 
 
 template <class Container, typename CompOper>
@@ -155,17 +171,9 @@ SortAndPermute<Container,CompOper>::operator()()
     }
 }
 
-/*!
-  * @fn Cont2 applyPermutation(const Cont2&, permutation const &p)
-  * @brief Applies the permutation to another container
-  *
-  * @pre The container size should be equal to the saze of the sorted container
-  * @tparam Cont2 The container type
-  * @param cont2 The container
-  * @return The container with the elements permuted
-  */
+
  template< class Cont2>
- Cont2 applyPermutation(Cont2 const & cont2, SortAndPermuteTraits::PermutationType const & p)
+ Cont2 applyPermutation(Cont2 const & cont2, std::vector<std::size_t> const & p)
  {
    Cont2 result;
    result.reserve(cont2.size());
@@ -176,16 +184,9 @@ SortAndPermute<Container,CompOper>::operator()()
    return result;
  }
 
- /*!
-   * @fn void applyPermutationInPlace(Cont2&, permutation const& p)
-   * @brief Applies permutation in place to another container
-   *
-   * @pre The container size should be equal to the saze of the sorted container
-   * @tparam Cont2 The container type
-   * @param cont2 A reference to the container that will be permuted.
-   */
+
   template< class Cont2>
-    void applyPermutationInPlace(Cont2 & cont2,SortAndPermuteTraits::PermutationType const & p)
+    void applyPermutationInPlace(Cont2 & cont2, std::vector<std::size_t> const & p)
   {
     // Thanks to Raymond Chen of Microsoft for the algorithm!
     auto indices=p;
@@ -207,7 +208,7 @@ SortAndPermute<Container,CompOper>::operator()()
 
 
 template<typename Container,typename CompOp>
-auto sortAndPermute(Container & v, CompOp comparison)
+std::vector<std::size_t> sortAndPermute(Container & v, CompOp comparison)
 {
   SortAndPermute<Container,CompOp> sortAndPermute{v,comparison};
   sortAndPermute();

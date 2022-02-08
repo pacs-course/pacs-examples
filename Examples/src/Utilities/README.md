@@ -34,7 +34,7 @@ std::unique_prt<B> clone() const;
 that returns the pointer to a copy of the object wrapped into a
 unique_prt.  B can be either T or a base class of T. It also contains
 an interesting class, called `PointerWrapper`, which implements an owning pointer with deep copy
-semantic! The "pointed" class should be clonable. It means that you can use it to implement composition of a polymorphic object!
+semantic! The "pointed" class should be clonable. It means that you can use it to implement composition of a polymorphic object and have autometically the copy operators in the composing class!
 
 * `cxxversion` To test with which version of C++ you are compiling your code
 

@@ -180,15 +180,23 @@ main()
   std::cout << "The resource in wb is: ";
   wb->whoAmI();
   wb = apsc::make_PointerWrapper<Derived2, Derived2>();
-  std::cout << "The resource in wb is now (now is Derived2): ";
+  std::cout << "The resource in wb is now (now is Derived2 and storing 0): ";
   wb->whoAmI();
-  apsc::PointerWrapper<Base> wz = apsc::make_PointerWrapper<Base, Derived1>(4);
-  std::cout << "The resource in wz is: ";
+  apsc::PointerWrapper<Derived1> wz = apsc::make_PointerWrapper<Derived1, Derived1>(4);
+  std::cout << "The resource in wz is: (should be Derived1 and storing 4) ";
   wz->whoAmI();
   apsc::PointerWrapper<Base> wc =
     apsc::make_PointerWrapper<Derived1, Derived1>(55);
-  std::cout << "The resource in wc is: (should be Derived1)";
-  wz->whoAmI();
+  std::cout << "The resource in wc is: (should be Derived1 and storing 55)";
+  wc->whoAmI();
+  apsc::PointerWrapper<Base> wk{wz};
+  std::cout << "The resource in wk is: (should be Derived1 and identical to wz)";
+   wk->whoAmI();
+   wz->setValue(80);
+   wk=wz;
+   std::cout << "The resource in wk isnow: (should be Derived1 and store 80)";
+   wk->whoAmI();
+
   std::cout << "tesing some operator\n";
 
   std::cout << std::boolalpha << (wz == wc) << " " << (wz < wc) << std::endl;
