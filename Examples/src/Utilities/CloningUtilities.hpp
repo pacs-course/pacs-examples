@@ -222,7 +222,7 @@ public:
    * @param original
    */
   PointerWrapper(const PointerWrapper<T> &original)
-    : DataPtr(original.get() ? original.DataPtr->clone() : Ptr_t{})
+    : DataPtr{original.get() ? original.DataPtr->clone() : Ptr_t{}}
   {}
 
   //! Copy conversion
@@ -233,11 +233,12 @@ public:
    * @tparam U the type of the origin Wrapper, must be T or derived from T
    * @param original The original wrapper
    */
-  template <class U> PointerWrapper(const PointerWrapper<U> &original)
+ template <class U> PointerWrapper(const PointerWrapper<U> &original)
   {
     if(original.get())
       {
-        DataPtr.reset(static_cast<Ptr_t>(original.DataPtr->clone()));
+        //DataPtr.reset(static_cast<Ptr_t>(original.DataPtr->clone()));
+        DataPtr=static_cast<Ptr_t>(original.get()->clone());
       }
   }
 
@@ -252,6 +253,27 @@ public:
       DataPtr = original.DataPtr ? original.DataPtr->clone() : Ptr_t{};
     return *this;
   }
+  /*!
+   * @brief copying assignement allowing for conversions
+   *
+   * This assignemt allow to convere PointerWrapper<Derived> in a PointeWrapper<Base>
+   * @tparam U The derived type
+   * @param original The Wrapper to convert-copy
+   * @return a reference to myself
+   */
+ template<class U>
+  PointerWrapper &
+   operator=(const PointerWrapper<U> &original)
+   {
+      using OtherType=typename PointerWrapper<U>::Ptr_t;
+      static_assert(std::is_constructible_v<Ptr_t,OtherType&&>,"Cannot assign a non convertible PointerWrapper");
+      DataPtr = original.get() ? static_cast<Ptr_t>(original.get()->clone()) : Ptr_t{};
+      return *this;
+   }
+
+
+
+
   //! Maybe I want to mov-assign a unique pointer
   /*!
    * If argument is an rvalue unique_ptr can be moved.
@@ -285,7 +307,7 @@ public:
    */
   template <class U>
   PointerWrapper(PointerWrapper<U> &&rhs) noexcept
-    : DataPtr(static_cast<T *>(rhs.release()))
+    : DataPtr{static_cast<T *>(rhs.release())}
   {}
 
   //! Move assignement
@@ -303,14 +325,13 @@ public:
   PointerWrapper &
   operator=(PointerWrapper<U> &&rhs) noexcept
   {
-    using otherPType = typename PointerWrapper<U>::pointer;
-    static_assert(std::is_convertible<otherPType, pointer>::value,
+    using OtherPType = typename PointerWrapper<U>::pointer;
+    static_assert(std::is_constructible<pointer,OtherPType>::value,
                   "Pointers must be convertible");
     if(this->get() != static_cast<pointer>(rhs.get()))
       {
-        DataPtr.reset(rhs.get());
+        DataPtr.reset(rhs.release());
       }
-    rhs.release(); // release resource
     return *this;
   };
 
@@ -467,6 +488,21 @@ operator!=(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
 {
   return a.get() != b.get();
 }
+/* @todo C++20 use the spaceship operator to simplify
+ * template <class T, class U>
+ * bool
+ * operator<=>(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
+ * {
+ *  return a.get() <=> b.get();
+ * }
+ * bool
+ * operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
+ * {
+ *  return a.get() == b.get();
+ * }
+ *
+ */
+
 } // end namespace apsc
 /*!
  *  Specialization of std::hash. I can store wrappers in unordered associative
