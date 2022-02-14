@@ -139,7 +139,7 @@ endif
 #
 # Flags for standard 
 #
-STANDARD=c++17
+STANDARD=c++20
 # 
 # Location of
 # Doxygen configuration file
