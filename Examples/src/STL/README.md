@@ -37,6 +37,8 @@ permutation to be able to apply it to other vectors.
 
 * `Map` A simple program that shows the main functionalities of `std::map`
 
+* `InitializerList` An simple example that explains how the use of `std::initializer_list<T>` can simplyfy construction of object that stores containers to be filled in the construction.
+
 
 
 #What do I lean here?#

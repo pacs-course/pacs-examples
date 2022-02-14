@@ -20,13 +20,13 @@
 namespace internal
 {
 //! For standard monomial basis
-inline double
+constexpr double
 POW(const double &x, const unsigned int N)
 {
   return (N == 0u) ? 1.0 : x * POW(x, N - 1);
 }
 //! Derivative of \f$ x^N \f$
-inline double
+constexpr double
 POWDer(const double &x, const unsigned int N)
 {
   if(N == 0u)

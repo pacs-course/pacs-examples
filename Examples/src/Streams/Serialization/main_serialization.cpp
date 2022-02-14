@@ -91,11 +91,12 @@ main()
   std::ofstream binfile("file.dat", std::ios::binary);
 
   int n = 10;
+  std::vector<double> v(n, 10.0); // n elements
+  // A vector is easily serializable (but you need to store the number of
+  // elements) The number of elements has already been stored
   // an int is trivially serializable
   binfile.write(reinterpret_cast<char *>(&n), sizeof n);
-  // A vector is easily serializable (but you need to store the numbe rof
-  // elements) The number of elements has already been stored
-  std::vector<double> v(n, 10.0); // n elements
+  // Dump the vector data
   binfile.write(reinterpret_cast<char *>(v.data()), v.size() * sizeof(double));
   // A set cannot be serialized, but I can buffer it in a vector
   std::set<int>    s = {1, 2, 3, 4, 5};
@@ -131,12 +132,12 @@ main()
   std::cout << "The data stored is indeed of "
             << 2 * sizeof(int) + v.size() * sizeof(double) +
                  s.size() * sizeof(int) + sizeof(TrivialCopy)
-            << " bytes" << std::endl;
+            << " bytes\n" << std::endl;
   //*****               READING BACK
   // I use another file stream (input in this case)
 
   std::ifstream infile("file.dat", std::ios::binary);
-  For instance, serialization of a `std::vector`
+  //serialization of a `std::vector`
 
   // Read dimension of vector
   int l;
