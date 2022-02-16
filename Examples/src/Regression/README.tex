@@ -48,92 +48,65 @@
 \begin{document}
 \maketitle
 
-The directory \onlyprogramname{Regression} contains a set of utilities
-for fitting simple parametric models.  The chosen paradigm is that of having a
-collection of simple classes that may be composed to create the
+The directory \onlyprogramname{Regression} contains an example of
+fitting data with simple parametric models.  The chosen paradigm is that of having a
+collection of simple classes that may be composed to create
 different types of models and solution procedures.  To this purpose
-generic programming via templates it is of advantage because it allows
+generic programming via templates is of advantage because it allows
 to create only loosely related classes, contrary to polymorphism that
 requires a precise definition of class hierarchy and careful design of
-the interface.  I will use a terminology which is not perfectly
-standard but exemplifies the different components that make up a
+the interface.  I will use a terminology that is not always
+standard, but it exemplifies the different components that make up a
 simple univariate parametric fitting.
 
+\section{The general framework}
 A rather general framework for parametric fitting in a supervised learning setting consists of the following ingredients:
 \begin{itemize}
-    \item The data $\boldsymbol{\chi}=(\mathbf{X},\mathbf{Y})=\lbrace(x_i,y_i),i=1,\ldots,n\rbrace$, i.i.d. distributed, and the aim is to find a
+    \item \textbf{Data.} The data $\boldsymbol{\chi}=(\mathbf{X},\mathbf{Y})=\lbrace(x_i,y_i),i=1,\ldots,n\rbrace$, i.i.d. distributed, and the aim is to find a
         relationship $x \to y$ which represents the way data is generated and allows to make predictions on unseen values of $x$. 
-    \item A model, i.e. a predictor $m(x|\boldsymbol{\theta})$, parametrised by $\boldsymbol{\theta}= \lbrace\theta_1,\cdots,\theta_p\rbrace$
-    which, for a given value of the parameters $\boldsymbol{\theta}$, provides a prediction  $y=m(x|\boldsymbol{\theta})$
-    which should be representative of the process in which data is generated. So, we will look for the parameter $\boldsymbol{\theta}^*$ so that a distance between $\boldsymbol{Y}$ and $m(\boldsymbol{X}|\boldsymbol{\theta}^*)$
+        In this example $x$ and $y$ are scalar. But the general framework applies also to vectorial $y$ and $x$ (multivariate setting).
+    \item \textbf{Predictor.} A model, i.e. a predictor $m(x|\boldsymbol{\beta})$ parametrised by $\boldsymbol{\beta}= \lbrace\beta_1,\cdots,\beta_p\rbrace$
+    which, for a given value of the parameters $\boldsymbol{\beta}$, provides a prediction  $y=m(x|\boldsymbol{\beta})$
+    which should be representative of the data generating process. Indeed, we will look for the parameter $\boldsymbol{\beta}^*$ so that a given distance function between $\boldsymbol{Y}$ and $m(\boldsymbol{X}|\boldsymbol{\beta}^*)$
     is minimal.
-    \item A loss function $l(y,\hat{y})$ that takes a $(x_i,y_i)\in\boldsymbol{\chi}$ and $\hat{y}_i=m(x_i|\boldsymbol{\theta})$
+    \item \textbf{Loss function.} A loss function $l(y,\hat{y})$ that takes a $(x_i,y_i)\in\boldsymbol{\chi}$ and $\hat{y}_i=m(x_i|\boldsymbol{\beta})$
     and measures a distance between $y_i$ and $\hat{y}_i$. 
         We may note that, given the model and the datum $(x_i,y_i)$, the loss function can be expressed as a function of the parameters only, defining
     \begin{equation}\label{eq:lossfun}
-    l_i(\boldsymbol{\theta})=l(y_i,m(x_i|\boldsymbol{\theta})).
+    l_i(\boldsymbol{\beta})=l(y_i,m(x_i|\boldsymbol{\beta})).
     \end{equation}
-    A possible choice (but not the only one, and not necessarily the most appropriate for the case at hand) is the \emph{square loss}: $l(y,\hat{y})=\Vert y-\hat{y}\Vert^2$, which is indeed a particular case of the \emph{negative log-likelihood},
+    A possible choice (but not the only one, and not necessarily the most appropriate for the case at hand) is the \emph{square loss}: $l(y,\hat{y})=\Vert y-\hat{y}\Vert^2$, which is indeed linked to a particular case of the \emph{negative log-likelihood}\footnote{The use of the logarithm is to have an additive loss, and the negative sign to trasform a maximization to a minimization. This way, minimizing $J$ in~\eqref{eq:empiricalr} is equivalent to maximize $\prod \log(p_m(y_i|x_i,\boldsymbol{\beta}))$},
      \begin{equation}\label{eq:lossfunnl}
- l_i(\boldsymbol{\theta})=-log(p_m(y_i|x_i,\boldsymbol{\theta}))
+ l_i(\boldsymbol{\beta})=-\log(p_m(y_i|x_i,\boldsymbol{\beta}))
  \end{equation}
-   when the probabilistic distribution $p_m$ of $y$ is Gaussian with constant variance $\sigma^2$ and the model $m(x_i|\boldsymbol{\theta})$ represents the expected value of $y$ at $x=x_i$ (see Sect.~\ref{sec:logequivalence}):
+   when the probabilistic distribution $p_m$ of $y$ is Gaussian with constant variance $\sigma^2$ and the model $m(x_i|\boldsymbol{\beta})$ represents the expected value of $y$ at $x=x_i$ (see Sect.~\ref{sec:logequivalence}):
    \[
-      p_m(y|x,\boldsymbol{\theta})=\frac{1}{\sqrt{2\sigma^2}}e^{-\frac{(y-m(x|\boldsymbol{\theta}))^2}{2\sigma^2}}
+      p_m(y|x,\boldsymbol{\beta})=\frac{1}{\sqrt{2\sigma^2}}e^{-\frac{(y-m(x|\boldsymbol{\beta}))^2}{2\sigma^2}}
    \]
-    \item A cost function (empirical risk)
+    \item \textbf{Empirical Risk.}  A cost function (empirical risk), of the form
     \begin{equation}\label{eq:empiricalr}
-    J(\boldsymbol{\theta})=\frac{1}{n}\sum_{i=1}^{n} l_i(\boldsymbol{\theta})=\frac{1}{n}\sum_{i=1}^{n}l(y_i,m(x_i|\boldsymbol{\theta})).
+    J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^{n} l_i(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^{n}l(y_i,m(x_i|\boldsymbol{\beta})).
     \end{equation}
-    Often, to guarantee uniqueness of the solution a \emph{regularization} is added, considering the following form of $J$
+    Often, to guarantee uniqueness of the solution, a \emph{regularization} is added, considering the following form of $J$
      \begin{equation}\label{eq:empiricalrreg}
-   J(\boldsymbol{\theta})=\frac{1}{n}\sum_{i=1}^{n} l_i(\boldsymbol{\theta})+\Vert\boldsymbol{\theta}-\boldsymbol{\theta}_0\Vert^2_\theta,
+   J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^{n} l_i(\boldsymbol{\beta})+\Vert\boldsymbol{\beta}-\boldsymbol{\beta}_0\Vert^2_W,
    \end{equation}
-    where $\boldsymbol{\theta}_0$ ia a possible prior on the parameters (often taken zero) and 
+    where $\boldsymbol{\beta}_0$ ia a possible prior on the parameters (often taken zero) and 
     \[
-    \Vert\boldsymbol{\beta}\Vert^2_\theta=\boldsymbol{\beta}^T \mathbf{W} \boldsymbol{\beta},
+    \Vert\boldsymbol{\beta}\Vert^2_W=\boldsymbol{\beta}^T \mathbf{W} \boldsymbol{\beta},
     \]
     a squared weighted norm, with $\mathbf{W}$ a symmetric positive definite matrix (often taken proportional to the identity).
-    \item A minimization procedure to find
+    \item \textbf{Minimization.} A minimization procedure to find
     \begin{equation}
     \label{eq:minim}
-    \boldsymbol{\theta}^*=\arg\min_{\boldsymbol{\theta}\in \mathcal{T}}J(\boldsymbol{\theta}),
+    \boldsymbol{\beta}^*=\arg\min_{\boldsymbol{\beta}\in \mathcal{T}}J(\boldsymbol{\beta}),
     \end{equation}
     where $\mathcal{T}\subset\mathbb{R}^p$ is the set of admissible parameters (typically convex).
+    
+     In the case of square loss functions the minimization problem is equivalent to a Minimal Square Error (MSE) strategy. 
+     If the model is linear in the parameters (linear regression) you may use a QR factorization of the matrix of the resulting normal problem. In general, you may use any optimization method, like gradient, stichastic gradient, Newton-Rapson, Levemberg-Marquardt, BFGS, trust region methods etc etc.
 \end{itemize}
 
-\paragraph{\textbf{Data}.} We indicate with $y=y(x)$ a datum, function of a variable $x\in I$, which represent a stochastic variable with an underlying statistical
-  distribution, for instance $y=N(\bar{y},\sigma)$. With vectors $(\mathbf{X},\mathbf{Y})$ we indicate some sample (experimental) data.
-\paragraph{\textbf{Model}}. With model we indicate here the
-  quantity $m(x;\boldsymbol{\theta})$ that, given the parameters $\boldsymbol{\theta}$, for any $x\in I$ returns a feature
-  of the data $y$. Typically, $m(x;\boldsymbol{\theta})$ may want to
-  represent the expected value of $y$ at $x$. 
-\paragraph{\textbf{Cost function.}} A measure $J$ of the discrepancy of
-  the measured feature of the sample data and that provided by the model
-  given a value $\boldsymbol{\theta}$ for the parameters. Typically it is based on some a-priori
-  assumption of the probabilistic distribution of the data, $p_m(y|x)$. For instance $J(\boldsymbol{\theta})=-E(\log(p_m(y|x;\boldsymbol{\theta}))$,
-  where the expected value is calculated on the empirical distribution stemming
-  from the data,
-  uses the log-likelihood estimation to build the cost function. It means that
-  \[
-   J(\boldsymbol{\theta})=-\frac{1}{n}\sum_{i=1}^n \log p_m(Y_i|X_i;\boldsymbol{\theta})).
- \]
- We can, and we will, neglect $1/n$ since irrelevant for the minimization of $J$.
- If $m$ represents the expected value and we consider a constant variance we have
-   \[
-   J(\boldsymbol{\theta})=-\frac{1}{n}\sum_{i=1}^n \log N(Y_i,m(X_i,\boldsymbol{\theta}),1)
- \]
- and it is well known that this is equivalent to look for the mean least-square
- error. That is, in this case we can replace the $J$ above with
- \[
-   J_{MSE}=\sum_1^n(Y_i-  m(X_i,\boldsymbol{\theta}))^2.
- \]
- \paragraph{\textbf{Solver}} The solver, or optimizer, is the tools that computes
- \[
-   \boldsymbol{\theta}_{opt}=\operatorname{argmin}_{\boldsymbol{\theta}}J(\boldsymbol{\theta})
- \]
- In the case of MSE cost function and a model linear in the parameter (linear regression) you may use QR factorization of the matrix of the normal problem.
- In general, you may use any optimization method, like gradient, Newton-Rapson, BFGS, trust region methods etc etc.
 
  \subsection{Putting it together}
  We have a clear functional hierarchy: the solver needs the cost function, which in turn needs a model, and, finally, we need to define the type of data
@@ -142,16 +115,15 @@ A rather general framework for parametric fitting in a supervised learning setti
  a template parameter.
  
  
- \section{Overview}
-In particular, we have implemented polynomial univariate regression, as an example of models of the form
+ \section{A particular case: linear regression}
+In this example we designed a general frame, but we only implemented, polynomial univariate regression, as an example of models of a class of linear models the form
 \begin{equation}
 m(x;\boldsymbol{\beta})=\sum_{i=0}^{N-1} \beta_i\phi_i(x)
 \end{equation}
 where the $\beta_i$ are the parameters, and $\phi_i$ basis functions.
+The model is linear in the parameters and in the case of polynomial regression ine may choose monomials as basis functions, that is $\phi_i=x^i$, but other choices may be possible.
 
-In the case of polynomial regression we have chosen $\phi_i=x^i$, but other choices may be possible.
 
-In this frame, the model il linear with respect to the parameters.
 
 We have also created a class for cost functions, at the moment we have implemented only the mean least square error (MSE)
 
@@ -514,33 +486,33 @@ for details. Among all solvers of cppNumLib I am using
 \label{sec:logequivalence}
 Let' take 
 \[
-p_m(y|x,\boldsymbol{\theta})=\frac{1}{\sqrt{2\sigma^2(x)}}e^{-\frac{(y-m(x|\boldsymbol{\theta}))^2}{2\sigma^2(x)}}
+p_m(y|x,\boldsymbol{\beta})=\frac{1}{\sqrt{2\sigma^2(x)}}e^{-\frac{(y-m(x|\boldsymbol{\beta}))^2}{2\sigma^2(x)}}
 \]
 where $\sigma=\sigma(x)$ is supposed to be known.
 \[
--\log p_m(y|x,\boldsymbol{\theta})=-\log{\frac{1}{\sqrt{2\sigma^2(x)}}}+\frac{(y-m(x|\boldsymbol{\theta}))^2}{2\sigma^2(x)},
+-\log p_m(y|x,\boldsymbol{\beta})=-\log{\frac{1}{\sqrt{2\sigma^2(x)}}}+\frac{(y-m(x|\boldsymbol{\beta}))^2}{2\sigma^2(x)},
 \]
 thus
 \[
-p_i(\boldsymbol{\theta})=-\log p_m(y_i|x_i,\boldsymbol{\theta})=-\log{\frac{1}{\sqrt{2\sigma^2_i}}}+\frac{(y_i-m(x_i)|\boldsymbol{\theta}))^2}{2\sigma^2_i},
+p_i(\boldsymbol{\beta})=-\log p_m(y_i|x_i,\boldsymbol{\beta})=-\log{\frac{1}{\sqrt{2\sigma^2_i}}}+\frac{(y_i-m(x_i)|\boldsymbol{\beta}))^2}{2\sigma^2_i},
 \]
 with $\sigma_i=\sigma(x_i)$. Consider 
 \[
-J_1(\boldsymbol{\beta})=\sum_i p_i(\boldsymbol{\theta})=-\sum_i \log{\frac{1}{\sqrt{2\sigma^2_i}}} +\sum_i \frac{(y_i-m(x)i|\boldsymbol{\theta}))^2}{2\sigma^2_i}
+J_1(\boldsymbol{\beta})=\sum_i p_i(\boldsymbol{\beta})=-\sum_i \log{\frac{1}{\sqrt{2\sigma^2_i}}} +\sum_i \frac{(y_i-m(x)i|\boldsymbol{\beta}))^2}{2\sigma^2_i}
 \]
 The first term does not contain the parameters, so it can be ignored in the minimization procedure. Also the factor $2$ is irrelevant when looking for the minimum and can be replaced by $1/n$. Therefore, minimizing $J_1$ is equivalent to minimizing
 \[
-J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^n \frac{(y_i-m(x_i|\boldsymbol{\theta}))^2}{\sigma^2_i}
+J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^n \frac{(y_i-m(x_i|\boldsymbol{\beta}))^2}{\sigma^2_i}
 \]
 which is a weighted least square with diagonal weights $\frac{1}{\sigma_i^2}$. If the variance $\sigma$ is constant, the minimization of $J_1$ further simplifies into the minimization
 \[
-J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^n (y_i-m(x_i|\boldsymbol{\theta}))^2
+J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^n (y_i-m(x_i|\boldsymbol{\beta}))^2
 \]
 which is nothing else than classic least squares.
 
 A further note. Often the minimization of $J$ is indeed replaced by the minimization of 
 \[
-\frac{1}{2}\sum_{i=1}^n (y_i-m(x_i|\boldsymbol{\theta}))^2.
+\frac{1}{2}\sum_{i=1}^n (y_i-m(x_i|\boldsymbol{\beta}))^2.
 \]
 The minimum point is the same, and the factor two simplifies some algebraic operations when computing gradients.
 \end{document}
