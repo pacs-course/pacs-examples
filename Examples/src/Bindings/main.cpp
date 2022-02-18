@@ -1,6 +1,26 @@
+// This show shows how to eliminate compiler warnings issued because some parameters are not used
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include <iostream>
 #include <typeinfo>
 #include <vector>
+/*
+ * This is an example to show refernce bindigs. We consider the case with just lvalue refernces
+ * and that with also rvalue refernces
+ */
+/*!
+ * @brief A function returning an int
+ *
+ * @return an int
+ */
+int
+createFive()
+{
+  int tmp{5};
+  return tmp;
+}
+// Bindings of lvalue references only
 void
 foo(int &a)
 {
@@ -11,12 +31,8 @@ foo(const int &a)
 {
   std::cout << "using void foo(const int&)" << std::endl;
 }
-int
-createFive()
-{
-  int tmp{5};
-  return tmp;
-}
+
+// Now we consider also rvalue references
 void
 goo(int &a)
 {
@@ -35,6 +51,7 @@ goo(const int &a)
   std::cout << "using void goo(const int&)" << std::endl;
 }
 
+// Here with universal references
 using Vector = std::vector<double>; // to save typing
 
 /*
@@ -51,7 +68,7 @@ void gvect(Vector&& x)
 }
 */
 //! Now the std:;forward magic: all in one!
-//! Comment if you want standard overloading (and uncomment code above)
+//! Comment if you want standard bindings (and uncomment code above)
 template <class T>
 void
 gvect(T &&x)
@@ -71,6 +88,7 @@ main()
   // reference
   const int &   c = createFive(); // Ok lifetime of temporary is increased!
   constexpr int dcx = 2;
+  std::cout<<"I have foo(int&) and foo(const int &):\n";
   std::cout << "calling foo(25) " << std::endl;
   foo(25); // foo(const int& a)
   std::cout << "calling foo(a) (a is int)" << std::endl;
@@ -83,6 +101,7 @@ main()
   foo(c); // foo(const int & a)
   std::cout << "calling foo(dcx) (dcx is a constexpr)" << std::endl;
   foo(dcx); // foo(const int & a)
+  std::cout<<"\nI have goo(int&) and goo(const int &) and goo(int&&):\n";
   std::cout << "calling goo(25)" << std::endl;
   goo(25); // goo(int&& a) NOTE!
   std::cout << "calling goo(a) (a is int)" << std::endl;
@@ -96,7 +115,7 @@ main()
   std::cout << "calling goo(dcx) (dcx is a constexpr)" << std::endl;
   goo(dcx); // goo(const int & a)
 
-  std::cout << "\n\n NOW SOMETHING MORE INTERESTING\n\n";
+  std::cout << "\nNOW SOMETHING MORE INTERESTING\n";
   Vector v(100, 3.0); // a vector containing 3 of size 100
 
   std::cout << "calling gvect(v) (v is a vector)" << std::endl;
@@ -111,3 +130,5 @@ main()
             << std::endl;
   gvect(std::vector<double>(10));
 }
+#pragma GCC diagnostic pop
+

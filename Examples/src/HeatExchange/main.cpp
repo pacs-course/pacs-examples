@@ -65,18 +65,16 @@ main(int argc, char **argv)
     std::cout<<"Getpot input file\n";
   }
   cout << "Reading parameters from " << filename << std::endl;
+  parameters param;
+    if(jsonfile)
+      param=   readParameters_json(filename, verbose);
+    else
+      param=   readParameters(filename, verbose);
+
 #if __cplusplus < 201703L
   // This version is perfectly fine and
   // works also if you compile with C++17, but with C++17 you
   // may make things simpler
-
-  // read parameters
-//  const parameters param = readParameters(filename, verbose);
-  parameters param;
-  if(jsonfile)
-    param= readParameters_json(filename, verbose);
-  else
-    param = readParameters(filename, verbose);
   // Transfer parameters to local variables, to avoid having towrite every time
   // param.xx. I use references to save memory (not really an issue here, it is
   // just to show a possible  use of references)
@@ -85,12 +83,12 @@ main(int argc, char **argv)
   const double &toler = param.toler;  // Tolerance for stopping criterion
   // Here I use auto (remember that you need const and & if you want constant
   // references)
-  const auto &L = param.L;   // Bar length
+  const auto &L  = param.L;  // Bar length
   const auto &a1 = param.a1; // First longitudinal dimension
   const auto &a2 = param.a2; //  Second longitudinal dimension
   const auto &To = param.To; // Dirichlet condition
   const auto &Te = param.Te; // External temperature (Centigrades)
-  const auto &k = param.k;   // Thermal conductivity
+  const auto &k  = param.k;  // Thermal conductivity
   const auto &hc = param.hc; // Convection coefficient
   const auto &M = param.M;   // Number of grid elements
   const auto &solverType = param.solverType;
@@ -98,11 +96,6 @@ main(int argc, char **argv)
   // C++17 onwards version. This version works only with at least C++17
   // A oneliner! This is called structured bindings. It works because parameter
   // class is an aggregate!
-  parameters param;
-    if(jsonfile)
-      param= readParameters_json(filename, verbose);
-    else
-      param=   readParameters(filename, verbose);
 
     const auto &[itermax, toler, L, a1, a2, To, Te, k, hc, M, solverType] = param;
      
