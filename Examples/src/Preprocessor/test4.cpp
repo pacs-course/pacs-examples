@@ -19,6 +19,6 @@ If PIPPO is defined this part of text will be contained in the output file
       We are compiling with a C++ 11 compliant compiler !
 #endif
 
-#if __cpusplus != 201103L
+#if __cplusplus != 201103L
 #error We need a c++11 compliant compiler
 #endif
