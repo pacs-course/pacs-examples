@@ -197,7 +197,7 @@ main()
    std::cout << "The resource in wk isnow: (should be Derived1 and store 80)";
    wk->whoAmI();
 
-  std::cout << "tesing some operator\n";
+  std::cout << "testing some operators\n";
 
   std::cout << std::boolalpha << (wz == wc) << " " << (wz < wc) << std::endl;
 
