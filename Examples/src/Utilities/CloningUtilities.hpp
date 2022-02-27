@@ -66,7 +66,7 @@ creating an object of type T.
 
 This class implements a generic wrapper around a unique pointer
 useful to support the bridge pattern. Its role is to ease the memory
-management of object which are composed polymorphycally in a class
+management of object which are composed polymorphically in a class
 in order to implement a rule.  It is a extensive modification of the
 class presented by Mark Joshi in his book "c++ design patterns and
 derivative pricing", Cambridge Press. This version makes use of
@@ -271,12 +271,9 @@ public:
       return *this;
    }
 
-
-
-
-  //! Maybe I want to mov-assign a unique pointer
+  //! Maybe I want to move-assign a unique pointer
   /*!
-   * If argument is an rvalue unique_ptr can be moved.
+   * If argument is an rvalue unique_ptr it can be moved.
    */
   PointerWrapper &
   operator=(Ptr_t &&p) noexcept
@@ -431,7 +428,7 @@ template <class B, class D, typename... Args>
 PointerWrapper<B>
 make_PointerWrapper(Args &&... args)
 {
-  return PointerWrapper<B>(std::make_unique<D>(std::forward<Args>(args)...));
+  return PointerWrapper<B>{std::make_unique<D>(std::forward<Args>(args)...)};
 }
 /*!
 Creates a PointerWrapper the class to hold.
