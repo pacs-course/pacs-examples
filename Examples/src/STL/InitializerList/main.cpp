@@ -6,7 +6,7 @@
  */
 #include <iostream>
 
-#include "../InitializerList/poly.hpp"
+#include "poly.hpp"
 
 void printPoly(apsc::Poly const & p)
 {

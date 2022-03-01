@@ -37,6 +37,7 @@ THE SOFTWARE.
  * replace PTY stuff.
  */
 // Ignore stupind warnings induced by the boost library
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsuggest-override"
 
 #ifndef GNUPLOT_IOSTREAM_H
@@ -2942,6 +2943,7 @@ public:
 } // namespace gnuplotio
 #endif // GNUPLOT_ARMADILLO_SUPPORT_LOADED
 #endif // ARMA_INCLUDES
+#pragma GCC diagnostic pop
 
 // }}}2
 
