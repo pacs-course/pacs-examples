@@ -124,7 +124,7 @@ struct IntersectionStatus {
 };
 
 /*!
-  @brief Computes intersection betweeen two edges
+  @brief Computes intersection between edges
 
   It handles also the case of intersection at the segment ends
   @note  It is not so robust because it uses the tolerances in a
@@ -234,7 +234,7 @@ IntersectionStatus segmentIntersect(
     bool inside = (t1 >= -0.5 * tol) && (t1 <= 1.0 + 0.5 * tol) &&
                   (t2 >= -0.5 * tol) && (t2 <= 1.0 + 0.5 * tol);
     if (!inside) {
-      // No intersecion, end here
+      // No intersection, end here
       return out;
     } else {
       out.intersect = true;
