@@ -13,11 +13,11 @@ variables
 
     The macros defined in this file are:
 
-        - INLINE    if enabled converts to null, otherwise converts to inline;
-        - SURE_ASSERT(cond,"mesg")     prints mesg if cond==false, prints also
+  - INLINE    if enabled converts to null, otherwise converts to inline;
+  - SURE_ASSERT(cond,"mesg")     prints mesg if cond==false, prints also
                                  line number and file name. Cannot be disabled;
-        - ASSERTM(cond,"mesg")         as SURE_ASSERT but may be disabled;
-        - ASSERT(cond)                 as ASSERTM with no message;
+  - ASSERTM(cond,"mesg")         as SURE_ASSERT but may be disabled;
+  - ASSERT(cond)                 as ASSERTM with no message;
   - PRE_ASSERT(cond,"mesg")      as ASSERTM;
   - POST_ASSERT(cond,"mesg")     as ASSERTM;
   - INV_ASSERT(cond,"mesg")      as ASSERTM.
@@ -32,7 +32,7 @@ by using preprocessor variable bassed via the -D option
 
  Preprocessor variables that affect the asserts
 
-  - NDEBUG      All macros are disabled a part SURE_ASSERT;
+  - NDEBUG      All macros are disabled apart SURE_ASSERT;
   - INLINED     INLINE is disabled (i.e. it converts to inline!);
   - NOASSERT    ASSERTM disabled;
   - NOXXX where XXX is either PRECON or POST or INV: corresponding ASSERT
