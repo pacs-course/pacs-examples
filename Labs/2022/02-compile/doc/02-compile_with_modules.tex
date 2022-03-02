@@ -1,0 +1,408 @@
+\documentclass[10pt]{beamer}
+\usetheme{default}
+\setbeamercovered{transparent}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+
+\begin{document}
+\title{Using \texttt{mk}\\
+  Linking against shared libraries}
+\author{Pasquale Claudio Africa}
+\date{04/03/2022}
+
+\begin{frame}
+  \maketitle
+\end{frame}
+
+\section{Toolchains, \texttt{mk}, libraries and header files}
+
+\begin{frame}{Toolchains}
+  The toolchain: a set of software which constitutes a close environment for the development of further software
+
+  \begin{itemize}
+  \item a compiler (and related standard library)
+  \item a linker
+  \item basic tools for software development
+  \item basic libraries for scientific development
+  \end{itemize}	
+
+  All the software must be independent from the hosting OS 
+  (although it must be capable of talking with the specific kernel and with the CPU instruction set); if this is achieved, the software set will be portable on a large variety of computers, provided that the OS and the architecture is the same.
+
+\end{frame}
+
+\begin{frame}{\texttt{mk}}
+
+  How do I confine my work to a specific toolchain?\\[3mm]
+
+  We use the bash environmental variables to define paths for executables and libraries; the tool to manage these variables is commonly called 
+  the environment module system.\\[3mm]
+
+  There are two main module systems, the one we use is named \texttt{Lmod} (the other is \texttt{TCL Environment Modules}).\\[3mm]
+
+  A module is basically a set of instructions that define a specific environment for a specific software: where are the executables, where are its libraries, where are the header files, … 
+  If the software is built inside a toolchain, the installation and the environment  will be portable (in the previous sense).\\[3mm]
+
+  The specific module is “loaded” and can be “unloaded” as well when not needed.\\[3mm]
+
+  The module system can define a hierarchy: a module may need another one, and the system automatically handles these dependencies.
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+  Initialization of \texttt{mk}
+
+\begin{verbatim}
+$ source /u/sw/etc/bash.bashrc
+
+$ module avail
+---------- /u/sw/modules/toolchains ----------
+gcc-glibc/11.2.0 (D)
+\end{verbatim}
+
+Choice of the toolchain
+\begin{verbatim}
+$ module load gcc-glibc/11.2.0
+\end{verbatim}
+
+Inside the toolchain I can find a lot of packages
+\begin{verbatim}
+$ module avail
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \small
+  Now a specific software package can be selected: usually many other requested modules will be automatically loaded
+\begin{verbatim}
+$ module avail
+---------- /u/sw/pkgs/toolchains/gcc-glibc/11.2.0/modules ----------
+R/3.6.2                 hdf5/1.10.6    (L)    petsc/3.12.4      (L)
+adol-c/2.6.4-rc1 (L)    hypre/2.18.2   (L)    qhull/2019.1
+arpack/3.7.0     (L)    lis/2.0.20            qrupdate/1.1.2
+blacs/1.1        (L)    matio/1.5.17   (L)    scalapack/2.1.0   (L)
+boost/1.72.0     (L)    metis/5        (L)    scipy/1.18.1      (L)
+cgal/5.0.1              mumps/5.2.1    (L)    scotch/6.0.9      (L)
+dealii/9.2.0     (L)    netcdf/4.7.3   (L)    suitesparse/5.6.0 (L)
+eigen/3.3.7      (L)    nlopt/2.6.1           superlu/5         (L)
+fenics/2019.1.0         octave/5.2.0          tbb/2020.1        (L)
+fftw/3.3.8       (L)    openblas/0.3.7 (L)    trilinos/12.14.1  (L)
+glpk/4.65        (L)    p4est/2.2      (L)    vtk/9.0.0         (L)
+\end{verbatim}
+
+The module system takes care of the integrity of the definitions and does not permit bad cross-coupling (e.g. libraries with an incompatible \texttt{libc}).\smallskip
+
+To unload all the loaded modules:
+\begin{verbatim}
+$ module purge
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]
+
+  The module system takes care of defining the environment variable \texttt{LD\_LIBRARY\_PATH} so the loader can find newly loaded libraries.
+
+  The user is responsible of passing compiler and linker flags when compiling, to do so they must know where libraries and headers are located.
+
+  The module system provides variables to make it easy to find headers and libraries of loaded modules
+
+\begin{verbatim}
+$ module load eigen
+$ module list
+Currently Loaded Modules:
+1) gcc-glibc/9   2) eigen/3.3.7
+
+$ echo ${mkEigenInc}
+/u/sw/pkgs/.../eigen/3.3.7/include/eigen3
+\end{verbatim}
+
+General naming scheme: 
+\begin{itemize}
+\item Installation path: \texttt{"mk" + Modulename + "Prefix"}, \textit{e.g.} \texttt{mkOctavePrefix}
+\item Headers: \texttt{"mk" + Modulename + "Inc"}, \textit{e.g.} \texttt{mkEigenInc}
+\item Libraries: \texttt{"mk" + Modulename + "Lib"}, \textit{e.g.} \texttt{mkSuitesparseLib}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{How to use a third-party library}
+  Basic compile/link flags:
+\begin{verbatim}
+$ g++ -I$mkLibrarynameInc -c main.cpp
+$ g++ -L$mkLibrarynameLib -llibraryname main.o -o main
+\end{verbatim}
+\bigskip
+\textbf{Warning}: by mistake, one can include headers and link against libraries related to different installations of the same library! The compile, link and loading phase may succeed, but the executable may crash, resulting in a very subtle yet painful error to debug!
+\end{frame}
+
+\section{Some useful things to remember about shared libraries}
+
+\begin{frame}{Using shared libraries}
+  We need to distinguish the bare \emph{use} of a shared library and how
+  to develop a library. The latter aspect will be covered in a later lecture.
+  \medskip
+
+  Furthermore, in the latter case we need to distinguish between the
+  \textbf{development} phase (\textit{i.e.} the library is not yet available to others) and the \textbf{release} phase (\textit{i.e.} when you make your
+  library available to others).
+\end{frame}
+
+
+\begin{frame}{Shared libraries in Linux/Unix} In
+  discussing shared libraries we need first to distinguish between the
+  linking phase of the compilation process and the loading of the
+  executable. 
+  \medskip
+
+  We will treat the linking aspects later on, yet to fully understand
+  how the handling of shared libraries (and the selection of the correct
+  version) works on Linux (and generally in POSIX-Unix systems) we need
+  to understand the difference between \emph{version} and \emph{release}
+  and the corresponding naming scheme.
+\end{frame}
+
+\begin{frame}{Versions and releases} 
+  The \emph{version} is a symbol
+  (typically a number) by which we indicate a set of instances of a
+  library with a common public interface and functionality.
+  \smallskip
+
+  Within a version, one may have several releases, typically indicated
+  by one or more numbers (major and minor or bug-fix). A new release is 
+  issue to fix bugs  or improve of a library without
+  changes in its public interface. So a code linked against version 1,
+  release 1 of a library should work (in principle) when you update
+  the library to version 1, release 2.
+  \smallskip
+
+  Normally version and releases are separated by a dot in the library name:
+  \texttt{libfftw3.so.3.3.8} is version 3, release 3.8 of the
+  \texttt{fftw3} library (The Fastest Fourier Transform in the West).
+\end{frame}
+
+\begin{frame}{Naming scheme of shared libraries (Linux/Unix)}
+  We give some nomenclature used when describing a shared library
+
+  \begin{itemize}
+  \item Link name. It's the name used in the linking stage when
+    you use the \texttt{-lmylib} option.  It is of the
+    form \texttt{libmylib.so}. The normal search rules
+    apply. Remember that it is also possible to give the full path of
+    the library instead of the \texttt{-l} option.
+  \item soname (shared object name).  It's the name looked after
+    by the \emph{loader}.  Normally it is formed by the link name
+    followed by the version.  For instance
+    \texttt{libfftw3.so.3}. It is \emph{fully
+    qualified} if it contains the full path of the library.
+  \item real name. It's the name of the actual file that stores the library. 
+    For instance \texttt{libfftw3.so.3.3.8}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{How does it work?}  The command
+  \texttt{ldd} lists the shared libraries used by an object file.
+
+  For example:
+\begin{verbatim}
+$ ldd $mkOctavePrefix/lib/octave/5.2.0/liboctave.so
+...
+libfftw3.so.3 => /full/path/to/libfftw3.so.3
+...
+\end{verbatim}
+It means that the version of octave I have has been linked (by its
+developers) against version $3$ of the \texttt{libfftw3} library, 
+as indicated by the \texttt{soname}.
+
+The \textbf{loader} searches the occurrence of this library in special
+directories (we will discuss about it later) and has indeed found
+\texttt{/u/sw/pkgs/.../fftw/3.3.8/lib/libfftw3.so.3} (full qualified name). This is the library used if I launch \texttt{octave} in my computer. \smallskip
+
+Which release? Well, lets take a closer look at the file
+\begin{verbatim}
+$ ls -l $mkFftwLib/libfftw3.so.3
+/full/path/to/libfftw3.so.3 -> libfftw3.so.3.3.8
+\end{verbatim}
+I am in fact using release \texttt{3.8} of version \texttt{3}.
+\end{frame}
+
+\begin{frame}{Got it?}  
+
+  The executable (\texttt{octave}) contains the
+  information on which shared library to load, including version
+  information (its soname). This part has been taken care by the 
+  developers of Octave.
+  \smallskip
+
+  When I launch the program the loader looks in special directories,
+  among which \texttt{/usr/lib} for a file that matches the
+  \texttt{soname}. This file is typically a symbolic link to the real
+  file containing the library.  
+  \medskip
+
+  If I have a new release of \texttt{fftw3} version 3, let's say $3.4.1$,
+  I just need to place the corresponding shared library file, reset the symbolic links and automagically \texttt{octave}
+  will use the new release (this is what \texttt{apt} does when
+  installing a new update in a Debian/Ubuntu system, for example).
+
+  \smallskip
+
+  No need to recompile anything!
+\end{frame}
+
+
+\begin{frame}[fragile]{Another nice thing about shared libraries} 
+
+  A shared library may depend on another shared library. This information may be encoded  when creating the library
+  (just as for an executable, we will see it later on).
+
+  For instance
+\begin{verbatim}
+$ ldd /usr/lib/x86_64-linux-gnu/libumfpack.so.5
+...
+libblas.so.3 => /lib/x86_64-linux-gnu/libblas.so.3
+...
+\end{verbatim}
+The UMFPACK library is linked against version
+\texttt{3} of the BLAS library. \smallskip
+
+This prevents using incorrect version of
+libraries. Moreover, when creating an executable that needs UMFPACK I have to indicate only
+\texttt{-lumfpack}! \\
+\textbf{Note}: This is not true for static libraries: you have to list all dependencies.
+\end{frame}
+
+\begin{frame}[fragile]{How to link against a shared library}   
+  It is now sufficient to proceed as usual
+\begin{verbatim}
+g++ -I$mkFFtwInc -c main.cpp
+g++ -L$mkFFtwLib -lfftw3 main.o -o main
+\end{verbatim}
+
+The linker finds \texttt{libfftw3.so}, controls the symbols it
+provides and verifies if the library contains a
+\texttt{soname} (if not the link name is assumed to be also the
+soname).
+
+Indeed \texttt{libfftw3.so} provides a \texttt{soname}. If we wish we
+can check it:
+\begin{verbatim}
+$ objdump libx.so.1.3 -p | grep SONAME
+SONAME   libfftw3.so.3
+\end{verbatim}
+(of course this has been taken care by the library developers).
+\end{frame}
+
+\begin{frame}[fragile]
+
+  Being \texttt{libfftw3.so} a shared library the linker does not
+  resolve the symbols by integrating the corresponding code in the
+  executable. Instead, it inserts the information about the
+  \texttt{soname} of the library:
+  \smallskip
+
+\begin{verbatim}
+$ ldd main
+libfftw3.so.3 => /full/path/to/libfftw3.so.3
+\end{verbatim}
+\smallskip
+The loader can then do its job now!
+\smallskip
+
+In conclusion, linking with a shared library is not more complicated
+than linking with a static one.
+\medskip
+
+\textbf{Remember:} By default if the linker finds both the static and
+shared version of a library it gives precedence to the shared
+one. If you want to by sure to link with the static version you need to use 
+the \texttt{-static} linker option.
+\end{frame}
+
+\begin{frame}{Where does the loader search for shared libraries?}  
+
+  It looks in \texttt{/lib}, \texttt{/usr/lib}, in all the
+  directories contained in \texttt{/etc/ld.conf} and in all \texttt{.conf} contained in the \texttt{/etc/ld.conf.d/}
+  directory (so the search strategy is different than that of the
+  linker!) \smallskip
+
+  If I want to permanently add a directory in the search path of the
+  loader I need to add it to \texttt{/etc/ld.conf}, or add a conf file
+  in the \texttt{/etc/ld.conf.d/} directory with the name of the
+  directory, and then launch \texttt{ldconfig}).  \smallskip
+
+  The command \texttt{ldconfig} rebuilds the data base of the shared
+  libraries and should be called every time one adds a new library (of
+  course \texttt{apt} does it for you, and moreover
+  \texttt{ldconfig} is launched at every boot of the computer).
+  \smallskip
+
+  \textbf{Note}: all this operations require you act as superuser, for
+  instance with the \texttt{sudo} command.
+\end{frame}
+
+\begin{frame}[fragile]{Alternative ways of directing the loader}
+  \begin{itemize}
+  \item Setting the environment variable \texttt{LD\_LIBRARY\_PATH}. If
+    it contains a comma-separated list of directory names the
+    loader will first look for libraries on these directories.
+\begin{verbatim}
+  export LD_LIBRARY_PATH+=:dir1:dir2
+\end{verbatim}
+\item With the special flag \texttt{-Wl,-rpath=directory}
+  during the compilation of the executable, for instance
+\begin{verbatim}
+  g++ main.cpp -o main -Wl,-rpath=/opt/lib  -L. -lsmall
+\end{verbatim}
+Here the loader will look in \texttt{/opt/lib} before the standard directories. You can use also relative paths.
+\item Launching the command \texttt{sudo ldconfig -n directory} which adds \texttt{directory} to the loader search path (you need to have superuser privileges). This addition remains valid until the next reboot of the computer. \textbf{Note}: prefer the other alternatives!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{How to build a shared library?}
+  We will dedicate another lecture to this issue, where we will also show how to handle shared libraries and symbols dynamically.
+  For the moment we need to know only the following :
+  \begin{itemize}
+  \item When building a shared library we need to pass the option \texttt{-shared} to the linker
+  \item Object code used in a shared library must be \emph{position independent} (compiler option \texttt{-fPIC})
+  \end{itemize}
+
+  Basic build of a shared library starting from an object file:
+\begin{verbatim}
+$ g++ -shared -Wl,-soname,libutility.so \
+utility.o -o libutility.so
+\end{verbatim}
+\end{frame}
+
+
+\section{Exercises}
+\begin{frame}{Code used for the exercise}
+  For the following exercise we will be using the code from the linear algebra example.
+
+  The code is available here: \url{https://github.com/pacs-course/pacs/tree/master/Labs/2022/03-compile}
+\end{frame}
+
+\begin{frame}{Exercise 1: compiler and linker options}
+  \begin{itemize}
+  \item Compile \texttt{Utilities.cpp} and make it a shared library named \texttt{liblinearalgebra.so}\\[5mm]
+  \item Compile \texttt{test.cpp} and make an executable binary linked against \texttt{liblinearalgebra.so}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Exercise 2: a simple bash script to automate repetitive operations}
+  Create a simple bash script to build the library and executable of Exercise 1 without typing the same commands every time.
+\end{frame}
+
+\begin{frame}{Exercise 3: a smart bash script to avoid unnecessary operations}
+  Create a more advanced bash script to build the library and executable of Exercise 1 without repeating compilation / linking steps when not necessary.
+\end{frame}
+
+\begin{frame}{Exercise 4: a Makefile}
+  Create a Makefile that works as the bash script in Exercise 3.
+\end{frame}
+
+\end{document}
