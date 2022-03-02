@@ -191,6 +191,8 @@ make.dep
 /Examples/src/ReferenceWrapper/main_wrap
 /Exercises/202*/**/*.pdf
 /Exercises/202*/**/output*
+/Labs/202*/**/*.pdf
+/Labs/202*/**/output*
 /.cproject
 /.project
 /.settings/language.settings.xml
