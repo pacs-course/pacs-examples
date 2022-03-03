@@ -37,7 +37,7 @@
 
   How do I confine my work to a specific toolchain?\\[3mm]
 
-  We use the bash environmental variables to define paths for executables and libraries; the tool to manage these variables is commonly called 
+  We use the \texttt{Bash} environmental variables to define paths for executables and libraries; the tool to manage these variables is commonly called 
   the environment module system.\\[3mm]
 
   There are two main module systems, the one we use is named \texttt{Lmod} (the other is \texttt{TCL Environment Modules}).\\[3mm]
@@ -81,17 +81,18 @@ $ module avail
 \begin{verbatim}
 $ module avail
 ---------- /u/sw/pkgs/toolchains/gcc-glibc/11.2.0/modules ----------
-R/3.6.2                 hdf5/1.10.6    (L)    petsc/3.12.4      (L)
-adol-c/2.6.4-rc1 (L)    hypre/2.18.2   (L)    qhull/2019.1
-arpack/3.7.0     (L)    lis/2.0.20            qrupdate/1.1.2
-blacs/1.1        (L)    matio/1.5.17   (L)    scalapack/2.1.0   (L)
-boost/1.72.0     (L)    metis/5        (L)    scipy/1.18.1      (L)
-cgal/5.0.1              mumps/5.2.1    (L)    scotch/6.0.9      (L)
-dealii/9.2.0     (L)    netcdf/4.7.3   (L)    suitesparse/5.6.0 (L)
-eigen/3.3.7      (L)    nlopt/2.6.1           superlu/5         (L)
-fenics/2019.1.0         octave/5.2.0          tbb/2020.1        (L)
-fftw/3.3.8       (L)    openblas/0.3.7 (L)    trilinos/12.14.1  (L)
-glpk/4.65        (L)    p4est/2.2      (L)    vtk/9.0.0         (L)
+R/4.1.0                gsl/2.7         (L)    pybind11/2.6.2
+adol-c/2.7.2    (L)    hdf5/1.12.0     (L)    qhull/2020.2       (L)
+arpack/3.8.0    (L)    hypre/2.22.0    (L)    qrupdate/1.1.2     (L)
+blacs/1.1       (L)    lis/2.0.30             scalapack/2.1.0    (L)
+boost/1.76.0    (L)    matio/1.5.21    (L)    scipy/1.7.0        (L)
+cgal/5.3               metis/5.1.0     (L)    scotch/6.1.1       (L)
+dakota/6.15.0          mumps/5.4.0     (L)    suitesparse/5.10.1 (L)
+dealii/9.3.1    (L)    netcdf/4.8.0    (L)    superlu/5.3.0      (L)
+eigen/3.3.9     (L)    octave/6.2.0    (L)    tbb/2021.3.0       (L)
+fenics/2019.1.0        openblas/0.3.15 (L)    trilinos/13.0.1    (L)
+fftw/3.3.9      (L)    p4est/2.3.2     (L)    vtk/9.0.3          (L)
+glpk/5.0        (L)    petsc/3.15.1    (L)
 \end{verbatim}
 
 The module system takes care of the integrity of the definitions and does not permit bad cross-coupling (e.g. libraries with an incompatible \texttt{libc}).\smallskip
@@ -115,28 +116,28 @@ $ module purge
 $ module load eigen
 $ module list
 Currently Loaded Modules:
-1) gcc-glibc/9   2) eigen/3.3.7
+1) gcc-glibc/11.2.0   2) eigen/3.3.9
 
 $ echo ${mkEigenInc}
-/u/sw/pkgs/.../eigen/3.3.7/include/eigen3
+/u/sw/pkgs/.../eigen/3.3.9/include/eigen3
 \end{verbatim}
 
 General naming scheme: 
 \begin{itemize}
-\item Installation path: \texttt{"mk" + Modulename + "Prefix"}, \textit{e.g.} \texttt{mkOctavePrefix}
-\item Headers: \texttt{"mk" + Modulename + "Inc"}, \textit{e.g.} \texttt{mkEigenInc}
-\item Libraries: \texttt{"mk" + Modulename + "Lib"}, \textit{e.g.} \texttt{mkSuitesparseLib}
+\item Installation path: \texttt{"mk" + Modulename + "Prefix"}, \textit{e.g.} \texttt{\$\{mkOctavePrefix\}}
+\item Headers: \texttt{"mk" + Modulename + "Inc"}, \textit{e.g.} \texttt{\$\{mkEigenInc\}}
+\item Libraries: \texttt{"mk" + Modulename + "Lib"}, \textit{e.g.} \texttt{\$\{mkSuitesparseLib\}}
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{How to use a third-party library}
   Basic compile/link flags:
 \begin{verbatim}
-$ g++ -I$mkLibrarynameInc -c main.cpp
-$ g++ -L$mkLibrarynameLib -llibraryname main.o -o main
+$ g++ -I${mkLibrarynameInc} -c main.cpp
+$ g++ -L${mkLibrarynameLib} -llibraryname main.o -o main
 \end{verbatim}
 \bigskip
-\textbf{Warning}: by mistake, one can include headers and link against libraries related to different installations of the same library! The compile, link and loading phase may succeed, but the executable may crash, resulting in a very subtle yet painful error to debug!
+\textbf{Warning}: by mistake, one can include headers and link against libraries related to different installations/versions of the same library! The compile, link and loading phase may succeed, but the executable may crash, resulting in a very subtle yet painful error to debug!
 \end{frame}
 
 \section{Some useful things to remember about shared libraries}
@@ -180,7 +181,7 @@ $ g++ -L$mkLibrarynameLib -llibraryname main.o -o main
   \smallskip
 
   Normally version and releases are separated by a dot in the library name:
-  \texttt{libfftw3.so.3.3.8} is version 3, release 3.8 of the
+  \texttt{libfftw3.so.3.3.9} is version 3, release 3.9 of the
   \texttt{fftw3} library (The Fastest Fourier Transform in the West).
 \end{frame}
 
@@ -209,7 +210,7 @@ $ g++ -L$mkLibrarynameLib -llibraryname main.o -o main
 
   For example:
 \begin{verbatim}
-$ ldd $mkOctavePrefix/lib/octave/5.2.0/liboctave.so
+$ ldd ${mkOctavePrefix}/lib/octave/6.2.0/liboctave.so
 ...
 libfftw3.so.3 => /full/path/to/libfftw3.so.3
 ...
@@ -224,7 +225,7 @@ directories (we will discuss about it later) and has indeed found
 
 Which release? Well, lets take a closer look at the file
 \begin{verbatim}
-$ ls -l $mkFftwLib/libfftw3.so.3
+$ ls -l ${mkFftwLib}/libfftw3.so.3
 /full/path/to/libfftw3.so.3 -> libfftw3.so.3.3.8
 \end{verbatim}
 I am in fact using release \texttt{3.8} of version \texttt{3}.
@@ -279,8 +280,8 @@ libraries. Moreover, when creating an executable that needs UMFPACK I have to in
 \begin{frame}[fragile]{How to link against a shared library}   
   It is now sufficient to proceed as usual
 \begin{verbatim}
-g++ -I$mkFFtwInc -c main.cpp
-g++ -L$mkFFtwLib -lfftw3 main.o -o main
+g++ -I${mkFFtwInc} -c main.cpp
+g++ -L${mkFFtwLib} -lfftw3 main.o -o main
 \end{verbatim}
 
 The linker finds \texttt{libfftw3.so}, controls the symbols it
@@ -349,7 +350,7 @@ the \texttt{-static} linker option.
   \begin{itemize}
   \item Setting the environment variable \texttt{LD\_LIBRARY\_PATH}. If
     it contains a comma-separated list of directory names the
-    loader will first look for libraries on these directories.
+    loader will first look for libraries on these directories (analogous to \texttt{PATH} for executables):
 \begin{verbatim}
   export LD_LIBRARY_PATH+=:dir1:dir2
 \end{verbatim}
@@ -359,13 +360,13 @@ the \texttt{-static} linker option.
   g++ main.cpp -o main -Wl,-rpath=/opt/lib  -L. -lsmall
 \end{verbatim}
 Here the loader will look in \texttt{/opt/lib} before the standard directories. You can use also relative paths.
-\item Launching the command \texttt{sudo ldconfig -n directory} which adds \texttt{directory} to the loader search path (you need to have superuser privileges). This addition remains valid until the next reboot of the computer. \textbf{Note}: prefer the other alternatives!
+\item Launching the command \texttt{sudo ldconfig -n directory} which adds \texttt{directory} to the loader search path (superuser privileges are required). This addition remains valid until the next reboot of the computer. \textbf{Note}: prefer the other alternatives!
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{How to build a shared library?}
   We will dedicate another lecture to this issue, where we will also show how to handle shared libraries and symbols dynamically.
-  For the moment we need to know only the following :
+  For the moment we need to know only the following:
   \begin{itemize}
   \item When building a shared library we need to pass the option \texttt{-shared} to the linker
   \item Object code used in a shared library must be \emph{position independent} (compiler option \texttt{-fPIC})
@@ -374,15 +375,15 @@ Here the loader will look in \texttt{/opt/lib} before the standard directories. 
   Basic build of a shared library starting from an object file:
 \begin{verbatim}
 $ g++ -shared -Wl,-soname,libutility.so \
-utility.o -o libutility.so
+      utility.o -o libutility.so
 \end{verbatim}
 \end{frame}
 
 
 \section{Exercises}
 \begin{frame}{Code used for the exercise}
-  For the following exercise we will be using the code from the linear algebra example.
-
+  For the following exercises we will be using some code from the \texttt{LinearAlgebra/IML\_Eigen} example.
+  \vfill
   The code is available here: \url{https://github.com/pacs-course/pacs/tree/master/Labs/2022/03-compile}
 \end{frame}
 
@@ -393,16 +394,16 @@ utility.o -o libutility.so
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Exercise 2: a simple bash script to automate repetitive operations}
-  Create a simple bash script to build the library and executable of Exercise 1 without typing the same commands every time.
+\begin{frame}{Exercise 2: a simple \texttt{Bash} script to automate repetitive operations}
+  Create a simple \texttt{Bash} script to build the library and executable of Exercise 1 without typing the same commands every time.
 \end{frame}
 
-\begin{frame}{Exercise 3: a smart bash script to avoid unnecessary operations}
-  Create a more advanced bash script to build the library and executable of Exercise 1 without repeating compilation / linking steps when not necessary.
+\begin{frame}{Exercise 3: a smart \texttt{Bash} script to avoid unnecessary operations}
+  Starting from Exercise 2, create a more advanced \texttt{Bash} script to build the library and executable without repeating compilation and linking steps when not necessary.
 \end{frame}
 
 \begin{frame}{Exercise 4: a Makefile}
-  Create a Makefile that works as the bash script in Exercise 3.
+  Create a Makefile that works as the \texttt{Bash} script in Exercise 3.
 \end{frame}
 
 \end{document}

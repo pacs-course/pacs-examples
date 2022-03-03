@@ -3,7 +3,6 @@
 set -x
 
 function do_distclean {
-
     do_clean
 
     if [[ -a test ]]
@@ -34,7 +33,6 @@ function do_build_library {
 }
 
 function do_build_executable {
-
     if [[ ! ( -a liblinearalgebra.so ) ]]
     then
         do_build_library
