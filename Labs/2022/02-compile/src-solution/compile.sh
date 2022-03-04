@@ -5,15 +5,15 @@ set -x
 function do_distclean {
     do_clean
 
-    if [[ -a test ]]
+    if [[ -e test ]]
     then
-        rm -rf ./*.o ./*.so test
+        rm -rf test
     fi
 }
 
 
 function do_clean {
-    if [[ -a Utilities.o  || -a test.o || -a liblinearalgebra.so ]]
+    if [[ -e Utilities.o  || -e test.o || -e liblinearalgebra.so ]]
     then
         rm -rf ./*.o ./*.so 
     fi
@@ -21,31 +21,32 @@ function do_clean {
 
 
 function do_build_library {
-    if [[ ! ( -a Utilities.o ) || ( -a Utilities.o && Utilities.cpp -nt Utilities.o) ]]
+    if [[ ! ( -e Utilities.o ) || ( -e Utilities.o && Utilities.cpp -nt Utilities.o) ]]
     then
-        g++ -c -I../include -I$mkEigenInc -fPIC Utilities.cpp
+        g++ -c -I../include -I${mkEigenInc} -fPIC Utilities.cpp
     fi
 
-    if [[ ! ( -a liblinearalgebra.so ) || ( -a liblinearalgebra.so && Utilities.o -nt liblinearalgebra.so) ]]
+    if [[ ! ( -e liblinearalgebra.so ) || ( -e liblinearalgebra.so && Utilities.o -nt liblinearalgebra.so) ]]
     then
         g++ -shared -Wl,-soname,liblinearalgebra.so Utilities.o -o liblinearalgebra.so
     fi
 }
 
+
 function do_build_executable {
-    if [[ ! ( -a liblinearalgebra.so ) ]]
+    if [[ ! ( -e liblinearalgebra.so ) ]]
     then
         do_build_library
     fi
        
-    if [[ ! ( -a test.o ) || ( -a test.o && test.cpp -nt test.o) ]]
+    if [[ ! ( -e test.o ) || ( -e test.o && test.cpp -nt test.o) ]]
     then
-        g++ -c -I../include -I$mkEigenInc -I$mkSuitesparseInc test.cpp
+        g++ -c -I../include -I${mkEigenInc} -I${mkSuitesparseInc} test.cpp
     fi
 
-    if [[ ! ( -a test ) || ( -a test && test.o -nt test) ]]
+    if [[ ! ( -e test ) || ( -e test && test.o -nt test) ]]
     then
-        g++ -L$mkSuitesparseLib -lumfpack -L$PWD -llinearalgebra -Wl,-rpath=$PWD test.o -o test
+        g++ -L${mkSuitesparseLib} -lumfpack -L${PWD} -llinearalgebra -Wl,-rpath=${PWD} test.o -o test
     fi
 }
 
