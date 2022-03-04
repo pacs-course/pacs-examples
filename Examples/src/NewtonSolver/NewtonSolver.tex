@@ -1,0 +1,233 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\RequirePackage{listings}
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\RequirePackage{hyperref}
+% User-defined colors
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+% Settings for listing class
+\lstset{  
+  language=[ISO]C++,                       % The default language
+  basicstyle=\sf,                          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  lineskip=0ex, %  frame=single
+}
+
+\author{Luca Formaggia}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\color{red}}
+\newcommand{\black}{\color{black}}
+\newcommand{\darkred}{\color{darkred}}
+\newcommand{\darkgreen}{\color{darkgreen}}
+\newcommand{\til}{{$\tilde\null\,\,$}}
+\newcommand{\li}{\lstinline}
+\newcommand{\cpp}[1]{\li!#1!}
+\newcommand{\Exampledir}{run:./../Material/Examples}
+\newcommand{\program}[1]{run:./../Material/Examples/src/#1}
+\newcommand{\programname}[1]{./../Material/Examples/src/#1}
+\newcommand{\onlyprogramname}[1]{Material/Examples/src/#1}
+\usepackage{a4wide}
+\title{Newton and quasi-Newton solvers}
+\date{February 2022}
+\begin{document}
+\maketitle
+
+In this document we give an overview of the classes that implement Newton-and quasi-Newton algorithms for the solution of the problem: \emph{find $\mathbf{x}$
+    such that}
+\begin{equation}
+\mathbf{F}(\mathbf{x})=\mathbf{0},
+\end{equation}
+    with $\mathbf{F}:\mathbb{R}^n\to\mathbb{R}^n$.
+   
+The a general Newton and quasi-Newton algorithm build the iterates   $\mathbf{x}^{(k)}$ s:
+\emph{Given $\mathbf{x}^{(0)}$ and indicating with $\mathbf{B}:\mathbb{R}^n\to\mathbb{R}^{n\times n}$ the Jacobian $\nabla\mathbf{F}$ or an approximation of it, until a convergence criterion is met, repeat:} 
+\begin{itemize}
+    \item Solve $\mathbf{B}(\mathbf{x}^{(k)})\mathbf{d}^{(k)}=\mathbf{F}(\mathbf{x}^{(k)})$;
+    \item (backtracking) Compute $\alpha_k$ such that
+    $\Vert\mathbf{F}(\mathbf{x}^{(k)}+\alpha_k\mathbf{d}^{(k)})\Vert^2\le(1-c\alpha_k) \Vert\mathbf{F}(\mathbf{x}^{(k)})\Vert^2$,
+    for a $0<c<1$, by reducing its value starting from $\alpha_k=1$. If backtracking is not activated, set $\alpha_k=1$.
+    \item $\mathbf{x}^{(k+1)}=\mathbf{x}^{(k)} -\alpha_k\mathbf{d}^{(k)}$
+\end{itemize}
+
+The convergence criteria include
+\begin{itemize}
+    \item $\Vert\mathbf{d}^{(k)}\Vert\le\epsilon_s$ (criterion on difference of successive iterates);
+    \item $\Vert\mathbf{F}(\mathbf{x}^{(k)})\Vert\le\epsilon_r$ (criterion on residual).
+\end{itemize}
+While, exceeding a maximum number of iteration or having $\Vert\mathbf{F}(\mathbf{x}^{(k)}\Vert$ not reducing with $k$
+is a considered lack of convergence.
+
+\section{Main ingredients of the code}
+In this code I need, as main ingredients
+\begin{enumerate}
+    \item A class that encapsulates the non-linear system. Here I use the function wrapper \cpp{std::function<T>} to be as general as possible. 
+    \item Utilities to perform basic linear algebra. I use the \texttt{Eigen} library for this purpose;
+    \item A class that encapsulate the Jacobian or its approximation $\mathbf{B}$. To be as flexible as possible, I have chosen to use polymprphism, and the Jacobian classes have a main publci interface: a method \cpp{solve()} that computes the solution of
+    the first step of the algorithm, i.e. it computes the solution of $\mathbf{B}(\mathbf{x}^{(k)})\mathbf{d}^{(k)}=\mathbf{F}(\mathbf{x}^{(k)})$. Using polymorphism allows to specialize the base class to different concrete implementations of the Jacobian and of possible approximations.
+    \item The \cpp{Newton} class, which takes a non lienar system and the Jacobian (or an approximation of it) and performs the Newton iterations. I have stored the Jacobian via a \cpp{unique_ptr}, to activate polymorphism and have composition. Yet, 
+    this implies that the \cpp{Newton} class is not copy-constructible nor copy-assignable. To implement copy operations we would need to resort to clonable objects, but here I have avoided this additional complexity.
+\end{enumerate}
+
+Things to note:
+\begin{itemize}
+    \item I have used traits to encapsulate the main tyes used in the code;
+    \item I have used the \emph{callback} technique to allow the used to add user defined features by inheriting from \cpp{Newton}. The \cpp{callback()} virtual method, a empty method in the base class, is called at each iteration. The main quantities on which the algorithm operats are stored as a state of the class (colelcted in an aggregate). A user-overridden \cpp{callback()} may access the state, for instance to log some quantities. Indeed the \cpp{NewtonVerbose} class displays an example of use of the callback technique. 
+    \item I have encapsulate all options in an aggregate. By doing so I have several advantages:
+    \begin{enumerate}
+        \item I have just one place for all the parameters needed by the algorithms. 
+        \item It is easy to give default values just by initializing the aggregate member.
+        \item The addition of another parameter in the future will can be done without changing the main structure of the \cpp{Newton} class and of its interface.
+    \end{enumerate}
+\item Similarly, for convenience I have collected the returned information of the main method, \cpp{solve()} (which indeed implements the Newton algorithm) in an aggregate.
+\item I have used universal (forwarding) references to enable move semantic whenever possible. 
+\end{itemize}
+\section{Excerpts of the code}
+\subsection{The traits}
+\begin{lstlisting}
+struct NewtonTraits
+{
+//! The type of argument: an Eigen dynamic vector
+using ArgumentType = Eigen::Matrix<double, Eigen::Dynamic, 1>;
+//! The return type: we want a function \f$R^N\to R^N\f$
+using ReturnType = ArgumentType;
+//! The type for the non-linear system
+using NonLinearSystemType = std::function<ReturnType(const ArgumentType &)>;
+//! Type used to store the Jacobian as matrix
+using JacobianMatrixType = Eigen::MatrixXd;
+//! Type for the JacobianFunction
+using JacobianFunctionType =
+std::function<JacobianMatrixType(const ArgumentType &)>;
+};
+\end{lstlisting}
+\subsection{The options and result data}
+\begin{lstlisting}
+struct NewtonOptions
+{
+double tolerance{1.e-8};
+double minRes{1.e-6};
+unsigned int maxIter{50};
+bool backtrackOn{false};
+bool stopOnStagnation{false};
+double alpha{1e-4};
+double backstepReduction{0.5};
+unsigned int maxBackSteps{4};
+double lambdaInit = 1.0;
+};
+
+//! The quantities returned, wrapped in a struct
+struct NewtonResult
+{
+NewtonTraits::ReturnType solution;
+double residualNorm{0.0};
+double stepLength{0.0};
+unsigned int iterations{0u};
+bool converged = false;
+bool stagnation{false};
+};
+\end{lstlisting}
+
+The options allow to set the main control parameters. In particular, the two tolerances, on the iterates and on the residual, respectively, the maximum number of iterations. Then, I can indicate if I want backtracking, in which case I can control the backtrack procedure by indicating the max number of backtracking steps, the initial $\alpha_k$, how much to reduce if the condition is not satisfied. I can control stagantion: stagantion meand two consecutive iteration in which the residual has not decreased.
+
+The aggregate collecting the result provides also information on the convergence, the last residual, the number of iterations etc.
+
+\subsection{The \cpp{Newton} class}
+\begin{lstlisting}
+class Newton : public apsc::NewtonTraits
+{
+public:
+Newton() = default;
+Newton(std::unique_ptr<JacobianBase> j, NewtonOptions opt = NewtonOptions{});
+template <class NLS>
+Newton(NLS &&nls, std::unique_ptr<JacobianBase> j, NewtonOptions opt = NewtonOptions{});
+template <class NLS, class JAC>
+Newton(NLS &&nls, JAC  j, NewtonOptions opt = NewtonOptions{});
+template <class NLS>
+Newton(NLS &&nls, apsc::JacobianKind JAC, NewtonOptions opt = NewtonOptions{});
+
+
+void setJacobianPtr(std::unique_ptr<JacobianBase> jacobianPtr);
+
+apsc::NewtonResult solve(ArgumentType const &x0);
+
+virtual ~Newton() = default;
+
+protected:
+virtual void callback() const {};
+//! Internal structure giving the state
+//! Used for callback
+struct NewtonState
+{
+//! The last computed solution
+NewtonTraits::ReturnType currentSolution;
+//! The current number of iterations
+unsigned int currentIteration{0u};
+//! The current residualNorm (set initially to a big number)
+double currentResidualNorm = std::numeric_limits<double>::max();
+//! current step length (set initially to a big number)
+double currentStepLength = std::numeric_limits<double>::max();
+};
+
+NonLinearSystemType           nonLinSys;
+std::unique_ptr<JacobianBase> Jacobian_ptr;
+NewtonOptions                 options;
+NewtonState                   state;
+};
+
+\end{lstlisting}
+
+I have different contructors to provide flexibility in the contruction of a \cpp{Newton} object.
+\subsection{The Jacobian}
+I have implemented different approximation of the jacobian
+\begin{itemize}
+    \item \cpp{FullJacobian} The user must provide the full jacobian as any callable object converible to
+    \cpp{NewtonTraits::JacobianFunctionType}.
+    \item \cpp{DiscreteJacobian}. Jacobian is approximated by finite differences.
+    \item \cpp{IdentityJacobian.} Does nothing. With this "approximation" the Newton method becomes a simple fixed point iteration 
+    for the iteration function $\boldsymbol{\psi}(\mathbf{x})=\mathbf{x}-\mathbf{F}(\mathbf{x})$
+     \item \cpp{BroydenG.} Implements the Broyden "good" method, see \href{https://en.wikipedia.org/wiki/Broyden%27s_method}{Wikipedia}.%
+   \item \cpp{BroydenB.} Implements the Broyden "bad" method.
+   \item  \cpp{Eirola_Nevanlinna}. Implements the extension of Broyden's method that carries the name.   
+\end{itemize}
+
+The \cpp{JacobianFactory} allows the user to create the desired concrete object of the \cpp{Jacobian} hierarchy.
+\begin{lstlisting}
+enum JacobianKind
+{
+DISCRETEJACOBIAN = 0,
+IDENTITYJACOBIAN = 1,
+FULLJACOBIAN = 2,
+BROYDENB = 3,
+BROYDENG = 4,
+EIROLANEVANLINNA = 5
+};
+
+template <typename... Args>
+std::unique_ptr<apsc::JacobianBase>
+make_Jacobian(JacobianKind kind, Args&&... args);
+\end{lstlisting} 
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

@@ -9,6 +9,7 @@
 #define NONLINSYSSOLVER_NEWTON_HPP_
 #include "Jacobian.hpp"
 #include "NewtonMethodsSupport.hpp"
+#include "JacobianFactory.hpp"
 #include <limits>
 #include <memory>
 
@@ -66,6 +67,27 @@ public:
     // I need to connect the Jacobian to the non linear system
     Jacobian_ptr->setNonLinSys(&nonLinSys);
   }
+
+  /*!
+   * @brief Build the Jacobian via an identifier
+   *
+   * This constructor takes a apsc::JacobianKind to select the type f Jacobian,
+   * in particular which approximate Jacobian to use
+   *
+   * @tparam NLS A non linear system
+   * @param nls The non linear system to solve
+   * @param JAC a enumerator indicating the type of approximate jacobian to use
+   * @param opt The options
+   */
+  template <class NLS>
+   Newton(NLS &&nls, apsc::JacobianKind JAC, NewtonOptions opt = NewtonOptions{})
+     : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(apsc::make_Jacobian(JAC)),
+       options(opt)
+   {
+     // I need to connect the Jacobian to the non linear system
+     Jacobian_ptr->setNonLinSys(&nonLinSys);
+   }
+
 
   //! You can change the Jacobian. Note that it is moved
   //! You have to explicitly move if it is not a rvalue!
