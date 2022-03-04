@@ -194,13 +194,13 @@ $ g++ -L${mkLibrarynameLib} -llibraryname main.o -o main
     form \texttt{libmylib.so}. The normal search rules
     apply. Remember that it is also possible to give the full path of
     the library instead of the \texttt{-l} option.
-  \item soname (shared object name).  It's the name looked after
+  \item \texttt{soname} (shared object name).  It's the name looked after
     by the \emph{loader}.  Normally it is formed by the link name
     followed by the version.  For instance
     \texttt{libfftw3.so.3}. It is \emph{fully
     qualified} if it contains the full path of the library.
   \item real name. It's the name of the actual file that stores the library. 
-    For instance \texttt{libfftw3.so.3.3.8}
+    For instance \texttt{libfftw3.so.3.3.9}
   \end{itemize}
 \end{frame}
 
@@ -215,28 +215,28 @@ $ ldd ${mkOctavePrefix}/lib/octave/6.2.0/liboctave.so
 libfftw3.so.3 => /full/path/to/libfftw3.so.3
 ...
 \end{verbatim}
-It means that the version of octave I have has been linked (by its
+It means that the version of \texttt{Octave} I have has been linked (by its
 developers) against version $3$ of the \texttt{libfftw3} library, 
 as indicated by the \texttt{soname}.
 
 The \textbf{loader} searches the occurrence of this library in special
 directories (we will discuss about it later) and has indeed found
-\texttt{/u/sw/pkgs/.../fftw/3.3.8/lib/libfftw3.so.3} (full qualified name). This is the library used if I launch \texttt{octave} in my computer. \smallskip
+\texttt{/u/sw/pkgs/.../fftw/3.3.9/lib/libfftw3.so.3} (full qualified name). This is the library used if I launch \texttt{octave} in my computer. \smallskip
 
 Which release? Well, lets take a closer look at the file
 \begin{verbatim}
 $ ls -l ${mkFftwLib}/libfftw3.so.3
-/full/path/to/libfftw3.so.3 -> libfftw3.so.3.3.8
+/full/path/to/libfftw3.so.3 -> libfftw3.so.3.3.9
 \end{verbatim}
-I am in fact using release \texttt{3.8} of version \texttt{3}.
+I am in fact using release \texttt{3.9} of version \texttt{3}.
 \end{frame}
 
 \begin{frame}{Got it?}  
 
   The executable (\texttt{octave}) contains the
   information on which shared library to load, including version
-  information (its soname). This part has been taken care by the 
-  developers of Octave.
+  information (its \texttt{soname}). This part has been taken care by the 
+  developers of \texttt{Octave}.
   \smallskip
 
   When I launch the program the loader looks in special directories,
@@ -384,7 +384,7 @@ $ g++ -shared -Wl,-soname,libutility.so \
 \begin{frame}{Code used for the exercise}
   For the following exercises we will be using some code from the \texttt{LinearAlgebra/IML\_Eigen} example.
   \vfill
-  The code is available here: \url{https://github.com/pacs-course/pacs/tree/master/Labs/2022/03-compile}
+  The code is available here: \url{https://github.com/pacs-course/pacs-examples/tree/master/Labs/2022/02-compile}
 \end{frame}
 
 \begin{frame}{Exercise 1: compiler and linker options}
