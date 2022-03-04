@@ -39,27 +39,27 @@ enum JacobianKind
 //!
 template <typename... Args>
 std::unique_ptr<apsc::JacobianBase>
-make_Jacobian(JacobianKind kind)
+make_Jacobian(JacobianKind kind, Args&&...args)
 {
   switch(kind)
     {
     case DISCRETEJACOBIAN:
-      return std::make_unique<apsc::DiscreteJacobian>();
+      return std::make_unique<apsc::DiscreteJacobian>(std::forward<Args>(args)...);
       break;
     case IDENTITYJACOBIAN:
-      return std::make_unique<apsc::IdentityJacobian>();
+      return std::make_unique<apsc::IdentityJacobian>(std::forward<Args>(args)...);
       break;
     case FULLJACOBIAN:
-      return std::make_unique<apsc::FullJacobian>();
+      return std::make_unique<apsc::FullJacobian>(std::forward<Args>(args)...);
       break;
     case BROYDENB:
-      return std::make_unique<apsc::BroydenB>();
+      return std::make_unique<apsc::BroydenB>(std::forward<Args>(args)...);
       break;
     case BROYDENG:
-      return std::make_unique<apsc::BroydenG>();
+      return std::make_unique<apsc::BroydenG>(std::forward<Args>(args)...);
       break;
     case EIROLANEVANLINNA:
-      return std::make_unique<apsc::Eirola_Nevanlinna>();
+      return std::make_unique<apsc::Eirola_Nevanlinna>(std::forward<Args>(args)...);
       break;
     default:
       throw std::runtime_error(
