@@ -19,7 +19,7 @@ namespace NonLinSysTraits
    *
    * @tparam Scalar The scalar field type
    */
-  template <class Scalar> struct VectorTraits
+  template <class Scalar=double> struct VectorTraits
   {
     //! The type of the function argument
     using ArgumentType = std::vector<Scalar>;
@@ -35,7 +35,7 @@ namespace NonLinSysTraits
     using FunctionContainerType = std::vector<ScalarFunctionType>;
   };
 
-  template <class Scalar> struct EigenVectorTraits
+  template <class Scalar=double> struct EigenVectorTraits
   {
     using ArgumentType = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
     using ResultType = ArgumentType;
@@ -53,7 +53,7 @@ namespace NonLinSysTraits
    *
    * @tparam Scalar
    */
-  template <class Scalar> struct ScalarTraits
+  template <class Scalar=double> struct ScalarTraits
   {
     using ArgumentType = Scalar;
     using ResultType = std::vector<Scalar>;

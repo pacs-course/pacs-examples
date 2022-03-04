@@ -11,11 +11,7 @@
 #endif
 #endif
 
-//! My function for power
-/*!
- Since std::pow() is very expensive I create my version for integer
- powers.
- */
+
 
 double
 eval(std::vector<double> const &a, double const &x)
@@ -23,10 +19,7 @@ eval(std::vector<double> const &a, double const &x)
   double sum = a[0];
   for(std::size_t k = 1; k < a.size(); ++k)
     {
-      sum += a[k] * std::pow(x, k); // Pow is expensive
-      // If you want to test with the standard pow comment the
-      // previous statement and uncomment the next one
-      // sum += a[k]*std::pow(x,k);// Pow is expensive
+      sum += a[k] * std::pow(x, k); 
     }
   return sum;
 }
