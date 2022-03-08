@@ -93,7 +93,7 @@ EXEC_SRCS:=$(exe_sources)
 
 
 all:
-	@echo "make install installs everithing"
+	@echo "make install installs everything"
 
 
 exec: $(EXEC)
