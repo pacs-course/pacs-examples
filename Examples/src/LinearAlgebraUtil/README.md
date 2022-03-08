@@ -2,7 +2,6 @@
 
 To install the utilities in the PACS default folders do
 
-    make alllibs DEBUG=no
     make install
 
 Content
