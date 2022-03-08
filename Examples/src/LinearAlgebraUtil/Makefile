@@ -93,21 +93,8 @@ EXEC_SRCS:=$(exe_sources)
 
 
 all:
-	@echo "make install installs"
+	@echo "make install installs everithing"
 
-
-alllibs:
-	$(MAKE) clean
-	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC
-	$(MAKE) clean
-	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
-
-static:
-	$(MAKE) $(STATIC_LIBFILE) LIBTYPE=STATIC 
-#	$(MAKE) exec LIBTYPE=STATIC 
-dynamic:
-	$(MAKE) $(DYNAMIC_LIBFILE) LIBTYPE=DYNAMIC
-#	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 

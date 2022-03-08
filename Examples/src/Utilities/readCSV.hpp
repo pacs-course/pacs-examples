@@ -45,8 +45,8 @@ public:
   }
   /*!
    * Change the minimum number of Tokens in a record (default 1)
-   * If we read a number of tokens lesss than the minumum, the record is
-   * completed with empy cells.
+   * If we read a number of tokens less than the minimum, the record is
+   * completed with empty cells.
    * If different from 1, it is also used to preallocate memory
    */
   void

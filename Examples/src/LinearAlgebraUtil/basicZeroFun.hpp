@@ -17,7 +17,7 @@
 namespace apsc
 {
 /*!
- * Computes the zero of a scalar function with the method of the chord
+ * Computes the zero of a scalar function with the method of the Regula Falsi
  * We stop when the residual is below lolerance;
  *
  * @tparam Function
