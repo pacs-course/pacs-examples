@@ -188,7 +188,8 @@ namespace apsc
    * Example of use:
    *
    * f = auto [](double x){return std::sin(x);}
-   * auto d = lambda::derive<4>(f,3.2,1.e-4);
+   * auto d4 = lambda::derive<4>(f,1.e-4);
+   * auto d  = f(3.4);// fourth derivative of f in 3.4
    *
    * Taken from Discovering Modern C++, II Edition, by Peter Gottschling
    *
