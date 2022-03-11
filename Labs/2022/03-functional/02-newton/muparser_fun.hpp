@@ -28,17 +28,9 @@ public:
   double
   operator()(const double &x)
   {
-    double y;
-    var = x;
+    double y = 0;
 
-    try
-      {
-        y = p.Eval();
-      }
-    catch (mu::Parser::exception_type &e)
-      {
-        std::cerr << e.GetMsg() << std::endl;
-      }
+    // To complete.
 
     return y;
   };
