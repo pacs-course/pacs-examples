@@ -12,76 +12,68 @@
 #  endif
 #endif
 
-/*!
- Since std::pow() is very expensive, a specialization for
- integers is implemented.
+/**
+ * Since std::pow() is very expensive, a specialization for
+ * integers is implemented.
  */
 double
 pow_integer(const double &x, const unsigned int &n)
 {
-  double res{x};
+  double result{x};
+
   for (unsigned int i = 2; i != n + 1; ++i)
-    res *= x;
-  return res;
+    result *= x;
+
+  return result;
 }
 
 double
 eval(const std::vector<double> &a, const double &x)
 {
-  double sum{a[0]};
+  double result{a[0]};
 
   for (std::vector<double>::size_type k = 1; k < a.size(); ++k)
     {
-      sum += a[k] * pow_integer(x, k);
+      result += a[k] * pow_integer(x, k);
 
       // std::pow is VERY expensive.
       // If you want to test with the standard pow comment the
       // previous statement and uncomment the next one.
-      // sum += a[k]*std::pow(x,k);
+      // result += a[k] * std::pow(x, k);
     }
-  return sum;
+
+  return result;
 }
 
 double
 eval_horner(const std::vector<double> &a, const double &x)
 {
-  double u{a.back()};
+  double result{a.back()};
 
   for (auto i = a.crbegin() + 1; i != a.crend(); ++i)
-    u = u * x + *i;
-  return u;
+    result = result * x + (*i);
+
+  return result;
 }
+
+/// Evaluates polynomial at a set of points.
+std::vector<double>
+evaluate_poly(const std::vector<double> &points,
+              const std::vector<double> &a,
+              eval_method                method)
+{
+  std::vector<double> result(points.size());
+
+  auto compute = [&a, &method](const double &x) { return method(a, x); };
 
 #ifdef PARALLELEXEC
 #  warning "Using parallel implementation of std::transform"
-//! Evaluates polynomial in a set of points (parallel version)
-std::vector<double>
-evaluate_poly(const std::vector<double> &points,
-              const std::vector<double> &a,
-              eval_method                method)
-{
-  std::vector<double> result(points.size());
-
-  auto compute = [&a, &method](const double &x) { return method(a, x); };
-
   std::transform(
     std::execution::par, points.begin(), points.end(), result.begin(), compute);
-
-  return result;
-}
 #else
 #  warning "Using sequential implementation of std::transform"
-//! Evaluates polynomial in a set of points
-std::vector<double>
-evaluate_poly(const std::vector<double> &points,
-              const std::vector<double> &a,
-              eval_method                method)
-{
-  std::vector<double> result(points.size());
-
-  auto compute = [&a, &method](const double &x) { return method(a, x); };
-
   std::transform(points.begin(), points.end(), result.begin(), compute);
+#endif
+
   return result;
 }
-#endif
