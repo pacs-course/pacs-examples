@@ -13,10 +13,10 @@ main(int argc, char **argv)
 
   muparser_fun fun(fun_str), dfun(dfun_str);
 
-  const int         n_max_it = datafile("n_max_it", 100);
-  const double      tol_fun  = datafile("tol_fun", 1.0e-14);
-  const double      tol_x    = datafile("tol_x", 1.0e-14);
-  const std::string filename = datafile("filename", "data.txt");
+  const unsigned int n_max_it = datafile("n_max_it", 100);
+  const double       tol_fun  = datafile("tol_fun", 1.0e-14);
+  const double       tol_x    = datafile("tol_x", 1.0e-14);
+  const std::string  filename = datafile("filename", "data.txt");
 
   newton_solver solver(fun, dfun, n_max_it, tol_fun, tol_x);
   solver.solve(0.0);

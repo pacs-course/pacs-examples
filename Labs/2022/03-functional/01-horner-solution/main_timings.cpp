@@ -22,27 +22,25 @@ main(int argc, char **argv)
   for (unsigned int i = 0; i <= degree; ++i)
     coeff[i] = 2 * std::sin(2.0 * i);
 
-  /*
-  std::cout << "Give me coefficients a0, a1..." << std::endl;
-  for (unsigned int i = 0; i <= degree; ++i) {
-    double temp;
-    std::cout << "a[" << i << "]=";
-    std::cin >> temp;
-    std::cout << std::endl;
-    coeff.push_back(temp);
-  }
-  */
+  // std::cout << "Please input coefficients a0, a1, ..." << std::endl;
+  // for (unsigned int i = 0; i <= degree; ++i)
+  //   {
+  //     double tmp;
+  //     std::cout << "a[" << i << "]=";
+  //     std::cin >> tmp;
+  //     std::cout << std::endl;
+  //     coeff.push_back(tmp);
+  //   }
 
-  double       x_0      = 0.00;
-  double       x_f      = 1.00;
-  double       h        = 0.5e-6;
-  unsigned int n_points = static_cast<unsigned int>((x_f - x_0) / h);
+  const double       x_0      = 0.00;
+  const double       x_f      = 1.00;
+  const double       h        = 0.5e-6;
+  const unsigned int n_points = static_cast<unsigned int>((x_f - x_0) / h);
 
   std::vector<double> points(n_points + 1);
-
-  double x = x_0;
-  for (unsigned int i = 0; i <= n_points; ++i, x += h)
-    points[i] = x;
+  points[0] = x_0;
+  for (unsigned int i = 0; i <= n_points; ++i)
+    points[i] = points[i - 1] + h;
 
   Timings::Chrono timer;
 

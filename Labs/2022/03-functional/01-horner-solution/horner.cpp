@@ -73,6 +73,9 @@ evaluate_poly(const std::vector<double> &points,
 #else
 #  warning "Using sequential implementation of std::transform"
   std::transform(points.begin(), points.end(), result.begin(), compute);
+  // Or, equivalently:
+  std::transform(
+    std::execution::par, points.begin(), points.end(), result.begin(), compute);
 #endif
 
   return result;

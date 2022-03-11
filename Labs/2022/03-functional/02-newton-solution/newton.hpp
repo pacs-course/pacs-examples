@@ -11,7 +11,7 @@ class newton_solver
 public:
   newton_solver(const std::function<double(const double &)> &fun_,
                 const std::function<double(const double &)> &dfun_,
-                const int                                    n_max_it_ = 100,
+                const unsigned int                           n_max_it_ = 100,
                 const double tol_fun_ = std::numeric_limits<double>::epsilon() *
                                         1000.0,
                 const double tol_x_ = std::numeric_limits<double>::epsilon() *
@@ -61,7 +61,7 @@ public:
     return res;
   };
 
-  int
+  unsigned int
   get_iter()
   {
     return iter;
@@ -71,15 +71,15 @@ private:
   std::function<double(const double &)> fun;
   std::function<double(const double &)> dfun;
 
-  const int    n_max_it;
-  const double tol_fun;
-  const double tol_x;
+  const unsigned int n_max_it;
+  const double       tol_fun;
+  const double       tol_x;
 
-  double x;
-  double df_dx;
-  double dx;
-  double res;
-  int    iter;
+  double       x;
+  double       df_dx;
+  double       dx;
+  double       res;
+  unsigned int iter;
 };
 
 #endif /* NEWTON_H */

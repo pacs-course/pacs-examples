@@ -7,9 +7,9 @@ main(int argc, char **argv)
 {
   GetPot command_line(argc, argv);
 
-  const int    n_max_it = command_line("n_max_it", 100);
-  const double tol_fun  = command_line("tol_fun", 1.0e-16);
-  const double tol_x    = command_line("tol_x", 1.0e-16);
+  const unsigned int n_max_it = command_line("n_max_it", 100);
+  const double       tol_fun  = command_line("tol_fun", 1.0e-16);
+  const double       tol_x    = command_line("tol_x", 1.0e-16);
 
   auto fun = [](const double &x) -> double {
     return std::pow(x, 3) + 5 * x + 3;

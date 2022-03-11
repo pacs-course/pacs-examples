@@ -26,11 +26,11 @@ p_\text{Horner}(x) &= a_0 + x \left(a_1 + x \left(a_2 + x \left(a_3 + \ldots + x
 \item Implement an \texttt{evaluate\_poly()} function by manually looping over the input points.
 \item Modify \texttt{evaluate\_poly()} to use \texttt{std::transform}.
 \item Implement an \texttt{evaluate\_poly\_parallel()} that makes use of the parallel execution policies of \texttt{std::transform} (available since \texttt{C++17}).
-\item Convert \texttt{eval} and \texttt{horner} from function pointers to \texttt{std::function}.
-\item (Optional) Let the user choose from command line the type of evaluation to run (standard, Horner) and the parallelization policy (sequential, parallel).
+\item Convert \texttt{eval} and \texttt{eval\_horner} from function pointers to \texttt{std::function}.
+\item Let the user choose from command line the type of evaluation to run (standard, Horner) and the parallelization policy (sequential, parallel).
 \end{enumerate}
 
-Note: the parallel version requires to link against the Intel Threading Building Blocks (\texttt{TBB}) library.
+\textbf{NB}: the parallel version requires to link against the Intel Threading Building Blocks (\texttt{TBB}) library (preprocessor flags \texttt{-I\$\{mkTbbInc\}}, linker flags \texttt{-L\$\{mkTbbLib\} -ltbb}).
 \end{frame}
 
 \begin{frame}{Exercise 2 - Newton solver}
@@ -41,7 +41,7 @@ Note: the parallel version requires to link against the Intel Threading Building
 \begin{enumerate}
 \item function pointers;
 \item lambda functions;
-\item (Optional) \texttt{muParser} functions (the \texttt{muParser} library can be installed by running \texttt{./install\_PACS.sh} from \texttt{\$\{PACS\_ROOT\}/Extras/muParser}).
+\item \texttt{muParser} functions (the \texttt{muParser} library can be installed by running \texttt{./install\_PACS.sh} from \texttt{\$\{PACS\_ROOT\}/Extras/muParser}).
 \end{enumerate}
 \item Use the solver to solve the equation
 \begin{equation*}
