@@ -39,7 +39,7 @@ main(int argc, char **argv)
 
   std::vector<double> points(n_points + 1);
   points[0] = x_0;
-  for (unsigned int i = 0; i <= n_points; ++i)
+  for (unsigned int i = 1; i <= n_points; ++i)
     points[i] = points[i - 1] + h;
 
   Timings::Chrono timer;
