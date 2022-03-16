@@ -1,6 +1,6 @@
 #include "extendedAssert.hpp"
 #include "rational.hpp"
-#include <cstdlib> // for abs()
+#include <cmath> // for abs()
 #include <ios>     // for manipulators
 #include <iostream>
 #include <sstream> // stringstream
@@ -141,7 +141,8 @@ std::istream &
 operator>>(std::istream &str, Rational &r)
 {
   std::string tmp;
-  int         n, d;
+  int n;
+  int d;
   // Read from stream up to end of line or space char.
   std::getline(str, tmp, ' ');
   // Look if we have /

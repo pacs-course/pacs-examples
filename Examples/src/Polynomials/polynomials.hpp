@@ -6,6 +6,9 @@
 #include <iostream>
 #include <type_traits>
 #include <utility>
+#if __cplusplus >= 202002L
+#include <compare> // for c++20 style comparison operators
+#endif
 namespace apsc::LinearAlgebra
 {
 //! A simple class for "static" polynomials
@@ -32,7 +35,7 @@ public:
   Polynomial(Polynomial<N, R> const &) = default;
   //! Move constructor is the implicit one
   Polynomial(Polynomial<N, R> &&) = default;
-  // I can also assign a polynomial of smaller degree
+  //! I can also assign a polynomial of smaller degree
   template <unsigned int M>
   Polynomial &
   operator=(Polynomial<M, R> const &right) noexcept
@@ -42,10 +45,18 @@ public:
     std::copy(right.get_coeff.begin(), right.get_coeff().end(),
               M_coeff.begin());
   }
-  //! Copy assignement is the implicit one
+  //! Copy assignment is the sinthetized one
   Polynomial &operator=(Polynomial<N, R> const &) = default;
-  //! Move assignement is the implicit one
+  //! Move assignment is the sinthetized one
   Polynomial &operator=(Polynomial<N, R> &&) = default;
+  /*!
+   * Relational operators among polynomials of seme type and order (C++20)
+   *
+   * It relies on the fact that <=> operator is defined for std::array<R,M>
+   */
+#if __cplusplus >= 202002L
+  friend auto operator <=>(Polynomial<N, R> const&, Polynomial<N,R> const &)=default;
+#endif
   //! Set coefficients
   void
   set_coeff(const std::array<R, N + 1> &c)
@@ -224,7 +235,7 @@ operator<<(std::ostream &out, Polynomial<NDegree, R> const &p)
  * @param Num Numerator
  * @param Den Denominator
  * @return The result of the division (rest is discarded)
- * * @pre NDegree>=DDegree
+ * @pre NDegree>=DDegree
  * @pre Denominator must be a complete polynomial, i.e. the coefficient of
  * highest degree must be !=0
  */
@@ -281,7 +292,7 @@ operator+(Polynomial<LDegree, R> const &left,
 }
 
 /*!
- * Polinomial subtraction
+ * Polynomial subtraction
  */
 template <unsigned int LDegree, unsigned int RDegree, typename R>
 auto

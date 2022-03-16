@@ -3,6 +3,7 @@
 #if __cplusplus >= 202002L
 #include <compare> // for c++20 style comparison operators
 #endif
+#include "hashCombine.hpp" // for the hash function
 namespace apsc
 {
 //! A simple class that represent a rational number
@@ -173,4 +174,27 @@ operator>=(Rational const &l, Rational const &r)
   return !(l < r);
 }
 #endif
+/*!
+ * @brief A hash functor for Rational objects
+ *
+ * It relies on the hash_compare utility in Utility/hashCompare.hpp
+ *
+ * @note If I use it to specialize std::hash<T> with T=Rational, I will not need to
+ * pass it as template parameter of a unordered container
+ *
+ */
+struct RationalHash
+{
+  /*!
+   * @brief the call operator implementing the hssh function
+   * @param r The Rational object
+   * @return The corresponding hash key
+   */
+  std::size_t operator()(const Rational & r)const
+  {
+    std::size_t seed{0u};
+    apsc::hash_combine(seed, r.numerator(), r.denominator());
+    return seed;
+  }
+};
 } // namespace apsc
