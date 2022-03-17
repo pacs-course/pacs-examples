@@ -1,0 +1,32 @@
+#ifndef CONTAGION_HPP
+#define CONTAGION_HPP
+
+#include "Agent.hpp"
+#include "Parameters.hpp"
+
+#include <memory>
+#include <vector>
+
+class Contagion
+{
+public:
+  Contagion(const std::string &filename);
+
+  void
+  run();
+
+protected:
+  void
+  output_results() const;
+
+  std::shared_ptr<const ContagionParameters> params_contagion;
+
+  std::vector<Agent> agents;
+
+  std::vector<double>       time;
+  std::vector<unsigned int> n_susceptible;
+  std::vector<unsigned int> n_infected;
+  std::vector<unsigned int> n_recovered;
+};
+
+#endif /* CONTAGION_HPP */
