@@ -5,48 +5,40 @@
 #include <cmath>
 #include <execution>
 #include <limits>
+
+// Since C++20.
 #include <numbers>
 
-Agent::Agent(const State &initial_state, const AgentParameters &params)
+Agent::Agent(const State &initial_state, const Parameters &params)
   : params(params)
   , engine(std::chrono::system_clock::now().time_since_epoch().count())
-  , rand(0, 1)
-  , randi(1, params.n_timesteps_go_to_pub)
   , does_sd(false)
   , state(initial_state)
   , t_infection(0)
   , is_at_pub(false)
   , t_spent_at_pub(0)
 {
-  x = rand(engine) * params.params_contagion->domain_size;
-  y = rand(engine) * params.params_contagion->domain_size;
+  std::uniform_real_distribution<double> rand(0, 1);
 
-  if (rand(engine) < params.params_contagion->frac_sd)
-    does_sd = true;
+  x = rand(engine) * params.domain.domain_size;
+  y = rand(engine) * params.domain.domain_size;
 
+  does_sd = (rand(engine) < params.contagion.frac_sd);
+
+  std::uniform_int_distribution<unsigned int> randi(
+    1, params.agent.n_timesteps_go_to_pub);
   t_go_to_pub = randi(engine);
-}
-
-std::pair<double, double>
-Agent::generate_direction_step()
-{
-  const double alpha = 2 * std::numbers::pi * rand(engine);
-
-  const double dx = params.dr * std::sin(alpha);
-  const double dy = params.dr * std::cos(alpha);
-
-  return std::make_pair(dx, dy);
 }
 
 void
 Agent::move()
 {
-  // Move.
-  t_go_to_pub -= 1; // Update time to go to pub.
+  if (t_go_to_pub.has_value())
+    --(t_go_to_pub.value());
 
   if (is_at_pub)
     {
-      t_spent_at_pub += 1;
+      ++t_spent_at_pub;
     }
   else
     {
@@ -54,6 +46,7 @@ Agent::move()
       y_bak = y;
     }
 
+  // Determine next move.
   Move next_move;
   if (t_go_to_pub > 0)
     {
@@ -68,7 +61,7 @@ Agent::move()
     }
   else if (is_at_pub)
     {
-      if (t_spent_at_pub < params.n_timesteps_at_pub)
+      if (t_spent_at_pub < params.agent.n_timesteps_at_pub)
         {
           next_move = Move::Stay;
         }
@@ -84,30 +77,38 @@ Agent::move()
 
   if (next_move == Move::Walk)
     {
-      double dx, dy;
+      // Generate new random direction step.
+      auto generate_direction_step = [this]() -> std::pair<double, double> {
+        // Since C++20.
+        std::uniform_real_distribution<double> rand(0, 2 * std::numbers::pi);
 
-      std::tie(dx, dy) = generate_direction_step();
+        const double alpha = rand(engine);
+
+        const double dx = params.agent.dr * std::cos(alpha);
+        const double dy = params.agent.dr * std::sin(alpha);
+
+        return std::make_pair(dx, dy);
+      };
+
+      auto [dx, dy] = generate_direction_step();
 
       double x_new = x + dx;
       double y_new = y + dy;
 
       // If a wall is hit, try new random directions.
-      bool wall_hit =
-        ((x_new < 0) || (x_new > params.params_contagion->domain_size) ||
-         (y_new < 0) || (y_new > params.params_contagion->domain_size));
+      auto wall_hit = [this](const double &x, const double &y) -> bool {
+        return ((x < 0) || (x > params.domain.domain_size) || (y < 0) ||
+                (y > params.domain.domain_size));
+      };
 
       unsigned int n_tries      = 0;
       bool         still_trying = true;
-      while (wall_hit && still_trying)
+      while (wall_hit(x_new, y_new) && still_trying)
         {
           std::tie(dx, dy) = generate_direction_step();
 
           x_new = x + dx;
           y_new = y + dy;
-
-          wall_hit =
-            ((x_new < 0) || (x_new > params.params_contagion->domain_size) ||
-             (y_new < 0) || (y_new > params.params_contagion->domain_size));
 
           if ((++n_tries) >= 1000)
             {
@@ -124,12 +125,18 @@ Agent::move()
     }
   else if (next_move == Move::Go_To_Pub)
     {
-      x = params.params_contagion->pub_x +
-          (rand(engine) - 0.5) * params.params_contagion->pub_size;
-      y = params.params_contagion->pub_y +
-          (rand(engine) - 0.5) * params.params_contagion->pub_size;
+      std::uniform_real_distribution<double> rand_x(
+        params.domain.pub_x - 0.5 * params.domain.pub_size,
+        params.domain.pub_x + 0.5 * params.domain.pub_size);
 
-      t_go_to_pub = -1;
+      std::uniform_real_distribution<double> rand_y(
+        params.domain.pub_y - 0.5 * params.domain.pub_size,
+        params.domain.pub_y + 0.5 * params.domain.pub_size);
+
+      x = rand_x(engine);
+      y = rand_y(engine);
+
+      t_go_to_pub = {};
       is_at_pub   = true;
     }
   else if (next_move == Move::Return_From_Pub)
@@ -137,13 +144,13 @@ Agent::move()
       x = x_bak;
       y = y_bak;
 
-      t_go_to_pub    = params.n_timesteps_go_to_pub;
+      t_go_to_pub    = params.agent.n_timesteps_go_to_pub;
       t_spent_at_pub = 0;
       is_at_pub      = false;
     }
   else // if (next_move == Move::Stay)
     {
-      // Do nothing.
+      // Nothing to do here.
     }
 }
 
@@ -155,7 +162,7 @@ Agent::update_contagion(std::vector<Agent> &agents)
     {
       t_infection += 1;
 
-      if (t_infection > params.n_timesteps_recover)
+      if (t_infection > params.agent.n_timesteps_recover)
         {
           state = State::Recovered;
         }
@@ -179,7 +186,7 @@ Agent::update_contagion(std::vector<Agent> &agents)
                       const bool im_home = ((x == x_bak) && (y == y_bak));
 
                       const bool other_met =
-                        (r <= params.params_contagion->r_infection);
+                        (r <= params.contagion.r_infection);
 
                       const bool other_is_home =
                         ((other.x == other.x_bak) && (other.y == other.y_bak));

@@ -3,7 +3,7 @@
 
 #include "Parameters.hpp"
 
-#include <memory>
+#include <optional>
 #include <random>
 #include <utility>
 #include <vector>
@@ -26,7 +26,7 @@ enum class Move
 class Agent
 {
 public:
-  Agent(const State &initial_state, const AgentParameters &params);
+  Agent(const State &initial_state, const Parameters &params);
 
   void
   move();
@@ -53,16 +53,10 @@ public:
   }
 
 protected:
-  // Generate new random direction step.
-  std::pair<double, double>
-  generate_direction_step();
+  const Parameters params;
 
-  const AgentParameters params;
-
-  // Random numbers generators.
-  std::default_random_engine                  engine;
-  std::uniform_real_distribution<double>      rand;
-  std::uniform_int_distribution<unsigned int> randi;
+  // Engine for random numbers generators.
+  std::default_random_engine engine;
 
   // Position and backup.
   double x;
@@ -83,7 +77,7 @@ protected:
   bool is_at_pub;
 
   // Timesteps until next pub trip.
-  int t_go_to_pub;
+  std::optional<unsigned int> t_go_to_pub;
 
   // Timesteps spent at the pub.
   unsigned int t_spent_at_pub;

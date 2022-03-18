@@ -4,7 +4,6 @@
 #include "Agent.hpp"
 #include "Parameters.hpp"
 
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -23,7 +22,7 @@ protected:
   void
   output_results() const;
 
-  std::shared_ptr<const ContagionParameters> params_contagion;
+  const Parameters params;
 
   std::vector<Agent> agents;
 

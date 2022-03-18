@@ -2,7 +2,7 @@
 #include "gnuplot-iostream.hpp"
 
 Contagion::Contagion(const std::string &filename)
-  : params_contagion(std::make_shared<const ContagionParameters>(filename))
+  : params(filename)
 {}
 
 void

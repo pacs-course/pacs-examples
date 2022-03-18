@@ -10,23 +10,21 @@
 #include <utility>
 
 Contagion::Contagion(const std::string &filename)
-  : params_contagion(std::make_shared<const ContagionParameters>(filename))
-  , time(params_contagion->n_timesteps + 1)
-  , n_susceptible(params_contagion->n_timesteps + 1)
-  , n_infected(params_contagion->n_timesteps + 1)
-  , n_recovered(params_contagion->n_timesteps + 1)
+  : params(filename)
+  , time(params.contagion.n_timesteps + 1)
+  , n_susceptible(time.size())
+  , n_infected(time.size())
+  , n_recovered(time.size())
 {
-  agents.reserve(params_contagion->n_agents);
+  agents.reserve(params.contagion.n_agents);
 
-  AgentParameters params(filename, params_contagion);
-
-  for (size_t p = 0; p < agents.capacity() - params_contagion->n_init_infected;
+  for (size_t p = 0; p < agents.capacity() - params.contagion.n_init_infected;
        ++p)
     {
       agents.emplace_back(State::Susceptible, params);
     }
 
-  for (size_t p = 0; p < params_contagion->n_init_infected; ++p)
+  for (size_t p = 0; p < params.contagion.n_init_infected; ++p)
     agents.emplace_back(State::Infected, params);
 }
 
@@ -40,13 +38,13 @@ Contagion::run()
 void
 Contagion::simulate()
 {
-  for (unsigned int step = 0; step <= params_contagion->n_timesteps; ++step)
+  for (unsigned int step = 0; step <= params.contagion.n_timesteps; ++step)
     {
-      std::cout << "Timestep " << step << " / " << params_contagion->n_timesteps
+      std::cout << "Timestep " << step << " / " << params.contagion.n_timesteps
                 << "\r";
 
       time[step] =
-        static_cast<double>(step) / params_contagion->n_timesteps_per_day;
+        static_cast<double>(step) / params.contagion.n_timesteps_per_day;
 
       if (step >= 1)
         {
@@ -90,10 +88,10 @@ Contagion::simulate()
 
   std::cout << "Peak of " << *max_n_infected << " infected ("
             << static_cast<double>(*max_n_infected) /
-                 params_contagion->n_agents * 100
+                 params.contagion.n_agents * 100
             << "%) reached after "
             << std::ceil(static_cast<double>(timestep_peak) /
-                         params_contagion->n_timesteps_per_day)
+                         params.contagion.n_timesteps_per_day)
             << " days." << std::endl;
 }
 
@@ -104,7 +102,7 @@ Contagion::output_results() const
   std::ofstream file("output.csv", std::ofstream::out);
   file << "time, n_susceptible, n_infected, n_recovered" << std::endl;
 
-  for (unsigned int step = 0; step <= params_contagion->n_timesteps; ++step)
+  for (unsigned int step = 0; step <= params.contagion.n_timesteps; ++step)
     {
       file << time[step] << ", " << n_susceptible[step] << ", "
            << n_infected[step] << ", " << n_recovered[step] << std::endl;

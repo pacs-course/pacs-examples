@@ -1,13 +1,12 @@
 #ifndef PARAMETERS_HPP
 #define PARAMETERS_HPP
 
-#include <memory>
 #include <string>
 
 class Domain
 {
 public:
-  Domain(const std::string &filename);
+  Domain() = default;
 
   // Domain is [0, domain_size] x [0, domain_size].
   double domain_size;
@@ -19,10 +18,10 @@ public:
   double pub_y;
 };
 
-class ContagionParameters : public Domain
+class ContagionParameters
 {
 public:
-  ContagionParameters(const std::string &filename);
+  ContagionParameters() = default;
 
   // Number of agents.
   unsigned int n_agents;
@@ -47,12 +46,7 @@ public:
 class AgentParameters
 {
 public:
-  AgentParameters(
-    const std::string &                               filename,
-    const std::shared_ptr<const ContagionParameters> &params_contagion_);
-
-  // Contagion parameters.
-  std::shared_ptr<const ContagionParameters> params_contagion;
+  AgentParameters() = default;
 
   // Agents go to the pub once every n_timesteps_go_to_pub
   // timesteps.
@@ -66,6 +60,16 @@ public:
 
   // Step length per timestep.
   double dr;
+};
+
+class Parameters
+{
+public:
+  Parameters(const std::string &filename);
+
+  Domain              domain;
+  ContagionParameters contagion;
+  AgentParameters     agent;
 };
 
 #endif /* PARAMETERS_HPP */
