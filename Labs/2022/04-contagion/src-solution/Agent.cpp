@@ -5,6 +5,7 @@
 #include <cmath>
 #include <execution>
 #include <limits>
+#include <numbers>
 
 Agent::Agent(const State &initial_state, const AgentParameters &params)
   : params(params)
@@ -29,7 +30,7 @@ Agent::Agent(const State &initial_state, const AgentParameters &params)
 std::pair<double, double>
 Agent::generate_direction_step()
 {
-  const double alpha = 2 * M_PI * rand(engine);
+  const double alpha = 2 * std::numbers::pi * rand(engine);
 
   const double dx = params.dr * std::sin(alpha);
   const double dy = params.dr * std::cos(alpha);

@@ -1,5 +1,5 @@
 CXX      ?= g++
-CXXFLAGS ?= -std=c++17
+CXXFLAGS ?= -std=c++20
 CPPFLAGS ?= -O3 -Wall -pedantic -I. -isystem../../../../Examples/include \
             -isystem$(mkBoostInc) -isystem$(mkTbbInc)
 LDLIBS   ?= -L$(mkBoostLib) -L$(mkTbbLib) \
