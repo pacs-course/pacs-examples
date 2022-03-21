@@ -21,10 +21,12 @@ main()
   // A triangle built with the first 3 vertices
   Triangle aTriangle(Vertices(v.begin(), v.begin() + 3));
   // testing polymorphism
+  aTriangle.showMe();
+  std::cout << "Area: " << aTriangle.area() << std::endl;
   AbstractPolygon *p_ab = &aTriangle;
 
   p_ab->showMe();
-  std::cout << "Area: " << aTriangle.area() << std::endl;
+  std::cout << "Area: " << p_ab->area() << std::endl;
   //! Unit Square
   Square           aSquare({0.0, 0.0}, 1.0);
   Square           s2(aSquare);
@@ -40,13 +42,15 @@ main()
     std::cout << k;
 
   // testing the factory
-  auto ppoly = createPolygon("Polygon");
-  ppoly->setVertexes(v);
+  auto ppoly = createPolygon("Polygon",v);
+  //ppoly->setVertexes(v);
   ppoly->showMe();
   std::cout << "Area: " << ppoly->area() << std::endl;
-  auto     anotherSquare = createPolygon("Square");
-  Vertices q{{0, 0}, {0, 1}, {1, 1}, {1, 0}};
-  anotherSquare->setVertexes(q);
+    Vertices q{{0, 0}, {0, 1}, {1, 1}, {1, 0}};
+    
+    auto     anotherSquare = createPolygon("Square",q);
+
+  //anotherSquare->setVertexes(q);
   anotherSquare->showMe();
   std::cout << "Area: " << anotherSquare->area() << std::endl;
 }
