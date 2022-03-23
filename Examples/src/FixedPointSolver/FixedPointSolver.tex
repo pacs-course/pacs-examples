@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\RequirePackage{listings}
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\RequirePackage{hyperref}
+% User-defined colors
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+% Settings for listing class
+\lstset{  
+  language=[ISO]C++,                       % The default language
+  basicstyle=\sf,                          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries,  % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed},             % Set string constant style
+  extendedchars=true                       % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  lineskip=0ex, %  frame=single
+}
+
+\author{Luca Formaggia}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\color{red}}
+\newcommand{\black}{\color{black}}
+\newcommand{\darkred}{\color{darkred}}
+\newcommand{\darkgreen}{\color{darkgreen}}
+\newcommand{\til}{{$\tilde\null\,\,$}}
+\newcommand{\li}{\lstinline}
+\newcommand{\cpp}[1]{\li!#1!}
+\newcommand{\Exampledir}{run:./../Material/Examples}
+\newcommand{\program}[1]{run:./../Material/Examples/src/#1}
+\newcommand{\programname}[1]{./../Material/Examples/src/#1}
+\newcommand{\onlyprogramname}[1]{Material/Examples/src/#1}
+\usepackage{a4wide}
+\setlength{\parindent}{0pt}
+\title{Fixed Point Solver}
+\date{March 2022}
+\begin{document}
+\maketitle
+
+We consider the problem: \emph{Given $\boldsymbol{\phi}:\mathbb{R}^n\to \mathbb{R}^n$, find $\mathbf{x}\in\mathbb{R}^n$ so that}
+\begin{equation}
+    \label{eq:fixedpoint}
+        \mathbf{x}=\boldsymbol{\phi}(\mathbf{x}).
+\end{equation}
+We wish to solve it through the accelerated functional iteration
+\begin{equation}
+    \label{eq:picard}
+    \mathbf{x}_{k+1}=\boldsymbol{A}\circ\boldsymbol{\phi}(\mathbf{x}_k),\  k=0,1,\ldots
+\end{equation}
+for a given $\mathbf{x}_0$. The stopping criteria is $\Vert\mathbf{x}_{k+1}- \mathbf{x}_k\Vert\le\epsilon$, $\epsilon$ being a given tolerance.
+
+Here $\boldsymbol{A}:\mathbb{R}^n\to\mathbb{R}^n$ is an \emph{accelerator}, which may depend also on the current and previous iterates (it has a state). With the identity operator, we recover the standard Picard iteration. Clearly, the accelerator must itself
+satisfy $\boldsymbol{A}(\mathbf{x})=\mathbf{x}$, but the idea is that a non-trivial accelerator
+should provide a faster converging sequence than the standard Picard iteration.
+
+Indeed, several accelerators could be implemented, including Anderson acceleration, secant-type acceleration or even quasi-Newton procedures. At the time being, besides the \texttt{NoAccelerator} class implementing the identity,  we have only a secant-type procedure, 
+taken from the bibliography contained in the \texttt{Accelerators.hpp} file.
+
+
+
+\section{Notes on the implementation}
+\begin{itemize}
+    \item \texttt{FixedPointTraits.hpp} contains the definition of the main type used by the program, parameterized with respect to the argument type (and return type) of the iterator function.
+    \item \texttt{IteratorFunction}. Is a function wrapper that represents $\boldsymbol{\phi}$.
+    \item \texttt{FixedPointOptions}. An aggregate with the parameters that control the iteration procedure, in particular the tolerance and the maximal number of iteration.
+    \item \texttt{Accelerators.hpp} Contains some accelerator classes. An accelerator aggregates an
+    \texttt{IteratorFunction} and may keep track of the previous iterations.
+    \texttt{FixedPointIteration<ARG,Accelerator>} is the main class. The template parameters provide the type of the iteration function arguments (and return type), and the acceleration type. The actual computation of the fixed point iteration is performed with the method \texttt{compute(ArgumentType const \&x0)} which takes the initial point as input.
+\end{itemize}
+ 
+The class is quite simple. If compiled  with \texttt{-DVERBOSE} the code prints on the screen some info of each iterate.
+
+\section{Things to do}
+\begin{itemize}
+    \item Calling the accelerator when is the identity causes a useless overhead.
+    We may use a type trait and \texttt{if constexpr} to avoid the call when the accelerator is \texttt{NoAccelerator<ARG>}.
+    \item Other accelerators should be written.
+\end{itemize}
+
+
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
