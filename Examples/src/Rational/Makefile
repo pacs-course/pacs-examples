@@ -19,6 +19,8 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
 #
+# update CPPFLAGS to find hashCombine
+CPPFLAGS+=-I${PACS_ROOT}/src/Utilities
 -include Makefile.inc
 
 #
@@ -36,8 +38,6 @@ HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
-# update CPPFLAGS to find hashCombine
-CPPFLAGS+=-I${PACS_ROOT}/src/Utilities
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
