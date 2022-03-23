@@ -36,6 +36,8 @@ HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
+# update CPPFLAGS to find hashCombine
+CPPFLAGS+=-I${PACS_ROOT}/src/Utilities
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
