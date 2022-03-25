@@ -1,5 +1,6 @@
 #ifndef HH_MATRIXPROXY_HH
 #define HH_MATRIXPROXY_HH
+#include <cstddef>
 // A much more complex example of CRTP
 // Suppose want to create different matrix classes, each of them
 // providing the operator ()(i,j) to address the element in

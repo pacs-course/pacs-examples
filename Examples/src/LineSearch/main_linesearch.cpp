@@ -5,6 +5,7 @@
  *      Author: forma
  */
 #include "DescentDirections.hpp"
+#include "DescentDirectionFactory.hpp"
 #include "GradientFiniteDifference.hpp"
 #include "LineSearch.hpp"
 #include "LineSearchSolver.hpp"
@@ -43,6 +44,8 @@ main()
   optimizationData.gradient =
     apsc::GradientFiniteDifference{optimizationData.costFunction};
 
+  // Load the factory
+  auto const & theFactory=apsc::loadDirections();
   // Different descent directions
   // std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction =
   // std::make_unique<apsc::GradientDirection>();
@@ -53,7 +56,7 @@ main()
   // std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction =
   // std::make_unique<apsc::BBDirection>();
   std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFunction =
-    std::make_unique<apsc::CGDirection>();
+      theFactory.create("BFGSDirection");
 
   optimizationOptions.maxIter = 4000;
   optimizationOptions.relTol = 1.e-6;

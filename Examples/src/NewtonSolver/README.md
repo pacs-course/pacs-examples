@@ -16,5 +16,7 @@ We have also:
 
 The file `main_Newton.cpp` contains a test.
 
+If you launch `pdflatex NewtonSolver.tex` you get `NewtonSolver.pdf` with some more details on the procedure.
+
 #What do I learn here?#
 - A rather complete example where we use traits, aggregates to collect strictly related variables, polymorphism, object factory.

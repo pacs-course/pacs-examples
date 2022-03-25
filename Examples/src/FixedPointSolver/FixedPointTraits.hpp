@@ -17,7 +17,8 @@ enum class FixedPointArgumentType
   EIGEN
 };
 
-template <FixedPointArgumentType ARG> struct FixedPointTraits
+template <FixedPointArgumentType ARG>
+struct FixedPointTraits
 {};
 
 template <> struct FixedPointTraits<FixedPointArgumentType::VECTOR>

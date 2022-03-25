@@ -13,7 +13,7 @@ template <> struct fib<1>
   static constexpr unsigned long int value = 1ul;
 };
 
-//! Specializatio for 0
+//! Specialization for 0
 template <> struct fib<0>
 {
   static constexpr unsigned long int value = 0ul;
@@ -34,8 +34,10 @@ template <> struct fib<0>
 constexpr unsigned long int
 Fibonacci(unsigned int const N)
 {
-  if(N <= 2ul)
+  if (N == 1ul)
     return 1ul;
+  else if (N==0ul)
+    return 0ul;
   else
     return Fibonacci(N - 1) + Fibonacci(N - 2);
 }
