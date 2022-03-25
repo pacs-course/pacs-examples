@@ -87,6 +87,12 @@ public:
     , h{h}
   {}
 
+  /**
+   * The call operator that computes the first derivative.
+   *
+   * @param x The point where the derivative is computed.
+   * @return The derivative value.
+   */
   NumberType
   operator()(const NumberType &x) const
   {
