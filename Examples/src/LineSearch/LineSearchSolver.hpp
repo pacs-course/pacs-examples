@@ -23,7 +23,8 @@ public:
   LinearSearchSolver() = default;
   /*!
    * You may pass all needed parameters in the constructors
-   * @param data The structure containing the cost fuunction and the gradient
+   *
+   * @param data The structure containing the cost function and the gradient
    * function
    * @param ddptr a unique pointer to the concrete callable object that computed
    * the search direction
