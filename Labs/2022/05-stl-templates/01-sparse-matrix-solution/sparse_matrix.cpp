@@ -125,14 +125,11 @@ sparse_matrix::csr_update(std::vector<double> &            val,
   const size_t ni = row_ptr.size();
   const size_t nj = col_ind.size();
 
-  val.clear();
-  val.reserve(nj);
+  val.resize(nj);
 
   for (size_t in = 0; in < ni - 1; ++in)
     for (size_t jn = row_ptr[in]; jn < row_ptr[in + 1]; ++jn)
       val.push_back(col_val(((*this)[in]).find(col_ind[jn])));
-
-  val.shrink_to_fit();
 }
 
 

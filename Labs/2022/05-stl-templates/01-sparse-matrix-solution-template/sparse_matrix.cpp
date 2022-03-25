@@ -7,10 +7,6 @@ sparse_matrix::extract_block_pointer(const std::vector<unsigned int> &rows,
   p_sparse_matrix out;
   out.resize(rows.size());
 
-  size_t                          ii, jj;
-  unsigned int                    jcol;
-  std::map<unsigned int, double> *irow;
-
   // copy the vector with the list of columns into a map to
   // reduce the complexity of searches.
   // with this format the complexity should be:
@@ -18,27 +14,31 @@ sparse_matrix::extract_block_pointer(const std::vector<unsigned int> &rows,
 
   std::map<unsigned int, unsigned int> ordcol;
 
-  for (jj = 0; jj < cols.size(); ++jj)
+  for (size_t jj = 0; jj < cols.size(); ++jj)
     ordcol.insert(std::pair<unsigned int, unsigned int>(cols[jj], jj));
 
-  for (ii = 0; ii < rows.size(); ++ii)
-    // proceed only if the current row is actually in the matrix
-    if (rows[ii] < static_cast<unsigned int>((*this).rows()))
-      {
-        irow = &((*this)[rows[ii]]);
-        // loop through nonzero entries of the current row
-        // (constant complexity)
-        for (auto jout = irow->begin(); jout != irow->end(); ++jout)
-          {
-            jcol = jout->first;
-            // check if the current column is in the
-            // list of selected columns
-            // (complexity: log(cols.size()))
-            if (ordcol.count(jcol))
-              // insert a pointer to this entry in the output
-              out[ii][ordcol.at(jcol)] = &((*irow)[jcol]);
-          }
-      }
+  for (size_t ii = 0; ii < rows.size(); ++ii)
+    {
+      // proceed only if the current row is actually in the matrix
+      if (rows[ii] < (*this).rows())
+        {
+          std::map<unsigned int, double> &irow = (*this)[rows[ii]];
+
+          // loop through nonzero entries of the current row
+          // (constant complexity)
+          for (auto jout = irow.begin(); jout != irow.end(); ++jout)
+            {
+              const unsigned int jcol = jout->first;
+
+              // check if the current column is in the
+              // list of selected columns
+              // (complexity: log(cols.size()))
+              if (ordcol.find(jcol) != ordcol.end())
+                // insert a pointer to this entry in the output
+                out[ii][ordcol.at(jcol)] = &(irow[jcol]);
+            }
+        }
+    }
 
   out.update_properties();
 
@@ -53,30 +53,30 @@ sparse_matrix::extract_block_pointer_keep_cols(
   p_sparse_matrix out;
   out.resize(rows.size());
 
-  size_t                          ii, jj;
-  unsigned int                    jcol;
-  std::map<unsigned int, double> *irow;
-
   // same algorithm as for extract_block_pointer except that we don't need to
   // change the ordering of columns, therefore we can use a std::set instead of
   // a std::map
 
   std::set<unsigned int> ordcol;
 
-  for (jj = 0; jj < cols.size(); ++jj)
+  for (size_t jj = 0; jj < cols.size(); ++jj)
     ordcol.insert(cols[jj]);
 
-  for (ii = 0; ii < rows.size(); ++ii)
-    if ((static_cast<size_t>(rows[ii]) < (*this).rows()))
-      {
-        irow = &((*this)[rows[ii]]);
-        for (auto jout = irow->begin(); jout != irow->end(); ++jout)
-          {
-            jcol = jout->first;
-            if (ordcol.count(jcol))
-              out[ii][jcol] = &((*irow)[jcol]);
-          }
-      }
+  for (size_t ii = 0; ii < rows.size(); ++ii)
+    {
+      if (rows[ii] < (*this).rows())
+        {
+          std::map<unsigned int, double> &irow = (*this)[rows[ii]];
+
+          for (auto jout = irow.begin(); jout != irow.end(); ++jout)
+            {
+              const unsigned int jcol = jout->first;
+
+              if (ordcol.find(jcol) != ordcol.end())
+                out[ii][jcol] = &(irow[jcol]);
+            }
+        }
+    }
 
   out.update_properties();
 
