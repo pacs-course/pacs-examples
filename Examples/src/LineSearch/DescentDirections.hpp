@@ -27,6 +27,16 @@ public:
   {
     return -values.currentGradient;
   }
+  /*!
+   * @brief The class is clonable
+   *
+   * @return A clone of myself wrapped into a unique pointer
+   */
+  virtual
+  std::unique_ptr<DescentDirectionBase>
+  clone() const override
+  {return std::make_unique<GradientDirection>(*this);}
+
 };
 /*!
  *  Implements the classic BFGS quasi-Newton algorithm.
@@ -42,6 +52,16 @@ public:
    * @note This is done inside LineSearchSolver
    */
   void reset() override;
+  /*!
+    * @brief The class is clonable
+    *
+    * @return A clone of myself wrapped into a unique pointer
+    */
+   virtual
+   std::unique_ptr<DescentDirectionBase>
+   clone() const override
+   {return std::make_unique<BFGSDirection>(*this);}
+
 
 private:
   apsc::OptimizationCurrentValues previousValues;
@@ -66,6 +86,18 @@ private:
   Eigen::MatrixXd                 H;
   bool                            firstTime{true};
   double const smallNumber = std::sqrt(std::numeric_limits<double>::epsilon());
+
+  /*!
+    * @brief The class is clonable
+    *
+    * @return A clone of myself wrapped into a unique pointer
+    */
+   virtual
+   std::unique_ptr<DescentDirectionBase>
+   clone() const override
+   {return std::make_unique<BFGSIDirection>(*this);}
+
+
 };
 /*!
  * Bazrzilain-Borwein
@@ -80,6 +112,16 @@ public:
   {
     firstTime = true;
   };
+  /*!
+    * @brief The class is clonable
+    *
+    * @return A clone of myself wrapped into a unique pointer
+    */
+   virtual
+   std::unique_ptr<DescentDirectionBase>
+   clone() const override
+   {return std::make_unique<BBDirection>(*this);}
+
 
 private:
   apsc::OptimizationCurrentValues previousValues;
@@ -99,6 +141,17 @@ public:
   {
     firstTime = true;
   };
+
+  /*!
+    * @brief The class is clonable
+    *
+    * @return A clone of myself wrapped into a unique pointer
+    */
+   virtual
+   std::unique_ptr<DescentDirectionBase>
+   clone() const override
+   {return std::make_unique<CGDirection>(*this);}
+
 
 private:
   apsc::OptimizationCurrentValues previousValues;

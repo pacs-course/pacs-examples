@@ -7,6 +7,7 @@
 #include "LineSearch.hpp"
 #ifndef EXAMPLES_SRC_LINESEARCH_DESCENTDIRECTIONBASE_HPP_
 #define EXAMPLES_SRC_LINESEARCH_DESCENTDIRECTIONBASE_HPP_
+#include <memory>
 namespace apsc
 {
 /*!
@@ -32,6 +33,14 @@ public:
   virtual void
   reset(){};
   virtual ~DescentDirectionBase() = default;
+  /*!
+   * @brief The class is clonable
+   *
+   * @return A clone of myself wrapped into a unique pointer
+   */
+  virtual
+  std::unique_ptr<DescentDirectionBase>
+  clone() const {return nullptr;}
 };
 
 } // namespace apsc

@@ -3,11 +3,12 @@
 // I want inequality
 #include "inequality.hpp"
 #include <array>
-//! I use CRTP to have inequality if I define equality operator
-/*!  Note that this is not strictly necessary here since array has the
-inequality operator. But is a nice simple example.
+//! I use CRTP to have all relational operator consisten with the less operator
+//!
+/*!  Note that this is not strictly necessary here since array has the relational
+ *  operators. But it is a nice simple example of a possible use of CRTP.
  */
-template <unsigned int N> class Point : public inequality<Point<N>>
+template <unsigned int N> class Point : public RelationalOps<Point<N> >
 {
 public:
   Point(std::array<double, N> const &in) : coord(in){};
@@ -23,17 +24,19 @@ public:
   {
     return coord[i];
   }
-  //! operator defined in class for simplicity
+  //! less operator
   bool
-  operator==(Point<N> const &that) const
+  operator<(Point<N> const &that) const
   {
     unsigned int k{0u};
     for(auto const &i : coord)
       {
-        if(i != that[k++])
+        if(i > that[k])
           return false;
+        if(i < that[k])
+          return true;
       }
-    return true;
+    return false;
   }
 
 private:

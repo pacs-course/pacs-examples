@@ -34,7 +34,8 @@ enum FPAcceleratorId
  * arguments. It must conform to a std::function!
  *
  */
-template <FixedPointArgumentType ARG> class NoAccelerator
+template <FixedPointArgumentType ARG>
+class NoAccelerator
 {
 public:
   using ArgumentType = typename FixedPointTraits<ARG>::ArgumentType;
@@ -83,7 +84,8 @@ protected:
  * arguments. No other requirements are made
  *
  */
-template <FixedPointArgumentType ARG> class ASecantAccelerator
+template <FixedPointArgumentType ARG>
+class ASecantAccelerator
 {
 public:
   using ArgumentType = typename FixedPointTraits<ARG>::ArgumentType;

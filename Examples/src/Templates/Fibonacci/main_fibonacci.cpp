@@ -9,7 +9,7 @@ main()
   Timings::Chrono clock;
   std::cout << " Time is in microseconds\n";
   unsigned long int fibo;
-  std::cout << " Now with the recursive template" << std::endl;
+  std::cout << " With the recursive template" << std::endl;
   clock.start();
   fibo = fib<3>::value;
   clock.stop();
@@ -48,7 +48,7 @@ main()
       clock.start();
       ff = Fibonacci(l);
       clock.stop();
-      std::cout << " f" << l << "= " << ff << '\n';
+      std::cout << " F(" << l << ")= " << ff << '\n';
       std::cout << "Time to evaluate F(" << l
                 << ") with non constexpr argument and recursion:"
                 << clock.wallTime() << std::endl;

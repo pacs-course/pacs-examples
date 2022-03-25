@@ -27,8 +27,7 @@ struct OptimizationOptions
 struct OptimizationData
 {
   apsc::LineSearch_traits::CostFunction costFunction; //!< The cost function.
-  apsc::LineSearch_traits::Gradient
-              gradient;              //!< The gradient of the cost function.
+  apsc::LineSearch_traits::Gradient gradient; //!< The gradient of the cost function.
   std::size_t NumberOfVariables = 0; //! The number of variables of the problem.
 };
 
