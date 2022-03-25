@@ -70,7 +70,7 @@ private:
   using PreviousDerivative = NthDerivative<N - 1,
                                            FunctionType,
                                            NumberType,
-                                           class DifferenceType::OTHER_TYPE>;
+                                           typename DifferenceType::OTHER_TYPE>;
 
   PreviousDerivative previous_derivative;
   NumberType         h;
