@@ -3,7 +3,9 @@
 //#include "functions.hpp"
 #include <dlfcn.h>
 
-typedef double (*Fun)(double);
+//typedef double (*Fun)(double); // if you prefer tyoedef
+// Fun is a pointer to function taking a double
+using Fun = double (*)(double);
 
 int
 main()

@@ -59,10 +59,8 @@ main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c -O3 -Wall main.cpp -o main.o
 
 main: main.o
-	$(CXX) $(LDFLAGS) $(LOADLIBES) main.o  -L. -lsmall -o main
+	$(CXX) -Wl,-rpath=$(PWD) main.o  -L. -lsmall -o main
 
-development:
-	$(MAKE) main LDLIBS=-Wl,-rpath,.
 
 clean:
 	$(RM) *.o main libsmall.so lib*.so.* 
