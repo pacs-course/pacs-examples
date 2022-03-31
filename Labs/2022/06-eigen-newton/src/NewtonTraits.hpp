@@ -1,0 +1,4 @@
+#ifndef NEWTONTRAITS_HPP
+#define NEWTONTRAITS_HPP
+
+#endif /* NEWTONTRAITS_HPP */
