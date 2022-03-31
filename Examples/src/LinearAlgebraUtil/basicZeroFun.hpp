@@ -237,7 +237,7 @@ bracketInterval(Function const &f, double x1, double h = 0.01,
       y2 = f(x2);
       h *= expandFactor;
     }
-  return std::make_tuple(x1, x2, iter <= maxIter);
+  return std::make_tuple(x1, x2, iter < maxIter);
 }
 /*!
  * Brent type search
