@@ -121,8 +121,7 @@ Newton<Type>::solve(const typename T::VariableType &x0)
       // If residual does not decrease for two consecutive iterations
       // mark for stagnation.
       const bool no_decrease = (norm_res >= norm_res_old);
-      stagnation       = (no_decrease_old && no_decrease);
-      no_decrease_old  = no_decrease;
+      stagnation             = (no_decrease_old && no_decrease);
 
       // We stop on stagnation if we decided to.
       stop = (stagnation && stop_on_stagnation);
@@ -137,6 +136,8 @@ Newton<Type>::solve(const typename T::VariableType &x0)
 
       if (converged || stop)
         break;
+
+      no_decrease_old = no_decrease;
     }
 
   return result;
