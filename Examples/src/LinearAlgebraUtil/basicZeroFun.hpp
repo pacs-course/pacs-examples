@@ -230,7 +230,7 @@ bracketInterval(Function const &f, double x1, double h = 0.01,
           std::swap(x1, x2);
           // change direction
         }
-      direction = (y2 >= 0 && y1 >= 0) ? -1.0 : 1.0;
+      direction = (x2 > x1) ? 1.0 : -1.0;
       x1 = x2;
       y1 = y2;
       x2 += direction * h;
