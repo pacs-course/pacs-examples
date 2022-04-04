@@ -164,11 +164,11 @@ public:
     return T;
   }
   //! Computes \f$ ||A||_\infty \f$
-  const double normInf() const;
+  double normInf() const;
   //! Computes \f$ ||A||_1 \f$
-  const double norm1() const;
+  double norm1() const;
   //! Computes Frobenious norm
-  const double normF() const;
+  double normF() const;
   //! An example of matrix times vector
   /*!
    * It checks for consistency: the size of the vector must be equal
@@ -330,7 +330,7 @@ MyMat0<T>::resize(size_type const n, size_type const m)
 }
 
 template <StoragePolicySwitch T>
-const double
+double
 MyMat0<T>::normInf() const
 {
   double vmax(0.0);
@@ -348,7 +348,7 @@ MyMat0<T>::normInf() const
 }
 
 template <StoragePolicySwitch T>
-const double
+double
 MyMat0<T>::norm1() const
 {
   if(nr * nc == 0)
@@ -365,7 +365,7 @@ MyMat0<T>::norm1() const
 }
 
 template <StoragePolicySwitch T>
-const double
+double
 MyMat0<T>::normF() const
 {
   if(nr * nc == 0)
