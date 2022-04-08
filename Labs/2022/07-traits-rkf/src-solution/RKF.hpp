@@ -244,7 +244,7 @@ RKF<ButcherType, ProblemType>::RKFstep(const double &      t,
 
   // The first step is always an Euler step.
   K[0] = function(t, y);
-  for (unsigned int i = 1; i < n_stages; ++i)
+  for (size_t i = 1; i < n_stages; ++i)
     {
       const double time = t + c[i] * h;
 
