@@ -146,7 +146,7 @@ RKF<ButcherType, ProblemType>::operator()(const double &      t0,
 
   bool rejected = false;
 
-  // Check that the time step does not becone ridiculously small.
+  // Check that the time step does not become ridiculously small.
   const double time_span = tf - t0;
   double       t         = t0;
 
@@ -189,7 +189,7 @@ RKF<ButcherType, ProblemType>::operator()(const double &      t0,
 
       if (error <= tol * h / time_span)
         {
-          t = t + h;
+          t += h;
 
           time.push_back(t);
           y.push_back(y_high);

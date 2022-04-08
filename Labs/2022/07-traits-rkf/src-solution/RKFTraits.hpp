@@ -34,9 +34,10 @@ public:
 
 /// Specialization for scalar problems.
 template <>
-struct RKFTraits<double>
+class RKFTraits<RKFType::Scalar>
 {
-  using VariableType = double;
+public:
+  using VariableType = RKFType::Scalar;
 
   using ForcingTermType =
     std::function<VariableType(const double &, const VariableType &)>;
