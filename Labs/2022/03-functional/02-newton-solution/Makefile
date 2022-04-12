@@ -4,12 +4,12 @@ CPPFLAGS ?= -O3 -I. -Wno-conversion-null -Wno-deprecated-declarations
 
 EXEC     = main_fcn_ptr main_lambda main_getpot_lambda 
 LDFLAGS ?= 
-LIBS    ?= 
+LDLIBS  ?= 
 
 # Flags for the muParser example.
 CPPFLAGMP ?= -I../../../../Examples/include
 EXECMP     = main_getpot_muparser
-LDFLAGMP  ?= -L../../../../Examples/lib -Wl,-rpath=../../../../Examples/lib
+LDFLAGSMP ?= -L../../../../Examples/lib -Wl,-rpath=../../../../Examples/lib
 LIBMP     ?= -lmuparser
 
 all: $(EXEC) $(EXECMP)
@@ -24,7 +24,7 @@ $(EXEC): %: %.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $< $(LIBS) -o $@
 
 $(EXECMP): %: %.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDFLAGMP) $< $(LIBS) $(LIBMP) -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDFLAGSMP) $< $(LIBS) $(LIBMP) -o $@
 
 clean:
 	$(RM) *.o
