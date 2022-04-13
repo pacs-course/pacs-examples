@@ -12,7 +12,7 @@ main()
   using namespace LinearAlgebra;
 
   /* SHOW THE ADVANTAGES OF MOVE SEMANTIC */
-  constexpr unsigned int N = 5000;
+  constexpr unsigned int N = 6000;
   MyMat0<ROWMAJOR>       matH = Hilbert(N);
 
   std::cout << " Created a matrix of " << N * N * 8 / 1000000 << " Mbytes"
