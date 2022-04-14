@@ -14,8 +14,10 @@ namespace apsc::NumericalIntegration
   It's a very light class (no variable members) that provides
   the common interface to all integration rules.
 
-  Constructors and assignement operators
+  Constructors and assignment operators
   are not defined since the synthetic ones are sufficient.
+
+  @note This class is an interface (no data members). It is done on purpose.
 */
 class QuadratureRuleBase
 {

@@ -9,9 +9,9 @@ namespace Geometry
 MeshNodes
 Uniform::operator()() const
 {
-  auto const n = this->M_num_elements;
-  auto const a = this->M_domain.left();
-  auto const b = this->M_domain.right();
+  auto const & n = this->M_num_elements;
+  auto const & a = this->M_domain.left();
+  auto const & b = this->M_domain.right();
   if(n == 0)
     throw std::runtime_error("At least two elements");
   MeshNodes mesh(n + 1);
