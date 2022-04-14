@@ -11,7 +11,7 @@ using MeshNodes = std::vector<double>;
 class OneDMeshGenerator
 {
 public:
-  OneDMeshGenerator(Geometry::Domain1D const &d) : M_domain(d) {}
+  OneDMeshGenerator(Geometry::Domain1D const &d) : M_domain{d} {}
   virtual MeshNodes operator()() const = 0;
   Domain1D
   getDomain() const
