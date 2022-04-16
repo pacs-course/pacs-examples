@@ -37,8 +37,8 @@ public:
   std::unique_ptr<QuadratureRuleBase> clone() const override;
   //!
   /*!@{*/
-  int
-  num_nodes() const
+  constexpr unsigned int
+  num_nodes()const
   {
     return _therule.num_nodes();
   }
