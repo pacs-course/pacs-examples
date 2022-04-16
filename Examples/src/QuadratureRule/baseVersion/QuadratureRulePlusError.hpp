@@ -32,7 +32,7 @@ public:
   //! Cloning method.
   std::unique_ptr<QuadratureRuleBase> clone() const override;
   //! Number of quadrature nodes. Delagates to the stored rules.
-  int
+  constexpr unsigned int
   num_nodes() const
   {
     return _therule.num_nodes();
