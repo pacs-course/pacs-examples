@@ -19,18 +19,15 @@ namespace TypeTraits
    *
    * @tparam T The type to test
    */
-  template <class T, class = void> struct is_eigen : std::false_type
+  template <class T> struct is_eigen : std::false_type
   {};
 
   /*!
-   * Here the specialised function. I use the trick of void_t and declval. This
-   * specialization is valid only if T has a method called array(). You can
-   * change to another method of MatrixBase if you think that array() is not
-   * appropriate
-   * @tparam T The type to test
+   * Here the specialised function.
+   * @tparam T The Derived type of the Eigen Matrix/Vector
    */
   template <class T>
-  struct is_eigen<T, std::void_t<decltype(std::declval<T &>().array())>>
+  struct is_eigen<Eigen::MatrixBase<T>>
     : std::true_type
   {};
 

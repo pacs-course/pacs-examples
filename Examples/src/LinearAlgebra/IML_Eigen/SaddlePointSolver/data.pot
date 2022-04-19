@@ -3,7 +3,7 @@ tol=1.e-7
 #Maximum number of iterations
 max_iter=10000
 # GMRES restart level (only if using GMRES)
-gmres_levels=50
+gmres_levels=100
 # The M B and T matrix
 #MMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondiziona#tori/matrici/table3/coarse/M.mat #The M matrix
 #BMatrixname=/home/forma/Dropbox/Papers_Presentations_Shared/Paper_Precondiziona#tori/matrici/table3/coarse/B.mat #The B matrix
@@ -14,12 +14,13 @@ TMatrixname=matrices/network1/T.mat #The M matrix
 #
 # Solver type among {umfpack, sparselu, gmres, fgmres, gmresr, minres, tminres, eigenvalues}
 # if solver=eigenvalues max/min only eigenvalues are computed for the given matrices. Otherwise the solver is launched (no computation of eigvalues)
-#solver=gmres
+solver=gmres
 #solver=umfpack
-solver=eigenvalues
+#solver=eigenvalues
 # Preconditioner type among {Diagonal,BlockDiagonal,BlockTriangular, 
 # ILU, HSS, Identity}
-preconditioner=ILU
+preconditioner=BlockDiagonal
+#preconditioner=DoubleSaddlePoint
 # use symmetric undefinite format (1) or unsymmetric definite format (0)
 isSymUndef=1
 # use lumped mass matrix approximation (1) or diagonal part approximation (0)

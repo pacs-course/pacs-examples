@@ -19,8 +19,8 @@
 namespace apsc::concepts
 {
   /*!
-     Using a user defined trait to define a concept
-     */
+     Using a user defined trait to define a simple concept
+   */
   template <class T>
   concept complex = apsc::TypeTraits::is_complex_v<T>;
 
@@ -32,7 +32,7 @@ namespace apsc::concepts
    * @param x a complex number
    * @return The norm of x
    */
-  template <complex C>
+ template <complex C>
  constexpr  auto complex_norm(C const & x)
   {
     return std::sqrt(x.real()*x.real()+x.imag()*x.imag());
@@ -41,7 +41,7 @@ namespace apsc::concepts
   /* Alternative (less nice) syntax
   template <class C>
   requires complex<C>
-   auto complex_norm(C const & x)
+   constexpr auto complex_norm(C const & x)
    {
      return std::sqrt(x.real()*x.real()+x.imag()*x.imag());
    }
@@ -49,15 +49,16 @@ namespace apsc::concepts
 
   /*!
     I define a concept of clonable requiring that
-    the class contains a method called clone() thet returns
+    the class contains a method called clone() that returns
     something convertible to a  unique pointer to the class.
 
     Note the use of a standard provided concept (convertible_to)
-     and the sintax to indicate the rreturn type.
+     and the syntax to indicate the return type.
     */
   template <typename T>
   concept clonable = requires( T v)
   {
+    // the {} identify a non evaluating context
     {v.clone()}->std::convertible_to<std::unique_ptr<T>>;
   };
 /*!
