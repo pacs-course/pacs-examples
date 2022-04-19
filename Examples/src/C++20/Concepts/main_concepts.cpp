@@ -54,26 +54,18 @@ std::cout<<apsc::concepts::dot(s1,s2)<<std::endl;
 {
   std::array<double,3> a1{1.,2.,3.};
   std::cout<<"Small array. ";
-  auto res=apsc::concepts::mul(a1);
-  if (res<=5)
-    std::cout<<"Using fast method\n";
-  else
-    std::cout<<"Using standard algorithm\n";
+  apsc::concepts::mul(a1);
 }
 {
   std::array<double,7> a1{1.,2.,3.,4.,5.,6.,7.};
   std::cout<<"Not small array. ";
-  auto res=apsc::concepts::mul(a1);
-  if (res<=5)
-    std::cout<<"Using fast method\n";
-  else
-    std::cout<<"Using standard algorithm\n";
+  apsc::concepts::mul(a1);
 }
 
 auto f=[](std::floating_point auto x){return 3*x;};
 
 auto y = f(4.5);//ok
-auto z = f("a");// error
+//auto z = f("a");// error
 
 }
 

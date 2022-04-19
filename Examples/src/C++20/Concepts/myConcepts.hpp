@@ -15,6 +15,7 @@
 #include "is_complex.hpp"
 #include <vector>
 #include <array>
+#include <iostream>
 
 namespace apsc::concepts
 {
@@ -135,7 +136,7 @@ return res;
 }
 
 /*!
- * If you want to test if a tempalte dependent constant boolean expression
+ * If you want to test if a template dependent constant boolean expression
  * returns true, you need to us requires again otherwise the compiler checks only
  * if the expression is well formed, but NOT its value:
  */
@@ -162,20 +163,19 @@ concept smallerThan5 = requires(T v)
 
 // Example of use in overload resolution. It can be done in a simpler way
 // using if constexpr: it is just an example to show how overloading with concepts work.
-// Indeed, this function does nothing a part returning different integers depending on the case.
+// Indeed, this function does nothing a part writing up that it has been called.
 
 //! Primary function
-template < class A>
-int mul(A const & a){
+template <typename A>
+void mul(A const & a){
   // Here the standard function
-  return a.size();
+   std::cout<<"Calling the standard mul() function\n";
 }
 //! overloaded function
-template < class A>
-requires  smallerThan5<A>
-int mul(A const & a){
+template <smallerThan5 A>
+void mul(A const & a){
   // Here the special algorithm for small array
-  return a.size();
+  std::cout<<"Calling the mul() function for short objects\n";
 }
 
 
