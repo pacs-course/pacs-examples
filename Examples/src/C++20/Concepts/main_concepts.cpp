@@ -9,6 +9,7 @@
 #include <complex>
 #include<memory>
 #include <vector>
+#include <concepts>
 class Foo // a clonable class
 {
 public:
@@ -69,8 +70,10 @@ std::cout<<apsc::concepts::dot(s1,s2)<<std::endl;
     std::cout<<"Using standard algorithm\n";
 }
 
+auto f=[](std::floating_point auto x){return 3*x;};
 
-
+auto y = f(4.5);//ok
+auto z = f("a");// error
 
 }
 

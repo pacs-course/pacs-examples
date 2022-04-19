@@ -7,7 +7,7 @@
 #include <type_traits>
 
 /*!
- * It computes the dot roduct of two arrays of floating points or std::complex numbers!
+ * It computes the dot product of two arrays of floating points or std::complex numbers!
  * @tparam N The size of the array
  * @tparam T1 The type stored in the first array
  * @tparam T2 The type stored in the second array
