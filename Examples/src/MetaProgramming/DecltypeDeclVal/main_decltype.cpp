@@ -61,7 +61,7 @@ private:
 //! A template function where I want to interrogate the type of get_i().
 template <class T>
 void
-fun(T const &a)
+fun(T const & /*a */) //  am not using the parameter, o I can omit indicating it
 {
   std::cout << std::boolalpha;
   std::cout << " The argument is:" << std::endl;
@@ -79,18 +79,13 @@ fun(T const &a)
     }
   else
     {
-      // If I do not have a default constructor I can also do this
+      // If I do not have a default constructor I can do this
+      // (it works in any case, so THIS is the more correct construct!)
       decltype(std::declval<T>().getTwiceJ(double())) c;
       // Which type is c?, now to write it out I need typeid
       std::cout << "The type returned by getTwice(double) is  "
                 << typeid(c).name() << std::endl;
     }
-  // To interrogate the return get I do not need to create an object of type T.
-  // If the object is default constructible I do not need the declval.
-  decltype(std::declval<T>().get_i()) b;
-  // Which type is b?, now to write it out I need typeid
-  std::cout << "The type returned by  get_i() is " << typeid(b).name()
-            << std::endl;
   // I do not need declval to interrogate static members since I do not need
   // to create an object: static members are attribute of the class.
   std::cout << "Static member j is of type " << typeid(decltype(T::j)).name()

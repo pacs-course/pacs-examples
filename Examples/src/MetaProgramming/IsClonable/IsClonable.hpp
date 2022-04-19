@@ -95,5 +95,8 @@ isClonable()
   return has_clone<T>{};
 }
 
+template <typename  T>
+constexpr bool has_clone_v=  has_clone<T>::value;
+
 } // namespace apsc::CloningTrait
 #endif
