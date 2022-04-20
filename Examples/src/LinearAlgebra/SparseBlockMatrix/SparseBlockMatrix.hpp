@@ -25,12 +25,12 @@ namespace apsc
  * @tparam T The stored type
  * @tparam M The number of block rows
  * @tparam N The number of block columns
- * @tparam storageOrder The type of ordiering for the stored Eigen matrices
+ * @tparam storageOrder The type of ordering for the stored Eigen matrices
  *
  * @note So far the class is not default-construcible, far safety reason.
  * To make it default constructible we need some care.
  * It is however copy constructible/assignable and
- * move-constructible/assignable. we
+ * move-constructible/assignable.
  */
 template <typename T, unsigned int M, unsigned int N,
           int storageOrder = Eigen::ColMajor>

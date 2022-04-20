@@ -8,18 +8,20 @@
 #ifndef EXAMPLES_SRC_UTILITIES_IS_EIGEN_HPP_
 #define EXAMPLES_SRC_UTILITIES_IS_EIGEN_HPP_
 #include "Eigen/Core"
+#include "Eigen/SparseCore"
 #include <type_traits>
 namespace apsc
 {
 namespace TypeTraits
 {
   /*!
-   * A class that tests if a type derives from Eigen::MatrixBase
-   * It can be used to verify if a tye is an Eigen dense matrix or vector
+   * A class that tests if a type T derives from Eigen::MatrixBase<T> or
+   * Eigen::SparseMatrixBase<T>
+   * It can be used to verify if a type is an Eigen matrix or vector
    *
    * @tparam T The type to test
    */
-  template <class T> struct is_eigen : std::false_type
+  template <class T, typename S=void> struct is_eigen : std::false_type
   {};
 
   /*!
@@ -27,7 +29,22 @@ namespace TypeTraits
    * @tparam T The Derived type of the Eigen Matrix/Vector
    */
   template <class T>
-  struct is_eigen<Eigen::MatrixBase<T>>
+  struct is_eigen<T,
+                  std::enable_if_t<
+                    std::is_base_of_v<Eigen::MatrixBase<T>,T>
+                    >
+                  >
+    : std::true_type
+  {};
+
+  /*!
+   */
+  template <class T>
+  struct is_eigen<T,
+                  std::enable_if_t<
+                    std::is_base_of_v<Eigen::SparseMatrixBase<T>,T>
+                    >
+                  >
     : std::true_type
   {};
 
