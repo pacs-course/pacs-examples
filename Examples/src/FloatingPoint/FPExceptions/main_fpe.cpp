@@ -52,7 +52,7 @@ main()
         {
           std::cout << "Another (unknown) exception occurred" << std::endl;
         }
-      std::cout << "Do you want to exit? (Y or y for yes) anithing else=no"
+      std::cout << "Do you want to exit? (Y or y for yes) anything else=no"
                 << std::endl;
       std::string input;
       cin.clear();

@@ -71,6 +71,8 @@ utilities of the Standard Library, but with a simpler interface.
 
 * `toString` Converts anything for which there is the `<<` streming operator to a string. A use of `std::stringstream`.
 
+* `overloaded` A facility, called `overloaded` that implements the overloaded design pattern that may be used to visit a std::variant.
+
 
 ** Note ** `Factory.hpp` and `Proxy.hpp` are in fact links to the same file in the folder `GenericFactory`. If the files are not present for some reason you may safely copy in `Utility/` the files in `GenericFactory/`.
 
