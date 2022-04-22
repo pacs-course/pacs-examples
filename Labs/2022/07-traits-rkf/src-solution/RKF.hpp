@@ -119,9 +119,7 @@ RKF<ButcherType, ProblemType>::operator()(const double &      t0,
                                           const double &      tol,
                                           const unsigned int &n_max_steps,
                                           const double &      factor_reduction,
-                                          const double &      factor_expansion
-
-) const
+                                          const double &factor_expansion) const
 {
   RKFResult<ProblemType> result;
 

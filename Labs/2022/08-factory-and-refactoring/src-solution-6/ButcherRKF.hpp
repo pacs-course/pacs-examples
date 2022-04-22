@@ -213,8 +213,8 @@ namespace RKFScheme
   namespace internal
   {
     static Proxy<DormandPrince_t>           p1("DormandPrince");
-    static Proxy<RKFScheme::RK23_t>         p2("RK23");
     static Proxy<RKFScheme::RK45_t>         p3("RK45");
+    static Proxy<RKFScheme::RK23_t>         p2("RK23");
     static Proxy<RKFScheme::FehlbergRK12_t> p4("RKF12");
     static Proxy<RKFScheme::RK12_t>         p5("RK12");
   } // namespace internal
