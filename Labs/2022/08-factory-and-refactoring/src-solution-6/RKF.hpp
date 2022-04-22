@@ -304,14 +304,14 @@ RKF<ProblemType>::RKFstep(const double &      t,
                           const double &      h) const
   -> std::pair<VariableType, VariableType>
 {
-  const auto n_stages = table->n_stages;
-
-  std::vector<VariableType> K(n_stages);
+  const auto &n_stages = table->n_stages;
 
   const auto &A  = table->A;
   const auto &b1 = table->b1;
   const auto &b2 = table->b2;
   const auto &c  = table->c;
+
+  std::vector<VariableType> K(n_stages);
 
   // The first step is always an Euler step.
   K[0] = function(t, y);

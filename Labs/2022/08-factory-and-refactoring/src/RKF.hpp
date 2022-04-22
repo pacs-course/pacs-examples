@@ -87,9 +87,9 @@ public:
              const VariableType &y0,
              const double &      h0,
              const double &      tol,
-             const unsigned int  n_max_steps,
-             const double        factor_reduction = 0.95,
-             const double        factor_expansion = 2) const;
+             const unsigned int &n_max_steps,
+             const double &      factor_reduction = 0.95,
+             const double &      factor_expansion = 2) const;
 
 private:
   /**
@@ -117,9 +117,9 @@ RKF<ButcherType, ProblemType>::operator()(const double &      t0,
                                           const VariableType &y0,
                                           const double &      h0,
                                           const double &      tol,
-                                          const unsigned int  n_max_steps,
-                                          const double        factor_reduction,
-                                          const double        factor_expansion
+                                          const unsigned int &n_max_steps,
+                                          const double &      factor_reduction,
+                                          const double &      factor_expansion
 
 ) const
 {

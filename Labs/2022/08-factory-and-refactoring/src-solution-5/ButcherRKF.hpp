@@ -1,8 +1,8 @@
 #ifndef BUTCHERRKF_HPP
 #define BUTCHERRKF_HPP
 
-#include <exception>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
