@@ -37,7 +37,7 @@
 }
 
 \begin{document}
-    \title{Optimization, debugging and profiling}
+    \title{Optimization and profiling}
     \author{Pasquale Claudio Africa}
     \date{29/04/2022}
 
@@ -143,7 +143,7 @@ Starting from the provided implementation of the class for dense matrices (and c
     \begin{itemize}
         \item Transpose the first factor in matrix multiplication before performing the product.
         \item Compare the execution speed with respect to the previous implementation.
-        \item Generate a coverage report using \texttt{lcov}.
+        \item Generate a coverage report using \texttt{lcov} and a profiling check using \texttt{valgrind}.
     \end{itemize}
 \end{frame}
 
@@ -154,36 +154,4 @@ Starting from the provided implementation of the class for dense matrices (and c
         \item Compare the execution speed with respect to the previous implementations.
     \end{itemize}
 \end{frame}
-
-\begin{frame}{Examples 4 - Debugging}
-This examples are inspired by \url{https://github.com/cme212/course}
-and show basic techniques for debugging as well as an introduction to \texttt{gdb}.
-
-See also \href{https://gjbex.github.io/DPD-online-book/}{Defensive Programming and Debugging}.
-\vfill
-Some useful readings about \textit{undefined behaviour} in \texttt{C++}:
-\begin{itemize}
-\item \url{https://mohitmv.github.io/blog/Cpp-Undefined-Behaviour-101/}
-\item \url{https://mohitmv.github.io/blog/Shocking-Undefined-Behaviour-In-Action/}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Exercise 5 - Debugging (advanced)}
-The program \texttt{integer-list} in the directory \texttt{05-bug} has:
-
-\begin{itemize}
-    \item a compile error;
-    \item a run-time error;
-    \item a memory leak;
-    \item a potential memory leak that is not captured by the \texttt{main}.
-\end{itemize}
-\vspace{0.5cm}
-Find all the issues and fix them. \\[3mm]
-
-Get help by using \texttt{gdb} and \texttt{valgrind}.\\[3mm]
-
-The directory \texttt{05-bug-solution} contains the fixed code,
-please don't look at it before trying to solve the exercise by yourself!
-\end{frame}
-
 \end{document}
