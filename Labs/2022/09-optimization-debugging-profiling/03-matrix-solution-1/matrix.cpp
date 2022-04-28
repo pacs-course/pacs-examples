@@ -14,7 +14,8 @@ matrix::transpose() const
   return retval;
 }
 
-matrix operator*(const matrix &A, const matrix &B)
+matrix
+operator*(const matrix &A, const matrix &B)
 {
   unsigned int i, j, k;
   assert(A.get_cols() == B.get_rows());

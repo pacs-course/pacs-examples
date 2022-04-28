@@ -1,6 +1,5 @@
-#include "test_matrix_mult.hpp"
-
 #include "matrix.hpp"
+#include "test_matrix_mult.hpp"
 
 int
 main(int argc, char **argv)

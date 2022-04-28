@@ -1,9 +1,9 @@
 #include "matrix.hpp"
 
-#include <Eigen/Dense>
-
 #include <algorithm>
 #include <cassert>
+
+#include <Eigen/Dense>
 
 matrix
 matrix::transpose() const
@@ -19,7 +19,8 @@ matrix::transpose() const
   return retval;
 }
 
-matrix operator*(const matrix &A, const matrix &B)
+matrix
+operator*(const matrix &A, const matrix &B)
 {
   assert(A.get_cols() == B.get_rows());
 

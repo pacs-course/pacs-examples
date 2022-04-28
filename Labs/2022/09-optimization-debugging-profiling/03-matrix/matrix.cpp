@@ -9,7 +9,8 @@ matrix::transpose() const
   return matrix(0);
 }
 
-matrix operator*(const matrix &A, const matrix &B)
+matrix
+operator*(const matrix &A, const matrix &B)
 {
   return matrix(0);
 }

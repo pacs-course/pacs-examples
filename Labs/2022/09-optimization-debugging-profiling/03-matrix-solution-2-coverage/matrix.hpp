@@ -6,32 +6,6 @@
 
 class matrix
 {
-private:
-  std::vector<double> data;
-  std::vector<int>    p;
-  const unsigned int  rows;
-  const unsigned int  cols;
-
-  inline unsigned int
-  sub2ind(const unsigned int ir, const unsigned int jc) const
-  {
-    return (ir + jc * rows);
-  };
-
-  double &
-  value(unsigned int irow, unsigned int jcol)
-  {
-    return data[sub2ind(irow, jcol)];
-  };
-
-  const double &
-  value(unsigned int irow, unsigned int jcol) const
-  {
-    return data[sub2ind(irow, jcol)];
-  };
-
-  bool factorized;
-
 public:
   matrix(unsigned int size)
     : rows(size)
@@ -94,9 +68,36 @@ public:
 
   void
   factorize();
+
+private:
+  std::vector<double> data;
+  std::vector<int>    p;
+  const unsigned int  rows;
+  const unsigned int  cols;
+
+  inline unsigned int
+  sub2ind(const unsigned int ir, const unsigned int jc) const
+  {
+    return (ir + jc * rows);
+  };
+
+  double &
+  value(unsigned int irow, unsigned int jcol)
+  {
+    return data[sub2ind(irow, jcol)];
+  };
+
+  const double &
+  value(unsigned int irow, unsigned int jcol) const
+  {
+    return data[sub2ind(irow, jcol)];
+  };
+
+  bool factorized;
 };
 
 /// matrix x matrix product : C = A * B
-matrix operator*(const matrix &A, const matrix &B);
+matrix
+operator*(const matrix &A, const matrix &B);
 
 #endif

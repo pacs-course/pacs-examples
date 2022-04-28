@@ -67,8 +67,7 @@ main(int argc, char **argv)
   std::default_random_engine engine(std::random_device{}());
 
   // Since the "work" we are doing is squaring each integer,
-  // initialize them with some value between 0 and the square root of the
-  // integer max.
+  // initialize them with some value between 1 and 10.
   std::uniform_int_distribution<int> rand_int(1, 10);
 
   // Bundle this all up into a closure that populate_dataset can call:

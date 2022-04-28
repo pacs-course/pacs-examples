@@ -61,7 +61,7 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{Exercise 1: how memory access affects performance}
+\begin{frame}{Exercise 1 - How memory access affects performance}
     This exercise is inspired by \href{https://bitbashing.io/memory-performance.html}{\textcolor{DarkBlue}{this post}}.
     \vfill
     The source file \texttt{01-memory-access/01-base.cpp} implements a very simple algorithm, where a \texttt{std::vector} of size equal to an integer multiple of the cache memory is filled with random numbers and applied some simple mathematical operation (function \texttt{compute()}) for a specified amount of iterations.
@@ -95,13 +95,13 @@ class MyClass
     \begin{figure}
         \centering
         \only<1>{\includegraphics[width=0.7\textwidth]{images/padding_pre.jpg}}
-        \only<2>{\includegraphics[width=0.7\textwidth]{images/padding_post.jpg}}
+        \only<2>{\includegraphics[width=0.7\textwidth]{images/padding_post.png}}
         \caption{How data is \alt<1>{\textbf{not}}{actually} stored.}
     \end{figure}
 \end{frame}
 
 
-\begin{frame}{Exercise 3}
+\begin{frame}{Exercise 3 - Operating with matrices}
 Starting from the provided implementation of the class for dense matrices (and column vectors represented as 1-column matrices) based on \lstinline{std::vector}, implement the following methods:
 \begin{itemize}
 \item \lstinline{transpose()}: $A = A^{T}$.
@@ -168,7 +168,7 @@ Some useful readings about \textit{undefined behaviour} in \texttt{C++}:
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Exercise 5}
+\begin{frame}{Exercise 5 - Debugging (advanced)}
 The program \texttt{integer-list} in the directory \texttt{05-bug} has:
 
 \begin{itemize}

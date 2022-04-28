@@ -28,8 +28,7 @@ main(int argc, char **argv)
             << " is attached to a node with data = "
             << newnode->getPrevious()->getData() << std::endl;
 
-  std::cout << "the list has " << start.size() << " nodes"
-            << std::endl;
+  std::cout << "the list has " << start.size() << " nodes" << std::endl;
 
   // print the list
   start.print();

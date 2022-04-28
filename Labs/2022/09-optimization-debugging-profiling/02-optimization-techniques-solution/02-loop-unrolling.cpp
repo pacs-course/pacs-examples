@@ -9,8 +9,8 @@ multiply(const std::vector<int> &data)
 {
   int result = 1;
 
-  for (size_t i = 0; i < data.size(); ++i)
-    result *= data[i];
+  for (const auto &v : data)
+    result *= v;
 
   return result;
 }
@@ -56,8 +56,7 @@ main(int argc, char **argv)
             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                      start)
                  .count()
-            << " ms."
-            << ", result: " << result << std::endl;
+            << " ms, result: " << result << std::endl;
 
   start = timer::now();
   for (size_t i = 0; i < n_iterations; ++i)
@@ -68,8 +67,7 @@ main(int argc, char **argv)
             << std::chrono::duration_cast<std::chrono::milliseconds>(end -
                                                                      start)
                  .count()
-            << " ms."
-            << ", result: " << result << std::endl;
+            << " ms, result: " << result << std::endl;
 
   return 0;
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 class Class1
 {
@@ -30,11 +31,18 @@ private:
 int
 main()
 {
-  Class1 x1;
-  Class2 x2;
+  const size_t length = 1e8;
 
-  std::cout << "Size of class 1 is " << sizeof(x1) << " bytes." << std::endl;
-  std::cout << "Size of class 2 is " << sizeof(x2) << " bytes." << std::endl;
+  const std::vector<Class1> x1(length);
+  const std::vector<Class2> x2(length);
+
+  // Conversion factor from kB to MB.
+  const double conv = 1024 * 1024;
+
+  std::cout << "Size of class 1 is " << x1.size() * sizeof(x1[0]) / conv
+            << " MB." << std::endl;
+  std::cout << "Size of class 2 is " << x2.size() * sizeof(x2[0]) / conv
+            << " MB." << std::endl;
 
   return 0;
 }
