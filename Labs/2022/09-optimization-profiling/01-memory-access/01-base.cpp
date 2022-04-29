@@ -91,7 +91,7 @@ main(int argc, char **argv)
       // We write out the result to make sure the compiler doesn't
       // optimize out the result as a dead store, and to give us something
       // to look at.
-      std::cout << "Run " << i + 1 << ": " << result << "\r";
+      std::cout << "Run " << i + 1 << ", result = " << result << "\r";
       std::cout.flush();
     }
   std::cout << std::endl << std::endl;
