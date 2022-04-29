@@ -35,7 +35,7 @@ using timer = std::chrono::high_resolution_clock;
 int
 main(int argc, char **argv)
 {
-  size_t n_iterations = 1e7;
+  const size_t n_iterations = 1e7;
 
   std::default_random_engine engine(std::random_device{}());
 
