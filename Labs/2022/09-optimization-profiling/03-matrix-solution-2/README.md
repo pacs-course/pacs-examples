@@ -4,7 +4,7 @@
 
 > make -f Makefile2 coverage
 
-generates a code coverage report (`lcov` must to be installed first, *e.g.* with `sudo apt install lcov`).
+generates a code coverage report.
 
 > make -f Makefile2 memcheck
 
