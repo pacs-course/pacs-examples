@@ -20,7 +20,7 @@ $(OBJS): %.o: %.cpp
 
 clean:
 	$(RM) $(DEPEND)
-	$(RM) *.o
+	$(RM) -r *.o *.gcda *.gcno test_coverage* callgrind*
 
 distclean: clean
 	$(RM) $(EXEC)
