@@ -1,6 +1,10 @@
 #include <iostream>
 #include <vector>
 
+/// Layout:
+/// | s |    s    | padding | padding | // "i" would not fit in this row!
+/// | i |    i    |    i    |    i    |
+/// | c | padding | padding | padding |
 class Class1
 {
 private:
@@ -9,12 +13,10 @@ private:
   char      c; // 1 byte.
 };
 
-// Layout:
-// | s |    s    | padding | padding | // "i" would not fit in this row!
-// | i |    i    |    i    |    i    |
-// | c | padding | padding | padding |
 
-
+/// Layout:
+/// | i | i | i |    i    |
+/// | c | s | s | padding |
 class Class2
 {
 private:
@@ -22,10 +24,6 @@ private:
   short int s; // 2 bytes.
   char      c; // 1 byte.
 };
-
-// Layout:
-// | i | i | i |    i    |
-// | c | s | s | padding |
 
 
 int
@@ -36,13 +34,13 @@ main()
   const std::vector<Class1> x1(length);
   const std::vector<Class2> x2(length);
 
-  // Conversion factor from kB to MB.
-  const double conv = 1024 * 1024;
+  // Conversion factor from kB to GB.
+  const double conv = 1024 * 1024 * 1024;
 
-  std::cout << "Size of class 1 is " << x1.size() * sizeof(x1[0]) / conv
-            << " MB." << std::endl;
-  std::cout << "Size of class 2 is " << x2.size() * sizeof(x2[0]) / conv
-            << " MB." << std::endl;
+  std::cout << "Size of x1 is " << x1.size() * sizeof(Class1) / conv << " GB."
+            << std::endl;
+  std::cout << "Size of x2 is " << x2.size() * sizeof(Class2) / conv << " GB."
+            << std::endl;
 
   return 0;
 }

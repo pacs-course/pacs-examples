@@ -11,9 +11,8 @@ private:
 int
 main()
 {
-  Class1 x1;
-
-  std::cout << "Size of class 1 is " << sizeof(x1) << " bytes." << std::endl;
+  std::cout << "Size of Class1 is " << sizeof(Class1) << " bytes."
+            << std::endl;
 
   return 0;
 }
