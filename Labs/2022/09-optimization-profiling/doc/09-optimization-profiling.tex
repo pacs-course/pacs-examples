@@ -127,7 +127,7 @@ Starting from the provided implementation of the class for dense matrices (and c
     \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{images/access_patterns.png}
-        \caption{Access patterns.}
+        \caption{Access patterns for a \textbf{row-major} data structure, assuming that the cache can store 4 elements at once. If elements are accessed in column-wise order (left) then the loop is \textbf{not} cache-friendly: at the second iterations (following the arrow) the grey elements, that are already in the cache since their memory location is contiguous to the first one, are discarded: thus new entries -- which are 8 memory locations far from the ones already in the cache -- must be re-cached. This operation is costly! Vice-versa, if elements are accessed row-wise (\textit{i.e.} following the memory pattern of the original data structure) the second iteration operates on an element (the second grey box) which is already in the cache, and so on. Analogous considerations hold for \textbf{column-major} data structures.}
     \end{figure}
 \end{frame}
 
