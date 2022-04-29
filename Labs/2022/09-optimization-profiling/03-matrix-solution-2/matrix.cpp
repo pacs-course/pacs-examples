@@ -6,26 +6,30 @@
 matrix
 matrix::transpose() const
 {
-  matrix       retval(get_cols(), get_rows());
-  unsigned int i, j;
-  for (j = 0; j < retval.get_cols(); ++j)
-    for (i = 0; i < retval.get_rows(); ++i)
-      retval(i, j) = value(j, i);
-  return retval;
+  matrix result(get_cols(), get_rows());
+
+  for (size_t i = 0; i < result.get_rows(); ++i)
+    for (size_t j = 0; j < result.get_cols(); ++j)
+      result(i, j) = value(j, i);
+
+  return result;
 }
 
 matrix
 operator*(const matrix &A, const matrix &B)
 {
-  unsigned int i, j, k;
   assert(A.get_cols() == B.get_rows());
-  matrix retval(A.get_rows(), B.get_cols());
+
+  matrix result(A.get_rows(), B.get_cols());
+
   matrix tmp = A.transpose();
-  for (i = 0; i < retval.get_rows(); ++i)
-    for (j = 0; j < retval.get_cols(); ++j)
-      for (k = 0; k < A.get_cols(); ++k)
-        retval(i, j) += tmp(k, i) * B(k, j);
-  return retval;
+
+  for (size_t i = 0; i < result.get_rows(); ++i)
+    for (size_t j = 0; j < result.get_cols(); ++j)
+      for (size_t k = 0; k < A.get_cols(); ++k)
+        result(i, j) += tmp(k, i) * B(k, j);
+
+  return result;
 }
 
 void

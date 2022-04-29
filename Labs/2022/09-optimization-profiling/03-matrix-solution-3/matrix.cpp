@@ -8,15 +8,15 @@
 matrix
 matrix::transpose() const
 {
-  matrix retval(*this);
+  matrix result(*this);
 
-  Eigen::Map<Eigen::MatrixXd> eigen_retval(retval.get_data(),
-                                           retval.get_rows(),
-                                           retval.get_cols());
+  Eigen::Map<Eigen::MatrixXd> eigen_result(result.get_data(),
+                                           result.get_rows(),
+                                           result.get_cols());
 
-  eigen_retval.transposeInPlace();
+  eigen_result.transposeInPlace();
 
-  return retval;
+  return result;
 }
 
 matrix
@@ -32,15 +32,15 @@ operator*(const matrix &A, const matrix &B)
                                             B.get_rows(),
                                             B.get_cols());
 
-  matrix retval(A.get_rows(), B.get_cols());
+  matrix result(A.get_rows(), B.get_cols());
 
-  Eigen::Map<Eigen::MatrixXd> eigen_retval(retval.get_data(),
-                                           retval.get_rows(),
-                                           retval.get_cols());
+  Eigen::Map<Eigen::MatrixXd> eigen_result(result.get_data(),
+                                           result.get_rows(),
+                                           result.get_cols());
 
-  eigen_retval = eigen_A * eigen_B;
+  eigen_result = eigen_A * eigen_B;
 
-  return retval;
+  return result;
 }
 
 void
