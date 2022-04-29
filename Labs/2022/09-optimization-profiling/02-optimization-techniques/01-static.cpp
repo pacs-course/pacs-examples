@@ -4,7 +4,7 @@
 #include <random>
 #include <vector>
 
-const size_t vec_size = 1000;
+inline static constexpr size_t vec_size = 1000;
 
 int
 lookup(const size_t &index)

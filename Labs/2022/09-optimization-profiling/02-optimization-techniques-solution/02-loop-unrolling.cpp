@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-const size_t vec_size = 1000;
+inline static constexpr size_t vec_size = 1000;
 
 int
 multiply(const std::vector<int> &data)
