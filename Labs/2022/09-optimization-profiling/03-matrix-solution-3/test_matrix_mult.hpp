@@ -1,8 +1,8 @@
 #ifndef HAVE_TEST_MATRIX_MULT_H
 #define HAVE_TEST_MATRIX_MULT_H
 
-#ifndef msize
-#  define msize 1000
+#ifndef matrix_size
+#  define matrix_size 1000
 #endif
 
 #include <ctime>

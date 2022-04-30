@@ -7,14 +7,14 @@
 class matrix
 {
 public:
-  matrix(unsigned int size)
+  matrix(size_t size)
     : rows(size)
     , cols(size)
   {
     data.resize(rows * cols, 0.0);
   };
 
-  matrix(unsigned int rows_, unsigned int cols_)
+  matrix(size_t rows_, size_t cols_)
     : rows(rows_)
     , cols(cols_)
   {
@@ -23,26 +23,26 @@ public:
 
   matrix(const matrix &) = default;
 
-  unsigned int
+  size_t
   get_rows() const
   {
     return rows;
   }
 
-  unsigned int
+  size_t
   get_cols() const
   {
     return cols;
   }
 
   double &
-  operator()(unsigned int irow, unsigned int jcol)
+  operator()(size_t irow, size_t jcol)
   {
     return value(irow, jcol);
   };
 
   const double &
-  operator()(unsigned int irow, unsigned int jcol) const
+  operator()(size_t irow, size_t jcol) const
   {
     return value(irow, jcol);
   };
@@ -72,23 +72,23 @@ public:
 private:
   std::vector<double> data;
   std::vector<int>    p;
-  const unsigned int  rows;
-  const unsigned int  cols;
+  const size_t        rows;
+  const size_t        cols;
 
-  inline unsigned int
-  sub2ind(const unsigned int ir, const unsigned int jc) const
+  inline size_t
+  sub2ind(const size_t ir, const size_t jc) const
   {
     return (ir + jc * rows);
   };
 
   double &
-  value(unsigned int irow, unsigned int jcol)
+  value(size_t irow, size_t jcol)
   {
     return data[sub2ind(irow, jcol)];
   };
 
   const double &
-  value(unsigned int irow, unsigned int jcol) const
+  value(size_t irow, size_t jcol) const
   {
     return data[sub2ind(irow, jcol)];
   };

@@ -33,8 +33,8 @@ operator*(const matrix &A, const matrix &B)
 void
 matrix::solve(matrix &rhs)
 {
-  unsigned int ii, jj, kk;
-  double       f;
+  size_t ii, jj, kk;
+  double f;
 
   // Factorize
   if (!factorized)
@@ -70,14 +70,16 @@ void
 matrix::factorize()
 {
   p.resize(rows, 0);
-  for (unsigned int ii = 0; ii < rows; ++ii)
+  for (size_t ii = 0; ii < rows; ++ii)
     p[ii] = ii;
 
-  int    m = this->get_rows();
-  int    n = this->get_cols();
-  int    ii, jj, kk;
+  size_t m = this->get_rows();
+  size_t n = this->get_cols();
+  size_t ii, jj, kk;
+
   double pivot = 0., maxpivot = 0.;
-  int    imaxpivot = 0;
+
+  size_t imaxpivot = 0;
 
   assert(m == n);
   for (ii = 0; ii < m - 1; ++ii)
