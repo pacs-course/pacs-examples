@@ -26,7 +26,7 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 # mains are identified bt main_XX.cpp
 # all other files are XX.cpp
 #
-
+CC=cc
 # get all files *.cpp
 SRCS=$(wildcard *.cpp) 
 # get the corresponding object file

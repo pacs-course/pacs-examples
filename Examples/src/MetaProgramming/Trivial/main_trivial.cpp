@@ -10,8 +10,8 @@ extern "C"
 //! An aggregate
 struct Aggregate
 {
-  double a;
   int    b;
+  double a;
 };
 
 //! A trivially copyable class
