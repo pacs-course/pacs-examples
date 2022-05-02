@@ -52,14 +52,19 @@ EXEC=esempioExtAss
 all:
 	@echo "Possible Targets:"
 	@echo "esempioExtAss Use of some extended assert facilities"
-	@echo "aliasing An example of argument aliasing"
+#	@echo "aliasing An example of argument aliasing"
 	@echo "optimize Compare an optimized and an not optimized version"
 	@echo "leak Find a memory leak in a program with valgrind"
 	@echo "profile Program profiling with gprof"
+	@echo "callgrind Program profiling with callgrind (valgrind)"
 	@echo "massif Memory usage using valgrind"
 	@echo "debug Example for debugging"
 	@echo "coverage Program coverage with gcov"
 	@echo "lcoverage Program coverage with lcov"
+
+	@echo "\nNote: for some utilities you need extra sofwtare:"
+	@echo "leak callgrind and massif needs valgrind installed"
+	@echo "callgrind needs also kcachegrind"
 
 esempioExtAss:
 	$(CXX) $(CPPFLAGS) $(LDFLAGS) $(CXXFLAGS) -g  esempioExtAss.cpp  rational.cpp -o esempioExtAss_debug
@@ -92,7 +97,7 @@ debug:
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)  -o esempio0_debug esempio.cpp $(LDFLAGS) $(LDLIBS)
 	$(CXX)  $(CPPFLAGS) $(CXXFLAGS)   -o esempio1_debug esempio_errore.cpp $(LDFLAGS) $(LDLIBS)
 
-leak:
+leak: leak.cpp
 	 $(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Wall -g leak.cpp -o leak
 	valgrind --tool=memcheck --leak-check=yes \
 --demangle=yes --log-file=leak.log ./leak
@@ -100,21 +105,29 @@ leak:
 profile:
 #	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
 	echo " With no optimization"
-	g++ -std=c++17 $(CPPFLAGS) -pg  -O0 esempio.cpp  -o esempio0 $(LDLIBS)
+	g++ -std=c++20 $(CPPFLAGS) -g -pg  -O0 esempio.cpp  -o esempio0 $(LDLIBS)
 	./esempio0 -i dati
 	gprof --line  --demangle ./esempio0 gmon.out >Profiling_nopt.txt
 	echo " With optimization"
-	g++ -std=c++17 -pg -O2 $(CPPFLAGS)  esempio.cpp -o esempio0 $(LDLIBS)
+	g++ -std=c++20 -g -pg -O2 $(CPPFLAGS)  esempio.cpp -o esempio0 $(LDLIBS)
 	./esempio0 -i dati
 	gprof --line --demangle ./esempio0 gmon.out >Profiling_opt.txt
 #	gprof --line --demangle --annotated-source ./esempio0 gmon.out >file.txt # works only with -g
 
+callgrind:
+	@echo "unoptimised code"
+	g++ -std=c++20 -g -O0 $(CPPFLAGS)  esempio.cpp -o esempio0 $(LDLIBS)
+	valgrind --tool=callgrind --demangle=yes --dump-line=yes --callgrind-out-file=callgrind_O0.out ./esempio0 -i dati_small
+	@echo "optimised code"
+	g++ -std=c++20 -g -O3 $(CPPFLAGS)  esempio.cpp -o esempio0 $(LDLIBS)
+	valgrind --tool=callgrind --demangle=yes --dump-line=yes --callgrind-out-file=callgrind_03.out ./esempio0 -i dati_small
+	@echo "\n run kcachegrind callgrind_O0 (unoptimised code)"
+	@echo " or  kcachegrind callgrind_O3 (optimized code)"
 massif:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -g provamassif.cpp -o  provamassif
 	valgrind --tool=massif --demangle=yes --log-file=provamassif.log --massif-out-file=massif.out\
         ./provamassif
 	ms_print massif.out > massif.txt
-
 coverage:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g -fprofile-arcs -ftest-coverage esempio.cpp -o esempio $(LDFLAGS) $(LDLIBS)
 	./esempio -i dati
