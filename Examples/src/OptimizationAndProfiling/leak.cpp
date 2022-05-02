@@ -49,7 +49,7 @@ createFibonacci(std::vector<int> &v, unsigned int n)
   // I use copy. Note the use of pointer arithmetics
   std::copy(f, f + n, v.begin());
   // Who is deleting f????
-  delete[] f;
+  //delete[] f;
 }
 
 int
