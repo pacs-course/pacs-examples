@@ -26,7 +26,7 @@ metadot(std::array<T1, N> const &a, std::array<T2, N> const &b) noexcept
   using result_type = std::common_type_t<T1, T2>;
   static_assert(std::is_arithmetic_v<result_type> ||
                     apsc::TypeTraits::is_complex_v<result_type>,
-                  "Metadot17:: The arrays must contain arithmetic values or "
+                  "Metadot:: The arrays must contain arithmetic values or "
                   "complex numbers\n");
   // casting 0 not really needed, but better be sure
   result_type result = static_cast<result_type>(0);
@@ -43,15 +43,14 @@ metadot(std::array<T1, N> const &a, std::array<T2, N> const &b) noexcept
     }
   return result;
 }
-/*
-    A version of * operator that uses metadot17
+
+//    A version of * operator that uses metadot
    template<std::size_t N,typename T1, typename T2>
   constexpr auto operator * (std::array<T1,N>const & a,std::array<T2,N> const &
   b) noexcept
   {
-    return metadot17(a,b);
+    return metadot(a,b);
   }
- */
 } // end namespace apsc::Operators
 
 //
