@@ -106,12 +106,12 @@ profile:
 #	g++ -std=c++11 -pg -O esempio.cpp chrono.cpp -o esempio0
 	echo " With no optimization"
 	g++ -std=c++20 $(CPPFLAGS) -g -pg  -O0 esempio.cpp  -o esempio0 $(LDLIBS)
-	./esempio0 -i dati
-	gprof --line  --demangle ./esempio0 gmon.out >Profiling_nopt.txt
+	./esempio0 -i dati_small
+	gprof  --demangle ./esempio0 gmon.out >Profiling_nopt.txt
 	echo " With optimization"
 	g++ -std=c++20 -g -pg -O2 $(CPPFLAGS)  esempio.cpp -o esempio0 $(LDLIBS)
-	./esempio0 -i dati
-	gprof --line --demangle ./esempio0 gmon.out >Profiling_opt.txt
+	./esempio0 -i dati_small
+	gprof  --demangle ./esempio0 gmon.out >Profiling_opt.txt
 #	gprof --line --demangle --annotated-source ./esempio0 gmon.out >file.txt # works only with -g
 
 callgrind:
@@ -131,7 +131,7 @@ massif:
 coverage:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g -fprofile-arcs -ftest-coverage esempio.cpp -o esempio $(LDFLAGS) $(LDLIBS)
 	./esempio -i dati
-	gcov  --demangled-names ./esempio > summary.txt
+	gcov -r -j --demangled-names ./esempio > summary.txt
 
 lcoverage:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -g -fprofile-arcs -ftest-coverage esempio.cpp -o esempio $(LDFLAGS) $(LDLIBS)

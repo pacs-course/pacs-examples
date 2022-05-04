@@ -21,8 +21,8 @@ public:
   explicit Vector(std::vector<double> const &v) : M_data{v} {};
   //! A vector may also be moved in a Vector
   explicit Vector(std::vector<double> &&v) : M_data{std::move(v)} {};
-  //! Construct a Vector of n zeroes
-  Vector(unsigned int n) : M_data(n, 0.){};
+  //! Construct a Vector of n elements initialised by value
+  Vector(unsigned int n, double value=0.0) : M_data(n, value){};
   //! Copy constructor
   Vector(Vector const &) = default;
   //! Move constructor
