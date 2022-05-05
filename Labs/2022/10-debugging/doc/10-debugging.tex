@@ -1,0 +1,79 @@
+\documentclass[10pt]{beamer}
+\usetheme{default}
+\setbeamercovered{invisible}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+    \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+
+\usepackage{listings}
+
+% User-defined colors.
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+% Settings for listing class.
+\lstset{
+  language=C++,                        % The default language
+  basicstyle=\small\ttfamily,          % The basic style
+  backgroundcolor=\color{White},       % Set listing background
+  keywordstyle=\color{DarkBlue}\bfseries, % Set keyword style
+  commentstyle=\color{DarkGreen}\itshape, % Set comment style
+  stringstyle=\color{DarkRed}, % Set string constant style
+  extendedchars=true % Allow extended characters
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  showstringspaces=false,
+  lineskip=0ex, %  frame=single
+}
+
+\begin{document}
+    \title{Debugging}
+    \author{Pasquale Claudio Africa}
+    \date{06/05/2022}
+
+\begin{frame}[plain, noframenumbering]
+    \maketitle
+\end{frame}
+
+\begin{frame}{Examples 1 - Debugging}
+This examples are inspired by \url{https://github.com/cme212/course}
+and show basic techniques for debugging as well as an introduction to \texttt{gdb}.
+
+See also \href{https://gjbex.github.io/DPD-online-book/}{Defensive Programming and Debugging}.
+\vfill
+Some useful readings about \textit{undefined behaviour} in \texttt{C++}:
+\begin{itemize}
+\item \url{https://mohitmv.github.io/blog/Cpp-Undefined-Behaviour-101/}
+\item \url{https://mohitmv.github.io/blog/Shocking-Undefined-Behaviour-In-Action/}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Exercise 2 - Debugging (advanced)}
+The program \texttt{integer-list} in the directory \texttt{02-bug} has:
+
+\begin{itemize}
+    \item a compile error;
+    \item a run-time error;
+    \item a memory leak;
+    \item a possible memory leak that is not captured by the \texttt{main}.
+\end{itemize}
+\vspace{0.5cm}
+Find all the issues and fix them. \\[3mm]
+
+Get help by using \texttt{gdb} and \texttt{valgrind}.\\[3mm]
+
+The directory \texttt{02-bug-solution} contains the fixed code,
+please don't look at it before trying to solve the exercise by yourself!
+\end{frame}
+
+\end{document}
