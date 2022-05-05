@@ -61,7 +61,7 @@ public:
   /*!
    * The constructor. It takes in input two arrays containing the size of the
    * block rows and columns. The block {i,j} will store a zero matrix with
-   * rowSizes[i] rows and colSizes[j] comlumns.
+   * rowSizes[i] rows and colSizes[j] columns.
    *
    * @param rowSizes The rows of each block row.
    * @param colSizes The columns of each block column.
@@ -200,7 +200,7 @@ public:
    *
    * Use only if you know what you are doing!.
    * @param rowSizes Array of row block size
-   * @param colSizesArray of col block size
+   * @param colSizes Array of col block size
    */
   void changeOffsets(std::array<Index, M> rowSizes,
                      std::array<Index, N> colSizes);
@@ -508,7 +508,7 @@ SparseBlockMatrix<T, M, N, storageOrder>::changeOffsets(
   std::tie(totalCols, totalRows) = internals::computeTotals(rowSizes, colSizes);
   theRowSizes = rowSizes;
   theColSizes = colSizes;
-  // Compute offfsets
+  // Compute offsets
   theRowOffset[0] = 0;
   for(Index i = 1; i < M; ++i)
     theRowOffset[i] = theRowOffset[i - 1] + rowSizes[i - 1];
