@@ -51,7 +51,9 @@ public:
 
   /// Destructor
   ~Student()
-  {}
+  {
+    // delete name_; ///< Missing!
+  }
 
   /// Return a copy of the student's ID number
   int
