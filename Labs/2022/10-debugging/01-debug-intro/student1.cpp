@@ -24,7 +24,7 @@ private:
 
 
 int
-main()
+main(int argc, char **argv)
 {
   // The instance of Student on the stack.
   Student pacs_student("Terry Gilliam", 123444);

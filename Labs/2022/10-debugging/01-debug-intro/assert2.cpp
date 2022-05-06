@@ -19,8 +19,10 @@ non_negative_add(const int &x, const int &y)
 }
 
 int
-main()
+main(int argc, char **argv)
 {
   std::cout << non_negative_add(2, 2) << std::endl;
   std::cout << non_negative_add(2, -5) << std::endl;
+
+  return 0;
 }

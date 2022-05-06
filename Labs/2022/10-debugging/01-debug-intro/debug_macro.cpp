@@ -3,7 +3,7 @@
 #include <iostream>
 
 int
-main()
+main(int argc, char **argv)
 {
   const int a = 5;
   const int b = 6;

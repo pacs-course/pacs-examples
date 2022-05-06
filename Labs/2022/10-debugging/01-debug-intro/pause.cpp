@@ -1,7 +1,7 @@
 #include <iostream>
 
 int
-main()
+main(int argc, char **argv)
 {
   std::cout << "Before pause." << std::endl;
 
@@ -15,4 +15,6 @@ main()
       std::cout << "iter: " << i << std::endl;
       std::cin.get();
     }
+
+  return 0;
 }

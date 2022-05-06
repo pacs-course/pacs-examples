@@ -77,7 +77,7 @@ private:
 
 
 int
-main()
+main(int argc, char **argv)
 {
   /// Create another student (who is an instance of the Student) on the
   /// heap. Pointer p_other_student points to the instance of the other

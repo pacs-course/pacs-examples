@@ -1,7 +1,7 @@
 #include <iostream>
 
 int
-main()
+main(int argc, char **argv)
 {
 // Compile with `-DMY_DEBUG` to enable printing debug output
 #ifdef MY_DEBUG

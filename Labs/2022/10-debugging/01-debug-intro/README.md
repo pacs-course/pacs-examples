@@ -400,6 +400,7 @@ Run till exit from #0  Student::~Student (this=0x7fff4625bd10,
 Let us quickly summarize execution commands:
 
 - `run` -- launches the code execution.
+- `break filename:NO` -- sets a breakpoint at line NO of `filename`.
 - `continue` -- continues code execution from the current position in the code.
 - `next` -- executes the current line of the code and moves to the next line.
 - `step` -- executes the current line of the code and steps into the function

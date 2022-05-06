@@ -9,7 +9,7 @@ add(int &a, int &b)
 }
 
 int
-main()
+main(int argc, char **argv)
 {
   // Another "const" missing here!
   int x = 2;

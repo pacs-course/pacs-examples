@@ -22,7 +22,7 @@ private:
 };
 
 int
-main()
+main(int argc, char **argv)
 {
   // We are binding a const reference to a temporary object.
   A a(2);
