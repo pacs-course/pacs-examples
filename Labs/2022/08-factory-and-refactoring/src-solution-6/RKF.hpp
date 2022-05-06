@@ -384,7 +384,7 @@ operator<<(std::ostream &out, const RKFResult<ProblemType> &res)
             out << yy[k] << "\t";
         }
 
-      out << "\n";
+      out << std::endl;
       ++i;
     }
   return out;

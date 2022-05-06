@@ -18,7 +18,7 @@ public:
     // std::cout << "Invoking Name constructor in file "
     //           << __FILE__
     //           << " on line "
-    //           << __LINE__ << "\n";
+    //           << __LINE__ << std::endl;
   }
 
   ~Name()
@@ -87,7 +87,7 @@ main(int argc, char **argv)
   Student *p_other_student = new Student("Terry", "Jones", 111234);
 
   std::cout << "Student name: " << p_other_student->getName() << ", "
-            << "ID#: " << p_other_student->getStudentID() << "\n";
+            << "ID#: " << p_other_student->getStudentID() << std::endl;
 
   /// Delete the other student
   delete p_other_student;
