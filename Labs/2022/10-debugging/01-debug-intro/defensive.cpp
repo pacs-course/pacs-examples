@@ -1,7 +1,7 @@
 #include <iostream>
 
 // This function should assign (a + b) to b.
-// a should be "const"!
+// a should be marked as "const"!
 void
 add(int &a, int &b)
 {

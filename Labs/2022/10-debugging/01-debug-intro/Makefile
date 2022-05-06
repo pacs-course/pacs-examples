@@ -3,7 +3,8 @@ CXXFLAGS ?= -std=c++17
 CPPFLAGS ?= -O3 -Wall
 
 EXEC     = assert1 assert2 debug_macro defensive \
-	   pause print student1 student2 undefined_behaviour
+	   pause print student1 student2 \
+           undefined_behaviour undefined_behaviour2
 
 LDFLAGS ?=
 LIBS    ?=

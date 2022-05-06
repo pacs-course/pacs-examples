@@ -35,7 +35,8 @@ $ ./defensive
 By stating our design intention explicitly, using constant data
 types, we can have compiler catch our mistake.
 ```c++
-// b <- b + a
+// This function should assign (a + b) to b.
+// a should be marked as "const"!
 void
 add(const int& a, int& b)
 {
