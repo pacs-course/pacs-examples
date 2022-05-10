@@ -16,17 +16,6 @@ class ShapeVisitor; // FORWARD DECLARATION
 class Shape
 {
 public:
-  /*! Accepting a visitor.
-   *
-   * This version accepts also visitors that change that state of the object.
-   * That's why the method is not const!
-   *
-   * @param visitor The visiting object
-   */
-  virtual void   accept(ShapeVisitor &visitor) = 0;
-  /*!
-   * A dirty
-   */
   virtual double measure() const = 0;
   virtual ~Shape() = default;
 };
@@ -41,11 +30,10 @@ public:
     : M_coor{x, y} {}; // builds a Point
   Point() = default;
 
-  void setCoordinates(double x, double y);         // Sets point coordinates
-  void getCoordinates(double &x, double &y) const; // Get points coordinates
+  void setCoordinates(double x, double y); // Sets point coordinates
 
-  // We can get the coordinates also by operator []
-  double const
+  // We can get the coordinates with  operator []
+  double
   operator[](int i) const
   {
     return M_coor[i];
@@ -61,7 +49,6 @@ public:
   Point        operator*(const double &) const;
   friend Point operator*(const double &, const Point &);
 
-  void accept(ShapeVisitor &v) override;
   double
   measure() const override
   {
@@ -84,7 +71,6 @@ public:
   static const int numVertices = 3;
   static const int numSides = 3;
 
-  Triangle() = default; // Constructs an empty triangle
   Triangle(Point const &a, Point const &b, Point const &c) : M_points{a, b, c}
   {} //!< Points are given
 
@@ -118,8 +104,6 @@ public:
   Point const &edgePoint(int edgenum, int endnum) const; //!< The const version
 
   static int edge(int edgenum, int endnum); //!< The edge numbering
-  //! accepting visitors
-  void accept(ShapeVisitor &) override;
 
 private:
   std::array<Point, numVertices> M_points;
@@ -132,7 +116,7 @@ public:
   static int const myDim = 2;
   static const int numVertices = 4;
   static const int numSides = 4;
-  Quadrilateral() = default;
+
   Quadrilateral(Point const &a, Point const &b, Point const &c, Point const &d)
     : M_points{a, b, c, d} {};
   //! Change a point
@@ -167,8 +151,6 @@ public:
   static int edge(int edgenum, int endnum); // The edge numbering
 
   double measure() const override; // area
-  //! Accepting visitors
-  void accept(ShapeVisitor &) override;
 
 private:
   std::array<Point, numVertices> M_points;
