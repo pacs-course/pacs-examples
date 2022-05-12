@@ -73,13 +73,11 @@ interp1D(RAIterator const &  begin,
 {
   // I avoid users using wrong iterators
   // I nice use of iterator_traits and iterator_tags
-  using category =
-    typename std::iterator_traits<RAIterator>::iterator_category;
+  using category = typename std::iterator_traits<RAIterator>::iterator_category;
 
-  static_assert(
-    std::is_same_v<category, std::bidirectional_iterator_tag> ||
-      std::is_same_v<category, std::random_access_iterator_tag>,
-    "Iterators must be (at least) bidirectional");
+  static_assert(std::is_same_v<category, std::bidirectional_iterator_tag> ||
+                  std::is_same_v<category, std::random_access_iterator_tag>,
+                "Iterators must be (at least) bidirectional");
 
   // I need at least two point for interpolating anything. This
   // checks also that end is after begin!
@@ -87,45 +85,7 @@ interp1D(RAIterator const &  begin,
     throw std::runtime_error(
       "Interp1D: I need at least 2 points to interpolate!");
 
-  RAIterator a{begin};
-  RAIterator b{end};
-
-  // bisection
-  for (auto dis = std::distance(a, b); dis > 1;)
-    {
-      RAIterator c = std::next(a, dis / 2); // midpoint
-
-      if (comp(keyVal, extractKey(*c))) // keyVal on the left of c
-        b = c;
-      else // keyVal on the right of c or on c
-        a = c;
-
-      dis = std::distance(a, b); // recompute distance
-    }
-
-  // interval found
-  b = std::next(a, 1); // get other end of interval
-
-  // complex situation I need to go back of 1 to extrapolate last two
-  // elements
-  if (b == end)
-    {
-      b = a;
-      std::advance(a, -1); // here I need bi-directionality!
-    }
-
-  auto valueLeft = extractValue(*a);
-  Key  keyLeft   = extractKey(*a);
-
-  auto valueRight = extractValue(*b);
-  Key  keyRight   = extractKey(*b);
-
-  auto len = keyRight - keyLeft;
-
-  // I assume no nodes are repeated
-  auto coeffRight = (keyVal - keyLeft) / len;
-  auto coeffLeft  = 1.0 - coeffRight;
-  return valueLeft * coeffLeft + valueRight * coeffRight;
+  return extractValue(*begin);
 }
 
 #endif /* EXAMPLES_SRC_INTERP1D_INTERP1D_HPP_ */

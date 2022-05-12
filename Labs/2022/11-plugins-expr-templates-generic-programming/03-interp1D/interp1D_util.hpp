@@ -8,10 +8,10 @@
 
 //
 /*! Implementation for vector<T> where T behaves like an array with
- * 2 components (key, value).
+ * 2 components (key value).
  *
  * @tparam CompOper Comparison operator
- * @tparam T the type stores in the array. it should behave as an array of 2
+ * @tparam T the type stored in the array. it should behave as an array of 2
  * components. The first is the key, the second is the value
  * @param v a vector
  * @param keyVal the point to be interpolated

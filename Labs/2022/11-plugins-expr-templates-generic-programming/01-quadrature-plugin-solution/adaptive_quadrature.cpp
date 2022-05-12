@@ -1,8 +1,6 @@
 #include "adaptive_quadrature.hpp"
 
 #include <cmath>
-#include <iomanip>
-#include <iostream>
 
 #define tol 1e-12
 #define maxdepth 40
@@ -20,10 +18,7 @@ trapz(std::function<double(double)> f, double a, double b)
 }
 
 double
-refine(std::function<double(double)> f,
-       double                        a,
-       double                        b,
-       double                        oldval)
+refine(std::function<double(double)> f, double a, double b, double oldval)
 {
   ++depth;
   if (depth > depth_reached)

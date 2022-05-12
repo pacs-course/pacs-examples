@@ -24,12 +24,13 @@ interp1D(std::vector<T> const &v,
          double const &        keyVal,
          CompOper const &      comp = std::less<double>{})
 {
-  return interp1D(v.cbegin(),
-                  v.cend(),
-                  keyVal,
-                  [](T const &x) { return x[0]; },
-                  [](T const &x) { return x[1]; },
-                  comp);
+  return interp1D(
+    v.cbegin(),
+    v.cend(),
+    keyVal,
+    [](T const &x) { return x[0]; },
+    [](T const &x) { return x[1]; },
+    comp);
 }
 
 namespace internals
