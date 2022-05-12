@@ -23,7 +23,9 @@ double
 interp1D(std::vector<T> const &v,
          double const &        keyVal,
          CompOper const &      comp = std::less<double>{})
-{}
+{
+  return 0.0;
+}
 
 
 /*!
@@ -44,6 +46,8 @@ interp1D(std::vector<double> const &keys,
          std::vector<T> const &     values,
          double const &             keyVal,
          CompOper const &           comp = std::less<double>{})
-{}
+{
+  return T{};
+}
 
 #endif /* EXAMPLES_SRC_INTERP1D_INTERP1D_UTIL_HPP_ */

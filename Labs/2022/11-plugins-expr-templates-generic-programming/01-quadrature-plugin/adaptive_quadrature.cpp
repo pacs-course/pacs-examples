@@ -15,7 +15,7 @@ trapz(std::function<double(double)> f, double a, double b)
 {
   double retval = 0.0;
   double h      = b - a;
-  retval        = .5 * h * (f(a) + f(b));
+  retval        = 0.5 * h * (f(a) + f(b));
   return retval;
 }
 
@@ -26,7 +26,7 @@ refine(std::function<double(double)> f, double a, double b, double oldval)
   if (depth > depth_reached)
     depth_reached = depth;
 
-  double c = .5 * a + .5 * b;
+  double c = 0.5 * a + 0.5 * b;
 
   double oldval_l = trapz(f, a, c);
   double oldval_r = trapz(f, c, b);

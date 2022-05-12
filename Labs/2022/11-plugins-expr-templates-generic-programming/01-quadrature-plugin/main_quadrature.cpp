@@ -14,7 +14,7 @@ integrand(double x)
 int
 main(int argc, char **argv)
 {
-  double res = integrate(integrand, 0, M_PI);
+  const double res = integrate(integrand, 0, M_PI);
 
   std::cout << "res = " << res << std::endl;
 

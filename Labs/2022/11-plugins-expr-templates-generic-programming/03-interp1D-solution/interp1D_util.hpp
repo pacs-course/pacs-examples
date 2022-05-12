@@ -58,6 +58,7 @@ namespace internals
     {
       return indexes.cbegin();
     }
+
     const_iterator
     cend() const noexcept
     {
@@ -79,6 +80,7 @@ namespace internals
     extractKey_map2Vectors(map2Vectors<T> const &map)
       : map2v{map}
     {}
+
     double
     operator()(size_t const &i) const
     {
@@ -127,13 +129,12 @@ interp1D(std::vector<double> const &keys,
          double const &             keyVal,
          CompOper const &           comp = std::less<double>{})
 {
-  using namespace internals;
-  map2Vectors<T> map(keys, values);
+  const internals::map2Vectors<T> map(keys, values);
   return interp1D(map.cbegin(),
                   map.cend(),
                   keyVal,
-                  extractKey_map2Vectors<T>{map},
-                  extractValue_map2Vectors<T>{map},
+                  internals::extractKey_map2Vectors<T>{map},
+                  internals::extractValue_map2Vectors<T>{map},
                   comp);
 }
 

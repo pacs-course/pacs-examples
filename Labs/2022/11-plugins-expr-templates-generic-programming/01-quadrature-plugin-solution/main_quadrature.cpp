@@ -34,7 +34,7 @@ main(int argc, char **argv)
   double (*integrate)(std::function<double(double)>, double, double);
   integrate = reinterpret_cast<decltype(integrate)>(sym);
 
-  double res = integrate(integrand, 0, M_PI);
+  const double res = integrate(integrand, 0, M_PI);
 
   std::cout << "res = " << res << std::endl;
 

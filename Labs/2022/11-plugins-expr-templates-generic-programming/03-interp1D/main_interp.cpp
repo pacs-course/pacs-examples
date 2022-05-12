@@ -7,21 +7,23 @@
 int
 main()
 {
-  std::vector<std::array<double, 2>> v    = {{0.1, 2.0},
-                                          {0.3, 3.0},
-                                          {0.5, 5.0},
-                                          {0.55, 5.5},
-                                          {0.65, -10.0},
-                                          {0.7, -8.0},
-                                          {0.8, 4.0}};
-  std::vector<double>                keys = {0, 0.1, 0.35, 0.7, 0.75, 0.8, 0.9};
+  const std::vector<std::array<double, 2>> v = {{0.1, 2.0},
+                                                {0.3, 3.0},
+                                                {0.5, 5.0},
+                                                {0.55, 5.5},
+                                                {0.65, -10.0},
+                                                {0.7, -8.0},
+                                                {0.8, 4.0}};
+
+  const std::vector<double> keys = {0, 0.1, 0.35, 0.7, 0.75, 0.8, 0.9};
+
   // print it out:
   for (auto i : v)
     std::cout << i[0] << " " << i[1] << std::endl;
   // interpolate
   for (auto key : keys)
     {
-      double xin = interp1D(v, key);
+      const double xin = interp1D(v, key);
       std::cout << "Value at " << key << " equal to " << xin << std::endl;
     }
 
@@ -35,7 +37,7 @@ main()
   // to use std::greater
   for (auto key : keys)
     {
-      double xin = interp1D(vr, key, std::greater<double>());
+      const double xin = interp1D(vr, key, std::greater<double>());
       std::cout << "Value at " << key << " equal to " << xin << std::endl;
     }
 
@@ -55,7 +57,7 @@ main()
   std::cout << "\nNow the version taking two vectors\n";
   for (auto key : keys)
     {
-      double xin = interp1D(nodes, values, key);
+      const double xin = interp1D(nodes, values, key);
       std::cout << "Value at " << key << " equal to " << xin << std::endl;
     }
 }

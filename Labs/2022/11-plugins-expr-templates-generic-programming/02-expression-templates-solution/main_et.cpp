@@ -8,12 +8,12 @@ class MyVector
 {
 public:
   // MyVector with initial size.
-  MyVector(const std::size_t &n)
+  MyVector(const size_t &n)
     : cont(n)
   {}
 
   // MyVector with initial size and value.
-  MyVector(const std::size_t &n, const double &initial_value)
+  MyVector(const size_t &n, const double &initial_value)
     : cont(n, initial_value)
   {}
 
@@ -29,26 +29,26 @@ public:
   {
     assert(size() == other.size());
 
-    for (std::size_t i = 0; i < cont.size(); ++i)
+    for (size_t i = 0; i < cont.size(); ++i)
       cont[i] = other[i];
 
     return (*this);
   }
 
-  std::size_t
+  size_t
   size() const
   {
     return cont.size();
   }
 
   T
-  operator[](const std::size_t &i) const
+  operator[](const size_t &i) const
   {
     return cont[i];
   }
 
   T &
-  operator[](const std::size_t &i)
+  operator[](const size_t &i)
   {
     return cont[i];
   }
@@ -77,15 +77,17 @@ public:
   MyVectorAdd(const Op1 &a, const Op2 &b)
     : op1(a)
     , op2(b)
-  {}
+  {
+    assert(a.size() == b.size());
+  }
 
   T
-  operator[](const std::size_t i) const
+  operator[](const size_t &i) const
   {
     return op1[i] + op2[i];
   }
 
-  std::size_t
+  size_t
   size() const
   {
     return op1.size();
@@ -104,15 +106,17 @@ public:
   MyVectorMul(const Op1 &a, const Op2 &b)
     : op1(a)
     , op2(b)
-  {}
+  {
+    assert(a.size() == b.size());
+  }
 
   T
-  operator[](const std::size_t i) const
+  operator[](const size_t &i) const
   {
     return op1[i] * op2[i];
   }
 
-  std::size_t
+  size_t
   size() const
   {
     return op1.size();
