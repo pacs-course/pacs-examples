@@ -138,4 +138,24 @@ interp1D(std::vector<double> const &keys,
                   comp);
 }
 
+// Or, even simpler:
+// template <class T, class CompOper = std::less<double>>
+// T
+// interp1D(std::vector<double> const &keys,
+//          std::vector<T> const &     values,
+//          double const &             keyVal,
+//          CompOper const &           comp = std::less<double>{})
+// {
+//   std::vector<size_t> indices(keys.size());
+//   std::iota(indices.begin(), indices.end(), 0.0);
+
+//   return interp1D(
+//     indices.cbegin(),
+//     indices.cend(),
+//     keyVal,
+//     [&keys](auto i) { return keys[i]; },
+//     [&values](auto i) { return values[i]; },
+//     comp);
+// }
+
 #endif /* EXAMPLES_SRC_INTERP1D_INTERP1D_UTIL_HPP_ */
