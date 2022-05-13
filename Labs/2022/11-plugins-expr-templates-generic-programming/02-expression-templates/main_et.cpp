@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 
-template <typename T, typename Container = std::vector<T>>
+template <class T, class Container = std::vector<T>>
 class MyVector
 {
 public:
@@ -22,7 +22,7 @@ public:
   {}
 
   // Assignment operator for MyVector of different type.
-  template <typename T2, typename R2>
+  template <class T2, class R2>
   MyVector &
   operator=(const MyVector<T2, R2> &other)
   {

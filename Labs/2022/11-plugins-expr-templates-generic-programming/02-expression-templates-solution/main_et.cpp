@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-template <typename T, typename Container = std::vector<T>>
+template <class T, class Container = std::vector<T>>
 class MyVector
 {
 public:
@@ -23,9 +23,9 @@ public:
   {}
 
   // Assignment operator for MyVector of different type.
-  template <typename T2, typename R2>
+  template <class T2, class V2>
   MyVector &
-  operator=(const MyVector<T2, R2> &other)
+  operator=(const MyVector<T2, V2> &other)
   {
     assert(size() == other.size());
 
@@ -70,7 +70,7 @@ private:
 };
 
 // Element-wise sum.
-template <typename T, typename Op1, typename Op2>
+template <class T, class Op1, class Op2>
 class MyVectorAdd
 {
 public:
@@ -99,7 +99,7 @@ private:
 };
 
 // Element-wise product.
-template <typename T, typename Op1, typename Op2>
+template <class T, class Op1, class Op2>
 class MyVectorMul
 {
 public:
@@ -128,21 +128,21 @@ private:
 };
 
 // Function template for the sum operator.
-template <typename T, typename R1, typename R2>
-MyVector<T, MyVectorAdd<T, R1, R2>>
-operator+(const MyVector<T, R1> &a, const MyVector<T, R2> &b)
+template <class T, class V1, class V2>
+MyVector<T, MyVectorAdd<T, V1, V2>>
+operator+(const MyVector<T, V1> &a, const MyVector<T, V2> &b)
 {
-  return MyVector<T, MyVectorAdd<T, R1, R2>>(
-    MyVectorAdd<T, R1, R2>(a.data(), b.data()));
+  return MyVector<T, MyVectorAdd<T, V1, V2>>(
+    MyVectorAdd<T, V1, V2>(a.data(), b.data()));
 }
 
 // Function template for the multiplication operator.
-template <typename T, typename R1, typename R2>
-MyVector<T, MyVectorMul<T, R1, R2>>
-operator*(const MyVector<T, R1> &a, const MyVector<T, R2> &b)
+template <class T, class V1, class V2>
+MyVector<T, MyVectorMul<T, V1, V2>>
+operator*(const MyVector<T, V1> &a, const MyVector<T, V2> &b)
 {
-  return MyVector<T, MyVectorMul<T, R1, R2>>(
-    MyVectorMul<T, R1, R2>(a.data(), b.data()));
+  return MyVector<T, MyVectorMul<T, V1, V2>>(
+    MyVectorMul<T, V1, V2>(a.data(), b.data()));
 }
 
 // A program that evaluates (x + x + y * y).
