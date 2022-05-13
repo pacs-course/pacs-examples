@@ -1,8 +1,6 @@
 #include "adaptive_quadrature.hpp"
 
 #include <cmath>
-#include <iomanip>
-#include <iostream>
 
 #define tol 1e-12
 #define maxdepth 40

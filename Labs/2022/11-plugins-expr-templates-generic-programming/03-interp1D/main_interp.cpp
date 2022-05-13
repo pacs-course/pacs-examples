@@ -29,7 +29,8 @@ main()
 
   // To check if it works also with other comparison opts
   std::cout << "\nReverse ordering\n";
-  std::vector<std::array<double, 2>> vr{v.rbegin(), v.rend()}; // reverse vector
+  const std::vector<std::array<double, 2>> vr{v.rbegin(),
+                                              v.rend()}; // reverse vector
   // print it out:
   for (auto i : vr)
     std::cout << i[0] << " " << i[1] << std::endl;

@@ -4,9 +4,9 @@ CPPFLAGS ?= -O3 -Wall -pedantic -I. -fPIC
 LDFLAGS  ?= -L. -Wl,-rpath=$(PWD)
 LINK.o := $(LINK.cc) # Use C++ linker.
 
-EXEC=main_quadrature
+EXEC = main_quadrature
 SRCS = $(wildcard *.cpp)
-LIBS=adaptive_quadrature.so midpoint.so trapezoidal.so
+LIBS = adaptive_quadrature.so midpoint.so trapezoidal.so
 
 DEPEND = make.dep
 

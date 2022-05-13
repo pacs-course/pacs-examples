@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <functional>
-#include <iomanip>
 #include <iostream>
 
 double

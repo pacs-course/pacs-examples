@@ -13,7 +13,7 @@ integrand(double x)
 int
 main(int argc, char **argv)
 {
-  void *handle = dlopen("adaptive_quadrature.so", RTLD_LAZY);
+  void *handle = dlopen(argv[1], RTLD_LAZY);
   if (!handle)
     {
       std::cerr << "Cannot load object!" << std::endl;
