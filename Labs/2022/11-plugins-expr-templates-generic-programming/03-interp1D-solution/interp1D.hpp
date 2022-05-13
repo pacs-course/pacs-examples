@@ -72,7 +72,7 @@ interp1D(RAIterator const &  begin,
          CompareKey const &  comp = std::less<Key>())
 {
   // I avoid users using wrong iterators
-  // I nice use of iterator_traits and iterator_tags
+  // A nice use of iterator_traits and iterator_tags
   using category = typename std::iterator_traits<RAIterator>::iterator_category;
 
   static_assert(std::is_same_v<category, std::bidirectional_iterator_tag> ||
@@ -112,17 +112,18 @@ interp1D(RAIterator const &  begin,
       std::advance(a, -1); // here I need bi-directionality!
     }
 
-  auto valueLeft = extractValue(*a);
-  Key  keyLeft   = extractKey(*a);
+  const auto valueLeft = extractValue(*a);
+  const Key  keyLeft   = extractKey(*a);
 
-  auto valueRight = extractValue(*b);
-  Key  keyRight   = extractKey(*b);
+  const auto valueRight = extractValue(*b);
+  const Key  keyRight   = extractKey(*b);
 
-  auto len = keyRight - keyLeft;
+  const auto len = keyRight - keyLeft;
 
   // I assume no nodes are repeated
-  auto coeffRight = (keyVal - keyLeft) / len;
-  auto coeffLeft  = 1.0 - coeffRight;
+  const auto coeffRight = (keyVal - keyLeft) / len;
+  const auto coeffLeft  = 1.0 - coeffRight;
+
   return valueLeft * coeffLeft + valueRight * coeffRight;
 }
 
