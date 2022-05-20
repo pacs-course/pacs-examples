@@ -5,7 +5,7 @@
 #include <iostream>
 
 /**
- * Same as 04-pi.cpp, but using parallel reduction.
+ * Same as 03-pi.cpp, but using parallel reduction.
  */
 int
 main(int argc, char **argv)
@@ -21,7 +21,7 @@ main(int argc, char **argv)
    * over the different threads, i.e. the value computed by each
    * thread is summed by the end of the parallel block.
    */
-#pragma omp parallel for schedule(static), private(x), reduction(+ : sum)
+#pragma omp parallel for default(none) schedule(static), private(x), reduction(+ : sum)
   for (unsigned int i = 0; i < n; ++i)
     {
       x = h * (i + 0.5);

@@ -3,13 +3,18 @@
 #include <iostream>
 #include <vector>
 
+/**
+ * This exercise presents a simple algorithm that cannot be parallelized.
+ * Any attempt to parallelize it would result in a data race (or race
+ * condition).
+ */
 int
 main(int argc, char **argv)
 {
   const size_t n = 10;
 
-  std::vector<int> a(n);
-  std::vector<int> b(n);
+  std::vector<unsigned int> a(n);
+  std::vector<unsigned int> b(n);
 
   // Serial version.
   for (size_t i = 0; i < n; ++i)
@@ -53,7 +58,7 @@ main(int argc, char **argv)
     }
 #pragma omp barrier
 
-#pragma omp for // schedule(dynamic, 6)
+#pragma omp for
     for (size_t i = 0; i < n - 1; ++i)
       {
         /**
@@ -80,6 +85,6 @@ main(int argc, char **argv)
     }
 
   std::cout << std::endl
-            << "Serial   result: " << serial_checksum << std::endl
-            << "Parallel result: " << parallel_checksum << std::endl;
+            << "Serial   checksum: " << serial_checksum << std::endl
+            << "Parallel checksum: " << parallel_checksum << std::endl;
 }

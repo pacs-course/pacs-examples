@@ -10,7 +10,7 @@
  *
  * As a possible solution, the two calls to MPI_Recv and to MPI_Send may be
  * swapped (at least on one rank), or non-blocking communications may be used
- * (see exercise 05).
+ * (see exercise 04-non_blocking.cpp).
  */
 int
 main(int argc, char **argv)

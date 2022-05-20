@@ -23,23 +23,23 @@ main(int argc, char **argv)
 
 /**
  * We declare x as private, i.e. each thread keeps its own copy.
- * Private variables are NOT initialized, we can declare them
+ * Private variables are NOT initialized: we can declare them
  * outside the parallel block's scope, but they must be initialized
  * in each thread.
  *
  * We declare sum as firstprivate, i.e. it's private but initialized
- * with the value defined in the master thread; 0.0 in this case.
+ * with the value defined in the master thread (0.0 in this case).
  *
  * We declare pi as shared, any thread can access it. Shared is the
  * default, however being explicit is not a bad thing. You should be
  * careful that multiple threads are not writing to shared variables
- * at the same time (race conditions, as in exercise 03).
+ * at the same time (race conditions, as in exercise 02).
  *
  * Specifying default(none) is also a good practice, so the compiler
  * forces us to specify whether each of the variables used herein
  * are private or shared.
  */
-#pragma omp parallel private(x), firstprivate(sum), shared(pi)
+#pragma omp parallel default(none) private(x), firstprivate(sum), shared(pi)
   {
 /**
  * See http://jakascorner.com/blog/2016/06/omp-for-scheduling.html

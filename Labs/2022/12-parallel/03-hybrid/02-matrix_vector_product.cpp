@@ -18,7 +18,7 @@ static double c_start, c_diff;
 /**
  * Parallel matrix-vector product.
  *
- * Data are generated randomly by rank 0 and then broadcasted. Each rank is
+ * Data are generated randomly by rank 0 and then broadcast. Each rank is
  * assigned a sub-block of the input matrix (split by rows, without overlap) and
  * computes the local matrix-vector product. Finally, the results are collected
  * back by rank 0, which prints them to output.
@@ -111,8 +111,16 @@ main(int argc, char **argv)
   const unsigned int n_rows_local =
     (mpi_rank < remainder) ? (count + 1) : count;
 
-  std::cout << "Number of rows on rank " << mpi_rank << ": " << n_rows_local
-            << std::endl;
+  for (int rank = 0; rank < mpi_size; ++rank)
+    {
+      if (rank == mpi_rank)
+        {
+          std::cout << "Number of rows on rank " << mpi_rank << ": "
+                    << n_rows_local << std::endl;
+        }
+
+      MPI_Barrier(mpi_comm);
+    }
 
   std::vector<double> matrix_local(n_rows_local * n_cols);
 
@@ -180,6 +188,7 @@ main(int argc, char **argv)
       toc("Assemble matrix: time elapsed on rank " + std::to_string(mpi_rank) +
           ": ");
     }
+  MPI_Barrier(mpi_comm);
 
   tic();
   MPI_Bcast(rhs.data(), rhs.size(), MPI_DOUBLE, 0, mpi_comm);
@@ -197,7 +206,7 @@ main(int argc, char **argv)
   MPI_Barrier(mpi_comm);
   for (int rank = 0; rank < mpi_size; ++rank)
     {
-      if (rank == mpi_rank && mpi_rank == 0)
+      if (rank == 0 && rank == mpi_rank)
         std::cout << std::endl;
       MPI_Barrier(mpi_comm);
 
@@ -223,7 +232,7 @@ main(int argc, char **argv)
   MPI_Barrier(mpi_comm);
   for (int rank = 0; rank < mpi_size; ++rank)
     {
-      if (rank == mpi_rank && mpi_rank == 0)
+      if (rank == 0 && rank == mpi_rank)
         std::cout << std::endl;
       MPI_Barrier(mpi_comm);
 
@@ -261,7 +270,7 @@ main(int argc, char **argv)
   MPI_Barrier(mpi_comm);
   for (int rank = 0; rank < mpi_size; ++rank)
     {
-      if (rank == mpi_rank && mpi_rank == 0)
+      if (rank == 0 && rank == mpi_rank)
         std::cout << std::endl;
       MPI_Barrier(mpi_comm);
 
