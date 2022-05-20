@@ -159,7 +159,7 @@ main(int argc, char **argv)
 
       if (print)
         {
-          std::cout << "RHS:" << std::endl;
+          std::cout << "Right-hand side:" << std::endl;
           for (const auto &v : rhs)
             {
               std::cout << std::setw(12) << v;
@@ -185,7 +185,7 @@ main(int argc, char **argv)
         }
 
       std::cout << std::endl;
-      toc("Assemble matrix: time elapsed on rank " + std::to_string(mpi_rank) +
+      toc("Assemble matrix - Time elapsed on rank " + std::to_string(mpi_rank) +
           ": ");
     }
   MPI_Barrier(mpi_comm);
@@ -212,7 +212,7 @@ main(int argc, char **argv)
 
       if (rank == mpi_rank)
         {
-          toc("Scatter: time elapsed on rank " + std::to_string(mpi_rank) +
+          toc("Scatter - Time elapsed on rank " + std::to_string(mpi_rank) +
               ": ");
         }
 
@@ -220,12 +220,16 @@ main(int argc, char **argv)
     }
 
   tic();
-#pragma omp parallel for shared(result_local)
-  for (unsigned int i = 0; i < n_rows_local; ++i)
+  for (unsigned int k = 0; k < 500; ++k)
     {
-      for (unsigned int j = 0; j < n_cols; ++j)
+      std::fill(result_local.begin(), result_local.end(), 0.0);
+#pragma omp parallel for shared(result_local)
+      for (unsigned int i = 0; i < n_rows_local; ++i)
         {
-          result_local[i] += matrix_local[i * n_cols + j] * rhs[j];
+          for (unsigned int j = 0; j < n_cols; ++j)
+            {
+              result_local[i] += matrix_local[i * n_cols + j] * rhs[j];
+            }
         }
     }
 
@@ -238,7 +242,7 @@ main(int argc, char **argv)
 
       if (rank == mpi_rank)
         {
-          toc("Matrix-vector product: time elapsed on rank " +
+          toc("500 matrix-vector products - Time elapsed on rank " +
               std::to_string(mpi_rank) + ": ");
         }
 
@@ -276,7 +280,7 @@ main(int argc, char **argv)
 
       if (rank == mpi_rank)
         {
-          toc("Gather: time elapsed on rank " + std::to_string(mpi_rank) +
+          toc("Gather - Time elapsed on rank " + std::to_string(mpi_rank) +
               ": ");
         }
 
