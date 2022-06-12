@@ -106,7 +106,7 @@ main(int argc, char **argv)
     result.resize(n_rows);
 
   const unsigned int count     = n_rows / mpi_size;
-  const int          remainder = n_rows - count * mpi_size;
+  const int          remainder = n_rows % mpi_size;
 
   const unsigned int n_rows_local =
     (mpi_rank < remainder) ? (count + 1) : count;
