@@ -19,6 +19,7 @@ struct LineSearch_traits
   using Matrix = Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>;
   using CostFunction = std::function<Scalar(Vector const &)>;
   using Gradient = std::function<Vector(Vector const &)>;
+  using Hessian  = std::function<Matrix(Vector const &)>;
 };
 
 } // namespace apsc

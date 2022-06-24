@@ -8,7 +8,10 @@
 #ifndef EXAMPLES_SRC_LINESEARCH_DESCENTDIRECTIONS_HPP_
 #define EXAMPLES_SRC_LINESEARCH_DESCENTDIRECTIONS_HPP_
 #include "DescentDirectionBase.hpp"
+#include "Eigen/Dense"
 #include <limits>
+#include <numeric>
+#include <functional>
 namespace apsc
 {
 /*!
@@ -36,6 +39,58 @@ public:
   std::unique_ptr<DescentDirectionBase>
   clone() const override
   {return std::make_unique<GradientDirection>(*this);}
+
+};
+/*!
+ * Implements the gradient search
+ */
+class NewtonDirection : public DescentDirectionBase
+{
+public:
+  /*!
+   *  Returns - gradient as descent direction
+   * @param values The current values.
+   * @return The descent direction.
+   */
+  apsc::LineSearch_traits::Vector
+  operator()(apsc::OptimizationCurrentValues const &values) override
+  {
+    if(!values.bounded)
+      return values.currentHessian.llt().solve(-values.currentGradient);
+    else
+      {
+        std::vector<bool> constrained(values.currentPoint.size(),false);
+        for (std::size_t i=0; i<constrained.size();++i)
+          {
+            constrained[i]=
+                (values.currentPoint[i]==values.lowerBounds[i]
+                and values.currentGradient[i]>0 )
+                or
+                (values.currentPoint[i]==values.upperBounds[i]
+                and values.currentGradient[i]<0);
+          }
+        //if(std::reduce(constrained.begin(),constrained.end(),false,std::logical_and<bool>{}))
+        apsc::LineSearch_traits::Matrix Hi=values.currentHessian.inverse();
+        for (std::size_t i=0; i<constrained.size();++i)
+          {
+            if(constrained[i])
+              {
+                Hi.row(i).fill(0.);//=0.*Hi.row(i);
+                Hi.col(i).fill(0.);//=0.*Hi.col(i);
+              }
+          }
+        return -Hi*values.currentGradient;
+      }
+  }
+  /*!
+   * @brief The class is clonable
+   *
+   * @return A clone of myself wrapped into a unique pointer
+   */
+  virtual
+  std::unique_ptr<DescentDirectionBase>
+  clone() const override
+  {return std::make_unique<NewtonDirection>(*this);}
 
 };
 /*!
