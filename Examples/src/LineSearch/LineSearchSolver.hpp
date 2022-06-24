@@ -26,7 +26,7 @@ public:
    *
    * @param data The structure containing the cost function and the gradient
    * function
-   * @param ddptr a unique pointer to the concrete callable object that computed
+   * @param ddptr a unique pointer to the concrete callable object that computes
    * the search direction
    * @param opt The options for the line search iterations.
    * @param lsOpt The options for the backtracking function.
@@ -82,9 +82,12 @@ private:
    */
   std::tuple<apsc::LineSearch_traits::Vector, apsc::LineSearch_traits::Scalar,
              int>
-                                              backtrack(apsc::LineSearch_traits::Vector const &searchDirection) const;
+  backtrack(apsc::LineSearch_traits::Vector  &searchDirection) const;
   apsc::OptimizationCurrentValues             currentValues;
   std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFinderPtr;
+  std::tuple<apsc::LineSearch_traits::Vector, bool>
+  project(apsc::LineSearch_traits::Vector const &newPoint) const;
+  void projectDirection(apsc::LineSearch_traits::Vector & searchDirection) const;
 };
 
 } // namespace apsc

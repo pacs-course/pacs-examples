@@ -52,6 +52,7 @@
 \date{February 2022}
 \begin{document}
 \maketitle
+\section{Line search algorithm for unconstrained minimization problems}
 A set of techniques for the unconstrained minimization problem: \emph{Find $\mathbf{x}\in \mathbb{R}^n$
 such that}
 \[
@@ -81,7 +82,30 @@ Here, we want to provide some insight on the algorithmic choices I have made.
     \item The polymorphic classes for the descent direction are \emph{clonable}. In this specific example it is not so relevant, but in future development it is always better to enable the composition with a polymorphic object support copy operations.  
 \end{enumerate}
  
-\section{Possible extensions}
+ \section{Bound constrained problem}
+ Unconstrained minimization techniques may be easily extended to the box constrained case: 
+ \emph{Find $\mathbf{x}\in \mathbb{R}^n$ such that}
+ \[
+ \begin{cases}
+ \mathbf{x}=\operatorname{argmin}_{\mathbf{y}\in\mathbb{R}^n} f(\mathbf{y}),
+ \mathbf{a}\le \mathbf{x}\le \mathbf{b}.
+ \end{cases}
+ \]
+ where $\mathbf{a}\in [\{-\infty\}\cup\mathbb{R}]^n$  and $\mathbf{b}\in [\{+\infty\}\cup\mathbb{R}]^n$ are bounds.
+ If we indicate with $\Pi$ the projection on the interval $\mathcal{I}$m defined by the bounds, the general algorithms changes into 
+ \begin{algorithm}
+     \caption{Line Search for Box-Constraints}
+     \KwData{$\mathbf{x}_0\in\mathcal{I}$, $\epsilon_1,\epsilon_2 >0$}
+     Compute a descent direction $\mathbf{d}_k\in\mathbb{R}^n$;\\
+     Compute a good step $\alpha_k$ so that $(\mathbf{x}_k+\alpha_k\mathbf{d}_k)\in\mathcal{I}$;\\
+     Advance $\mathbf{x}_{k+1}=\mathbf{x}_k+\alpha_k\mathbf{d}_k$;\\
+     Stop if $\vert f\mathbf{x}_{k+1}\vert\le\epsilon_1$ or $\Vert \mathbf{x}_{k+1}-\mathbf{x}_k\Vert\le\epsilon_2$ ;\\
+     \KwResult{$\mathbf{x}=\mathbf{x}_{k+1}$}
+ \end{algorithm}
+
+These methods are normally called "projected methods". You find the description in any good book. The version for bounds given by intervals is simple, more  complex situations arise when the constraints are general convex sets.
+
+\section{Other possible extensions}
 \begin{itemize}
     \item You can add many other formulas for the computation of descent direction: \emph{L-BFGS}, \emph{gradient with momentum (heavy ball)} ..... 
     \item You can implement a more sophisticated backtracking that enforces also the second Wolfe condition (curvature condition). However, in this case, I will let the user having the possibility of choosing whether activating it or not. The procedure for satisfying a curvature condition is indeed

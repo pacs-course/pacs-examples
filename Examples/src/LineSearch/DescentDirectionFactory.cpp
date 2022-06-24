@@ -18,6 +18,7 @@ loadDirections()
   theFactory.add("BFGSIDirection",[](){return std::make_unique<BFGSIDirection>();});
   theFactory.add("BBDirection",[](){return std::make_unique<BBDirection>();});
   theFactory.add("CGDirection",[](){return std::make_unique<CGDirection>();});
-  return theFactory;
+  theFactory.add("NewtonDirection",[](){return std::make_unique<NewtonDirection>();});
+ return theFactory;
 }
 }
