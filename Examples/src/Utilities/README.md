@@ -23,6 +23,9 @@ which produces tests for most of the utilities. All tests start with `test_`. Yo
 
 List of the utilities:
 
+* `absdiff` If you have to compute the absolute difference of two integral type
+you cannot just use `std::abs(x-y)` since if the integral types are unsigned the difference gives wrong result if x>y. This utility computes the correct result
+if the arguments are both of signed or unsigned type. It gives an error otherwise, since the situation is ambiguous.
 * `chrono`  An utility to take times, built on the chrono utilities of the standard library.
 
 * `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class T containes the (usually virtual) method
