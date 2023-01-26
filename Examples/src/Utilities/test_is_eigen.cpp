@@ -6,6 +6,14 @@
  */
 #include "is_eigen.hpp"
 #include <iostream>
+// using concepts to test if tempalte argument is an eigen matrix
+template <apsc::TypeTraits::EigenMatrixType M>
+void
+fun(M const &)
+{
+  std::cout<<"fun() called with an Eigen matrix"<<std::endl;
+}
+
 int
 main()
 {
@@ -31,4 +39,7 @@ main()
             << is_eigen_v<decltype(smat)> << std::endl;
   std::cout << svec << " is eigen= (should be true)" << std::boolalpha
             << is_eigen_v<decltype(svec)> << std::endl;
+  fun(svec);
+  fun(A);
+  //fun(c); // it fails compilation
 }

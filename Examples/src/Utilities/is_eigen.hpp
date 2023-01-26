@@ -53,6 +53,12 @@ namespace TypeTraits
    * since C++17
    */
   template <class T> inline bool constexpr is_eigen_v = is_eigen<T>::value;
+
+#if  __cplusplus >= 202002L
+  template <class T>
+  concept EigenMatrixType = is_eigen_v<T>;
+#endif
+
 } // namespace TypeTraits
 
 } // namespace apsc
