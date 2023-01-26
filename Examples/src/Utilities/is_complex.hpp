@@ -35,6 +35,10 @@ namespace TypeTraits
   template <class T> inline bool constexpr is_complex_v = is_complex<T>::value;
   template <class T> using is_complex_t = typename is_complex<T>::type;
 
+#if  __cplusplus >= 202002L
+  template <class T>
+  concept Complex = is_complex_v<T>;
+#endif
 } // end namespace TypeTraits
 } // end namespace apsc
 #endif

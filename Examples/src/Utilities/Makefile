@@ -40,6 +40,7 @@ HEADERS+=GetPot
 exe_sources=$(filter main%.cpp,$(SRCS))
 exe_sources+=$(filter test%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
+EXEC_OBJS=$(exe_sources:.cpp=.o)
 
 ifeq ($(LIBTYPE),DYNAMIC)
  CXXFLAGS+=-fPIC
@@ -88,10 +89,6 @@ doc:
 
 test: $(EXEC)
 
-$(EXEC):%: %.o
-
-
-$(OBJS): $(SRCS)
 
 static: $(STATIC_LIBFILE)
 	make $(STATIC_LIBFILE) LIBTYPE=STATIC
