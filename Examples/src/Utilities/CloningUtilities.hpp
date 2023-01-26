@@ -60,6 +60,11 @@ creating an object of type T.
    * @tparam T the base class of the hierarchy of clonable classes
    */
   template <typename T> constexpr bool has_clone_v = isClonable<T>();
+
+  // concept
+  template <class T>
+  concept Clonable = has_clone_v<T>;
+
 } // end namespace TypeTraits
 
 /*! A smart pointer that handles cloning for compusing with polymorphic objects
@@ -174,6 +179,7 @@ template <class T> class PointerWrapper
 {
 public:
   // Check if clone is present
+  // Here I prefer not using concepts to have a more extensive error message
   static_assert(
     TypeTraits::isClonable<T>(),
     "template parameter of Wrapper must be a clonable class. "
@@ -233,12 +239,12 @@ public:
    * @tparam U the type of the origin Wrapper, must be T or derived from T
    * @param original The original wrapper
    */
- template <class U> PointerWrapper(const PointerWrapper<U> &original)
+  template <class U> PointerWrapper(const PointerWrapper<U> &original)
   {
     if(original.get())
       {
-        //DataPtr.reset(static_cast<Ptr_t>(original.DataPtr->clone()));
-        DataPtr=static_cast<Ptr_t>(original.get()->clone());
+        // DataPtr.reset(static_cast<Ptr_t>(original.DataPtr->clone()));
+        DataPtr = static_cast<Ptr_t>(original.get()->clone());
       }
   }
 
@@ -256,20 +262,23 @@ public:
   /*!
    * @brief copying assignement allowing for conversions
    *
-   * This assignemt allow to convere PointerWrapper<Derived> in a PointeWrapper<Base>
+   * This assignemt allow to convere PointerWrapper<Derived> in a
+   * PointeWrapper<Base>
    * @tparam U The derived type
    * @param original The Wrapper to convert-copy
    * @return a reference to myself
    */
- template<class U>
+  template <class U>
   PointerWrapper &
-   operator=(const PointerWrapper<U> &original)
-   {
-      using OtherType=typename PointerWrapper<U>::Ptr_t;
-      static_assert(std::is_constructible_v<Ptr_t,OtherType&&>,"Cannot assign a non convertible PointerWrapper");
-      DataPtr = original.get() ? static_cast<Ptr_t>(original.get()->clone()) : Ptr_t{};
-      return *this;
-   }
+  operator=(const PointerWrapper<U> &original)
+  {
+    using OtherType = typename PointerWrapper<U>::Ptr_t;
+    static_assert(std::is_constructible_v<Ptr_t, OtherType &&>,
+                  "Cannot assign a non convertible PointerWrapper");
+    DataPtr =
+      original.get() ? static_cast<Ptr_t>(original.get()->clone()) : Ptr_t{};
+    return *this;
+  }
 
   //! Maybe I want to move-assign a unique pointer
   /*!
@@ -323,7 +332,7 @@ public:
   operator=(PointerWrapper<U> &&rhs) noexcept
   {
     using OtherPType = typename PointerWrapper<U>::pointer;
-    static_assert(std::is_constructible<pointer,OtherPType>::value,
+    static_assert(std::is_constructible<pointer, OtherPType>::value,
                   "Pointers must be convertible");
     if(this->get() != static_cast<pointer>(rhs.get()))
       {
@@ -426,7 +435,7 @@ a derived object. Of  course,
  */
 template <class B, class D, typename... Args>
 PointerWrapper<B>
-make_PointerWrapper(Args &&... args)
+make_PointerWrapper(Args &&...args)
 {
   return PointerWrapper<B>{std::make_unique<D>(std::forward<Args>(args)...)};
 }
@@ -444,6 +453,7 @@ Creates a PointerWrapper the class to hold.
 //  return PointerWrapper<D>{std::make_unique<D>(std::forward<Args>(args)...)};
 //}
 //! comparison operator
+#if __cplusplus < 202002L
 template <class T, class U>
 bool
 operator<(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
@@ -485,20 +495,22 @@ operator!=(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
 {
   return a.get() != b.get();
 }
-/* @todo C++20 use the spaceship operator to simplify
- * template <class T, class U>
- * bool
- * operator<=>(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
- * {
- *  return a.get() <=> b.get();
- * }
- * bool
- * operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
- * {
- *  return a.get() == b.get();
- * }
- *
- */
+#else
+/* C++20 use the spaceship operator to simplify things */
+template <class T, class U>
+auto // you need auto, let the compiler to the stuff
+operator<=>(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
+{
+  return a.get() <=> b.get();
+}
+template <class T, class U>
+//! Equivalence operator. I need it since it cannot be deduced by <=>
+bool
+operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
+{
+  return a.get() == b.get();
+}
+#endif
 
 } // end namespace apsc
 /*!

@@ -7,7 +7,7 @@
 namespace Utility
 {
 /*!
- * Class forreading a csv file. It recognizes text cells ignoring separation
+ * Class for reading a csv file. It recognizes text cells ignoring separation
  * character for within tokens (cells) marked by " "
  */
 class ReadCSV
@@ -76,7 +76,7 @@ public:
     verbose = v;
   }
   /*!
-   * Get the reead records. It returns a matrix
+   * Get the read records. It returns a matrix
    * so that using [i][j] you have the j-th token of record i
    * (remember, starting from 0).
    * @return The matrix containing all redords and tokens
