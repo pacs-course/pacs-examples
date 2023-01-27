@@ -1,6 +1,6 @@
 # Course on Advanced programming for scientific computing #
 ## Mathematical Engineering, Politecnico di Milano ##
-## Copyright Luca Formaggia 2012-2021 ##
+## Copyright Luca Formaggia 2012-2023 ##
 
 ## LICENCING ##
 The software contained in the subfolders of this directory is free-software released under a GNU General Public Licens (GPL). The details of the licence are availabe in the `COPYRIGHT` file in the root directory.
