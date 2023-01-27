@@ -11,13 +11,23 @@
 #include <iostream>
 #include <numeric>
 #include <random>
+inline void fill_random(std::vector<double> & v)
+{
+  std::random_device rd{};
+  std::mt19937 gen{rd()};
+  std::uniform_real_distribution<double> d{-1.0,1.0};
+  for (auto & x:v)
+    x=d(gen);
+}
+
 int
 main()
 {
   // Some paralllel algorithms of the standard library
   // They operate on ranges
   std::vector<double> a;
-  a.resize(10000000, 6.); // A big vector filled with value 6
+  a.resize(10000000); // A big vector filled with random values
+  fill_random(a);
   Timings::Chrono watch;
   // Sum all elements using reduce
   {

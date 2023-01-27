@@ -1,0 +1,2 @@
+CXX=mpic++
+DEBUG=no

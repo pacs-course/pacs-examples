@@ -1,0 +1,2 @@
+CXXFLAGS += -fopenmp
+LDFLAGS += -fopenmp
