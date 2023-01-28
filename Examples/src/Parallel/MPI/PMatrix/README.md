@@ -1,4 +1,6 @@
-#An example of parallel matrix#
+# An example of parallel matrix#
+
+*(if you have a compilation error see the note at the bottom)*
 
 In this example we illustrate a class template that represents a parallel (full) matrix and is able to perform matrix-vector multiplication in parallel in an MPI environment. It supports two types of matrix partitioning: `block row` and `block column`. I recall that they consist in distibuting the rows of the matrix, respectively the columns,  to the different processes so that the local number of rows (columns) is (nearly) the same.
 
