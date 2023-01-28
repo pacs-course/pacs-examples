@@ -1,4 +1,8 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-override"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
 #include <mpi.h>
+#pragma GCC diagnostic pop
 
 #include <iostream>
 #include <vector>
@@ -35,7 +39,7 @@ main(int argc, char **argv)
 
   std::vector<double> to_receive(100);
 
-  bconst int tag_send = (mpi_rank == 0) ? 10 : 20;
+  const int tag_send = (mpi_rank == 0) ? 10 : 20;
   const int tag_receive = (mpi_rank == 0) ? 20 : 10;
 
   const int partner_rank = !mpi_rank; // 0 --> 1, 1 --> 0.

@@ -92,6 +92,7 @@ since several examples make use of the utilities.
   * `CompositionWithVariadicTemplates` The Composer design pattern done with variadic templates: constructing complex objects by composing simple ones. The technique is more "rigid" than the classical one which uses polymorphism, but rather flexible and efficient. 
   * `DesignPatterns/` A set of example of Design Patterns, a C++ implementation of the techniques illustrated in the famous [Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns)book and in [this site.](https://refactoring.guru/design-patterns/cpp). 
   * `FloatingPoint/` A directory containing several examples on aspects (sometimes degeneracies) of floating point computations, including how to handle floating point exception. See the local `README.md` file.  The example `FloatinPoint\FinDiff` also shows another use of *gnuplot-iostream* to have plots on the terminal.
+  * `
   * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Only to remember the various tools, which have been integrated in the Makefile. If you read the Makefile you see how tools have been called.
   * `Polynomials`. A more complex example of a class that implements the generic concept of a polynomial. An example of generic programming.
   * `MetaProgramming/`. A folder with examples that show  metaprogramming techniques.
@@ -124,6 +125,7 @@ since several examples make use of the utilities.
     - `Fibonacci` A classic example of template metaprogramming: a recursive template. 
     - `Function` Beware of mixing template and free funcions with template specializations. Here we show why in this simple example. Non so important if you are careful.
     - `Interpolation` Polynomial interpolation on a set of points (x,y). Use of policy to choose from different interpolation strategies. *Note* It differs from the code contained in the `Interp1D` folder: the latter implements just piecewise linear interpolation but in a very generic fashion.
+    - `Matrix` The initial design of a simple full matrix with row or column orderning, with the parallel implementation (with openMP) of matrix-vector product.xs
     - `Mean` An example of use of tempalte specialization or variadic templates to create functions that computes sumes and average of values. 
     - `traits` Use of traits/policies to create an inner product able to operate seemlessly on vectos of floating points or of complex numbers. 
     - `VariadicTemplates` An illustration of variadic templates

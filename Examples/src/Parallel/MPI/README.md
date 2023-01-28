@@ -18,3 +18,5 @@ mpirun -n 1 ./executable2 # Runs in serial.
 * *PI* The analogous of the examples found in the `OpenMP` folder, here solved with hybrid parallelism (*i.e.* both using `OpenMP` and `MPI`).
 
 * *MatrixVectorProduct* An example showing the use of collective operations, such as `MPI_Bcast()`, `MPI_Scatterv()` and `MPI_Gatherv()`, for computing a matrix-vector product in parallel.
+
+
