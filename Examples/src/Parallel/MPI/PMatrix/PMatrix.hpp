@@ -8,9 +8,14 @@
 #ifndef AMSC_EXAMPLES_EXAMPLES_SRC_PARALLEL_MPI_PMATRIX_PMATRIX_HPP_
 #define AMSC_EXAMPLES_EXAMPLES_SRC_PARALLEL_MPI_PMATRIX_PMATRIX_HPP_
 #include "Matrix.hpp"      // in Matrix/
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-override"
+#pragma GCC diagnostic ignored "-Wcast-function-type"
 #include "mpi_utils.hpp"   // for MPI_SIZE_T and mpi_typeof()
 #include "partitioner.hpp" // in Parallel/Utilities
 #include <mpi.h>
+#pragma GCC diagnostic pop
+#include <array>
 #include <vector>
 namespace apsc
 {
