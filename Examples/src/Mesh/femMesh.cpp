@@ -53,7 +53,7 @@ Edge::map(const double &t) const
 }
 
 Matrix<double, ndim, 1>
-Edge::jacobian(const double &t) const
+Edge::jacobian(const double &) const
 {
   GeoPoint &a = *M_points[0];
   GeoPoint &b = *M_points[1];
@@ -109,7 +109,7 @@ Triangle::invMap(GeoPoint const &x) const
 }
 
 Eigen::Matrix<double, Triangle::myDim, ndim>
-Triangle::jacobian(double u, double v) const
+Triangle::jacobian(double , double ) const
 {
   Eigen::Matrix<double, myDim, ndim> tmp;
   tmp(0, 0) = M_J(0, 0);
@@ -120,7 +120,7 @@ Triangle::jacobian(double u, double v) const
 }
 
 Eigen::Matrix<double, Triangle::myDim, ndim>
-Triangle::invJac(double u, double v) const
+Triangle::invJac(double , double ) const
 {
   Eigen::Matrix<double, myDim, ndim> tmp;
   tmp(0, 0) = M_invJ(0, 0);
