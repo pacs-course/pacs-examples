@@ -1,4 +1,4 @@
-#A template class for derivatives of a function by finite differences#
+# A template class for derivatives of a function by finite differences #
 
 This is an example of template (meta)programming to have a class that implements derivatives of any order of a function
 approximating them by finite differencing. It is an example of recursion. In practice the N-th derivative of f is approximated

@@ -87,6 +87,8 @@ since several examples make use of the utilities.
     *`Vector/Remove` What it means removing elements from a vector.
   
 ## Advanced examples
+  * `adtTree` A binary search structure based on the alternating digital tree algorithm. It can search for "points inside boxes",
+  and "possibly intersecting boxes". It is a quite dynamic structure where nodes (boxes or points) can be added/deleted dynamically.
   * `bcHandler` An example of a possible way to handle the information about boundary conditions in a numerical code. It shows also 
   an example of use of `muparserx`. To install muparserX go in the sub-folder `Extra`
   * `CompositionWithVariadicTemplates` The Composer design pattern done with variadic templates: constructing complex objects by composing simple ones. The technique is more "rigid" than the classical one which uses polymorphism, but rather flexible and efficient. 
@@ -106,6 +108,7 @@ since several examples make use of the utilities.
     * `SwitchType`. The use of type alias to allow mesh elements dedice the type of their buonday depending on the space dimensions.
     * `trasposeView` An overly complex example of a transpose view of a matrix, To show a possible use of `std::enable_if` (but I also provide an alternative).
     * `Trivial` USe of type-traits to detect Trivial, Trivially-Constructable and StandardLayout types. With an example on how Trivially-Constructable and StandardLayout property may be useful.
+  * `Mesh` example of teools to store and read a 2D mesh of polygons (currently implemented for triangles and quads).
   * `MoveSemantic` A examples that uses [valgrind](https://valgrind.org/ "The valgrind site") to show the advantages of move semantic when handling large objects (you must have valgrind installed in your system).
   * `NonLinSys` A class that holds a system of callable objects, where you can add the objects one at a time. It also contains a `FunctionFactory`, a factory of
   callable objects. The latter may be used in a program where functions are given by the user and then used throughout the program, for instance functions that define boundary conditions.

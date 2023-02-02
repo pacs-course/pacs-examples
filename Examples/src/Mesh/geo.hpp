@@ -3,7 +3,7 @@
 #include <array>
 namespace Geometry
 {
-const int ndim = 2;
+inline constexpr int ndim = 2;
 //! A simple class to represent a point in 2D
 /*!
   This class aims a representing a single point and provides some basic
@@ -21,7 +21,11 @@ public:
     It serves also ad default constructor
   */
   explicit Point(double x = 0, double y = 0) : M_coor{{x, y}} {}; // C+11
-
+/*!
+ * A point is convertible to an array of 2 doubles. Useful for handling point  simply.
+ * @return An array containing the point coordinates
+ */
+  operator std::array<double,ndim>(){return M_coor;}
   /*!@}*/
   //! Destructor is virtual since I may want to use polymorphism
   virtual ~Point(){};
@@ -40,7 +44,7 @@ public:
     y = M_coor[1];
   }
   //! We can get the coordinates also by operator []
-  double const
+  double
   operator[](int i) const
   {
     return M_coor[i];

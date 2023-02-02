@@ -128,7 +128,7 @@ MeshReadSimple::read(MeshTria &m, std::string const &fileName)
 }
 
 int
-DummyMesh::read(MeshTria &m, std::string const &filename)
+DummyMesh::read(MeshTria &m, std::string const &)
 {
   MeshHandler mesh(m);
   mesh.pointList.reserve(4);
@@ -192,7 +192,7 @@ remainder of the file is assumed to contain boundary markers.
   int    bMarker(0);
   int    nId;
   double x, y, attr;
-  for(std::size_t i = 0; i < numPoints; ++i)
+  for(int i = 0; i < numPoints; ++i)
     {
       nodeFile >> nId >> x >> y;
       if(nodeFile.bad())
@@ -288,7 +288,7 @@ remainder of the file is assumed to contain boundary markers.
   std::vector<Edge> &edl(mesh.edgeList);
   edl.resize(numEdges);
   bMarker = 0;
-  for(std::size_t i = 0; i < numEdges; ++i)
+  for(int i = 0; i < numEdges; ++i)
     {
       edgeFile >> nId >> i1 >> i2;
       if(edgeFile.bad())
