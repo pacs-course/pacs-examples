@@ -86,9 +86,9 @@ namespace apsc
     operator()(const T &x) const
     {
       //! This is C++17 syntax. Don't use a simple  if if you want efficiency!
-      if constexpr(std::is_same<DifferenceType::FORWARD, DT>::value)
+      if constexpr(std::is_same_v<DifferenceType::FORWARD, DT>)
           return (f(x + h) - f(x)) / h;
-      else if constexpr(std::is_same<DifferenceType::BACKWARD, DT>::value)
+      else if constexpr(std::is_same_v<DifferenceType::BACKWARD, DT>)
           return (f(x) - f(x - h)) / h;
       else
         return (f(x + h) - f(x - h)) / (2. * h);

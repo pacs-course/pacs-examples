@@ -14,21 +14,21 @@ class MeshReadSimple : public Fem::MeshReader
 {
 public:
   MeshReadSimple(bool verbose = false) : MeshReader(verbose){};
-  int read(MeshTria &m, std::string const &filename);
+  int read(MeshTria &m, std::string const &filename) override;
 };
 
 class MeshReadTriangle : public Fem::MeshReader
 {
 public:
   MeshReadTriangle(bool verbose = false) : MeshReader(verbose){};
-  int read(MeshTria &, std::string const &filename);
+  int read(MeshTria &, std::string const &filename) override;
 };
 
 class DummyMesh : public Fem::MeshReader
 {
 public:
   DummyMesh(bool verbose = false) : MeshReader(verbose){};
-  int read(MeshTria &, std::string const &filename);
+  int read(MeshTria &, std::string const &filename) override;
 };
 } // namespace Fem
 #endif /* MESHREADERS_HPP_ */

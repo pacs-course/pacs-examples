@@ -28,6 +28,8 @@ class Point2D
 public:
   //! Constructor giving coordinates.
   Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {}
+  //! A point is convertible to an array of double
+  operator std::array<double, 2>(){return coor;}
   //! Returns coordinates in a array<double>.
   std::array<double, 2>
   get() const
@@ -151,9 +153,21 @@ public:
   {
     return vertexes[i];
   }
-  //! Returns a vertex (read and write)
+ //! Returns a vertex (read only)
+  Point2D
+  operator[](std::size_t i) const
+  {
+    return vertexes[i];
+  }
+ //! Returns a vertex (read and write)
   Point2D &
   vertex(std::size_t i)
+  {
+    return vertexes[i];
+  }
+  //! Returns a vertex (read and write)
+  Point2D &
+  operator[](std::size_t i)
   {
     return vertexes[i];
   }

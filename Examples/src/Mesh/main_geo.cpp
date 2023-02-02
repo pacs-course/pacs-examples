@@ -3,6 +3,9 @@
 #include "femMesh.hpp"
 #include <iostream>
 #include <vector>
+/*
+ * Read the README.md fie for the instruction on how to create the files for the test.
+ */
 int
 main()
 {
@@ -22,4 +25,9 @@ main()
   MeshTria meshT("Test/quad.1", readTriangle);
   meshT.checkmesh();
   cout << meshT << endl;
+
+  MeshTria meshA("Test/A.1", readTriangle);
+  meshA.checkmesh();
+
+
 }
