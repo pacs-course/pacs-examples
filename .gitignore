@@ -243,3 +243,6 @@ make.dep
 /Examples/share/cmake/muparserx/muparserxConfigVersion.cmake
 /Examples/src/Utilities/test_csvReader
 /.externalToolBuilders/org.eclipse.texlipse.builder.TexlipseBuilder.launch
+/Examples/src/Arrays/main_array
+/Examples/src/C++20/Concepts/main_concepts
+/Examples/src/Constexpr/mainHornerConstexpr
