@@ -6,6 +6,7 @@
       <file path="$PROJECT_DIR$/src/C++20/Concepts" />
       <file path="$PROJECT_DIR$/src/Constexpr" />
       <file path="$PROJECT_DIR$/src/Mesh" />
+      <file path="$PROJECT_DIR$/src/Numeric_Limits" />
       <file path="$PROJECT_DIR$/src/Polygon" />
       <file path="$PROJECT_DIR$/src/Utilities" />
     </sourceRoots>
@@ -17,17 +18,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Polygon" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Numeric_Limits" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/src/Polygon" />
+            <option value="$PROJECT_DIR$/src/Numeric_Limits" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Polygon">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Numeric_Limits">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>
