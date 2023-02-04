@@ -25,42 +25,81 @@ createFive()
   int tmp{5};
   return tmp;
 }
-// Bindings of lvalue references only
+
+std::vector<int> createVector()
+  {
+   return {1,2,3,4,5};
+  }
+/*****************************************     CASE WITHOUR R-VALUE REFENCES *************************/
+/*! Binds to  non const lvalues only!
+ *
+ * @param a the value. Being passed as (non const) l-reference I expect that the function modifies  it
+ */
 void
 foo(int &a)
 {
+  a=10;
   std::cout << "using void foo(int&)" << std::endl;
 }
 
+/*!
+ * It can bind to int of every category! But since I have the overload with foo(int&)
+ * it binds  only to const l-values ot rvalues.
+ *
+ * @param a
+ */
 void
 foo(const int &a)
 {
   std::cout << "using void foo(const int&)" << std::endl;
 }
 
-// Now we consider also rvalue references
+/******************************************  NOW ALL POSSIBILITIES **************************/
+/*!
+ * Binds to  non const lvalues only!
+ * @param a the value. Being passed as (non const) l-reference I expect that the function modifies  it
+ */
 void
-goo(int &a)
+goo(std::vector<int> &a)
 {
-  std::cout << "using void goo(int&)" << std::endl;
+  a.resize(2*a.size());
+  a[0]=1000;
+  std::cout << "using void goo(vector<int>&)" << std::endl;
 }
 
+/*!
+ * Binds to  non const rvalues only!
+ * @param a the value. Being passed as (non const) r-reference I expect that it can be moved!
+ */
 void
-goo(int &&a)
+goo(std::vector<int> &&a)
 {
-  std::cout << "using void goo(int&&)" << std::endl;
+  std::vector<int> b=std::move(a);
+  std::cout << "using void goo(vector<int> &&)" << std::endl;
 }
 
+/*!
+ * In principle it can bind to any category. But since I have the other overloads
+ * it can bind only to const lvalues!
+ * @param a The vector passed as const&
+ */
 void
-goo(const int &&a)
+goo(const std::vector<int> &a)
 {
-  std::cout << "using void goo(const int &&)" << std::endl;
+  std::cout << "using void goo(const vector<int>&)" << std::endl;
 }
+
+/*!
+ * Binds to  non const rvalues only! This overload is normally useless.
+ * It is shown here only for completeness.
+ * @param a the value.
+ */
 void
-goo(const int &a)
+goo(const std::vector<int> &&a)
 {
-  std::cout << "using void goo(const int&)" << std::endl;
+  std::cout << "using void goo(const vector<int> &&)" << std::endl;
 }
+
 
 // Here with universal references
 using Vector = std::vector<double>; // to save typing
@@ -129,24 +168,30 @@ main()
   { // block scope
     std::cout << "\ngoo implements a full set of overloads (if you have not "
                  "commented some)\n";
-    std::cout << "calling goo(25) (a literal):" << std::endl;
-    goo(25); // goo(int&& a)
-    std::cout << "calling goo(a) (a is int, a lvalue):" << std::endl;
-    goo(a); // goo(int&)
-    std::cout << "calling goo(b) (b is int&, a lvalue):" << std::endl;
-    goo(b); // goo(int&)
-    std::cout << "calling foo(createFive()), I am passing a rvalue:"
+    auto v=createVector();// a vector of size 5
+    auto const cv=createVector(); // a constant vector of size 5
+    auto const & rv{v};// rv is an alias to v, but const!
+    std::cout << "calling goo(v) (v is a lvalue - a vector of size 5):" << std::endl;
+    goo(v); // goo(vector<int>&)
+    std::cout<<"The size of v after the call is "<<v.size()<<"\n";
+    std::cout << "calling goo(cv) (cv is a constant vector, a const lvalue):" << std::endl;
+    goo(cv); // goo(const vector<int>&)
+    std::cout<<"The size of cv after the call is "<<cv.size()<<"\n";
+    std::cout << "calling goo(rv) (rv is a constant l-value ref, a const lvalue):" << std::endl;
+    goo(rv); // goo(const vector<int>&)
+    std::cout<<"The size of rv after the call is "<<rv.size()<<"\n";
+    std::cout << "calling foo(createVector()), I am passing a rvalue:"
               << std::endl;
-    goo(createFive()); // goo(int&&)
-    std::cout << "calling goo(c) (c is const int &) a const lvalue:"
-              << std::endl;
-    goo(c); // goo(const int &)
-    std::cout << "calling goo(dcx) (dcx is a constexpr):" << std::endl;
-    goo(dcx); // goo(const int &)
-    std::cout << "calling goo(std::move(a)) (a is an int):" << std::endl;
-    goo(std::move(a)); // foo(int&& )
-    std::cout << "calling goo(std::move(c)) (c is a const int&):" << std::endl;
-    goo(std::move(c)); // goo(const int && )
+    goo(createVector()); // goo(vector<int>&&)
+    std::cout << "calling goo(std::move(v)): an r-value"<< std::endl;
+    goo(std::move(v)); //  goo(vector<int>&&)
+    std::cout<<"The size of v after the call is "<<v.size()<<"\n";
+    std::cout << "calling goo(std::move(cv)) (cv is const, move retorns a const rvalue):" << std::endl;
+    goo(std::move(cv)); // goo(const vector<int> && )
+    std::cout<<"The size of cv after the call is "<<cv.size()<<"\n";
+    // If you comment out the definition of goo(const vector<int> &&).
+    // goo(const vector<int> &) is used instead, which is normally fine. So goo(const vector<int> &&)
+    // is generally of no practicall use
   }
   std::cout << "\nNOW SOMETHING MORE INTERESTING\n";
   Vector v(100, 3.0); // a vector containing 3 of size 100
