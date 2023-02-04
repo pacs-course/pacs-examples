@@ -23,36 +23,34 @@ Here you find the examples given in the course
 `clang-format_scripts_and_hooks` Some tools to beautify your code, based on [clang-format](https://www.electronjs.org/docs/latest/development/clang-format) (you must have clang-tools installed! if you want to use the utilities in this directory).
 
 
-## HOW TO COMPILE AND INSTALL THE EXAMPLES: THE FIRST STEP ##
+## HOW TO COMPILE AND INSTALL THE EXAMPLES: ##
 
-To compile the examples the first operation to be made is to copy the
-file `Makefile.user` to `Makefile.inc`:
+### THE FIRST STEP ###
 
+Open a terminal and go in the directory `Examples` of the repository (*it is the directory that contains this README.md file!, from now on denoted as **root directory***) 
+The first operation is to copy the  file `Makefile.user` to `Makefile.inc`:
 
     $ cp Makefile.user Makefile.inc
 
+and edit the latter to suit your system. In particular, you have to set `PACS_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
+If you do not know it
+just type
 
-and edit the latter to suit your system.
+    pwd
+in the terminal and you have it.
 
-(Almost) all `Makefiles` of the examples include the file `Makefile.inc` of this
+(Almost) all `Makefiles` of the examples include the file `Makefile.inc` of the root directory
 directory and possibly a `Makefile.inc` file local to the example
-under consideration.  You may modify those files to suit your need.
-
+under consideration.  You may modify those files to suit your need. 
 In particular, the user may modify the `Makefile.inc` to change some
-compilation options. 
-
-The main `Makefile.inc` also sets the `PACS_ROOT`
-variable, which **should indicate the same directory where this** `README.md`
-**file is kept** (with the full path, i.e. the path should start with `/`).
-**A  trick:**  on your terminal type `pwd` and copy/paste the result.!
+compilation options. But normally you don't need it.
 
 As an example:
 
     PACS_ROOT=/home/myname/pacs/Examples/
 
-Alternatively to editing the file, you may set an environmental
+Alternatively, to editing the file, you may set an environmental
 variable with the same name using the command 
-
 
     export PACS_ROOT=/home/myname/pacs/Examples/ 
 
@@ -174,7 +172,7 @@ env | grep mk
 
 Remember that after you have modified your .profile file you need to do a new login for the changes to be effective (see note at the end of the file)
 
-## SECOND STEP: INSTALL UTILITIES ##
+### SECOND STEP: INSTALL UTILITIES ###
 
 The examples require some common utilities that are contained in `src/Utilities/`. So it is simpler if we compile and install them once for all.
 
@@ -188,16 +186,23 @@ This way, a library called libpacs.a (and ist dynamic equivalent
 libpacs.so) is installed in `PACS_LIB_DIR` and some header files are
 installed in `PACS_INC_DIR`
 
-If you then do `make exec` you should compile the program that test the utilities. If everthing is fine compilation should complete with no errors. You may have al look at the tests and try to execute them.
+If you then do `make exec` you should compile the programs that test the utilities. If everything is fine,
+compilation should complete with no errors. You may have at look at the tests and try to execute them.
 
-More advanced examples may use also the Utilities in `LinearAlgebraUtil`. Go in that directory and  do just:
+More advanced examples may use also the Utilities in `LinearAlgebraUtil`. Go in that directory and  just type
 
     make install
 
 to install everything in the `Examples/include` directory.
 Here the tests have been collected in the subfolder `test`, but the rule is the same, go there, type `make`
 
-Have a look at the tests becouse thay contian information on how to use the utilities!
+Have a look at the tests because they contain information on how to use the utilities!
+
+### THIRD STEP EXTRAS ###
+Some utilities that are used in a few examples (and interesting on their own) are kept as submodules, since they refer to third party software.
+To compile and install them, go in the `Extras` directory of the repository and follow the instructions in the `README.md` file stored in that directory.
+
+**NOW YOU ARE READY TO ENJOY THE EXAMPLES**
 
 **NOTE** Some test use the native parallel programming of c++ that, at
 least with gnu and LLVM compiler, requires haning the multithreading
@@ -245,19 +250,3 @@ If you want to know more (and discover that you have also
 [here](https://www.baeldung.com/linux/bashrc-vs-bash-profile-vs-profile),
 or look to any good Unix reference manual.
 
-
-**Changes AA 18-19**
-
-To semplify linking of dynamic libraries now I use in all cases the
- option -Wl-rpath=$(PACS_LIB_DIR), so that shared libs and executables
- that load dynamic libraries created by the Examples do not need to
- set LD_LIBRARY_PATH to work. Remember however that in general this is
- not the standard situation, dynamic libraries should be loaded
- following the loader rules explained in the lecture about static and
- dynamic libraries.
-
- *Note:* maybe some examples still follow the previous rule,
- where compiling with make target DEBUG=no(optimization activated)
- did not activate the -Wl,-rpath option above.
-
- **end Changes AA18-19**
