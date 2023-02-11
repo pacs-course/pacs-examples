@@ -22,8 +22,8 @@ main()
        << endl;
 
   // now a point
-  Point<3> a{{1.0, 2.0, 3.0}};
-  Point<3> b{{1.0, 2.0, 3.0}};
+  apsc::crtp::Point<3> a{{1.0, 2.0, 3.0}};
+  apsc::crtp::Point<3> b{{1.0, 2.0, 3.0}};
 
   cout << " Is a different from b? " << std::boolalpha << (a != b) << endl;
 
