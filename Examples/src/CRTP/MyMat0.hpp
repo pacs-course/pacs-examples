@@ -43,7 +43,7 @@ typedef std::vector<double>::size_type size_type;
  * a pointer to function selected at construction time.
  I use the proxy to be able to do m[i][j]
  */
-class MyMat0 : public crtp_matrix<MyMat0, double>
+class MyMat0 : public apsc::crpt::crtp_matrix<MyMat0, double>
 {
 private:
   size_type nr, nc;
