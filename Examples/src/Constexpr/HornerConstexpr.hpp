@@ -31,7 +31,6 @@ HornerConstexpr(Coeff const &coeff, Value const &x)
   // The type of u is the common type among the coefficient and the value x
   std::common_type_t<decltype(coeff.back()), Value> u =
     coeff.back(); // back is a constexpr function for arrays
-                  // Since c++14 I can have for loops in constexpr functions
                   // and size() is a constexpr function for arrays
   for(int i = coeff.size() - 2; i >= 0; --i)
     u = u * x + coeff[i]; // [] operator is constexpr for arrays
