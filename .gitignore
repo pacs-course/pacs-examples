@@ -246,3 +246,7 @@ make.dep
 /Examples/src/Arrays/main_array
 /Examples/src/C++20/Concepts/main_concepts
 /Examples/src/Constexpr/mainHornerConstexpr
+
+*.vscode
+*.pptx
+!/Labs/2023/**/*.pdf
