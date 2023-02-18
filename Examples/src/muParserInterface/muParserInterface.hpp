@@ -19,19 +19,21 @@ public:
     as coord[0] and coord[1];
   */
   template <typename COORD>
-  double operator()(double const t, COORD const &coord);
+  double operator()(double const t, COORD const &coord) const;
   //! Version that takes x and y
-  double operator()(double const t, double const x, double const y);
+  double operator()(double const t, double const x, double const y) const;
 
 private:
   mu::Parser  M_parser;
-  double      M_t, M_x, M_y;
+  mutable double M_t;
+  mutable double M_x;
+  mutable double M_y;
   std::string M_expr;
 };
 
 template <typename COORD>
 double
-muParserInterface::operator()(double const t, COORD const &coord)
+muParserInterface::operator()(double const t, COORD const &coord)const
 {
   this->M_t = t;
   this->M_x = coord[0];

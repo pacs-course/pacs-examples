@@ -1,6 +1,7 @@
 #ifndef __HORNER_HPP__
 #define __HORNER_HPP__
 #include <vector>
+#include <functional>
 //! It evaluates a polynomial using standard rule.
 /*!
   \f$ y=a_0+a_1x+\ldots+a_nx^n\f$
@@ -22,8 +23,11 @@ double horner(std::vector<double> const &a, double const &x);
 // This only to show the use of pointers to function to implement a policy
 //! A pointer to function.
 //
-using polyEval = double (*)(std::vector<double> const &, double const &);
+//using polyEval = double (*)(std::vector<double> const &, double const &);
 
+// using function wrapper, nicer.
+
+using polyEval = std::function<double (std::vector<double> const &, double const &)>;
 //! Evaluates polynomial in a set of points.
 /*!
   @param point   Vector of points to compute the polynomial.

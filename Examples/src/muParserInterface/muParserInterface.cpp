@@ -19,7 +19,7 @@ muParserInterface::muParserInterface(const std::string &e) : muParserInterface()
 muParserInterface::~muParserInterface() { this->M_parser.ClearVar(); }
 
 double
-muParserInterface::operator()(double const t, double const x, double const y)
+muParserInterface::operator()(double const t, double const x, double const y) const
 {
   return this->operator()(t, std::array<double, 2>{{x, y}});
 }

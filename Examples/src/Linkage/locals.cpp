@@ -22,7 +22,7 @@ fun2(double x)
 static double
 fun3(double x)
 {
-  return Globals::Pi / 2;
+  return x*Globals::Pi / 2;
 }
 
 //! External linkage (default)

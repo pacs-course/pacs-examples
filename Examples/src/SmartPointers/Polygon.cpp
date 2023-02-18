@@ -86,10 +86,6 @@ AbstractPolygon::checkConvexity()
   return;
 }
 
-// ****   POLYGON
-
-Polygon::Polygon(Vertices const &v) : AbstractPolygon(v){};
-
 void
 Polygon::set(Vertices const &v)
 {
