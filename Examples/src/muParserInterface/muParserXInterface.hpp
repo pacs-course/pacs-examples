@@ -97,8 +97,8 @@ public:
     M_parser.SetExpr(e.c_str());
   }
 
-  double
-  operator()(ArgumentType const &x)
+  auto
+  operator()(ArgumentType const &x) const
   {
     for(int i = 0; i < N; ++i)
       {
@@ -128,7 +128,7 @@ private:
   // The muparseX engine
   mup::ParserX M_parser;
   // The muparserX value used to set the variables in the engine
-  mup::Value M_value;
+  mutable mup::Value M_value;
 };
 } // namespace MuParserInterface
 #endif

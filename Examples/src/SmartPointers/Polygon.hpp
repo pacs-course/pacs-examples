@@ -25,7 +25,7 @@ class Point2D
 public:
   using Coord = std::array<double, 2>;
   //! Constructor giving coordinates.
-  Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {} // C++11 syntax
+  Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {}
   //! Constructor that takes an array
   Point2D(Coord const &c) : coor{c} {}
   //! Returns coordinates in an array
@@ -109,8 +109,8 @@ class AbstractPolygon
 {
 public:
   using Vertices = std::vector<Point2D>;
-  //! Empty polygon
-  AbstractPolygon() : vertexes(), isconvex(false){};
+  //! Defaulted constuctor
+  AbstractPolygon()=default;
   //! virtual destructor (is a base class)
   virtual ~AbstractPolygon() = default;
   //! Returns the number of vertices.
@@ -143,15 +143,13 @@ public:
   //! The area of the polygon (with sign!)..
   virtual double area() const = 0;
 
-protected:
-  //! Protected constructor taking vertices.
-  /*
-     This constructor is kept protected because it is not part of
-     the interface of AbstractPolygon, yet some derived classes may
-     make use of it.
-  */
   AbstractPolygon(Vertices const &v) : vertexes(v) { checkConvexity(); }
-  Vertices vertexes;
+  // will be redefined
+  AbstractPolygon(Point2D const &, double, double){};
+
+protected:
+
+  Vertices vertexes={};
   bool     isconvex = false;
   //! Test convexity of the polygon
   void checkConvexity();
@@ -165,13 +163,7 @@ protected:
 class Polygon : public AbstractPolygon
 {
 public:
-  //! Default constructor.
-  /*!
-    It does nothing.
-   */
-  Polygon() = default; // C++11
-  //! Polygon may be constructed giving Vertices;
-  Polygon(Vertices const &);
+  using AbstractPolygon::AbstractPolygon;
   /*!
     The area is positive if vertices are given in
     counterclockwise order
@@ -202,6 +194,17 @@ public:
    */
   Square(Point2D const &origin, double length, double angle = 0.0);
 
+  /*
+   * Delegating constructor
+   */
+  Square(Vertices const & v):AbstractPolygon(v){};
+  /*!
+   * Constictor giving origin and dimensions
+   *
+   * @param origin Origin
+   * @param length side length
+   * @param angle rotation angle
+   */
   void
   set(Point2D const &origin, double length, double angle = 0.0)
   {
@@ -220,6 +223,8 @@ public:
 class Triangle final : public AbstractPolygon
 {
 public:
+  using AbstractPolygon::AbstractPolygon;
+
   Triangle() { this->isconvex = true; };
   //! Constructor for triangles.
   /*!

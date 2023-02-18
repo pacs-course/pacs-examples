@@ -52,8 +52,8 @@ main()
   Chrono temporizzatore;
   temporizzatore.start();
   evaluatePoly(points, a, &eval);
-  cout << endl;
   temporizzatore.stop();
+  cout << endl;
 
   cout << temporizzatore << endl;
 
@@ -61,7 +61,7 @@ main()
        << " Horner's rule" << endl;
   temporizzatore.start();
   evaluatePoly(points, a, &horner);
-  cout << endl;
   temporizzatore.stop();
+  cout << endl;
   cout << temporizzatore << endl;
 } // end of main()
