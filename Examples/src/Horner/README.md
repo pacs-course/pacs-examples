@@ -1,18 +1,16 @@
-# Example on timing. We show the advantage of Horner rule.#
-
-We use the utility chrono and the library libpacs.
+# Computing a polynomial with Horner rule. #
 
 You should firse enter the directory Examples/src/Utilities and then run
 
-``
+````
 make library
 make install
-``
+````
 
 Make sure that ``Makefile.inc`` in the PACS root directory is set correctly.
 
-## New: Parallel version##
-This new version exploits also a parallel version of an algorithm
+## Parallel version ##
+This version of the example exploits also a parallel version of an algorithm
 (``std::transform``) of the standard library. However the
 implementation of concurrency is not yet fully supported by all
 compilers and architecture. If you use gnu compilers, you must have
@@ -57,11 +55,11 @@ increases as the polynomial degree increases.
 The Makefile has been set so that you always compile with optimization
 activated.
 
-**Note** To use the multithread parallel algorithm of the standard libary you need to link you code qith the Intel treading building block (tbb) library.
-This is done automatically by the Makefile. Of course, you mast have `libtbb.so` installed in your system! Check!
+**Note** To use the parallel algorithm of the standard library you need to link you code with the Intel treading building block (tbb) library.
+This is done automatically by the Makefile. Of course, you must have `libtbb.so` installed in your system! Check!
 
 **Note 2:**  To get significant timings use a high degree polinomial, at least 20.
 
-# What do you learn with this example?#
+# What do you learn with this example? #
 - That the use of a more elaborate algorithm can give a significant efficiency gain, even for apparently simple problems;
 - A use of the new (since C++17) parallel algorithms of the standard library; 

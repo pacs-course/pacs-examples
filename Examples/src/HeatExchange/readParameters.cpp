@@ -73,17 +73,17 @@ readParameters_json(std::string const &filename, bool verbose)
   jfile>>ifile;
   parameters values;
   // Read parameters from getpot ddata base
-  values.itermax = ifile.extract("itermax", defaults.itermax);
-  values.toler = ifile.extract("toler", defaults.toler);
-  values.L = ifile.extract("L", defaults.L);
-  values.a1 = ifile.extract("a1", defaults.a1);
-  values.a2 = ifile.extract("a2", defaults.a2);
-  values.To = ifile.extract("To", defaults.To);
-  values.Te = ifile.extract("Te", defaults.Te);
-  values.k = ifile.extract("k", defaults.k);
-  values.hc = ifile.extract("hc", defaults.hc);
-  values.M = ifile.extract("M", defaults.M);
-  values.solverType = ifile.extract("solverType", defaults.solverType);
+  values.itermax = ifile.value("itermax", defaults.itermax);
+  values.toler = ifile.value("toler", defaults.toler);
+  values.L = ifile.value("L", defaults.L);
+  values.a1 = ifile.value("a1", defaults.a1);
+  values.a2 = ifile.value("a2", defaults.a2);
+  values.To = ifile.value("To", defaults.To);
+  values.Te = ifile.value("Te", defaults.Te);
+  values.k = ifile.value("k", defaults.k);
+  values.hc = ifile.value("hc", defaults.hc);
+  values.M = ifile.value("M", defaults.M);
+  values.solverType = ifile.value("solverType", defaults.solverType);
   if(verbose)
     {
       std::cout << "PARAMETER VALUES IN JSON FILE"

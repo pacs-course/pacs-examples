@@ -34,7 +34,7 @@ horner(std::vector<double> const &a, double const &x)
 }
 
 #ifdef PARALLELEXEC
-#warning "Using parallel implementation of std::transform"
+#pragma message("Using parallel implementation of std::transform")
 //! Evaluates polynomial in a set of points (parallel version)
 std::vector<double>
 evaluatePoly(std::vector<double> const &points, std::vector<double> const &a,
@@ -50,7 +50,7 @@ evaluatePoly(std::vector<double> const &points, std::vector<double> const &a,
   return result;
 }
 #else
-#warning "Using sequential implementation of std::transform"
+#pragma message("Using sequential implementation of std::transform")
 //! Evaluates polynomial in a set of points
 std::vector<double>
 evaluatePoly(std::vector<double> const &points, std::vector<double> const &a,

@@ -45,8 +45,9 @@ EXEC=$(exe_sources:.cpp=)
 
 all: $(DEPEND) $(EXEC)
 
-parallel:
-	$(MAKE) all CPPFLAGS+=-DPARALLELEXEC
+#parallel:
+#	$(MAKE) all CPPFLAGS+=-DPARALLELEXEC
+
 clean:
 	-\rm -f $(EXEC) $(OBJS)
 

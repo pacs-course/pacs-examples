@@ -1,4 +1,4 @@
-#Example of usage of static members#
+# Example of use of static members #
 
 A class that stores a double, counts how many objects of that class
    have been created and is able to access the average of the value of
@@ -12,18 +12,19 @@ members of the class.  For instance, a class of a `Polygon` family may
 have as static member variable the number of vertices of specific
 Polygons: for `Triangle` is 3, for a `Square` is 4 ...
 
-In modern C++ you can initialize in-class static variable members (before c++11 ou could do it only with ints),
+In modern C++ you can initialize in-class 
+static variable members (before c++11 ou could do it only with ints),
 but **you have to declare them inline**.
 
-Only to recall the issue
+Only to recall the issue:
 
 If you want to initialise a static member variable
 
-- Before c++11 (valis also now)
+- Before c++11 (valid also now)
 
 **in the header file Foo.h**
 
-```
+```c++
 class Foo
 {
 ...
@@ -46,10 +47,11 @@ inline static double x=6.0; // Definition and initialization
 };
 ```
 
-If the static variable is `constexpr` you can avoid inline since `constexpr` implies `inline` (since C++14).
+If the static variable is `constexpr` you can avoid inline 
+since `constexpr` implies `inline` (since C++14).
 
 
-#What do I get from this example?#
+# What do I get from this example? #
 - A possible use of static variables to track statistics of the class objects;
 - The issue of initialization of static member variables.
 
