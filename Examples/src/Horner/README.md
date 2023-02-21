@@ -1,6 +1,10 @@
 # Computing a polynomial with Horner rule. #
 
-You should firse enter the directory Examples/src/Utilities and then run
+Horner's rule is a fast and stable way of computing the value of a polynomial at a given point.  
+
+## How to compile ##
+
+You should first enter the directory Examples/src/Utilities and then run
 
 ````
 make library
