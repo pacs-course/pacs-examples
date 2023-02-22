@@ -6,6 +6,7 @@ Are you able to guess what will be printed on the terminal?
  */
 
 // Global variables (in the global scope)
+// Try to limit the use of global variable to the minumum (i.e. 0)
 int g = 10;
 int f = 30;
 // Namespace variable
@@ -21,7 +22,7 @@ namespace pippo
 int
 main()
 {
-  using namespace std; // std names in the current scope
+  using namespace std; // std names injected in the current scope
   int f = 55; // Hides ::f
   int g = -9999;    
   cout << "Local g=" << g << ", Global g=" << ::g << endl;
@@ -30,11 +31,11 @@ main()
     double f =
         9.9; // overrides f in the outer scope, which is now inaccessible!
     // While the global f is still accessible using full qualified name
-    // The g of the outer scope is accessible
+    // The g declared in  the enclosing scope is also accessible
     cout << "Local f=" << f << ", Global f=" << ::f << " g=" << g
         << endl;
     // also pippo::g and pippo::pluto::g ar still accessible with their qulified
-    // name!
+    // name, being namespace variables.
     cout << "pippo::g=" << pippo::g << " pluto::g=" << pippo::pluto::g << endl;
   }
   cout << " main scope f=" << f << endl;

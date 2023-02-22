@@ -124,7 +124,9 @@ main()
   double           c[] = {1, 2, 3};      // this was already possible in c++98
   int              j{3};                 // J is initialized to 3
 
-  //** Constructors and initilizer_list interaction (brace initialization)
+  /* std::complex is not an aggregate. Brace initialization is here just a call to the constructor
+     that takes teo arguments
+     */
   std::complex<double> cNumber = {1.0, 3.0};// copy-initialization of a complex
   // User defined constructors.
   MyClass myc{3,4.};// direct initialization
