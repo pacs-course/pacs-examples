@@ -446,7 +446,7 @@ If you have to work on the same files, the best practice is to create a new `bra
 ---
 
 ### SSH authentication
-![bg right:60% width:650px](./assets/rsa.png)
+![bg right:45% width:500px](./assets/rsa.png)
 
 1. Register to Github
 2. [Create the SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=linux).
@@ -458,6 +458,9 @@ git config --global \
 git config --global \
   user.email "name.surname@email.com"
 ```
+
+See [here](https://www.digitalocean.com/community/tutorials/understanding-the-ssh-encryption-and-connection-process) for more details on SSH. 
+
 ---
 
 ### Hands on `git` - Working on different files (1/2)
