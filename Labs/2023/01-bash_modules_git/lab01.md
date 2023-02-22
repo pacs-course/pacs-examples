@@ -211,6 +211,7 @@ To unzip the file, simply type `gzip -dk mhd416a.mtx.gz`
 - `grep` stands for **Global regular expression print**. It searches for lines with a given string or looks for a pattern in a given input stream.
 - `head` show the first lines of a file
 - `tail` show the last lines of a file 
+- `file` reads the files specified and performs a series of tests in attempt to classify them by type
 
 ---
 
