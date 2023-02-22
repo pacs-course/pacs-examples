@@ -8,6 +8,8 @@
 /*!  Note that this is not strictly necessary here since array has the relational
  *  operators. But it is a nice simple example of a possible use of CRTP.
  */
+namespace apsc::crtp
+{
 template <unsigned int N> class Point : public RelationalOps<Point<N> >
 {
 public:
@@ -42,4 +44,5 @@ public:
 private:
   std::array<double, N> coord;
 };
+}
 #endif

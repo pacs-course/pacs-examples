@@ -35,11 +35,11 @@ anArray()
  */
 template <class T, std::size_t N>
 std::ostream &
-operator<<(std::ostream &out, std::array<T, N> const &myarray)
+operator<<(std::ostream &out, std::array<T, N> const & myarray)
 {
   out << "Array dimension:" << N << "\n";
   out << "Array content" << std::endl;
-  for(auto i : myarray)
+  for(auto const & i : myarray)
     {
       out << i << " ";
     }
@@ -49,9 +49,9 @@ operator<<(std::ostream &out, std::array<T, N> const &myarray)
 
 /*!
  * A function that takes a pointer to an array of double, the old C-style for
- * arrays (and C++98 style). To show how you can use C++ standard and vectors
+ * arrays (and C++98 style). To show how you can use C++ standard arrays and vectors
  * with legacy code
- * @param a a pointer to an array
+ * @param a a pointer to a C array
  * @param n The size of the array
  */
 void
@@ -72,8 +72,7 @@ main()
   using namespace std;
   array<int, 3> b{1, 2, 3}; // brace initialization (array is an aggregate!!)
   std::cout << b;
-  array<double, 3> c = {
-    1., 2., 3.}; // brace-equal initialization (internal braces may be omitted)
+  array<double, 3> c = {1., 2., 3.}; // brace-equal initialization (internal braces may be omitted)
   // An array of aggregates is an aggregate! So I can use list initialization.
   // If I use this version I need to start with double brackets... I will not
   // explain why here, just believe me.

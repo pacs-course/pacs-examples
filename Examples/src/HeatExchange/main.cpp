@@ -91,7 +91,7 @@ main(int argc, char **argv)
   const auto &k  = param.k;  // Thermal conductivity
   const auto &hc = param.hc; // Convection coefficient
   const auto &M = param.M;   // Number of grid elements
-  const auto &solverType = param.solverType;
+  const auto &solverType = param.solverType; // 1 Gauss siedel, !=1 direct method
 #else
   // C++17 onwards version. This version works only with at least C++17
   // A oneliner! This is called structured bindings. It works because parameter
@@ -124,7 +124,6 @@ main(int argc, char **argv)
       int    iter = 0;
       double xnew, epsilon;
       // Gauss siedel iterations
-      // @todo replace with a direct solver
       do
         {
           epsilon = 0.;

@@ -10,7 +10,8 @@ namespace Geometry
 //! To drive the factory
 /*!
   This is an enum class. Introduced with C++11
-  This enumerator is not convertible to an int.
+  This enumerator is not implicitely convertible to an int
+  (it is explicitely convertible instead)
   It has to be addressed with the qualified name:
   Shape::Triangle of Shape::Square
 */
@@ -20,26 +21,59 @@ enum class Shape
   Triangle,
   Square
 };
+
 //! A factory of polygons.
 /*!
-  This is a not so simle simple example of object factory. For simplicity I use
-  a switch statement on an enum.
-  The complexity comes from the fact that different Polygon objects have
-  different constructors, taking different arguments. So I need to use variadic
-  templates! and if constexpr.
+  This simple version uses the defualt ocnstructor to constuct the
+  objects of the polymprphic family. Less flexible than the more complex
+  version below.
+
+  Indeed, you need to use setters afterwards if you need to change the state from the
+  default one.
+
+  @note I have chosen to inline it, so to keep everything in the header file
 */
-template <Shape SHAPE, class... Args>
+inline
 std::unique_ptr<AbstractPolygon>
-polyFactory(Args&&... args)
+polyFactory_simple(Shape s)
 {
-  if constexpr(SHAPE == Shape::Triangle)
-    return std::make_unique<Triangle>(std::forward<Args>(args)...);
-  else if constexpr(SHAPE == Shape::Square)
-    return std::make_unique<Square>(std::forward<Args>(args)...);
-  else if constexpr(SHAPE == Shape::Polygon)
-    return std::make_unique<Polygon>()(std::forward<Args>(args)...);
-  else
-    return nullptr; // To avoid compiler complains
+  switch(s)
+    {
+    case Shape::Triangle:
+      return std::make_unique<Triangle>();
+    case Shape::Square:
+      return std::make_unique<Square>();
+    case Shape::Polygon:
+      return std::make_unique<Polygon>();
+    default:
+      return nullptr;
+    }
+}
+
+
+
+//! A factory of polygons.
+/*!
+  This is a less simple simple example of object factory.
+  With the help of variadic templates I can use any constructor of the polymorphic object.
+  Indeed,  different Polygon objects have
+  different constructors, taking different arguments.
+*/
+template <class... Args>
+std::unique_ptr<AbstractPolygon>
+polyFactory(Shape s, Args&&... args)
+{
+  switch(s)
+    {
+    case Shape::Triangle:
+        return std::make_unique<Triangle>(std::forward<Args>(args)...);
+    case Shape::Square:
+        return std::make_unique<Square>(std::forward<Args>(args)...);
+    case Shape::Polygon:
+        return std::make_unique<Polygon>(std::forward<Args>(args)...);
+    default:
+        return nullptr;
+    }
 }
 
 } // namespace Geometry
