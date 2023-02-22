@@ -242,7 +242,7 @@ the changes become operative only after a new login.
 Changes in `.bashrc` becomes active just by opening a new terminal.
 
 If this is too confusing for you, replace `.profile` with `.bashrc` in
-my instructions above and everithing will wark the same way in
+my instructions above and everything will work the same way in
 practice.
 
 If you want to know more (and discover that you have also
