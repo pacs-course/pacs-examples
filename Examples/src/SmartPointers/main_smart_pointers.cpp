@@ -10,7 +10,7 @@ main()
 
   // Use the factory to create a polygon
   Point2D origin(1., 1.);
-  auto    square_ptr = polyFactory<Shape::Square>(origin, 3.0, 0.0);
+  auto    square_ptr = polyFactory(Shape::Square, origin, 3.0, 0.0);
   std::cout<<"A unique_pointer storing a Polygon:\n";
   square_ptr->showMe();
   /*
@@ -27,7 +27,7 @@ main()
   Point2D b=origin + Point2D{0.,1.};
   Point2D c=origin + Point2D{1.,0.};
   std::vector Vertices{origin,b,c};
-  std::shared_ptr<AbstractPolygon> apoly(polyFactory<Shape::Triangle>(Vertices) );
+  std::shared_ptr<AbstractPolygon> apoly(polyFactory(Shape::Triangle,Vertices) );
   std::shared_ptr<AbstractPolygon> bpoly(apoly);
   cout << "there are " << bpoly.use_count()
        << " shared pointers owning a polygon:" << endl;
