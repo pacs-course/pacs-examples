@@ -176,9 +176,7 @@ int main(int argc, char** argv)
 
 2. Load the toolchain `source /u/sw/etc/profile`.
 
-3. Make sure the Eigen module is loaded: ```
-module load gcc-glibc/11.2.0 
-module load eigen```.
+3. Make sure the Eigen module is loaded: `module load gcc-glibc eigen`.
 
 3. Compile and run the test:
 
