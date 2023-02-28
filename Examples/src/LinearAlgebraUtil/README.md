@@ -1,4 +1,4 @@
-#A Set of utilities for linear algebra#
+# A Set of utilities for linear algebra #
 
 To install the utilities in the PACS default folders do
 
@@ -35,11 +35,10 @@ Content
 	element to be discarded, all the elements shifted by one to the
 	left and the new element added at the back of the `RotatingVector`.
     It is generic, so the RotatingVector may store any type.
-	
-* `Utilities` An utility to extract the graph of a matrix and another
-  utility to apply symmetric permutation on a Eigen sparse matrix. We
-  have also an utility to apply RCMK reordering of a matrix.
- 
+
+* `thomas.hpp` Thomas algorithm to solve tridiagonal systems. It contains also a version for
+periodic systems, and a tool to multiply a tridiagonal matrix givne by 3 vectors and a vector.
+
 * `RotatingMatrix` Like rotating vector, but now the vectors are the compuns of an Eigen Matrix. In practice you have an Eigen matrix with a maximal number of columns
 you may add a column to the end of the matrix and if the maximal number of columns is reached, the columns are shifted to the left to give room to the new column. As a consequence the first column is canceled.
 

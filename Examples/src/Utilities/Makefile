@@ -12,7 +12,7 @@
 # Makefile.h file, where other important variables are also set.
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
-
+CXXFLAGS+=-std=c++20
 MAKEFILEH_DIR=../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc

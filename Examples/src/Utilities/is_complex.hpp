@@ -4,7 +4,7 @@
 #include <type_traits>
 /*!
  * @file is_complex.hpp
- * Apparently the Standard Libeary has no trait to test if a type is a
+ * Apparently the Standard Library has no trait to test if a type is a
  * complex<T> number This is a simple implementation with just one defect. It
  * tests if the type is a
  *

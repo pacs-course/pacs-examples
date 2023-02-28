@@ -1,4 +1,4 @@
-#Examples on function objects and lambdas#
+# Examples on function objects and lambdas #
 
 An object function, or *functor*, is a callable object implemented as a
 class or struct. A *callable object* is any object that can be called
@@ -22,7 +22,7 @@ AFunctor f;
 auto x = f(x); // calls the call operator
 ```
 
-#What do I learn here?#
+# What do I learn here? #
 The concept of functors, which is very used by many standard algorithms.
 
 The standard library also provides son base classes from which you can publicly derive your functor if it is a 

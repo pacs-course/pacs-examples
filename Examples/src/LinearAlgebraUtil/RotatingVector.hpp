@@ -9,6 +9,7 @@
 #define SRC_LINEARALGEBRA_UTILITIES_ROTATINGVECTOR_HPP_
 #include <algorithm>
 #include <vector>
+#include <array>
 
 namespace apsc
 {

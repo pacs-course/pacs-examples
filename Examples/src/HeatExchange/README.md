@@ -7,7 +7,7 @@ depending on a switch set in the parameter file, by default called `parameter.po
 Taken and heavily adapted from *"Simulation numerique an C++" of I. Danaila,
    F. Hecht e O. Pironneau, 2005* 
 
-** Note** This program makes use of the Thomas algorithm for the solution of a tridiagonal system of linear equations. To have it at disposal for the example you must first
+**Note** This program makes use of the Thomas algorithm for the solution of a tridiagonal system of linear equations. To have it at disposal for the example you must first
 - go into the folder `Utility`
 - do `make install`
 
@@ -49,7 +49,7 @@ module load boost
 ```
 
 
-#What do you learn from this Example?#
+# What do you learn from this Example? #
 - A very simple, but complete, finite element code;
 - The use of an *aggregate* (here a `struct` with only public attributes)  to store the main parameter of the code, with default values;
 - The use of `GetPot` to pass options in the command line;
