@@ -2,8 +2,8 @@
 // Created by forma on 30/01/23.
 //
 
-#ifndef C_INTRIANGLE_HPP
-#define C_INTRIANGLE_HPP
+#ifndef C_INPOLYGON_HPP
+#define C_INPOLYGON_HPP
 #include <array>
 #include <cmath>
 #include <concepts>
@@ -12,16 +12,24 @@
 namespace apsc
 {
 /*!
+ * Concept to express a Point
+ */
+  template <class P>
+  concept BarePoint = requires(P p)
+  {
+    {p[0]}->std::convertible_to<double>;
+  };
+/*!
  * Concept to express a simple basic structure for a polygon
  */
 template <class P>
 concept BarePolygon = requires(P p) {
                         // address operator returns something convertible to an
-                        // array of 2 doubles
+                        // BarePoint
                         {
-                          P{}[0]
-                        } -> std::convertible_to<std::array<double, 2>>;
-                        p.size();
+                          p[0]
+                        } -> BarePoint;
+                        p.size(); // It contains a method size()
                       };
 
 /*!
@@ -69,7 +77,7 @@ inPolygon(Poly const &poly, std::array<double, 2> const &point)
     return {b[0] - a[0], b[1] - a[1]};
   };
 
-  // Dot producto of two arrays
+  // Dot product of two arrays
   auto dot = [](Point const &a, Point const &b) {
     return b[0] * a[0] + b[1] * a[1];
   };

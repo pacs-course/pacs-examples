@@ -110,7 +110,7 @@ concept StandardClock =
     c.wallTimeNow();
   };
 /*!
- * A function tht masure the time taken to run a given function object double->double
+ * A function tht measure the time taken to run a given function object double->double
  *
  * @tparam FUN the type of the function object
  * @tparam StandardClock a type satisfying the concept of a clock
