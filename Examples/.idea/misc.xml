@@ -8,9 +8,11 @@
       <file path="$PROJECT_DIR$/src/CompositionWithVariadicTemplates" />
       <file path="$PROJECT_DIR$/src/Constexpr" />
       <file path="$PROJECT_DIR$/src/Horner" />
+      <file path="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
       <file path="$PROJECT_DIR$/src/Mesh" />
       <file path="$PROJECT_DIR$/src/Numeric_Limits" />
       <file path="$PROJECT_DIR$/src/Polygon" />
+      <file path="$PROJECT_DIR$/src/STL/Variant" />
       <file path="$PROJECT_DIR$/src/SmartPointers" />
       <file path="$PROJECT_DIR$/src/Utilities" />
       <file path="$PROJECT_DIR$/src/muParserInterface" />
@@ -23,17 +25,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Arrays" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Utilities" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/src/Arrays" />
+            <option value="$PROJECT_DIR$/src/Utilities" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Arrays">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Utilities">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>

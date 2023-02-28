@@ -1,7 +1,10 @@
 #ifndef HH_THOMASSOLV_HH
 #define HH_THOMASSOLV_HH
 #include <algorithm>
+#include "vectorConcept.hpp"
 namespace apsc
+{
+namespace LinearAlgebra
 {
 //! Solution of a tridiagonal system
 /*!
@@ -18,7 +21,7 @@ namespace apsc
   are not used <b>The dimension of the system is determined by the size of
   a</b>.
 
-  @tparam C type of a stl compliant sequential container. Typically a
+  @tparam C type complies with AlgebraicVector concept. Typically a
   vector<double>
   @param a diagonal terms
   @param b subdiagonal terms
@@ -29,7 +32,7 @@ namespace apsc
   @pre size of a,b,c, and f greater than one
   @pre <b>all elements of a are different from zero<\b>
  */
-template <class C>
+  template <apsc::TypeTraits::AlgebraicVector C>
 C
 thomasSolve(const C &a, const C &b, const C &c, const C &f)
 {
@@ -54,7 +57,7 @@ thomasSolve(const C &a, const C &b, const C &c, const C &f)
     }
   return x;
 }
-//! Solution of tridiagonal system on a system of n equations and symmetry
+//! Solution of tridiagonal system on a system of n equations and periodicity
 //! conditions
 /*!
   System is of the form
@@ -82,7 +85,7 @@ vector<double>
   @pre size of a,b,c, and f greater than one
   @pre <b>all elements of a are different from zero</b>
  */
-template <class C>
+template <apsc::TypeTraits::AlgebraicVector C>
 C
 thomasSolveSym(const C &a, const C &b, const C &c, const C &f)
 {
@@ -120,7 +123,7 @@ thomasSolveSym(const C &a, const C &b, const C &c, const C &f)
   @param b lower diagonal stored in b[1]... b[n-1]
   @param c upper diagonal stored in c[0] c[n-2]
   @param v the vector to be multiplied with
-  @param sym true is the system represents a symmetric problem,
+  @param sym true is the system represents a periodic problem,
   see @ref thomasSolveSym
   @return the result
 
@@ -128,7 +131,7 @@ thomasSolveSym(const C &a, const C &b, const C &c, const C &f)
  n=a.size()</b>
 */
 
-template <class C>
+template <apsc::TypeTraits::AlgebraicVector C>
 C
 matVecTrid(const C &a, const C &b, const C &c, const C &v,
            const bool sym = false)
@@ -147,5 +150,6 @@ matVecTrid(const C &a, const C &b, const C &c, const C &v,
   return res;
 }
 
+} // namespace LinearAlgebra
 } // namespace apsc
 #endif
