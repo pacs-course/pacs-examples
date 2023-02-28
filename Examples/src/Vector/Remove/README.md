@@ -4,9 +4,9 @@ Unfortunately, sometimes in C++ names may be misleading. And a typical example i
 
 **`std::remove` and `std::remove_if` don't remove anything!** 
 
-They operate on a range (i.e. any container, here we see the example for a
+They operate on a sequential range (i.e. any sequential container, here we see the example for a
 `std::vector`) by moving at the end of the container the "removed"
-elements and return an iterator to the position where the "removed"
+elements, and returns an iterator to the position where the "removed"
 portion begins.
 
 So removing 3 in `[1,2,3,4,5]` generates `[1,2,4,5,*]`, where `*` is a undefined value, and return an iterator to element `*`. 
@@ -44,7 +44,7 @@ C++20 has introduced a new version of `erase` that does also the job of remove+e
     v.erase(it, v.end());
 with simply
     
-    auto n= erase(v, 3);
+    auto n= std::erase(v, 3);
 
-and `n` contains the number of elements erased!. I have left here the pre C++20 version since C++20 is rather new.
+and `n` contains the number of elements erased!. I have left in the example the pre C++20 version since C++20 is rather new.
 
