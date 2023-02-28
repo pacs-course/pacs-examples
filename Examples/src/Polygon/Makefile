@@ -42,7 +42,8 @@ EXEC=$(exe_sources:.cpp=)
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) $(EXEC)
+
+all: $(DEPEND) $(EXEC) 
 
 clean:
 	$(RM) -f $(EXEC) $(OBJS)
