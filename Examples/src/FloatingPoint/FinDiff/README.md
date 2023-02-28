@@ -1,11 +1,11 @@
-#Round-off error example: finite difference#
+# Round-off error example: finite difference #
 
 A simple test of forward error analysis for the computation of the
 derivative of a function via centered finite differences.  It shows
 the relevance of the truncation error as the step h gets smaller
 
 * make run runs the test
-* Change file data.pot may to modify some of the parameters
+* Change file data.pot to modify some of the parameters
 
 With just `make` you make three main programs for different types of
 floats. Each one produces a file that can be viewed with gnuplot (or
@@ -15,14 +15,22 @@ program. You may have a look at it.
 
 With `make run` all this is done automatically.
 
-**NEW VERSION**: it computes the derivative also with the special
+The code computes the derivative also with the special
 formula that does not takes differences, so it is not subject to
-cancellation errors. Have a look at the code!
+cancellation errors. Have a look at the code! The technique is illustrated in 
+[this post.](https://sinews.siam.org/Details-Page/differentiation-without-a-difference)
 
-#What do I learn here?
 
-That roundoff errors are for real and, in particular, roundoff errors induced by cancellation may (in some special cases)
+# What do I learn here? #
+
+- That roundoff errors are for real and, in particular, roundoff errors induced by cancellation may (in some special cases)
 worsen the accuracy of an algorithm.
 
-A good not though" in most cases round-off erorrs are negligible (if you do things right). But it is important to remember that on a computer
+Luckily, in many cases round-off erorrs are negligible 
+(if you do things right). But it is important to remember that on a computer
 you are working with floating points not real numbers.
+
+**Note** There are libraries that allow for arbitrary precision 
+arithmetics. Clearly, computations with those libraries become much more costly,
+So they are used only when having high accuracy is crucial.
+

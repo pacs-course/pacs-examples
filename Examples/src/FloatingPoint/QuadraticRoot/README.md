@@ -1,4 +1,4 @@
-#Round-off error due to cancelation#
+# Round-off error due to cancelation #
 
 This is another example of round-off error accumulation due to
 cancellation. Using the common formula for the root of a quadratic
@@ -16,7 +16,7 @@ the code indeed uses a preprocessor macro variable.
 **Note:** I have implemented the code using `std::complex`, so this is
 also an example of complex numbers in C++
 
-#What do you learn with this code#
+# What do you learn with this code #
 - That the use of less standard numerical algorithms may be necessary if you wish to control roudoff error in particular situations;
 - The use of CPP macro to select different compilation options;
 - The use od `std::complex`.

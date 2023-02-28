@@ -1,6 +1,11 @@
 #ifndef HH_Parameters_HH
 #define HH_Parameters_HH
 #include <iosfwd>
+/*!
+ * A structure holding the parameters
+ *
+ * It is an aggregate, you can use structured binding and brace initialization
+ */
 struct parameters
 {
   //! max number of iteration for Gauss-Siedel

@@ -8,8 +8,8 @@
     "k":0.164,
     "itermax":1000000,
     "hc":200.0E-6,
-    "M":10,
+    "M":100,
     "toler":1.0E-8,
-    "solverType":1,
+    "solverType":0,
     "docstring":"File for Example HeatExchange"
 }
