@@ -250,3 +250,13 @@ make.dep
 *.vscode
 *.pptx
 !/Labs/2023/**/*.pdf
+/Examples/src/FloatingPoint/FPFailure/explanation.pdf
+/Examples/src/FloatingPoint/FPFailure/main_fpefailure
+/Examples/src/LinearAlgebraUtil/test/testBasicMinFun
+/Examples/src/LinearAlgebraUtil/test/testBasicZeroFun
+/Examples/src/LinearAlgebraUtil/test/testCooWrite
+/Examples/src/LinearAlgebraUtil/test/testMM_readers
+/Examples/src/LinearAlgebraUtil/test/testRotatingVector
+/Examples/src/LinearAlgebraUtil/test/test_RotatingMatrix
+/Examples/src/LinearAlgebraUtil/test/test_mathUtils
+/Examples/src/LinearAlgebraUtil/test/test_thomas
