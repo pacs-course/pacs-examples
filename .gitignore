@@ -260,3 +260,10 @@ make.dep
 /Examples/src/LinearAlgebraUtil/test/test_RotatingMatrix
 /Examples/src/LinearAlgebraUtil/test/test_mathUtils
 /Examples/src/LinearAlgebraUtil/test/test_thomas
+/Examples/src/FloatingPoint/FinDiff/main_double
+/Examples/src/FloatingPoint/FinDiff/main_extended
+/Examples/src/FloatingPoint/FinDiff/main_float
+/Examples/src/InPolygon/main_inPolygon
+/Examples/src/Utilities/test_absdiff
+/Examples/src/Utilities/test_hash_combine
+/Examples/src/Utilities/test_overloaded
