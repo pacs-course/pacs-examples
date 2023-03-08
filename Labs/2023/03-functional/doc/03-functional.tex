@@ -1,0 +1,57 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+\usetheme{default}
+\setbeamercovered{invisible}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+    \flushright{\hfill \insertframenumber{}/\inserttotalframenumber}
+}
+
+\begin{document}
+    \title{Functional}
+    \author{Matteo Caldana}
+    \date{10/03/2023}
+    
+\begin{frame}[plain, noframenumbering]
+    \maketitle
+\end{frame}
+
+\begin{frame}{Warning}
+    To complete some points of the following exercises you need to install the utilities in "Examples Utilities" and the "Extras". If the submodules folders (json and muparser) are empty, you forgot the \texttt{--recursive} option when cloning the pacs repo, you can fix it by running \texttt{git submodule update --init} in the root folder of the pacs repo.
+\end{frame}
+
+\begin{frame}{Exercise 1 - Horner algorithm}
+\begin{enumerate}
+\item Implement the \texttt{eval()} and \texttt{eval\_horner()} functions to compute:
+\begin{align*}
+p_\text{eval}(x) &= a_0 + a_1x + a_2x^2 + a_3x^3 + \ldots + a_nx^n, \\
+p_\text{Horner}(x) &= a_0 + x \left(a_1 + x \left(a_2 + x \left(a_3 + \ldots + x\left(a_{n-1} + x \, a_n\right) \ldots \right) \right) \right).
+\end{align*}
+\item Implement an \texttt{evaluate\_poly()} function by manually looping over the input points.
+\item Modify \texttt{evaluate\_poly()} to use \texttt{std::transform}.
+\item Implement an \texttt{evaluate\_poly\_parallel()} that makes use of the parallel execution policies of \texttt{std::transform} (available since \texttt{C++17}).
+\item Convert \texttt{eval} and \texttt{eval\_horner} from function pointers to \texttt{std::function}.
+\item (\textit{Homework}) Let the user choose from a json parameters file the degree of the polynomial and the discretization interval. The \texttt{json} library can be installed by running \texttt{./install\_PACS.sh} from \texttt{\$\{PACS\_ROOT\}/Extras/json}
+\end{enumerate}
+
+\textbf{NB}: the parallel version requires to link against the Intel Threading Building Blocks (\texttt{TBB}) library (preprocessor flags \texttt{-I\$\{mkTbbInc\}}, linker flags \texttt{-L\$\{mkTbbLib\} -ltbb}).
+\end{frame}
+
+\begin{frame}{Exercise 2 - Newton solver}
+\begin{enumerate}
+\item Implement a \texttt{NewtonSolver} class.
+\item Let algorithm parameters be read from the command line using \texttt{GetPot}.
+\item Write different \texttt{main} files that pass functions and derivatives as:
+\begin{enumerate}
+\item function pointers;
+\item (\textit{Homework}) lambda functions;
+\item \texttt{muParser} functions (the \texttt{muParser} library can be installed by running \texttt{./install\_PACS.sh} from \texttt{\$\{PACS\_ROOT\}/Extras/muParser}).
+\item (\textit{Homework}) Let the user pass the function and the parameters from command line using \texttt{GetPot} and \texttt{muParser}.
+\end{enumerate}
+\item Use the solver to solve the equation
+\begin{equation*}
+x^3 + 5 x + 3 = 0.
+\end{equation*}
+\end{enumerate}
+\end{frame}
+
+\end{document}
