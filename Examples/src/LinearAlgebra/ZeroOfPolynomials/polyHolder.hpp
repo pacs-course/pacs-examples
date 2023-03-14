@@ -24,7 +24,7 @@ namespace apsc
     *
     * It is just a different version of Holder algorithm already seen in other examples.
     *
-    * @pre Coefficients is a container of Coefficient. Coefficient is either double of complex<double>
+    * @pre Coefficients is a container of Coefficient. Coefficient is either a double of complex<double>
     * @tparam Coefficients The container of coefficients (must be a sequential container, coefficient ordered from lowest to highest)
     * @tparam Coefficient The type of a polynomial coefficient
     * @param pCoeff The coefficients
@@ -105,8 +105,9 @@ namespace apsc
       qCoeff.clear();
     }
     /*!
-       * @brief Sets coefficients
+     * @brief Sets coefficients
      * Version for real coefficients.
+     * I need to convert them to complex
      * @param coeff
      */
     void setCoeff(std::vector<double> const & coeff)
@@ -116,7 +117,7 @@ namespace apsc
       pCoeff.reserve(coeff.size());
       for (auto const & x: coeff)
         {
-          pCoeff.emplace_back(std::complex<double>(x,0));
+          pCoeff.emplace_back(x,0.);
         }
       qCoeff.clear();
     }
@@ -135,7 +136,7 @@ namespace apsc
      * @param order The order of derivative to be computed (defaulted to 1)
      * @return A vector with all the derivative (at 0 you have the 0th derivative = the value at x)
      */
-    std::vector<std::complex<double>> derivatives(Coefficient const & x, unsigned int order=1)
+    std::vector<std::complex<double>> derivatives(Coefficient const & x, unsigned int order=1)const
     {
       std::vector<std::complex<double>> values;
       const unsigned int maxorder=pCoeff.size();
@@ -147,7 +148,7 @@ namespace apsc
         {
           values.emplace_back( this->sintDivision(x) );
           values.emplace_back(polyEval(this->qCoeff,x));
-          // this is the case of derivatives higher than one. I apply sinthetic
+          // this is the case of derivatives higher than one. I apply synthetic
           // division recursively
           if (order>1)
             {
@@ -181,9 +182,9 @@ namespace apsc
   /*!
    * @brief The  coefficients of the nth derivative
    *
-   * If n=0 is a stupid way of getting the polynomial coefficient. Indeed for n=0 the derivative is
-   * the polynomial itself. This is a different algorithm than the one presented in the forlder src/Polynomials.
-   * This is a not recursive implementation, that however needs the computation of a factorial coefficient,
+   * If n=0 it is a stupid way of getting the polynomial coefficient. Indeed for n=0 the derivative is
+   * the polynomial itself. This is a different algorithm than the one presented in the folder src/Polynomials.
+   * It is a not recursive implementation, that however needs the computation of a factorial coefficient,
    * which is in the protected section since it is not of general use.
    *
    * @pre Polynomial coefficients must be set
@@ -225,7 +226,7 @@ namespace apsc
    * @param x The point
    * @return The value of the polynomial at the point
    */
-      Coefficient sintDivision(Coefficient const & x)
+      Coefficient sintDivision(Coefficient const & x)const
       {
         qCoeff.clear();
         // special cases
@@ -267,9 +268,9 @@ namespace apsc
     Coefficients pCoeff; //!< The coefficients of the polynomial
     /*!
      * The coefficients of the associated polynomial.
-     * Must be mutable since the state may change also for constant objects.
+     * Must be mutable since they may change also on "morally constant" objects.
     */
-    Coefficients qCoeff;
+    mutable Coefficients qCoeff;
   };
     /*!
      * @brief Finds roots of a polynomial

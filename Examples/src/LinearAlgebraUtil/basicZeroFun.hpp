@@ -14,9 +14,13 @@
 #include <iostream>
 #include <limits>
 #include <tuple>
+// In this version (march 2023) I have added concepts, just to show their use
+// I constrain the template parameter defining the function to be convertible to a
+// function wrapper with the same signature.
+#include "functionConcepts.hpp" // from Utility/
 namespace apsc
 {
-/*!
+ /*!
  * Computes the zero of a scalar function with the method of the Regula Falsi
  * We stop when the residual is below lolerance;
  *
@@ -29,7 +33,7 @@ namespace apsc
  * @return The approximation of the zero of f
  * @pre f(a)*f(b)<0
  */
-template <class Function>
+template <TypeTraits::ScalarFunction Function>
 double
 regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
             double tola = 1.e-10)
@@ -86,7 +90,7 @@ regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
  * @note It the interval brackets the zero convergence should be guaranteed.
  *
  */
-template <class Function>
+template <TypeTraits::ScalarFunction Function>
 double
 bisection(Function const &f, double a, double b, double tol = 1.e-5)
 {
@@ -129,7 +133,7 @@ bisection(Function const &f, double a, double b, double tol = 1.e-5)
  * converging)
  *
  */
-template <class Function>
+template <TypeTraits::ScalarFunction Function>
 std::tuple<double, bool>
 secant(Function const &f, double a, double b, double tol = 1e-4,
        double tola = 1.e-10, unsigned int maxIt = 150)
@@ -169,7 +173,7 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
  * converging)
  *
  */
-template <class Function, class Dfunction>
+template <TypeTraits::ScalarFunction Function, TypeTraits::ScalarFunction Dfunction>
 std::tuple<double, bool>
 Newton(Function const &f, Dfunction const & df, double a, double tol = 1e-4,
        double tola = 1.e-10, unsigned int maxIt = 150)

@@ -20,4 +20,8 @@ Indeed, for polynomial with real coefficient one can implement a different defla
 
 Newton-Horner has no global convergence property, particularly for polynomials in the complex plane. One can ameliorate it by a backtracking technique, as in the `Newton` example. 
 
-Deflation may also introduce  
+Deflation may also introduce  round-off error. So consider this code only as a interesting starting point.
+
+#What do I learn here ?#
+-An iteresting algorithm for polynomial zeroes.
+- A use of `mutable`: the coefficients of the associated polynomial are stored when synthetic division is performed to compute polinomial derivatives at a point. But the method to compute the derivative is "morally const": I expect it to be callable also on constant `polyHolder` objects. 

@@ -35,6 +35,8 @@ main()
             << is_complex_v<decltype(c)> << std::endl;
   std::cout << a << " is complex=" << std::boolalpha
             << is_complex_v<decltype(a)> << std::endl;
-  fun(a);
+  fun(a); //
   std::cout << fun2(a) << std::endl;
+  // fun2("hello"); fails since char* is not a complex
+ // fun2(8.); fails even if double->complex<double> is implicit
 }

@@ -2,6 +2,9 @@
 #define HH_IS_COMPLEX_HHH
 #include <complex>
 #include <type_traits>
+#if  __cplusplus >= 202002L
+#include <concepts>
+#endif
 /*!
  * @file is_complex.hpp
  * Apparently the Standard Library has no trait to test if a type is a
@@ -37,7 +40,20 @@ namespace TypeTraits
 
 #if  __cplusplus >= 202002L
   template <class T>
-  concept Complex = is_complex_v<T>;
+  concept Complex = is_complex_v<T>;// I have the trait so I can just do this
+  /*concept Complex = requires(T a)
+  {
+  typename T::value_type;
+  {a.imag()}->std::same_as<typename T::value_type>;
+  {a.real()}->std::same_as<typename T::value_type>;
+  };*/
+  template<class T>
+  concept FloatComplex=
+  requires(T x)
+  {
+      typename T::value_type;
+      requires Complex<T> && std::floating_point<typename T::value_type>;
+  };
 #endif
 } // end namespace TypeTraits
 } // end namespace apsc
