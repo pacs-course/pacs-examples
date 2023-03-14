@@ -110,10 +110,10 @@ std::istringstream nextLine(std::istream &stream);
 /*!
  * When consuming whitespace-delimited input (e.g. int n; std::cin >> n;) any
  * whitespace that follows, including a newline character, will be left on the
- * input stream. Then when switching to line-oriented input, the first line
- * retrieved with getline will be just that whitespace. In the likely case that
+ * input stream. Then, when switching to line-oriented input, the first line
+ * retrieved with getline() will be just that whitespace. In the likely case that
  * this is unwanted behaviour, possible solutions is to call this function
- * passing the steam to be cleaned up.
+ * passing the stream to be cleaned up.
  *
  * @param istream The input stream
  */
@@ -121,7 +121,7 @@ void cleanStream(std::istream &istream);
 /*!
  * This is an helper class to allow the handling of a stringstream that holds a
  * whole text file in a buffer.
- *  \
+ *
  * Reading the file is faster since it is read in a whole block. At the price of
  * more memory usage.
  *
@@ -154,7 +154,7 @@ public:
    */
   void read(std::string const &fileName);
   /*!
-   * Allow extraction of the stored test using the classical streaming operator
+   * Allow extraction of the stored text using the classical streaming operator
    *
    * @tparam T the data type
    * @param data The data that will be read
@@ -176,7 +176,7 @@ public:
    * You can get the enclosed string stream to operate on it at wish.
    * @note you should extract it only by reference
    *
-   * @return the stringstrem associated to the text buffer
+   * @return the stringstream associated to the text buffer
    */
   std::stringstream &
   globbedText()

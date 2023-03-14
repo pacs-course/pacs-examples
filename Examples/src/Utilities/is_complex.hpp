@@ -47,6 +47,9 @@ namespace TypeTraits
   {a.imag()}->std::same_as<typename T::value_type>;
   {a.real()}->std::same_as<typename T::value_type>;
   };*/
+  /*!
+   * A concept expressing a complex number on the float field
+   */
   template<class T>
   concept FloatComplex=
   requires(T x)
@@ -54,6 +57,19 @@ namespace TypeTraits
       typename T::value_type;
       requires Complex<T> && std::floating_point<typename T::value_type>;
   };
+
+  /*!
+   * Concept including FloatComplex and complex<T> with T an integral type
+   */
+  template<class T>
+   concept ArithmeticComplex= Complex<T> ||
+   requires(T x)
+   {
+       typename T::value_type;
+       requires std::integral<typename T::value_type>;
+   };
+
+
 #endif
 } // end namespace TypeTraits
 } // end namespace apsc
