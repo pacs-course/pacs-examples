@@ -80,7 +80,7 @@ namespace apsc
           using value_type = typename T::value_type;
           // using product_type=typename product<value_type>::result_type;
           using product_type = decltype(
-              std::declval<innerProduct<value_type> &>()(value_type(0), value_type(0)));
+              std::declval<innerProduct<value_type> >()(value_type(0), value_type(0)));
           return std::transform_reduce(
               std::execution::par, std::begin(a), std::end(a), std::begin(b),
               static_cast<product_type>(0), std::plus<product_type>(),

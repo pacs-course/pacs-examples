@@ -25,7 +25,7 @@ namespace apsc
     Extension()=default;
     /*!
      * @fn  Extension(T&&...)
-     * @brief COntructor taking Exensions objects
+     * @brief COntructor taking Extensions objects
      *
      * @tparam T The extensions
      * @param ext The Extensions objects

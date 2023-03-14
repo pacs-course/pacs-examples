@@ -20,9 +20,12 @@ In `simpleVisitor.hpp` you have a basic usage of `std::visit`. While, in `manyVa
 
 `std::visit` and `std::variant` allow to implement a sort of **runtime polymorphysm**. Have a look at  [this page](https://www.cppstories.com/2020/04/variant-virtual-polymorphism.html/).
 
-In the `main` I show also an advanced used of variadic tempalte that allow to create visitors on the fly. This special tempalte struct  (called `overloaded`) is also contained in the header file `overloaded.hpp` of the `Utilities/` folder.
+In the `main` I show also an advanced used of variadic template that allow to create visitors on the fly. This special template  (called `overloaded`) is also contained in the header file `overloaded.hpp` of the `Utilities/` folder.
+
+
 
 # What do I learn here? #
 
 - An interesting utility of modern C++.
-- A way to implement a runtime polymorphism via  
+- A way to implement a runtime polymorphism via  `variant` and `visit`
+- A use of variadic templates 	

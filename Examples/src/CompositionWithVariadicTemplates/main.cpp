@@ -33,15 +33,18 @@ main()
   c.setBcType(BcType::Dirichlet);
   auto res = dot(a, b);
   /// auto res2=dot(a,e); ERROR dimension differs!!!
-  Id ident(5);
+  Id ident{5};
   // I am passing the point and the constructor for the Id!
-  std::array<double, 2> praw = std::array<double, 2>{0., 1.5};
+  std::array<double, 2> praw = {0., 1.5};
   Point2dSimple         psi{praw};
+  // I am passing the point and the constructor for the Id!
   Point2dWithId          pwi{praw, ident};
   pwi.setId(4);
   std::cout << pwi.getId() << std::endl;
   Point2dWithIdAndBc z{praw,10,BcType::Neumann};
   std::cout << z.getId() << std::endl;
+  //Point2dWithId K({0., 2.}, 3); wont work
+  // since a Point does not have a constructor with an std::initializer_list
   Point2dWithId K(std::array<double, 2>{0., 2.}, 3);
   std::cout << K.getId() << std::endl;
 }
