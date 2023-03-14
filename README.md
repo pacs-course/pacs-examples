@@ -20,6 +20,18 @@ git clone --recursive git@github.com:pacs-course/pacs-examples.git
 
 In the latter case you have to register your ssh keys on a github account.
 
+To keep your local repo update with changes upstream do frequently
+
+```
+git pull --recurse-submodules
+```
+
+or just, from this directory,
+
+```
+./update.sh
+```
+
 
 The software requires a c++ compiler, i.e. gcc >= 8.0 or clang >= 8.
 You may check the version of you compiler with the option -v. Several examples have now been ported to c++17

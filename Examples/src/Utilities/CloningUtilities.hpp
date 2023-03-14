@@ -61,7 +61,9 @@ creating an object of type T.
    */
   template <typename T> constexpr bool has_clone_v = isClonable<T>();
 
-  // concept
+  /*!
+   * Concept expressing the traits
+   */
   template <class T>
   concept Clonable = has_clone_v<T>;
 
@@ -175,15 +177,17 @@ clone() method with the indicated signature.
 
 @tparam T the base class
   */
-template <class T> class PointerWrapper
+template <TypeTraits::Clonable T> class PointerWrapper
 {
 public:
   // Check if clone is present
   // Here I prefer not using concepts to have a more extensive error message
-  static_assert(
+// I am using concepts now
+  /*static_assert(
     TypeTraits::isClonable<T>(),
     "template parameter of Wrapper must be a clonable class. "
     "You must have a virtual clone()const method that returns a unique_ptr<T>");
+    */
   // The type of the stored unique pointer
   using Ptr_t = std::unique_ptr<T>;
   /*! This class imitates that of the unique pointer so it exposes the same

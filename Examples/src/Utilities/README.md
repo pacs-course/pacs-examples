@@ -26,6 +26,9 @@ List of the utilities:
 * `absdiff` If you have to compute the absolute difference of two integral type
 you cannot just use `std::abs(x-y)` since if the integral types are unsigned the difference gives wrong result if x>y. This utility computes the correct result
 if the arguments are both of signed or unsigned type. It gives an error otherwise, since the situation is ambiguous.
+
+* `Arithmetic.hpp`  introduces concepts to constrain template types to floating point or integral types, possibly including also complex numbers. 
+
 * `chrono`  An utility to take times, built on the chrono utilities of the standard library.
 
 * `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class T containes the (usually virtual) method
@@ -51,7 +54,7 @@ semantic! The "pointed" class should be clonable. It means that you can use it t
 
 * `hashCombine.hpp` Provides the function object `hash_combine` that may be used to combine the hash key of object of different types, provided the latter have `std::hash` defined. It can be used to creat the hash key of an user-defined class by combining that of non-static members of the class, in order to achieve better uniformity. The usage is explained in the file.
 
-* `is_complex.hpp` A header file containing a type trait to interrogate is a type is a `std::complex<T>`
+* `is_complex.hpp` A header file containing a type trait to interrogate is a type is a `std::complex<T>`. It also include the definition of the concept `Complex` to constrain a template type to be an `std::complex<T>` and `ArithmeticComplex`, where we also impose that `T` be either a floating point or an integer.
 
 * `is_eigen.hpp` A header file containing a type trait to interrogate is a type is a `Eigen::Matrix`
 
