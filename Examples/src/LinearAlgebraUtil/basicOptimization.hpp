@@ -5,11 +5,20 @@
  *      Author: forma
  */
 
+
+#ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_
+#define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_
 #include <array>
 #include <cmath>
 #include <tuple>
-#ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_
-#define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_
+#include <numbers> // C++20 stuff to get golden ration
+/*
+ * In this version (march 2023) I use concepts to constrain the
+ * template parameter indicating the function. Function must be
+ * double (double) or double (double const &)
+ */
+#include "functionConcepts.hpp"// from Utility
+
 namespace apsc
 {
 /*!
@@ -24,12 +33,12 @@ namespace apsc
  * @param maxIter Max number of iteratin. Safeguard against non-convergence
  * @return The found extremum and a status (=false max iterations reached)
  */
-template <class Function>
+template <TypeTraits::ScalarFunction Function>
 std::tuple<double, bool>
 golden_search(Function const &f, double a, double b, double tol = 1.e-5,
               unsigned maxIter = 100)
 {
-  constexpr double phi = (std::sqrt(5.) + 1) / 2;
+  constexpr double phi = std::numbers::phi_v<double>;//(std::sqrt(5.) + 1) / 2;
   unsigned         iter{0u};
   while(std::abs(b - a) > tol && iter < maxIter)
     {
@@ -45,19 +54,19 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
 }
 
 /*!
- * Tries to bracket an interval containing a minimim of a continuous function f
+ * Tries to bracket an interval containing a minimum of a continuous function f
  *
  * @tparam Function The type of a callable object double (double)
- * @param f A callable object doube (double)
+ * @param f A callable object of signature double (double)
  * @param x1 An initial guess
  * @param h The initial increment
- * @param maxIter Maximum number of itaration
+ * @param maxIter Maximum number of iteration
  * @return The found bracket points and a status (0=ok, 1= bad initial point, 2
  * max iteration exceeded)
  *
  * @note The initial point is not valid if it is near a maximum.
  */
-template <class Function>
+template <TypeTraits::ScalarFunction Function>
 std::tuple<double, double, int>
 bracketIntervalMinumum(Function const &f, double x1, double h = 0.01,
                        unsigned int maxIter = 100)

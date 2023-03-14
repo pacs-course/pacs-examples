@@ -27,7 +27,7 @@ some variable in the **local** `Makefile.inc` file (or create corresponding envi
 * `mkTbbLib` should contain the directory where `libtbb.so`
 resides. If you have a standard istallation you may put `/usr/lib`, If
 you use the module system for the PACS course this value is set
-through an envoronmental variable.
+through an environmental variable.
 
 * `mkTbbLib` should contain the directory where the header files of
 the `tbb` library resides. If you have installed the `libtbb` package
@@ -36,9 +36,9 @@ installed also the development version (normally called `libtbb_dev`),
 otherwise you do not have the header files.  If you have a standard
 istallation you may put `/usr/include`, If you use the module system
 for the PACS course the value of `mkTbbInc` is set through an
-envoronmental variable.
+environmental variable.
 
-If you want to compile the parallel version of the example d
+If you want to compile the parallel version of the example do
 
     make parallel
     
