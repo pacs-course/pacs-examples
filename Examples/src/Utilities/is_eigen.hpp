@@ -23,40 +23,76 @@ namespace TypeTraits
    */
   template <class T, typename S=void> struct is_eigen : std::false_type
   {};
+  template <class T, typename S=void> struct is_dense_eigen : std::false_type
+   {};
+  template <class T, typename S=void> struct is_sparse_eigen : std::false_type
+   {};
 
   /*!
-   * Here the specialised function.
-   * @tparam T The Derived type of the Eigen Matrix/Vector
+   * Here a specialized clas.
+   * @tparam T The Derived type of the Eigen Matrix/Vector or Array
    */
   template <class T>
   struct is_eigen<T,
                   std::enable_if_t<
-                    std::is_base_of_v<Eigen::MatrixBase<T>,T>
+                    std::is_base_of_v<Eigen::MatrixBase<T>,T> ||
+                    std::is_base_of_v<Eigen::SparseMatrixBase<T>,T> ||
+                    std::is_base_of_v<Eigen::DenseBase<T>,T>
                     >
                   >
     : std::true_type
   {};
 
   /*!
+   * Here a specialized class.
+   * @tparam T The Derived type of the Sparse Eigen Matrix/Vector
    */
   template <class T>
-  struct is_eigen<T,
+  struct is_sparse_eigen<T,
                   std::enable_if_t<
                     std::is_base_of_v<Eigen::SparseMatrixBase<T>,T>
                     >
                   >
     : std::true_type
   {};
+  /*!
+   * Here a specialized class.
+   * @tparam T The Derived type of the Dense Eigen Matrix/Array
+   */
+  template <class T>
+   struct is_dense_eigen<T,
+                   std::enable_if_t<
+                   std::is_base_of_v<Eigen::MatrixBase<T>,T> ||
+                   std::is_base_of_v<Eigen::DenseBase<T>,T>
+                     >
+                   >
+     : std::true_type
+   {};
 
   /*!
    * This inline constexpr mimick the utility present in standard type traits
    * since C++17
    */
   template <class T> inline bool constexpr is_eigen_v = is_eigen<T>::value;
+  template <class T> inline bool constexpr is_sparse_eigen_v = is_sparse_eigen<T>::value;
+  template <class T> inline bool constexpr is_dense_eigen_v = is_dense_eigen<T>::value;
 
 #if  __cplusplus >= 202002L
+  /*!
+   * Concept for a generic Eigen Matrix/Array or expression
+   */
   template <class T>
   concept EigenMatrixType = is_eigen_v<T>;
+  /*!
+   * Concept for a sparse Eigen matrix type or expression
+   */
+  template <class T>
+  concept EigenSparseMatrixType = is_sparse_eigen_v<T>;
+  /*!
+   * Concept for a dense Eigen matrix/array type or expression
+   */
+  template <class T>
+  concept EigenDenseMatrixType = is_dense_eigen_v<T>;
 #endif
 
 } // namespace TypeTraits
