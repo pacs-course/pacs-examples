@@ -3,7 +3,7 @@ include ../../../Makefile.inc
 OCPPFLAGS:=$(CPPFLAGS)
 CPPFLAGS=-I.. $(OCPPFLAGS)
 # for multithreading
-LDLIBS+=-ltbb#
+LDLIBS+=-L$(TBB_LIBDIR) -ltbb#
 # You may have an include file also in the current directory
 #
 -include Makefile.inc

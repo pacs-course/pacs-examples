@@ -56,7 +56,8 @@ semantic! The "pointed" class should be clonable. It means that you can use it t
 
 * `is_complex.hpp` A header file containing a type trait to interrogate is a type is a `std::complex<T>`. It also include the definition of the concept `Complex` to constrain a template type to be an `std::complex<T>` and `ArithmeticComplex`, where we also impose that `T` be either a floating point or an integer.
 
-* `is_eigen.hpp` A header file containing a type trait to interrogate is a type is a `Eigen::Matrix`
+* `is_eigen.hpp` A header file containing a type trait to interrogate is a type is a `Eigen::Matrix`.
+We hve also traits and concepts to test sparse and dense matrices separately.
 
 
 * `JoinVectors.hpp` Just an example on how to imitate the `join` phyton command. You can use it to iterate jointly on a set of vectors. 
