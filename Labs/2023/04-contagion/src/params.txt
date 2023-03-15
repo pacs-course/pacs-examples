@@ -1,0 +1,50 @@
+[domain]
+  # Domain is [0, domain_size] x [0, domain_size].
+  domain_size = 1
+
+  # Pub size and location.
+  pub_size = 0.1
+
+  pub_x = 0.5
+  pub_y = 0.5
+[../]
+
+[contagion]
+  # Number of agents.
+  n_agents = 200
+
+  # Number of timesteps per day.
+  n_timesteps_per_day = 10
+
+  # Simulation duration
+  # (= #days * n_timesteps_per_day).
+  n_timesteps = 200
+
+  # Number of agents initially infected.
+  n_init_infected = 1
+
+  # Fraction of agents who practice social distancing.
+  frac_sd = 0.75
+
+  # Agents get infected when another infected gets closer than r_infection.
+  r_infection = 0.04
+[../]
+
+[agent]
+  # Agents go to the pub once every n_timesteps_go_to_pub timesteps
+  # (= #days * n_timesteps_per_day).
+  n_timesteps_go_to_pub = 168
+
+  # Number of timesteps spent at pub.
+  n_timesteps_at_pub = 3
+
+  # Agents recover after n_timesteps_recover timesteps
+  # (= #days * n_timesteps_per_day).
+  n_timesteps_recover = 240
+
+  # Step length per timestep.
+  dr = 0.02
+[../]
+
+seed = 0
+dump = 1
