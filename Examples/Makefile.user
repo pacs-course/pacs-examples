@@ -111,9 +111,9 @@ export DOXYFILE=$(PACS_ROOT)/DoxyfileCommon
 ##
 
 ifdef RELEASE
-DEBUG=no
+DEBUG?=no
 else
-DEBUG=yes
+DEBUG?=yes
 endif
 
 ifeq ($(DEBUG),yes)

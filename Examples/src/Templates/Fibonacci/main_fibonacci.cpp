@@ -23,7 +23,7 @@ main()
   clock.stop();
   std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
 
-  std::cout << " Now with the constexpr function and constexpr argument\n";
+  std::cout << " Now with the recursive constexpr function and constexpr argument\n";
   clock.start();
   fibo = Fibonacci(3);
   clock.stop();
@@ -36,10 +36,26 @@ main()
   fibo = Fibonacci(40);
   clock.stop();
   std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+  std::cout << " Now with the non recursive function and constexpr argument\n";
+    clock.start();
+    fibo = FibonacciNR(3);
+    clock.stop();
+    std::cout << " f3 = " << fibo << " Time=" << clock.wallTime() << '\n';
+    clock.start();
+    fibo = FibonacciNR(9);
+    clock.stop();
+    std::cout << " f9 = " << fibo << " Time=" << clock.wallTime() << '\n';
+    clock.start();
+    fibo = FibonacciNR(40);
+    clock.stop();
+    std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
+
   unsigned int l = 999u;
   while(true)
     {
       unsigned long int ff;
+      std::cout << "\n Now with a non constexpr argument\n";
       std::cout << "Give me the index of the Fibonacci number you want (0=exit)"
                 << std::endl;
       std::cin >> l;

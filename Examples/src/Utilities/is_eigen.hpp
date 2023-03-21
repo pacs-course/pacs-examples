@@ -15,21 +15,31 @@ namespace apsc
 namespace TypeTraits
 {
   /*!
-   * A class that tests if a type T derives from Eigen::MatrixBase<T> or
-   * Eigen::SparseMatrixBase<T>
-   * It can be used to verify if a type is an Eigen matrix or vector
+   * A class that tests if a type T is an Eigen matrix or vector
    *
    * @tparam T The type to test
    */
   template <class T, typename S=void> struct is_eigen : std::false_type
   {};
+
+  /*!
+    * A class that tests if a type T is an Eigen dense matrix or vector
+    *
+    * @tparam T The type to test
+    */
   template <class T, typename S=void> struct is_dense_eigen : std::false_type
-   {};
-  template <class T, typename S=void> struct is_sparse_eigen : std::false_type
    {};
 
   /*!
-   * Here a specialized clas.
+     * A class that tests if a type T is an Eigen sparse matrix or vector
+     *
+     * @tparam T The type to test
+     */
+ template <class T, typename S=void> struct is_sparse_eigen : std::false_type
+   {};
+
+  /*!
+   * Here a specialized class.
    * @tparam T The Derived type of the Eigen Matrix/Vector or Array
    */
   template <class T>

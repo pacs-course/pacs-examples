@@ -1,4 +1,4 @@
-#An example of policy# 
+# An example of policy # 
 
 We want to define a class, called `interp1D`
 that parform the interpolation of a vector of values given the couple
@@ -12,4 +12,8 @@ the number of interpolation nodes, Lagrange interpolation using the
 Newton formula (which is slightly more stable) and piecewise linear
 interpolation.
 
-You can add other interpolatiors, if you wish!
+You can add other interpolators, if you wish!
+
+# What do I learn here ? #
+- Another use of a policy to provide a component that changes the behaviour of an algorithm.
+
