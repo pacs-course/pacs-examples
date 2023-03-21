@@ -52,14 +52,13 @@ public:
 struct HashNoCase
 {
   std::size_t
-  operator()(std::string const &s) const noexcept
+  operator()(std::string s) const noexcept
   {
-    std::string nocomp{s};
     // convert to upper case
-    for(auto &c : nocomp)
+    for(auto &c : s)
       c = std::toupper(c);
     // use system hash for strings
-    return std::hash<std::string>{}(nocomp);
+    return std::hash<std::string>{}(s);
   }
 };
 #endif

@@ -42,7 +42,22 @@ Fibonacci(unsigned int const N)
     return Fibonacci(N - 1) + Fibonacci(N - 2);
 }
 //! The recursive version is heavy for "large" N So here I have a non recursive
-//! version Definition in the cpp file
-unsigned long int FibonacciNR(unsigned int const N);
+//! version Definition
+constexpr unsigned long int
+FibonacciNR(unsigned int const N)
+{
+  unsigned long int first = 1ul;
+  unsigned long int second = first;
+  if(N > 3)
+    {
+      for(unsigned int i = 3; i <= N; ++i)
+        {
+          auto save = second;
+          second += first;
+          first = save;
+        }
+    }
+  return second;
+}
 
 #endif

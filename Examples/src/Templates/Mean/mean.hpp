@@ -2,6 +2,7 @@
 #define _MEANEXAMPLE_H
 #include <type_traits>
 #include <vector>
+#include <array>
 namespace Utility
 {
 //! A simple template for the mean
@@ -23,7 +24,8 @@ mean(T *const &a, T *const &b)
 {
   return 0.5 * (*a + *b);
 }
-//! Overloading for vectors of POD type (no constexpr since useless)
+
+//! Overloading for vectors
 template <class T>
 auto
 mean(std::vector<T> const &a, std::vector<T> const &b)
@@ -35,6 +37,21 @@ mean(std::vector<T> const &a, std::vector<T> const &b)
     res[i] = mean(a[i], b[i]);
   return res;
 }
+
+//! Overloading for arrays
+template <class T, std::size_t N>
+constexpr auto
+mean(std::array<T,N> const &a, std::array<T,N> const &b)
+{
+  // If the arguments are vectors of integers, we return a vector of double!
+  using RetType = std::common_type_t<double, T>;
+  std::vector<RetType> res(a.size());
+  for(std::size_t i = 0; i < a.size(); ++i)
+    res[i] = mean(a[i], b[i]);
+  return res;
+}
+
+
 
 //! Example use of variadic templates (only for nerds!)
 /*!

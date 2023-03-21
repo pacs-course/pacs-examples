@@ -23,7 +23,8 @@ template <class... Types> class JoinVectorIterator;
 /*!
  * This class imitates (only approximately) the python utility join.
  * It only joins std::vectors. See test_joinVector.cpp for an example of its
- * usage
+ * usage.
+ *
  * @tparam Types The types stored in the std::vectors to be joined
  * @note The vectors must have the same size and the correct type
  */
@@ -32,7 +33,7 @@ template <class... Types> class JoinVectors
 public:
   //! The number of vectors joined
   static constexpr std::size_t numVectors = sizeof...(Types);
-  //! The tuple type  containing the pointers to the joined vectore
+  //! The tuple type  containing the pointers to the joined vectors
   using ContainingTuple = std::tuple<std::vector<Types> *...>;
   //! The type of a tuple containing the value types stored in the joined
   //! vectors
@@ -41,11 +42,8 @@ public:
   /*!
    * constructor that takes the vectors to be joined
    * @param the vectors
-   * @note this version does not work if you pass const std::vectors. The reason
-   * is that we store pointers in data.
    */
-  JoinVectors(std::vector<Types> &... args) : data(&args...) {}
-  // Copy and move constuctor
+  JoinVectors(std::vector<Types> &... args) : data{&args...} {}
 
 
   /*! Set the vectors to be joined
