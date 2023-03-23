@@ -17,7 +17,7 @@ namespace apsc
 {
 /*
    * @fn  sortAndPermute(Container&, CompOp=CompOp())
-   * @brief Sorts a squential container and returns the permutation vector
+   * @brief Sorts a sequential container and returns the permutation vector
    *   *
    * @pre Container must be a stl compliant  random access container (a vector or array)
    * @tparam Container The type of the container to sort
@@ -54,7 +54,29 @@ namespace apsc
     template< class Cont2>
       void applyPermutationInPlace(Cont2 & cont2, std::vector<std::size_t> const & p);
 
-
+    /*!
+     * The permutation vector retuned by sortAndPermute contains in position n the index
+     * of the position in the original (unsorted) container of the n-th element of the sorted container:
+     *
+     *     auto original=v;
+     *     auto p =sortAndPermute(v);
+     *     v[i] = original[p[i]];
+     *
+     * Sometimes you need the inverse:
+     *
+     *    v[ip[i]] = original[i];
+     *
+     *
+     * @param p The permutation vector
+     * @return The inverse permutation ip
+     */
+    inline std::vector<std::size_t> invertPermutation(std::vector<std::size_t> const & p)
+    {
+      std::vector<std::size_t> ip(p.size());
+      for (std::size_t i=0u ;i!=p.size();++i)
+        ip[p[i]]=i;
+      return ip;
+    }
 
   /*!
  * @class SortAndPermute
@@ -153,9 +175,9 @@ SortAndPermute<Container,CompOper>::operator()()
   std::vector<element> elements;
   auto                 n = data_.size();
   elements.reserve(n);
-  for(std::size_t i = 0; i < n; ++i)
+  for(std::size_t i = 0u; i < n; ++i)
     {
-      elements.push_back({data_[i], i});
+      elements.emplace_back(data_[i], i);
     }
   auto compOp = [this](element const &x, element const &y) {
     return comparison(x.value, y.value);
