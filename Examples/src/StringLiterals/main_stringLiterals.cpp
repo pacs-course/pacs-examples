@@ -24,7 +24,7 @@ main()
   std::cout << "treating end of string  \\0 verbatim:" << std::endl;
   std::cout << noTrunk << std::endl;
 
-  // string literals (here I aaxplain only s)
+  // string literals (here I explain only s)
   using namespace std::string_literals;
 
   // Note that typeid returns two different types. The type name is mangled so not

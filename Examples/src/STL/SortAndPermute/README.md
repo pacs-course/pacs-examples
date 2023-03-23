@@ -24,3 +24,5 @@ In the main program you find a simple example that explains the use of this util
 
 ** Note: ** The in-place algorithm has been "strongly inspired" (i.e. copied) from a post of Raymond Chen: 
 https://devblogs.microsoft.com/oldnewthing/20170102-00/?p=95095
+
+** To do ** write a parallel version 
