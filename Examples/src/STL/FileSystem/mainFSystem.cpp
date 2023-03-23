@@ -37,15 +37,14 @@ main(int argc, char *argv[])
 
   if(std::filesystem::is_regular_file(filePath)) // is a regular file?
     {                                            // is path p a regular file?
-      std::cout << filePath << " is a regular file with "
+      std::cout << filePath << " is a regular file of "
                 << std::filesystem::file_size(filePath) << " bytes\n";
     }
   else if(std::filesystem::is_directory(filePath)) // is a directory?
     {
       std::cout << filePath << " is a directory containing:\n";
-      auto dirIterator = std::filesystem::directory_iterator{
-        filePath}; // to iterate the directory
-      for(auto &e : dirIterator)
+      auto dirIterator = std::filesystem::directory_iterator{filePath}; // to iterate the directory
+      for(auto const &e : dirIterator)
         {
           std::cout << e.path() << std::endl;
         }
