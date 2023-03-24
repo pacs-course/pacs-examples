@@ -1,0 +1,13 @@
+#!/bin/bash
+SUFFIX=backup
+for f in $*; do
+   echo $f
+   TMPFILE=${f}.${SUFFIX}
+   tr -d \\r < $f > $TMPFILE
+   chmod --reference=$f $TMPFILE
+   touch --reference=$f $TMPFILE
+   cp --preserve=all $TMPFILE $f
+   # comment out if you want to remove backup file
+   #   /bin/rm -f $TMPFILE 
+done
+
