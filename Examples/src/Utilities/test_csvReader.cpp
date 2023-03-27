@@ -23,7 +23,7 @@ main()
   reader.setVerbose(true);
   // I skip the first line
   reader.setSkippedLines(1);
-  // Strip quoataion marks in text token, i.e. "anc" -> anc
+  // Strip quotation marks in text token, i.e. "anc" -> anc
   reader.stripQuotation(true);
   // Read!
   reader.read(db);

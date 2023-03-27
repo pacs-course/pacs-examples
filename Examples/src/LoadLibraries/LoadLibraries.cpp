@@ -4,7 +4,7 @@
  *  Created on: May 2, 2020
  *      Author: forma
  */
-#include "../LoadLibraries/LoadLibraries.hpp"
+#include "LoadLibraries.hpp"
 
 #include <algorithm>
 #include <fstream>
