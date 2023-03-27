@@ -17,8 +17,8 @@ namespace apsc
 //! Enumerator for different Jacobias
 //!
 //! I use a simple enumerator because it is convertible to an int
-//! I explicitely indicate the numbering, only to facilitate the identification
-//! of the integer corresponding to thee enum (if I want to read it from a file,
+//! I explicitly indicate the numbering, only to facilitate the identification
+//! of the integer corresponding to three enum (if I want to read it from a file,
 //! for instance)
 //!
 enum JacobianKind

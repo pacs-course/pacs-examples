@@ -43,10 +43,13 @@ periodic systems, and a tool to multiply a tridiagonal matrix givne by 3 vectors
 you may add a column to the end of the matrix and if the maximal number of columns is reached, the columns are shifted to the left to give room to the new column. As a consequence the first column is canceled.
 
 * `mathUtils.hpp` It contains some utilities for linear algebra operation. For instance dot product and norm that wotk on a very generic setting. *It also extends arithmetic operations to std::vector!*
+It implement parallelism either with C++ native paralell algorithm or by using openMP. Have a look to the *Makefile* to change between the two options when compiling the test. I general if you compile with `-fopenmp` you get the openmp version. Otherwise you have the native parallelism (remeber to link with libtbb!)
 
 * `basicOptimization` Golden search for unconstrained minimization of a scalar function. And a simple implementation of a function to bracket a minimum. 
 
 * `basicZeroFun.hpp` Basic routines for the zero of a scalar function. Bisection, secant, Newton, Brent, also a tool for bracketing a zero with odd multiplicity. Only scalar.
+
+* `vectorConcept` a concept tp test if a tempalte parameter is a std::vector<T> with T algebraic.
  
 In `test/` you have tests for all the utilities here contained, do
 

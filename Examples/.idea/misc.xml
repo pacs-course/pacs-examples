@@ -8,6 +8,7 @@
       <file path="$PROJECT_DIR$/src/CompositionWithVariadicTemplates" />
       <file path="$PROJECT_DIR$/src/Constexpr" />
       <file path="$PROJECT_DIR$/src/Horner" />
+      <file path="$PROJECT_DIR$/src/LinearAlgebraUtil" />
       <file path="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
       <file path="$PROJECT_DIR$/src/Mesh" />
       <file path="$PROJECT_DIR$/src/Numeric_Limits" />
@@ -25,17 +26,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Utilities" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/src/Utilities" />
+            <option value="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Utilities">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/LinearAlgebraUtil/test">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>

@@ -2,10 +2,27 @@
 #include <iostream>
 //#include "functions.hpp"
 #include <dlfcn.h>
+#include <functional>
+#include <string>
+#include <map>
+using Fun=std::function<double (double)>; // I want to use function wrappers not pointers
 
-//typedef double (*Fun)(double); // if you prefer tyoedef
-// Fun is a pointer to function taking a double
-using Fun = double (*)(double);
+
+// A simple factory for my functions
+Fun functionFactory(void * lib_handle,std::string const & name)
+{
+  // Internally to the factory I need a pointer to function taking a double
+  using Fun_p = double (*)(double);
+  // I need reinterpret_cast unfortunately
+  auto fn = reinterpret_cast<Fun_p>(dlsym(lib_handle, name.c_str()));
+  auto error = dlerror();
+  if(error != nullptr)
+    {
+      std::cerr << "Error " << error << std::endl;
+      std::exit(2); //exit with status=2 (I could have thrown an exception instead)
+    }
+  return Fun{*fn};// return the function wrapper
+}
 
 int
 main()
@@ -19,25 +36,11 @@ main()
     }
 
   int answer;
+  std::map<int,std::string> inttoname{ {1,"cube"},{2,"square"},{3,"strangefun"} };
 
   std::cout << "cube (1), square (2) or strangefun(3)?" << std::endl;
   std::cin >> answer;
-  Fun fn;
-  if(answer == 1)
-    // Unfortunately this is necessary. C is less type safe than C++!
-    fn = reinterpret_cast<Fun>(dlsym(lib_handle, "cube"));
-  else if(answer == 2)
-    fn = reinterpret_cast<Fun>(dlsym(lib_handle, "square"));
-  else
-    fn = reinterpret_cast<Fun>(dlsym(lib_handle, "strangefun"));
-
-  char *error = dlerror();
-
-  if(error != nullptr)
-    {
-      std::cerr << "Error " << error << std::endl;
-      std::exit(2);
-    }
+  Fun fn=functionFactory(lib_handle, inttoname[answer]);
 
   std::cout << " Give me a value" << std::endl;
   double value;

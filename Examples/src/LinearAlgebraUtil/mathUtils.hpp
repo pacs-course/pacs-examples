@@ -7,17 +7,21 @@
 
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_MATHUTILS_HPP_
 #define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_MATHUTILS_HPP_
+#include "../../include/Arithmetic.hpp"
+#include "Arithmetic.hpp"
 #include "is_complex.hpp"
 #include "is_eigen.hpp"
 #include <cmath>
 #include <complex>
-#include <execution>
 #include <functional>
 #include <iostream>
 #include <numeric>
+#include <ranges>
 #include <type_traits>
-
-
+#ifndef _OPENMP
+// using C++ native multithreading
+#include <execution>
+#endif
 namespace apsc
 {
   namespace math_util
@@ -33,7 +37,9 @@ namespace apsc
      */
     namespace
     {
-      template <class T> struct innerProduct
+      template <class T>
+      requires apsc::TypeTraits::ExtendedArithmetic<T>
+      struct innerProduct
       {
         /*!
          * The actual product operator
@@ -45,7 +51,7 @@ namespace apsc
         operator()(T const &a, T const &b)
         {
           if constexpr(apsc::TypeTraits::is_complex_v<T>)
-            return a.real() * b.real() + a.imag() * b.imag();
+                return a.real() * b.real() + a.imag() * b.imag();
           else
             return a * b;
         }
@@ -68,23 +74,35 @@ namespace apsc
      * @return The dot product, whose actual implementation depends on the type T
      */
     template <class T>
+    requires apsc::TypeTraits::EigenMatrixType<T> || apsc::TypeTraits::ExtendedArithmetic<T>|| std::ranges::random_access_range<T>
     decltype(auto)
     dot(T const &a, T const &b)
     {
       if constexpr(apsc::TypeTraits::is_complex_v<T> || std::is_arithmetic_v<T>)
-          return innerProduct<T>()(a, b);
+              return innerProduct<T>()(a, b);
       else if constexpr(apsc::TypeTraits::is_eigen_v<T>)
-          return a.dot(b); // Eigen vectors have a dot member function
+              return a.dot(b); // Eigen vectors have a dot member function
       else
         {
           using value_type = typename T::value_type;
           // using product_type=typename product<value_type>::result_type;
           using product_type = decltype(
               std::declval<innerProduct<value_type> >()(value_type(0), value_type(0)));
+#ifndef _OPENMP
           return std::transform_reduce(
               std::execution::par, std::begin(a), std::end(a), std::begin(b),
               static_cast<product_type>(0), std::plus<product_type>(),
               innerProduct<value_type>());
+#else
+          product_type res{0};
+          innerProduct<value_type> prod;
+#pragma omp parallel for reduction (+:res)
+          for (std::size_t i=0u;i<a.size();++i)
+            {
+              res+=prod(a[i],b[i]);
+            }
+          return res;
+#endif
         }
     }
 
@@ -115,9 +133,9 @@ namespace apsc
      * @param a The vector
      * @return The square of the 2-norm of the vector
      */
-    template <typename Derived>
+    template <apsc::TypeTraits::EigenMatrixType T>
     decltype(auto)
-    squaredNorm(const Eigen::MatrixBase<Derived> &a)
+    squaredNorm(const T &a)
     {
       return a.squaredNorm();
     }
@@ -147,21 +165,30 @@ namespace apsc
      * @return The infinity norm
      */
     template <class T>
+    requires apsc::TypeTraits::EigenMatrixType<T> || apsc::TypeTraits::ExtendedArithmetic<T>|| std::ranges::random_access_range<T>
     decltype(auto)
     normInf(const T &a)
     {
       if constexpr(apsc::TypeTraits::is_complex_v<T> || std::is_arithmetic_v<T>)
-          return std::abs(a);
+              return std::abs(a);
       else if constexpr(apsc::TypeTraits::is_eigen_v<T>)
-          return a.template lpNorm<Eigen::Infinity>();
+              return a.template lpNorm<Eigen::Infinity>();
       else
         {
+#ifndef _OPENMP
           using value_type = typename T::value_type;
           return std::abs(
               *std::max_element(std::execution::par,std::begin(a), std::end(a),
                                 [](value_type const &x, value_type const &y) {
             return std::abs(x) < std::abs(y);
           }));
+#else
+          auto res =std::abs(a[0]);
+#pragma omp parallel for reduction(max:res)
+          for (std::size_t i=0u;i<a.size();++i)
+            res = std::max(std::abs(a[i]),res);
+          return res;
+#endif
         }
     }
 
@@ -178,16 +205,20 @@ namespace apsc
       std::vector<T>
       operator+(std::vector<T> const &a, std::vector<T> const &b)
       {
+#ifndef _OPENMP
         std::vector<T> res(a.size(), 0); // a vector of zeros
         // I use std::transform because, by adding an execution policy I can make it
         // parallel! A note: the non parallel version can be made more efficient...
         // but then I cannot use std::transform
         std::transform(std::execution::par,a.begin(), a.end(), b.begin(), res.begin(),
                        std::plus<T>());
-        /* a non parallel version with a simple loop, made more efficient (less
-    operations) std::vector<T> res=a; for (std::size_t i=0u;i<a.size();++i)
-      res[i]+=b[i]; // add-assign!
-         */
+#else
+        // a parallel version with openMP, more efficient probably
+        std::vector<T> res=a;
+#pragma omp parallel for
+        for (std::size_t i=0u;i<a.size();++i)
+          res[i]+=b[i]; // add-copy!
+#endif
         return res;
       }
 
@@ -195,11 +226,19 @@ namespace apsc
       std::vector<T>
       operator-(std::vector<T> const &a, std::vector<T> const &b)
       {
+#ifndef _OPENMP
         std::vector<T> res(a.size(), 0);
         // I use std::transform because, by adding an execution policy I can make it
-        // parallel! the seme considerations for the + version apply here.
+        // parallel! the sqme considerations for the + version apply here.
         std::transform(std::execution::par,a.begin(), a.end(), b.begin(), res.begin(),
                        std::minus<T>());
+        //a parallel version with openMP, more efficient probably
+#else
+        std::vector<T> res=a;
+#pragma omp parallel for
+        for (std::size_t i=0u;i<a.size();++i)
+          res[i]-=b[i]; // subtract-copy!
+#endif
         return res;
       }
       /*!
@@ -217,13 +256,16 @@ namespace apsc
       operator*(T const &a, std::vector<T> const &b)
       {
         std::vector<T> res = b;
+#ifndef _OPENMP
         // I use std::transform because, by adding an execution policy I can make it
         // parallel!
         std::transform(std::execution::par,res.begin(), res.end(), res.begin(),
                        [&a](T const &y) { return a * y; });
-        /* version with a simple loop (it works fine as well)
-    for (auto & x:res) x*=a;
-         */
+        // version with a simple loop (it works fine as well)
+#else
+#pragma omp parallel for
+        for (std::size_t i=0u;i<res.size();++i) res[i]*=a;
+#endif
         return res;
       }
 
@@ -265,29 +307,29 @@ namespace apsc
 
     };// namespace vectorOperators
     /*!
-       * Often we need the squared distance of the point. I wrota an utility for the
-       * purpose. Here the version for Eigen.
-       * @tparam Derived The type of the first vector
-       * @tparam OtherDerived The type of the second vector
-       * @param a the first vector
-       * @param b the second vector
-       * @return ||a-b||^2
-       */
-      template <typename Derived, typename OtherDerived>
-      decltype(auto)
-      squaredDistance(const Eigen::MatrixBase<Derived> &     a,
-                      Eigen::MatrixBase<OtherDerived> const &b)
-                      {
-        return (a - b).squaredNorm();
-                      }
+     * Often we need the squared distance of the point. I wrota an utility for the
+     * purpose. Here the version for Eigen.
+     * @tparam Derived The type of the first vector
+     * @tparam OtherDerived The type of the second vector
+     * @param a the first vector
+     * @param b the second vector
+     * @return ||a-b||^2
+     */
+    template <typename Derived, typename OtherDerived>
+    decltype(auto)
+    squaredDistance(const Eigen::MatrixBase<Derived> &     a,
+                    Eigen::MatrixBase<OtherDerived> const &b)
+                    {
+      return (a - b).squaredNorm();
+                    }
 
-      template <typename T>
-      auto
-      squaredDistance(std::vector<T> const &a, std::vector<T> const &b)
-      {
-        using namespace vectorOperators;
-        return squaredNorm(a - b);
-      }
+    template <typename T>
+    auto
+    squaredDistance(std::vector<T> const &a, std::vector<T> const &b)
+    {
+      using namespace vectorOperators;
+      return squaredNorm(a - b);
+    }
 
   } // namespace math_util
 } // end namespace apsc
