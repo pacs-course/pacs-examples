@@ -30,12 +30,13 @@ public:
 
 int main()
 {
+  using namespace apsc::concepts;
   std::complex a{2.,4.};
-  auto x = apsc::concepts::complex_norm(a);
+  auto x = complex_norm(a);
   /*
    This fails to compile
   double y{2.3};
-  auto v = apsc::concepts::complex_norm(y);
+  auto v = complex_norm(y);
   */
 Foo foo;
 auto p=apsc::concepts::cloneMe(foo);
@@ -73,6 +74,10 @@ auto timeSpent=apsc::concepts::timeTaken(f,10.,Timings::Chrono{});
 std::cout<<"Time spent is "<<timeSpent<<" milliseconds"<<std::endl;
 
 //auto z = f("a");// error
+
+// Concepts may be used as type traits:
+std::cout<<"is Foo clonable? "<<std::boolalpha<<apsc::concepts::clonable<Foo><<std::endl;
+std::cout<<"is Foo2 clonable? "<<std::boolalpha<<apsc::concepts::clonable<Foo2><<std::endl;
 
 }
 

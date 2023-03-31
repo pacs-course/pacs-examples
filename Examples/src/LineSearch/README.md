@@ -1,4 +1,4 @@
-# A tool for line search methods for unconstrained optimization #
+# A tool for line search methods for unconstrained and box-constrained optimization #
 
 This set of files introduce a general framework for line search methods for the minimization of a function
 f: Rn -> R.
@@ -21,7 +21,11 @@ We have (so far) implemented
 - Gradient scheme;
 - classic BFGS that approximates the Hessian;
 - BFGS that approximates the inverse of the Hessian directly;
-- Borzilai-Borwain method.
+- Borzilai-Borwain method
+- Newton method
+
+This version implements also the projected-gradient and projected-Newton methods for 
+box constrained problems (not for the other methods).
 
 We give a brief description of the main files
 
@@ -49,8 +53,9 @@ not a great limitation.
 
 Many improvement can be made. For instance: 
 - reading options from a text (maybe GetPot) file; 
-- adding more methods for the computation of the descent direction; 
-- use a factory to enable choosing the method at run time;
+- adding more methods for the computation of the descent direction;
+- extend it to more general contraints;
+- implement the 2nd Wolfe condition
 - make it a library.
 
 

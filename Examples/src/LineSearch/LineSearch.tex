@@ -86,14 +86,13 @@ Here, we want to provide some insight on the algorithmic choices I have made.
  Unconstrained minimization techniques may be easily extended to the box constrained case: 
  \emph{Find $\mathbf{x}\in \mathbb{R}^n$ such that}
  \[
- \mathbf{x}=\operatorname{argmin}_{ \mathbf{a}\le \mathbf{y}\le \mathbf{b}} f(\mathbf{y}),\\
+ \begin{cases}
+ \mathbf{x}=\operatorname{argmin}_{\mathbf{y}\in\mathbb{R}^n} f(\mathbf{y}),
+ \mathbf{a}\le \mathbf{x}\le \mathbf{b}.
+ \end{cases}
  \]
  where $\mathbf{a}\in [\{-\infty\}\cup\mathbb{R}]^n$  and $\mathbf{b}\in [\{+\infty\}\cup\mathbb{R}]^n$ are bounds.
- If we indicate with $\Pi$ the projection on the interval $\mathcal{I}$m defined by the bounds.
- We describe here the general structure of a \emph{projected line search method}.
- First of all, we indicate with $\mathbf{B}_k$ a symmetric positive definite matrix
- approximating \emph{the inverse of the Hessian} at point $\mathbf{x}_k$. Note that in the following algorithm the trivial choice $\mathbf{B}_k=\mathbf{I}$ gives the \emph{projected gradient} method.
-   
+ If we indicate with $\Pi$ the projection on the interval $\mathcal{I}$m defined by the bounds, the general algorithms changes into 
  \begin{algorithm}
      \caption{Line Search for Box-Constraints}
      \KwData{$\mathbf{x}_0\in\mathcal{I}$, $\epsilon_1,\epsilon_2 >0$}
@@ -112,6 +111,7 @@ These methods are normally called "projected methods". You find the description 
     \item You can implement a more sophisticated backtracking that enforces also the second Wolfe condition (curvature condition). However, in this case, I will let the user having the possibility of choosing whether activating it or not. The procedure for satisfying a curvature condition is indeed
     quite heavy. The advantage is that you guarantee convergence of certain methods that (according to the theory) may fail if you enforce only the first condition.
     \item More complex, but possible, is to use the present framework in the context of "big data" and implement a \emph{Stochastic gradient} (which is a line search technique). However, maybe in that case is better start from scratch. 
+    \item Implement Newton method. Here you need to expand the aggregate providing the input information to account for a function that represent the Hessian. 
 \end{itemize}
 
  

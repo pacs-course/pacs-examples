@@ -7,6 +7,43 @@
 #include "DescentDirections.hpp"
 #include "Eigen/Dense"
 
+  apsc::LineSearch_traits::Vector
+  apsc::NewtonDirection::operator()(apsc::OptimizationCurrentValues const &values)
+  {
+    if(!values.bounded)
+      {
+        return values.currentHessian.llt().solve(-values.currentGradient);
+      }
+    else
+      {
+        std::vector<bool> active(values.currentGradient.size(),false);
+        for (std::size_t i=0u;i<active.size();++i)
+          {
+            active[i]=((values.currentPoint[i]==values.lowerBounds[i]
+            and values.currentGradient[i]>0) or
+            (values.currentPoint[0]==values.upperBounds[i]
+             and values.currentGradient[i]<0));
+          }
+        if(std::all_of(active.begin(),active.end(),[](bool x){return x;}))
+          {
+            return apsc::LineSearch_traits::Vector::Zero(values.currentGradient.size());
+          }
+        else
+          {
+          apsc::LineSearch_traits::Matrix Hinv =values.currentHessian.inverse();
+          for (std::size_t i=0u;i<active.size();++i)
+            {
+              if(active[i])
+                {
+                  Hinv.row(i).fill(0.);
+                  Hinv.col(i).fill(0.);
+                }
+            }
+           return -Hinv*values.currentGradient;
+          }
+      }
+  }
+
 apsc::LineSearch_traits::Vector
 apsc::BFGSDirection::operator()(const apsc::OptimizationCurrentValues &values)
 {
