@@ -87,7 +87,10 @@ private:
   std::unique_ptr<apsc::DescentDirectionBase> descentDirectionFinderPtr;
   std::tuple<apsc::LineSearch_traits::Vector, bool>
   project(apsc::LineSearch_traits::Vector const &newPoint) const;
-  void projectDirection(apsc::LineSearch_traits::Vector & searchDirection) const;
+  apsc::LineSearch_traits::Vector
+  projectGrad(apsc::LineSearch_traits::Vector const &newPoint,
+              apsc::LineSearch_traits::Vector const & gradient) const;
+ void projectDirection(apsc::LineSearch_traits::Vector & searchDirection) const;
 };
 
 } // namespace apsc

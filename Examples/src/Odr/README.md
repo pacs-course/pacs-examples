@@ -14,8 +14,8 @@ gives an error.
 However, the mechanism of instantiation of function templates (or inline functions) makes it
 inevitable that instances of template functions with the same
 arguments are compiled in all the translation units that instantiate/use
-them, *(thats why function template and inline function definitions must go in the header file).*
-Therefore for those object the ODR is relaxed.
+them, *(that's why function template and inline function definitions must go in the header file).*
+Therefore, for those objects the ODR is relaxed.
 
 Example:
 
@@ -71,11 +71,10 @@ name, same parameters, but this time the function divides by three!
 Now let's see how this can be VERY dangerous. In `fun.hpp` and `fun2.hpp`
 I declare two functions, the first uses the first version of `three`,
 the second is meant to use the second version. However, since the function
-`three()` is not referred in the function declarations I can avoid including
+`three()` is not referred in the function declarations, I can avoid including
 `three.hpp` and `newthree.hpp` in those files.  Indeed, they are included
 only in the corresponding source files `fun.cpp` and `fun2.cpp`, where
-function `three()` is actually used and thus instantiated with the corresponding argument 
-type (the same in both cases).
+function `three()` is actually used, and thus instantiated with the corresponding argument type (the same in both cases).
 
 After compilation (which goes perfectly well) if you do
 nm --demangle fun.o | grep three
@@ -93,7 +92,7 @@ also fun2 instantiates `three()` with `T=double`. Perfectly fine (or not? This f
 If we have a main program that uses both fun and fun2 we get something really nasty.
 
 The linker finds the function `three(double const &)` defined twice, but it is not an error
-since we have two instances of a template function, *the linke does not know that the two instances are infact different*.
+since we have two instances of a template function, *the linker does not know that the two instances are infact different*.
 
 So, eventually in the main we have the code corresponding to only one
 of the two versions of three(double const). Which one?  It depends on
@@ -112,16 +111,16 @@ be identical. Unfortunately the linker has no way to check it.
 Secondly, you should never write two function templates with the same
 name and parameters. **The use of namespaces may also help to avoid name clashes.**
 
-Thirdly, a good rule is that you include in the header file where you declare a function or a class
-makes use of a template function the definition of the
-functiontemplate, even when it is not strictly necessary. Indeed, try to uncomment the `#include` statements in
+Thirdly, it is a good rule to include where you declare a function or a class that makes use of a template function the header file containing the definition of the
+function template, even when it is not strictly necessary. Indeed, try to uncomment the `#include` statements in
 `fun.hpp` and `fun2.hpp` and see what happens. Now, the main does not even
 compile!  Why? Well the compiler finds two definition of the same function template, and this is an error!.
-Relaxing the ODR rule applies to instances of function templates (i.e. template functions) not the the template itself!
-With this safety net you now know that you have a problem to sort out: you have to change the
+Relaxing the ODR rule applies to instances of function templates (i.e. template functions) not to the function template!
+
+With this safety net, the compiler error tells you that you have a problem to sort out: you have to change the
 name of one of the two functions (or use namespaces to separate them).
 
-#What do I learn here?#
+# What do I learn here? #
 - Some technical details of the ODR rule;
 - That you must be careful about name clashes, use long and significant names, and use namespaces;
 - A little advice that may help avoiding this nasty situation (which anyway will not happen if you follow the previous rule).

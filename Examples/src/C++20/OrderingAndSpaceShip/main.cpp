@@ -14,6 +14,9 @@
 #include <vector>
 // C++20 introduces the concept of weak/partial/strong ordering.
 // and the spaceship operator that allows to define < > and == in one go
+/*!
+ * A class to define a 2-dimensional Point
+ */
 struct Point
 {
   double x = 0.0;
@@ -27,97 +30,97 @@ struct Point
   friend auto operator<=>(const Point &, const Point &)= default;
 };
 
+/*!
+ * A simple class for rationals, where I do not normalize the Rational
+ *
+ */
 struct Rational
 {
   int den = 1;
   int num = 0;
-  //! @brief spaceshift fo this simple representation of rational numbers
-  //! If the rational is not normalised I have a weak ordering
-  //! since two equivalent elements are not "equal": 1/2 and 2/4 are
-  //! equivalent but if I have a function that returns the numerator
-  //! f(1/2) != f(2/4)
-  //!  I implement a spaceship returning a weak ordering
-  std::weak_ordering
-  operator<=>(Rational const &r2) const
-  {
-    using po = std::weak_ordering;
-    auto a = num * r2.den;
-    auto b = den * r2.num;
-    if(a < b)
-      return po::less;
-    if(b < a)
-      return po::greater;
-    else
-      return po::equivalent;
-  }
-  //! I want == to return true on equivalence
-  //!
-  //! In this case a true a==b  does not mean interchangeable object:
-  //! two equivalent rationals
-  bool operator ==(Rational const & r2)const
-    {
-    return std::is_eq(*this<=>r2);
-    }
+  /*! @brief spaceshift for this simple representation of rational numbers
 
+   If the rational is not normalised I have a weak ordering
+   since two equivalent elements are not "equal": 1/2 and 2/4 are
+   equivalent but if I have a function that returns the numerator
+   f(1/2) != f(2/4)
+   Thus, I  implement a spaceship returning a weak ordering
+    */
+  friend std::weak_ordering
+  operator<=>(Rational const & r1, Rational const &r2);
+ /*!
+  * Having defined <=> does not give == automatically
+  * what I have is instead the functor std::is_eq()
+  * I need to define == if I want it. I decide to be consistent and
+  * say that ==  returns is_eq().
+  * @param r1 A rational
+  * @param r2 A rational
+  * @return true if equivalent according to what defined in <=>
+  */
+  friend bool operator ==(Rational const & r1, Rational const & r2);
 };
 
-struct OddEquivalence
+inline std::weak_ordering
+operator<=>(Rational const & r1, Rational const &r2)
 {
-  int x = 0;
-  /*!
-   * @brief another example of weak ordering
-   *
-   * I create the equivanence class of even/odd numbers by defining the
-   * appropriate operator
-   */
+  using po = std::weak_ordering;
+  auto a = r1.num * r2.den;
+  auto b = r1.den * r2.num;
+  if(a < b)
+    return po::less;
+  if(b < a)
+    return po::greater;
+  else
+    return po::equivalent;
+}
 
-  std::weak_ordering
-  operator<=>(OddEquivalence const &r2) const
-  {
-    using po = std::weak_ordering;
-    auto a = x % 2;
-    auto b = r2.x % 2;
-    if(a < b)
-      return po::less;
-    if(b < a)
-      return po::greater;
-    else
-      return po::equivalent;
-  }
-  //! I want operator == that tests equality and I am using the default one
-  friend bool operator ==(OddEquivalence const &, OddEquivalence const &)=default;
-};
-
-struct OddEquivalence2
-{
-  int x = 0;
-  /*!
-   * @brief another example of weak ordering
-   *
-   * I create the equivalence class of even/odd numbers by defining the
-   * appropriate operator.
-   */
-
-  std::weak_ordering
-  operator<=>(OddEquivalence2 const &r2) const
-  {
-    using po = std::weak_ordering;
-    auto a = x % 2;
-    auto b = r2.x % 2;
-    if(a < b)
-      return po::less;
-    if(b < a)
-      return po::greater;
-    else
-      return po::equivalent;
-  }
-  //! I want operator == to test equivalence
-  friend bool operator ==(OddEquivalence2 const &, OddEquivalence2 const &);
-};
-bool operator ==(OddEquivalence2 const & a, OddEquivalence2 const & b)
+inline bool operator== (Rational const & r1, Rational const & r2)
     {
-  return std::is_eq(a<=>b);
+    return std::is_eq(r1<=>r2);
     }
+/*!
+ * Another simple class for rationals, where I do not normalize the Rational
+ *
+ */
+struct Rational2
+{
+  int den = 1;
+  int num = 0;
+  /*! @brief spaceshift for this simple representation of rational numbers
+
+   If the rational is not normalised I have a weak ordering
+   since two equivalent elements are not "equal": 1/2 and 2/4 are
+   equivalent but if I have a function that returns the numerator
+   f(1/2) != f(2/4)
+   Thus, I  implement a spaceship returning a weak ordering
+    */
+  friend std::weak_ordering
+  operator<=>(Rational2 const & r1, Rational2 const &r2);
+ /*!
+  * Having defined <=> does not give == automatically
+  * I decide to default ==. It returns true if both numerators and denominators are equal
+  * @param r1 A rational
+  * @param r2 A rational
+  * @return true if den and num equal
+  */
+  friend bool operator ==(Rational2 const & r1, Rational2 const & r2)=default;
+};
+
+inline std::weak_ordering
+operator<=>(Rational2 const & r1, Rational2 const &r2)
+{
+  using po = std::weak_ordering;
+  auto a = r1.num * r2.den;
+  auto b = r1.den * r2.num;
+  if(a < b)
+    return po::less;
+  if(b < a)
+    return po::greater;
+  else
+    return po::equivalent;
+}
+
+
 
 struct Poset
 {
@@ -143,47 +146,38 @@ struct Poset
   }
 };
 
-int
-main()
-{
-  Point a{4., 5.};
-  Point b{5., 6.};
-  std::cout << std::boolalpha << (a < b) << " " << (a == b) << std::endl;
 
-  Rational r1{10, 20};
-  Rational r2{20, 40};
-  std::cout << std::boolalpha << std::is_eq(r1 <=> r2) << " "<< (r1==r2) <<std::endl;
-
-
+  int
+  main()
   {
-  OddEquivalence aa{3};
-  OddEquivalence bb{5};
-  // Equivalent but not equal! Here is_eq and == do not return the same!
-  std::cout << std::boolalpha << std::is_eq(aa<=>bb) << " " << (aa == bb) << std::endl;
-  std::set<OddEquivalence> ms;
-  for (int i=0;i<20;++i) ms.emplace(i);
-  std::cout<<"Size of set of OddEquivalence objects "<<ms.size()<<std::endl;
-  // You may not that size is 2 since set uses equivalence
-  }
+    Point a{4., 5.};
+    Point b{5., 6.};
+    std::cout<<"Two different points a=(4,5) and b=(5,6)\n";
+    std::cout << std::boolalpha << "(a < b)? "<< (a < b) << ", (a == b)? " << (a == b) << std::endl;
 
-  {
-    OddEquivalence2 aa{3};
-    OddEquivalence2 bb{5};
-    // Here == do return equivalence!
-    std::cout << std::boolalpha << std::is_eq(aa<=>bb) << " " << (aa == bb) << std::endl;
-    std::set<OddEquivalence2> ms;
-    for (int i=0;i<20;++i) ms.emplace(i);
-    std::cout<<"Size of set of OddEquivalence2 objects "<<ms.size()<<std::endl;
-    // You may not that size is 2 since set uses equivalence
+    {
+    Rational r1{1, 2};
+    Rational r2{2, 4};
+    std::cout<<"Two Rationals r1=1/2 and r2=2/4\n";
+    std::cout << std::boolalpha << "r1 eqv r2? "<<std::is_eq(r1 <=> r2) << ", r1==r2? "<< (r1==r2) <<std::endl;
+    std::cout << std::boolalpha << "r1 < r2? "<< (r1<r2) <<std::endl;
+   }
+    {
+     Rational2 r1{1, 2};
+     Rational2 r2{2, 4};
+     std::cout<<"Two Rational2s r1=1/2 and r2=2/4\n";
+     std::cout << std::boolalpha << "r1 eqv r2? "<<std::is_eq(r1 <=> r2) << ", r1==r2? "<< (r1==r2) <<std::endl;
+     std::cout << std::boolalpha << "r1 < r2? "<< (r1<r2) <<std::endl;
     }
+
 
 
 
 
   Poset ap{{1,2,3,4}};
   Poset bp{{1,2}};
-  std::cout<<"This two posets are not comparable.\n";
-  std::cout<<std::boolalpha<<(ap<bp)<<(ap>bp)<<std::is_eq(ap<=>bp)<<std::endl;
+  std::cout<<"This two posets, ap and bp, are not comparable.\n";
+  std::cout<<std::boolalpha<<"ap<bp? "<<(ap<bp)<<", ap>=bp? "<<(ap>=bp)<<", ap eq bp? "<<std::is_eq(ap<=>bp)<<std::endl;
 
 
 

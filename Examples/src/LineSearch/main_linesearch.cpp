@@ -24,7 +24,6 @@ main()
 
   // The classic Rosembrock function
   optimizationData.NumberOfVariables = 2;
-
   /*
    *
    //Rosembrock
@@ -81,23 +80,34 @@ main()
   optimizationData.costFunction = [b](const Vector &x) {
     return 2 - 0.5 * x[0] + std::sqrt(1. + b * x[1] * x[1] + x[0] * x[0]);
   };
+  /*
+   * ans(x, y) =
 
+  x/(x^2 + b*y^2 + 1)^(1/2) - 1/2
+    (b*y)/(x^2 + b*y^2 + 1)^(1/2)
+
+  >> simplify(hessian(f, [x,y]))
+
+  ans(x, y) =
+
+  [(b*y^2 + 1)/(x^2 + b*y^2 + 1)^(3/2),      -(b*x*y)/(x^2 + b*y^2 + 1)^(3/2)]
+  [   -(b*x*y)/(x^2 + b*y^2 + 1)^(3/2), (b*(x^2 + 1))/(x^2 + b*y^2 + 1)^(3/2)]
+
+   */
   optimizationData.gradient = [b](const Vector &x) {
     Vector g(x.size());
-    auto   v = 1. / std::sqrt(1. + b * x[1] * x[1] + x[0] * x[0]);
-    g(0) = -0.5 + x[0] * v;
-    g(1) = b * x[1] * v;
+    g(0) = x[0] / std::sqrt(x[0] * x[0] + b * x[1] * x[1] + 1) - 1 / 2.;
+    g(1) = (b * x[1]) / std::sqrt(x[0] * x[0] + b * x[1] * x[1] + 1);
     return g;
   };
 
   optimizationData.hessian = [b](const Vector &x) {
     Matrix m(x.size(), x.size());
-    auto   z = 1 + b * x[1] * x[1] + x[0] * x[0];
-    auto   v = 1. / (z * std::sqrt(z));
-    m(0, 0) = (1 + b * x[1] * x[1]) * v;
-    m(0, 1) = 0;
-    m(1, 0) = 0;
-    m(1, 1) = (1 + b * x[0] * x[0]) * v;
+    auto   v = 1. / std::pow(x[0] * x[0] + b * x[1] * x[1] + 1, 3. / 2);
+    m(0, 0) = (b * x[1] * x[1] + 1) * v;
+    m(0, 1) = -(b * x[0] * x[1] + 1) * v;
+    m(1, 0) = m(0, 1);
+    m(1, 1) = (b * (x[0] * x[0] + 1)) * v;
     return m;
   };
 
@@ -122,7 +132,7 @@ main()
     theFactory.create("NewtonDirection");
 
   optimizationOptions.maxIter = 4000;
-  optimizationOptions.relTol = 1.e-6;
+  optimizationOptions.relTol = 1.e-8;
   optimizationOptions.absTol = 1.e-8;
   lineSearchOptions.initialStep = 1.0;
   setBounds(optimizationData, {0., 0.}, {1.0, 1.0});

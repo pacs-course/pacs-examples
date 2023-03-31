@@ -24,3 +24,12 @@ With constraints you can check if:
 - A boolean expression evaluates to true
 
 It is one of the major addition of C++20.
+
+In this example I also show two attributes:
+
+- `[[nodiscard]]`, which indicates that the return type of a function should not be discarded. The compiler will generate a warning if you discard the returned value;
+- `[[maybe_unused]]`, which indicates that a variable may be unused, so no warning is generated in this case.
+
+# What do I learn here ? #
+- The use of a very recent addition to the C++ language
+- The use of two special C++ attributes

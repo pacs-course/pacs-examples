@@ -26,17 +26,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/src/LineSearch" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
+            <option value="$PROJECT_DIR$/src/LineSearch" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/LinearAlgebraUtil/test">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/LineSearch">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>

@@ -12,6 +12,9 @@
 #include <limits>
 #include <numeric>
 #include <functional>
+#include <vector>
+#include <algorithm>
+#include <iostream>
 namespace apsc
 {
 /*!
@@ -42,7 +45,7 @@ public:
 
 };
 /*!
- * Implements the gradient search
+ * Implements the Newton search
  */
 class NewtonDirection : public DescentDirectionBase
 {
@@ -53,46 +56,20 @@ public:
    * @return The descent direction.
    */
   apsc::LineSearch_traits::Vector
-  operator()(apsc::OptimizationCurrentValues const &values) override
-  {
-    if(!values.bounded)
-      return values.currentHessian.llt().solve(-values.currentGradient);
-    else
-      {
-        std::vector<bool> constrained(values.currentPoint.size(),false);
-        for (std::size_t i=0; i<constrained.size();++i)
-          {
-            constrained[i]=
-                (values.currentPoint[i]==values.lowerBounds[i]
-                and values.currentGradient[i]>0 )
-                or
-                (values.currentPoint[i]==values.upperBounds[i]
-                and values.currentGradient[i]<0);
-          }
-        //if(std::reduce(constrained.begin(),constrained.end(),false,std::logical_and<bool>{}))
-        apsc::LineSearch_traits::Matrix Hi=values.currentHessian.inverse();
-        for (std::size_t i=0; i<constrained.size();++i)
-          {
-            if(constrained[i])
-              {
-                Hi.row(i).fill(0.);//=0.*Hi.row(i);
-                Hi.col(i).fill(0.);//=0.*Hi.col(i);
-              }
-          }
-        return -Hi*values.currentGradient;
-      }
-  }
-  /*!
-   * @brief The class is clonable
-   *
-   * @return A clone of myself wrapped into a unique pointer
-   */
-  virtual
-  std::unique_ptr<DescentDirectionBase>
-  clone() const override
-  {return std::make_unique<NewtonDirection>(*this);}
+  operator()(apsc::OptimizationCurrentValues const &values) override;
 
-};
+    /*!
+     * @brief The class is clonable
+     *
+     * @return A clone of myself wrapped into a unique pointer
+     */
+    virtual
+    std::unique_ptr<DescentDirectionBase>
+    clone() const override {return std::make_unique<NewtonDirection>(*this);}
+
+  private:
+    static constexpr double eps=100.*std::numeric_limits<double>::epsilon();
+  };
 /*!
  *  Implements the classic BFGS quasi-Newton algorithm.
  */
@@ -214,7 +191,6 @@ private:
   //! I need to keep track of previous descent direction
   apsc::LineSearch_traits::Vector prevDk;
 };
-
-} // namespace apsc
+}// namespace apsc
 
 #endif /* EXAMPLES_SRC_LINESEARCH_DESCENTDIRECTIONS_HPP_ */
