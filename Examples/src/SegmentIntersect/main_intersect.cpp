@@ -1,8 +1,10 @@
 #include "SegmentIntersect.hpp"
+#include "EdgeGeo.hpp"
 
 int main()
 {
   using namespace apsc::Geometry::Intersection;
+  using apsc::Geometry::EdgeGeo;
   {
     std::array<double,2> p1={0.0,-1.0};
     std::array<double,2> p2={0.0,2.0};
