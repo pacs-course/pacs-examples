@@ -55,7 +55,7 @@ Builder build3 = [] { return std::make_unique<Derived3>(); };
 
 //! Normally this is done elsewhere, but this is only a test
 /*!
-  Filling the first 2 factory with the builders
+  Filling the factory with the first 2 builders
  */
 void
 loadFactory()

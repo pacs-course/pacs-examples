@@ -86,7 +86,7 @@ the identifier as key.
   }
 
 private:
-  typedef std::map<Identifier, Builder_type> Container_type;
+  using Container_type=std::map<Identifier, Builder_type>;
   //! Made private since it is a Singleton
   Factory() = default;
   //! Deleted since it is a Singleton
@@ -173,7 +173,7 @@ Factory<AbstractProduct, Identifier, Builder>::registered() const
   std::vector<Identifier> tmp;
   tmp.reserve(_storage.size());
   for(auto const &i : _storage)
-    tmp.push_back(i.first);
+    tmp.emplace_back(i.first);
   return tmp;
 }
 

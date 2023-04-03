@@ -50,14 +50,14 @@ struct StandardLayout
   StandardLayout(int a, double b) : m_a(a), m_b(b){};
   //! Copy constructor
   /*!
-    This is useless and actually wrong since this constructor
-    is equivalent to the synthetic one. But declaring
+    This is useless since this constructor
+    is equivalent to the synthetic one. Declaring
     a user-defined copy constructor I am making this struct not
     satysfying the requirement of a TriviallyCopyable class (even
     if morally it is trivially copyable). But it still has standard layout.
 
-    @note Don't declare (or declare it default) the copy contructor if the
-    synthetic one is what you need!!
+    @note Don't define a copy contructor if the synthetic one is provided and
+    is what you need!!
    */
   StandardLayout(StandardLayout const &rhs) : m_a(rhs.m_a), m_b(rhs.m_b){};
   int
@@ -145,7 +145,7 @@ main()
   // A trivially copyable item can be serialised in a direct way
   TriviallyCopyable tc{7, 8.9};
   constexpr auto    m = sizeof(TriviallyCopyable);
-  // a buffer of m bytes (since c++17 I can use byte instread of char)
+  // a buffer of m bytes
   char buffer[m];
   // copy into the buffer using memcpy
   std::memcpy(buffer, &tc, m);

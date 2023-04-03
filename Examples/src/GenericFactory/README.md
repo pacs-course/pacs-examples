@@ -10,7 +10,7 @@ register objects in the Factory automatically using the technique of local varia
 Do ``make exec`` to produce the executable that tests the Factory. The `Utility` folder should contain a link to `Factory.hpp` and `Proxy.hpp` so you
 do not need to run `make install` to have those facilities availabel to the other examples. If it is not so, run `make install`.
 
-#What do you lean with this example#
+# What do you lean with this example #
 - An example of a generic implemetation of the *object factory* design pattern. The key for a plugin-type architecture and, in general, useful when you have to select an element of a hierarchy of polymorphic object run time;
 - The use of generic programming to build a model for various implementations;
 - The use of *variadic templates* to pass a variable number of arguments to a function;

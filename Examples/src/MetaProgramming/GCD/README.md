@@ -1,4 +1,4 @@
-#Computing greater common divisor of two integers at compile time#
+# Computing greater common divisor of two integers at compile time #
 
 I present two techniques based on recursion to compute the greater common divisor of two given integers, letting the compiler to the computation at compile time.
 
@@ -8,5 +8,5 @@ I present two techniques based on recursion to compute the greater common diviso
 that none of the functions/classes defined in `gcd.hpp` appear! All has been resolved with inlining! And in the case of constant expression the compiler may have
 computed the value directly
 
-#What I learn from this example#
+# What I learn from this example #
 - A simple use of recursion with templates. Using two different strategies. 
