@@ -5,8 +5,10 @@
 #include <iostream>
 #include <limits>
 #include <utility>
+#include <concepts>
 namespace apsc::Geometry::Intersection {
-//! Some helper function in anonimous namespace
+
+//! Some helper functions in an anonimous namespace
 namespace {
 inline double dot(std::array<double, 2> const &a,
                   std::array<double, 2> const &b) {
@@ -28,7 +30,7 @@ inline std::array<double, 2> operator*(double const &a,
                                        std::array<double, 2> const &b) {
   return {{a * b[0], a * b[1]}};
 }
-//! Solves Ax=b
+//! Solves Ax=b when A is 2X2
 /*! \param tol Tolerance on the determinant
  */
 inline
@@ -45,7 +47,15 @@ solve(std::array<std::array<double, 2>, 2> const &A, std::array<double, 2> b,
   return {true, res};
 }
 } // namespace
-
+/*!
+ * Expresses the basic semantin of a 2D edge
+ * @tparam E the edge
+ */
+template<typename E>
+concept Edge = requires (E e)
+{
+  {e[0]}->std::convertible_to<std::array<double,2> >;
+};
 //! Simple struct holding an edge
 /*!
   @tparam PointContainer. Anything with operator [i] that returns ith coordinate
@@ -141,7 +151,7 @@ struct IntersectionStatus {
   @return Intersection. A data structure containing the info about the
   intersection
  */
-template <class Edge_t>
+template <Edge Edge_t>
 IntersectionStatus segmentIntersect(
     const Edge_t &S1, const Edge_t &S2,
     double const tol = std::sqrt(std::numeric_limits<double>::epsilon())) {
@@ -150,8 +160,8 @@ IntersectionStatus segmentIntersect(
   //[0][1] ->2
   //[1][0] ->3
   //[1][1] ->4
-  auto const v1 = S1[1] - S1[0];
-  auto const v2 = S2[1] - S2[0];
+  std::array<double, 2> const v1 = S1[1] - S1[0];
+  std::array<double, 2> const v2 = S2[1] - S2[0];
   auto const len1 = norm(v1);
   auto const len2 = norm(v2);
   // Tolerance for distances
@@ -218,8 +228,8 @@ IntersectionStatus segmentIntersect(
     auto const &t = result.second;
     // Make a stupid check (only in debugging phase)
 #ifndef NDEBUG
-    auto P1 = A1 + t[0] * (B1 - A1);
-    auto P2 = A2 + t[1] * (B2 - A2);
+    const std::array<double, 2> P1 = A1 + t[0] * (B1 - A1);
+    const std::array<double, 2> P2 = A2 + t[1] * (B2 - A2);
     if (norm(P1 - P2) > tol_dist)
       std::cerr << " Something strange, intersection points not coincident. "
                    "Distance= "

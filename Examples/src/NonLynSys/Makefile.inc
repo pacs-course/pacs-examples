@@ -4,4 +4,4 @@ mkTbbInc?=/usr/include
 
 CPPFLAGS+=-I. -fopenmp
 CXXFLAGS+=-fopenmp
-LDLIBS+=-L${mkTbbLib} -ltbb -fopenmp -lpthread
+LDLIBS+=-L${mkTbbLib} -ltbb -fopenmp

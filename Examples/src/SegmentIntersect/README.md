@@ -2,7 +2,7 @@
 
 Finding the intersection of two segments in a plane looks easy. Indeed, it is not when you consider all possibilities:
 
-- Segments may have a clear intersectionin an internal point. This is the easy case to handle;
+- Segments may have a clear intersection in an internal point. This is the easy case to handle;
 - Segments may intersect at the end, in various way;
 - Segments may be superimposed one on the other;
 - Segments may "barely intersect", but what does "barely" mean when we deal with floating point numbers, and the consequent round-off errors?
@@ -33,3 +33,4 @@ The folder contains also a Matlab version of the algorithm. Useful for compariso
 - The use of `inline` to avoid the one-definition-rule, since the header file containes the definition of non-template functions;
 - An overloading of the output streaming operator to prettiprint the results;
 - The use of 'block scope' to simplify the repetition of a test on different data.
+- The use of a concept to specify a prerequisite on a type
