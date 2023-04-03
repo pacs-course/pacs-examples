@@ -1,8 +1,8 @@
-#Function for Runge Kutta (Fehlberg type) adaptive time integration#
+# Runge Kutta (Fehlberg type) adaptive time integration #
 
 **New version July 2021** Extended to treat also DIRK (Diagonally
 Implicit) schemes. Only for vectorial problem (but you can still solve
-scalar problems if you set the dimension of the vector to 1). This now
+scalar problems if you set the dimension of the vector to 1). This new
 version needs the updated version of the `Newton` class, available in
 `NewtonSolver` (follow the instruction in that folder to install it).
 
@@ -44,4 +44,8 @@ accurate) techniques.
 **Important note** Is the problem is stiff the explicit methods are inadequate.
 You have to use a DIRK scheme
 
-**Some Explanations** Are included in the aTex file you find in this folder.
+**Some Explanations** Are included in the LaTex file you find in this folder.
+
+# What do I learn here? #
+- A way to bild a generic code for both explicit and implicit formulations
+- The use of strategy pattern and traits

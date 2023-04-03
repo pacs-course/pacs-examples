@@ -1,4 +1,4 @@
-#Classes to handle a simple mesh#
+# Classes to handle a simple one-dimensional mesh #
 
 You need first to compile and install RK45:
 
@@ -32,7 +32,7 @@ provided in the directory `rk45/`
 
 `main_TestGenerator` is a simple application to test the sofware and `run_test_generator.sh` is a script that runs the code and lauches `gnuplot`.
 
-#What do I learn here?#
+# What do I learn here? #
 - An example of the *strategy design pattern*, or policy. The way the mesh is generated is a policy of the class Mesh1d. According to the policy the mesh can be univorm or with a prescribed spacing;
 - A way to compute the nodes of a mesh by integrating a spacing function using an ode solver. 
 

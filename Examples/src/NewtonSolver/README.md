@@ -1,4 +1,4 @@
-# Tools for Newton and quasi-Newton methods for the zero of a system of non linear equations#
+# Tools for Newton and quasi-Newton methods for the zero of a system of non linear equations #
 
 We present here a set of tools to implement generic Newton or quasi newton methods. They are based on the eigen library and 
 on the following main classes
@@ -18,5 +18,5 @@ The file `main_Newton.cpp` contains a test.
 
 If you launch `pdflatex NewtonSolver.tex` you get `NewtonSolver.pdf` with some more details on the procedure.
 
-#What do I learn here?#
+# What do I learn here? #
 - A rather complete example where we use traits, aggregates to collect strictly related variables, polymorphism, object factory.

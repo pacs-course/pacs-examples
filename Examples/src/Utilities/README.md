@@ -29,6 +29,8 @@ if the arguments are both of signed or unsigned type. It gives an error otherwis
 
 * `Arithmetic.hpp`  introduces concepts to constrain template types to floating point or integral types, possibly including also complex numbers. 
 
+* `booleanConcept.hpp` A concept that expesses the semantic of a boolean type.
+
 * `chrono`  An utility to take times, built on the chrono utilities of the standard library.
 
 * `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class T containes the (usually virtual) method
