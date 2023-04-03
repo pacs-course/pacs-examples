@@ -31,7 +31,9 @@ inline std::array<double, 2> operator*(double const &a,
   return {{a * b[0], a * b[1]}};
 }
 //! Solves Ax=b when A is 2X2
-/*! \param tol Tolerance on the determinant
+/*! @param tol Tolerance on the determinant
+ * @param A the matrix
+ * @param b the rhs
  */
 inline
 std::pair<bool,std::array<double, 2>>
@@ -48,7 +50,7 @@ solve(std::array<std::array<double, 2>, 2> const &A, std::array<double, 2> b,
 }
 } // namespace
 /*!
- * Expresses the basic semantin of a 2D edge
+ * Expresses the basic semantic of a 2D edge
  * @tparam E the edge
  */
 template<typename E>
@@ -56,13 +58,10 @@ concept Edge = requires (E e)
 {
   {e[0]}->std::convertible_to<std::array<double,2> >;
 };
-//! Simple struct holding an edge
-/*!
-  @tparam PointContainer. Anything with operator [i] that returns ith coordinate
-  (as double)
-*/
-template <class PointContainer = std::array<double, 2>> class EdgeGeo {
+//! Simple class holding an edge
+  class EdgeGeo {
 public:
+  using PointContainer = std::array<double, 2>;
   // Constructor giving end points
   EdgeGeo(const PointContainer &left, const PointContainer &right)
       : M_points{left, right} {};
@@ -71,11 +70,11 @@ public:
     M_points = {left, right};
   };
 
-  std::array<double, 2> operator[](std::size_t i) const { return M_points[i]; }
-  std::array<double, 2> &operator[](std::size_t i) { return M_points[i]; }
+  PointContainer operator[](std::size_t i) const { return M_points[i]; }
+  PointContainer& operator[](std::size_t i) { return M_points[i]; }
 
 private:
-  std::array<std::array<double, 2>, 2> M_points{{{0., 0.}, {0., 0.}}};
+  std::array<PointContainer, 2> M_points{{{0., 0.}, {0., 0.}}};
 };
 
 //! A simple struct that contains the result of the intersection test
