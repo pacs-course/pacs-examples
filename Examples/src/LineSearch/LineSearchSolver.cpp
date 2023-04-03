@@ -159,10 +159,15 @@ apsc::LinearSearchSolver::backtrack(
     {
       // If I am on the boundary I relax sufficient decrease since
       // gradstep may be incorrect in this case.
-      double alphab=bumped? 0.0:alpha;
+      auto gradstepb=gradstep;
+      if(bumped)
+        {
+          apsc::LineSearch_traits::Vector newGradient = this->projectGrad(nextPoint,currentValues.currentGradient);
+          gradstepb = newGradient.dot(searchDirection);
+        }
       while((nextValue >=
              currentValues.currentCostValue +
-               options.sufficientDecreaseCoefficient * alphab * gradstep) and
+               options.sufficientDecreaseCoefficient * alpha * gradstepb) and
             (iter < maxIter))
         {
           ++iter;
