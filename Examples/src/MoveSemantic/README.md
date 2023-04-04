@@ -13,7 +13,7 @@ so you can compare the difference in memory usage between the versions.
 **Note:** I use `ms_print` to produce a readable output from the file `move.out`
 produced by `valgrind`. You may use other, fancier, tools.
 
-#What do I get from this example#
+# What do I get from this example #
 - That when handling large objects whose memory is dynamically allocated move semantic may help in reducing memory footpring quite a lot!
-- That use standard container to store dynamic data is a good practice since they have move semantic already in place, and I have not too warry about it;
+- That using standard container to store dynamic data is a good practice since they have move semantic already in place, and you have not too worry too much about it;
 - The use of one of the many [valgrind](https://valgrind.org/) tools for profiling your code.

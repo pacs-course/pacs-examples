@@ -83,8 +83,8 @@ main()
   foo3 = createFoo();
   std::cout << "\nCalling Foo foo4(createFoo())" << std::endl;
   Foo foo4{createFoo()};
-  std::cout << " Note that in this case the default constructor is called, not "
-               "move or copy  constructor:\n";
+  std::cout << " Note that in this case no constructor is called, neither "
+               "move nor copy  constructor:\n";
   std::cout << " RVO (copy elision) optimization has been appllied!"
             << std::endl;
   std::cout << "\nCalling Foo foo5=std::move(foo4)" << std::endl;
