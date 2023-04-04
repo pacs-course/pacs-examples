@@ -107,6 +107,10 @@ WARNFLAGS=-Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor
 # Common file for Doxygen documentation
 export DOXYFILE=$(PACS_ROOT)/DoxyfileCommon
 ##
+# PYBIND11 SETTINGS
+# remember to instal pybind11 in the $(PACS_ROOT)/include directory
+PYBIND11_DIR=$(PACS_ROOT)/include
+##
 # ************ END USER MODIFIABLE PART *****************
 ##
 

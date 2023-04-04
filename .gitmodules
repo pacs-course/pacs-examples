@@ -17,3 +17,6 @@
 	path = Extras/json
 	url = git@github.com:lformaggia/json.git
 	branch = PACS
+[submodule "Extras/pybind11"]
+	path = Extras/pybind11
+	url = git@github.com:pacs-course/pybind11.git
