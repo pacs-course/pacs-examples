@@ -8,7 +8,7 @@ value that can be moved safely (or that you have indicated that can be
 moved with `std::move`). It is then up to you to decide what to do for
 the "moving".
 
-# What do I get from this example?#
+# What do I get from this example? #
 - A practical example of how reference bindings work, including rvalue references
 
 Remember that the language provides move constructor and move assignment operator by default, so in most cases you have to do nothing and your class already implements move semantic. But there are rules  see 
