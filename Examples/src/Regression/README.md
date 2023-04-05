@@ -1,4 +1,4 @@
-#An example of regression#
+# An example of regression #
 
 Type
 
