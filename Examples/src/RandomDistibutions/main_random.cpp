@@ -54,7 +54,7 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
   // Remember to use typename since we have template parameter dependent types
   //
   // Number of samples
-  constexpr int N = 50000;
+  constexpr int N = 150000;
   std::ofstream outfile;
   if(file)
     {

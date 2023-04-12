@@ -52,7 +52,7 @@ main()
   std::cout << std::endl;
 
   // NOw we take the logarithm
-  a = log(a);
+  a = log(a)+ c;
   for(auto i : a)
     std::cout << i << " ";
   std::cout << std::endl;
