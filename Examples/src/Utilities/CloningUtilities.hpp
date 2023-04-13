@@ -37,8 +37,8 @@ creating an object of type T.
   template <typename T>
   struct has_clone<
     T,
-    typename std::enable_if<std::is_convertible_v<
-      std::unique_ptr<T>, decltype(std::declval<const T &>().clone())> >::type>
+    typename std::enable_if_t<std::is_convertible_v<
+      std::unique_ptr<T>, decltype(std::declval<const T &>().clone())> > >
     : std::true_type
   {};
 

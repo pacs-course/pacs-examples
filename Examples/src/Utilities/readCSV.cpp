@@ -90,7 +90,7 @@ ReadCSV::read(std::basic_istream<CharT> &in)
             }
         }
 
-      int check;
+      int check{0};
       // Check if I have read something
       for(auto const &t : tokens)
         check += t.size();

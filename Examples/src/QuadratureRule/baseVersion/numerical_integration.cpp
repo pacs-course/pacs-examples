@@ -17,6 +17,9 @@ double
 Quadrature::apply(FunPoint const &f) const
 {
   double result(0);
+#ifdef _OPENMP
+#pragma omp parallel for reduction (+:result)
+#endif
   for(unsigned int i = 0u; i < mesh_.numNodes() - 1; ++i)
     {
       double a = mesh_[i];

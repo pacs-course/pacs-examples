@@ -103,7 +103,7 @@ namespace apsc::NumericalIntegration
 
     // Read quadratur rule libraries
     // The second argument is there just to deduce the type
-    auto libs = cl.extract("library",param.library);
+    auto libs = cl.value("library",param.library);
     auto nlibs = libs.size();
     if(nlibs == 0)
       {
@@ -122,7 +122,7 @@ namespace apsc::NumericalIntegration
     libs.clear();
 
     // read integrand libraries
-    libs = cl.extract("udflib", param.udflib);
+    libs = cl.value("udflib", param.udflib);
     nlibs = libs.size();
     if(nlibs == 0)
       {
@@ -141,7 +141,7 @@ namespace apsc::NumericalIntegration
 
     // @note: I must tell that the II argument is a std::string, since it is used to derive
     //        the return type of exec();
-    std::string fun_name = cl.extract("integrand", std::string("NULL"));
+    std::string fun_name = cl.value("integrand", std::string("NULL"));
 
     if(fun_name == "NULL")
       {
@@ -149,12 +149,12 @@ namespace apsc::NumericalIntegration
       }
     param.integrand=std::move(fun_name);
     // The last parameters
-    param.a=cl.extract("a",param.a);
-    param.b=cl.extract("b",param.b);
-    param.nint=cl.extract("nint",param.nint);
-    param.maxIter=cl.extract("maxIter",param.maxIter);
-    param.targetError=cl.extract("targetError",param.targetError);
-    param.rule=cl.extract("rule",std::string("?"));
+    param.a=cl.value("a",param.a);
+    param.b=cl.value("b",param.b);
+    param.nint=cl.value("nint",param.nint);
+    param.maxIter=cl.value("maxIter",param.maxIter);
+    param.targetError=cl.value("targetError",param.targetError);
+    param.rule=cl.value("rule",std::string("?"));
     return param;
   }
 

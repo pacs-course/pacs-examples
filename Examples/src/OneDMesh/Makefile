@@ -82,6 +82,7 @@ EXEC=$(exe_sources:.cpp=)
 EXEC_OBJS=$(exe_sources:.cpp=.o)
 EXEC_SRCS:=$(exe_sources)
 LDLIBS=-L. -lMesh1D
+LIBD+= -L$(PACS_LIB_DIR) -lNewton
 
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .PHONY: all clean distclean doc static dynamic depend install exec library
