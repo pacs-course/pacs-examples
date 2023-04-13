@@ -1,4 +1,4 @@
-#Basic classes and function for numerical integration#
+# Basic classes and function for numerical integration #
 
 The code contained in this directory produces the basic libary for the
 example on numerical integration seen at lecture.
@@ -26,7 +26,7 @@ In particular:
   as policy to apply  a concrete rule on each sub-interval. It impements the Strategy design pattern.
 
 * `libquadrature` is the library that stores the code for composite quadrature rule. It depends on the library `libMesh1D`, and on GetPot so you have first
-to go to `Utilities` and then to `OneDMesh`, look at the README files and install using `make install`. You also need `RKFSolver`, since it is required by `OneDMesh`, even if we are not using the RK solver here.
+to to `OneDMesh` and  look carefully at the README files to install it (it depends on other libraries as well).
 
 * `libintegrands` is a library that stores some possible integrands
 
@@ -38,7 +38,7 @@ To do everything, including the test program:
     
 You may also have a look at `main.integration.cpp`,which stores the test program, and try to run it.
 
-#What do I learn here? #
+# What do I learn here?  #
 - An example of polymorphism. All quadrature rules derive from a common base
 - An example of the **Decorator design pattern**, look [here](https://refactoring.guru/design-patterns/cpp) if you are interested in design patterns. Indeed, some rules are made by decorating existing classes. The Decorator patter is useful
 when you want to extend the capabilities of an existing hyerarchy of classes, uniformly over all of them; 

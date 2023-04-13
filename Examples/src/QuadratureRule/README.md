@@ -1,4 +1,4 @@
-#Examples of a code for numerical quadrature#
+# Examples of a code for numerical quadrature #
 
 * `baseversion/` Here the basic classes for numerical quadrature,
   including adaptive and Montecarlo. We use the *Decorator* design pattern to
@@ -24,11 +24,14 @@ go into `../Utility` (if you have not already done so) and do
 
 to install `libpacs.so` with all support utilities:
 
+go into `../NewtonSolver` and do
+```bash
+make dynamic DEBUG=no
+make install
+```
 go into `../RKFSolver` and do
 
     make install
-
-to install the `librk54.so` library (use `static` instead of `dynamic` if you wish to install the static library)
 
 go into `../OneDMesh` and do
 
@@ -58,6 +61,17 @@ makes a test the uses only the basis version.
 
 Similarly in the other directories. 
 
-**In** `AllDynamic\` **you can only use dynamic libraries. So make sure to run** `make alllibs; make install` **before using the code in** `AllDynamic`
+**In** `AllDynamic\` **you can only use dynamic libraries. So make sure to run** 
+```bash
+make dynamic; 
+make install`
+```
+or 
+```bash
+make allibs; 
+make install`
+```
+
+ **before using the code in** `AllDynamic`
 
 
