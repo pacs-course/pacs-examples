@@ -86,6 +86,7 @@ private:
   unsigned int                 _maxIter;
 };
 
+// *** IMPLEMENTATIONS
 template <class SQR>
 QuadratureRuleAdaptive<SQR>::QuadratureRuleAdaptive(double       targetError,
                                                     unsigned int maxIter)

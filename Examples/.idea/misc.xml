@@ -14,6 +14,7 @@
       <file path="$PROJECT_DIR$/src/MetaProgramming/SwitchType" />
       <file path="$PROJECT_DIR$/src/Numeric_Limits" />
       <file path="$PROJECT_DIR$/src/Polygon" />
+      <file path="$PROJECT_DIR$/src/QuadratureRule" />
       <file path="$PROJECT_DIR$/src/STL/Variant" />
       <file path="$PROJECT_DIR$/src/SmartPointers" />
       <file path="$PROJECT_DIR$/src/Utilities" />

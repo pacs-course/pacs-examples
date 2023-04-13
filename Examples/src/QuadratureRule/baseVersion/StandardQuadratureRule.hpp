@@ -37,8 +37,8 @@ public:
     @param order Order of the quadrature (exactness +1). Required only if
     adaptive rule is used
    */
-  StandardQuadratureRule(std::array<double, NKNOTS> weight,
-                         std::array<double, NKNOTS> nodes, double order = 0)
+  StandardQuadratureRule(std::array<double, NKNOTS> const & weight,
+                         std::array<double, NKNOTS> const & nodes, double order = 0)
     : _w(weight), _n(nodes), my_order(order)
   {}
   //! class is default constructible
@@ -61,7 +61,11 @@ public:
   {
     return _w[i];
   }
-  //! The order of convergence
+  /*!
+   * The order of convergence
+   * @note Used for error estimation
+   * @return the order
+   */
   unsigned int
   order() const
   {
@@ -70,9 +74,9 @@ public:
   //! returns a string that identify the general type of quadrature rule
   std::string
   name() const override
-  {
-    return "StandardQuadratureRule";
-  };
+    {
+      return "Standard Quadrature Rule";
+    };
   //! The class is clonable.
   /*!
     Having a clonable class makes it possible to write copyconstructors
@@ -93,6 +97,7 @@ protected:
 private:
 };
 
+// *******************  IMPLEMENTATIONS
 template <unsigned int N>
 double
 apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
@@ -100,7 +105,7 @@ apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
 {
   double h2((b - a) * 0.5); // half length
   double xm((a + b) * 0.5); // midpoint
-  auto   fscaled = [&](double x) { return f(x * h2 + xm); };
+  auto   fscaled = [&h2,&xm,&f](double x) { return f(x * h2 + xm); };
   double tmp(0);
   auto   np = _n.begin();
   //    for (auto wp=_w.begin();wp<_w.end();++wp,++np)
