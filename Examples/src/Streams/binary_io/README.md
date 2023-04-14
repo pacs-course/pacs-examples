@@ -1,4 +1,4 @@
-#An example of binary vs formatted i/o.#
+# An example of binary vs formatted i/o. #
 
 We write and read a big file using formatted and binary i/o. The
 binary i/o is eather native or using the HDF5 library
