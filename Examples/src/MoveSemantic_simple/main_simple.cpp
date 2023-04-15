@@ -35,7 +35,7 @@ public:
     M_x = std::move(f.M_x);
     return *this;
   }
-  // in class initialization of member variable
+
   std::vector<double> M_x;
 };
 
@@ -75,7 +75,7 @@ main()
     << std::endl;
   Foo foo3{std::move(foo1)};
   std::cout << "Indeed after the move the size of the vector in foo1 is now= "
-            << foo1.M_x.size() << std::endl;
+            << foo1.M_x.capacity() << std::endl;
   // auto x = foo1.M_x; // This can give inconsistent results or segfault!
   std::cout << "\n foo2 = foo3  Assigning the Foo object" << std::endl;
   foo2 = foo3;

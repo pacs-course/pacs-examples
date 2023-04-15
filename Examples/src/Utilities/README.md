@@ -9,7 +9,7 @@ You need to do
     make 
     make install
 
-to install them. `make` will produce both a dynamic and a static library, called `libpacs.so` and `libpacs.a`, respectively. `make install` installs the header files in `PACS_ROOT/include` and the libraries into `PACS_ROOT/lib`. Use `make DEBUG=no` if you want the library code to be optimised.
+to install Alessandro Coclite and Armando Coco	them. `make` will produce both a dynamic and a static library, called `libpacs.so` and `libpacs.a`, respectively. `make install` installs the header files in `PACS_ROOT/include` and the libraries into `PACS_ROOT/lib`. Use `make DEBUG=no` if you want the library code to be optimised.
 
 After you have installed the libraries you can run
 
@@ -61,6 +61,7 @@ semantic! The "pointed" class should be clonable. It means that you can use it t
 * `is_eigen.hpp` A header file containing a type trait to interrogate is a type is a `Eigen::Matrix`.
 We hve also traits and concepts to test sparse and dense matrices separately.
 
+* `is_specialization.hpp`. Type traits and concepts to test if a class is the specialization of a class template.
 
 * `JoinVectors.hpp` Just an example on how to imitate the `join` phyton command. You can use it to iterate jointly on a set of vectors. 
 
