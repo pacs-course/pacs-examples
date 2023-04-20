@@ -33,11 +33,11 @@ launch a test.
 This software provides a class to store a simple 1D mesh of a one dimensional domain represented by an interval. It uses a policy, 
 that derives from `OneDMeshGenerator`, to implement the actual mesh generation process. We provide two policies: one for uniform mesh generation, the other that allows to prescribe
 a variable mesh spacing. The latter needs to integrate a ordinary differential equation to locate the mesh nodes; to this purpose it uses one of the  runge kutta adaptive schemes
-provided in the directory `rk45/`
+provided in the directory `RKFSolver/`
 
 `main_TestGenerator` is a simple application to test the sofware and `run_test_generator.sh` is a script that runs the code and lauches `gnuplot`.
 
 # What do I learn here? #
-- An example of the *strategy design pattern*, or policy. The way the mesh is generated is a policy of the class Mesh1d. According to the policy the mesh can be univorm or with a prescribed spacing;
-- A way to compute the nodes of a mesh by integrating a spacing function using an ode solver. 
+- An example of the *strategy design pattern*, or policy. The way the mesh is generated is a policy of the class Mesh1d. According to the policy the mesh can be uniform or with a prescribed spacing;
+- A way to compute the nodes of a mesh by integrating a spacing function with an ode solver. 
 

@@ -27,7 +27,7 @@ Or
 The code uses the header `StatisticsComputations.hpp`, which is in the `Utility` folder. You have to install it (following the instructions in that folder).
 
 
-#What do I learn here?#
+# What do I learn here? #
 - The different random number generators and engines of the standard library
 - An utility to extract statistical information from a sample (univariate)
 - A use of `gnuplot-iostream`

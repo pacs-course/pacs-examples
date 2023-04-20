@@ -94,7 +94,7 @@ protected:
 };
 // Not needed in C++17
 // template<typename SQR>
-// SQR QuadratureRulePlusError<SQR>::_therule;
+// SQR QuadratureRulePlusError<SQR>::therule_;
 
 template <typename SQR>
 QuadratureRulePlusError<SQR>::QuadratureRulePlusError()

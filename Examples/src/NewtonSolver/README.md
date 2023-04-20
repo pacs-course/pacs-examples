@@ -12,7 +12,7 @@ We have also:
 * `NewtonOptions` and `NewtonResults`, structs that encapsulate the options and the result;
 * `JacobianFactory` to generate a concrete class of `JacobianBase` family on the fly.
 
-**Note** the use of the virtual function member `callback` in `Newton` that allow the user to get hold of the state at each iteration.
+**Note** the use of the virtual function member `callback` in `Newton` allows the user to get hold of the state at each iteration. See `NewtonVerbose` in `Newton.hpp`, to see a possible use of it.
 
 The file `main_Newton.cpp` contains a test.
 
@@ -20,3 +20,4 @@ If you launch `pdflatex NewtonSolver.tex` you get `NewtonSolver.pdf` with some m
 
 # What do I learn here? #
 - A rather complete example where we use traits, aggregates to collect strictly related variables, polymorphism, object factory.
+- The use of a callback()

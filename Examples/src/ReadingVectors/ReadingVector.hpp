@@ -7,6 +7,7 @@
 #include <vector>
 #ifndef EXAMPLES_SRC_READINGVECTORS_READINGVECTOR_HPP_
 #define EXAMPLES_SRC_READINGVECTORS_READINGVECTOR_HPP_
+
 namespace apsc::Utilities
 {
 /*!
@@ -20,11 +21,11 @@ namespace apsc::Utilities
  * @return The vector
  *
  */
-template <class T, class... Args>
-std::vector<T, Args...> &
-operator<<(std::vector<T, Args...> &v, T const &i)
+template <class T>
+std::vector<T> &
+operator<<(std::vector<T> &v, T&&i)
 {
-  v.emplace_back(i);
+  v.emplace_back(std::forward<T>(i));
   return v;
 }
 /*!
@@ -37,10 +38,10 @@ operator<<(std::vector<T, Args...> &v, T const &i)
  * @param i the value
  * @return The vector
  */
-template<class T, class ...Args>
-std::vector<T,Args...> & operator , (std::vector<T,Args...> & v, T const & i)
+template<class T>
+std::vector<T> & operator , (std::vector<T> & v, T&& i)
 {
-  v.emplace_back(i);
+  v.emplace_back(std::forward<T>(i));
   return v;
 };
 }
