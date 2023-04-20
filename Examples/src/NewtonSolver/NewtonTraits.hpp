@@ -1,4 +1,18 @@
+/*!
+ * @file
+ * @brief Class for NewtonTraits
+ *
+ * This class is a template class used to define the types used by the Newton solver
+ * It is used to simplify the implementation of the Newton solver
+ * It is a template class to allow the user to select different types
+ * for the non-linear system and for the Jacobian matrix
+ * @author Luca Formaggia
+ * @date 19 Feb 2020
+ */
 /*
+ * NewtonTraits.hpp
+ *
+ *  Created on: Feb 19, 2020
  * NetwtonTraits.hpp
  *
  *  Created on: Feb 19, 2020

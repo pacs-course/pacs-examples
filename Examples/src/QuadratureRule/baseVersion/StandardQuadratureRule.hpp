@@ -39,7 +39,7 @@ public:
    */
   StandardQuadratureRule(std::array<double, NKNOTS> const & weight,
                          std::array<double, NKNOTS> const & nodes, double order = 0)
-    : _w(weight), _n(nodes), my_order(order)
+    : w_(weight), n_(nodes), my_order(order)
   {}
   //! class is default constructible
   StandardQuadratureRule() = default;
@@ -53,13 +53,13 @@ public:
   double
   node(const unsigned int i) const
   {
-    return _n[i];
+    return n_[i];
   }
   //! access to the i-th weight
   double
   weight(const unsigned int i) const
   {
-    return _w[i];
+    return w_[i];
   }
   /*!
    * The order of convergence
@@ -90,8 +90,8 @@ public:
   virtual ~StandardQuadratureRule() = default;
 
 protected:
-  std::array<double, NKNOTS> _w;
-  std::array<double, NKNOTS> _n;
+  std::array<double, NKNOTS> w_;
+  std::array<double, NKNOTS> n_;
   unsigned int               my_order = 0;
 
 private:
@@ -103,14 +103,19 @@ double
 apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
   FunPoint const &f, double const &a, double const &b) const
 {
-  double h2((b - a) * 0.5); // half length
-  double xm((a + b) * 0.5); // midpoint
+  double h2=(b - a) * 0.5; // half length
+  double xm=(a + b) * 0.5; // midpoint
+  // scale functions
   auto   fscaled = [&h2,&xm,&f](double x) { return f(x * h2 + xm); };
-  double tmp(0);
-  auto   np = _n.begin();
-  //    for (auto wp=_w.begin();wp<_w.end();++wp,++np)
-  for(auto weight : _w)
-    tmp += fscaled(*(np++)) * weight;
+  double tmp=0.0;
+  auto   np = n_.begin();
+  //    for (auto wp=w_.begin();wp<w_.end();++wp,++np)
+  for(auto weight : w_)
+      {
+        tmp += fscaled(*(np)) * weight;
+        ++np;
+      }
+
   return h2 * tmp;
 }
 

@@ -48,26 +48,26 @@ The presence of the two vectors $\mathbf{b}$ and $\hat{\mathbf{b}}$ characterize
 
 The solution in a step $t^n\to t^{n+1}=t^n+h$, being $h$ the time step size, is obtained by solving the following problem,
 \begin{align}\label{eq:rk1}
-&\mathbf{K}_i = f(t+c_ih,\mathbf{y}_n+h\sum_j A_{ij}\mathbf{K}_j)\quad i=1,\ldots,s,\\
+&\mathbf{K}_i = f(t+c_ih,\mathbf{y}n_+h\sum_j A_{ij}\mathbf{K}_j)\quad i=1,\ldots,s,\\
 \label{eq:rkt}
-&\mathbf{y}_{n+1}=\mathbf{y}_n + h \mathbf{K}\mathbf{b},\\\label{eq:rk3}
-&\hat{\mathbf{y}}_{n+1}=\mathbf{y}_n + h \mathbf{K}\hat{\mathbf{b}}.
+&\mathbf{y}_{n+1}=\mathbf{y}n_ + h \mathbf{K}\mathbf{b},\\\label{eq:rk3}
+&\hat{\mathbf{y}}_{n+1}=\mathbf{y}n_ + h \mathbf{K}\hat{\mathbf{b}}.
 \end{align}
 
-Here $K\in\mathbb{R}^{d\times s}$, with $\mathbf{K})i$ the $i$=th column and $\mathbf{y}_n\in\mathbb{R}^d$ the approximated solution at time $t^n$.
+Here $K\in\mathbb{R}^{d\times s}$, with $\mathbf{K})i$ the $i$=th column and $\mathbf{y}n_\in\mathbb{R}^d$ the approximated solution at time $t^n$.
 
 If $\mathbf{A}$ is \emph{strictly} lower diagonal ($A_{ij}=0$ if $j\ge i$), then the  computation of $\mathbf{K}_i$ in ~\eqref{eq:rk1} is \emph{explicit}, i.e does not require the solution of any non-linear system, but solving in succession, for $i=1,\ldots s$,
 \[
-\mathbf{K}_i = f(t_n+c_ih,\mathbf{y}_n+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j).
+\mathbf{K}_i = f(t_n+c_ih,\mathbf{y}n_+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j).
 \]
-(Note that $\mathbf{K}_1=f(t_n,\mathbf{y}_n)$).
+(Note that $\mathbf{K}_1=f(t_n,\mathbf{y}n_)$).
 
 Otherwise the method is implicit and the step~\eqref{eq:rk1} involves the solution of a non-linear system of $s\times d$ unknnown (the coefficients of $\mathbf{K}$.).
 
 There is an intermediate possibility. When $\mathbf{A}$ is \emph{lower triangular} (but not \emph{strictly lower triangular}) then the RK scheme is \emph{linearly} or \emph{diagonally} implicit
 (DIRK schemes). In this case, \eqref{eq:rk1} involves the solution of $s$ nonlinear systems of size $d$, solved in succession:
 \[
-\mathbf{K}_i - f(t+c_ih,\mathbf{y}_n+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j +hA_{ii}\mathbf{K}_i)=\mathbf{0}\quad i=1,\ldots,s\\\label{eq:rk2ex}
+\mathbf{K}_i - f(t+c_ih,\mathbf{y}n_+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j +hA_{ii}\mathbf{K}_i)=\mathbf{0}\quad i=1,\ldots,s\\\label{eq:rk2ex}
 \]
 Finally, a subclass of the DIRK schemes are the ESDIRK~\cite{jorgensenFamilyESDIRKIntegration2018} (explicit singly diagonal implicit) 
 schemes, where $\mathbf{A}$ is lower triangular but the first row is zero. It means that the first stage is explicit and you have to solve only $s-1$ implicit stages at each time step. 

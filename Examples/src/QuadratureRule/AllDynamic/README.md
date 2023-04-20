@@ -1,4 +1,4 @@
-#Dynamic loading of numerical rules and integrands#
+# Dynamic loading of numerical rules and integrands #
 
 
 This is a rather complex example, where we show the use of dynamic library leading to implement a plugin-type architecture and
@@ -35,7 +35,7 @@ We create several dynamic libraries
 - `libAdamsRules.so`, `libGaussRules.so` and `libMontecarloRules.so` are the plugin dynamic libraries that define a different set of quadrature rules.
 
 
-##Things to note ##
+## Things to note ##
 - The use of two alternatives (one is commented) to register the rules into the factory as soon as the corresponding library is loaded. One uses an attribute of the compiler, the second, some helper object (you find the code in `GenericFactory`) whose creation registers the rule;
 - The factory implements the Singleton design pattern, useful to avoid dangerous copies, and is implemented as a global (namespace) variable, so that we ensure that all code sees the same factory. Beware: the object code that provides the factory MUST be contained in a shared library! Otherwise you have problems due to the way the linker (at least the gnu linker) works (I avoid going into details here).
 - The function `parsedFunction` reads the function expression from the file `parsedFunction.txt` (you cannot change the name, sorry). The muParser code is enucleated in a special class, called `muParserFunction`. To be able to use the parser properly, I need to create a static object inside the function. When the function `parsedFunction()` is called the first time, a `muParserFunction` object is created, which reads the expression from the file. The parser is then kept for the successive calls of the function. I had to do this way since `parsedFunction` must be a simple function with C-linkage. If you decide to use full fledged callable objects as integrands, which may include functors, you have more flexibility. But, then you need to have also a factory for the integrands.

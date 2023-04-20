@@ -40,35 +40,35 @@ public:
   constexpr unsigned int
   num_nodes()const
   {
-    return _therule.num_nodes();
+    return therule_.num_nodes();
   }
   double
   node(const int i) const
   {
-    return _therule.node(i);
+    return therule_.node(i);
   };
   double
   weight(const int i) const
   {
-    return _therule.weight(i);
+    return therule_.weight(i);
   };
   unsigned int
   order() const
   {
-    return _therule.order();
+    return therule_.order();
   };
   /*!@}*/
   //! set Target Error
   void
   setTargetError(double const t) override
   {
-    _targetError = t;
+    targetError_ = t;
   };
   //! set Max number of iterations
   void
   setMaxIter(unsigned int n) override
   {
-    _maxIter = n;
+    maxIter_ = n;
   };
   //! The method that applies the rule.
   double apply(FunPoint const &, double const &a,
@@ -81,16 +81,16 @@ public:
 
 private:
   //! inline since since c++17 this way we have  a definition.
-  QuadratureRulePlusError<SQR> _therule;
-  double                       _targetError;
-  unsigned int                 _maxIter;
+  QuadratureRulePlusError<SQR> therule_;
+  double                       targetError_;
+  unsigned int                 maxIter_;
 };
 
 // *** IMPLEMENTATIONS
 template <class SQR>
 QuadratureRuleAdaptive<SQR>::QuadratureRuleAdaptive(double       targetError,
                                                     unsigned int maxIter)
-  : _targetError(targetError), _maxIter(maxIter)
+  : targetError_(targetError), maxIter_(maxIter)
 {}
 
 template <class SQR>
@@ -119,17 +119,17 @@ QuadratureRuleAdaptive<SQR>::apply(FunPoint const &f, double const &a,
   queue<pair<double, double> > subint;
   subint.push(make_pair(a, b));
 
-  while(counter < _maxIter && !subint.empty())
+  while(counter < maxIter_ && !subint.empty())
     {
       pair<double, double> z = subint.front();
       subint.pop();
-      _therule.ExtractError.reset();
+      therule_.ExtractError.reset();
       double x1 = z.first;
       double x2 = z.second;
       double h2 = (x2 - x1);
-      double errorLocalTarget = _targetError * h2 / dSize;
-      double lr = this->_therule.apply(f, x1, x2);
-      double localError = std::abs(_therule.ExtractError.error);
+      double errorLocalTarget = targetError_ * h2 / dSize;
+      double lr = this->therule_.apply(f, x1, x2);
+      double localError = std::abs(therule_.ExtractError.error);
       ++counter;
       if(localError <= errorLocalTarget)
         result += lr;
@@ -140,7 +140,7 @@ QuadratureRuleAdaptive<SQR>::apply(FunPoint const &f, double const &a,
         }
     }
   // std::clog<<"Number of Iterations in Adaptive Rule="<<counter<<std::endl;
-  if(counter >= _maxIter)
+  if(counter >= maxIter_)
     // throw std::runtime_error("Max number iteration exceeded in
     // QuadratureRuleAdaptive");
     std::cerr << "Max number iteration exceeded in QuadratureRuleAdaptive: "
