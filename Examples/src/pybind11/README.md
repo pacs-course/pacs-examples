@@ -6,12 +6,12 @@ It is available via
 ```bash
  module load pybind11
 ```
-if you use the module systtem or via
+if you use the module system or via
 
 ```bash
 pip install pybind11
 ```
-or by using the submodule stored in `Extras/pybind11`, which should be automatically downloaded if you do `git pull --recurse-submodules` or you have clodes the repository with `--recurse submodules`. Then =, you have to do
+or, by using the submodule stored in `Extras/pybind11`, which should be automatically downloaded if you do `git pull --recurse-submodules` or you have clodes the repository with `--recurse submodules`. Then =, you have to do
 ```bash
 cd Extras/pybind11
 ./install_PACS.sh
