@@ -3,8 +3,8 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/LinearAlgebra/CppNumericalSolvers" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/LinearAlgebra/CppNumericalSolvers/gtest" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/LinearAlgebra/redsvd-h" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/LinearAlgebra/spectra" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/pybind11/pybind11_examples" vcs="Git" />
   </component>
 </project>
