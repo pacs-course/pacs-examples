@@ -16,5 +16,8 @@ git remote add upstream git@github.com:beltoforion/muparserx.git
 pushd Examples/src/LinearAlgebra/spectra
 git remote add upstream https://github.com/yixuan/spectra.git
 popd
+pushd Extras/pybind11
+git remote add upstream git@github.com:pybind/pybind11.git
+popd
 
 

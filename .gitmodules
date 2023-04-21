@@ -20,3 +20,6 @@
 [submodule "Extras/pybind11"]
 	path = Extras/pybind11
 	url = git@github.com:pacs-course/pybind11.git
+[submodule "Examples/src/pybind11/pybind11_examples"]
+	path = Examples/src/pybind11/pybind11_examples
+	url = git@github.com:pacs-course/pybind11_examples.git
