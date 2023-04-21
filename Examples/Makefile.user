@@ -108,7 +108,8 @@ WARNFLAGS=-Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor
 export DOXYFILE=$(PACS_ROOT)/DoxyfileCommon
 ##
 # PYBIND11 SETTINGS
-# remember to instal pybind11 in the $(PACS_ROOT)/include directory
+# remember to install pybind11 in the $(PACS_ROOT)/include directory
+# To do it: go in Extra/pybind11 and run ./install_PACS.sh
 PYBIND11_DIR=$(PACS_ROOT)/include
 ##
 # ************ END USER MODIFIABLE PART *****************
