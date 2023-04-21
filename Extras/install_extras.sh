@@ -1,5 +1,5 @@
 #!/bin/bash
-extra_dirs="muparser muparserx json"
+extra_dirs="muparser muparserx json pybind11"
 this_dir=$PWD
 if ! test install
 then 
