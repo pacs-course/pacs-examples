@@ -1,4 +1,4 @@
-#Two examples of use of expression templates#
+# Two examples of use of expression templates #
 
 Expression templates is a rather complex metaprogramming technique normally used in linear algebra libraries (like Eigen or Armadillo++) (but not only, one of the examples in this directory is about numerical integrations) to satisfy the following requirements
 
