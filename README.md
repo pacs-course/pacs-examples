@@ -77,7 +77,8 @@ Change the protocol of the submodules to ssh. You should not need it!
 
 ## What ELSE? ##
 
-  * `Exercises/` Directory with the exercises of the course, subdivided by year! Enjoy!
+  * `E
+  * Labs/` Directory with the laboratory sessions of the course, subdivided by year! Enjoy!
   
 
 
