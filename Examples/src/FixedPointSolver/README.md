@@ -1,4 +1,4 @@
-#A tool for fixed point iterations#
+# A tool for fixed point iterations #
 
 We define a class template `FixedPointIteration` that implements the simple fixed point iteration 
 
@@ -24,7 +24,7 @@ to use some standard algorithms that allow a parallel version, even if in this v
 make VERBOSE=yes
 ```
 
-#What do I learn from this example?#
+# What do I learn from this example? #
 
 - The use of adapters to make your code more general, in particular to enable it to interface with objects with different public interfaces
 - The strange way of passing Eigen matrices as function parameters, due to the adoption of expression templates by Eigen.
