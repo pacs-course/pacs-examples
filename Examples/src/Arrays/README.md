@@ -11,4 +11,5 @@
 # What do I learn here? #
  
  - A few features of `std::array'.
+ - How to use `std::array` in a generic way.
  
