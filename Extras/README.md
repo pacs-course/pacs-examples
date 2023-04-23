@@ -34,3 +34,5 @@ This directory contains also some additional material.
 - `CRLFSaga.odt` The Carriage Return/Line Feed issue: why text files on Windows are different than in Linux/Unix/MacOS?
 - `CppCon14Lecture` Lectures on the C++14 standard by the CppCon community
 - `Vagrant_guid.pdf` A guide on Vagrant, a tool for virtual machines.
+
+- `tounix`. A simple shell script to transgorm a DOS/Windows text file to Unix, by changing the line endin convention.
