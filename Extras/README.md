@@ -35,4 +35,4 @@ This directory contains also some additional material.
 - `CppCon14Lecture` Lectures on the C++14 standard by the CppCon community
 - `Vagrant_guid.pdf` A guide on Vagrant, a tool for virtual machines.
 
-- `tounix`. A simple shell script to transgorm a DOS/Windows text file to Unix, by changing the line endin convention.
+- `tounix`. A simple shell script to transform a DOS/Windows text file to Unix, by changing the line ending convention.
