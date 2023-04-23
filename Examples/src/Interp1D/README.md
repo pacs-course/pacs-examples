@@ -1,4 +1,4 @@
-# A generic piecewise linear interpolator#
+# A generic piecewise linear interpolator #
 
 In this directory we show a rather complex example of a generic piecewise linear 1D interpolator, and one application for
 vectors of couples of values, representing the key (the interpolation nodes) and values (the interpolation values).
@@ -15,7 +15,7 @@ Then I have written two oveloads that represent the more common usage of the too
 
 For the second overload I need to implement some adapters to obey the interface of the generic function. It is a complex, and a little convoluted, example. 
 
-#What do I learn from this examples?#
+# What do I learn from this example? #
 - The use of generic programming to develop a flexible tool, capable of handling different ways the input data is structured
 - The use of specializations, via function overloading, can provide the user with a simpler iterface for the most common data structures.
 - The use of adapters to interface a code with data structures apparently incompatible with the given interface.
