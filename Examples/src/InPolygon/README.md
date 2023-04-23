@@ -3,7 +3,7 @@
 Given a generic polygon, we show here two functions to find if a point is falling inside the polygon.
 They are just meant as prototypes. A more "professional" coding should take care of controlling floating point errors 
 (important to deal with the limit cases), and treating the case when the point lies exactly on the boundary 
-of the polygon in a consistent way. However, the codes here provided give an idea of the algorithms and are usable.
+of the polygon, in a consistent way. Yet, the code provided here give an idea of the algorithms, and is usable.
 
 We have implemented two types of algorithms:
 
