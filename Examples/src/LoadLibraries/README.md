@@ -1,4 +1,4 @@
-#An utility to load and store dynamically libraries#
+# An utility to load and store libraries dynamically #
 
 It is an utility, in the form of a library that enables you to
 - To load dynamically a set of shared library and store the handler in a common repository
@@ -17,5 +17,5 @@ It is an utility, in the form of a library that enables you to
 ** The test is also an example of factories! Indeed it uses a generic factory to store functions. Have a look! **
 
 
-#What do I learn here?#
+# What do I learn here? #
 - The use of a common repository can help to handle dynamic libraries loaded in a plugin architecture.
