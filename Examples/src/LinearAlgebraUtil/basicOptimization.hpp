@@ -22,7 +22,8 @@
 namespace apsc
 {
 /*!
- *  Golden search method to find the extrema of a function.
+ *  Golden search method to find the extrema of a function. The function must be
+ *  double (double) or double (double const &) and must be unimodal in the interval.
  *
  * @tparam Function The type of a callable object double (double)
  * @param f The callable object double (double)
@@ -30,7 +31,7 @@ namespace apsc
  * @param b the second end of an interval bracketing the extremum
  * @param tol The desired tolerance. It is guaranteed that the found extremum is
  * within the tolerance
- * @param maxIter Max number of iteratin. Safeguard against non-convergence
+ * @param maxIter Max number of iterations. Safeguard against non-convergence
  * @return The found extremum and a status (=false max iterations reached)
  */
 template <TypeTraits::ScalarFunction Function>
@@ -54,7 +55,7 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
 }
 
 /*!
- * Tries to bracket an interval containing a minimum of a continuous function f
+ * Tries to bracket an interval containing a minimum of a continuous function f.
  *
  * @tparam Function The type of a callable object double (double)
  * @param f A callable object of signature double (double)
