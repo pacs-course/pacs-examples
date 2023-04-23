@@ -16,8 +16,8 @@ namespace apsc
  * @brief An utility to load dynamic libraries by name and keep them in a common
  * repository
  *
- * The object of this class must be in the accessible for all time the libraries
- * are used. Indeed it applied the RAII principle and the descructor closes the
+ * The object of this class must be in the accessible for all the time the libraries
+ * are used. Indeed it applies the RAII principle, and the descructor closes the
  * libraries. When a dynamic library is closed the symbols it provides are not
  * accessible anymore.
  *
