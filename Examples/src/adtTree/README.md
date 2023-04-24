@@ -46,8 +46,8 @@ This is indeed another requirement for our ADT implementation. Then, after a re-
 of the coordinates between 0 and 1, one can test them  against 2<sup>-l</sup>, l being the level of the tree, 
 to decide to move to the left or right branch.
 
-Finally, how to treat points in nD and Boxes? Here we find out the meaning of the therm "alternating". 
-The test is done alternating across the dimension: in a nD, with point's coordinates (x<sub>0</sub>,..,x<sub>i</sub>,..x<sub>nD</sub>) the test is made rotating cycling the coordinates and against 2<sup>-l/nD</sup> (integer division). Note that it means that at tree level l we test coordinate with index l mod nD.
+Finally, how to treat points in nD and Boxes? Here we find out the meaning of the term "alternating": 
+the test is done alternating across the dimension: in a nD, with point's coordinates (x<sub>0</sub>,..,x<sub>i</sub>,..x<sub>nD</sub>) the test is made rotating cycling the coordinates and against 2<sup>-l/nD</sup> (integer division). Note that it means that at tree level l we test coordinate with index l mod nD.
 
 Boxes are defined by the two corners defining the minimum and maximum coordinates. 
 An ADT tree *Box node* is seen as a 2nD point where the min and max coordinates of the box are alternated. 
@@ -215,10 +215,16 @@ where
 - `control` is the control structure of type   `template <std::size_t BOXDIMS> class NodeControl` whihc returns the information on the level and position in the tree structure
 - `level` The level of the tree.
 
-# What do I learn here
+**A Note** The `control` structure is a bit complicated, but it is used to avoid code replication. It is a template class that returns the information on the level and position in the tree structure. The template parameter `BOXDIMS` is the dimension of the box.
+
+
+# What do I learn here? #
 - A rather complex data structure;
 - The use of generic programming to avoid code replications: we treat Points and Boxes in the same code;
 - An example of visitor design pattern. Indeed this is a simplified version.
+- The use of variadic templates to define a node with additional data.
+- The use of `std::enable_if` to define a template function that is enabled only if a condition is true.
+
 
 ## Bibliography ##
 - Bonet, J. and Peraire, J. (1991), An alternating digital tree (ADT) algorithm for 3D geometric searching and intersection problems. Int. J. Numer. Meth. Engng., 31: 1-17. https://doi.org/10.1002/nme.1620310102

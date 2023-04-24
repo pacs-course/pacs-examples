@@ -43,7 +43,8 @@
  \[
  p_m(x)=\sum_{i=0}^{m} a_i x^i,
  \]
-be a (real or complex) polynomial of degree at most $m$, express in terms of the monomial basis. The \emph{Synthetic Division} or \emph{Horner's algoritm} reads
+be a (real or complex) polynomial of degree at most $m$, expressed in terms of the monomial basis.
+  The \emph{Synthetic Division} or \emph{Horner's algoritm} reads
 
 \begin{algo}\label{alg:horner}
 \emph{Computes $p(z)$}
@@ -54,14 +55,17 @@ auto horner(a,z)
     return {b[0]*z + a[0],b}; 
 \end{lstlisting}
 \end{algo}
-This version of the algorithm, beside computing $p_m(z)$, returns the coefficients $b_j$, $j=0,\ldots m-1$ of the so called \emph{associated polynomial}
+This version of the algorithm, beside computing $p_m(z)$,
+  returns the coefficients $b_j$, $j=0,\ldots m-1$ of the so called \emph{associated polynomial}
 \begin{equation}
 \label{eq:associated}
 q_{m-1}(x;z)=\sum_{j=0}^{m-1}b_j x^j.
 \end{equation}
-It is a polynomial of degree at most $m$, and the $z$ in $q_{m-1}(x;z)$ indicates that the coefficients $b_j$ are the results of the synthetic division applied in $x=z$ (see Algorithm~\ref{alg:horner}). Indeed, the value of the coefficients $b_j$ depends on the chosen point $z$. 
+It is a polynomial of degree at most $m$, and the $z$ in $q_{m-1}(x;z)$ indicates
+  that the coefficients $b_j$ are the results of the synthetic division applied in $x=z$ (see Algorithm~\ref{alg:horner}). Indeed, the value of the coefficients $b_j$ depends on the chosen point $z$.
 
-We have the following \emph{important result}: the polynomial $q_{m-1}(x;z)$ is the quotient of the division of $p_m$ by $x-z$. Which means that 
+We have the following \emph{important result}: the polynomial $q_{m-1}(x;z)$ is the quotient
+  of the division of $p_m$ by $x-z$. Which means that
 \begin{equation}
 \label{eq:quotient}
 \boxed{p_m(x)=q_{m-1}(x;z)(x-z) + p_m(z),}
@@ -76,6 +80,7 @@ by which,
 \label{eq:quotientdertwo}
 \boxed{\frac{d}{dx}p_m(z)=q_{m-1}(z;z).}
 \end{equation}
+
 Therefore, the synthetic division is a tool to compute not only the value at a point $z$, but also the derivative at that point, and the quotient of the division with the factor $x-z$. It provides the basic ingredients of the \textbf{Newton-Horner} algorithm for computing the zeros of a polynomial. But first we need to illustrate the deflation.
 \subsection{Deflation}
 Let $\{\alpha_j,\ j=1,\ldots,n\}$ be a zeroes of the polynomial $p_n$. Then, $\{\alpha_j,\ j=1,\ldots,n-1\}$ are the zeroes of 
@@ -117,8 +122,10 @@ Newton-Holder algorithm is a very nice and relatively efficient algorithm. Howev
     \item We have global convergence (i.e. for all $x_0$) only for polynomial with real coefficients under some conditions on the zeroes (look at specialized literature if you want more information). Therefore, in general convergence of the basic algorithm depends on the choice of $x_0$. You may implement techniques like backtracking, or randomization, to better convergence properties. It must be said that in all the tests I have made the basic method worked fine.
     \item The deflation is only approximate! Indeed, we will "divide" not by the real zero, but by the \emph{approximated zero}. This means that we may accumulate errors that may reduce the accuracy of the last computed zeroes: a small value of the \emph{approximated} deflated polynomial may not imply a small value of the original polynomial. Consequently, the algorithm may terminate at a point far from the real zero. 
     However, this may happen only if you compute all zeroes of a polynomial of high degree, and for the last computed zeroes! Normally, you do not have to worry if you have set the tolerances reasonably tight. 
-    \item In real polynomials complex roots come in pairs. Cannot we deflate by $(x-\alpha)(x-\overline{\alpha})$ directly? Indeed we can, it is a modification of the basic algorithm that however I have not implemented here.  
-    \item You have to avoid division by zero in   $q^\prime(x_n)^{-1}p(x_n)$!. This is always a tricky business. What you can try to do is 
+    \item In real polynomials, complex roots come in pairs. Cannot we deflate by $(x-\alpha)(x-\overline{\alpha})$ directly?
+    Indeed we can, it is a modification of the basic algorithm that however I have not implemented here.
+    \item You have to avoid division by zero in   $q^\prime(x_n)^{-1}p(x_n)$!.
+    This is a tricky business. What you can try to do is
     to set a small number at the denominator. For instance, using $p(x_n)/d$ with $d=\epsilon<<1$ if $|q^\prime(x_n)|=0$ and $d=q^\prime(x_n)$ otherwise. 
     \item Operating with complex numbers makes the algorithm more general. But if $x_0$ is a pure real number (i.e. zero imaginary part), then the algorithm will find only the real zeroes. Since we do not know how, in general, how many real zeroes we have, the algorithm may fail to find a zero simply because we do not have other real zeroes! Therefore, we need to modify the algorithm to detect non convergence. Here I have decided to keep things simple, but then you have always to start with an 
     $x_0$ with non-sero imaginary part, unless you know beforehand that \emph{all} zeroes are real (or, at least, the number of real zeroes, since the given algorithm allows to search only for a certain number of zeroes).

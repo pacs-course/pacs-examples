@@ -67,3 +67,5 @@ This is done automatically by the Makefile. Of course, you must have `libtbb.so`
 # What do you learn with this example? #
 - That the use of a more elaborate algorithm can give a significant efficiency gain, even for apparently simple problems;
 - A use of the new (since C++17) parallel algorithms of the standard library; 
+- How to use the `std::transform` algorithm.
+- The use of a policy passed as function argument to select the different version of the algorithm for plynomial evaluation.
