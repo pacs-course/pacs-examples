@@ -267,3 +267,5 @@ make.dep
 /Examples/src/Utilities/test_absdiff
 /Examples/src/Utilities/test_hash_combine
 /Examples/src/Utilities/test_overloaded
+/Examples/share/cmake/*
+/Examples/share/pkgconfig/*
