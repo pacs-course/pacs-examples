@@ -26,8 +26,8 @@ namespace adt
    */
   enum class AdtType
   {
-    Point,
-    Box
+    Point, //!< Point
+    Box   //!< Box
   };
   /*!
    * @brief Coordinate box location
@@ -38,8 +38,8 @@ namespace adt
    */
   enum class BoxLocation
   {
-    LowerLeft,
-    UpperRight
+    LowerLeft, //!< LowerLeft corner
+    UpperRight //!< UpperRight corner
   };
 
   /*!
@@ -149,7 +149,7 @@ namespace adt
      * @return The coordinate of the box as a 2*DIM Point
      */
     constexpr auto
-    operator[](std::size_t i) const
+    operator[](std::size_t i) const noexcept
     {
       return corners[whichCorner(i)][phCoord(i)];
     }
@@ -158,7 +158,7 @@ namespace adt
      * @return The coordinate of the box as a 2*DIM Point
      */
     constexpr auto &
-    operator[](std::size_t i)
+    operator[](std::size_t i) noexcept
     {
       return corners[whichCorner(i)][phCoord(i)];
     }
@@ -182,7 +182,7 @@ namespace adt
      * @return The location of the coordinate
      */
     static constexpr BoxLocation
-    location(std::size_t i)
+    location(std::size_t i)noexcept
     {
       if constexpr(Type == AdtType::Box)
         return (i / DIM) % 2u == 0 ? BoxLocation::LowerLeft
@@ -197,7 +197,7 @@ namespace adt
      * @return 0 or 1.
      */
     static constexpr std::size_t
-    whichCorner(std::size_t i)
+    whichCorner(std::size_t i)noexcept
     {
       return location(i) == BoxLocation::LowerLeft ? 0u : 1u;
     }
@@ -208,7 +208,7 @@ namespace adt
      * @return The corresponding physical coordinate
      */
     static constexpr std::size_t
-    phCoord(std::size_t i)
+    phCoord(std::size_t i) noexcept
     {
       return i % DIM;
     }
@@ -225,7 +225,7 @@ namespace adt
      * @return An array containing the 2 values
      */
     std::array<double, 2>
-    minmax(std::size_t i) const
+    minmax(std::size_t i) const noexcept
     {
       return {corners[0u % CDIM][phCoord(i)], corners[1u % CDIM][phCoord(i)]};
     }
@@ -241,13 +241,13 @@ namespace adt
      * @return
      */
     auto const &
-    corner(std::size_t i) const
+    corner(std::size_t i) const noexcept
     {
       return corners[i % CDIM];
     }
 
     auto &
-    corner(std::size_t i)
+    corner(std::size_t i) noexcept
     {
       return corners[i % CDIM];
     }
@@ -259,25 +259,25 @@ namespace adt
      * @return The size
      */
     static constexpr auto
-    size()
+    size() noexcept
     {
       return CDIM * DIM;
     }
     //! The space dimensions=the size of the space of the box corners
     static constexpr auto
-    dim()
+    dim() noexcept
     {
       return DIM;
     }
     //! The Box type (Box or Point)
     static constexpr AdtType
-    type()
+    type() noexcept
     {
       return Type;
     }
     //! Another way to identify if point box or not
     static constexpr auto
-    cdim()
+    cdim() noexcept
     {
       return CDIM;
     }

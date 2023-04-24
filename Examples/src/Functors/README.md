@@ -23,12 +23,9 @@ auto x = f(x); // calls the call operator
 ```
 
 # What do I learn here? #
-The concept of functors, which is very used by many standard algorithms.
-
-The standard library also provides son base classes from which you can publicly derive your functor if it is a 
+- The concept of functors, which is very used by many standard algorithms.  The standard library also provides son base classes from which you can publicly derive your functor if it is a 
 *unary function object*, or *binary function object* (i.e. a functur taking one or two arguments, respectively). 
-They are called `std::unary_function` and `std::binary_function`, and are tempalte class templatized with the argument and return type of your functor.
+They are called `std::unary_function` and `std::binary_function`, and are tempalte class templatized with the argument and return type of your functor. Inheriting from those classes is not necessary, but it can be of help if you use the functor inside standard algorithms.
 
-Inheriting from those classes is not necessary, but it can be of help if you use the functor inside standard algorithms.
 
 

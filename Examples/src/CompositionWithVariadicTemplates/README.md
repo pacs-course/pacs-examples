@@ -11,5 +11,6 @@ Some care should be taken, the basic components should be as simple as possible,
 
 # What do I learn here? #
 
-- A use of variadic template, composition by public inheritance: a peculiar implementation of the Builder design pattern
-- How to use concepts with variadic templates
+- A use of variadic template, composition by public inheritance: a peculiar implementation of the Builder design pattern;
+- How to use concepts with variadic templates;
+- How to use concepts to check that the template arguments are all default constructible.
