@@ -14,9 +14,9 @@ namespace apsc
 {
 //! The options to be passed, with default values
 //!
-//! \note
-//! We use absolute tolerances in the code. It is the user task to set them
-//! appropriately \todo Implement relative tolerances
+//! @note We use absolute tolerances in the code. It is the user task to set them
+//! appropriately
+//! @todo Implement relative tolerances
 struct NewtonOptions
 {
   //! @brief Tolerance for two successive iterations.

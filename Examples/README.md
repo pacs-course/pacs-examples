@@ -115,6 +115,7 @@ one that you have created by copying Makefile.user).  In particular
 - `mkCxxCompiler` The c++ compiler of your choice
 - `mkEigenHome`      Where the Eigen files are kept (normally equal to MkEigenInc)
 
+
 Other important environment variables set up by the module system that may be 
 not  used in `Makefile.user` but may be used by other makefiles of the examples are
 
@@ -126,11 +127,13 @@ not  used in `Makefile.user` but may be used by other makefiles of the examples 
 - `mkCgalInc`         Directory with the CGAL header files
 - `mkBoostInc`        Directory with the boost libraries     
 - `mkBoostLib`        Directory with the boost header files
+- `mkHdf5Lib `       The directory with the hdf5 libraries
+- `mkHdf5Inc`        The directory with the hdf5 header files
 
 
 So, you have two main choices
 
-  * You use the module system provided with the virtual machine. Then
+  * You use the module system provided with the virtual machine givern in the course. Then
 in your `Makefile.inc` you have to set only `PACS_ROOT`, all other
 variables are set by the module system.  I recall that if you want to
 see all environmental variables set by the modules you may do (all
