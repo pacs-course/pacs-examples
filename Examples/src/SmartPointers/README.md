@@ -21,8 +21,8 @@ working of smart pointers.  A Container class is composed
 polymorphically with an object of a polymorphic family, selected using
 a simple object factory .  
 
-A muche more complex example of composition with
-polymorphyc object, which uses clonable classes, is in
+A much more complex example of composition with
+polymorphyc object, which uses cloneable classes, is in
 `Utilities/CliningUtilities.hpp`: it employs a `PointerWrapper` class that  simplifies the composition with polymorphic object (provided they are  clonable classes). Have a look!
 
 # A note #
@@ -47,7 +47,7 @@ This is necessary due to the way compiler checks code. It is a nuisance, I know,
 
 It is not against the 'is-a' principle if a derived class provides additional constructors, specialised for the derived class. Actually it is often the case. 
 
- For instance, in my polymorphic family of Polygons, `Square` can be constructed also passing a `Point2D` as origin , and two doubles for the lenght and the rotation angle,
+ For instance, in my polymorphic family of Polygons, `Square` can be constructed also passing a `Point2D` as origin , and two doubles for the length and the rotation angle,
 
 ``````
   Square(Point2D const &origin, double length, double angle = 0.0);

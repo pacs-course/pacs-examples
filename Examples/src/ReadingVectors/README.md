@@ -15,3 +15,4 @@ This is an example of complex overloading of operators by using templates. In fa
 # What do I lean here? #
 - An unusual overload of the output stream operator;
 - A curious usage of overloading the comma operator;
+- A curious usage of variadic templates.
