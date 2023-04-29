@@ -12,6 +12,7 @@
       <file path="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
       <file path="$PROJECT_DIR$/src/Mesh" />
       <file path="$PROJECT_DIR$/src/MetaProgramming/SwitchType" />
+      <file path="$PROJECT_DIR$/src/MyMat0" />
       <file path="$PROJECT_DIR$/src/NewtonSolver" />
       <file path="$PROJECT_DIR$/src/Numeric_Limits" />
       <file path="$PROJECT_DIR$/src/OneDMesh" />

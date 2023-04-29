@@ -1,7 +1,7 @@
-#include "Adams_rule.hpp"
+//#include "Adams_rule.hpp"
 #include "Gauss_rule.hpp"
 #include "QuadratureRuleAdaptive.hpp"
-#include "montecarlo.hpp"
+//#include "montecarlo.hpp"
 #include "ruleFactory.hpp"
 // uncomment the next include if you want to use
 // #include "ruleProxy.hpp"
@@ -43,6 +43,7 @@ loadFactoryItems()
   using namespace apsc::QuadratureRuleFactory;
   using namespace apsc::NumericalIntegration;
   addRuleToFactory<QuadratureRuleAdaptive<GaussLegendre3p>>("AdaptiveGauss3");
+  addRuleToFactory<QuadratureRuleAdaptive<GaussLegendre4p>>("AdaptiveGauss4");
   addRuleToFactory<GaussLobatto4p>("GaussLobatto4");
   addRuleToFactory<GaussLobatto5p>("GaussLobatto5");
   addRuleToFactory<GaussLegendre3p>("GaussLegendre3");

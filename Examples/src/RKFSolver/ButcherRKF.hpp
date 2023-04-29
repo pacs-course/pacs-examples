@@ -186,17 +186,17 @@ namespace RKFScheme
   };
 
   // C++17 here!
-  inline const RK45_t RK45;
+  inline constexpr RK45_t RK45;
 
-  inline const RK23_t RK23;
+  inline constexpr RK23_t RK23;
 
-  inline const RK12_t RK12;
+  inline constexpr RK12_t RK12;
 
-  inline const RKF12_t RKF12;
+  inline constexpr RKF12_t RKF12;
 
-  inline const ESDIRK12_t ESDIRK12;
+  inline constexpr ESDIRK12_t ESDIRK12;
 
-  inline const ESDIRK34_t ESDIRK34;
+  inline constexpr ESDIRK34_t ESDIRK34;
 
 } // namespace RKFScheme
 

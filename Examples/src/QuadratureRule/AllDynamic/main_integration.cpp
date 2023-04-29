@@ -59,7 +59,7 @@ main(int argc, char **argv)
       return 0;
     }
   // Get the input file
-  std::string           inputFile = key_input("InputFile", "quadratura.getpot");
+  std::string inputFile = key_input("InputFile", "quadratura.getpot");
   std::filesystem::path filepath(inputFile);
   if(!std::filesystem::exists(filepath))
     {

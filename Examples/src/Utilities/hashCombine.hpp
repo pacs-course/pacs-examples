@@ -56,6 +56,7 @@ namespace apsc
       std::hash<T> hasher;
       seed ^= hasher(v) + 0x9e3779b97f4a7c15 + (seed << 6) + (seed >> 2);
       int[] i={0, (hashCombine(seed, rest), 0)...};
+      //!@note: the following line is to avoid the warning of unused variable i
       (void)(i);
   }
 #endif

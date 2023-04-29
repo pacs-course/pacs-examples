@@ -29,10 +29,10 @@ main(int argc, char **argv)
   Domain1D domain(a, b);
   Mesh1D   mesh(domain, nint);
 
-  Quadrature s(Simpson(), mesh);
-  Quadrature m(MidPoint(), mesh);
-  Quadrature t(Trapezoidal(), mesh);
-  Quadrature gL(GaussLegendre3p(), mesh);
+  Quadrature s(Simpson{}, mesh);
+  Quadrature m(MidPoint{}, mesh);
+  Quadrature t(Trapezoidal{}, mesh);
+  Quadrature gL(GaussLegendre3p{}, mesh);
 
   cout << " Now the mesh has " << mesh.numNodes() << " nodes" << endl;
 
