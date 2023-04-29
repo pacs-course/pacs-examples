@@ -7,7 +7,7 @@ main()
 {
   using namespace std;
   using namespace apsc;
-  auto fun = [](double const &t, double const &y) { return -10 * y; };
+  auto fun = [](double const &, double const &y) { return -10 * y; };
   auto exact = [](double const &t) { return std::exp(-10. * t); };
   // auto exact=[](double const &t){return std::cos(t);};
   // auto fun = [](double const & t, double const & y){return -std::sin(t);};
@@ -41,7 +41,7 @@ main()
   }
   {
     // Van Der Pol with mu=1
-    auto fun = [](double const &t, Eigen::VectorXd y) -> Eigen::VectorXd {
+    auto fun = [](double const &, Eigen::VectorXd y) -> Eigen::VectorXd {
       constexpr double mu = 1.;
       Eigen::VectorXd  out(2);
       out(0) = y(1);

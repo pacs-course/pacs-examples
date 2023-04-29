@@ -35,31 +35,31 @@ public:
   constexpr unsigned int
   num_nodes() const
   {
-    return _therule.num_nodes();
+    return therule_.num_nodes();
   }
   //! Coordinate of i-th node. Delegates to the stored rules.
   double
   node(const int i) const
   {
-    return _therule.node(i);
+    return therule_.node(i);
   };
   //! Weight of i-th node. Delegates to the stored rules.
   double
   weight(const int i) const
   {
-    return _therule.weight(i);
+    return therule_.weight(i);
   };
   //! Order of convergence of the rule.
   unsigned int
   order() const
   {
-    return _therule.order();
+    return therule_.order();
   };
   //! The factor used to compute the error estimate
   double
   factor() const
   {
-    return _factor;
+    return factor_;
   }
   //! The actual rule.
   double apply(FunPoint const &, double const &a,
@@ -88,9 +88,9 @@ public:
 protected:
   //! The underlying rule. static because it is common to all objects of the
   //! class inlined so this is a definition (since C++17)
-  inline static SQR _therule;
+  inline static SQR therule_;
   //! Factor used in the calculation of the error estimate.
-  double _factor;
+  double factor_;
 };
 // Not needed in C++17
 // template<typename SQR>
@@ -98,7 +98,7 @@ protected:
 
 template <typename SQR>
 QuadratureRulePlusError<SQR>::QuadratureRulePlusError()
-  : _factor(1. / (1 - std::pow(2, 1.0 - _therule.order())))
+  : factor_(1. / (1 - std::pow(2, 1.0 - therule_.order())))
 {}
 
 template <typename SQR>
@@ -121,11 +121,11 @@ double
 QuadratureRulePlusError<SQR>::apply(FunPoint const &f, double const &a,
                                     double const &b) const
 {
-  double result = _therule.apply(f, a, b);
+  double result = therule_.apply(f, a, b);
   double xm = (a + b) / 2.0;
-  double result2 = _therule.apply(f, a, xm) + _therule.apply(f, xm, b);
+  double result2 = therule_.apply(f, a, xm) + therule_.apply(f, xm, b);
   // Record the error in the extractor.
-  ExtractError.error += (result2 - result) * _factor;
+  ExtractError.error += (result2 - result) * factor_;
   return result; // I should return result2 see commment above
 }
 } // namespace apsc::NumericalIntegration

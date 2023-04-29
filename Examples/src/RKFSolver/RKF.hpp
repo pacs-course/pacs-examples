@@ -54,9 +54,12 @@ public:
   using VariableType = typename RKFTraits<KIND>::VariableType;
   using Function = typename RKFTraits<KIND>::ForcingTermType;
   //! Constructor just taking the function
-  RKF(Function const &f) : M_f{f} {};
+  template <class F=Function>
+  RKF(F&&f) : M_f{std::forward<F>(f)} {};
   //! Constructor passing butcher table and forcing function
-  RKF(B const &bt, Function const &f) : M_f{f}, ButcherTable(bt){};
+  template<class F=Function>
+  RKF(B const bt, F&& f) : M_f{std::forward<F>(f)}, ButcherTable{bt}{};
+
   //! Default constructor
   RKF() = default;
   //! Set the forcing function
@@ -79,12 +82,11 @@ public:
    * @param hInit initial time step
    * @param tol desired global error max. norm
    * @param maxstep Safeguard to avoid too many steps (default 2000)
-   * @todo It would be better to group the parameters tol and maxStep into an
-   * (internal?) struct
+   * @todo It would be better to group the parameters tol and maxStep into an (internal?) struct
    */
   RKFResult<KIND> operator()(double const &T0, double const &T,
                              VariableType const &y0, double const &hInit,
-                             double const &tol, int maxStep = 2000) const;
+                             double const &tol=1e-6, int maxStep = 2000) const;
   /*!
    * Kept public to simplify handling
    * Mutable because I should be free to modify it also on a const object
@@ -127,6 +129,8 @@ private:
   auto RKFstep(const double &tstart, const VariableType &y0,
                const double &h) const -> std::pair<VariableType, VariableType>;
 };
+
+
 
 //! streaming operators to dump the results in gnuplot format
 //!  For simplicity I inline them so I have everything in this header file

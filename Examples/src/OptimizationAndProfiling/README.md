@@ -1,4 +1,4 @@
-#This directory contains a series of examples of optimization and profiling. #
+# This directory contains a series of examples of optimization and profiling. #
 
 The makefile is specially written so it compiles and executes the some of examples. We need some of the tools of the `Utility` folder. So, if you have not done it yet, 
 you to go in the directory `Utilities/` and follow the instruction to install the utilities.
@@ -39,6 +39,5 @@ info provided by --annotated-source, so I am not using it.
 
 `rational.[h|c]pp` and `GetPot` are only support utilities used in some of the previous examples. 
 
-#What do I learn here?#
-- Different tools and utilities for debugging and profiling. 
-- 
+# What do I learn here? #
+- Different tools and utilities for debugging and profiling.
