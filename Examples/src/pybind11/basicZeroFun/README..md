@@ -1,10 +1,12 @@
 # basic routines for finding the zero of a function #
 
-This examples shows how existing function templates, more precisely the ones in LinearAlgebraUtilities/basicZeroFun.hpp, can be used in Python. The function templates are wrapped using pybind11.
+This examples shows how existing function templates, more precisely the ones in `LinearAlgebraUtilities/basicZeroFun.hpp`, can be used in Python. The function templates are wrapped using pybind11.
 
-We need to do an expliti instantiation of the template function ,since we need to provide the pybind11 wrapper with concrete objects, not templates (we have no templates in python).
+The file in `LinearAlgebraUtilities/basicZeroFun.hpp` must be copied (installed) in Examples/include for this example to work. 
 
-For the rest, it is rather simple. You need to provide the function with the correct return type, and the correct argument types. The rest is done by pybind11.
+We need to do an explicit instantiation of the template functions since we need to provide pybind11 wrapper with concrete objects, not templates (we have no templates in python).
+
+For the rest, the code is rather simple. You need to provide the function with the correct return type, and the correct argument types. The rest is done by pybind11.
 
 In python we can now do:
 

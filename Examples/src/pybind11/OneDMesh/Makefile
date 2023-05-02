@@ -15,13 +15,12 @@
 
 MAKEFILEH_DIR=../../../
 #
-DEBUG=no #get full optimization
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
 # This is optional. If not present is not an error
 -include Makefile.inc
-
+LDLIBS+=-L$(PACS_LIB_DIR) -lMesh1D
 #
 # The general setting is as follows:
 # mains are identified bt main_XX.cpp
@@ -42,7 +41,7 @@ EXEC=$(exe_sources:.cpp=)
 OBJS_NOEXEC=$(filter-out main%.o,$(OBJS))
 
 
-MODULENAME=eigenwrapper# Must be consistsnt with what declared in the pybind wrapper
+MODULENAME=OneDMesh# Must be consistsnt with what declared in the pybind wrapper
 PY_INCLUDES != python3-config --includes
 PY_EXT != python3-config --extension-suffix
 PY_FLAGS=-fPIC -flto #flto is not strictly needed
@@ -61,7 +60,7 @@ all: $(DEPEND) pyModule $(EXEC)
 pyModule: $(PY_MODULE)
 
 $(PY_MODULE): $(OBJS_NOEXEC) $(PY_OBJS)
-	$(RM) ./*.so
+	$(RM) *.so
 	$(CXX) $(CPPFLAGS) -shared $(CXXFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $(PY_MODULE)
 
 
@@ -71,7 +70,7 @@ clean:
 distclean:
 	$(MAKE) clean
 	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.so  *.bak *~
+	$(RM) *.out *.so *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)

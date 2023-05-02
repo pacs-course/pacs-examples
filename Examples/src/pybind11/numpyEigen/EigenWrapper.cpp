@@ -68,7 +68,7 @@ multiply(const Eigen::MatrixXi &xs, int fac)
 PYBIND11_MODULE(eigenwrapper,m)
 {
   namespace py = pybind11;
-  m.doc() = "pybind11 example plugin";
+  m.doc() = "pybind11 example of a wrapper for Eigen matrices";
 
   m.def("inv", &inv,"A function that computes the inverse of a matrix");
 

@@ -26,5 +26,6 @@ PYBIND11_MODULE(zeroFun, m) {
     m.def("Newton",&Newton<funct,funct>);
     m.def("bracketInterval",&bracketInterval<funct>);
     m.def("brent_search",&brent_search<funct>);
+    m.doc() = "A set of utilities to find the zero of a scalar function";
 };
 
