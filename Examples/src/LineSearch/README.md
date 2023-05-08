@@ -39,7 +39,7 @@ We give a brief description of the main files
 
 In *main_linesearch.cpp* you have an example of use, with different options commented.
 
-##What do I learn here?#
+## What do I learn here? ##
 - A rather complete code (however, read the notes) that implements one of the basic technique for optimization.
 - The use of polymorphism to select different implementations of the descent direction computation
 - The use of aggregates to store the parameters of the algorithm in a single place
