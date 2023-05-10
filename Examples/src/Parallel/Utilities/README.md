@@ -1,4 +1,4 @@
-# General Utilities for parallel computing#
+# General Utilities for parallel computing #
 
 ## Partitioner ##
 
@@ -42,6 +42,6 @@ When you compile with the usual setting a file that includes `mpi.h` you get a l
 
 
 
-# Instructions#
+# Instructions #
 
 If you just type `make all`, or simply `make`, you compile a test code for the partitioner. **If you do `make install` the content of this folder goes in the correct `include` folder and will be available for other examples.**

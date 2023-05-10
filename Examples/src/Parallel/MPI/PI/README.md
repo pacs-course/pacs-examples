@@ -1,4 +1,4 @@
-#A strange way of computing pi
+# A strange way of computing pi
 
 The code computes an approximation of pi by integrating 4/(1+x^2) in the interval (0,1) using a composite integration rule. It is just an example to show the use of `MPI_Reduce`, the collective communication tool that performs a reduction.
 
@@ -17,7 +17,7 @@ In the code we use `MPI_Allreduce` that, differently to `MPI_Reduce`, broadcasts
 **A Note:** You may note that the result obtained with a different number of processes, for a given number of elements, may differ slightly. This should not be a surprise: the order of operation is different, so roundoff errors accumulate differently. This is a classic result of paralellisation: the result is not exacly the same as the scalar counterpart, and, moreover, it may differ depending on the number of processes. The important thing is that the differences are within the approximation error.
 
 
-#What do I learn here?
+# What do I learn here?
 
 - The use of reduction in MPI
 - The use of GetPot to parse program parameters

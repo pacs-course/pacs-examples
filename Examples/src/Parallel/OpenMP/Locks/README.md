@@ -1,4 +1,4 @@
-#An exampe of OpenMP locks#
+# An exampe of OpenMP locks #
 
 A simple example that shows a possible use of locks. Two classes have a method that updates an internal variable.
 In one of the classes (called `Locked`) the update is protected with a lock:
@@ -24,7 +24,6 @@ In one of the classes (called `Locked`) the update is protected with a lock:
  
  Note that the `Locked` class has a constructor explicitly defined, since it initializes the lock variable member of the class.
  
-#What do I learn here?
+# What do I learn here?
  
 -A possible use of OpenMP Locks.
- 

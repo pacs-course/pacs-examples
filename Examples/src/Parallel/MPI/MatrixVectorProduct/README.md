@@ -1,4 +1,4 @@
-#Parallel matrix-vector product.
+# Parallel matrix-vector product #
 
 Matrix-vector product is one of the classic parallel algorithm. Typically, one splits
 the matrix by assigning a given number of rows to each process, while the vector, being less memory demanding, is kept replicated.
@@ -11,7 +11,7 @@ This may optimise the use of resources in hybrid architecture, for instance a cl
 
 The code  compute the rimings (using MPI timing tools) of the different parts of the procedure separately. One may note how the scatter of matrix elements is rather costly. Not only, having to store the full matrix on the root process is memory demanding. In practical situation, one tries to build the matrix locally, whenever possible.
 
-#What do I learn here?
+# What do I learn here? #
 
 Some MPI procedures: Gathes, Scatter, Broadcast, Barrier... A trick to output local data in the order of the ranks.
 

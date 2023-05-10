@@ -1,4 +1,4 @@
-#An example of deadlock and of non-blocking communications
+# An example of deadlock and of non-blocking communications #
 
 in `main_deadlock.cpp` you have a classical example of deadlock. This is a prototype code meant to run with just 2 processes that communicate a message each other. The problem here is that both procsses launch a blocking `MPI_Recv` before sending! So both will wait for a message that cannot be received.
 
@@ -20,12 +20,12 @@ An alternative could be using non-blocking communications: i.e. point-to-point c
 to run it (again, this is a simple code that works only with just 2 processes).
 
 
-#What do I learn here?
+# What do I learn here?
 
 - An example of the dreaded deadlock, and how to avoid it.
 - Non-blocking vs blocking.
 
-#A note
+## A note
 In fact `MPI_Send` and `MPI_Recv` are not guaranteed to be blocking, 
 **but is is safer to assume they are**. 
 What they guarantee is that when they return the send/receive buffer can be safely reused.

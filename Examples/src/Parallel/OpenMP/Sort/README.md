@@ -1,4 +1,4 @@
-#Comparison of different parallel sorting algorithms
+# Comparison of different parallel sorting algorithms
 
 In this example we have compare different sorting routines
 
@@ -71,13 +71,13 @@ The main reason is the high number of cache miss. Differntly than the quicksort 
 and the risk of cache miss is high. We do not go in more details here, in the book by P Pacheco and M. Malensk you have a thorough discussion about cache and how cache misses may slow down shared mamory parallel code.
 
 
-#What do I learn here?
+# What do I learn here?
 - A use `omp task`  and of `omp_set_num_threads()`;
 - The use of `GetPot` to parse program options;
 - The use of `std::sort`, in its classic and (multithreded, native c++) parallel implementation;
 - A nice implmenetation of parallel quicksort.
 
-#QuickSort algorithm pseudocode (serial version)
+# QuickSort algorithm pseudocode (serial version)
 
 For completeness we report a psedocode of the quicksort implemented in the example.
 

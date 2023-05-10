@@ -1,4 +1,4 @@
-#Code for generating Fibonacci numbers#
+# Code for generating Fibonacci numbers #
 
 Here we have implemented a recursive algorithm for th egeneration of Fibnacci sequences, and a parallel version using OpenMP *tasks*.
 
@@ -52,7 +52,7 @@ The overhead of taks creation and destruction may exceed greatly the advantage o
 This example shows also a serial nonrecursive implementation. Just to show that recursive algorithm are elegant but may be inefficient!. **The non recursive version is (at least on my computer) the fastest, and by far!**. For two reasons: 1) you do not have the overhead of repeated function calls, 2) in this case, the non recursive version is much more *cache friendly* than the non recursive one, since the iteration access consecutive elements.
 
 
-#What do I learn here#
+# What do I learn here #
 - That recursive algorithm may be difficult, if not impossible, to parallelize efficiently, in particular in  machines with 
 a small number of cores. Better results are in the `Sort` folder, where we show a parallel implementation of another recursive algorithm.
 - The serial non recursive version of the algorithm cannot be made parallel, but (at least on ordinary PCs) the fastest, and by far! 

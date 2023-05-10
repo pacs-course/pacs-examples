@@ -1,4 +1,4 @@
-#A possible use of MPI_Probe()
+# A possible use of MPI_Probe()
 
 `MPI_Probe` obtains information about a message that is waiting for reception, **without actually receiving it**. In other words, the message probed remains waiting for reception afterwards. What it receive is a `MPI_Status` object that refers to the message to be received. The status contains, among other things, the length of the message. 
 
@@ -27,9 +27,9 @@ To run the code after compilation:
 
 since this code runs only with just 2 MPI processes (it's just an example!).
 
-#What do I learn here?
+# What do I learn here?
 
 -How the use of probing allow to correctly dimension receive data buffers of unknown length.
-
+- How to use `MPI_Probe` and `MPI_Get_count` to obtain information about a message without actually receiving it.
 
 
