@@ -22,5 +22,5 @@ The last `MPI_Barrier()` is optional. Its role is to force the rank ordering in 
 In the example in this folder, the trick is used to let each process to print some data on the screen without interfering each other.
 
 
-#What do I learn here?#
+# What do I learn here? #
 A trick to implement a critical section in MPI

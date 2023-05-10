@@ -1,4 +1,4 @@
-# An example of parallel matrix#
+# An example of parallel matrix #
 
 *(if you have a compilation error see the note at the bottom)*
 
@@ -41,7 +41,7 @@ In this form, **only the master process obtains the result**, in the other proce
 ```
 That's it.
 
-## Note on the procedure for parallel matrix-vector product##
+## Note on the procedure for parallel matrix-vector product ##
 Let the (global) matrix dimensions be `m X n` , `p` the number of processes, and `v` the vector to be multiplied with, of dimension `n`. 
 We need to distinguish the two cases
 
@@ -62,7 +62,7 @@ We need to distinguish the two cases
 First of all in the compilation I have not activated openMP. If you do, by adding `-fopenmp` to the `CXXFLAGS` in `Makefile.inc` you have an hybrid parallelization, since the class `Matrix` uses multithreading in the local matrix-vector product. However, not always hybrid parallelism works well in a computer not meant for hybrid parallel computing like a normal PC, that's why I have taken it away by default. Remember to compile with 
 
 ```
-make DEBUG-no
+make DEBUG=no
 ```
 if you want to get full optimization (do a `make clean` before, to be sure you recompile everithing).
 
@@ -77,7 +77,7 @@ You may note that the setup time, i.e. the time taken to partition the matrix an
 - The technique where a master process distributes the global matrix partitiones to the processes implies a certain overhead due to the need of communicating large amount of data during the setup phase. In prectical situations, it's better to have each processor build its own local matrix, whenever possible.
 - the parallel matrix-vector computation becomes more advantageous if repeated many times with the same matrix. Indeed, in this case the setup phase overhed may become irrelevant. Luckily, this is the most common situation, for instance in iterative techniques for the solution of linear systems.
 
-## Note on the use of the class## 
+## Note on the use of the class ## 
 
 The `PMatrix.hpp` file includes other header files, in particular `partitioner.hpp`, `mpi_utils.h` and `Matrix.hpp`. To have them in the include directory of the Examples and thus available for the compilation of the test program using `make`, you need to
 

@@ -1,8 +1,8 @@
-#Hello World!#
+# Hello World! #
 
 The classic "Hello World" program, with MPI flavour.
 
-#What do I learn here?
+## What do I learn here? ##
 
 The basic tools to start a MPI program. No communication among the processes here. Each process run independently.
 

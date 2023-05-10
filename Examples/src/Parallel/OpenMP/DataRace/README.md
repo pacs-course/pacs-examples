@@ -1,4 +1,4 @@
-#The dreaded data race
+# The dreaded data race
 
 A major problem, and typical error, in shared memory parallelism is related to data race
 We recall the distinction between Race Condition and Data Race
@@ -27,7 +27,7 @@ Unfortunately, there is no easy way to parallelize that loop  (you may give a tr
 
 *Note* You may try to change scheduling strategy, the error persists.
 
-#What do I learn here?
+# What do I learn here?
 
 A simple typical loop which causes a race condition. 
 

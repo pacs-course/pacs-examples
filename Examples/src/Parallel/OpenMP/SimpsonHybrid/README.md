@@ -1,4 +1,4 @@
-#Numerical integration with a parallel Simpson composite quadrature, hybrid implementation.
+# Numerical integration with a parallel Simpson composite quadrature, hybrid implementation.
 
 
 This code illustrates a hybrid MPI-OpenMP implementation of the same code containe in `MPI/Simpson`. We leave the general description to the README file in that folder.
@@ -28,7 +28,7 @@ The number of threads are given in the json file `data.pot`, and may be changed 
  ```
  if you want 2 processes. 
  
-#What do I learn here?
+# What do I learn here?
  
 - A simple usage  of the json reader. Much, much more in [Json for modern C++](https://github.com/nlohmann/json)
 - The use of `MPI_Reduce()` to collect partial sums

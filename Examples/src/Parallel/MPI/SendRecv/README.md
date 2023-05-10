@@ -1,4 +1,4 @@
-#Odd-even transposition algorithm for parallel sorting
+# Odd-even transposition algorithm for parallel sorting
 
 In this example we have implemented the odd-even transposition algorithm illustrated in the book by Pacheco and Melenk. It is also an example
 of the possible combination of MPI with native C++ parallel (multithreaded) algorithms, and an illustration of the use of `MPI_Sendrecv`
@@ -51,15 +51,16 @@ The vector is initialised with random values distributed uniformly in the range 
 Eventually, the program tests whether the global vector has been effectively sorted.
 Timings are taken with both the `chrono.hpp` utility and the MPI native timings.
 
-#An important note
+## An important note
 This algorithm is not very efficient. In particualr, on normal PC the parallel time is normally higher (even much higher) than the serial counterpart.
 This types of algorithms may be beneficial in machines with very fast communication among processes, but inn general tere are better choices. 
 
 
-#What do I learn here?
+# What do I learn here?
 - How to use `MPI_Sendrecv()` in a cyclic point-to-point communication, and the use of `MPI_PROC_NUL`
 - The use of `GetPot` to parse program options
 - The use of `std::sort`, in its classic and (multithreded, native c++) parallel implementation.
+
 
 
 

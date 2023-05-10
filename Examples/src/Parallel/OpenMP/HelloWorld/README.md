@@ -1,4 +1,4 @@
-#Two simple "hello world!" programs
+# Two simple "hello world!" programs
 
 The two executables in this directory show the basic features of an OpenMP program.
 
@@ -64,14 +64,8 @@ Compared to the "simple" version, we may note
 1. The output message "Hello world from thread..." is never garbled, thanks to the critical section. Yet, the order of the threads is still undetermined, and different runs may produce a different order.
 2. The final message may be printed by different threads in different execution of the program.
 
-#What do I learn here?
-Some basic features of OpenMP.
-
-
-
-
-Comparing with the
-
+# What do I learn here?
+- Some basic features of OpenMP.
 
 
 

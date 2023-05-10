@@ -1,4 +1,4 @@
-#Scheduling strategies
+# Scheduling strategies
 
 This simple program wants to illustrate how the different scheduling strategy for a parallel for loop operate.
 
@@ -40,6 +40,6 @@ you are setting a dynamic scheduling with chunk size 4 whenever a `strategy(runt
 
  
 
-#What do I get here?
+# What do I get here?
 - Scheduling strategies shown with a simple example;
 - A use of `std::map`. You can try to use an `std::multimap` to invert the relation: give the iterations assigned to each task.

@@ -1,4 +1,4 @@
-#A strange way of computing pi, openMP version
+# A strange way of computing pi, openMP version
 
 The code computes an approximation of pi by integrating 4/(1+x^2) in the interval (0,1) using a composite integration rule. It is just an example that replicates an analogous example in `MPI/Pi`, so the general description may be found in the README.md file stored in that folder. 
 
@@ -57,7 +57,7 @@ You may call the program with
 **A Note:** You may note that the result obtained with a different number of processes, for a given number of elements, may differ slightly. This should not be a surprise: the order of operation is different, so roundoff errors accumulate differently. This is a classic result of paralellisation: the result is not exacly the same as the scalar counterpart, and, moreover, it may differ depending on the number of processes. The important thing is that the differences are within the approximation error.
 
 
-#What do I learn here?
+# What do I learn here?
 
 - A use of the `firstprivate` clause
 - The use of reduction in openMPI
