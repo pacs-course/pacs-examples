@@ -1,4 +1,4 @@
-#The parallel tools of the standard library#
+# The parallel tools of the standard library #
 The standard library now support different parallel algorithms. All parallel algorithms are characterised by the specification of a particular argument, which is the first argument of the algorithm, which specifies the type of parallel execution that is desireed.
 It is called the *parallel execution policy*. All algorithms, as usual for std algorithms, operate on ranges.
 
@@ -26,5 +26,6 @@ The is not the case for other algorithms. For instance `std::inner_product`, a n
 
 In this main program you have just some examples of use of just a few parallel algorithms of the stl, with some timings.
 
-#What do I learn here?#
-- How parallel algorithms of the standard library are called. 
+# What do I learn here? #
+- How parallel algorithms of the standard library are called.
+- How to get a parallel code cheaply using modern C++.

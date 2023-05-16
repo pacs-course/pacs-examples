@@ -2,13 +2,13 @@
 
 Here we have implemented a recursive algorithm for th egeneration of Fibnacci sequences, and a parallel version using OpenMP *tasks*.
 
-The use oftasks is here necesssary becouse of the nature of the algorithm, which is not formulated as a loop or as a fixed an predetermined number of possibly parallel parts.
+The use of tasks is here necesssary because of the nature of the algorithm, which is not formulated as a loop or as a fixed, predetermined number of parallel parts.
 
-The recusion is bases on the formula
+We indeed use a recursion based on the formula
 
 	F(k) = F(k-1)+ F(k-2), k=n,n-1,..1; F(1)=1, F(0)=0;
 	
-A (very moderate) level of parallelization is achived by noting that the compution of `F(k-1)` and `F(k-2)` can be carried out concurrently. Therefore, we can assign the computation to two different tasks:
+A (very moderate) level of parallelization is achived by noting that the computation of `F(k-1)` and `F(k-2)` can be carried out concurrently. Therefore, we can assign the computation to two different tasks:
 
 ```
   long unsigned int fib(long unsigned int n)

@@ -13,20 +13,23 @@
 // Distribution of Muster and its documentation is subject to terms of the Muster LICENSE.
 // available in  https://github.com/LLNL/muster/blob/master/LICENSE
 //
+// Some changes made by L. Formaggia for his courses.
+
 /// @file mpi_utils.h
- /// @brief Overloaded utility functions to convert between arbitrary C/C++
- ///        types and MPI types, custom typedefs for cstdlib types like size_t,
- ///        and a wrapper for MPI_Pack_Size
- ///
+/// @brief Overloaded utility functions to convert between arbitrary C/C++
+///        types and MPI types, custom typedefs for cstdlib types like size_t,
+///        and a wrapper for MPI_Pack_Size
+///
 
  #include <iostream>
  #include <cstdlib>
  #include <stdint.h>
  #include <mpi.h>
 
- //
- // Overloaded functions for getting corresponding MPI types for C types.
- //
+//
+// Overloaded functions for getting corresponding MPI types for C types.
+// @todo They can become constexpr. Or tranformed to template classes (type-trait style)
+//
  inline MPI_Datatype mpi_typeof(char)                       {return MPI_CHAR;}
  inline MPI_Datatype mpi_typeof(signed short)               {return MPI_SHORT;}
  inline MPI_Datatype mpi_typeof(signed int)                 {return MPI_INT;}
@@ -46,7 +49,7 @@
 
  //
  // Handy datatypes for stdlib datatypes
- // @todo these won't work in heterogeneous environments, as it's tied to the machine type.
+ // @note these won't work in heterogeneous environments, as it's tied to the machine type.
  //
  #define MPI_SIZE_T      (mpi_typeof(size_t()))
  #define MPI_INTPTR_T    (mpi_typeof(intptr_t()))

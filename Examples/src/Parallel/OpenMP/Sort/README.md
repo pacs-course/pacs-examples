@@ -1,10 +1,10 @@
 # Comparison of different parallel sorting algorithms
 
-In this example we have compare different sorting routines
+In this example we compare different sorting routines:
 
-1. The standard serial `std::sort`, which implements qicksort
-2. The multithresed version of `std::sort` tat implements a parallel version of qucksort obrained with the native multithreding facilities of C++
-3. The parallell (openMP) version of the  odd-even transposition sort, whose description may by foind in the boof *Introduction to Parallel Programming* by P.S. Pacheco and M. Malensek. **However, being this algorithm rathe inefficient, this version is currently commented-out and disabled**.
+1. The standard serial `std::sort`, which implements qicksort;
+2. The multithresed version of `std::sort` tat implements a parallel version of qucksort obtained with the native multithreading facilities of C++;
+3. The parallell (openMP) version of the  odd-even transposition sort, whose description may by found in the boof *Introduction to Parallel Programming* by P.S. Pacheco and M. Malensek. **However, being this algorithm rather inefficient, this version is currently commented-out and disabled**.
 4. A parallel QuickSort algoritm based on OpenMP, which is a modified version of the code presented in [this site](https://github.com/Michael-Beukman/OpenMPQuicksort)
 
 The QuickSort algorithm is one of the major algorithm for sorting, with Nlog(N) complexity. It is based on a recursive subdivision and rearrangement of the original vector. A full description of the algorithm (and all its variants) may be found on [Wikipedia](https://en.wikipedia.org/wiki/Quicksort).
@@ -30,7 +30,7 @@ To launch the code do
 Some peculiarities of the code:
 
 - The use of `omp_set_num_threads(num_threads);` to set the default number of threads. This way we do not need to specify the claus `num_threads` in the `omp parallel` directive.
-- The use of taks to indicate the portions that can  be carried out in parallel.
+- The use of tasks to indicate the portions that can  be carried out in parallel.
 
 ```
 template <class T>
@@ -57,13 +57,16 @@ void q_sort_tasks(int p, int r, std::vector<T> & data, int low_limit) {
 }
 ```
 
-We recall that `omp task` should normally be launched by a single thread of a team of threads (that's why we have `omp single`) and defines a task that can be carried out concurrently with other taks in the same section. `#pragma omp taskwait` imposes a synconization of the tasks. Note that the algorithm is recursive, so, even if `q_sork_task` difines just two tasks, the recursion will generate other two couples and so on. The taks that can be done cuncurrently will be assigned to the available threads.
+We recall that `omp task` should normally be launched by a single thread of a team of threads (that's why we have `omp single`) and defines a task that can be carried out concurrently with other tasks in the same section. 
+
+`#pragma omp taskwait` imposes a synconization of the tasks. Note that the algorithm is recursive, so, even if `q_sork_task` defines just two tasks, the recursion will generate other two couples and so on. The taks that can be done cuncurrently will be assigned to the available threads.
 
 - The use of a limit (here set to 1000, via the C preprocessore macro `TASK_LIMIT`) of the number of elements for the parallel version. All partitions with less elements will be processed with the sequential version of the algorithms in `seq_qsort()`.
 
 We can see that for rellatively small number of elements (<10000) the native serial version, `std::sort` is by far more efficient. Increasing the size the parallel versions get more efficient, the C++ native parallel `std::sort`, being highly optimized, becomes the most efficient for large sizes (>1M). 
 For intermediate sizes, the native C++ parallel sort and the "hand made" parallel quicksort behave similarly.
 Of course, these result refer to my PC, which has just 4 core with a max of two independent threads each. Performance must always be assessed on a specific architecture. 
+
 
 *A Note*
 The parallel odd-even transposition algorithm presented in the book of P. Pacheco is not very efficient, at least on my computer.
@@ -75,11 +78,11 @@ and the risk of cache miss is high. We do not go in more details here, in the bo
 - A use `omp task`  and of `omp_set_num_threads()`;
 - The use of `GetPot` to parse program options;
 - The use of `std::sort`, in its classic and (multithreded, native c++) parallel implementation;
-- A nice implmenetation of parallel quicksort.
+- A nice implementation of parallel quicksort.
 
 # QuickSort algorithm pseudocode (serial version)
 
-For completeness we report a psedocode of the quicksort implemented in the example.
+For completeness we report a pseudocode of the quicksort implemented in the example.
 
 ```
 // Sorts a (portion of an) array, divides it into partitions, then sorts those
