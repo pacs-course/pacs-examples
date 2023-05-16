@@ -3,19 +3,15 @@
   <component name="CidrRootsConfiguration">
     <sourceRoots>
       <file path="$PROJECT_DIR$/include" />
-      <file path="$PROJECT_DIR$/src/Arrays" />
       <file path="$PROJECT_DIR$/src/C++20/Concepts" />
-      <file path="$PROJECT_DIR$/src/CompositionWithVariadicTemplates" />
-      <file path="$PROJECT_DIR$/src/Constexpr" />
-      <file path="$PROJECT_DIR$/src/Horner" />
-      <file path="$PROJECT_DIR$/src/LinearAlgebraUtil" />
       <file path="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
-      <file path="$PROJECT_DIR$/src/Mesh" />
       <file path="$PROJECT_DIR$/src/MetaProgramming/SwitchType" />
       <file path="$PROJECT_DIR$/src/MyMat0" />
       <file path="$PROJECT_DIR$/src/NewtonSolver" />
       <file path="$PROJECT_DIR$/src/Numeric_Limits" />
       <file path="$PROJECT_DIR$/src/OneDMesh" />
+      <file path="$PROJECT_DIR$/src/Parallel/MPI/Simpson" />
+      <file path="$PROJECT_DIR$/src/Parallel/Utilities" />
       <file path="$PROJECT_DIR$/src/Polygon" />
       <file path="$PROJECT_DIR$/src/QuadratureRule" />
       <file path="$PROJECT_DIR$/src/STL/Variant" />
@@ -33,17 +29,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/pybind11/OneDMesh" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Parallel/Utilities" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/src/pybind11/OneDMesh" />
+            <option value="$PROJECT_DIR$/src/Parallel/Utilities" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/pybind11/OneDMesh">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Parallel/Utilities">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>

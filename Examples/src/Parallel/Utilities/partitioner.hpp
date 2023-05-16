@@ -24,6 +24,11 @@ namespace apsc
   class GroupedPartitioner
   {
   public:
+    /*!
+     * Constructor
+     * @param num_tasks The number of tasks
+     * @param num_elements The number of elements
+     */
     GroupedPartitioner(unsigned int num_tasks, std::size_t num_elements)
     : num_tasks{num_tasks}, num_elements{num_elements},
       rest{num_elements % num_tasks}, chunk_size{num_elements / num_tasks} {};
@@ -31,6 +36,8 @@ namespace apsc
       GroupedPartitioner()=default;
       /*!
        * Sets partitioner data if not given with constructor
+       * @param num_t The number of tasks
+       * @param num_e The number of elements
        */
       void setPartitioner(unsigned int num_t, std::size_t num_e)
       {
@@ -70,6 +77,10 @@ namespace apsc
         return std::min(i / (chunk_size + 1u), (i - rest) / (chunk_size + 1u));
       }
 
+      /*!
+       * The number of tasks
+       * @return The number of tasks
+       */
       auto
       get_NumTasks() const
       {
@@ -94,12 +105,19 @@ namespace apsc
   class DistributedPartitioner
   {
   public:
+    /*!
+     * Constructor
+     * @param num_tasks The number of tasks
+     * @param num_elements The number of elements
+     */
     DistributedPartitioner(unsigned int num_tasks, std::size_t num_elements)
     : num_tasks{num_tasks}, num_elements{num_elements},
       rest{num_elements % num_tasks}, chunk_size{num_elements / num_tasks} {};
       DistributedPartitioner()=default;
       /*!
        * Sets partitioner data if not given with constructor
+       * @param num_t The number of tasks
+       * @param num_e The number of elements
        */
       void setPartitioner(unsigned int num_t, std::size_t num_e)
       {
@@ -138,6 +156,10 @@ namespace apsc
       {
         return (num_tasks * (i + 1u) - 1u) / num_elements;
       }
+      /*!
+       * The number of tasks
+       * @return The number of tasks
+       */
       auto
       get_NumTasks() const
       {
@@ -151,6 +173,19 @@ namespace apsc
       std::size_t chunk_size;
   };
 
+#if __cplusplus >= 202002L
+  /*!
+   * The concept of a partitioner
+   * @tparam T the type of the partitioner
+   */
+  template<class T>
+  concept PartitionerType = requires(T t)
+  {
+    {t.get_NumTasks()} -> std::convertible_to<unsigned int>;
+    {t.first(0u)} -> std::convertible_to<std::size_t>;
+    {t.last(0u)} -> std::convertible_to<std::size_t>;
+  };
+#endif
   /*!
    * This utility takes a partitioner object and produces counts and
    * displacements as needed for MPI gatherv or scatterv routines
@@ -158,9 +193,12 @@ namespace apsc
    * @param partitioner The partitioner
    * @return An array with counts and displacements. in vectors of int because this is what MPI wants!
    */
+#if __cplusplus >= 202002L
+  template <PartitionerType Partitioner>
+#else
   template <class Partitioner>
-  std::array<std::vector<int>, 2>
-  counts_and_displacements(Partitioner const &partitioner)
+#endif
+  auto counts_and_displacements(Partitioner const &partitioner) -> std::array<std::vector<int>, 2>
   {
     auto num_tasks = partitioner.get_NumTasks();
     std::vector<int> counts;
@@ -189,6 +227,10 @@ namespace apsc
   /*!
    * Class that provides useful tools for partitioning a matrix with a row-wise or column-wise
    * partitioning
+   *
+   * The MatrixPartitioner class satisfies the concept of a PartitionerType, where
+   * the matrix data is in fact serialied in a linear buffer, according to the ordering.
+   *
    * @tparam P A partitioner, either GroupedPartitioner or DistributedPartitioner
    * @tparam O The ordering type
    */
@@ -222,7 +264,6 @@ namespace apsc
        * @param num_cols Number of columns
        * @param num_tasks Number of tasks (processors r thread) for the partion
        */
-
       void setPartitioner(std::size_t num_r, std::size_t num_c, unsigned int num_t)
       {
         num_rows=num_r;

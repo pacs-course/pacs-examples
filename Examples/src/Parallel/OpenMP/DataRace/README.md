@@ -23,13 +23,15 @@ and (incorrectly), we parallelize it using
 	}
 The `omp parallel` directive spawns a certain number of threads and the default schedule strategy for the `parallel for` is `static`: the iterations are split among threads in chunks of approx same size in a round-robin fashion: the first thread gets the first chunk and so on. The size of the chunk is, in this case, computed by the system. Since the threads runs independently there is no guarantee that when a thread accesses `a[i+1]` with,for instance, `i=3`,  `a[i]` with `i=4` has not already been updated by another thread. We have a race condition, since the order of execution of the loop iterations affects the final result. We have potentially also a data race, since the writing of `a[i]` with `i=4` may happen contextually to the reading of `a[i+1]`, with `i=3`. And the result is again undetermined.
 
-Unfortunately, there is no easy way to parallelize that loop  (you may give a try). Compile and run the code different times, so you will appreciate the undeterministic nature of the error.
+Unfortunately, there is no easy way to parallelize that loop  (you may give it a try). Compile and run the code different times, so you will appreciate the undeterministic nature of the error.
 
 *Note* You may try to change scheduling strategy, the error persists.
 
 # What do I learn here?
 
-A simple typical loop which causes a race condition. 
+A simple typical loop which causes a race condition.
+
+
 
 
 

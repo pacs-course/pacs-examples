@@ -32,7 +32,7 @@ other two.
 This is a rather advanced detail that we have omitted here. 
 
 
-## The `omp_set_schedule` function.## 
+## The `omp_set_schedule` function. ## 
 It is an alternative to setting the environmental variable `OMP_SCHEDULE` to define the actual strategy to be used when `strategy(runtime)` is adopted: if you have in your code
 
 	omp_set_schedule(omp_sched_dynamic, 4)
