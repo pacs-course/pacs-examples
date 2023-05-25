@@ -74,7 +74,7 @@ The main reason is the high number of cache miss. Differntly than the quicksort 
 and the risk of cache miss is high. We do not go in more details here, in the book by P Pacheco and M. Malensk you have a thorough discussion about cache and how cache misses may slow down shared mamory parallel code.
 
 
-# What do I learn here?
+# What do I learn here?execution
 - A use `omp task`  and of `omp_set_num_threads()`;
 - The use of `GetPot` to parse program options;
 - The use of `std::sort`, in its classic and (multithreded, native c++) parallel implementation;

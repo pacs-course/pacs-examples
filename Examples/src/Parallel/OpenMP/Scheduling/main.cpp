@@ -73,8 +73,8 @@ int main()
    print(threadMap);
 
 
-   std::cout<<"Guided schedule with chunk 2\n";
-#pragma omp parallel for num_threads(num_t) schedule(guided, 2)
+   std::cout<<"Runtime schedule \n";
+#pragma omp parallel for num_threads(num_t) schedule(runtime)
    for (std::size_t i=0u;i<n;++i)
      {
        add(threadMap,omp_get_thread_num(),i);

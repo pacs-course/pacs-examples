@@ -61,7 +61,10 @@ public:
     to write the operators myself, exploiting clone().
    */
   Quadrature(Quadrature const &rhs) = default;
-  //! Move constructor.
+  /*!
+   * Move constructor.
+   * @param rhs The input quadrature
+   */
   Quadrature(Quadrature &&rhs) = default;
   //! Copy assignment.
   Quadrature &operator=(Quadrature const &) = default;

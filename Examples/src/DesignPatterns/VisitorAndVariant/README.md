@@ -1,4 +1,4 @@
-#The Visitor Design Pattern vit Variant#
+# The Visitor Design Pattern with Variant #
 
 Here an example of using visitors on variants. It is a very elegant solution for having
 a double dispatch (even if we do not explit here polymorphism with the visitors). 
