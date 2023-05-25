@@ -1,4 +1,4 @@
-#Numerical integration with a parallel Simpson composite quatrature implementation.
+# Numerical integration with a parallel Simpson composite quatrature implementation.
 
 
 This code illustrates

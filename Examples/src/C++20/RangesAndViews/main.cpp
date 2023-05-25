@@ -68,7 +68,7 @@ int main()
 
   {
     // sort by age using the function member and greater than comparison operator
-    std::ranges::sort(friends,std::greater<unsigned>(),&Person::getAge);
+    std::ranges::sort(friends,std::greater<unsigned>{},&Person::getAge);
     std::cout<<"\nSorted by age (oldest to youngest\n";
     for (auto const & p:friends)
       std::cout<<p;
@@ -161,7 +161,7 @@ int main()
     std::cout << "Original list:  \t";
     std::ranges::copy(l, out);
 
-    // extract the sum of all positive numbers (using a loop)
+    // extract the sum of the squares of just the positive numbers (using a loop)
     auto gt0=[](double const & x){return x>0;};
     double sum{0};
     for (auto i: l |
