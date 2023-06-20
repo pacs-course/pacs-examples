@@ -4,6 +4,7 @@
     <sourceRoots>
       <file path="$PROJECT_DIR$/include" />
       <file path="$PROJECT_DIR$/src/C++20/Concepts" />
+      <file path="$PROJECT_DIR$/src/HeapView" />
       <file path="$PROJECT_DIR$/src/LinearAlgebraUtil/test" />
       <file path="$PROJECT_DIR$/src/MetaProgramming/SwitchType" />
       <file path="$PROJECT_DIR$/src/MyMat0" />
@@ -29,17 +30,17 @@
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
       <MakefileProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/src/Parallel/Utilities" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/src/HeapView" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/src/Parallel/Utilities" />
+            <option value="$PROJECT_DIR$/src/HeapView" />
           </set>
         </option>
         <option name="version" value="2" />
       </MakefileProjectSettings>
     </option>
   </component>
-  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/Parallel/Utilities">
+  <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$/src/HeapView">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>
