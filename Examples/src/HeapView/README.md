@@ -35,12 +35,30 @@ according to the given comparison operator), adding new elements to the data vec
 remove elements from the heap with `remove()`, beware however that in the case of `remove` *the element is not
 eliminated from the data vector* only from the heap.
 
-# What do I learn here ? #
+** A Note ** 
+The data is composed in the heap (so it is not really a view) to avoid the user modyfing the data without updating the heap. However, the data vector values are not 
+changed by an heap operation, a part from `update` that, as the names says, updates a value. For instance, after `pop()` the value in the data vector is unchanged: the
+element is removed from the heap and not from the data
 
-- A simple example of a data structure that is not provided by the standard library, but that can be easily implemented
-  with the tools provided by the standard library.
-- The implementation of the heap based on a vector, which is a very simple and efficient data structure.
-- The use of `std::optional` to identify leaf nodes in the heap.
+``` c++
+    auto [where value]=heap.pop(); // top value removed from the heap
+    heap[where]==value; // this is still true! Value still in data
+```
+
+One can put back the element in the heap, possibly with changed value, using `update()`: this code is fine,
+
+``` c++
+    auto [where value]=heap.pop(); // top value removed from the heap
+    heap.update(where,newvalue); // put back the element with a new value.
+```
+
+
+# What do I learn here ? #
+ 
+ - A simple example of a data structure that is not provided by the standard library, but that can be easily implemented
+   with the tools provided by the standard library.
+ - The implementation of the heap based on a vector, which is a very simple and efficient data structure.
+ - The use of `std::optional` to identify leaf nodes in the heap and also keep track of elements deleted from the heap.
 
 # Bibliography #
 

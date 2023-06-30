@@ -21,6 +21,8 @@ concept heapViewCompOp = requires(T comp)
   ->std::convertible_to<bool>;
 };
 */
+namespace apsc
+{
 /*!
  * @brief A heap view is a data structure that allows you to store a heap of
  * values and operate on them without moving them around in memory.
@@ -33,25 +35,35 @@ concept heapViewCompOp = requires(T comp)
  * not the data.  The heap view maintains a mapping from data
  * indices to indices into the heap.
  *
- * @note At the moment is is not implemented as a view since it has a copy of
- * the data vector. A view would be better.
+ * @note At the moment is is not implemented as a view since it is composed with
+ * the data vector. The reason is that a view is too dangerous, since the user
+ * may modify the data without updating the heap.
  * @tparam DataElementType The type stored in the data vector. It should be
  * comparable with the comparison operator.
  * @tparam CompOp Comparison operator for the data elements.  It should be
+ * a total order: every pair of element is comparable and the relation is a 
+ * partial ordering relation 
  */
-namespace apsc
-{
 template <class DataElementType, class CompOp = std::less<DataElementType>>
 class HeapView
 {
 public:
+  //! The type of the index used to address internal vectors
   using Index = typename heapViewTraits<DataElementType>::Index;
+  /*! 
+   The type of the sequential random access data stored in the heap. 
+   It should be comparable w.r.t. the given comparison operator
+  */
   using DataType = typename heapViewTraits<DataElementType>::DataType;
+  //! The type of the sequantial randoma acces container used to address the data vector
   using DataIndex = typename heapViewTraits<DataElementType>::DataIndex;
+  //! The type of data
   using ElementType = typename heapViewTraits<DataElementType>::ElementType;
+  //! The structure used to keep the indexes in the data vector
   using HeapIndex = typename heapViewTraits<DataElementType>::HeapIndex;
+  //! The structure with the map data index -> position in the heap
   using HeapIter = typename heapViewTraits<DataElementType>::HeapIter;
-
+  //! Default constuctor
   HeapView() = default;
   /*!
    * @brief Construct a heap view from a vector of data elements.
@@ -116,6 +128,7 @@ public:
   /*!
    * @brief Set the comparison operator for the data elements.
    * @param comp The comparison operator between data elements
+   * @note Danger: use it only if the heap is currently empty
    */
   void
   setCompOp(CompOp comp)
@@ -325,7 +338,7 @@ Comparing two elements using the given ordering relation
     return compHeapView_(i,j);
   }
   //! to indicate no data (could have used optional here)
-  static auto constexpr noData=std::numeric_limits<std::size_t>::max();
+  static auto constexpr noData=std::numeric_limits<Index>::max();
 
 private:
   /*!
