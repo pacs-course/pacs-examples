@@ -135,5 +135,31 @@ main()
     std::cout << std::endl;
     std::cout << "Heap is sane? " << std::boolalpha << heapView.check()
               << std::endl;
+    std::cout<< "Emptying heap\n";
+    auto currentSize=heapView.size();
+    std::vector<std::size_t> currentHeapElements;
+    for (auto i=0;i<currentSize;++i)
+    {
+     auto where= heapView.pop();
+     currentHeapElements.emplace_back(where.first);
+    }
+    std::cout << "Heap is sane? " << std::boolalpha << heapView.check()
+              << std::endl;
+    std::cout<< "Putting back with update\n";
+    for (auto i=0;i<currentSize;++i)
+    {
+      auto k = currentHeapElements[i];
+      heapView.update(k,heapView[k]);
+    }
+    std::cout << "heapView size = " << heapView.size() << std::endl;
+    std::cout << "current values in the heap = " << std::endl;
+    for(auto i = 0u; i < heapView.size(); ++i)
+      {
+        std::cout << heapView.heapValue(i) << " ";
+      }
+    std::cout << std::endl;
+    std::cout << "Heap is sane? " << std::boolalpha << heapView.check()
+              << std::endl;
+    
   }
 }
