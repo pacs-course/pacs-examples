@@ -161,16 +161,17 @@ public:
    * @brief Remove an element from the heap view.
    * @param i The index of the element to remove.
    * @return The index in the heap where the element was removed.
+   *         noData if error.
    */
   Index
   remove(DataIndex i)
   {
     auto where = heapIter_[i];
-    if (where == noData)
+    if (!where.has_value())
       return noData; // ERROR CONDITION!
-    this->swap(where, heapIndex_.size() - 1);
+    this->swap(*where, heapIndex_.size() - 1);
     heapIndex_.pop_back();
-    return siftDown(siftUp(where));
+    return siftDown(siftUp(*where));
   }
   /*!
    * @brief Update an element in the heap view.
@@ -189,15 +190,15 @@ public:
   {
     auto where = heapIter_[i];
     data_[i] = e;
-    if (where==noData)
+    if (!where.has_value())
       {
         // add again the value to the heap
         where=heapIndex_.size();
         heapIndex_.push_back(i);
         heapIter_[i]=where;
-        return siftUp(where);
+        return siftUp(*where);
       }
-    return siftDown(siftUp(where));
+    return siftDown(siftUp(*where));
   }
   /*!
    * @brief The size of the heap
@@ -266,7 +267,7 @@ public:
   {
     auto const [where, e] = this->topPair();
     remove(where); // remove data element from the heap
-    heapIter_[where]=noData;
+    heapIter_[where]=std::nullopt;
     return std::make_pair(where, e);
   }
   /*!
@@ -323,6 +324,8 @@ Comparing two elements using the given ordering relation
   {
     return compHeapView_(i,j);
   }
+  //! to indicate no data (could have used optional here)
+  static auto constexpr noData=std::numeric_limits<std::size_t>::max();
 
 private:
   /*!
@@ -429,8 +432,6 @@ private:
   };
   //! The comparison operator for the data (user defined or defaulted to less)
   CompOp comp_ = CompOp{};
-  //! to indicate no data (could have used optional here)
-  static auto constexpr noData=std::numeric_limits<std::size_t>::max();
 };
 } // namespace apsc
 
