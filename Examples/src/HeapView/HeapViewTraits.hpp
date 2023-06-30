@@ -5,6 +5,7 @@
 #ifndef EXAMPLES_HEAPVIEWTRAITS_HPP
 #define EXAMPLES_HEAPVIEWTRAITS_HPP
 #include <vector>
+#include <optional>
 namespace apsc
 {
 template <class DataElementType> struct heapViewTraits
@@ -14,7 +15,7 @@ template <class DataElementType> struct heapViewTraits
   using DataIndex = std::size_t;
   using ElementType = DataElementType;
   using HeapIndex = std::vector<Index>;
-  using HeapIter = std::vector<Index>;
+  using HeapIter = std::vector<std::optional<Index>>;
 };
 } // namespace apsc
 #endif // EXAMPLES_HEAPVIEWTRAITS_HPP
