@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <tuple>
 #include <utility>
+#include <limits>
 /*
 template<typename T>
 concept heapViewCompOp = requires(T comp)
@@ -88,10 +89,11 @@ public:
    * @brief Construct a heap view from a vector of data elements.
    * @param data The data
    */
+  template <class T=DataType>
   void
-  setData(DataType &&data)
+  setData(T &&data)
   {
-    data_ = std::move(data);
+    data_ = std::forward<T>(data);
     heapIndex_.clear();
     heapIter_.clear();
     heapIndex_.reserve(data_.size());
@@ -101,9 +103,14 @@ public:
         heapIndex_.push_back(i);
         heapIter_.push_back(i);
       }
-    for(Index i = data_.size() / 2; i >= 0; --i)
+    if(data_.size()!=0)
       {
-        siftDown(i);
+// to avoid problems with subtraction of unsigned I treat index 0 specially
+        for(Index i = data_.size() / 2; i > 0; --i)
+        {
+            siftDown(i);
+        }
+        siftDown(0);
       }
   }
   /*!
@@ -159,6 +166,8 @@ public:
   remove(DataIndex i)
   {
     auto where = heapIter_[i];
+    if (where == noData)
+      return noData; // ERROR CONDITION!
     this->swap(where, heapIndex_.size() - 1);
     heapIndex_.pop_back();
     return siftDown(siftUp(where));
@@ -180,6 +189,14 @@ public:
   {
     auto where = heapIter_[i];
     data_[i] = e;
+    if (where==noData)
+      {
+        // add again the value to the heap
+        where=heapIndex_.size();
+        heapIndex_.push_back(i);
+        heapIter_[i]=where;
+        return siftUp(where);
+      }
     return siftDown(siftUp(where));
   }
   /*!
@@ -248,7 +265,8 @@ public:
   pop()
   {
     auto const [where, e] = this->topPair();
-    remove(where); // remuve data element from the heap
+    remove(where); // remove data element from the heap
+    heapIter_[where]=noData;
     return std::make_pair(where, e);
   }
   /*!
@@ -296,6 +314,14 @@ public:
           }
       }
     return true;
+  }
+/*
+Comparing two elements using the given ordering relation
+*/
+  bool
+    compare(DataIndex i, DataIndex j) const
+  {
+    return compHeapView_(i,j);
   }
 
 private:
@@ -403,6 +429,8 @@ private:
   };
   //! The comparison operator for the data (user defined or defaulted to less)
   CompOp comp_ = CompOp{};
+  //! to indicate no data (could have used optional here)
+  static auto constexpr noData=std::numeric_limits<std::size_t>::max();
 };
 } // namespace apsc
 
