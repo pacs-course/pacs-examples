@@ -31,7 +31,8 @@ ReadCSV::read(std::basic_istream<CharT> &in)
   for(auto i = 0u; i < skip; ++i)
     getline(in, line);
 
-  while(!in.eof())
+  // iterate until end of file (or error)
+  while(!in.eof() and in.good())
     {
       std::getline(in, line);
       ++count;
@@ -127,9 +128,9 @@ ReadCSV::read(std::basic_istream<CharT> &in)
           std::cerr << "Warning: empty line n. " << count << std::endl;
         }
     }
-
   if(verbose)
     {
+      if(in.bad()) std::clog<<"Input steam is in bad state!\n";
       std::clog << " Read " << count << " lines in file" << std::endl;
       std::clog << " Max/Min number of tokens " << maxtokens << "/" << mintokens
                 << std::endl;
