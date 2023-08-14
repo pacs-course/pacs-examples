@@ -1,10 +1,11 @@
-EXAMPLES AND EXERCISES FOR PACS COURSE
+EXAMPLES AND EXERCISES FOR APSSC (PACS) AND AMSC COURSE
 --------------------------------------
 
 This repo contains source code and descriptions for the examples and exercises
 that will be explained during the PACS (Programmazione Avanzata per il Calcolo
-Scientifico - Advanced Programming for Scientific Computing) course at
-Politecnico di Milano.
+Scientifico - Advanced Programming for Scientific Computing) and Advanced Methods for Scientific Computing (AMSC) courses at Politecnico di Milano.
+
+**A NOTE** For the AMSC course, only a subset of the examples will be used at the lecture and are part of the course. However, I encourage the interested student to look at the various examples.
 
 The repository contains submodules, so to check it out properly you have to type
 
