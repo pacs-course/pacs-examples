@@ -37,3 +37,5 @@
 	branch = master
 [submodule "pybind11"]
 	branch = master
+[submodule "pybind11_examples"]
+	branch = master
