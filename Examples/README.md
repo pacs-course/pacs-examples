@@ -1,5 +1,7 @@
 # Course on Advanced programming for scientific computing #
 ## Mathematical Engineering, Politecnico di Milano ##
+# Course on Advanced Modelling for scientific computing #
+## HPC and Big Data, Politecnico di Milano ##
 ## Copyright Luca Formaggia 2012-2023 ##
 
 ## LICENCING ##
@@ -149,8 +151,9 @@ env | grep mk
 
   * You do not use the module system. Then you have again two choices
    * You set the various macro in your `Makefile.inc` (and possibly the other Makefiles, if needed) by yourself
-   * You simulate the module environment by creating the environmental variables: you have to put in the `.profile `file in your home directory the corresponding instructions
-        for the bash (the `~/.profile` file is read by the bash shell every time you do a login).  For example, in my `.profile` I have:
+   * You simulate the module environment by creating the environmental variables: you have to put in the `.bash-profile` (or `.profile `) 
+   file in your home directory the corresponding instructions
+        for the bash (the `.bash-profile` and `~/.profile` files are sourced by the bash shell every time you do a login).  For example, in my `.profile` I have:
 
 -------------------------------------------------------------------------------
 
@@ -246,13 +249,13 @@ content is run as if typed on a terminal). Everytime you open a bash
 shell the `.bashrc` file is sourced. 
 
 What's the difference? Well today people prefer to put everything in
-the `.bashrc` file, but in principle envronmental variables
-definitions should be put in the `.profile` (or `.bash_profile`),
+the `.bashrc` file, but in principle definitions of environmental variables
+should be put in the `.bash_profile`  (or `.profile`),
 while `.bashrc` should be reserved for command alias or customization
-that need to change wether you are in a interactive shell (terminal)
+that need to change depending whether you are in a interactive shell (i.e. a terminal)
 or not (batch job). 
 
-A practical difference is that if you change `.profile` (or `.bash_profile`)
+A practical difference is that if you change `.bash_profile`  (or `.profile`)
 the changes become operative only after a new login. 
 Changes in `.bashrc` becomes active just by opening a new terminal.
 
