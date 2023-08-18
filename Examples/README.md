@@ -207,11 +207,23 @@ To compile and install them, go in the `Extras` directory of the repository and 
 
 **NOW YOU ARE READY TO ENJOY THE EXAMPLES**
 
-**NOTE** Some test use the native parallel programming of c++ that, at
-least with gnu and LLVM compiler, requires haning the multithreading
-building block library installed and link to the `libtbb.so`
-library. Check that the library is installed in your system (it's
+**NOTE FOR C++ PARALLEL ALGORITHMS** 
+Some test use the native parallel programming of c++ that, at
+least with gnu and LLVM compiler, requires having the multithreading
+building block library installed, and to link to the `libtbb.so`
+library when compiling your code. Check that the library is installed in your system (it's
 available on all Linux distribution, but not necessarily by default!).
+
+
+## CODE DOCUMENTATION ##
+I tried, as far as possible, to use [Doxygen](https://www.doxygen.nl/) to document the code. Doxygen requires to be run in the directory with the specific source files
+of which you want to produce documentation. It uses a *special file*, typically called `Doxyfile`, of which you can generate a prototype with the command `doxygen -g`. The file should then be changed to satisfy your needs. However, I have produced in this folder a Doxyfile, called `DoxyfileCommon`, with the most useful options already set. You have to
+
+- Look for the line with `INCLUDE_PATH` and change the last path with the full path of the folder where the general include files of the Examples reside in your PC. It may be found easily by adding `/include` to the string
+obtaining by typing `pwd` in the folder where this README file resides. 
+- If you have not [graphviz](https://graphviz.org/) installed (but I warmly suggest you to intall it, it is available in any Linux distro), you also have to set `HAS_DOT` to `NO`.
+- After this preliminary steps, go in the directory where the specific example reside, copy the `DoxyfileCommon` with the name `Doxyfile` and run `doxygen` (or `doxygen Doxifile`).
+- In the sub-directory `doc/html` you should have the file `index.html`, that you can open with your favourite browser and look at the documentation. More info on how to use Doxygen is availabel in the Doxigen site.
 
 ## FURTHER INFO ##
 
@@ -221,8 +233,8 @@ tree, `directory.html` of the subfolder `src` that may be parsed with
 a browser. To run it you must have the unix utility `tree`
 installed. Anyway, a copy of `directories.html` is present in this directory.
 
-## The content of `src` Directory ##
-A description of the examples in the `src` directory is founr in `CONTENT.md`.
+### The content of `src` Directory ###
+A description of the examples in the `src` directory is found in `CONTENT.md`.
 
 
 ### A note on `.bashrc` or `.profile` (or `.bash_profile`) ### 
