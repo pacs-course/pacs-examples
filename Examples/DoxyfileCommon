@@ -2081,9 +2081,10 @@ SEARCH_INCLUDES        = YES
 # preprocessor.
 # This tag requires that the tag SEARCH_INCLUDES is set to YES.
 
+# **you should add the include file of the Examples here as last path to search**
 INCLUDE_PATH           = ./include \
                          . \
-#                         /home/forma/Work/pacs/PACSCourse/Material/Examples/include # you should add the include file of the examples here
+                         /home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/include
 
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
