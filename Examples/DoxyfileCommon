@@ -2083,7 +2083,7 @@ SEARCH_INCLUDES        = YES
 
 INCLUDE_PATH           = ./include \
                          . \
-                         /home/forma/Work/pacs/PACSCourse/Material/Examples/include
+#                         /home/forma/Work/pacs/PACSCourse/Material/Examples/include # you should add the include file of the examples here
 
 
 # You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard
