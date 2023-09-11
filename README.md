@@ -16,7 +16,7 @@ git clone --recursive https://github.com/HPC-Courses/AMSC-CodeExamples.git
 or **(preferably)**
 
 ```
-git clone --recursive git@github.com:pacs-course/pacs-examples.git
+git clone --recursive git@github.com:HPC-Courses/AMSC-CodeExamples.git
 ```
 *In the latter case, you must register your ssh keys on a personal GitHub account*.
 
