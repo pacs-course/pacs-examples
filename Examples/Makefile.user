@@ -21,7 +21,9 @@
 #
 
 # The directory where the examples reside (you HAVE to change this)
-PACS_ROOT?=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
+export AMSC_ROOT?=/home/forma/Work/Didattica/HPC_Courses/AMSC-CodeExamples/Examples
+# For compatibility with the PACS course. Do not change it
+export PACS_ROOT=${AMSC_ROOT}
 # The directory with the Eigen (leave blank if they are in a standard directory)
 mkEigenInc?=/usr/local/include/eigen3/
 EIGEN_DIR=$(mkEigenInc)
