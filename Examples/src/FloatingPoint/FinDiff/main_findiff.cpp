@@ -38,8 +38,8 @@ auto dfunct= [](auto const & x){return a * b* std::exp(b * x);};
 int
 main()
 {
-  // Get roundoff unit
-  const Real u = 0.5 * std::numeric_limits<Real>::epsilon();
+  // Get roundoff unit (a use of auto)
+  const auto u = 0.5 * std::numeric_limits<Real>::epsilon();
   std::cout << "Roundoff unit=" << u << std::endl;
   // Read some data
   GetPot ifl("data.pot");
@@ -47,7 +47,7 @@ main()
   Real h = ifl("h", 0.1);
   std::cout << " Initial Spacing " << h << std::endl;
   // Number of subdivisions
-  const unsigned int n = ifl("n", 10);
+  const auto n = ifl("n", 10u);
   std::cout << " Number of subdivisions " << n << std::endl;
   // Point where derivative is computed
   const Real x = ifl("x", 3.0);
