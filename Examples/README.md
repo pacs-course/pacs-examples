@@ -34,7 +34,7 @@ The first operation is to copy the  file `Makefile.user` to `Makefile.inc`:
 
     $ cp Makefile.user Makefile.inc
 
-and edit the latter to suit your system. In particular, you have to set `PACS_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
+and edit the latter to suit your system. In particular, you have to set `AMSC_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
 If you do not know it
 just type
 

@@ -2,12 +2,12 @@
 # This file must be renamed into Makefile.inc in order to work!!
 #
 
-# *****  This is the user defined part of the Makefile
+# *****  This is the user defined part of the Makefile ****
 #
 #  It is included in almost all Makefiles of the example (a part some particulare cases)
 #
-# It has been modified so to read some data from environmental variables
-# and be compatible with the system of modules used at MOX
+# It has been modified so to read some data from environmental variables (if set!)
+# and be compatible with the system of modules used at MOX Laboratory
 #
 # YOU CAN change it to suit your need!!!!
 #
@@ -28,7 +28,7 @@ export PACS_ROOT=${AMSC_ROOT}
 mkEigenInc?=/usr/local/include/eigen3/
 EIGEN_DIR=$(mkEigenInc)
 #
-# Mpi directories for library and include files
+# Mpi directories for library and include files (change if needed)
 #
 mkOpenmpiLib?=/usr/lib/x86_64-linux-gnu
 mkOpenmpiInc?=/usr/include
