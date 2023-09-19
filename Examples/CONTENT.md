@@ -11,7 +11,7 @@ We can divide the examples into four categories:
 
 ## Utilities##
   - `Utilities` A set of utilities that you may use also in your code. All described in the local `README.md` file. 
-  **You should go in the directory and type**
+  **You should go in the `Utilities` directory and type**
 
 ``` 
     make
@@ -20,20 +20,21 @@ We can divide the examples into four categories:
 
 since several examples make use of the utilities.
   
-  - `LinearAlgebraUtil` A second set of utilities more specialised for linear algebra (but not only). Have a look there are several goodies.  **You should go in the directory and type**
+  - `LinearAlgebraUtil` A second set of utilities more specialised for linear algebra (but not only). Have a look there are several goodies.  **You should go in that directory and type**
 
 ```
     make
     make install
 ```
 
-since several examples make use of the utilities.
+since a few examples make use of the utilities.
 
 - `GenericFactory`. Copied also in `Utility`, it is a generic object factory. You may use and specialize it for your needs.
 - `muParserInterface` Some examples on how to interface with [MuParser](https://beltoforion.de/article.php?a=muparser) and [MuParseX](https://beltoforion.de/article.php?a=muparserx) libraries
   for parsing mathematical expressions. Use them as a guideline if you plan to use these tools. The source of the libraries are contained in the 
-`Extra` folder: you need to installation them before being able to compile the example. 
-- `LoadLibraries` An utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). I simplifies recolling all the toools to access dynamic libraries and it implements the RAII principle.
+- `LoadLibraries` An utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). I simplifies recolling all the tools to access dynamic libraries and it implements the RAII principle.
+`../Extra` folder. Some addituional utilities taken from external software. ** To install also the utilites in the `../Extra` folder, used by some examples, go there and follow the instructions in the `README.md` file **
+
   
 ## Basic Examples ##
   * `Aggregates` Show some feature of *aggregates*, a particular type of classes that have to satisfy some requirements, see [here for instance](https://en.cppreference.com/w/cpp/language/aggregate_initialization), and allow very useful constructs.
@@ -94,7 +95,6 @@ since several examples make use of the utilities.
   * `CompositionWithVariadicTemplates` The Composer design pattern done with variadic templates: constructing complex objects by composing simple ones. The technique is more "rigid" than the classical one which uses polymorphism, but rather flexible and efficient. 
   * `DesignPatterns/` A set of example of Design Patterns, a C++ implementation of the techniques illustrated in the famous [Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns)book and in [this site.](https://refactoring.guru/design-patterns/cpp). 
   * `FloatingPoint/` A directory containing several examples on aspects (sometimes degeneracies) of floating point computations, including how to handle floating point exception. See the local `README.md` file.  The example `FloatinPoint\FinDiff` also shows another use of *gnuplot-iostream* to have plots on the terminal.
-  * `
   * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Only to remember the various tools, which have been integrated in the Makefile. If you read the Makefile you see how tools have been called.
   * `Polynomials`. A more complex example of a class that implements the generic concept of a polynomial. An example of generic programming.
   * `MetaProgramming/`. A folder with examples that show  metaprogramming techniques.
