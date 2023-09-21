@@ -13,6 +13,9 @@ Taken and heavily adapted from *"Simulation numerique an C++" of I. Danaila,
 
 Otherwise the example will not compile.
 
+**ANOTHER important note**
+
+
 Then, as usual, in this directory `make` (`make DEBUG=no` if you want optimization) produces the executable, which is just called `main`.
  
 Calling ``./plot.sh`` you are able to visualize the result stored in `result.dat` offline.  
@@ -48,6 +51,15 @@ If you are using the modules you have all of them with
 module load boost
 ```
 
+### Deactivating gnuplot-iostream ###
+If you do not want to use gnuplot-iostream, for instance becouse your virtual machine does not support graphics, you should modify the local  `Makefile.inc` file,
+commenting out (or deleting) the lines
+
+```
+    CPPFLAGS+=-I$(mkBoostInc) -DGNUPLOT
+    LDLIBS+=-L$(mkBoostLib) -lboost_iostreams -lboost_system -lboost_filesystem
+
+```
 
 # What do you learn from this Example? #
 - A very simple, but complete, finite element code;
