@@ -2,6 +2,7 @@
 // parameters are not used
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 #include <iostream>
 #include <typeinfo>
@@ -51,6 +52,8 @@ foo(int &a)
 void
 foo(const int &a)
 {
+  auto av=5*a; // ok i can read a
+  // a=10.// Error! I cannot change a
   std::cout << "using void foo(const int&)" << std::endl;
 }
 
@@ -75,6 +78,7 @@ void
 goo(std::vector<int> &&a)
 {
   std::vector<int> b=std::move(a);
+  // now a is empty
   std::cout << "using void goo(vector<int> &&)" << std::endl;
 }
 
@@ -86,6 +90,8 @@ goo(std::vector<int> &&a)
 void
 goo(const std::vector<int> &a)
 {
+  auto av=a[0]; // ok i can read a
+  // a[0]=10.// Error! I cannot change a
   std::cout << "using void goo(const vector<int>&)" << std::endl;
 }
 
@@ -96,7 +102,10 @@ goo(const std::vector<int> &a)
  */
 void
 goo(const std::vector<int> &&a)
-{
+{  
+  auto av=a[0];
+  // ok i can read a
+  // a[0]=10.// Error! I cannot change a
   std::cout << "using void goo(const vector<int> &&)" << std::endl;
 }
 
@@ -126,7 +135,7 @@ gvect(T &&x)
   T v = std::forward<T>(x);
   std::cout << "using void gvect<T>(T&&) with std::forward\n"
             << " created vector size is " << v.size()
-            << ". Input vector size is now " << x.size() << std::endl;
+            << " Input vector size is now " << x.size() << std::endl;
 }
 
 int
