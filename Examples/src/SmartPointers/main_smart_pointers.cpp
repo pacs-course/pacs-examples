@@ -1,6 +1,7 @@
 #include "enable_shared.hpp"
 #include "polyFactory.hpp"
 #include <iostream>
+
 //! An example of smart pointers.
 int
 main()
@@ -36,8 +37,10 @@ main()
   cout << "after resetting apoly, there are " << bpoly.use_count()
        << " shared pointers owning a polygon" << endl;
   bpoly.reset(); // bpoly is now empty. Polygon is deleted
-  cout << "afrer resetting bpoly there are " << bpoly.use_count()
+  cout << "after resetting bpoly there are " << bpoly.use_count()
        << " shared pointers owning a polygon" << endl;
+
+
 
   std::cout << "Trying the enable_shared facility\n";
   auto tp1 = make_shared<Try>();
