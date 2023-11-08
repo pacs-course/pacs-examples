@@ -55,7 +55,7 @@ public:
     return coor[1];
   }
   //! Subtraction is implemented as an external friend function
-  friend Point2D operator-(Point2D const &a, Point2D const &b);
+  friend  Point2D operator-(Point2D const &a, Point2D const &b);
   //! Addition is implemented as an external friend function
   friend Point2D operator+(Point2D const &a, Point2D const &b);
   //! I implement the streaming operator as a friend
@@ -95,9 +95,9 @@ double distance(Point2D const &a, Point2D const &b);
 
 //! Point2D may be used also ad "vector" in 2D so it makes sense to compute
 //! the norm, which is the distance from the origin
-double norm(Point2D const &a);
+double norm(R2Vector const &a);
 //! Return the sin of the angle between two Point2d interpreted as vectors.
-double sinAngle(Point2D const &u, Point2D const &v);
+double sinAngle(R2Vector const &u, R2Vector const &v);
 //! Polygon vertices are just vectors of points.
 using Vertices = std::vector<Point2D>;
 
@@ -198,6 +198,7 @@ public:
   {
     return vertexes.cend();
   }
+
   //! Test convexity of the polygon
   virtual bool checkConvexity();
   //! Outputs some info on the polygon

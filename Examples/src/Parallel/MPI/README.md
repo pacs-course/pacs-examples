@@ -18,5 +18,10 @@ mpirun -n 1 ./executable2 # Runs in serial.
 * *PI* The analogous of the examples found in the `OpenMP` folder, here solved with hybrid parallelism (*i.e.* both using `OpenMP` and `MPI`).
 
 * *MatrixVectorProduct* An example showing the use of collective operations, such as `MPI_Bcast()`, `MPI_Scatterv()` and `MPI_Gatherv()`, for computing a matrix-vector product in parallel.
+* *PMatrix* An example of parallel matrix
+* *OneAtATime* An example showing the use of `MPI_Barrier()` to synchronize the processes.
+* *SendRecv* An example showing the use of `MPI_Sendrecv()` to perform a send and a receive operation in a single call.
+* *Simpson* An example showing the use of `MPI_Reduce()` to compute an integral in parallel.
+* *VectorSplit* An example showing the partitioning of a vector among MPI processes and the use of `MPI_Scatterv()` and `MPI_Gatherv()` to distribute and collect the vector elements.
 
 
