@@ -63,6 +63,7 @@ main(int argc, char **argv)
         {
           printHelp();
           stop = true;
+          //@todo broadcast stop to all processes
         }
       n = gp.follow(1000000000u, "-n");
       std::cout << "Number of Intervals: " << n << " ";
@@ -72,7 +73,8 @@ main(int argc, char **argv)
 
   if(stop)
     {
-      MPI_Abort(mpi_comm, 0);
+      MPI_Finalize();
+      //MPI_Abort(mpi_comm, 0);
       return 0;
     }
 

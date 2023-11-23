@@ -52,7 +52,7 @@ main(int argc, char **argv)
    */
     Timings::Chrono clock;
     clock.start();
-#pragma omp parallel for schedule(static), private(x), num_threads(num_threads), reduction(+ : sum)
+#pragma omp parallel for schedule(static), private(x), num_threads(num_threads),reduction(+ : sum)
   for(unsigned int i = 0; i < n; ++i)
     {
       x = h * (i + 0.5);
