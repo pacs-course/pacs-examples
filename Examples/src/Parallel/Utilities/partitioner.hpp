@@ -198,7 +198,8 @@ namespace apsc
 #else
   template <class Partitioner>
 #endif
-  auto counts_and_displacements(Partitioner const &partitioner) -> std::array<std::vector<int>, 2>
+  auto counts_and_displacements(Partitioner const &partitioner)
+    -> std::array<std::vector<int>, 2>
   {
     auto num_tasks = partitioner.get_NumTasks();
     std::vector<int> counts;
