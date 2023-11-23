@@ -19,7 +19,6 @@ printHelp()
     << "task_limit when the parallel code computes fib(n)\n<<"<<
     " with n<task_limit it resorts to the serial version (def 1)\n";
     std::cout<<"** Compile with make parallel_cpp if you want to test\n";
-    std::cout<<"also the parallel std::sort algorithm\n"
     << std::endl;
 }
 int
