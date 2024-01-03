@@ -30,7 +30,8 @@
  * the data vector and not a reference. A view would be better.
  * @tparam ElementType The type stored in the data vector. It should be
  * comparable with the comparison operator.
- * @tparam CompOp Comparison operator for the data elements.  It should be
+ * @tparam CompOp Comparison operator for the data elements.  It should be proper comparison operator on DataElementType.
+ * @tparam Traits The traits for the heap view.  It should provide the definition of the internal types.
  */
 namespace apsc
 {
@@ -94,8 +95,8 @@ public:
     heapIter_.reserve(data_.size());
     for(Index i = 0; i < data_.size(); ++i)
       {
-        heapIndex_.push_back(i);
-        heapIter_.push_back(i);
+        heapIndex_.emplace_back(i);
+        heapIter_.emplace_back(i);
       }
     if(data_.size()!=0)
       {
@@ -108,15 +109,6 @@ public:
       }
   }
   /*!
-   * @brief Set the comparison operator for the data elements.
-   * @param comp The comparison operator between data elements
-   */
-  void
-  setCompOp(CompOp comp)
-  {
-    comp_ = comp;
-  }
-  /*!
    * @brief Reserves capacity.
    */
   void
@@ -124,7 +116,7 @@ public:
   {
     data_.resize(n);
     heapIndex_.reserve(n);
-    heapIter_.resize(n,noData);
+    heapIter_.resize(n);
   }
   /*  @brief Returns the underlying data vector.
    *  @return The underlying data vector.
@@ -146,25 +138,29 @@ public:
   add(E &&e)
   {
     Index i = this->size();
-    data_.push_back(std::forward<E>(e));
-    heapIndex_.push_back(data_.size() - 1u);
-    heapIter_.push_back(i);
+    data_.emplace_back(std::forward<E>(e));
+    heapIndex_.emplace_back(data_.size() - 1u);
+    heapIter_.emplace_back(i);
     return siftUp(i);
   }
   /*!
    * @brief Remove an element from the heap view.
    * @param i The index of the element to remove.
    * @return The index in the heap where the element was removed.
+   * @note The element is not removed from the data vector.
    */
   Index
   remove(DataIndex i)
-  {
+  { 
     auto where = heapIter_[i];
-    if (where == noData)
-      return noData; // ERROR CONDITION!
-    this->swap(where, heapIndex_.size() - 1);
+    if(not where.has_value())
+    {
+      throw std::invalid_argument("HeapView: trying to remove an element not in the heap");
+    }
+    this->swap(*where, heapIndex_.size() - 1);
     heapIndex_.pop_back();
-    return siftDown(siftUp(where));
+    heapIter_[i].reset();
+    return siftDown(siftUp(*where));
   }
   /*!
    * @brief Update an element in the heap view.
@@ -181,17 +177,17 @@ public:
   Index
   update(DataIndex i, const ElementType &e)
   {
-    auto where = heapIter_[i];
     data_[i] = e;
-    if (where==noData)
+    auto where = heapIter_[i];
+    if (not where.has_value())
       {
         // add again the value to the heap
         where=heapIndex_.size();
         heapIndex_.push_back(i);
         heapIter_[i]=where;
-        return siftUp(where);
+        return siftUp(*where);
       }
-    return siftDown(siftUp(where));
+    return siftDown(siftUp(*where));
   }
   /*!
    * @brief The size of the heap
@@ -271,7 +267,6 @@ public:
   {
     auto const [where, e] = this->topPair();
     remove(where); // remove data element from the heap
-    heapIter_[where]=noData;
     return std::make_pair(where, e);
   }
   /*!
@@ -434,7 +429,7 @@ private:
   };
   //! The comparison operator for the data (user defined or defaulted to less)
   CompOp comp_ = CompOp{};
-  static auto constexpr noData=std::numeric_limits<std::size_t>::max();
+  //static auto constexpr noData=std::numeric_limits<std::size_t>::max();
 };
 } // namespace apsc
 

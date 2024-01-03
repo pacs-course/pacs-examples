@@ -62,19 +62,19 @@ since several examples make use of the utilities.
   * `SimpleProgram` A simple program that adds two numbers. Just a little more complicated than `Hello World`.
   * `SmartPointers` An example on the use of smart pointers. 
   * `StaticMembers` A possible use of static member variables: count how many objects of a given type you have in the code.
-  * `STL/` A folder with examples on various utilities of the STL, and some tricks!.
-    * `STL/cont` The use of some containers.
-    * `STL/FileSystem` The new facility to traverse and examine file systems.
-    * `STL/Map` The powerful C++ associative container.
-    * `STL/Optional` The new `std::optional` utility to represent *missing data*.
-    * `STL/Reduce` The new utilities `reduce` and `transform_reduce` that perform reduction and transformation operations on ranges, possibly in parallel 
-    * `STL/Set` The use of set with different comparison operators.
-    * `STL/SetEdge` Again the use of a comparison operator to distinguish between directed or undirected graphs.
-    * `STL/Sort` The use of `std::sort` and comparison operators (again!)
-    * `STL/SortAndPermute` Sometimes you want to sort a container and then perform the same permutation of elements of other containers. Here a way of doing it.
-    * `STL/tuple` Some examples on the use of tuples and `std::tie`
-    * `STL/UnorderedMap` The powerful C++ associative container. The unordered version.
-    * `STL/Variant` An example of this new utility, a class that may store values of different types. A more type sefe version of `union`.
+  * `STL/` A folder with examples on various utilities of the STL, and some tricks! .
+    - `STL/cont` The use of some containers.
+    - `STL/FileSystem` The new facility to traverse and examine file systems.
+    - `STL/Map` The powerful C++ associative container.
+    - `STL/Optional` The new `std::optional` utility to represent *missing data*.
+    - `STL/Reduce` The new utilities `reduce` and `transform_reduce` that perform reduction and transformation operations on ranges, possibly in parallel 
+    - `STL/Set` The use of set with different comparison operators.
+    - `STL/SetEdge` Again the use of a comparison operator to distinguish between directed or undirected graphs.
+    - `STL/Sort` The use of `std::sort` and comparison operators (again!)
+    - `STL/SortAndPermute` Sometimes you want to sort a container and then perform the same permutation of elements of other containers. Here a way of doing it.
+    - `STL/tuple` Some examples on the use of tuples and `std::tie`
+    - `STL/UnorderedMap` The powerful C++ associative container. The unordered version.
+    - `STL/Variant` An example of this new utility, a class that may store values of different types. A more type sefe version of `union`.
   * `Streams/` A folder containing several examples of the use of stream, 
     * `Streams/binary_io`. An example of binary i/o that shows how faster it is on large data set! It shows also an example of the use of HDF (you need hdf installed).
     * `Streams/fstream`. Streaming on a file (basic stuff).
@@ -92,32 +92,33 @@ since several examples make use of the utilities.
   * `bcHandler` An example of a possible way to handle the information about boundary conditions in a numerical code. It shows also 
   an example of use of `muparserx`. To install muparserX go in the sub-folder `Extra`
   * `CompositionWithVariadicTemplates` The Composer design pattern done with variadic templates: constructing complex objects by composing simple ones. The technique is more "rigid" than the classical one which uses polymorphism, but rather flexible and efficient. 
+  * `DataHeap` A class that implements a heap structure operating on a vector without moving vector eleeents around. It is a very efficient implementation of a heap.
   * `DesignPatterns/` A set of example of Design Patterns, a C++ implementation of the techniques illustrated in the famous [Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns)book and in [this site.](https://refactoring.guru/design-patterns/cpp). 
   * `FloatingPoint/` A directory containing several examples on aspects (sometimes degeneracies) of floating point computations, including how to handle floating point exception. See the local `README.md` file.  The example `FloatinPoint\FinDiff` also shows another use of *gnuplot-iostream* to have plots on the terminal.
-  * `
-  * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Only to remember the various tools, which have been integrated in the Makefile. If you read the Makefile you see how tools have been called.
-  * `Polynomials`. A more complex example of a class that implements the generic concept of a polynomial. An example of generic programming.
-  * `MetaProgramming/`. A folder with examples that show  metaprogramming techniques.
-    * `DelcTypeDeclval` An example of the use of the decltype/declval cinstruct. In fact, it contains also examples of some type_traits.
-    * `GCD` A useless examples on how to compute the greater common divisor statically. Different versions are provided. Now you have it in the
+  * `MetaProgramming/`. A folder with examples that show  metaprogramming techniques (note, since c++20 some are obsolete, yet still working)
+    - `DelcTypeDeclval` An example of the use of the decltype/declval cinstruct. In fact, it contains also examples of some type_traits.
+    - `GCD` A useless examples on how to compute the greater common divisor statically. Different versions are provided. Now you have it in the
     standard library (and surealy a better implementation than mine).
-    * `ifthenelse` Poor-man implementation of the `std::conditional` type-trait. 
-    * `IsClonable` An utility (a better version in `Utility/ColingUtilities.hpp` file) to test if a class contains the `clone()` member function.
-    * `MetaDot`. Dot product of arrays computed statically. Different versions are provided.
-    * `Pi`. Pi computed  by computing a truncated series with a recursive technique.
-    * `SwitchType`. The use of type alias to allow mesh elements dedice the type of their buonday depending on the space dimensions.
-    * `trasposeView` An overly complex example of a transpose view of a matrix, To show a possible use of `std::enable_if` (but I also provide an alternative).
-    * `Trivial` USe of type-traits to detect Trivial, Trivially-Constructable and StandardLayout types. With an example on how Trivially-Constructable and StandardLayout property may be useful.
+    - `ifthenelse` Poor-man implementation of the `std::conditional` type-trait. 
+    - `IsClonable` An utility (a better version in `Utility/ColingUtilities.hpp` file) to test if a class contains the `clone()` member function.
+    - `MetaDot`. Dot product of arrays computed statically. Different versions are provided.
+    - `Pi`. Pi computed  by computing a truncated series with a recursive technique.
+    - `SwitchType`. The use of type alias to allow mesh elements dedice the type of their buonday depending on the space dimensions.
+    - `trasposeView` An overly complex example of a transpose view of a matrix, To show a possible use of `std::enable_if` (but I also provide an alternative).
+    - `Trivial` USe of type-traits to detect Trivial, Trivially-Constructable and StandardLayout types. With an example on how Trivially-Constructable and StandardLayout property may be useful.
   * `Mesh` example of teools to store and read a 2D mesh of polygons (currently implemented for triangles and quads).
   * `MoveSemantic` A examples that uses [valgrind](https://valgrind.org/ "The valgrind site") to show the advantages of move semantic when handling large objects (you must have valgrind installed in your system).
   * `NonLinSys` A class that holds a system of callable objects, where you can add the objects one at a time. It also contains a `FunctionFactory`, a factory of
   callable objects. The latter may be used in a program where functions are given by the user and then used throughout the program, for instance functions that define boundary conditions.
   A different Function Factory is present in `Factory` as a specialization of the generic factory contained therein.
+  * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Only to remember the various tools, which have been integrated in the Makefile. If you read the Makefile you see how tools have been called.
   * `Parallel` Some examples of parallelization
-    * `Parallel/MPI` MPI Examples
-    * `Parallel/OpenMP` OpenMO Examples
-    * `Parallel/STL` Some examples of STL parallel algorithms.
+    - `Parallel/MPI` MPI Examples
+    - `Parallel/OpenMP` OpenMO Examples
+    - `Parallel/STL` Some examples of STL parallel algorithms.
   * `Plugins` Two examples of plugin architecture.
+  * `PointInSimplex` Locate if a point is insidede a 2D of 3D simplex. See the local `README.md` file.
+  * `Polynomials`. A more complex example of a class that implements the generic concept of a polynomial. An example of generic programming.
   * `ReadingVector` This is an example on how you can imitate the strange way used by Eigen to read a vector from a stream by overloading the
   streaming and the comma operator. More a curiosity than something of practical use.
   * `SharedLibrary` An example of set up of shared libraries with version control. And in `SharedLibrary/DynamicLoading` we show how to load functions
