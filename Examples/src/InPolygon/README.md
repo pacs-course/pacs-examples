@@ -26,7 +26,7 @@ I have created a *concept* to ensure that the user provides as polygon a class o
 
 I have made a large use of lambda expressions to enucleate the different steps necessary for the tests.
 
-**A note:** I have implemented the algorithms in good generality. If the method `size()`
+**A note:** Look also at the code in src/PointInSimplex, where you have a specialization for simpleces of 2 and 3 dimensions.
 
 
 # What do I learn here?
@@ -34,3 +34,4 @@ I have made a large use of lambda expressions to enucleate the different steps n
 - The use of lambda expressions to separate in different units the various steps of an algorithm, making it more readable (hopefully).
 - The creation of a simple concept (remember you need a C++20 compliant compiler!)
 - A simple processing of user input with `getline()` and `istringstream`. 
+
