@@ -25,8 +25,9 @@ struct Point
   //!
   //! By doing so you have all 6 relational operator with default semantic.
   //! The default ordering relation is the lexicographic one
-  //! The ordering type is the weakeast ordering among members.
-  //! But you may just use auto and ignore the details
+  //! The return ordering type is the weakeast ordering among members (in this case it will be a std::strong_ordering!)
+  //! But you may just use auto and ignore the details, since the compiler will do the right thing and you have the
+  //! expected conversion to bool
   friend auto operator<=>(const Point &, const Point &)= default;
 };
 
