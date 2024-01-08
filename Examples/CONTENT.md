@@ -41,6 +41,7 @@ since several examples make use of the utilities.
   * `Bindings` The binding rule of references and also an example of use of `std::forward` and of the move semantic of `std::vector`. See also `RefBindings` on the same topic.
   * `Constexpr` The use of constexpr functions compared with normal functions. You find here also `HornerConstexpr.hpp`, an implementation of 
   Horner rule for polynomial evaluation (see also `Horner` example) as a constexpr function.
+  * `Concepts` A brief explanation of concepts, a new feature introduced in C++20. With also some examples of creation of user defined concepts.
   * `CRTP` It shows how the Curiosly Recursive Template Pattern works. The example is simple, the feature less simple to understand (but not so difficult after all...).
   * `ForwardDeclaration` An example that shows a case were a forward declaration is needed.
   * `Functors` An example of use of callable objects (functors).
@@ -52,6 +53,7 @@ since several examples make use of the utilities.
   on lvalues and rvalues.
   * `Numeric_limits`. It uses almost all the facilities provided by `numeric_limits<>`, just to show what they do.
   * `Odr` An example on the one definition rules and also on a dangerous situation if things are not done correctly. A bit technical.
+  * `OrderingAndSpaceShip` An example of the ordering relation concepts introduced in C++20. It also shows how to use the spaceship operator and defaulted comparison operators.
   * `Polygon`. A classic example of *polymorphism*: a hierarchy of polygon classes.
   * `Preprocessor`. A simple example that shows what happens if you look at a code after having run the preprocessor. Just to show that `#include` does what it says and that `-D` sets a preprocessor variable.
   * `RandomDistribution` An example of use of different random number engines and distribution of the standard library. It uses `gnuplot-iostream` to plot histograms on the screen. You must have `gnuplot` installed.
@@ -67,6 +69,7 @@ since several examples make use of the utilities.
     - `STL/FileSystem` The new facility to traverse and examine file systems.
     - `STL/Map` The powerful C++ associative container.
     - `STL/Optional` The new `std::optional` utility to represent *missing data*.
+    - `STL/RangesAndViews` An example of the use of ranges and views, introduced in c++20. It also contains example of the use of the new *contrained algorithms*, more convenient to use and powerful than the usual ones.
     - `STL/Reduce` The new utilities `reduce` and `transform_reduce` that perform reduction and transformation operations on ranges, possibly in parallel 
     - `STL/Set` The use of set with different comparison operators.
     - `STL/SetEdge` Again the use of a comparison operator to distinguish between directed or undirected graphs.
