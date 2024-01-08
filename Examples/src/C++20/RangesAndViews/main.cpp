@@ -10,6 +10,7 @@
 #include <vector>
 #include <list>
 #include <ranges>
+#include <span>
 struct Person
 {
   std::string name;
@@ -20,24 +21,75 @@ struct Person
 };
 auto & operator<<(std::ostream & out, Person const & p)
 {
-  out<<p.name<<" "<<p.surname<<" "<<p.age<<std::endl;
+  out<<"Name:"<<p.name<<" Family Name:"<<p.surname<<" Age: "<<p.age<<" years"<<std::endl;
   return out;
 }
+
+/*!
+   std::span is a view of a contiguous range of elements
+   Thos steaming operator works for array, vectors and fixed size C-arrays of doubles!
+*/
+auto & operator<<(std::ostream & out, std::span<double> const & p)
+{
+  // the ranges::for_each is a for_each that works on ranges
+  std::ranges::for_each(p,[&out](auto const & x){out<<x<<" ";});
+  return out;
+}
+
+/*!
+  A constrained function that prints the first n elements of a range
+  The concept std::ranges::range is a concept that is satisfied by all the ranges
+  (i.e. containers, views, etc.)
+  @param out the output stream
+  @param r the range
+  @param n the number of elements to print
+  @return the output stream
+*/
+auto & printn(std::ostream & out, std::ranges::range auto const & r,std::size_t n)
+{
+  std::ranges::for_each(r | std::ranges::views::take(n),[&out](auto const & x){out<<x<<" ";});
+  return out;
+}
+
+
+/*!
+  @brief A function that estracts the digits from a string  "number1,number2,number3,..." 
+  @param csv a string containing a list of numbers separated by commas
+  @return a vector containing the numbers joined together
+*/
+  auto join_numbers(std::string_view const & csv)
+{
+  // let csv="10,11,12"
+  auto digits = csv 
+  | std::views::split(',')      // [ [1, 0], [1, 1], [1, 2] ]
+  | std::views::join;           // [ 1, 0, 1, 1, 1, 2 ]
+  std::vector<int> numbers;
+  for (auto const & d:digits)
+    numbers.emplace_back(d-'0');
+  return numbers;
+}
+
 int main()
 {
   {
   std::vector a{3.,4.,5.,-9.,-3.9};
-  // old way of sorting vector from smallest to largest element
+  // the old way of sorting vector from smallest to largest element
   std::sort(a.begin(), a.end());
   }
 
   {
   std::vector a{3.,4.,5.,-9.,-3.9};
+  std::cout<<"Original vector: "<<a<<std::endl;
   // The ranges way. Less hassle with iterators when you operate on the whole container
   std::ranges::sort(a);
+  // but you could use also std::ranges::sort(a.begin(),a.end())
+  // and you also have the parallel version std::ranges::sort(std::execution::par,a)
+  std::cout<<"Sorted vector: "<<a<<std::endl;
   }
 
 
+
+  {
   // Projections are unary functions that are meant to operate on elements of a range before
   // performing a standard algorithm. But they may be also pointers to member function or members.
   // ranges::sort takes a range (or a couple of iterators, a comparison operator and a projection!
@@ -51,13 +103,18 @@ int main()
   };
 
   {
-    // sort by name using default comparison operator
-    std::ranges::sort(friends,{},&Person::name);
-    std::cout<<"\nSorted by name\n";
+    std::cout<<"Original vector of persons\n";
     for (auto const & p:friends)
       std::cout<<p;
-    }
-
+    std::cout<<std::endl;
+    // sort by name using default comparison operator
+    // The {} in the second argument is the default comparison operator
+    std::ranges::sort(friends,{},&Person::name);
+    std::cout<<"\nPersons sorted by name\n";
+    for (auto const & p:friends)
+      std::cout<<p;
+    std::cout<<std::endl;    
+  }
   {
     // sort by surname using default comparison operator
     std::ranges::sort(friends,{},&Person::surname);
@@ -73,13 +130,15 @@ int main()
     for (auto const & p:friends)
       std::cout<<p;
     }
+  }
+std::cout<<std::endl;
   {
     //Partition a vector into odd end even
-    std::ostream_iterator<int> out {std::cout, " "};
+    std::ostream_iterator<int> out {std::cout, " "};// an output iterator with a space as separator
     std::vector<int> v {-3,7,9,0,2,1,4,3,7,6,5,8,9};
     std::cout << "Original vector:  \t";
-    std::ranges::copy(v, out);
-    // first the elements for wich the predicate returns true
+    std::ranges::copy(v, out);// the use of copy to print!
+    // first the elements for which the predicate returns true
     auto tail = std::ranges::partition(v, [](int i){return i % 2 == 0;});
 
     std::cout << "\nPartitioned vector: \t";
@@ -178,13 +237,39 @@ int main()
     using namespace std::literals;
    std::vector<std::string> course{"Advanced "s,"Programming "s, "for "s, "Scientific "s, "Computing"s};
    auto joined=course | std::views::join;
-   std::string joinedString{joined.begin(),joined.end()};
+   std::string joinedString{joined.begin(),joined.end()};// you hace to copy the string
    std::cout<<joinedString;
    std::cout<<std::endl;
   }
 
+{ 
+  //Extracting the digits from a string of integer numbers
+  std::string csv{"10,11,12,7,8,908"};
+  auto digits=join_numbers(csv);
+  std::cout<<"The digits are: ";
+  for (auto i:digits)
+    std::cout<<i<<" ";
+  std::cout<<std::endl;
+}
+
+{
+ // Some examples of conditional views
+const auto v = std::vector{3, 2, 2, 1, 0, 2, 1};
+const auto is_negative = [](int i) { return i < 0; };
+
+std::cout << "The vector  ";
+if (std::ranges::none_of(v, is_negative)) {
+  std::cout << "contains only positive numbers\n";
+}
+else if (std::ranges::all_of(v, is_negative)) {
+  std::cout << "contains only negative numbers\n";
+}
+else if (std::ranges::any_of(v, is_negative)) {
+  std::cout << "contains at least one negative number\n";
+}
 
 
+}
 
   }
 
