@@ -29,6 +29,8 @@ It contins also an example of use of `std::visit()`.
 * `Filesystem/` Utilities to examine the file system.
 
 * `Reduce/` Two new stl parallel algorithms
+  
+* `RangesAndViews` An example of use of the new ranges and views of the standard library.
 
 * `SortAndPermute` An useful utility if you need to sort a vector and keep track of the performed
 permutation to be able to apply it to other vectors.
