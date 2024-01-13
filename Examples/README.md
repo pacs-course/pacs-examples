@@ -1,27 +1,33 @@
-# Course on Advanced programming for scientific computing #
-## Mathematical Engineering, Politecnico di Milano ##
-## Copyright Luca Formaggia 2012-2023 ##
+# Examples of the Course on Advanced Programming for Scientific Computing (aka PACS)#
+**Mathematical Engineering, Politecnico di Milano**
+**Copyright Luca Formaggia 2012-2024**
 
 ## LICENCING ##
 The software contained in the subfolders of this directory is free-software released under a GNU General Public Licens (GPL). The details of the licence are availabe in the `COPYRIGHT` file in the root directory.
 
-
 ## CONTENT ##
 
-Here you find the examples given in the course
+`bin/` -> Directory where the executables are installed. It contains some scripts to beautify your code (see below)
 
-`doc` -> Possible additional documentation
+`lib/` -> Directory where the libraries are installed. Initially empty, but it will be filled with the libraries produced by the examples
 
-`lib` -> Possible libraries needed to compile some example
+`lib64/` -> Only for compatibility. In fact is a link to `lib`
 
-`include` -> General include files
+`include/` -> General include files. Initially empty, but it will be filled with the include files of the examples
 
-`src` -> Directory with the example sources
+`share/` -> Directory where the documentation is installed. Initially empty, but it will be filled with the documentation of the examples
 
-`astyle_scripts_and_hooks` Some tools to beautify your code, based on [Artistic Style](http://astyle.sourceforge.net/) (you mast install astyle if you wish to use the tools in this directory).
+`src/` -> Directory with the example sources. Probably the most important directory. Look at the `CONTENT.md` file for a description of the examples.
 
-`clang-format_scripts_and_hooks` Some tools to beautify your code, based on [clang-format](https://www.electronjs.org/docs/latest/development/clang-format) (you must have clang-tools installed! if you want to use the utilities in this directory).
+`astyle_scripts_and_hooks/` Some tools to beautify your code, based on [Artistic Style](http://astyle.sourceforge.net/) (you mast install astyle if you wish to use the tools in this directory).
 
+`clang-format_scripts_and_hooks/` Some tools to beautify your code, based on [clang-format](https://www.electronjs.org/docs/latest/development/clang-format) (you must have clang-tools installed! if you want to use the utilities in this directory)
+
+`environment.sh` A bash script that sets the environment variables needed by the examples. It can simplify life if you are not using the mk-modules adopted in the course. In that case you can copy it in your `.profile` file in your home directory (see note at the end of the file), **after having changed the path correctly**. 
+
+`Makefile.user` A makefile that you must copy to `Makefile.inc` and edit to suit your system. It is used by all the examples. It is explained in the next section.
+
+`setup.sh` A bash script that compiles the main utilities in one shot so that you have averything set. It is explained in the next section.
 
 ## HOW TO COMPILE AND INSTALL THE EXAMPLES: ##
 
@@ -201,6 +207,13 @@ Here the tests have been collected in the subfolder `test`, but the rule is the 
 
 Have a look at the tests because they contain information on how to use the utilities!
 
+To simplify life, you can just do
+```bash
+bash ./setup.sh
+```
+and averything is done for you.
+
+
 ### THIRD STEP EXTRAS ###
 Some utilities that are used in a few examples (and interesting on their own) are kept as submodules, since they refer to third party software.
 To compile and install them, go in the `Extras` directory of the repository and follow the instructions in the `README.md` file stored in that directory.
@@ -235,7 +248,6 @@ installed. Anyway, a copy of `directories.html` is present in this directory.
 
 ### The content of `src` Directory ###
 A description of the examples in the `src` directory is found in `CONTENT.md`.
-
 
 ### A note on `.bashrc` or `.profile` (or `.bash_profile`) ### 
 
