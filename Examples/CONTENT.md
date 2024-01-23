@@ -9,7 +9,9 @@ We can divide the examples into four categories:
 - **Advanced Examples** Still aiming at illustrate features of the language, they also focus on particular numerical, or simply technical, issues;
 - **Full Examples** Examples where a specific numerical problem is treated in a (relative) depth;
 
-## Utilities##
+In the following, the name of the example is the name of the directory where the code is stored. The description is very brief, just to give an idea of what the example is about. For more details, please read the `README.md` file in the directory of the example.
+
+## Utilities ##
   - `Utilities` A set of utilities that you may use also in your code. All described in the local `README.md` file. 
   **You should go in the directory and type**
 
@@ -20,20 +22,19 @@ We can divide the examples into four categories:
 
 since several examples make use of the utilities.
   
-  - `LinearAlgebraUtil` A second set of utilities more specialised for linear algebra (but not only). Have a look there are several goodies.  **You should go in the directory and type**
+  - `LinearAlgebraUtil` A second set of utilities more specialised for linear algebra (but not only). Have a look, there are several goodies.  **You should go in the directory and type**
 
 ```
     make
     make install
 ```
 
-since several examples make use of the utilities.
+since several examples make use of the utilities contained in this folder.
 
 - `GenericFactory`. Copied also in `Utility`, it is a generic object factory. You may use and specialize it for your needs.
 - `muParserInterface` Some examples on how to interface with [MuParser](https://beltoforion.de/article.php?a=muparser) and [MuParseX](https://beltoforion.de/article.php?a=muparserx) libraries
-  for parsing mathematical expressions. Use them as a guideline if you plan to use these tools. The source of the libraries are contained in the 
-`Extra` folder: you need to installation them before being able to compile the example. 
-- `LoadLibraries` An utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). I simplifies recolling all the toools to access dynamic libraries and it implements the RAII principle.
+  for parsing mathematical expressions. Use them as a guideline if you plan to use these tools. The source of the libraries are contained in the `Extra` folder under the root directory of this repo: you need to install them before being able to compile these example: go in the `Extra` folder and follow the instructions in the `README.md` file.
+- `LoadLibraries` An utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). I simplifies recalling all the tools needed to access dynamic libraries, and it implements the RAII principle: when destroyed it unloads the libraries.
   
 ## Basic Examples ##
   * `Aggregates` Show some feature of *aggregates*, a particular type of classes that have to satisfy some requirements, see [here for instance](https://en.cppreference.com/w/cpp/language/aggregate_initialization), and allow very useful constructs.
@@ -41,24 +42,25 @@ since several examples make use of the utilities.
   * `Bindings` The binding rule of references and also an example of use of `std::forward` and of the move semantic of `std::vector`. See also `RefBindings` on the same topic.
   * `Constexpr` The use of constexpr functions compared with normal functions. You find here also `HornerConstexpr.hpp`, an implementation of 
   Horner rule for polynomial evaluation (see also `Horner` example) as a constexpr function.
-  * `Concepts` A brief explanation of concepts, a new feature introduced in C++20. With also some examples of creation of user defined concepts.
-  * `CRTP` It shows how the Curiosly Recursive Template Pattern works. The example is simple, the feature less simple to understand (but not so difficult after all...).
+  * `Concepts` A brief explanation of concepts, a new feature introduced in C++20. With also some examples of creation of user defined concepts. See [here](https://www.modernescpp.com/index.php/c-20-concepts-the-placeholder-syntax/) for a general introduction.
+  * `CRTP` It shows how the Curiously Recursive Template Pattern works. The example is simple, the feature less simple to understand (but not so difficult after all...). It may be useful to understand the implementation of the [Expression Templates](https://en.wikipedia.org/wiki/Expression_templates) technique.
   * `ForwardDeclaration` An example that shows a case were a forward declaration is needed.
-  * `Functors` An example of use of callable objects (functors).
-  * `Horner` The Horner rule to compute polynomials efficiently (in a serial environment at least).
-  * `IntegerOverflow` An example that shows how integer overflow produces non-intuitive results. *Beware of integer overflows*.
-  * `LambdaExpr` Some examples of lambda expressions.
-  * `Linkage` Use of `extern` to create variables with external linkage (i.e. global/namespace variable) and unnamed `namespace` and `static` specifiers to have functions with local linkage (i.e. visible only in the current translation unit).
+  * `Functors` An example of use of callable objects (functors). It also shows how to use `std::function` to store callable objects in a container.
+  * `Horner` The Horner rule to compute polynomials efficiently, in a serial environment at least, the code is inherently scalar.
+  * `IntegerOverflow` An example that shows how integer overflow produces non-intuitive results. *Beware of integer overflows*. In `Ulilities/absdiff.hpp` you find a function that computes the absolute difference of two integers eliminating the risk of overflow
+  * if the integers are unsigned.
+  * `LambdaExpr` Some examples of lambda expressions. Lambda expressions are a very powerful tool, they are the equivalent of function handles in Matlab.
+  * `Linkage` Use of `extern` to create variables with external linkage (i.e. global/namespace variable) and unnamed `namespace` and `static` specifiers to have functions with local linkage (i.e. visible only in the current translation unit). A bit technical stuff.
   * `MoveSemantic_simple` An illustration of move semantic that shows which constructor/assignment operator is called
-  on lvalues and rvalues.
-  * `Numeric_limits`. It uses almost all the facilities provided by `numeric_limits<>`, just to show what they do.
-  * `Odr` An example on the one definition rules and also on a dangerous situation if things are not done correctly. A bit technical.
+  on l-values and r-values.
+  * `Numeric_limits`. An example that uses almost all the facilities provided by `numeric_limits<>`, just to show what they do.
+  * `Odr` An example on the one definition rules and also on a dangerous situation if things are not done correctly. A bit technical stuff.
   * `OrderingAndSpaceShip` An example of the ordering relation concepts introduced in C++20. It also shows how to use the spaceship operator and defaulted comparison operators.
   * `Polygon`. A classic example of *polymorphism*: a hierarchy of polygon classes.
   * `Preprocessor`. A simple example that shows what happens if you look at a code after having run the preprocessor. Just to show that `#include` does what it says and that `-D` sets a preprocessor variable.
-  * `RandomDistribution` An example of use of different random number engines and distribution of the standard library. It uses `gnuplot-iostream` to plot histograms on the screen. You must have `gnuplot` installed.
+  * `RandomDistribution` An example of use of different random number engines and distribution of the standard library. It uses `gnuplot-iostream` to plot histograms on the screen. You must have `gnuplot` installed and also some boost libraries. `gnuplot-iostream` is provided with the Utilities.
   * `Rational`. An example on operator overloading: a class for rational numbers.
-  * `RefBindings` Another example on reference bindings rules where I show all the possibilities of bindings. See also `Bindings`
+  * `RefBindings` Another example on reference bindings rules where I show all the possibilities of reference bindings. See also `Bindings`.
   * `ReferenceWrapper` Just to show that thanks to the reference wrapper utility you may store "references" in a container. Normally containers may contain only *first class objects*, not references, but reference wrappers come to a rescue.
   * `Scope` An old example on scoping rules.
   * `SimpleProgram` A simple program that adds two numbers. Just a little more complicated than `Hello World`.
@@ -69,52 +71,52 @@ since several examples make use of the utilities.
     - `STL/FileSystem` The new facility to traverse and examine file systems.
     - `STL/Map` The powerful C++ associative container.
     - `STL/Optional` The new `std::optional` utility to represent *missing data*.
-    - `STL/RangesAndViews` An example of the use of ranges and views, introduced in c++20. It also contains example of the use of the new *contrained algorithms*, more convenient to use and powerful than the usual ones.
+    - `STL/RangesAndViews` An example of the use of ranges and views, introduced in c++20. It also contains example of the use of the new *contrained algorithms*: more convenient to use and more powerful than the usual ones.
     - `STL/Reduce` The new utilities `reduce` and `transform_reduce` that perform reduction and transformation operations on ranges, possibly in parallel 
     - `STL/Set` The use of set with different comparison operators.
     - `STL/SetEdge` Again the use of a comparison operator to distinguish between directed or undirected graphs.
-    - `STL/Sort` The use of `std::sort` and comparison operators (again!)
+    - `STL/Sort` The use of `std::sort` and comparison operators (again!).
     - `STL/SortAndPermute` Sometimes you want to sort a container and then perform the same permutation of elements of other containers. Here a way of doing it.
     - `STL/tuple` Some examples on the use of tuples and `std::tie`
-    - `STL/UnorderedMap` The powerful C++ associative container. The unordered version.
-    - `STL/Variant` An example of this new utility, a class that may store values of different types. A more type sefe version of `union`.
+    - `STL/UnorderedMap` The powerful C++ associative container. The unordered version. Is the C++ version of the Python dictionary.
+    - `STL/Variant` An example of this new utility, a class that may store values of different types. A safer version of `union`.
   * `Streams/` A folder containing several examples of the use of stream, 
     * `Streams/binary_io`. An example of binary i/o that shows how faster it is on large data set! It shows also an example of the use of HDF (you need hdf installed).
     * `Streams/fstream`. Streaming on a file (basic stuff).
     * `Streams/iostream`. Basic streming operations.
-    * `Streams/redirect`. Strems ca be redirected, also at run time!.
+    * `Streams/redirect`. Straems can be redirected, also at run time!. Useful you you want to be able to switch from screen to file, or to a string.
     * `Streams/serialization`. A  example of serializaion of an aggregate (more complex serialization that may be performed with specialised libraries like `boost::serialization` are not covered here).
-    * `Streams/sstream`. String streams: a very useful tool. Here you find some example of usage.
-  * `Vector` Examples of use of `std::vector`.
+    * `Streams/sstream`. String streams are a very useful tool. They are strings that can act as a stream (or viceversa). Here you find some example of usage.
+  * `Vector` Examples of use of `std::vector`, probably the most used container in C++.
     *`Vector/Basics` As the name says.
-    *`Vector/Remove` What it means removing elements from a vector.
+    *`Vector/Remove` What it means "removing" elements from a vector with `remove()`. It is not what you think!`
   
 ## Advanced examples
   * `adtTree` A binary search structure based on the alternating digital tree algorithm. It can search for "points inside boxes",
-  and "possibly intersecting boxes". It is a quite dynamic structure where nodes (boxes or points) can be added/deleted dynamically.
+  and "possibly intersecting boxes". It is a quite dynamic structure where nodes (boxes or points) can be added/deleted dynamically.a very complex example.
   * `bcHandler` An example of a possible way to handle the information about boundary conditions in a numerical code. It shows also 
-  an example of use of `muparserx`. To install muparserX go in the sub-folder `Extra`
+  an example of use of `muparserx`. To install `muparserX`, go in the sub-folder `Extra`.
   * `CompositionWithVariadicTemplates` The Composer design pattern done with variadic templates: constructing complex objects by composing simple ones. The technique is more "rigid" than the classical one which uses polymorphism, but rather flexible and efficient. 
-  * `DataHeap` A class that implements a heap structure operating on a vector without moving vector eleeents around. It is a very efficient implementation of a heap.
+  * `DataHeap` A class that implements a heap structure operating on a vector without moving the vector elements around. It is a very efficient implementation of a heap.
   * `DesignPatterns/` A set of example of Design Patterns, a C++ implementation of the techniques illustrated in the famous [Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns)book and in [this site.](https://refactoring.guru/design-patterns/cpp). 
   * `FloatingPoint/` A directory containing several examples on aspects (sometimes degeneracies) of floating point computations, including how to handle floating point exception. See the local `README.md` file.  The example `FloatinPoint\FinDiff` also shows another use of *gnuplot-iostream* to have plots on the terminal.
-  * `MetaProgramming/`. A folder with examples that show  metaprogramming techniques (note, since c++20 some are obsolete, yet still working)
+  * `MetaProgramming/`. A folder with examples that show  metaprogramming techniques (note, since c++20 some techniques are obsolete, yet still working).
     - `DelcTypeDeclval` An example of the use of the decltype/declval cinstruct. In fact, it contains also examples of some type_traits.
     - `GCD` A useless examples on how to compute the greater common divisor statically. Different versions are provided. Now you have it in the
-    standard library (and surealy a better implementation than mine).
+    standard library (and surely a better implementation than mine).
     - `ifthenelse` Poor-man implementation of the `std::conditional` type-trait. 
-    - `IsClonable` An utility (a better version in `Utility/ColingUtilities.hpp` file) to test if a class contains the `clone()` member function.
+    - `IsClonable` An utility (a better version in contained `Utility/CloingUtilities.hpp`) to test if a class contains the `clone()` member function.
     - `MetaDot`. Dot product of arrays computed statically. Different versions are provided.
     - `Pi`. Pi computed  by computing a truncated series with a recursive technique.
     - `SwitchType`. The use of type alias to allow mesh elements dedice the type of their buonday depending on the space dimensions.
     - `trasposeView` An overly complex example of a transpose view of a matrix, To show a possible use of `std::enable_if` (but I also provide an alternative).
-    - `Trivial` USe of type-traits to detect Trivial, Trivially-Constructable and StandardLayout types. With an example on how Trivially-Constructable and StandardLayout property may be useful.
-  * `Mesh` example of teools to store and read a 2D mesh of polygons (currently implemented for triangles and quads).
+    - `Trivial` USe of type-traits to detect *Trivial*, *Trivially-Constructable* and *StandardLayout* types. With an example on how Trivially-Constructable and StandardLayout property may be useful.
+  * `Mesh` example of tools to store and read a 2D mesh of polygons (currently implemented for triangles and quads).
   * `MoveSemantic` A examples that uses [valgrind](https://valgrind.org/ "The valgrind site") to show the advantages of move semantic when handling large objects (you must have valgrind installed in your system).
   * `NonLinSys` A class that holds a system of callable objects, where you can add the objects one at a time. It also contains a `FunctionFactory`, a factory of
   callable objects. The latter may be used in a program where functions are given by the user and then used throughout the program, for instance functions that define boundary conditions.
   A different Function Factory is present in `Factory` as a specialization of the generic factory contained therein.
-  * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Only to remember the various tools, which have been integrated in the Makefile. If you read the Makefile you see how tools have been called.
+  * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Various tools have been integrated in the Makefile. If you read the Makefile you see how tools are called.
   * `Parallel` Some examples of parallelization
     - `Parallel/MPI` MPI Examples
     - `Parallel/OpenMP` OpenMO Examples
@@ -130,7 +132,7 @@ since several examples make use of the utilities.
     - `Compare` An example of the use of policies (Bridge design pattern) as template parameter to change the behaviour of comparison operations
     - `ExplicitInstatiation` An example of explicit instantiation of templates. A technique to save compilation time of template instances that you use often.
     - `Fibonacci` A classic example of template metaprogramming: a recursive template. 
-    - `Function` Beware of mixing template and free funcions with template specializations. Here we show why in this simple example. Non so important if you are careful.
+    - `Function` Beware of mixing template and free funcions with template specializations. Here we show why in this simple example. Non so important, if you are careful.
     - `Interpolation` Polynomial interpolation on a set of points (x,y). Use of policy to choose from different interpolation strategies. *Note* It differs from the code contained in the `Interp1D` folder: the latter implements just piecewise linear interpolation but in a very generic fashion.
     - `Matrix` The initial design of a simple full matrix with row or column orderning, with the parallel implementation (with openMP) of matrix-vector product.xs
     - `Mean` An example of use of tempalte specialization or variadic templates to create functions that computes sumes and average of values. 
@@ -156,8 +158,7 @@ since several examples make use of the utilities.
     * `redsvd-h` A submodule containing the fork of the homonymous tool [on Github](https://github.com/ntessore/redsvd-h), which implements
     in a templated fashion the algorithms in [redsvd](https://code.google.com/archive/p/redsvd/), for solving several matrix decompositions including singular value decomposition (SVD), principal component analysis (PCA), and eigenvalue decomposition. It uses a stocastic technique to be able to extract low rank approximations of possibly very large sparse matricies at low cost. See [Finding Structure with Randomness: Probabilistic Algorithms for Constructing Approximate Matrix Decompositions](https://doi.org/10.1137/090771806)
     * `spectra` A submodule containing a fork of the homonymous tool on [GitHub](https://github.com/yixuan/spectra.git). The name is the acronim of Sparse Eigenvalue Computation Toolkit as a Redesigned ARPACK. It is a C++ library for large scale eigenvalue problems, built on top of Eigen linear algebra library
-    * `Thomas` An implementation of the Thomas algoritm to solve tridiagonal systems of equations. It is a well known O(n) algorithm.
-    You find the general desctiption on [Wikipedia](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm)
+    * `Thomas` An implementation of the Thomas algorithm to solve tridiagonal systems of equations. It is a well known O(n) algorithm, you find the general desctiption on [Wikipedia](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm)
     * `SparseBlockMatrix` A tool to construct block matrices where each block is a sparse Eigen matrix.
     * `Utilities` Described in the *Utilities* section.
   * `Mesh`, An example of a class for 2D meshes, with a few utilities.
