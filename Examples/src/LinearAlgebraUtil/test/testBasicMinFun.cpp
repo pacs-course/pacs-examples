@@ -16,7 +16,7 @@ main()
   fun = [](double x) { return x * x * x * x - 1; };
   double a = 0;
   {
-    auto [x1, x2, s] = apsc::bracketIntervalMinumum(fun, a);
+    auto [x1, x2, s] = apsc::bracketIntervalMinimum(fun, a);
     std::cout << "Bracket found:"
               << " a=" << x1 << " b=" << x2 << " with status=" << s << "\n";
     {

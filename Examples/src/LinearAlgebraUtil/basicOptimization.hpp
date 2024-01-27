@@ -13,6 +13,7 @@
 #include <tuple>
 #include <limits>
 #include <numbers> // C++20 stuff to get golden ration
+#include <utility>
 /*
  * In this version (march 2023) I use concepts to constrain the
  * template parameter indicating the function. Function must be
@@ -88,7 +89,7 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
  */
 template <TypeTraits::ScalarFunction Function>
 std::tuple<double, double, int>
-bracketIntervalMinumum(Function const &f, double x1, double h = 0.01,
+bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
                        unsigned int maxIter = 100)
 {
   constexpr double expandFactor = 1.5;
@@ -98,10 +99,8 @@ bracketIntervalMinumum(Function const &f, double x1, double h = 0.01,
   // Check monotonicity
   if(f(x1 - h) < y1 and f(x1 + h) > y1)
     h = -h;                                  // change direction
-  else if(f(x1 - h) > y1 and f(x1 + h) > y1) // I have found the bracket
+  if(f(x1 - h) > y1 and f(x1 + h) > y1) // I have found the bracket
     return {x1 - h, x1 + h, 0};
-  else if(y1 > f(x1 - h) and y1 > f(x1 - h)) // bad initial point! Cannot start!
-    return {0., 0., 1};
   bool         isOk{false};
   unsigned int iter{0u};
   auto         x2 = x1;
@@ -116,10 +115,14 @@ bracketIntervalMinumum(Function const &f, double x1, double h = 0.01,
           x1 = x2;
           y1 = y2;
         }
+        ++iter;
     }
   while(!isOk and iter < maxIter);
   if(iter >= maxIter)
-    status = 2;
+    status = iter;
+  x1 -= h;
+  if(x1 > x2)
+    std::swap(x1, x2);
   return std::make_tuple(x1, x2, status);
 }
 
