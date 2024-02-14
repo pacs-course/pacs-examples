@@ -3,11 +3,11 @@
 #include "gnuplot-iostream.hpp" // interface with gnuplot
 #endif
 #include "readParameters.hpp"
-#include "thomas.hpp"
+#include "thomas.hpp" // for thomas algorithm. Must be installed in the system
 #include <cmath>    // (for sqrt)
 #include <iostream> // input output
-#include <tuple>
-#include <vector>
+#include <tuple> // I am using tuples to pass data to gnuplot iostream
+#include <vector> // For vectors
 /*!
   @file main.cpp
   @brief Temperature distribution in a 1D bar.
@@ -18,14 +18,15 @@
 
  **************************************************
   Linear finite elements
-  Iterative resolution by Gauss Siedel.
+  Iterative resolution by Gauss Siedel or
+  Direct solve by Thomas algorithm
  **************************************************
 
   Example adapted by Luca Formaggia from  a code found in
   "Simulation numerique an C++" di I. Danaila, F. Hecht e
   O. Pironneau.
  */
-//! helper function
+//! a helper function. Prints a help message
 void
 printHelp()
 {

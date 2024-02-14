@@ -1,7 +1,6 @@
 #ifndef HH_READPARAMETERS_HH
 #define HH_READPARAMETERS_HH
 #include <string>
-#include "json.hpp"
 #include "parameters.hpp"
 //! Reads problem parameters from GetPot file
 /*!
