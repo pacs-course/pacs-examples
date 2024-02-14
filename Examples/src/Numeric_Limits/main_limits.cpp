@@ -30,8 +30,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <cmath> // for isnan and isfinite
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <limits>
 #include <string>
 // numbers has been introduced in C++20
@@ -124,6 +124,19 @@ printFloatLimits(std::string const &type)
   cout << "# of decimal digits in mantissa= " << numeric_limits<F>::digits10
        << '\n';
   cout << endl;
+  /* Note
+  rounding_style is an enum class with the following values
+     enum class float_round_style {
+     round_indeterminate = -1,
+     round_toward_zero = 0,
+     round_to_nearest = 1,
+     round_toward_infinity = 2,
+     round_toward_neg_infinity = 3
+     };
+
+     round_off is the largest possible rounding error (expressed in
+     round-off units u). If rounding style is 1 the round error is 0.5,
+     */
 }
 
 int
@@ -158,10 +171,19 @@ main()
   cout << "smallest               = " << numeric_limits<unsigned int>::min()
        << '\n';
 
-  cout << endl << "***************    long INT   *********" << endl;
+  cout << "**********************************************" << endl;
+  cout << endl << "***************    long int   *********" << endl;
+  cout << "**********************************************" << endl;
   cout << "largest                = " << numeric_limits<long int>::max()
        << '\n';
   cout << "smallest               = " << numeric_limits<long int>::min()
+       << '\n';
+  cout << "**********************************************" << endl;
+  cout << endl << "***************    long unsigned   *********" << endl;
+  cout << "**********************************************" << endl;
+  cout << "largest                = " << numeric_limits<long unsigned int>::max()
+       << '\n';
+  cout << "smallest               = " << numeric_limits<long unsigned int>::min()
        << '\n';
 
   cout << endl;
@@ -200,25 +222,21 @@ main()
   cout << " Is 1./0. equal to Inf?: " << !std::isfinite(z) << std::endl;
 
 #if __cplusplus >= 202002L
-  cout<<"\n***    Now some c++20 goodies. Predefined constants ***\n";
+  cout << "\n***    Now some c++20 goodies. Predefined constants ***\n";
   using namespace std::numbers;
-  std::cout<<"Pi (double)        "<<pi<<std::endl;
-  std::cout<<"e  (double)        "<<e<<std::endl;
-  std::cout<<"sqr(2)(double)     "<<sqrt2<<std::endl;
+  std::cout << "Pi (double)        " << pi << std::endl;
+  std::cout << "e  (double)        " << e << std::endl;
+  std::cout << "sqr(2)(double)     " << sqrt2 << std::endl;
 
   maxprec = numeric_limits<long double>::digits10;
   cout.precision(maxprec);
-  std::cout<<"Pi (long double)   "<<pi_v<long double><<std::endl;
-  std::cout<<"e  (long double)   "<<e_v<long double><<std::endl;
-  std::cout<<"sqr(2)(long double)"<<sqrt2_v<long double><<std::endl;
+  std::cout << "Pi (long double)   " << pi_v<long double> << std::endl;
+  std::cout << "e  (long double)   " << e_v<long double> << std::endl;
+  std::cout << "sqr(2)(long double)" << sqrt2_v<long double> << std::endl;
   maxprec = numeric_limits<float>::digits10;
   cout.precision(maxprec);
-  std::cout<<"Pi (float)         "<<pi_v<float><<std::endl;
-  std::cout<<"e  (float)         "<<e_v<float><<std::endl;
-  std::cout<<"sqr(2)(float)      "<<sqrt2_v<float><<std::endl;
+  std::cout << "Pi (float)         " << pi_v<float> << std::endl;
+  std::cout << "e  (float)         " << e_v<float> << std::endl;
+  std::cout << "sqr(2)(float)      " << sqrt2_v<float> << std::endl;
 #endif
-
-
-
-
 }
