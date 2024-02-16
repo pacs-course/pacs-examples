@@ -10,7 +10,7 @@ Some updates have been made to introduce some C++17 goodies
 
 * `set/`  use of sets with different comparison operators
 
-* `sort/` Use comparison operators to change sorting criteria.
+* `sort/` Use comparison operators to change sorting criteria. We also show the new sort constrained algorithm.
 
 * `SetEdge/` An esample of set of Edges that describe a graph where different comparison operators enable directed (Edges may be repeated if they have  different orientation) or undirected graphs.
 
