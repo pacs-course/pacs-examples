@@ -41,11 +41,4 @@ main()
   std::cout<<"The type of s is "<<typeid(s).name()<<std::endl;
   // Here we have size since s is a std::string
   std::cout<<"of length "<<s.size()<<std::endl;
-
-
-
-
-
-
-
 }
