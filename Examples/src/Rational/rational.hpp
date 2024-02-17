@@ -23,7 +23,7 @@ public:
     double(1). If I want to have a rational from the integer I need to
     write r + Rational(1) explicitly (or use static_cast<Rational>).
    */
-  explicit Rational(int n = 0, int d = 1);
+  explicit  Rational(int n = 0, int d = 1);
   //! Constructor from a constant rational (since C++11).
   /*! Also using a constructor of the class in the initialization list
     is C++11 only. The argument is dummy, we do not need it.
@@ -95,6 +95,7 @@ public:
 
 #if __cplusplus >= 202002L
 /*!
+ * @brief The spaceship operator
  * If we use c++20 we can define all 4 comparison operators in one go using spaceship.
  * I will then use the spaceship operator for integers (provided by the standard lib)
  * for the comparison.
@@ -115,10 +116,10 @@ friend bool operator ==(Rational const &, Rational const &)=default;
   //! In a pre c++20 code (but it is still perfectly valid!!) the best way to define
   //! consistent relational operators is to define the < operator and then all the others
   //! consistently. Here < is friend to allow accessing private data.
-  //! @param
-  //! @param
-  //! @return
-  friend bool     operator<(Rational const &, Rational const &);
+  //! @param l th eleft operand
+  //! @param r the right operand
+  //! @return true if l<r, false otherwise
+  friend bool     operator<(Rational const & l, Rational const & r);
 #endif
   //! Streaming operator to output rationals in a nice way.
   friend std::ostream &operator<<(std::ostream &, Rational const &);

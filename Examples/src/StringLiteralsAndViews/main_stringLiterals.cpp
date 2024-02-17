@@ -1,6 +1,21 @@
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include <string_view> // since c++17
+
+/*! @ brief Function to check if 'text' starts with 'prefix'
+  * 
+  * This function is a simple example of the use of string_view
+  *  @param text the string to be checked
+  *  @param prefix the prefix to be checked
+  *  @return true if 'text' starts with 'prefix', false otherwise
+  */
+bool starts_with(std::string_view text, std::string_view prefix) {
+    return text.substr(0, prefix.size()) == prefix;
+}
+
+
+
 int
 main()
 {
@@ -41,4 +56,13 @@ main()
   std::cout<<"The type of s is "<<typeid(s).name()<<std::endl;
   // Here we have size since s is a std::string
   std::cout<<"of length "<<s.size()<<std::endl;
+
+  // Using string_view you can opearate on string literals without copying them
+  // and operate both on C++ and C-style strings without problems
+  // You can operate also on substrings of a string_view with no additional copies
+  // Note that we are mixing c-style strings and c++ strings: string_view is a bridge
+  std::cout<< "Deas '"<<c<<"' start with 'This'?="<<std::boolalpha<<starts_with(c,"This")<<std::endl;
+  std::cout<< "Deas '"<<s<<"' start with 'This'?="<<std::boolalpha<<starts_with(s,"This")<<std::endl;
+  std::cout<< "Deas '"<<trunk<<"' start with 'This'?="<<std::boolalpha<<starts_with(trunk,"This")<<std::endl;
+
 }
