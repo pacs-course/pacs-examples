@@ -18,16 +18,13 @@ namespace myfunctors
 {
 /*!
  *
- * A functor (object function) that takes a single argument is also called a
- * A unary functor.
- *
- * It is good practice to inherit from std::unary_function,
- * so that it complies with the unary functors in the
- * standard library (It is not compulsory though,! you can do without)
- * This object function computes fifth root of a by Newton method. Definition in
+ * @brief Computes the fitfh root of a number by Newton method
+ * 
+ * A functor (object function) that takes a single argument is also called aunary functor.
+ * This object function computes fifth root of a by Newton method up to 10^-6 precision. Definition in
  * the cpp file
  */
-struct Sqrt5 : public std::unary_function<double, double>
+struct Sqrt5
 {
   double operator()(double a) const;
   //! max number of iterations (default=100)
@@ -44,15 +41,8 @@ struct Sqrt5 : public std::unary_function<double, double>
   that returns true if the value passed is greater than a value that
   may be changed run time.
 
-  Since all methods are simple I will define them in class (no need
-  of cpp file) It is a unary function so I inherit from the
-  corresponding std class (not strictly needed, but it makes it
-  complient with the stl rules).  Inheriting publicly from
-  unary_function provides two typedef members argument_type and
-  result_type
-
 */
-class Isgreater : public std::unary_function<double, bool>
+class Isgreater
 {
 public:
   Isgreater(double const &a) : my_value{a} {};
