@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <cmath>
 int
 main()
 {
@@ -10,7 +11,7 @@ main()
   //! Creating an object
   Sqrt5 sqrt5;
   // comput fifth root of five
-  std::cout << std::setprecision(15) << "sqrt5(5)=" << sqrt5(5) << std::endl;
+  std::cout << std::setprecision(15) << "Exact value of fifth root of 5=" << std::pow(5,1./5.) << std::endl;
   // we have set a larger precision to see more digits. The setting
   // can be brought back to the default by
   // std::cout<<std::defaultfloat;

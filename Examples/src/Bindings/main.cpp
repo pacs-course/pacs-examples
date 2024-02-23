@@ -48,6 +48,7 @@ foo(int &a)
  *
  * @param a
  */
+
 void
 foo(const int &a)
 {
@@ -146,9 +147,9 @@ main()
     std::cout << "foo does not implement overloads with rvalue-references\n";
     std::cout << "calling foo(25) (a literal):" << std::endl;
     foo(25); // foo(const int&)
-    std::cout << "calling foo(a) (a is int, a lvalue):" << std::endl;
+    std::cout << "calling foo(a) (a is int, a non-const lvalue):" << std::endl;
     foo(a); // foo(int&)
-    std::cout << "calling foo(b) (b is int&, a lvalue):" << std::endl;
+    std::cout << "calling foo(b) (b is int&, a non-const lvalue):" << std::endl;
     foo(b); // foo(int&)
     std::cout << "calling foo(createFive()), I am passing a rvalue:"
               << std::endl;
