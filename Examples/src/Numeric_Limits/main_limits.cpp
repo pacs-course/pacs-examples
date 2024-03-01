@@ -118,7 +118,26 @@ printFloatLimits(std::string const &type)
   cout << "machine epsilon        = " << numeric_limits<F>::epsilon() << '\n';
   cout << "round off              = " << numeric_limits<F>::round_error()
        << '\n';
-  cout << "rounding style         = " << numeric_limits<F>::round_style << '\n';
+  cout << "rounding style         = ";
+    switch(numeric_limits<F>::round_style)
+    {
+      case std::round_indeterminate:
+        cout << "rounding style cannot be determined" << '\n';
+		break;
+      case std::round_toward_zero:
+        cout << "rounding toward zero" << '\n';
+		break;
+      case std::round_to_nearest:
+        cout << "rounding toward nearest representable value" << '\n';
+		break;
+      case std::round_toward_infinity:
+        cout << "rounding toward positive infinity" << '\n';
+		break;
+      case std::round_toward_neg_infinity:
+        cout << "rounding toward negative infinity" << '\n';
+		break;
+    }
+
   cout << "# of binary digits in mantissa= " << numeric_limits<F>::digits
        << '\n';
   cout << "# of decimal digits in mantissa= " << numeric_limits<F>::digits10
