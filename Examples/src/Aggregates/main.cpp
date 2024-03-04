@@ -7,11 +7,10 @@
 #include <vector>
 #include <initializer_list>
 //! This file illustrate uniform initialization.
-/*!
-  With the C++11 standard we can initialize all sort of objects using the same
-  syntax! It is very practical and it eases writing generic programs!
- */
-/* The main rules: all non-static data. No user-declared constructors
+
+
+/* 
+ * The main rules of an aggregate: all non-static data. No user-declared constructors
  * As you can see we can have methods
  *
  */
@@ -130,8 +129,8 @@ main()
   std::complex<double> cNumber = {1.0, 3.0};// copy-initialization of a complex
   // User defined constructors.
   MyClass myc{3,4.};// direct initialization
-  MyClass mycc={5,-27.};// Error if constructor is explicit
-  mycc={8,47.};// Error if constructor is explicit.
+  MyClass mycc={5,-27.};// copy-initialization. Error if constructor is explicit
+  mycc={8,47.};// copy initialization. Error if constructor is explicit.
   // I can also do this: vector of 10 Myclass elements
   // initialized with {1,3.}
   std::vector<MyClass> aV(10, {1, 3.0});
@@ -199,7 +198,6 @@ main()
   Derived d3{{8, 9.0}, 7.0};
   // but also simply as
   Derived d4{8, 9.0, 7.0};
-  // Beware however. Here I have a vector of complex and I use brace initialization:
   // This vector contains 3+4i and 5+6i
   std::vector<std::complex<double>> vc1 = {{3., 4.}, {5., 6.}};
   std::cout << "vc1=";
