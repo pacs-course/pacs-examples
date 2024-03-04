@@ -42,8 +42,8 @@ int
 main(int argc, char **argv)
 {
   using namespace std; // avoid std::
-  int    status(0);    // final program status
-  bool jsonfile{false};
+  int    status{0};    // final program status
+  bool jsonfile=false;
   GetPot cl(argc, argv);
   if(cl.search(2, "-h", "--help"))
     {
@@ -193,7 +193,8 @@ main(int argc, char **argv)
   for(int m = 0; m <= M; m++)
     {
       f.setf(std::ios::left, std::ios::adjustfield);
-      f.width(16);
+      f.width(18);
+      f.precision(15);
       f << m * h * L << "\t\t" << theta[m] << "\t\t" << thetaa[m] << "\n";
       coor[m] = m * h * L;
     }
