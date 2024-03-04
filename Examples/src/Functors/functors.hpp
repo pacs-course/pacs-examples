@@ -3,6 +3,8 @@
 #include <array>
 #include <functional> // for std function objects (like less<>)
 #include <string>
+#include <cmath>
+#include <stdexcept>
 // Some examples of functors (also called function object)
 /*
   A function object is any object of class type that defines the call operator.
@@ -27,6 +29,49 @@ namespace myfunctors
 struct Sqrt5
 {
   double operator()(double a) const;
+  //! max number of iterations (default=100)
+  unsigned int maxiter = 100;
+  //! Absolute tolerance
+  double tolerance = 1.e-6;
+  //! Initial value.
+  double x0 = 1.0;
+};
+/*!
+@brief Computes the N-th root of a number by Newton method
+ *
+ * This object function computes N-th root of a by Newton method up to 10^-6 precision. Definition in
+ * the header file since it is a templates
+ * @tparam p the root to compute
+ * @param a the number to compute the root of
+ * @return the N-th root of a by Newton method
+ 
+*/
+template <unsigned int p>
+struct rootN
+{
+  double operator()(double a) const
+  {
+    static_assert(p > 0, "rootN: p must be positive");
+    if(a == 0.0)
+      return 0.0;
+        //auto         phi =[&a](double const x) { return (a/x/x/x/x -x ) / 5; };
+
+    constexpr int exp = 1u - p; // the exponent in the Newton iterations
+    auto         err = 2 * tolerance;
+    unsigned int iter = 0;
+    auto         x = x0;
+    while((err > tolerance) && (iter < maxiter))
+      {
+        auto step = (a*std::pow(x,exp) -x ) / p;
+        err = std::abs(step);
+        x += step;
+        ++iter;
+      }
+    // This most complex version throw an exception if the number of iterations exceeds maxiter
+    if(iter == maxiter)
+      throw std::runtime_error("RootN: Too many iterations");
+    return x;
+  }
   //! max number of iterations (default=100)
   unsigned int maxiter = 100;
   //! Absolute tolerance
