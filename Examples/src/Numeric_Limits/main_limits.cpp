@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <limits>
 #include <string>
+#include <map>
 // numbers has been introduced in C++20
 #if __cplusplus >= 202002L
 #include <numbers>
@@ -93,18 +94,26 @@ void
 printFloatLimits(std::string const &type)
 {
   using namespace std; // to simplify life
+  // This map is to have a more significant name for the rounding style
+  map<std::float_round_style,std::string> roundStyleName {
+    {std::float_round_style::round_indeterminate, "round_indeterminate"},
+    {std::float_round_style::round_toward_zero, "round_toward_zero"},
+    {std::float_round_style::round_to_nearest, "round_to_nearest"},
+    {std::float_round_style::round_toward_infinity, "round_toward_infinity"},
+    {std::float_round_style::round_toward_neg_infinity, "round_toward_neg_infinity"}
+  };
   cout << "**********************************************" << endl;
   cout << "*************** " << type << " ******************" << endl;
   cout << "**********************************************" << endl;
   cout << "largest                = " << numeric_limits<F>::max() << '\n';
   cout << "smallest               = " << numeric_limits<F>::min() << '\n';
-  cout << "min exponent in binary = " << numeric_limits<F>::min_exponent
+  cout << "min exponent in base 2 = " << numeric_limits<F>::min_exponent
        << '\n';
-  cout << "min exponent in decimal= " << numeric_limits<F>::min_exponent10
+  cout << "min exponent in base 10= " << numeric_limits<F>::min_exponent10
        << '\n';
-  cout << "max exponent in binary = " << numeric_limits<F>::max_exponent
+  cout << "max exponent in base 2 = " << numeric_limits<F>::max_exponent
        << '\n';
-  cout << "max exponent in decimal= " << numeric_limits<F>::max_exponent10
+  cout << "max exponent in base 10= " << numeric_limits<F>::max_exponent10
        << '\n';
   cout << "base of exponent       = " << numeric_limits<F>::radix << '\n';
   cout << "Has infinity:            " << numeric_limits<F>::has_infinity
@@ -118,7 +127,7 @@ printFloatLimits(std::string const &type)
   cout << "machine epsilon        = " << numeric_limits<F>::epsilon() << '\n';
   cout << "round off              = " << numeric_limits<F>::round_error()
        << '\n';
-  cout << "rounding style         = " << numeric_limits<F>::round_style << '\n';
+  cout << "rounding style         = " << roundStyleName[numeric_limits<F>::round_style] << '\n';
   cout << "# of binary digits in mantissa= " << numeric_limits<F>::digits
        << '\n';
   cout << "# of decimal digits in mantissa= " << numeric_limits<F>::digits10
