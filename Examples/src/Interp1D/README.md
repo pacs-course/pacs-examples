@@ -17,7 +17,7 @@ For the second overload I need to implement some adapters to obey the interface 
 
 # What do I learn from this example? #
 - The use of generic programming to develop a flexible tool, capable of handling different ways the input data is structured
-- The use of specializations, via function overloading, can provide the user with a simpler iterface for the most common data structures.
+- The use of specializations, via function overloading, can provide the user with a simpler interface for the most common data structures.
 - The use of adapters to interface a code with data structures apparently incompatible with the given interface.
-- How function overloading may be used to provide different interfece to a common utility. Here `interp1D` may be called in different "versions", depending on the type of data available. 
+- How function overloading may be used to provide different interface to a common utility. Here `interp1D` may be called in different "versions", depending on the type of data available. 
 
