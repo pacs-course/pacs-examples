@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <complex>
 using namespace std;
 // An example of use of vector<T>
 // This template function is just an utility
@@ -36,7 +37,7 @@ main()
 
   cout << " ********** ADDING 2 ELEMENTS *****" << endl;
   vi.push_back(4); // add an element
-  vi.push_back(5); // add an element
+  vi.emplace_back(5); // add an element (here amplace and push do the same)
   printinfo(vi, "vi");
 
   // A vector element may be addressed by the [] operator
@@ -52,7 +53,7 @@ main()
   // vd.at(3)=5.0 ERROR element out of range. The program aborts
   //              printing an error message
 
-  vd.push_back(5.0); // This is fine (now vd[3] contains 5).
+  vd.emplace_back(5.0); // This is fine (now vd[3] contains 5).
   cout << " ********** ADDED 1 ELEMENT *****" << endl;
   printinfo(vd, "vd");
   vd.clear(); // clear vector. vd is now empty
@@ -82,8 +83,6 @@ main()
   cout << "*********** Vector has been resized to 2  *****" << endl;
   printinfo(a, "a");
 
-  // **************  SOME C++11 stuff  ********//
-
   for(auto &i : a)
     i = 10; // fills a  with 10 (equivalent to previous for loop)
 
@@ -106,4 +105,8 @@ main()
   // you may also use std::swap(ku,kv)
   cout << "*********** After swap with another vector" << endl;
   printinfo(kv, "kv");
+  vector<complex<double>> vc{{1.,2.},{0.,1.}};// a vector with 2 complex<double>
+  vc.emplace_back(3.,4.); // add a complex<double> to the vector emplace_back uses the constructor of complex<double>
+  printinfo(vc, "vc");
+
 }
