@@ -2,7 +2,7 @@ EXAMPLES AND EXERCISES FOR PACS COURSE
 --------------------------------------
 This repo contains source code and descriptions for the examples and exercises
 that will be explained during the APSC (Advanced Programming for Scientific Computing) course at
-Politecnico di Milano, also known as PACS (Programmazioen Avanzata per il Calcolo Scientifico)
+Politecnico di Milano, also known as PACS (Programmazione Avanzata per il Calcolo Scientifico)
 
 The repository contains submodules, so to check it out properly you have to type
 
