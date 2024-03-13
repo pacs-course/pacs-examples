@@ -10,11 +10,12 @@
 #include "NewtonTraits.hpp"
 namespace apsc
 {
+//! @brief 
 //! The base class for the Jacobian.
 //! It inherits from NonLinSolveTraits to get all types defined there
-//!
+//! This is possible since the trait is not a template.
 //! It implements the basic methods for the application of the Jacobian, which
-//! in fact may be a "pseudoJacobian" for quasi-Newton methods or evne Picard
+//! in fact may be a "pseudoJacobian" for quasi-Newton methods or even Picard
 //! iterations
 //!
 class JacobianBase : public NewtonTraits
@@ -41,9 +42,9 @@ protected:
   NonLinearSystemType const *M_sys;
 };
 
-//! Computes the jacobian by finite differences.
+//! @brief Computes the jacobian by finite differences.
 /*!
-  Final class that implements the following approximation of
+  @details Final class that implements the following approximation of
   the Jacobian
 
   \f[
@@ -57,8 +58,8 @@ protected:
   be destroyed before the call method of this class is used! But we may consider
   it a very unlikely event. So a prerequisite is that
   the non linear system is existing and accessible.
-  An alternative is to use a shared pointer or a reference. But a pointer
-  is the simplest solution
+  An alternative is to use a reference. But a pointer
+  is the simplest solution.
  */
 class DiscreteJacobian final : public JacobianBase
 {
@@ -83,6 +84,11 @@ public:
   ArgumentType solve(ArgumentType const &x,
                      ArgumentType const &b) const override;
 
+/*!
+  @brief Set the parameters for the computation of the Jacobian
+  @param tol The spacing |h| for the computation of the approximate derivative
+  @param lambda The regularization parameter
+*/
   void
   setParameters(double tol = defaultTol, double lambda = defaultLambda)
   {
@@ -119,6 +125,15 @@ public:
   {
     return this->lambda * b;
   }
+  //! Set the scaling factor
+  //! /param l the scaling factor
+  void
+  setLambda(double l)
+  {
+    lambda = l;
+  }
+  //! The scaling factor
+private:
   double lambda = 1.0;
 };
 
@@ -133,11 +148,12 @@ public:
   FullJacobian &operator=(FullJacobian const &) = default;
   FullJacobian &operator=(FullJacobian &&) = default;
 
-  //! I can pass the JacobianFunction via constructor
-  //! \param j an object convertible to a JacobianFunction
+  //! @brief I can pass the JacobianFunction via constructor
+  //! @param j an object convertible to a JacobianFunction
   FullJacobian(JacobianFunctionType const &j,
                NonLinearSystemType *       nls = nullptr)
     : JacobianBase{nls}, Jac{j} {};
+
   //! I can change the JacobianFunction
   //! \tparam J a type convertible to JacobianFunction
   //! \param j an object convertible to a JacobianFunction
@@ -147,7 +163,7 @@ public:
   {
     Jac = std::forward<J>(j);
   }
-  //! I may vet a copy of the jacobianFunction
+  //! I may get a copy of the jacobianFunction
   //! \return A copy of the sored JacobianFunction
   JacobianFunctionType
   getJacobianFunction() const
