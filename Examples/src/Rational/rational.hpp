@@ -101,9 +101,21 @@ public:
  * for the comparison.
  * Operator is friend to access private data directly and I use automatic return since
  * I will just use the ordering type returned by the spacship operator on integers (in fact, is a
- * std::strong_ordeting)
+ * std::strong_ordering)
+ * 
+ * I cannot default it becouse I need to implement it. It can be implemented also as a member function
+ * @code {.cpp}
+ * auto operator <=> (Rational const & r) const
+ * {
+ *  return M_n*r.M_d <=> M_n*r.M_d;
+ * }
+ * @endcode
+ * but here I preferred to implement it as friend free function.
+ * @param a the left operand
+ * @param b the right operand
+ * @return the ordering type
  */
-friend auto operator <=> (Rational const &, Rational const &);
+friend auto operator <=> (Rational const &, Rational const & b);
 /*!
  * @brief Equivalence operator
  * Since we store the rational always normalized I can use the default:
@@ -187,7 +199,7 @@ operator>=(Rational const &l, Rational const &r)
 struct RationalHash
 {
   /*!
-   * @brief the call operator implementing the hssh function
+   * @brief the call operator implementing the hash function
    * @param r The Rational object
    * @return The corresponding hash key
    */
