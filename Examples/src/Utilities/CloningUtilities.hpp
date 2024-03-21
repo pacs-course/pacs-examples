@@ -516,6 +516,27 @@ operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
 {
   return a.get() == b.get();
 }
+/*!
+@brief Equivalence operator with nullptr
+@details I have copy and pasted from the analogous declaration for the 
+unique_ptr. The concepts verify that the underlying pointer is comparable with nullptr_t
+The return type is the corresponding three way comparison type returnd by the spaceship operator.
+However if you want you can simplify things eliminating concepts and use automatic return type
+@code
+template< class T>
+auto
+operator<=>( const PointerWrapper<T>& x, std::nullptr_t )
+{
+    return x.get() <=> nullptr;
+};
+@endcode
+@note I need it since it cannot be deduced by <=>
+@tparam T The type of the pointer
+@param x The wrapper
+@param nullptr
+@return true if the pointer is null
+
+*/
 template< class T>
     requires std::three_way_comparable<typename PointerWrapper<T>::pointer>
 std::compare_three_way_result_t<typename PointerWrapper<T>::pointer>
