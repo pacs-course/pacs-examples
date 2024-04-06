@@ -33,7 +33,6 @@ namespace apsc
      *
      * It is in an anonymous name space since it is not for general use
      *
-     * @tparam T the type
      */
     namespace
     {
@@ -86,8 +85,10 @@ namespace apsc
         {
           using value_type = typename T::value_type;
           // using product_type=typename product<value_type>::result_type;
-          using product_type = decltype(
-              std::declval<innerProduct<value_type> >()(value_type(0), value_type(0)));
+          // Here I use result_of instread of decltype (pre c++20 version)
+          using product_type = std::result_of_t<innerProduct<value_type>(value_type, value_type)>;
+         // using product_type = decltype(
+         //     std::declval<innerProduct<value_type> >()(value_type(0), value_type(0)));
 #ifndef _OPENMP
           return std::transform_reduce(
               std::execution::par, std::begin(a), std::end(a), std::begin(b),

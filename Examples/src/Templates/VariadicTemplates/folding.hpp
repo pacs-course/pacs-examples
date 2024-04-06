@@ -44,7 +44,8 @@ template <typename... Args>
 constexpr auto
 allMean(Args const &... args)
 {
-  return (args + ...) / sizeof...(args);
+  // I cast to double to avoid integer division
+  return (args + ...) / static_cast<double>(sizeof...(args));
 }
 
 //! Make product of arguments (if it makes sense)

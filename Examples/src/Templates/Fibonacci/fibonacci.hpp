@@ -31,7 +31,6 @@ template <> struct fib<0>
 //! This is just to show a use of a tempalte variable
   template <unsigned long N>
   unsigned long fib_v =fib<N>::value;
-
 /*!
  A more modern way of writing the template. A recursive function template
  that exploits if constexpr to break the recursion

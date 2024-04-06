@@ -185,26 +185,26 @@ main()
   // full specialization of a class template
   std::cout << "Uniform real distribution in the interval [0,10), Mean=5, Var="
             << 100 / 12. << "Skew= 0, Ex. Kurt.=" << -6. / 5. << "\n";
-  std::uniform_real_distribution<> ud(0, 10);
+  std::uniform_real_distribution ud{0., 10.};
   distr(ud, e, "uniform-real-distribution-0-10", file);
 
   // Default is mean 0 and standard deviation 1
   std::cout << "Normal distribution mean=0, Var=1, Skew=0 Ex Kurt =0\n";
-  std::normal_distribution<> nd;
+  std::normal_distribution nd;
   distr(nd, e, "normal-distribution-mean-0-stdev-1", file);
 
   // Mean 1  Std dev 2.0
   std::cout << "Normal distribution mean=1, Var=4, Skew=0, Ex. Kurt.=0\n";
-  std::normal_distribution<> nd2(1.0, 2.0);
+  std::normal_distribution nd2{1.0, 2.0};
   distr(nd2, e, "normal-distribution-mean-1-stdev-2", file);
 
   std::cout << "Exponential distribution mean=1, Var=1, Skew=2, Ex Kurt= 6\n";
-  std::exponential_distribution<> ed;
+  std::exponential_distribution ed;
   distr(ed, e, "exponential-distribution-lambda-1", file);
 
   std::cout << "Gamma distribution k=2, theta=1, mean=2, Var=2, Skew="
             << 2. / std::sqrt(2.0) << ", Ex Kurt= 3\n";
-  std::gamma_distribution<> gd(2., 1.);
+  std::gamma_distribution gd{2., 1.};
   distr(gd, e, "gamma-distribution-k2-t1", file);
 
   std::cout << "LogNormal distribution mu=3, s=2, mean=" << std::exp(5.)
@@ -213,7 +213,7 @@ main()
             << ", Ex Kurt"
             << std::exp(16.) + 2 * std::exp(12.) + 3 * std::exp(8.) - 6.0
             << "3\n";
-  std::lognormal_distribution<> lnd(3., 2.);
+  std::lognormal_distribution lnd{3., 2.};
   distr(lnd, e, "lognormal-distribution-m3-s2", file);
 
   auto sigmaw = std::tgamma(3.) - std::tgamma(2.);
@@ -222,12 +222,12 @@ main()
             << (std::tgamma(4.0) - 3 * sigmaw * sigmaw - 1) /
                  (sigmaw * sigmaw * sigmaw)
             << std::endl;
-  std::weibull_distribution<> wd(1, 1);
+  std::weibull_distribution wd{1., 1.};
   distr(wd, e, "weibull-distribution-k1-l1", file);
 
   // This produces a very "elongated" distribution
   // so I am not printing on the scrren
-  std::student_t_distribution<> sd(2.0);
+  std::student_t_distribution sd{2.0};
   std::cout << "Student T Distribution nu=2, mean=0, Var=Inf, Skew=Undef, Ex "
                "Kurt=Undef";
   distr(sd, e, "student-t-distribution", true, true);
