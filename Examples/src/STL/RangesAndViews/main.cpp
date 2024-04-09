@@ -306,15 +306,22 @@ main()
   }
   {
     // Materializing a vector from a view
-    std::vector<double> v{1., 2., 3.e-15, -4.e-18, -5., 6.3, -7.2e-20};
+    std::vector<double> v{1., 2., 3.e-15, -4.e-18, -5., 6.3, -7.2e-20, 8., 2.7};
     using namespace std::views;
-    constexpr double    cut = 1.e-10;
-    auto                large = [cut](double x) { return std::abs(x) > cut; };
-    auto                square = [](double x) { return x * x; };
-    auto                conv = v | filter(large) | transform(square) | common;
+    constexpr double cut = 1.e-10;
+    auto             large = [cut](double x) { return std::abs(x) > cut; };
+    auto             square = [](double x) { return x * x; };
+    auto conv = v | filter(large) | transform(square); // here common non needed
     std::vector<double> conv_vector{conv.begin(), conv.end()};
     std::cout << "The square of elements greater than tolerance is: ";
     for(auto i : conv_vector)
+      std::cout << i << " ";
+    std::cout << std::endl;
+    // Now I take the first two elements and insert them in another vector
+    auto first_two = conv | take(2) | common; // common is needed here
+    std::vector<double> first_two_vector{first_two.begin(), first_two.end()};
+    std::cout << "The first two elements are: ";
+    for(auto i : first_two_vector)
       std::cout << i << " ";
     std::cout << std::endl;
   }
