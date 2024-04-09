@@ -7,7 +7,9 @@
 
 #ifndef SRC_RK45_BUTCHERRKF_HPP_
 #define SRC_RK45_BUTCHERRKF_HPP_
+#include <algorithm>
 #include <array>
+#include <numeric>
 namespace apsc
 {
 //! The class containing the prototype of a Butcher table for RKF methods
@@ -32,14 +34,11 @@ template <unsigned int NSTAGES> struct ButcherArray
    */
   constexpr ButcherArray(Atable const &a, std::array<double, NSTAGES> const &b1,
                          std::array<double, NSTAGES> const &b2, int ord)
-    : A(a), b1(b1), b2(b2), order(ord)
+    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}
   {
-    c.fill(0.0);
-    // loop over rows of A
-    for(std::size_t i = 1; i < NSTAGES; ++i)
-      // Loop over cols of A
-      for(auto const &v : A[i])
-        c[i] += v;
+    std::transform(A.begin(), A.end(), c.begin(), [](auto const &row) {
+      return std::accumulate(row.begin(), row.end(), 0.0);
+    });
   }
   /* I store the full array even if only the part below the main diagonal is
    * different from zero. For simplicity
