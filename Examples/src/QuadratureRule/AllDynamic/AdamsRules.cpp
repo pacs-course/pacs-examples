@@ -1,5 +1,4 @@
 #include "Adams_rule.hpp"
-#include "Gauss_rule.hpp"
 #include "QuadratureRuleAdaptive.hpp"
 #include "montecarlo.hpp"
 #include "ruleFactory.hpp"

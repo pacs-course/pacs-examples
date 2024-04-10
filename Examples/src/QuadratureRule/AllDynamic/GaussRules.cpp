@@ -1,7 +1,7 @@
-//#include "Adams_rule.hpp"
+// #include "Adams_rule.hpp"
 #include "Gauss_rule.hpp"
 #include "QuadratureRuleAdaptive.hpp"
-//#include "montecarlo.hpp"
+// #include "montecarlo.hpp"
 #include "ruleFactory.hpp"
 // uncomment the next include if you want to use
 // #include "ruleProxy.hpp"
@@ -48,5 +48,6 @@ loadFactoryItems()
   addRuleToFactory<GaussLobatto5p>("GaussLobatto5");
   addRuleToFactory<GaussLegendre3p>("GaussLegendre3");
   addRuleToFactory<GaussLegendre2p>("GaussLegendre2");
+  addRuleToFactory<GaussLegendre4p>("GaussLegendre4");
 }
 } // namespace
