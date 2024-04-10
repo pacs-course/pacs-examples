@@ -12,7 +12,7 @@ MonteCarlo::MonteCarlo()
 std::unique_ptr<QuadratureRuleBase>
 MonteCarlo::clone() const
 {
-  return std::unique_ptr<QuadratureRuleBase>(new MonteCarlo(*this));
+  return std::make_unique<MonteCarlo>(*this);
 }
 
 void
