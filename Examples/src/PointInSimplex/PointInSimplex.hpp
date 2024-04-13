@@ -27,8 +27,9 @@ inline std::tuple<bool,PointInS_Traits::Vector4D>
     Vector v02 = extract(t, 2) - extract(t, 0);
     Vector v03 = extract(t, 3) - extract(t, 0);
     Vector s   = p - extract(t, 0);
-    auto V  = dot(v01, cross(v02, v03));
-    auto l1 = dot(cross(v02, v03), s) / V;
+    auto c23 = cross(v02, v03);
+    auto V  = dot(v01, c23);
+    auto l1 = dot(c23, s) / V;
     auto l2 = dot(cross(v03, v01), s) / V;
     auto l3 = dot(cross(v01, v02), s) / V;
     auto l0=1.0-l1-l2-l3;
