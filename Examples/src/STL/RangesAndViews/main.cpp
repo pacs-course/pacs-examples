@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <list>
+#include <map>
 #include <numeric>
 #include <ranges>
 #include <span>
@@ -323,6 +324,26 @@ main()
     std::cout << "The first two elements are: ";
     for(auto i : first_two_vector)
       std::cout << i << " ";
+    std::cout << std::endl;
+  }
+  {
+    // How to create a view from a pair of iterators
+    /*
+    You have a pair of iterators that define a sequence and you vant to create a
+    vew in order to use and standard contrained algorithms or any user defined
+    algorithm that may take a view as input. For example I want to all values
+    greater then five associated to a key of a multimap
+    */
+    std::multimap<int, double> m{{1, 3.}, {1, 4.}, {3, 5.}, {4, 6.},
+                                 {1, 7.}, {3, 8.}, {1, 9.}};
+    auto interval = m.equal_range(1); // range is a pair of iterators
+    auto maprange = std::ranges::subrange(interval.first, interval.second);
+    std::cout << "The values associated to key 1 greater than 5 are: ";
+    using namespace std::views;
+    for(auto v : maprange | values | filter([](double x) { return x > 5.; }))
+      {
+        std::cout << v << " ";
+      }
     std::cout << std::endl;
   }
 }
