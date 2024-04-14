@@ -62,6 +62,8 @@ namespace apsc
  * @pre Iterators must be (at least) bidirectional.
  * @throw a runtime standard exception if I do not have at least 2 interpolation
  * nodes
+ * @todo We can make it better if we use the new renge concepts and range based
+ * algorithms
  */
 template <typename RAIterator, typename Key, typename ExtractKey,
           typename ExtractValue, typename CompareKey = std::less<Key>>
