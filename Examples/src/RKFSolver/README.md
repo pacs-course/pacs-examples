@@ -46,6 +46,23 @@ You have to use a DIRK scheme
 
 **Some Explanations** Are included in the LaTex file you find in this folder.
 
+## Constexpr Butcher arrays##
+You may note that the Butcher arrays have a *constexpr constructor*.
+```c++
+constexpr ButcherArray(Atable const &a, std::array<double, NSTAGES> const &b1,
+                         std::array<double, NSTAGES> const &b2, int ord)
+    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}
+  {
+    std::transform(A.begin(), A.end(), c.begin(), [](auto const &row) {
+      return std::accumulate(row.begin(), row.end(), 0.0);
+    });
+  }
+```
+This is a C++17 feature that allows to create a Butcher array at compile time. This is useful to create a Butcher array that is a constant expression, and can be used to create a template class that accepts a Butcher array as a template parameter and may allow the compiler to speedup some calculations. The Butcher arrays are indeed defined as `constexpr` variables in the `Butcher.hpp` file. 
+This is possible because they have a constexpr constructor. I needed to define the constructor and not use the synthetic one since I need to fill the vector `c` with the sum of the elements of each row of the matrix `A`. This is done in the body of the contructor. Note that I am using two standard algorithms `std::transform` and `std::accumulate` to do this and not a for loop. The reason is that using a for loop is forbidden in a constexpr function. While, since C++20 those two algorithms are constexpr functions, so I can use them in a constexpr constructor.
+
+
 # What do I learn here? #
 - A way to bild a generic code for both explicit and implicit formulations
 - The use of strategy pattern and traits
+- The use of constexpr constructors to allow the creation of constant expressions

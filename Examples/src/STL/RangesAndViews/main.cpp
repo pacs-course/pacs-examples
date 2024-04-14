@@ -336,11 +336,17 @@ main()
     */
     std::multimap<int, double> m{{1, 3.}, {1, 4.}, {3, 5.}, {4, 6.},
                                  {1, 7.}, {3, 8.}, {1, 9.}};
-    auto interval = m.equal_range(1); // range is a pair of iterators
+    auto interval = m.equal_range(1); // interval is a pair of iterators
     auto maprange = std::ranges::subrange(interval.first, interval.second);
+    // mapview is a view that over the sequence identifies by the iterators in
+    // interval
     std::cout << "The values associated to key 1 greater than 5 are: ";
     using namespace std::views;
-    for(auto v : maprange | values | filter([](double x) { return x > 5.; }))
+    // I compose the view with the values view that extracts just the values
+    // frem the elements of the map and the filter view that selects the values
+    // greater than 5
+    for(auto const v :
+        maprange | values | filter([](double x) { return x > 5.; }))
       {
         std::cout << v << " ";
       }
