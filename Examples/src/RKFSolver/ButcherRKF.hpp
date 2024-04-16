@@ -55,6 +55,8 @@ template <unsigned int NSTAGES> struct ButcherArray
   /*!
    * Check if it correspond to an implicit RK scheme
    * @return true if implicit
+   * @todo try to do it in the constructor. I need to check if it is possible to
+   * maintain it constexpr
    *
    */
   constexpr bool
