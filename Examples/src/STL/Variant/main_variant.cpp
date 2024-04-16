@@ -1,12 +1,12 @@
+#include "SimpleVisitor.hpp"
+#include "manyVariants.hpp"
 #include <iostream>
+#include <slgorithm>
 #include <string>
+#include <tuple>
 #include <type_traits>
 #include <variant>
 #include <vector>
-#include <tuple>
-#include "SimpleVisitor.hpp"
-#include "manyVariants.hpp"
-
 
 /*! This part is only for the nerds of you (skip if you are not interested)
  * This is a class with which you can overload an arbitrary number of functors
@@ -35,11 +35,11 @@ main()
   using namespace std::complex_literals;
   v.emplace_back(1.0 + 3.5i);
   for(auto k : v)
-    std::cout<<k;
+    std::cout << k;
   // now visit each variant
   // The correct overloaded call operator is called on the variant
-  std::cout<<"\n\n";
-  std::cout<<"\n\n";
+  std::cout << "\n\n";
+  std::cout << "\n\n";
   for(auto i : v)
     std::visit(SimpleVisitor{}, i);
 
@@ -50,45 +50,39 @@ main()
     [](const std::string &i) {
       std::cout << "it's a string equal to " << i << std::endl;
     },
-    [] (auto const & ) {std::cout<<"it's neither an int nor a string\n";}
-  };
+    [](auto const &) { std::cout << "it's neither an int nor a string\n"; }};
 
-  std::cout<<"\n\n";
-  int count=0;
+  std::cout << "\n\n";
+  int count = 0;
   for(auto k : v)
     {
-      std::cout<<"Element n."<<count++<<" of v ";
+      std::cout << "Element n." << count++ << " of v ";
       std::visit(visitor, k);
     }
   // end nerdish section
 
   // Now a visitor that takes two variants!
 
-  std::vector<std::pair<BoxType,ItemsType>> parcels;
-  parcels.emplace_back(MetalBox{},Fluid{});
-  parcels.emplace_back(PlasticBox{},Fluid{});
-  parcels.emplace_back(MetalBox{},HeavyItem{});
-  parcels.emplace_back(CartonBox{},Fluid{});
-  parcels.emplace_back(CartonBox{},LightItem{});
+  std::vector<std::pair<BoxType, ItemsType>> parcels;
+  parcels.emplace_back(MetalBox{}, Fluid{});
+  parcels.emplace_back(PlasticBox{}, Fluid{});
+  parcels.emplace_back(MetalBox{}, HeavyItem{});
+  parcels.emplace_back(CartonBox{}, Fluid{});
+  parcels.emplace_back(CartonBox{}, LightItem{});
 
-  std::cout<<std::endl<<std::endl;
+  std::cout << std::endl << std::endl;
 
-  for (auto const & k: parcels)
-    std::visit(checkParcel{},k.first,k.second);
+  for(auto const &k : parcels)
+    std::visit(checkParcel{}, k.first, k.second);
 
   // Just to show tuples
-std::vector<std::tuple<BoxType ,int>> numberOfBoxes;
-numberOfBoxes.emplace_back(CartonBox{},10);
-numberOfBoxes.emplace_back(MetalBox{},3);
-numberOfBoxes.emplace_back(PlasticBox{},1);
-std::cout<<"\n\n I have:\n";
-for (auto const & k: numberOfBoxes)
+  std::vector<std::tuple<BoxType, int>> numberOfBoxes;
+  numberOfBoxes.emplace_back(CartonBox{}, 10);
+  numberOfBoxes.emplace_back(MetalBox{}, 3);
+  numberOfBoxes.emplace_back(PlasticBox{}, 1);
+  std::cout << "\n\n I have:\n";
+  for(auto const &[boxtype, number] : numberOfBoxes)
     {
-      // strutured bindings
-      auto [boxtype,number] = k;
-      std::visit(ItemsAndQuantities{number},boxtype);
+      std::visit(ItemsAndQuantities{number}, boxtype);
     }
-
-
 }
-
