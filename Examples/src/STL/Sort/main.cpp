@@ -72,6 +72,8 @@ main()
   // The {} indicate to use the default comparison, which is here less<char
   // I show the  std::ranges::copy to print the vector
   std::ranges::copy(s, std::ostream_iterator<std::string>(std::cout, " "));
+  // but you can also use for_each
+  // std::ranges::for_each(s, [](auto const &i) {std::cout << i << " "; });
   /* the same with a for loop
   for(auto const & i :s)
     cout << i << " ";
