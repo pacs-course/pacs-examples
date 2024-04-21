@@ -78,6 +78,14 @@ join_numbers(std::string_view const &csv)
                 | std::views::join;          // [ 1, 0, 1, 1, 1, 2 ]
   std::vector<int> numbers;
   for(auto const &d : digits)
+    /*
+    The expression d - '0' is converting the character d to its corresponding
+    integer value. In ASCII, the characters '0' to '9' are represented by the
+    values 48 to 57. So, subtracting the ASCII value of '0' (which is 48) from
+    the ASCII value of a digit character gives you the integer value of that
+    digit. For example, if d is the character '7', then d - '0' is 55 - 48 which
+    equals 7.
+    */
     numbers.emplace_back(d - '0');
   return numbers;
 }
@@ -149,7 +157,7 @@ main()
   {
     // Partition a vector into odd end even
     std::ostream_iterator<int> out{
-      std::cout, " "}; // an output iterator with a space as separator
+      std::cout, ", "}; // an output iterator with a space as separator
     std::vector<int> v{-3, 7, 9, 0, 2, 1, 4, 3, 7, 6, 5, 8, 9};
     std::cout << "Original vector:  \t";
     std::ranges::copy(v, out); // the use of copy to print!
