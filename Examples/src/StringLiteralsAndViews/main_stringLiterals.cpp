@@ -2,7 +2,7 @@
 #include <locale>
 #include <string>
 #include <string_view> // since c++17
-#include <typeinfo> 
+#include <typeinfo>
 
 /*! @ brief Function to check if 'text' starts with 'prefix'
  *
@@ -73,27 +73,32 @@ main()
   // And now a little experiment (try to understand why)
   std::cout << "The size of the character e is" << sizeof('e') << std::endl;
   std::cout << "The size of the character  è is" << sizeof('è') << std::endl;
- std::cout << "Why??\n";
+  std::cout << "Why??\n";
   // I store e and è in a char
   char e_normal{'e'};
   // char e_accented{'è'}; // this is a multibyte character I get a compiler
   // error becouse of narrowing
-  char e_accented = 'è'; // Here I have implicit convertion from multibyte (int) to char
+  char e_accented =
+    'è'; // Here I have implicit convertion from multibyte (int) to char
   std::cout << "Printing the characters e and è stored in a char: " << e_normal
             << " " << e_accented << std::endl;
   using namespace std::string_literals;
-  std::string e_accented_str = "è"s; // the s not needed I can realy to implicit conversion
+  std::string e_accented_str =
+    "è"s; // the s not needed I can realy to implicit conversion
   std::string e_normal_str = "e"s;
   std::cout << "Printing the size of a c++ string storing e and è= "
-            << e_normal_str.size() << " and " << e_accented_str.size() << std::endl;
+            << e_normal_str.size() << " and " << e_accented_str.size()
+            << std::endl;
+  std::cout << "Printing è stored in a std::string: ";
+  std::cout << e_accented_str[0] << "," << e_accented_str[1] << std::endl;
   // Handling multybyte character strings is not easy
   // I can use a wide string but the following code is not working on my PC
   // Better use std::string and not single characters.
 
-  std::u8string utf8_str = u8"è";// this is a utf-8 string
-  wchar_t e_u8accented = utf8_str[0];// here I extract the character è
+  std::u8string utf8_str = u8"è";           // this is a utf-8 string
+  wchar_t       e_u8accented = utf8_str[0]; // here I extract the character è
   // that I store in a wchar_t (4 bytes long).
-  std::wcout << L"Printing the character è stored in a wchar_t: " << e_u8accented
-               << std::endl; // but still it does not work
+  std::wcout << L"Printing the character è stored in a wchar_t: "
+             << e_u8accented << std::endl; // but still it does not work
   return 0;
 }

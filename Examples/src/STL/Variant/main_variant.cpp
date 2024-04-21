@@ -1,7 +1,7 @@
 #include "SimpleVisitor.hpp"
 #include "manyVariants.hpp"
+#include <algorithm>
 #include <iostream>
-#include <slgorithm>
 #include <string>
 #include <tuple>
 #include <type_traits>
