@@ -7,7 +7,7 @@ of the polygon, in a consistent way. Yet, the code provided here give an idea of
 
 We have implemented two types of algorithms:
 
-1. The first one calculates the dot product between the normal of each polygon edge and the vector connecting the given 
+1. The first one, working only for convex polygons,  calculates the dot product between the normal of each polygon edge and the vector connecting the given 
 point and a point of the edge. The given point is inside only if all dot products have the same sign 
 (we have not made any assumption on the orientation of the edge vertices, so we cannot assume an 
 orientation for the normal).
