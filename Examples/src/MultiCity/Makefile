@@ -60,7 +60,7 @@ $(EXEC): $(OBJS)
 $(OBJS): $(SRCS)
 
 install:
-	cp *.hpp $(PACS_INC_DIR)
+	echo "Install has been suppressed for this example because it interacts with the code in RKFSolver"
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)
