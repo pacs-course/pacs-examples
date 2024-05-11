@@ -54,11 +54,11 @@ public:
   using VariableType = typename RKFTraits<KIND>::VariableType;
   using Function = typename RKFTraits<KIND>::ForcingTermType;
   //! Constructor just taking the function
-  template <class F=Function>
-  RKF(F&&f) : M_f{std::forward<F>(f)} {};
-  //! Constructor passing butcher table and forcing function
-  template<class F=Function>
-  RKF(B const bt, F&& f) : M_f{std::forward<F>(f)}, ButcherTable{bt}{};
+  template <class F = Function> RKF(F &&f) : M_f{std::forward<F>(f)} {};
+  // Constructor passing butcher table and forcing function
+  // Note: eliminated since butcher table is now a constant expression
+  // this should allow to sped up the code
+  template <class F = Function> RKF(B const &bt, F &&f) : RKF{f} {};
 
   //! Default constructor
   RKF() = default;
@@ -69,11 +69,11 @@ public:
     M_f = f;
   }
   //! Set the Butcher Array
-  void
-  set_ButcherArray(B const &bt)
-  {
-    ButcherTable = bt;
-  }
+  // void
+  // set_ButcherArray(B const &bt)
+  //{
+  //   ButcherTable = bt;
+  // }
 
   /*!
    * @param T0 initial time
@@ -82,11 +82,13 @@ public:
    * @param hInit initial time step
    * @param tol desired global error max. norm
    * @param maxstep Safeguard to avoid too many steps (default 2000)
-   * @todo It would be better to group the parameters tol and maxStep into an (internal?) struct
+   * @todo It would be better to group the parameters tol and maxStep into an
+   * (internal?) struct
    */
   RKFResult<KIND> operator()(double const &T0, double const &T,
                              VariableType const &y0, double const &hInit,
-                             double const &tol=1e-6, int maxStep = 2000) const;
+                             double const &tol = 1e-6,
+                             int           maxStep = 2000) const;
   /*!
    * Kept public to simplify handling
    * Mutable because I should be free to modify it also on a const object
@@ -95,8 +97,8 @@ public:
                                     newtonOptions};
 
 private:
-  Function M_f;
-  B        ButcherTable;
+  Function           M_f;
+  static constexpr B ButcherTable = B{};
   // The default options for the quasi newton solver
   static constexpr apsc::NewtonOptions newtonOptions{
     1.e-10, // tolerance on step \f$||x_{new}-x_{old}||<tolerance\$
@@ -109,6 +111,7 @@ private:
     4,      // Max number backstep
     1.      // initial lambda
   };
+
   /*! Function for a single step. It is private since is used only internally.
    *
    * @note
@@ -130,13 +133,11 @@ private:
                const double &h) const -> std::pair<VariableType, VariableType>;
 };
 
-
-
 //! streaming operators to dump the results in gnuplot format
 //!  For simplicity I inline them so I have everything in this header file
-inline std::ostream &operator<<(std::ostream &                    out,
+inline std::ostream &operator<<(std::ostream                     &out,
                                 RKFResult<RKFKind::SCALAR> const &res);
-inline std::ostream &operator<<(std::ostream &                    out,
+inline std::ostream &operator<<(std::ostream                     &out,
                                 RKFResult<RKFKind::VECTOR> const &res);
 
 //   ***********************************************
@@ -151,11 +152,11 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
 {
   RKFResult<KIND> res;
   // Useful alias to simplify typing
-  std::vector<double> &      time = res.time;
+  std::vector<double>       &time = res.time;
   std::vector<VariableType> &y = res.y;
-  auto &                     expansions = res.expansions;
-  auto &                     contractions = res.contractions;
-  auto &                     estimatedError = res.estimatedError;
+  auto                      &expansions = res.expansions;
+  auto                      &contractions = res.contractions;
+  auto                      &estimatedError = res.estimatedError;
   estimatedError = 0.0; // set initial error to zero
   auto &failed = res.failed;
   failed = false; // set failed to false
@@ -331,11 +332,11 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
 {
   auto constexpr Nstages = B::Nstages();
   std::array<VariableType, Nstages> K;
-  // I use references to simplify typing
-  typename B::Atable const &         A = ButcherTable.A;
-  std::array<double, Nstages> const &c{ButcherTable.c};
-  std::array<double, Nstages> const &b1{ButcherTable.b1};
-  std::array<double, Nstages> const &b2{ButcherTable.b2};
+  // They are constant expressions!
+  auto constexpr A = ButcherTable.A;
+  auto constexpr c{ButcherTable.c};
+  auto constexpr b1{ButcherTable.b1};
+  auto constexpr b2{ButcherTable.b2};
   //@todo Test if implicit no KIND=MATRIX
   //@todo Identify if implicit outside this heavily used routine!
   for(unsigned int i = 0; i < Nstages; ++i)
@@ -344,7 +345,7 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
       VariableType value = y0;
       for(unsigned int j = 0; j < i; ++j)
         value += A[i][j] * K[j];
-      if(A[i][i] != 0.0)
+      if constexpr(ButcherTable.implicit())
         {
           if constexpr(KIND == apsc::RKFKind::VECTOR)
             {
@@ -360,6 +361,10 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
                   std::cerr << "Solution of non-linear problem failed\n";
                   std::cerr << "Last residual " << result.residualNorm
                             << std::endl;
+                  std::cerr << "y0, value, h, time, stage, fun" << y0 << " "
+                            << value << " " << h << " " << time << " " << i
+                            << " " << M_f(time, value) << std::endl;
+                  throw std::runtime_error("Newton did not converge");
                 }
               K[i] = result.solution * h;
             }

@@ -48,10 +48,11 @@ main()
       out(1) = -y(0) + mu * (1 - y(0) * y(0)) * y(1);
       return out;
     };
-    // apsc::RKF<RKFScheme::RK45_t,RKFKind::VECTOR> solver{fun};
-    apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{
-      RKFScheme::ESDIRK34, fun};
-    // apsc::RKF<RKFScheme::ESDIRK12_t,RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{fun};
+    //  apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{fun};
+    //  std::cout << "ESDIRK34 is implicit? " << std::boolalpha
+    //            << apsc::RKFScheme::ESDIRK34_t{}.implicit() << std::endl;
+    apsc::RKF<RKFScheme::ESDIRK12_t, RKFKind::VECTOR> solver{fun};
     t0 = 0;
     T = 100.;
     Eigen::VectorXd y0(2);
@@ -78,9 +79,10 @@ main()
       out(1) = std::sin(t) - mu * y(1) + 0.1 * y(0);
       return out;
     };
-    // apsc::RKF<RKFScheme::RK45_t,RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::ESDIRK12_t, RKFKind::VECTOR> solver{fun};
     apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{fun};
-    // apsc::RKF<RKFScheme::ESDIRK12_t,RKFKind::VECTOR> solver{fun};
+
     t0 = 0;
     T = 40.;
     Eigen::VectorXd y0(2);
