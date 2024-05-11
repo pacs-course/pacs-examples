@@ -34,11 +34,12 @@ template <unsigned int NSTAGES> struct ButcherArray
    */
   constexpr ButcherArray(Atable const &a, std::array<double, NSTAGES> const &b1,
                          std::array<double, NSTAGES> const &b2, int ord)
-    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}
+    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}, implicit_{false}
   {
     std::transform(A.begin(), A.end(), c.begin(), [](auto const &row) {
       return std::accumulate(row.begin(), row.end(), 0.0);
     });
+    set_implicit<NSTAGES>();
   }
   /* I store the full array even if only the part below the main diagonal is
    * different from zero. For simplicity
@@ -62,15 +63,7 @@ template <unsigned int NSTAGES> struct ButcherArray
   constexpr bool
   implicit() const
   {
-    for(auto i = 0u; i < Nstages(); ++i)
-      {
-        for(auto j = i; j < Nstages(); ++j)
-          {
-            if(A[i][j] != 0)
-              return true;
-          }
-      }
-    return false;
+    return implicit_;
   }
 
   //! The number of steps.
@@ -84,6 +77,18 @@ template <unsigned int NSTAGES> struct ButcherArray
   Nstages()
   {
     return NSTAGES;
+  }
+
+protected:
+  bool implicit_ = false;
+  template <unsigned int N>
+  constexpr void
+  set_implicit()
+  {
+    if constexpr(N <= 1u)
+      implicit_ = implicit_ or (A[0][0] != 0);
+    else
+      implicit_ = implicit_ or (A[N - 1][N - 1] != 0);
   }
 };
 
