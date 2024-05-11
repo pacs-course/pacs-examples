@@ -39,8 +39,7 @@ VariableSize::operator()() const
   auto fun = [this](double const &x, double const &) {
     return 1. / this->M_h(x);
   };
-  apsc::RKF<apsc::RKFScheme::RK45_t, apsc::RKFKind::SCALAR> solver{
-    apsc::RKFScheme::RK45, fun};
+  apsc::RKF<apsc::RKFScheme::RK45_t, apsc::RKFKind::SCALAR> solver{fun};
   // NOTE This part is a little cumbersome but needed to update from a
   // previous version of the ODEs solver which returned the results in a
   // different structure. I use a block scope to delete variables that are
