@@ -33,7 +33,8 @@ main()
               << errorDesired << " Failed:" << solution.failed
               << " Estimated Error " << solution.estimatedError
               << "\n Contractions=" << solution.contractions
-              << " Expansions=" << solution.expansions;
+              << " Expansions=" << solution.expansions << " Total steps "
+              << solution.time.size();
     std::cout << std::endl;
 
     // auto solution = solver(t0,T, y0, h_init, errorDesired);
@@ -66,7 +67,8 @@ main()
               << " Failed:" << solution.failed << " Estimated Error "
               << solution.estimatedError
               << "\n Contractions=" << solution.contractions
-              << " Expansions=" << solution.expansions;
+              << " Expansions=" << solution.expansions << " Total steps "
+              << solution.time.size();
     std::cout << std::endl;
     ofstream file3("resultVDP.dat");
     file3 << solution;
@@ -97,7 +99,9 @@ main()
               << " Failed:" << solution.failed << " Estimated Error "
               << solution.estimatedError
               << "\n Contractions=" << solution.contractions
-              << " Expansions=" << solution.expansions;
+              << " Expansions=" << solution.expansions << " Total steps "
+              << solution.time.size();
+
     std::cout << std::endl;
     ofstream file3("resultstiff.dat");
     file3 << solution;

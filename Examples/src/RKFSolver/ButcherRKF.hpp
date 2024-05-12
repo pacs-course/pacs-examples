@@ -9,6 +9,7 @@
 #define SRC_RK45_BUTCHERRKF_HPP_
 #include <algorithm>
 #include <array>
+#include <concepts>
 #include <numeric>
 namespace apsc
 {
@@ -96,6 +97,21 @@ protected:
       return (A[N - 1][N - 1] != 0) or set_implicit<N - 1>();
   }
 };
+
+template <typename B>
+concept ButcherArrayConcept = requires(B b) {
+                                b.A;
+                                b.b1;
+                                b.b2;
+                                b.c;
+                                b.order;
+                                {
+                                  b.implicit()
+                                  } -> std::same_as<bool>;
+                                {
+                                  B::Nstages()
+                                  } -> std::convertible_to<unsigned int>;
+                              };
 
 namespace RKFScheme
 {

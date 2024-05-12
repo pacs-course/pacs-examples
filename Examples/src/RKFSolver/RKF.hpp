@@ -49,7 +49,7 @@ template <RKFKind KIND> struct RKFResult
  * scheme shown in ButcherRKF.hpp
  * @tparam KIND The type of traits to be used: SCALAR, VECTOR, MATRIX
  */
-template <class B, RKFKind KIND = RKFKind::SCALAR>
+template <apsc::ButcherArrayConcept B, RKFKind KIND = RKFKind::SCALAR>
 class RKF : public RKFTraits<KIND>
 {
 public:
