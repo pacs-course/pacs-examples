@@ -12,6 +12,7 @@
 #include "Newton.hpp"
 #include "RKFTraits.hpp"
 #include <cmath>
+#include <concepts>
 #include <functional>
 #include <iostream>
 #include <limits>
@@ -42,7 +43,8 @@ template <RKFKind KIND> struct RKFResult
 };
 
 /*!
- * A calss for explicit Runge-Kutta Fehlberg type solution of ODEs
+ * A class for explicit ir diagonally implicit Runge-Kutta Fehlberg type
+ * solution of ODEs
  * @tparam B The Butcher table of the scheme. Must be defined following the
  * scheme shown in ButcherRKF.hpp
  * @tparam KIND The type of traits to be used: SCALAR, VECTOR, MATRIX
@@ -54,11 +56,15 @@ public:
   using VariableType = typename RKFTraits<KIND>::VariableType;
   using Function = typename RKFTraits<KIND>::ForcingTermType;
   //! Constructor just taking the function
-  template <class F = Function> RKF(F &&f) : M_f{std::forward<F>(f)} {};
+  template <class F = Function>
+    requires std::convertible_to<F, Function>
+  RKF(F &&f) : M_f{std::forward<F>(f)} {};
   // Constructor passing butcher table and forcing function
-  // Note: eliminated since butcher table is now a constant expression
-  // this should allow to sped up the code
-  template <class F = Function> RKF(B const &bt, F &&f) : RKF{f} {};
+  // Butcher table is now a constant expression
+  // this constructor is there only to activate template parameter deduction
+  template <class F = Function>
+    requires std::convertible_to<F, Function>
+  RKF(B const &bt, F &&f) : RKF{f} {};
 
   //! Default constructor
   RKF() = default;
@@ -99,7 +105,8 @@ public:
 private:
   Function           M_f;
   static constexpr B ButcherTable = B{};
-  // The default options for the quasi newton solver
+  //! The default options for the quasi newton solver
+  //! @todo make it a member of the class. You should be able to change them!
   static constexpr apsc::NewtonOptions newtonOptions{
     1.e-10, // tolerance on step \f$||x_{new}-x_{old}||<tolerance\$
     1.e-10, // tolerance on residual
@@ -181,7 +188,7 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
   //
   // Now I need a factor to specify when I can enlarge the time step
   // to avoid reducing and expanding the time step repeatedly
-  // I need to take into account the order of the scheme is >2
+  // I need to take into account the order of the scheme may be >2
   double factor_contraction = 1. / (ButcherTable.order);
   double factor_expansion = 1. / (ButcherTable.order + 1.0);
 

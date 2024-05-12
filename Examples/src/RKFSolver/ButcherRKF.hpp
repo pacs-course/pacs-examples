@@ -39,7 +39,7 @@ template <unsigned int NSTAGES> struct ButcherArray
     std::transform(A.begin(), A.end(), c.begin(), [](auto const &row) {
       return std::accumulate(row.begin(), row.end(), 0.0);
     });
-    set_implicit<NSTAGES>();
+    implicit_ = set_implicit<NSTAGES>();
   }
   /* I store the full array even if only the part below the main diagonal is
    * different from zero. For simplicity
@@ -82,13 +82,18 @@ template <unsigned int NSTAGES> struct ButcherArray
 protected:
   bool implicit_ = false;
   template <unsigned int N>
-  constexpr void
+  constexpr bool
   set_implicit()
   {
+    /*   if constexpr(N <= 1u)
+         implicit_ = implicit_ or (A[0][0] != 0);
+       else
+         implicit_ = implicit_ or (A[N - 1][N - 1] != 0);
+     */
     if constexpr(N <= 1u)
-      implicit_ = implicit_ or (A[0][0] != 0);
+      return (A[0][0] != 0);
     else
-      implicit_ = implicit_ or (A[N - 1][N - 1] != 0);
+      return (A[N - 1][N - 1] != 0) or set_implicit<N - 1>();
   }
 };
 
@@ -156,13 +161,13 @@ namespace RKFScheme
     {}
   };
 
-  //! ESDIRK12 scheme
+  //! ESDIRK12 scheme (Lobatto III A)
   struct ESDIRK12_t : public ButcherArray<2>
   {
     constexpr ESDIRK12_t()
       : ButcherArray<2>{{{
                           {{0., 0.}},
-                          {{0., 1.}},
+                          {{0., 1.0}},
                         }},
                         {{0., 1.}},   // 1st order
                         {{0.5, 0.5}}, // 2nd order
