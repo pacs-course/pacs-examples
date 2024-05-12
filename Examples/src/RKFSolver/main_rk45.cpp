@@ -18,6 +18,7 @@ main()
   double errorDesired = 1.e-4;
   {
     apsc::RKF<RKFScheme::RK45_t, RKFKind::SCALAR> solver{fun};
+
     // RKF<RKFScheme::RK23_t> solver{fun};
     // RKF<RKFScheme::RK12_t> solver{fun};
     auto   solution = solver(t0, T, y0, h_init, errorDesired);
@@ -49,9 +50,9 @@ main()
       return out;
     };
     // apsc::RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{fun};
-    //  apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{fun};
-    //  std::cout << "ESDIRK34 is implicit? " << std::boolalpha
-    //            << apsc::RKFScheme::ESDIRK34_t{}.implicit() << std::endl;
+    // apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{fun};
+    // std::cout << "ESDIRK12 is implicit? " << std::boolalpha
+    //          << apsc::RKFScheme::ESDIRK12_t{}.implicit() << std::endl;
     apsc::RKF<RKFScheme::ESDIRK12_t, RKFKind::VECTOR> solver{fun};
     t0 = 0;
     T = 100.;
@@ -59,7 +60,7 @@ main()
     y0[0] = 1.;
     y0[1] = 1.;
     int maxSteps = 2000;
-    errorDesired = 1.e-1;
+    errorDesired = 1.e-2;
     auto solution = solver(t0, T, y0, h_init, errorDesired, maxSteps);
     std::cout << " Desired max error " << errorDesired
               << " Failed:" << solution.failed << " Estimated Error "
