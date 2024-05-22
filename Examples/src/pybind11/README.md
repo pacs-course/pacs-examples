@@ -39,7 +39,9 @@ PY_FLAGS=-fPIC -flto #flto is not strictly needed
 PY_MODULE=$(MODULENAME)$(PY_EXT) # The name of the python module
 CXXFLAGS+=$(PY_FLAGS) # Add the python flags to the C++ flags
 CPPFLAGS+=$(PY_INCLUDES) # Add the python headers
-LDFLAGS+=-shared -flto
+PY_LDFLAGS != python3-config --ldflags
+LDFLAGS+=-shared -flto  # The flags to create a shared library
+LDLIBS+=$(PY_LDFLAGS) # additional libraries to produce the module (often not needed)
 ```
 
 The `-flto` flag is not strictly needed, but it is a good idea to use it. It activates link time optimization and it is suggested to better efficiency. It must be used buth a compilation and linking stages.
