@@ -8,7 +8,7 @@
 "./libGaussRules.so",
 "./libMontecarloRules.so"
 ],
-"rule":"Simpson",
+"rule":"AdaptiveSimpson",
 "a":-1.0,
 "b":3.0,
 "nint":25,

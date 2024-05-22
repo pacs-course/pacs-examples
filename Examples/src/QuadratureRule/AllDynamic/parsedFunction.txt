@@ -1,1 +1,1 @@
-cos(x)*sin(x)
+x*cos(x)*sin(x)

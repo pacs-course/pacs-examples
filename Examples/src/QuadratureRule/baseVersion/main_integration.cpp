@@ -13,7 +13,15 @@ using namespace apsc::NumericalIntegration;
 using namespace Geometry;
 
 int
-main(int argc, char **argv)
+    main(int argc, char **argv) Adams_rule.o integrands.o main_integration
+      .o numerical_integration.hpp StandardQuadratureRule.hpp Gauss_rule
+      .hpp libintegrands.a make.dep numerical_integration.o helperfunction
+      .cpp libintegrands.so Makefile QuadratureRuleAdaptive.hpp helperfunction
+      .hpp libquadrature.so montecarlo.cpp QuadratureRuleBase.hpp helperfunction
+      .o libquadrules.so montecarlo.hpp QuadratureRulePlusError.hpp forma
+    @minnie : ~ /
+    Work / Didattica / HPC_Courses / Pacs
+  - examples / Examples / src / QuadratureRule / baseVersion$
 {
   using namespace std;
   FunPoint f = fsincos;
