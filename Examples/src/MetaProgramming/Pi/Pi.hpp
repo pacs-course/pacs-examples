@@ -44,7 +44,7 @@ template <class R> struct computePi<R, 0ul>
 namespace apsc::MathConstants
 {
 constexpr double      Pi = apsc::internals::computePi<double, 12ul>::value;
-constexpr float       Pi_f = apsc::internadoublels::computePi<float, 8ul>::value;
+constexpr float       Pi_f = apsc::internals::computePi<float, 8ul>::value;
 constexpr long double Pi_l =
   apsc::internals::computePi<long double, 14ul>::value;
 } // namespace apsc::MathConstants

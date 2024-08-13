@@ -9,72 +9,112 @@ main()
   Timings::Chrono clock;
   std::cout << " Time is in microseconds\n";
   unsigned long int fibo;
-  std::cout << " With the recursive template" << std::endl;
+  constexpr unsigned long int N=10ul;
+  {  
+  std::cout << " With the recursive template class" << std::endl;
   clock.start();
-  fibo = fib<3>::value;
+  //fibo = fib<N>::value; // old way
+  fibo=fib_v<N>; // using the template variable
   clock.stop();
-  std::cout << " f3 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  std::cout << " F"<<N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
   clock.start();
-  fibo = fib<9>::value;
+  fibo = fib<2*N>::value;
   clock.stop();
-  std::cout << " f9 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  std::cout << " F"<<2*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
   clock.start();
-  fibo = fib<40>::value;
+  fibo = fib<4*N>::value;
   clock.stop();
-  std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
-
+  std::cout << " F"<<4*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+  }
+  {  
+  std::cout << " With the recursive template function" << std::endl;
+  clock.start();
+  fibo=FibonacciR<N>();
+  clock.stop();
+  std::cout << " F"<<N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+  clock.start();
+  fibo=FibonacciR<2*N>(); 
+  clock.stop();
+  std::cout << " F"<<2*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+  clock.start();
+  fibo=FibonacciR<4*N>();
+  clock.stop();
+  std::cout << " F"<<4*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+  }
+  {
   std::cout << " Now with the recursive constexpr function and constexpr argument\n";
   clock.start();
-  fibo = Fibonacci(3);
+  fibo = Fibonacci(N);
   clock.stop();
-  std::cout << " f3 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  std::cout << " F"<<N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
   clock.start();
-  fibo = Fibonacci(9);
+  fibo = Fibonacci(2*N);
   clock.stop();
-  std::cout << " f9 = " << fibo << " Time=" << clock.wallTime() << '\n';
+  std::cout << " F"<<2*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
   clock.start();
-  fibo = Fibonacci(40);
+  fibo = Fibonacci(4*N);
   clock.stop();
-  std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
-
+  std::cout << " F"<<4*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+  }
+  {
   std::cout << " Now with the non recursive function and constexpr argument\n";
     clock.start();
-    fibo = FibonacciNR(3);
+    fibo = FibonacciNR(N);
     clock.stop();
-    std::cout << " f3 = " << fibo << " Time=" << clock.wallTime() << '\n';
-    clock.start();
-    fibo = FibonacciNR(9);
-    clock.stop();
-    std::cout << " f9 = " << fibo << " Time=" << clock.wallTime() << '\n';
-    clock.start();
-    fibo = FibonacciNR(40);
-    clock.stop();
-    std::cout << " f40 = " << fibo << " Time=" << clock.wallTime() << '\n';
+    std::cout << " F"<<N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
 
-  unsigned int l = 999u;
-  while(true)
-    {
-      unsigned long int ff;
-      std::cout << "\n Now with a non constexpr argument\n";
-      std::cout << "Give me the index of the Fibonacci number you want (0=exit)"
-                << std::endl;
-      std::cin >> l;
-      if(l == 0ul)
-        break;
-      clock.start();
-      ff = Fibonacci(l);
-      clock.stop();
-      std::cout << " F(" << l << ")= " << ff << '\n';
-      std::cout << "Time to evaluate F(" << l
-                << ") with non constexpr argument and recursion:"
-                << clock.wallTime() << std::endl;
-      clock.start();
-      ff = FibonacciNR(l);
-      clock.stop();
-      std::cout << " f" << l << "= " << ff << '\n';
-      std::cout << "Time to evaluate F(" << l
-                << ") with non recursive function:" << clock.wallTime()
-                << std::endl;
-    }
+    clock.start();
+    fibo = FibonacciNR(2*N);
+    clock.stop();
+    std::cout << " F"<<2*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+    clock.start();
+    fibo = FibonacciNR(4*N);
+    clock.stop();
+    std::cout << " F"<<4*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+  }
+{
+  std::cout << " Now with the recursive function and non constexpr\n";
+    auto M=N;
+    clock.start();
+    fibo = Fibonacci(M);
+    clock.stop();
+    std::cout << " F"<<M<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+    clock.start();
+    M*=2;
+    fibo = Fibonacci(M);
+    clock.stop();
+    std::cout << " F"<<M<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+    clock.start();
+    M*=2;
+    fibo = Fibonacci(4*N);
+    clock.stop();
+    std::cout << " F"<<4*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+  }
+{
+  std::cout << " Now with the non recursive function and non constexpr\n";
+    auto M=N;
+    clock.start();
+    fibo = FibonacciNR(M);
+    clock.stop();
+    std::cout << " F"<<M<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+    clock.start();
+    M*=2;
+    fibo = FibonacciNR(M);
+    clock.stop();
+    std::cout << " F"<<M<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+    clock.start();
+    M*=2;
+    fibo = FibonacciNR(4*N);
+    clock.stop();
+    std::cout << " F"<<4*N<<" = " << fibo << " Time=" << clock.wallTime() << '\n';
+
+  }
   return 0;
 }

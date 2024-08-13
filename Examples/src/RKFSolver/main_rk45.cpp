@@ -18,6 +18,7 @@ main()
   double errorDesired = 1.e-4;
   {
     apsc::RKF<RKFScheme::RK45_t, RKFKind::SCALAR> solver{fun};
+
     // RKF<RKFScheme::RK23_t> solver{fun};
     // RKF<RKFScheme::RK12_t> solver{fun};
     auto   solution = solver(t0, T, y0, h_init, errorDesired);
@@ -32,7 +33,8 @@ main()
               << errorDesired << " Failed:" << solution.failed
               << " Estimated Error " << solution.estimatedError
               << "\n Contractions=" << solution.contractions
-              << " Expansions=" << solution.expansions;
+              << " Expansions=" << solution.expansions << " Total steps "
+              << solution.time.size();
     std::cout << std::endl;
 
     // auto solution = solver(t0,T, y0, h_init, errorDesired);
@@ -48,23 +50,25 @@ main()
       out(1) = -y(0) + mu * (1 - y(0) * y(0)) * y(1);
       return out;
     };
-    // apsc::RKF<RKFScheme::RK45_t,RKFKind::VECTOR> solver{fun};
-    apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{
-      RKFScheme::ESDIRK34, fun};
-    // apsc::RKF<RKFScheme::ESDIRK12_t,RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{fun};
+    // std::cout << "ESDIRK12 is implicit? " << std::boolalpha
+    //          << apsc::RKFScheme::ESDIRK12_t{}.implicit() << std::endl;
+    apsc::RKF<RKFScheme::ESDIRK12_t, RKFKind::VECTOR> solver{fun};
     t0 = 0;
     T = 100.;
     Eigen::VectorXd y0(2);
     y0[0] = 1.;
     y0[1] = 1.;
     int maxSteps = 2000;
-    errorDesired = 1.e-1;
+    errorDesired = 1.e-2;
     auto solution = solver(t0, T, y0, h_init, errorDesired, maxSteps);
     std::cout << " Desired max error " << errorDesired
               << " Failed:" << solution.failed << " Estimated Error "
               << solution.estimatedError
               << "\n Contractions=" << solution.contractions
-              << " Expansions=" << solution.expansions;
+              << " Expansions=" << solution.expansions << " Total steps "
+              << solution.time.size();
     std::cout << std::endl;
     ofstream file3("resultVDP.dat");
     file3 << solution;
@@ -78,9 +82,10 @@ main()
       out(1) = std::sin(t) - mu * y(1) + 0.1 * y(0);
       return out;
     };
-    // apsc::RKF<RKFScheme::RK45_t,RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::RK45_t, RKFKind::VECTOR> solver{fun};
+    // apsc::RKF<RKFScheme::ESDIRK12_t, RKFKind::VECTOR> solver{fun};
     apsc::RKF<RKFScheme::ESDIRK34_t, RKFKind::VECTOR> solver{fun};
-    // apsc::RKF<RKFScheme::ESDIRK12_t,RKFKind::VECTOR> solver{fun};
+
     t0 = 0;
     T = 40.;
     Eigen::VectorXd y0(2);
@@ -94,7 +99,9 @@ main()
               << " Failed:" << solution.failed << " Estimated Error "
               << solution.estimatedError
               << "\n Contractions=" << solution.contractions
-              << " Expansions=" << solution.expansions;
+              << " Expansions=" << solution.expansions << " Total steps "
+              << solution.time.size();
+
     std::cout << std::endl;
     ofstream file3("resultstiff.dat");
     file3 << solution;

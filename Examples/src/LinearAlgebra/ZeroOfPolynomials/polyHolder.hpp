@@ -23,13 +23,17 @@ namespace apsc
     * @brief Helper function. Computes the polynomial given the coefficients
     *
     * It is just a different version of Holder algorithm already seen in other examples.
-    *
-    * @pre Coefficients is a container of Coefficient. Coefficient is either a double of complex<double>
-    * @tparam Coefficients The container of coefficients (must be a sequential container, coefficient ordered from lowest to highest)
+    * coefficient are stored in a container, ordered from lowest to highest monomial degree.
+    * The function is templated on the container type and on the coefficient type.
+    * The coefficient type must be convertible to a complex<double> number.
+  
+    * @pre Coefficients is a container of Coefficient.
+    * @tparam Coefficients The container of coefficients (must be a sequential container)
     * @tparam Coefficient The type of a polynomial coefficient
     * @param pCoeff The coefficients
     * @param x The value where to compute the polynomual
     * @return The polynomial at x
+    * @todo Create a concept for Coefficient and Coefficients
     */
    template <class Coefficients, class Coefficient>
    auto polyEval(const Coefficients & pCoeff,  const Coefficient & x)
@@ -57,6 +61,12 @@ namespace apsc
     * It also provide a method to compute derivatives of polynomials at a point
     * using synthetic division. It is provided here since it is a simple extension of what needed
     * for the root finding. An exception to the one responsibility principle.
+    * 
+    * Alterrnatively, one may build a class to encapsulate the synthetic division an  keep root finding and 
+    * derivatives separate. This would be more in line with the one responsibility principle.
+    * 
+    * The algorithm should always work for polynomial with real coefficients. For polynomyal on the complex field however,
+    * the situation is more complex. Look at specialised literature on the subject.
     *
    */
   class PolyHolder
@@ -291,7 +301,6 @@ namespace apsc
   polyRoots(Coefficients&& polyCoefficients, unsigned int numRoots, Coefficient const & x0,
             double tole=1.e-6, double tolr=1.e-6,unsigned int maxIter=200)
   {
-   constexpr double smalln=std::numeric_limits<double>::min();
    PolyHolder polyHolder(std::forward<Coefficients>(polyCoefficients));
    PolyHolder::Coefficient x{x0};
    unsigned int const degree = polyHolder.pCoefficients().size();
@@ -316,7 +325,7 @@ namespace apsc
           auto values=polyHolder.derivatives(x,1u);
           // to avoid division by zero. If the denominator is very small
           // I do one step of a basic fixed point scheme: x_{n+1}== x_n-p(x)
-          auto d = std::abs(values[1])<=smalln?std::complex<double>{1.,0.}:values[1];
+          auto d = std::abs(values[1])==0.0?std::complex<double>{1.,0.}:values[1];
           auto delta= -values[0]/d;
           x +=delta;
           // To make the loop simpler I am testing the residual at

@@ -7,7 +7,10 @@
 
 #ifndef SRC_RK45_BUTCHERRKF_HPP_
 #define SRC_RK45_BUTCHERRKF_HPP_
+#include <algorithm>
 #include <array>
+#include <concepts>
+#include <numeric>
 namespace apsc
 {
 //! The class containing the prototype of a Butcher table for RKF methods
@@ -32,14 +35,12 @@ template <unsigned int NSTAGES> struct ButcherArray
    */
   constexpr ButcherArray(Atable const &a, std::array<double, NSTAGES> const &b1,
                          std::array<double, NSTAGES> const &b2, int ord)
-    : A(a), b1(b1), b2(b2), order(ord)
+    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}, implicit_{false}
   {
-    c.fill(0.0);
-    // loop over rows of A
-    for(std::size_t i = 1; i < NSTAGES; ++i)
-      // Loop over cols of A
-      for(auto const &v : A[i])
-        c[i] += v;
+    std::transform(A.begin(), A.end(), c.begin(), [](auto const &row) {
+      return std::accumulate(row.begin(), row.end(), 0.0);
+    });
+    implicit_ = set_implicit<NSTAGES>();
   }
   /* I store the full array even if only the part below the main diagonal is
    * different from zero. For simplicity
@@ -56,20 +57,14 @@ template <unsigned int NSTAGES> struct ButcherArray
   /*!
    * Check if it correspond to an implicit RK scheme
    * @return true if implicit
+   * @todo try to do it in the constructor. I need to check if it is possible to
+   * maintain it constexpr
    *
    */
   constexpr bool
   implicit() const
   {
-    for(auto i = 0u; i < Nstages(); ++i)
-      {
-        for(auto j = i; j < Nstages(); ++j)
-          {
-            if(A[i][j] != 0)
-              return true;
-          }
-      }
-    return false;
+    return implicit_;
   }
 
   //! The number of steps.
@@ -84,7 +79,39 @@ template <unsigned int NSTAGES> struct ButcherArray
   {
     return NSTAGES;
   }
+
+protected:
+  bool implicit_ = false;
+  template <unsigned int N>
+  constexpr bool
+  set_implicit()
+  {
+    /*   if constexpr(N <= 1u)
+         implicit_ = implicit_ or (A[0][0] != 0);
+       else
+         implicit_ = implicit_ or (A[N - 1][N - 1] != 0);
+     */
+    if constexpr(N <= 1u)
+      return (A[0][0] != 0);
+    else
+      return (A[N - 1][N - 1] != 0) or set_implicit<N - 1>();
+  }
 };
+
+template <typename B>
+concept ButcherArrayConcept = requires(B b) {
+                                b.A;
+                                b.b1;
+                                b.b2;
+                                b.c;
+                                b.order;
+                                {
+                                  b.implicit()
+                                  } -> std::same_as<bool>;
+                                {
+                                  B::Nstages()
+                                  } -> std::convertible_to<unsigned int>;
+                              };
 
 namespace RKFScheme
 {
@@ -150,13 +177,13 @@ namespace RKFScheme
     {}
   };
 
-  //! ESDIRK12 scheme
+  //! ESDIRK12 scheme (Lobatto III A)
   struct ESDIRK12_t : public ButcherArray<2>
   {
     constexpr ESDIRK12_t()
       : ButcherArray<2>{{{
                           {{0., 0.}},
-                          {{0., 1.}},
+                          {{0., 1.0}},
                         }},
                         {{0., 1.}},   // 1st order
                         {{0.5, 0.5}}, // 2nd order

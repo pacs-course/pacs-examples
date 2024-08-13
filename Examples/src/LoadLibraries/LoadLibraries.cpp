@@ -78,8 +78,8 @@ LoadLibraries::loadSingleLibrary(std::string libName, int mode)
 void
 LoadLibraries::close()
 {
-  // close all hold libraries
-  for(auto [n, l] : this->loadedLibs)
+  // close all held libraries
+  for(auto [_, l] : this->loadedLibs)
     dlclose(l);
   // free map
   this->loadedLibs.clear();

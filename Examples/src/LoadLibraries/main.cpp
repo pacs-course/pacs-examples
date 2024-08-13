@@ -27,5 +27,12 @@ main()
       auto result = f(x);
       std::cout << fun << "(x)=" << result << std::endl;
     }
-
+  // I need first to clear the factory of functions, since they are
+  // linked to the library!
+  // Failure to do so creates a memory leak, since the pointer strored in the
+  // function wrapper used by funFactory is a pointer to sybols pprovided
+  // by the libraries in libraries.
+  funFactory.clear();
+  // now close libraries
+  libraries.close();
 }

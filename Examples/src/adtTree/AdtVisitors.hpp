@@ -24,7 +24,7 @@ namespace apsc
      * Action operator()(ADTNODE const & node, NodeControl<ADTNODE::BOXDIMS> const & control, std::size_t level)
      * @endcode
      *
-     * That returns the operation to be performe in terms of the enumerator
+     * That returns the operation to be performed in terms of the enumerator
      *
      * @code
      * enum Action{Stop,GoLeft,GoRight,GoAll};

@@ -44,9 +44,9 @@ thomasSolve(const C &a, const C &b, const C &c, const C &f)
   C D = f;
   for(size_t i = 1; i < n; ++i)
     {
-      real gamma = b[i] / B[i - 1];
-      B[i] = B[i] - gamma * c[i - 1];
-      D[i] = D[i] - gamma * D[i - 1];
+      const real gamma = b[i] / B[i - 1];
+      B[i] -= gamma * c[i - 1];
+      D[i] -= gamma * D[i - 1];
     }
   // back substitution
   C x(n);

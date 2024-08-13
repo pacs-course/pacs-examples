@@ -1,5 +1,6 @@
 #include "GetPot"
 #include "readParameters.hpp"
+#include "json.hpp"
 #include <fstream>
 parameters
 readParameters(std::string const &filename, bool verbose)

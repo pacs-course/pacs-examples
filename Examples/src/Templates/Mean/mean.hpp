@@ -8,7 +8,10 @@ namespace Utility
 //! A simple template for the mean
 /*!
   I use constexpr so it is more efficient if I pass constant expressions
-  And I use automatic deduction of return type (since c++14)
+  And I use automatic deduction of return type 
+  @param a left operand
+  @param b right operand
+  @return The meean as common type of the operands
   @note if arguments are integers it returns a double
 */
 template <class T>
@@ -33,6 +36,8 @@ mean(std::vector<T> const &a, std::vector<T> const &b)
   // If the arguments are vectors of integers, we return a vector of double!
   using RetType = std::common_type_t<double, T>;
   std::vector<RetType> res(a.size());
+  // if I compile woth -fopenmp I have this loop in parallel
+#pragma omp parallel for 
   for(std::size_t i = 0; i < a.size(); ++i)
     res[i] = mean(a[i], b[i]);
   return res;
@@ -66,7 +71,7 @@ Sum(const T &a)
 }
 //! Full template for the sum
 template <typename T, typename... Ts>
-typename std::common_type<T, Ts...>::type
+std::common_type_t<T, Ts...>
 Sum(const T &a, const Ts &... Args)
 {
   return a + Sum(Args...);
@@ -77,11 +82,12 @@ Sum(const T &a, const Ts &... Args)
   I want to return at least a double (if all args are integers for instance)
 */
 template <typename... Ts>
-typename std::common_type<double, Ts...>::type
+// typename std::common_type<double, Ts...>::type // old style!
+std::common_type_t<double, Ts...>
 Mean(const Ts &... Args)
 {
   return Sum(Args...) /
-         static_cast<typename std::common_type<double, Ts...>::type>(
+         static_cast<std::common_type_t<double, Ts...>>(
            sizeof...(Ts));
 }
 

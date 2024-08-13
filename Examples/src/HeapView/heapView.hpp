@@ -4,28 +4,19 @@
 
 #ifndef EXAMPLES_HEAPVIEW_HPP
 #define EXAMPLES_HEAPVIEW_HPP
-#include "HeapViewTraits.hpp"
+#include "heapViewTraits.hpp"
 #include <concepts>
 #include <functional>
+#include <limits>
 #include <optional>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
-#include <limits>
-/*
-template<typename T>
-concept heapViewCompOp = requires(T comp)
-{
-  using Index = typename heapViewTraits<DataElementType>::Index;
-  { comp.operator()(Index,Index) }
-  ->std::convertible_to<bool>;
-};
-*/
-namespace apsc
-{
+
 /*!
- * @brief A heap view is a data structure that allows you to store a heap of
- * values and operate on them without moving them around in memory.
+ * @brief A heap view is a data structure that allows you to have
+ * values stored in a and operate on them as a heap without moving them around
+ * in memory.
  *
  * The heap view is a wrapper around a vector of data elements.  The heap view
  * maintains a heap of indices into the vector.  The heap view also maintains a
@@ -35,35 +26,29 @@ namespace apsc
  * not the data.  The heap view maintains a mapping from data
  * indices to indices into the heap.
  *
- * @note At the moment is is not implemented as a view since it is composed with
- * the data vector. The reason is that a view is too dangerous, since the user
- * may modify the data without updating the heap.
- * @tparam DataElementType The type stored in the data vector. It should be
+ * @note At the moment is is not implemented as a view since it has a copy of
+ * the data vector and not a reference. A view would be better.
+ * @tparam ElementType The type stored in the data vector. It should be
  * comparable with the comparison operator.
  * @tparam CompOp Comparison operator for the data elements.  It should be
- * a total order: every pair of element is comparable and the relation is a 
- * partial ordering relation 
+ * proper comparison operator on DataElementType.
+ * @tparam Traits The traits for the heap view.  It should provide the
+ * definition of the internal types.
  */
-template <class DataElementType, class CompOp = std::less<DataElementType>>
+namespace apsc
+{
+template <class DataElementType, class CompOp = std::less<DataElementType>,
+          class Traits = heapViewTraits<DataElementType>>
 class HeapView
 {
 public:
-  //! The type of the index used to address internal vectors
-  using Index = typename heapViewTraits<DataElementType>::Index;
-  /*! 
-   The type of the sequential random access data stored in the heap. 
-   It should be comparable w.r.t. the given comparison operator
-  */
-  using DataType = typename heapViewTraits<DataElementType>::DataType;
-  //! The type of the sequantial randoma acces container used to address the data vector
-  using DataIndex = typename heapViewTraits<DataElementType>::DataIndex;
-  //! The type of data
-  using ElementType = typename heapViewTraits<DataElementType>::ElementType;
-  //! The structure used to keep the indexes in the data vector
-  using HeapIndex = typename heapViewTraits<DataElementType>::HeapIndex;
-  //! The structure with the map data index -> position in the heap
-  using HeapIter = typename heapViewTraits<DataElementType>::HeapIter;
-  //! Default constuctor
+  using Index = Traits::Index;
+  using DataVector = Traits::DataVector;
+  using DataIndex = Traits::DataIndex;
+  using ElementType = Traits::ElementType;
+  using HeapIndex = Traits::HeapIndex;
+  using HeapIter = Traits::HeapIter;
+
   HeapView() = default;
   /*!
    * @brief Construct a heap view from a vector of data elements.
@@ -75,23 +60,21 @@ public:
   explicit HeapView(T &&data, CompOp comp = CompOp{})
     : data_(std::forward<T>(data)), comp_(comp)
   {
-    if(data_.size() == 0)
+    if(data_.size() != 0)
       {
-        throw std::invalid_argument(
-          "HeapView: data vector must have at least one element");
+        heapIndex_.reserve(data_.size());
+        heapIter_.reserve(data_.size());
+        for(Index i = 0; i < data_.size(); ++i)
+          {
+            heapIndex_.push_back(i);
+            heapIter_.push_back(i);
+          }
+        for(Index i = data_.size() / 2; i > 0; --i)
+          {
+            siftDown(i);
+          }
+        siftDown(0);
       }
-    heapIndex_.reserve(data_.size());
-    heapIter_.reserve(data_.size());
-    for(Index i = 0; i < data_.size(); ++i)
-      {
-        heapIndex_.push_back(i);
-        heapIter_.push_back(i);
-      }
-    for(Index i = data_.size() / 2; i > 0; --i)
-      {
-        siftDown(i);
-      }
-    siftDown(0);
   }
   HeapView(const HeapView &other) = default;
   HeapView(HeapView &&other) noexcept = default;
@@ -101,7 +84,7 @@ public:
    * @brief Construct a heap view from a vector of data elements.
    * @param data The data
    */
-  template <class T=DataType>
+  template <class T = DataVector>
   void
   setData(T &&data)
   {
@@ -112,28 +95,19 @@ public:
     heapIter_.reserve(data_.size());
     for(Index i = 0; i < data_.size(); ++i)
       {
-        heapIndex_.push_back(i);
-        heapIter_.push_back(i);
+        heapIndex_.emplace_back(i);
+        heapIter_.emplace_back(i);
       }
-    if(data_.size()!=0)
+    if(data_.size() != 0)
       {
-// to avoid problems with subtraction of unsigned I treat index 0 specially
+        // to avoid problems with subtraction of unsigned I treat index 0
+        // specially
         for(Index i = data_.size() / 2; i > 0; --i)
-        {
+          {
             siftDown(i);
-        }
+          }
         siftDown(0);
       }
-  }
-  /*!
-   * @brief Set the comparison operator for the data elements.
-   * @param comp The comparison operator between data elements
-   * @note Danger: use it only if the heap is currently empty
-   */
-  void
-  setCompOp(CompOp comp)
-  {
-    comp_ = comp;
   }
   /*!
    * @brief Reserves capacity.
@@ -141,9 +115,9 @@ public:
   void
   reserve(std::size_t n)
   {
-    data_.reserve(n);
+    data_.resize(n);
     heapIndex_.reserve(n);
-    heapIter_.reserve(n);
+    heapIter_.resize(n);
   }
   /*  @brief Returns the underlying data vector.
    *  @return The underlying data vector.
@@ -165,25 +139,29 @@ public:
   add(E &&e)
   {
     Index i = this->size();
-    data_.push_back(std::forward<E>(e));
-    heapIndex_.push_back(data_.size() - 1u);
-    heapIter_.push_back(i);
+    data_.emplace_back(std::forward<E>(e));
+    heapIndex_.emplace_back(data_.size() - 1u);
+    heapIter_.emplace_back(i);
     return siftUp(i);
   }
   /*!
    * @brief Remove an element from the heap view.
    * @param i The index of the element to remove.
    * @return The index in the heap where the element was removed.
-   *         noData if error.
+   * @note The element is not removed from the data vector.
    */
   Index
   remove(DataIndex i)
   {
     auto where = heapIter_[i];
-    if (!where.has_value())
-      return noData; // ERROR CONDITION!
+    if(not where.has_value())
+      {
+        throw std::invalid_argument(
+          "HeapView: trying to remove an element not in the heap");
+      }
     this->swap(*where, heapIndex_.size() - 1);
     heapIndex_.pop_back();
+    heapIter_[i].reset();
     return siftDown(siftUp(*where));
   }
   /*!
@@ -201,14 +179,14 @@ public:
   Index
   update(DataIndex i, const ElementType &e)
   {
-    auto where = heapIter_[i];
     data_[i] = e;
-    if (!where.has_value())
+    auto where = heapIter_[i];
+    if(not where.has_value())
       {
         // add again the value to the heap
-        where=heapIndex_.size();
+        where = heapIndex_.size();
         heapIndex_.push_back(i);
-        heapIter_[i]=where;
+        heapIter_[i] = where;
         return siftUp(*where);
       }
     return siftDown(siftUp(*where));
@@ -244,7 +222,7 @@ public:
   }
   /*!
    * @brief The top element in the heap and its index in the data
-   * @return The pait index, value
+   * @return The pair index, value
    */
   std::pair<DataIndex, DataElementType>
   topPair() const
@@ -255,8 +233,8 @@ public:
    * Checks if the heap is empty
    * @return a boolean
    */
-  [[nodiscard]]
-  bool empty() const
+  [[nodiscard]] bool
+  empty() const
   {
     return heapIndex_.empty();
   }
@@ -266,21 +244,31 @@ public:
   void
   clear()
   {
-    data_.clear();
+    data_.resize(0);
     heapIndex_.clear();
     heapIter_.clear();
   }
   /*!
-   * pop the top element from the heap
+   * @brief Pops the top element from the heap
+   * @return The value of the top element
+   * @details The top element is removed from the heap but NOT from the data
+   */
+  DataElementType
+  pop()
+  {
+    return this->popPair().second;
+  }
+
+  /*!
+   * @brief pops the top element from the heap
    * @return the index and value of the top element
    * @details The top element is removed from the heap but NOT from the data
    */
   std::pair<DataIndex, DataElementType>
-  pop()
+  popPair()
   {
     auto const [where, e] = this->topPair();
     remove(where); // remove data element from the heap
-    heapIter_[where]=std::nullopt;
     return std::make_pair(where, e);
   }
   /*!
@@ -329,16 +317,14 @@ public:
       }
     return true;
   }
-/*
-Comparing two elements using the given ordering relation
-*/
+  /*
+  Comparing two elements using the given ordering relation
+  */
   bool
-    compare(DataIndex i, DataIndex j) const
+  compare(DataIndex i, DataIndex j) const
   {
-    return compHeapView_(i,j);
+    return compHeapView_(i, j);
   }
-  //! to indicate no data (could have used optional here)
-  static auto constexpr noData=std::numeric_limits<Index>::max();
 
 private:
   /*!
@@ -431,7 +417,7 @@ private:
   }
 
   //! The data
-  DataType data_;
+  DataVector data_;
   //! The heap index
   HeapIndex heapIndex_;
   //! The heap iterators. In fact, it is a reverse map from data index to heap
@@ -445,6 +431,7 @@ private:
   };
   //! The comparison operator for the data (user defined or defaulted to less)
   CompOp comp_ = CompOp{};
+  // static auto constexpr noData=std::numeric_limits<std::size_t>::max();
 };
 } // namespace apsc
 

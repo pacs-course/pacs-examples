@@ -12,33 +12,49 @@
 //!
 namespace apsc
 {
-//! Checks that all arguments are true
+/*! Checks that all arguments are true
+@note I am making it constexpr so that if all argoments are constant expresions
+the compiler my compute the result on the fly!
+*/
 template <typename... Args>
-bool
+constexpr bool
 allTrue(Args const &... args)
 {
   return (... && args);
 }
 
-//! Make a sum of arguments (if it makes sense)
+//! Make a sum of arguments (when  it makes sense)
+/*
+@note I am  making it constexpr so that if all argoments are constant expresions
+the compiler my compute the result on the fly!
+*/
 template <typename... Args>
-auto
+constexpr auto
 allSum(Args const &... args)
 {
   return (args + ...);
 }
 
 //! Compute the average of arguments (if it makes sense)
+/*!
+@note I am making it constexpr so that if all argoments are constant expresions
+the compiler my compute the result on the fly!
+*/
 template <typename... Args>
-auto
+constexpr auto
 allMean(Args const &... args)
 {
-  return (args + ...) / sizeof...(args);
+  // I cast to double to avoid integer division
+  return (args + ...) / static_cast<double>(sizeof...(args));
 }
 
 //! Make product of arguments (if it makes sense)
+/*!
+@note I am making it constexpr so that if all argoments are constant expresions
+the compiler my compute the result on the fly!
+*/
 template <typename... Args>
-auto
+constexpr auto
 allProd(Args const &... args)
 {
   return (args * ...);

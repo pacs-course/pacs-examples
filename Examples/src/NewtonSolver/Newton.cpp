@@ -13,33 +13,40 @@ apsc::Newton::solve(const ArgumentType &x0)
 {
   using namespace apsc;
   // C++17 structured bindings
-  // Get all options
-  //  const auto & [tolerance, minRes, maxIter, backTrackOn, stopOnBacktracking,
-  //                alpha, backStepReduction, maxBackSteps, lambdaInit] =
-  //                this->options;
+  // Get all options. Not really needed but it saves having to write
+  // options.something every time
+  //  Note that structured bindings are nice, but you need to know the order the
+  //  members defined in the struct. This is not a problem here, but it is
+  //  something to keep in mind. The old stile (you see an example below) is
+  //  more verbose, but it is also clearer and safer.
+  const auto &[tolerance, minRes, maxIter, backtrackOn, stopOnStagnation, alpha,
+               backStepReduction, maxBackSteps, lambdaInit] = this->options;
   // get all variables that go in the state
   // This is needed to allow an overridden callback to access the state
+  // avoinding having to write state.something every time
+  auto &[currentSolution, currentIteration, currentResidualNorm,
+         currentStepLength] = this->state;
 
-  //  auto & [currentSolution, currentIteration,
-  //          currentResidualNorm,currentStepLength] = this->state;
+  /* Before c++17
+    // Get all options
+    const auto &tolerance = this->options.tolerance;
+    const auto &minRes = this->options.minRes;
+    const auto &maxIter = this->options.maxIter;
+    const auto &backtrackOn = this->options.backtrackOn;
+    const auto &stopOnStagnation = this->options.stopOnStagnation;
+    const auto &alpha = this->options.alpha;
+    const auto &backStepReduction = this->options.backstepReduction;
+    const auto &maxBackSteps = this->options.maxBackSteps;
+    const auto &lambdaInit = this->options.lambdaInit;
 
-  // Get all options
-  const auto &tolerance = this->options.tolerance;
-  const auto &minRes = this->options.minRes;
-  const auto &maxIter = this->options.maxIter;
-  const auto &backtrackOn = this->options.backtrackOn;
-  const auto &stopOnStagnation = this->options.stopOnStagnation;
-  const auto &alpha = this->options.alpha;
-  const auto &backStepReduction = this->options.backstepReduction;
-  const auto &maxBackSteps = this->options.maxBackSteps;
-  const auto &lambdaInit = this->options.lambdaInit;
+    // get all variables that go in the state
+    // This is needed to allow an overridden callback to access the state
+    auto &currentSolution = this->state.currentSolution;
+    auto &currentIteration = this->state.currentIteration;
+    auto &currentResidualNorm = this->state.currentResidualNorm;
+    auto &currentStepLength = this->state.currentStepLength;
+    */
 
-  // get all variables that go in the state
-  // This is needed to allow an overridden callback to access the state
-  auto &currentSolution = this->state.currentSolution;
-  auto &currentIteration = this->state.currentIteration;
-  auto &currentResidualNorm = this->state.currentResidualNorm;
-  auto &currentStepLength = this->state.currentStepLength;
   // I make sure that the Jacobian has the correct non linear system
   // This is important if the Newton object has been moved
   Jacobian_ptr->setNonLinSys(&nonLinSys);
@@ -49,7 +56,7 @@ apsc::Newton::solve(const ArgumentType &x0)
   auto residual = this->nonLinSys(currentSolution);
   // Test if we have a map Rn to Rn
   if(currentSolution.size() != residual.size())
-    throw std::runtime_error("Newton needs a function Rn to Rn");
+    throw std::runtime_error("ERROR: Newton needs a function Rn to Rn");
   currentResidualNorm = residual.norm();
   // initial values for tests of convergence and stagnation
   bool converged = false;
@@ -59,6 +66,14 @@ apsc::Newton::solve(const ArgumentType &x0)
 
   // I always do at least 1 step. I might eventually check if the residual is
   // already small
+  if(currentResidualNorm <= minRes)
+    {
+      converged = true;
+      return NewtonResult{currentSolution,   currentResidualNorm,
+                          currentStepLength, currentIteration,
+                          converged,         stagnation};
+    } // I am already converged
+
   do
     {
       ++currentIteration;
@@ -99,8 +114,7 @@ apsc::Newton::solve(const ArgumentType &x0)
       converged =
         (currentResidualNorm <= minRes) && (currentStepLength <= tolerance);
       this->callback(); // This allows a specialization of callback to operate
-    }
-  while((!converged) && (currentIteration < maxIter) && (!stop));
+  } while((!converged) && (currentIteration < maxIter) && (!stop));
 
   return NewtonResult{currentSolution,  currentResidualNorm, currentStepLength,
                       currentIteration, converged,           stagnation};

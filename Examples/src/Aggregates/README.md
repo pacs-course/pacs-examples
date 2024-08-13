@@ -30,6 +30,7 @@ Brace initialization gives the possibility of initializing object with a common 
 
 Anyway, irrespectively on how it has been obtained, we may now use braces to initialize objects, if we want.
 
+** If you are programming in modern C++ you should use the brace initialization syntax. ** I have repported the old style syntax only for completeness and to avoid confusion. 
 
 **NOTE** Beware that to maintain compatibility with older versions of the language
 ```

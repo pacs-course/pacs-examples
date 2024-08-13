@@ -123,6 +123,6 @@ name of one of the two functions (or use namespaces to separate them).
 # What do I learn here? #
 - Some technical details of the ODR rule;
 - That you must be careful about name clashes, use long and significant names, and use namespaces;
-- A little advice that may help avoiding this nasty situation (which anyway will not happen if you follow the previous rule).
+- A little advice that may help avoiding this nasty situation (which anyway will not happen if you follow the previous advices).
 
 
