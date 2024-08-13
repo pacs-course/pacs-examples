@@ -2,13 +2,8 @@
 #include <algorithm>
 #include <cmath>
 // Comment/uncomment next line if you dont want/want parallelization
-// Test if I am compiling with g++ version >=9
 #ifdef PARALLELEXEC
-#if defined(__GNUC__) && (__GNUC__ >= 9)
 #include <execution>
-#else
-#undef PARALLELEXEC
-#endif
 #endif
 
 
@@ -28,8 +23,23 @@ double
 horner(std::vector<double> const &a, double const &x)
 {
   double u = a.back(); // last value
-  for(auto i = a.crbegin() + 1; i != a.crend(); ++i)
+  for(auto  i = a.crbegin() + 1; i != a.crend(); ++i)
     u = u * x + *i;
+  return u;
+}
+
+/*
+This version used the new ranges library. Look how nicer
+it is compared to the previous version.
+*/
+#include <ranges>
+
+double horner_range(std::vector<double> const &a, double const &x)
+{
+  double u = a.back(); // last value
+  for (auto const & i : a | std::views::reverse | std::views::drop(1))
+    u = u * x + i;
+
   return u;
 }
 

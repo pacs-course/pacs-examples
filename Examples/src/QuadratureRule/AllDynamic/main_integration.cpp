@@ -1,12 +1,12 @@
+#include "QuadParameters.hpp"
+#include "numerical_integration.hpp"
+#include "ruleProxy.hpp"
+#include "udfHandler.hpp"
 #include <dlfcn.h>
 #include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
-#include "QuadParameters.hpp"
-#include "numerical_integration.hpp"
-#include "ruleProxy.hpp"
-#include "udfHandler.hpp"
 void
 printHelp()
 {
@@ -59,21 +59,21 @@ main(int argc, char **argv)
       return 0;
     }
   // Get the input file
-  std::string inputFile = key_input("InputFile", "quadratura.getpot");
+  std::string           inputFile = key_input("InputFile", "quadratura.getpot");
   std::filesystem::path filepath(inputFile);
   if(!std::filesystem::exists(filepath))
     {
       std::cerr << "Input file " << inputFile << " does not exists\n";
       return 1;
     }
-  bool jsonFile=(inputFile.find(".json") != std::string::npos);
+  bool jsonFile = (inputFile.find(".json") != std::string::npos);
 
   // get the parameters
   QuadParameters parameters;
   if(jsonFile)
-    parameters=readQuadParameters_json(inputFile);
+    parameters = readQuadParameters_json(inputFile);
   else
-    parameters=readQuadParameters_GP(inputFile);
+    parameters = readQuadParameters_GP(inputFile);
 
   // get the factory: this is the correct way
   RulesFactory const &rulesFactory = apsc::QuadratureRuleFactory::MyFactory;
@@ -118,7 +118,7 @@ main(int argc, char **argv)
   nlibs = parameters.udflib.size();
   if(nlibs == 0)
     {
-      cout << "You need to specify at least one integrand library\n";
+      cout << "You need to specify at least one myIntegrands library\n";
       return 1;
     }
   else

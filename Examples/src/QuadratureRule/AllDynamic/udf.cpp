@@ -21,7 +21,7 @@ pluto(double const &x)
 };
 
 double
-one(double const &x)
+one(double const &)
 {
   return 1;
 };

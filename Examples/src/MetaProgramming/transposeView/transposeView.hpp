@@ -24,8 +24,16 @@ template <typename T> struct Matrix_Traits
   using value_type = double;
   using size_type = std::size_t;
 };
-
-template <typename Matrix> class TransposedView
+//*! A concept to check if a class is a matrix according to my definition
+template <typename Matrix> 
+concept MatrixConcept = requires (Matrix m)
+{
+  typename Matrix_Traits<Matrix>::size_type;// The size type must be defined
+  typename Matrix_Traits<Matrix>::value_type;// The value type must be defined
+  {std::declval<Matrix>()(0, 0)}->std::convertible_to<typename Matrix_Traits<Matrix>::value_type>;// The operator must be defined
+};
+template <MatrixConcept Matrix> 
+class TransposedView
 {
 public:
   using size_type = typename Matrix_Traits<Matrix>::size_type;

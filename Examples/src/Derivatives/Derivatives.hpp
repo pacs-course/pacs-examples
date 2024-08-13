@@ -58,9 +58,9 @@ namespace apsc
     T
     operator()(const T &x) const
     {
-      if constexpr(std::is_same<DifferenceType::FORWARD, DT>::value)
+      if constexpr(std::is_same_v<DifferenceType::FORWARD, DT>)
           return (pDerivative(x + h) - pDerivative(x)) / h;
-      else if constexpr(std::is_same<DifferenceType::BACKWARD, DT>::value)
+      else if constexpr(std::is_same_v<DifferenceType::BACKWARD, DT>)
           return (pDerivative(x) - pDerivative(x - h)) / h;
       else
         return (pDerivative(x + h) - pDerivative(x - h)) / (2 * h);

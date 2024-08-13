@@ -38,7 +38,7 @@ public:
   //!
   /*!@{*/
   constexpr unsigned int
-  num_nodes()const
+  num_nodes() const
   {
     return therule_.num_nodes();
   }
@@ -97,8 +97,7 @@ template <class SQR>
 std::unique_ptr<QuadratureRuleBase>
 QuadratureRuleAdaptive<SQR>::clone() const
 {
-  return std::unique_ptr<QuadratureRuleBase>(
-    new QuadratureRuleAdaptive<SQR>(*this));
+  return std::make_unique<QuadratureRuleAdaptive<SQR>>(*this);
 }
 
 /*!
@@ -113,10 +112,10 @@ QuadratureRuleAdaptive<SQR>::apply(FunPoint const &f, double const &a,
   using std::make_pair;
   using std::pair;
   using std::queue;
-  unsigned int                 counter(0);
-  double                       result(0);
-  double                       dSize = b - a;
-  queue<pair<double, double> > subint;
+  unsigned int                counter(0);
+  double                      result(0);
+  double                      dSize = b - a;
+  queue<pair<double, double>> subint;
   subint.push(make_pair(a, b));
 
   while(counter < maxIter_ && !subint.empty())

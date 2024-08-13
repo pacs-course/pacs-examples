@@ -12,7 +12,8 @@ namespace GenericFactory
   and the automatic registration mechanism.
 
   \tparam Factory The type of the factory. It must be a specialization of
-  GenericFactory::Factory<>. \tparam ConcreteProduct is the derived (concrete)
+  GenericFactory::Factory<>.
+  \tparam ConcreteProduct is the derived (concrete)
   type to be registered in the factory
 
 */
@@ -23,7 +24,7 @@ public:
   using Identifier_type = typename Factory::Identifier_type;
   using Builder_type = typename Factory::Builder_type;
   // The type returned by the builder
-  using Result_type = typename std::invoke_result<Builder_type()>::type;
+  using Result_type = std::invoke_result_t<Builder_type>;
   using Factory_type = Factory;
 
   /*! The constructor does the registration.
@@ -40,7 +41,7 @@ public:
     @param name The identifier
     @param builder The builder
    */
-  Proxy(Identifier_type const &name, Builder_type const &b);
+  Proxy(Identifier_type const &name, Builder_type const &b = Builder_type{});
 
   //! The in-built builder. Must comply with the signature.
   /*!

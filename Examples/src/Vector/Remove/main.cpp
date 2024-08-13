@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <ranges>// c++20
 template <class V>
 void
 printVector(const V &v)
@@ -28,7 +29,7 @@ main()
     printVector(v);
   }
   {
-    std::cout << "VERSION WITH REMOVE AND ERASE**\n";
+    std::cout << "\nVERSION WITH REMOVE AND ERASE**\n";
     std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3};
     printVector(v);
     auto it = std::remove(v.begin(), v.end(), 9);
@@ -42,10 +43,12 @@ main()
     printVector(v);
   }
   {
-    std::cout << "VERSION WITH REMOVE +ERASE+SHRINK**\n";
+    std::cout << "\nVERSION WITH REMOVE +ERASE+SHRINK**\n";
     std::vector<int> v{1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3};
     printVector(v);
     auto it = std::remove(v.begin(), v.end(), 9);
+    std::cout << "After removing 9\n";
+    printVector(v);
     v.erase(it, v.end());
     v.shrink_to_fit();
     std::cout << "After erasing 9 and shrinking\n";

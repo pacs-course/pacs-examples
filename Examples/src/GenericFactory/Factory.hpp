@@ -68,7 +68,7 @@ the identifier as key.
   */
   template <typename... Args>
   std::unique_ptr<AbstractProduct> create(Identifier const &name,
-                                          Args &&... args) const;
+                                          Args &&...args) const;
   /*!
      Returns the builder
   */
@@ -84,9 +84,21 @@ the identifier as key.
   {
     _storage.erase(name);
   }
+  //! clear the factory
+  void
+  clear()
+  {
+    _storage.clear();
+  }
+  //! Test if factory has some itemes registered
+  bool
+  empty() const
+  {
+    return _storage.empty();
+  }
 
 private:
-  using Container_type=std::map<Identifier, Builder_type>;
+  using Container_type = std::map<Identifier, Builder_type>;
   //! Made private since it is a Singleton
   Factory() = default;
   //! Deleted since it is a Singleton
@@ -101,7 +113,8 @@ private:
 //! function type and get returns a FunType object
 /*!
  * @note In this version you cannot use the method create()
- * @todo use enable_if to eliminate the method create() when AbstractProduct=void
+ * @todo use enable_if to eliminate the method create() when
+ * AbstractProduct=void
  */
 template <typename Identifier, typename FunType>
 using FunctionFactory = Factory<void, Identifier, FunType>;
@@ -141,7 +154,7 @@ template <typename AbstractProduct, typename Identifier, typename Builder>
 template <typename... Args>
 std::unique_ptr<AbstractProduct>
 Factory<AbstractProduct, Identifier, Builder>::create(Identifier const &name,
-                                                      Args &&... args) const
+                                                      Args &&...args) const
 {
   static_assert(!std::is_same_v<AbstractProduct, void>,
                 "You should use get() not create() on FunctionFactories");
@@ -151,7 +164,7 @@ Factory<AbstractProduct, Identifier, Builder>::create(Identifier const &name,
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
 void
-Factory<AbstractProduct, Identifier, Builder>::add(Identifier const &  name,
+Factory<AbstractProduct, Identifier, Builder>::add(Identifier const   &name,
                                                    Builder_type const &func)
 {
   auto f = _storage.insert(std::make_pair(name, func));

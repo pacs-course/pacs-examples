@@ -18,16 +18,16 @@ main()
   using namespace apsc;
   using namespace apsc::RKFScheme;
 
-  apsc::computeRforRK<RKF12_t, 2>    compute;
-  computeRforRK<RKF12_t, 2>::complex z = {0, 0};
-  auto                               res = compute(z);
+  apsc::computeRforRK<apsc::RKFScheme::RK45_t, 2> compute;
+  computeRforRK<RK45_t, 2>::complex               z = {0, 0};
+  auto                                            res = compute(z);
   std::cout << res << std::endl;
   std::cout << compute({-1., 0.}) << std::endl;
   std::cout << compute({0., 1.}) << std::endl;
   auto [x, status] = compute.computeLimit(3. * pi / 4.);
-  std::cout << x << status << std::endl;
+  std::cout << x << " status=" << status << std::endl;
   compute.options.verbose = true;
-  auto          values = compute.computeStabilityRegion(250);
+  auto          values = compute.computeStabilityRegion(1000, {-1., 1.0});
   std::ofstream out("stability.dat");
   for(auto xp = values.begin(); xp != values.end(); ++xp)
     out << xp->real() << " " << xp->imag() << "\n";

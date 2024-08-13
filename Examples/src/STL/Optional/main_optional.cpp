@@ -24,6 +24,7 @@ countValid(V const &v)
     if(x)
       ++count;
   });
+
   std::cout << "The container has " << count << " valid elements:\n";
   for(auto &x : v)
     if(x) // valid
@@ -52,7 +53,9 @@ main()
     std::cout << "v[2] stores no value" << std::endl;
   v[2] = 20.0;
   countValid(v);
-  if(v[2].has_value())
+
+  // You may also exploit the fact that a std::optional<T> converts to bool
+  if(v[2])
     std::cout << "v[2] stores " << v[2].value() << std::endl;
   else
     std::cout << "v[2] stores no value" << std::endl;

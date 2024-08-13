@@ -12,13 +12,27 @@
 #include <complex>
 namespace apsc{
 
-//! The primary template
+//*! A trait to compute the inner product of two arrays
+/*!
+ * The trait is used to compute the inner product of two arrays. The
+ * trait is used to identify the type of the inner product, which is
+ * T if T is a POD, and C if T is a complex::<C>. The trait is also
+ * used to identify the operation to be performed on the elements of
+ * the array, since the operation is different for complex than for
+ * other types.
+ * So this trait is also a policy since it can be used to change
+ * the implementation for a particular class of object.
+ */
 template <typename T> struct Value_Trait
 {
   //! The type
   using type = T;
-  //! Inner product. It works for all POD
-  static type
+  //! Product of two POD values
+  //! I use contexpr to have a compile-time evaluation in case of contexpr arguments
+  //!@note I have chosen to make the method static. I could hae instead made it 
+  //! a const method. Having it static allows me to use it without an object.
+  static constexpr 
+  type
   prod(T const &x, T const &y)
   {
     return x * y;
@@ -37,6 +51,9 @@ template <class T> struct Value_Trait<std::complex<T> >
     return x.imag() * y.imag() + x.real() * y.real();
   }
 };
+// This utility spares you the hideous typpename when exrtracting the type from the trait
+template <typename T> 
+using Value_Trait_t = typename Value_Trait<T>::type;
 }// end nemespace
 
 
