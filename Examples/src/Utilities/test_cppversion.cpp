@@ -5,7 +5,7 @@ int
 main()
 {
   std::string version;
-  std::cout<<"version sting is _cplusplus\n";
+  std::cout<<"version id is "<< __cplusplus<<"\n";
   if(Utilities::is_cxx11())
     version = "C++11";
   else if(Utilities::is_cxx14())

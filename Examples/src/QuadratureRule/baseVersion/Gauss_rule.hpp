@@ -31,7 +31,7 @@ public:
   std::unique_ptr<QuadratureRuleBase>
   clone() const override
   {
-    return std::unique_ptr<QuadratureRuleBase>(new GaussLegendre2p(*this));
+    return std::make_unique<GaussLegendre2p>(*this);
   }
 };
 
@@ -47,8 +47,28 @@ public:
   std::unique_ptr<QuadratureRuleBase>
   clone() const override
   {
-    return std::unique_ptr<QuadratureRuleBase>(new GaussLegendre3p(*this));
+    return std::make_unique<GaussLegendre3p>(*this);
   }
+};
+//! Gauss  Legendre rule 4pt
+class GaussLegendre4p final : public StandardQuadratureRule<4>
+{
+public:
+  GaussLegendre4p()
+    : StandardQuadratureRule<4>{{-n14, -n23, n23, n14}, {w14, w23, w23, w14}, 8}
+  {}
+  std::unique_ptr<QuadratureRuleBase>
+  clone() const override
+  {
+    return std::make_unique<GaussLegendre4p>(*this);
+  }
+
+private:
+  inline static const double s65 = std::sqrt(6. / 5.);
+  inline static const double n23 = std::sqrt(3. / 7 - 2. / 7 * s65);
+  inline static const double n14 = std::sqrt(3. / 7 + 2. / 7 * s65);
+  inline static const double w23 = (18 + std::sqrt(30)) / 36;
+  inline static const double w14 = (18 - std::sqrt(30)) / 36;
 };
 //! Gauss  Lobatto rule 4pt
 class GaussLobatto4p final : public StandardQuadratureRule<4>
@@ -63,7 +83,7 @@ public:
   std::unique_ptr<QuadratureRuleBase>
   clone() const override
   {
-    return std::unique_ptr<QuadratureRuleBase>(new GaussLobatto4p(*this));
+    return std::make_unique<GaussLobatto4p>(*this);
   }
 };
 
@@ -80,7 +100,7 @@ public:
   std::unique_ptr<QuadratureRuleBase>
   clone() const override
   {
-    return std::unique_ptr<QuadratureRuleBase>(new GaussLobatto5p(*this));
+    return std::make_unique<GaussLobatto5p>(*this);
   }
 };
 

@@ -1,4 +1,3 @@
-#include "FactoryTraits.hpp"
 #include "Polygon.hpp"
 #include "loadPolyFactory.hpp"
 #include <dlfcn.h>

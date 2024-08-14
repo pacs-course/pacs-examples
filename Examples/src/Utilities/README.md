@@ -9,7 +9,7 @@ You need to do
     make 
     make install
 
-to install Alessandro Coclite and Armando Coco	them. `make` will produce both a dynamic and a static library, called `libpacs.so` and `libpacs.a`, respectively. `make install` installs the header files in `PACS_ROOT/include` and the libraries into `PACS_ROOT/lib`. Use `make DEBUG=no` if you want the library code to be optimised.
+to install them. `make` will produce both a dynamic and a static library, called `libpacs.so` and `libpacs.a`, respectively. `make install` installs the header files in `PACS_ROOT/include` and the libraries into `PACS_ROOT/lib`. Use `make DEBUG=no` if you want the library code to be optimised.
 
 After you have installed the libraries you can run
 
@@ -17,9 +17,10 @@ After you have installed the libraries you can run
 
 which produces tests for most of the utilities. All tests start with `test_`. You may have a look at the source to see what they do.
 
-*Remember to install the utilities, they are used by other examples!.*
+**Remember to install the utilities, they are used by other examples!**
 
-**Note**: some utilities are in a nested namespace of the namespace `apsc`. Check it out looking at the code or at the examples.
+
+**Note**: some utilities are in a nested namespace of the namespace `apsc`. Check it out by looking at the code or at the examples.
 
 List of the utilities:
 
@@ -35,7 +36,7 @@ if the arguments are both of signed or unsigned type. It gives an error otherwis
 
 * `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class T containes the (usually virtual) method
 
-```
+```c++
 std::unique_prt<B> clone() const;
 ```
 
@@ -67,6 +68,8 @@ We hve also traits and concepts to test sparse and dense matrices separately.
 
 * `Proxy.hpp` It is not a proxy (bad naming, sorry). It is an utility that may be used to register objects in an object Factory automatically.
 
+* `range_to_vector` If you create a view of a range, for example using `std::views::iota`, of by applying views to a vector, you cannot use it to initialize a vector. A proposal is made to do this in a next c++ standard but so far we need to do it ourselves. This utility converts a range to a vector. It is a simple wrapper around `std::ranges::copy`. More information may be found [here](https://timur.audio/how-to-make-a-container-from-a-c20-range). 
+
 * `readCSV` A class to read csv files. Useful if you have data in a speadsheet and you want to load it into a C++ code. There are better tools than this one around. But this is relativley simple and handy
 
 * `scientific_precision` A function that sets the precision of a stream to the maximum value for a floating point. It contains also stream manipulators for the same purpose.
@@ -75,7 +78,7 @@ We hve also traits and concepts to test sparse and dense matrices separately.
 represented by an ordered container. They are built on top of the analogous
 utilities of the Standard Library, but with a simpler interface. 
 
-* `StatisticsComputations` Some tools to compute basic statistics of a sample.
+* `StatisticsComputations.hpp` Some tools to compute basic statistics of a sample.
 
 * `string_utility` Some extra utilities for strings: trimming (eliminate useless blanks) and lower-upper conversion. We have recetly added utilities for reading a whole text file in a buffer (it is faster, though potentially memory consuming, and an utility that computed the Levenshtein edit distance between two strings).
 
@@ -92,7 +95,7 @@ The functor `apsc::hash_combine` provided by  `hashCombine.hpp` is given in two 
 We recall that a good hash function should satisfy as far as possible the uniformity property: the probability distribution of the hash keys (conditioned to the distribution of the possible arguments) should be uniform. Since we do not normally know the distribution of the arguments, it is normally assumed that it is uniform as well.
 This is not so easy to achieve and a badly unbalanced hash function may make your unordered container very inefficient! That's why a lot of "tricks" are used to increase entropy and avoid "clustering".
 
-Here the c+=17 version of my `hash_comine` (taken from the web, I thank the unknown author):
+Here the c+=17 version of my `hash_combine` (taken from the web, I thank the unknown author):
 
 	template <typename T, typename... Rest>
 	void hash_combine(std::size_t& seed, const T& v, const Rest&... rest)
@@ -107,7 +110,7 @@ Note that **`seed` is passed by reference**, and indeed it will finally contain 
 We use some unusual operators: `operator^()` is a binary operator that performs a bit-wise exclusive or (xor). That is if we have two integers, `a` and `b`, whose binary representation is `a=0b1001` and `b=0b1100`, we have `a^b=0b0101` (The `0b` indicates that what follows is a binary literal). You can compare with the result of the two other binary bit-wise logical operators: `a|b=0b1101` (bit-wise or) and `a&b=0b1010` (bit-wise and). In this context, bit-wise xor is used to introduce a bit of entropy. 
 Then, we add the "magic number" `0x9e3779b9` (`0x` indicates that is is in hexadecimal format). It is the integral part of the Golden Ratio's fractional part `0.61803398875…`  multiplied by `2^64`. Adding it has a scattering effect, often referred to as "Golden Ratio Hashing", or "Fibonacci Hashing" and was popularised by Donald Knuth (The Art of Computer Programming: Volume 3: Sorting and Searching). If you are interested, in number theoretical terms it is related to the Steinhaus Conjecture. 
 
-After doing that, we have the `<<` and `>>` operators. These are the left and right *bit-shift* operators that take an number to shift and an unsigned integer indicating the number of shifts. To understand how it works let assume that the variable `a=0b1001` and `b` defined above is just a 4-bit integer (to make things simpler). We have
+After doing that, we have the `<<` and `>>` operators. These are the left and right *bit-shift* operators that take a number to shift and an unsigned integer indicating the number of shifts. To understand how it works let assume that the variable `a=0b1001` and `b` defined above is just a 4-bit integer (to make things simpler). We have
 `(a<< 1)=0b0010`, `(a<< 2)=0b0100`, and `(a>>1)=0100`, `(a>>2)=0010`. I hope it is clear. Again, all this fuss is to scatter the digits around (in fact the bits).
 
 Finally, I am using here a fold expression in `(hash_combine(seed,rest), ...);` to expand the variadic template. It means that, for intance,
@@ -118,7 +121,7 @@ Finally, I am using here a fold expression in `(hash_combine(seed,rest), ...);` 
 	hash_combine(seed,b);
 	hash_combine(seed,c);
 
-thanks to the magic of a fold expression. The pre-c++17 version achieves fold expression with a dirty tick that I avoid explaining (after all c++17 is now well extablished).
+thanks to the magic of a fold expression. The pre-c++17 version achieves fold expression with a dirty tick that I avoid explaining (after all, c++17 is now well extablished).
 
 ## What you can learn from these examples##
 
