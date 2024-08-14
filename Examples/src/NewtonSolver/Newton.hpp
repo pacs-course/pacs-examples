@@ -8,8 +8,8 @@
 #ifndef NONLINSYSSOLVER_NEWTON_HPP_
 #define NONLINSYSSOLVER_NEWTON_HPP_
 #include "Jacobian.hpp"
-#include "NewtonMethodsSupport.hpp"
 #include "JacobianFactory.hpp"
+#include "NewtonMethodsSupport.hpp"
 #include <limits>
 #include <memory>
 
@@ -32,17 +32,26 @@ class Newton : public apsc::NewtonTraits
 {
 public:
   Newton() = default;
-  //! I can pass options and jacobian. This is usefule for classes that store a
-  //! Newton object
+  /*!
+  @brief The constructor
+  @param j A unique pointer to the Jacobian
+  @param opt The options
+  */
   Newton(std::unique_ptr<JacobianBase> j, NewtonOptions opt = NewtonOptions{})
     : Jacobian_ptr{std::move(j)}, options{opt} {};
-  //! This class not meant to be copy constructible
-  //! The implementation of copy constructor would require a mechanism
-  //! for the deep copy of the Jacobian, which is passed as a unique pointer
+  /*!
+  This class is not copy constructible. TO make it copy constructible I should
+  implement a clone() method in the Jacobian classes.
+  */
   Newton(Newton const &) = delete;
-  //! This class not meant to be copy assignable.
+  /*!
+  This class is not copy assignable. TO make it copy assignable I should
+  implement a clone() method in the Jacobian classes.
+  */
   Newton &operator=(Newton const &) = delete;
-  //! It can be moved constructed
+  /*!
+  This class is move constructible
+  */
   Newton(Newton &&n) = default;
   //! It can be move assigned
   Newton &operator=(Newton &&) = default;
@@ -60,7 +69,7 @@ public:
   //! This constructor accepts a non linear system and a concrete Jacobian
   //! object
   template <class NLS, class JAC>
-  Newton(NLS &&nls, JAC  j, NewtonOptions opt = NewtonOptions{})
+  Newton(NLS &&nls, JAC j, NewtonOptions opt = NewtonOptions{})
     : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(std::make_unique<JAC>(j)),
       options(opt)
   {
@@ -80,14 +89,13 @@ public:
    * @param opt The options
    */
   template <class NLS>
-   Newton(NLS &&nls, apsc::JacobianKind JAC, NewtonOptions opt = NewtonOptions{})
-     : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(apsc::make_Jacobian(JAC)),
-       options(opt)
-   {
-     // I need to connect the Jacobian to the non linear system
-     Jacobian_ptr->setNonLinSys(&nonLinSys);
-   }
-
+  Newton(NLS &&nls, apsc::JacobianKind JAC, NewtonOptions opt = NewtonOptions{})
+    : nonLinSys(std::forward<NLS>(nls)), Jacobian_ptr(apsc::make_Jacobian(JAC)),
+      options(opt)
+  {
+    // I need to connect the Jacobian to the non linear system
+    Jacobian_ptr->setNonLinSys(&nonLinSys);
+  }
 
   //! You can change the Jacobian. Note that it is moved
   //! You have to explicitly move if it is not a rvalue!
@@ -138,9 +146,15 @@ public:
   virtual ~Newton() = default;
 
 protected:
+  /*!
+  @brief The callback function
+  @details This function is called at each iteration of the Newton method
+  It is a virtual function, so it can be overridden by a derived class
+  The default implementation does nothing
+  */
   virtual void callback() const {};
   //! Internal structure giving the state
-  //! Used for callback
+  //! Used for the callback
   struct NewtonState
   {
     //! The last computed solution

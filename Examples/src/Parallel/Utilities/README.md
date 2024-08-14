@@ -28,6 +28,8 @@ In `partition.hpp` you have two classes that implements the two partitioning tec
 
 In the same `partition.hpp` file, we have a template function, `counts_and_displacements()`, that takes a valid partitioner and returns the corresponding `counts` and `displacements` vectors, ready to be used in a `MPI_Gatherv` or `MPI_Scatterv`.
 
+In the same file you have the class template `MatrixPArtitioner` that can be used for the partition of a full matrix. It relies on the `Partitioner` class and provides the same information as the `Partitioner` class, but for a matrix.
+
 ## mpi_utils ##
 A set of utilities taken from the Muster code developed at Lawrence Livermore Labs. For details, see http://github.com/LLNL/muster. Take note of the licence statement in the code.
 

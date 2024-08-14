@@ -15,8 +15,9 @@ namespace apsc
 namespace NonLinSysTraits
 {
   /*!
-   * The trait for a system \f$ S^n \to S^m\f$ where S is a scalar field
-   *
+   * @brief The trait for a system \f$ S^n \to S^m\f$ where S is a scalar field
+   * @details The system is represented by a vector of functions
+   * 
    * @tparam Scalar The scalar field type
    */
   template <class Scalar=double> struct VectorTraits
@@ -28,9 +29,9 @@ namespace NonLinSysTraits
     //! The type of the result of a single equation
     using ScalarType = Scalar;
     //! The type of the single function
-    using ScalarFunctionType = std::function<ScalarType(ArgumentType const &)>;
+    using ScalarFunctionType = std::function<ScalarType (ArgumentType const &)>;
     //! The type that can be used to wrap the whole system
-    using VectorFunctionType = std::function<ResultType(ArgumentType const &)>;
+    using VectorFunctionType = std::function<ResultType (ArgumentType const &)>;
     //!  The container where the single functions are stored
     using FunctionContainerType = std::vector<ScalarFunctionType>;
   };

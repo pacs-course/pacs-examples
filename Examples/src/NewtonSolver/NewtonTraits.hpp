@@ -25,12 +25,15 @@
 #include <functional>
 namespace apsc
 {
-//! We base the Newton solver on Eigen for simplicity
-//! In principle this class should be a template class
-//! to enable choosing different type by selecting a different template argument
-//! during the instantiation of a Newton template class
-//! For simplicity I omit this complication here
-//!
+/*!
+@brief A class to define the types used by the Newton solver
+
+Here I base the class on Eigen matrices and vectors. This is a choice, but
+it is a good one, since Eigen is a very efficient library for linear algebra,
+
+However, by changing the trait and add some adaptors I can do as in 
+the FixedPoint class and use standard vectors or other types of containers.
+*/
 struct NewtonTraits
 {
   //! The type of argument: an Eigen dynamic vector

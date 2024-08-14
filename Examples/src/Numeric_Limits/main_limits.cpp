@@ -30,10 +30,11 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <cmath> // for isnan and isfinite
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <limits>
 #include <string>
+#include <map>
 // numbers has been introduced in C++20
 #if __cplusplus >= 202002L
 #include <numbers>
@@ -93,18 +94,26 @@ void
 printFloatLimits(std::string const &type)
 {
   using namespace std; // to simplify life
+  // This map is to have a more significant name for the rounding style
+  map<std::float_round_style,std::string> roundStyleName {
+    {std::float_round_style::round_indeterminate, "round_indeterminate"},
+    {std::float_round_style::round_toward_zero, "round_toward_zero"},
+    {std::float_round_style::round_to_nearest, "round_to_nearest"},
+    {std::float_round_style::round_toward_infinity, "round_toward_infinity"},
+    {std::float_round_style::round_toward_neg_infinity, "round_toward_neg_infinity"}
+  };
   cout << "**********************************************" << endl;
   cout << "*************** " << type << " ******************" << endl;
   cout << "**********************************************" << endl;
   cout << "largest                = " << numeric_limits<F>::max() << '\n';
   cout << "smallest               = " << numeric_limits<F>::min() << '\n';
-  cout << "min exponent in binary = " << numeric_limits<F>::min_exponent
+  cout << "min exponent in base 2 = " << numeric_limits<F>::min_exponent
        << '\n';
-  cout << "min exponent in decimal= " << numeric_limits<F>::min_exponent10
+  cout << "min exponent in base 10= " << numeric_limits<F>::min_exponent10
        << '\n';
-  cout << "max exponent in binary = " << numeric_limits<F>::max_exponent
+  cout << "max exponent in base 2 = " << numeric_limits<F>::max_exponent
        << '\n';
-  cout << "max exponent in decimal= " << numeric_limits<F>::max_exponent10
+  cout << "max exponent in base 10= " << numeric_limits<F>::max_exponent10
        << '\n';
   cout << "base of exponent       = " << numeric_limits<F>::radix << '\n';
   cout << "Has infinity:            " << numeric_limits<F>::has_infinity
@@ -118,12 +127,25 @@ printFloatLimits(std::string const &type)
   cout << "machine epsilon        = " << numeric_limits<F>::epsilon() << '\n';
   cout << "round off              = " << numeric_limits<F>::round_error()
        << '\n';
-  cout << "rounding style         = " << numeric_limits<F>::round_style << '\n';
+  cout << "rounding style         = " << roundStyleName[numeric_limits<F>::round_style] << '\n';
   cout << "# of binary digits in mantissa= " << numeric_limits<F>::digits
        << '\n';
   cout << "# of decimal digits in mantissa= " << numeric_limits<F>::digits10
        << '\n';
   cout << endl;
+  /* Note
+  rounding_style is an enum class with the following values
+     enum class float_round_style {
+     round_indeterminate = -1,
+     round_toward_zero = 0,
+     round_to_nearest = 1,
+     round_toward_infinity = 2,
+     round_toward_neg_infinity = 3
+     };
+
+     round_off is the largest possible rounding error (expressed in
+     round-off units u). If rounding style is 1 the round error is 0.5,
+     */
 }
 
 int
@@ -158,10 +180,19 @@ main()
   cout << "smallest               = " << numeric_limits<unsigned int>::min()
        << '\n';
 
-  cout << endl << "***************    long INT   *********" << endl;
+  cout << "**********************************************" << endl;
+  cout << endl << "***************    long int   *********" << endl;
+  cout << "**********************************************" << endl;
   cout << "largest                = " << numeric_limits<long int>::max()
        << '\n';
   cout << "smallest               = " << numeric_limits<long int>::min()
+       << '\n';
+  cout << "**********************************************" << endl;
+  cout << endl << "***************    long unsigned   *********" << endl;
+  cout << "**********************************************" << endl;
+  cout << "largest                = " << numeric_limits<long unsigned int>::max()
+       << '\n';
+  cout << "smallest               = " << numeric_limits<long unsigned int>::min()
        << '\n';
 
   cout << endl;
@@ -200,25 +231,21 @@ main()
   cout << " Is 1./0. equal to Inf?: " << !std::isfinite(z) << std::endl;
 
 #if __cplusplus >= 202002L
-  cout<<"\n***    Now some c++20 goodies. Predefined constants ***\n";
+  cout << "\n***    Now some c++20 goodies. Predefined constants ***\n";
   using namespace std::numbers;
-  std::cout<<"Pi (double)        "<<pi<<std::endl;
-  std::cout<<"e  (double)        "<<e<<std::endl;
-  std::cout<<"sqr(2)(double)     "<<sqrt2<<std::endl;
+  std::cout << "Pi (double)        " << pi << std::endl;
+  std::cout << "e  (double)        " << e << std::endl;
+  std::cout << "sqr(2)(double)     " << sqrt2 << std::endl;
 
   maxprec = numeric_limits<long double>::digits10;
   cout.precision(maxprec);
-  std::cout<<"Pi (long double)   "<<pi_v<long double><<std::endl;
-  std::cout<<"e  (long double)   "<<e_v<long double><<std::endl;
-  std::cout<<"sqr(2)(long double)"<<sqrt2_v<long double><<std::endl;
+  std::cout << "Pi (long double)   " << pi_v<long double> << std::endl;
+  std::cout << "e  (long double)   " << e_v<long double> << std::endl;
+  std::cout << "sqr(2)(long double)" << sqrt2_v<long double> << std::endl;
   maxprec = numeric_limits<float>::digits10;
   cout.precision(maxprec);
-  std::cout<<"Pi (float)         "<<pi_v<float><<std::endl;
-  std::cout<<"e  (float)         "<<e_v<float><<std::endl;
-  std::cout<<"sqr(2)(float)      "<<sqrt2_v<float><<std::endl;
+  std::cout << "Pi (float)         " << pi_v<float> << std::endl;
+  std::cout << "e  (float)         " << e_v<float> << std::endl;
+  std::cout << "sqr(2)(float)      " << sqrt2_v<float> << std::endl;
 #endif
-
-
-
-
 }

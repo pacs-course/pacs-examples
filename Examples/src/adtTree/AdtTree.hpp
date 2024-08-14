@@ -69,7 +69,7 @@ namespace adt
       return len_[dim % BOXDIMS];
     }
     /*!
-     * @brief The point used for tjhe test of at the current level
+     * @brief The point used for the test of at the current level
      *
      * @param dim The box dimension index
      * @return The point used for the test at the current level
@@ -105,7 +105,7 @@ namespace adt
      * @brief go bak one level along a given direction
      *
      * @param dim the coordinate
-     * @param direction the diraction I am moving along the tree
+     * @param direction the direction I am moving along the tree
      */
     void
     back(std::size_t dim, Direction direction)

@@ -36,6 +36,22 @@ Many more things can be said about strings. For instance, you should remember th
 
 Another important question if you go multilingual is that of the encoding system, i.e. the map between the printable character and the number(s) used to represent it in memory (remember, in a computer we only have numbers..). But this will be too much for this example.
 
+In this example we show also a possible use of string view. `std::string_view` is a non-owning reference to a sequence of characters. It was introduced with C++17 and serves several useful purposes:
+
+1. **Performance Optimization:** It allows the creation of lightweight, non-owning references to strings without the need to copy the underlying string data. This can lead to performance improvements, as it avoids potentially expensive copy operations.
+
+2. **Safer C-String Handling:** It provides a safer, more convenient way to work with C-style strings (`const char*`), by adding bounds-checked access and other features while still avoiding string copies.
+
+3. **Function Parameter Type:** `std::string_view` can be used as a function parameter type when you want to accept any kind of string-like object without committing to a particular string type. This can enable functions to accept literals, `std::string`, `const char*`, and other types of strings in a very efficient way.
+
+4. **String Slicing:** It can be used to refer to sub-strings or "slices" of a larger string without copying them. This is useful for parsing and tokenizing strings.
+
+1. **Temporary String Views:** It allows the creation of temporary views over string literals or other temporary string expressions, which can be more efficient than creating temporary `std::string` objects.
+
+It's important to note that since `std::string_view` does not own the string it references, care must be taken that the underlying string outlives the `string_view`. Otherwise, you could end up with a dangling reference, which could lead to undefined behavior. Sting views are useful in code that operates heavily on strings, such as parsers, compilers, and other text-processing applications.
+
+
+
 #What do I learn here#
 - Some pieces of information and curiosities about strings;
 - How to interpret a string verbatim;

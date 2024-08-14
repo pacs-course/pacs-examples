@@ -10,7 +10,7 @@ Some updates have been made to introduce some C++17 goodies
 
 * `set/`  use of sets with different comparison operators
 
-* `sort/` Use comparison operators to change sorting criteria.
+* `sort/` Use comparison operators to change sorting criteria. We also show the new sort constrained algorithm.
 
 * `SetEdge/` An esample of set of Edges that describe a graph where different comparison operators enable directed (Edges may be repeated if they have  different orientation) or undirected graphs.
 
@@ -29,6 +29,8 @@ It contins also an example of use of `std::visit()`.
 * `Filesystem/` Utilities to examine the file system.
 
 * `Reduce/` Two new stl parallel algorithms
+  
+* `RangesAndViews` An example of use of the new ranges and views of the standard library.
 
 * `SortAndPermute` An useful utility if you need to sort a vector and keep track of the performed
 permutation to be able to apply it to other vectors.

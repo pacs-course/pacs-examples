@@ -10,15 +10,14 @@ Sqrt5::operator()(double a) const
   // df =5*y^4
   if(a == 0.0)
     return 0.0;
-  auto         der = [](double const x) { return 5 * x * x * x * x; };
-  auto         resid = [&a](double const x) { return x * x * x * x * x - a; };
+  auto         phi =[&a](double const x) { return (a/x/x/x/x -x ) / 5; };
   auto         err = 2 * tolerance;
   unsigned int iter = 0;
   auto         x = x0;
   while((err > tolerance) && (iter < maxiter))
     {
-      // I should check if der=0 but here I avoid for simplicity
-      auto step = -resid(x) / der(x);
+      // I should 
+      auto step = phi(x);
       err = std::abs(step);
       x += step;
       ++iter;

@@ -13,6 +13,7 @@
 #include <tuple>
 #include <vector>
 #include <numeric>
+#include <ranges>// for ranges concepts
 namespace apsc
 {
 /*
@@ -20,14 +21,14 @@ namespace apsc
    * @brief Sorts a sequential container and returns the permutation vector
    *   *
    * @pre Container must be a stl compliant  random access container (a vector or array)
-   * @tparam Container The type of the container to sort
+   * @tparam Container The type of the container to sort. Satisfies the random_acces_range concept
    * @tparam CompOp The comparison operator for sorting
    * @param v The container to sort
    * @param comparison functor
    * @return A vector of integers containing the permutation
    */
-  template<typename Container,typename CompOp=std::less<typename Container::value_type>>
-  std::vector<std::size_t> sortAndPermute(Container &, CompOp comparison=CompOp());
+  template<std::ranges::random_access_range Container ,typename CompOp=std::less<typename Container::value_type>>
+  std::vector<std::size_t> sortAndPermute(Container &, CompOp const & comparison=CompOp());
 
   /*!
     * @fn Cont2 applyPermutation(const Cont2&, permutation const &p)
@@ -87,7 +88,7 @@ namespace apsc
  * @tparam Container A random access sequential container obeying Standard layout
  * @tparam CompOper A comparison operator on container elements
  */
-template <class Container,
+template <std::ranges::random_access_range Container,
 typename CompOper = std::less<typename Container::value_type>
 >
 class SortAndPermute
@@ -106,7 +107,7 @@ public:
    * @param v The container
    * @param comp The comparison operator
    */
-  template<typename CONT>
+  template<std::ranges::random_access_range CONT>
   SortAndPermute(CONT&& v,const CompOper & comp=CompOper()): data_{std::forward<CONT>(v)},comparison{comp}
   {
     permutation_.resize(data_.size());
@@ -149,7 +150,7 @@ public:
   }
 
 
-  friend PermutationType sortAndPermute<>(Container &, CompOper);
+  friend PermutationType sortAndPermute<>(Container &, CompOper const &);
 private:
   Container data_;
   CompOper comparison;
@@ -168,7 +169,7 @@ private:
 //   ********************    IMPLEMENTATIONS   ********************
 
 
-template <class Container, typename CompOper>
+template <std::ranges::random_access_range Container, typename CompOper>
 void
 SortAndPermute<Container,CompOper>::operator()()
 {
@@ -179,22 +180,34 @@ SortAndPermute<Container,CompOper>::operator()()
     {
       elements.emplace_back(data_[i], i);
     }
-  auto compOp = [this](element const &x, element const &y) {
-    return comparison(x.value, y.value);
-  };
-  // Sort the container
-  std::sort(elements.begin(), elements.end(), compOp);
 
-  std::size_t index{0};
+  // I use here the new constrained algorithms to sort the container
+  // I use the projection to sort the elements by value
+  std::ranges::sort(elements,comparison, &element::value);
+
+/* Before c+20
+  auto compOp = [this](element const &x, element const &y) {
+    return comparison(x.value, y.
+   std::size_t index{0};
   for(auto const & [v,i]: elements)
     {
       data_[index]=v;
       permutation_[index++]=i;
-    }
+    }value);
+  };
+  // Sort the container
+  std::sort(elements.begin(), elements.end(), compOp);
+*/
+  // I fill back the permutation vector
+  for (std::size_t i=0;i!=elements.size();++i)
+  {
+    permutation_[i]=elements[i].pos;
+    data_[i]=elements[i].value;
+  }
 }
 
 
- template< class Cont2>
+ template< std::ranges::random_access_range Cont2>
  Cont2 applyPermutation(Cont2 const & cont2, std::vector<std::size_t> const & p)
  {
    Cont2 result;
@@ -207,7 +220,7 @@ SortAndPermute<Container,CompOper>::operator()()
  }
 
 
-  template< class Cont2>
+  template< std::ranges::random_access_range Cont2>
     void applyPermutationInPlace(Cont2 & cont2, std::vector<std::size_t> const & p)
   {
     // Thanks to Raymond Chen of Microsoft for the algorithm!
@@ -229,8 +242,8 @@ SortAndPermute<Container,CompOper>::operator()()
 
 
 
-template<typename Container,typename CompOp>
-std::vector<std::size_t> sortAndPermute(Container & v, CompOp comparison)
+template<std::ranges::random_access_range Container,typename CompOp>
+std::vector<std::size_t> sortAndPermute(Container & v, CompOp const & comparison)
 {
   SortAndPermute<Container,CompOp> sortAndPermute{v,comparison};
   sortAndPermute();

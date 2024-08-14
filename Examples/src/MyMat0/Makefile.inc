@@ -2,10 +2,10 @@ BLAS=yes# the default
 # change it to suite your needs if yo do not use modules
 # module load suitesparse will also load the blas library
 RELEASE=yes
-#BLAS_LIB_DIR=-L${mkOpenblasLib}
-#BLAS_INC_DIR=-I${mkOpenblasInc}
+BLAS_LIB_DIR?=-L${mkOpenblasLib}
+BLAS_LIB_INC?=-L${mkOpenblasInc}
 #BLAS_LIB_DIR=-L/opt/atlas/lib
-#BLAS_INC_DIR=-I/opt/atlas/include
+#BLAS_INC_DIR=-I/opt/atlas/includ
 BLAS_LIB_NAME=openblas # if you use module you have openblas
 #BLAS_LIB_NAME=cblas # if you use module you have openblas
 BLAS_LIB_NAME=blas # if you use other versions of blas

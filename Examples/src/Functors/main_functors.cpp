@@ -3,16 +3,19 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <cmath>
+#include <limits>
 int
 main()
 {
   using namespace myfunctors; // only to simplify things
   //! Creating an object
   Sqrt5 sqrt5;
+  // Set maximal precision
+  std::cout.precision(std::numeric_limits<double>::max_digits10);
   // comput fifth root of five
-  std::cout << std::setprecision(15) << "sqrt5(5)=" << sqrt5(5) << std::endl;
+  std::cout << "Exact value of fifth root of 5=" << std::pow(5,1./5.) << std::endl;
   // we have set a larger precision to see more digits. The setting
-  // can be brought back to the default by
   // std::cout<<std::defaultfloat;
 
   // you may change tolerance
@@ -21,6 +24,12 @@ main()
   // you may also create the object on the fly and call the operator!
   sqrt5.tolerance = 1.e-2;
   std::cout << "sqrt5(5)=" << sqrt5(5) << " with tol=1e-2" << std::endl;
+  // sqrt4(10) with the generic functor
+  rootN<4> sqrt4;
+  std::cout << "sqrt4(10)=" << sqrt4(10) <<  " with tol= "<<sqrt4.tolerance<< std::endl;
+
+
+
   Isgreater        ig(5.0);
   std::vector<int> v = {1, 2, 3, 4, 6, 7, 8, 18, 25};
   auto             found = std::find_if(v.begin(), v.end(), ig);

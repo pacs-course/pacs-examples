@@ -105,8 +105,7 @@ template <typename SQR>
 std::unique_ptr<QuadratureRuleBase>
 QuadratureRulePlusError<SQR>::clone() const
 {
-  return std::unique_ptr<QuadratureRuleBase>(
-    new QuadratureRulePlusError<SQR>(*this));
+  return std::make_unique<QuadratureRulePlusError<SQR> >(*this);
 }
 
 /*!

@@ -28,7 +28,8 @@ namespace apsc
    innerProduct(const std::array<T, N> &x, const std::array<T, N> &y)
   {
     // Here I use the trait!
-    using valueType = typename Value_Trait<T>::type;
+    //using valueType = typename Value_Trait<T>::type; //befor c++17
+    using valueType = Value_Trait_t<T>; //since c++17
     valueType res{0}; // 0 is convertible to any POD
     for(std::size_t i = 0u; i < N; ++i)
       {

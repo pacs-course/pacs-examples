@@ -12,7 +12,6 @@ namespace TypeTraits
 {
   /*!
    * A type trait than checks if your class contains a method called clone()
-   * const that returns a unique pointer convertible to the class specified in
    * the template parameter. I use it to implement clonable classes which enable
    * the prototype design pattern on a polymorphic family of classes. This is
    * the primary template, which maps to false
@@ -36,9 +35,8 @@ creating an object of type T.
    */
   template <typename T>
   struct has_clone<
-    T,
-    typename std::enable_if_t<std::is_convertible_v<
-      std::unique_ptr<T>, decltype(std::declval<const T &>().clone())> > >
+    T, typename std::enable_if_t<std::is_convertible_v<
+         std::unique_ptr<T>, decltype(std::declval<const T>().clone())> > >
     : std::true_type
   {};
 
@@ -182,7 +180,7 @@ template <TypeTraits::Clonable T> class PointerWrapper
 public:
   // Check if clone is present
   // Here I prefer not using concepts to have a more extensive error message
-// I am using concepts now
+  // I am using concepts now
   /*static_assert(
     TypeTraits::isClonable<T>(),
     "template parameter of Wrapper must be a clonable class. "
@@ -417,7 +415,11 @@ public:
   }
 
   /*! conversion to bool */
-  explicit operator bool() const noexcept { return static_cast<bool>(DataPtr); }
+  explicit
+  operator bool() const noexcept
+  {
+    return static_cast<bool>(DataPtr);
+  }
 
 private:
   Ptr_t DataPtr;
@@ -514,6 +516,41 @@ operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
 {
   return a.get() == b.get();
 }
+/*!
+@brief Equivalence operator with nullptr
+@details I have copy and pasted from the analogous declaration for the 
+unique_ptr. The concepts verify that the underlying pointer is comparable with nullptr_t
+The return type is the corresponding three way comparison type returnd by the spaceship operator.
+However if you want you can simplify things eliminating concepts and use automatic return type
+@code
+template< class T>
+auto
+operator<=>( const PointerWrapper<T>& x, std::nullptr_t )
+{
+    return x.get() <=> nullptr;
+};
+@endcode
+@note I need it since it cannot be deduced by <=>
+@tparam T The type of the pointer
+@param x The wrapper
+@param nullptr
+@return true if the pointer is null
+
+*/
+template< class T>
+    requires std::three_way_comparable<typename PointerWrapper<T>::pointer>
+std::compare_three_way_result_t<typename PointerWrapper<T>::pointer>
+    operator<=>( const PointerWrapper<T>& x, std::nullptr_t )
+    {
+        return x.get() <=> nullptr;
+    };
+ template< class T>
+bool
+    operator==( const PointerWrapper<T>& x, std::nullptr_t )
+    {
+        return x.get() == nullptr;
+    };
+   
 #endif
 
 } // end namespace apsc

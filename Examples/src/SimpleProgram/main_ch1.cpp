@@ -28,4 +28,4 @@ main()
 // We have used the brace initialization for sum
 // Alternatively you may use:
 // int sum(0); // old style initialization (but still perfectly valid)
-// int sum = 0;// Equivalent to int sum(0);
+// int sum = 0;// Equivalent to int sum{0};
