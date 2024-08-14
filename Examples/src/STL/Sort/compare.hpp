@@ -34,7 +34,7 @@ class NoCaseCompare
 {
 public:
   bool
-  operator()(std::string const &a, std::string const &b)
+  operator()(std::string const &a, std::string const &b) const
   {
     // Lexycografic comparison
     for(std::size_t i = 0; i < std::min(a.size(), b.size()); ++i)
@@ -55,7 +55,7 @@ class Nocase_locale
 public:
   Nocase_locale(std::locale const &loc = std::locale()) : M_loc(loc){};
   bool
-  operator()(std::string const &a, std::string const &b)
+  operator()(std::string const &a, std::string const &b) const
   {
     // Lexycografic comparison note the
     for(std::size_t i = 0; i < std::min(a.size(), b.size()); ++i)

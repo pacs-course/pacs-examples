@@ -8,6 +8,11 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <numeric> //for transform_reduce
+// Comment/uncomment next line if you dont want/want parallelization of transorm_reduce
+#ifdef PARALLELEXEC
+#include <execution>
+#endif
 
 int
 main()
@@ -36,7 +41,7 @@ main()
   */
   double startx = 0.00;
   double endx = 1.00;
-  double interval = 0.5e-6;
+  double interval = 0.005;
   int    numinterval = (endx - startx) / interval; // truncated if not integer!
   cout << "Computing " << numinterval << " evaluation of polynomial"
        << " with standard formula" << endl;
@@ -44,15 +49,16 @@ main()
   vector<double> points;
   points.reserve(numinterval + 1);
   double x = startx;
+  // crete a vector with some values
   for(int i = 0; i <= numinterval; ++i)
     {
-      points.push_back(x);
+      points.emplace_back(x);
       x += interval;
     }
-  Chrono temporizzatore;
+  Chrono temporizzatore; // start clock
   temporizzatore.start();
-  evaluatePoly(points, a, &eval);
-  temporizzatore.stop();
+  auto sol1=evaluatePoly(points, a, &eval);
+  temporizzatore.stop();// stop clock
   cout << endl;
 
   cout << temporizzatore << endl;
@@ -60,8 +66,20 @@ main()
   cout << "Computing " << numinterval << " evaluation of the polynomial with"
        << " Horner's rule" << endl;
   temporizzatore.start();
-  evaluatePoly(points, a, &horner);
+  auto sol2=evaluatePoly(points, a, &horner_range);
   temporizzatore.stop();
   cout << endl;
   cout << temporizzatore << endl;
+  // campute || sol1 -sol2 ||^2_2 using std::transform_reduce
+  #ifdef PARALLELEXEC // parallel version
+  auto diff=std::transform_reduce(std::execution::par,sol1.begin(), sol1.end(), sol2.begin(), 0.0, std::plus<>(), 
+                                  [](auto const &x, auto const &y) { return (x - y)*(x-y); });
+  #else
+  auto diff=std::transform_reduce(sol1.begin(), sol1.end(), sol2.begin(), 0.0, std::plus<>(), 
+                                  [](auto const &x, auto const &y) { return (x - y)*(x-y); });
+  #endif
+  cout << "||sol1-sol2||_2/N=" << std::sqrt(diff)/sol1.size() << " (it should be close to zero)"<<endl;
+
+
+
 } // end of main()

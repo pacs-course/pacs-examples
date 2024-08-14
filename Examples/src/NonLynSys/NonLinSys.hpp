@@ -15,14 +15,14 @@
 namespace apsc
 {
 /*!
- * An example of a class that stores a non linear system.
+ * @brief An example of a class that stores a non linear system.
  *
  * The system \f$ R^n\rightarrow R^m\f$ is stored as a vector of functions
  * \f$ R^n\rightarrow R\f$. You may call the single function or the whole system
  * In fact \f$R\f$ is a generic type (it may be a complex).
  *
  * The types used in this class are taken from a trait templatised on R. You can
- * change the trait if you fant to change the basic tyes used in this class (for
+ * change the trait if you want to change the types used in this class (for
  * instance if you want to use Eigen vectors).
  *
  * @tparam T The type of the arguments and return of the functions
@@ -67,6 +67,7 @@ public:
   void
   addToSystem(scalarfunction &&f)
   {
+    //@todo use concepts instead of static_assert
     static_assert(std::is_convertible_v<scalarfunction,typename Traits<R>::ScalarFunctionType>,
                   "Cannot add a function with wrong signature!");
     system_.emplace_back(std::forward<scalarfunction>(f));
@@ -82,15 +83,21 @@ public:
     return system_[i];
   }
   /*!
-   * Get the i-th function
+   * @brief change the i-th function
+   *
+   * @tparam scalarfunction A function wrapper type.
    * @param i The index
    * @return A function \f$ R^n\rightarrow R\f$
    */
-  ScalarFunctionType &
-  getFunction(unsigned int i)
+  template <typename scalarfunction>
+  void
+  updateFunction(scalarfunction &&f, unsigned int i)
   {
-    return system_[i];
+    static_assert(std::is_convertible_v<scalarfunction,typename Traits<R>::ScalarFunctionType>,
+                  "Cannot add a function with wrong signature!");
+    system_[i] = std::forward<scalarfunction>(f);
   }
+
   /*!
    * The call operator for a single function
    * @param i The index of the function

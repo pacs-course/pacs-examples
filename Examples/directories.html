@@ -3,183 +3,189 @@
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
  <meta name="Author" content="Made by 'tree'">
- <meta name="GENERATOR" content="$Version: $ tree v1.8.0 (c) 1996 - 2018 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro $">
+ <meta name="GENERATOR" content="$Version: $ tree v2.0.2 (c) 1996 - 2022 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro $">
  <title>Directory structure of the examples</title>
  <style type="text/css">
-  <!-- 
-  BODY { font-family : ariel, monospace, sans-serif; }
-  P { font-weight: normal; font-family : ariel, monospace, sans-serif; color: black; background-color: transparent;}
-  B { font-weight: normal; color: black; background-color: transparent;}
-  A:visited { font-weight : normal; text-decoration : none; background-color : transparent; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:link    { font-weight : normal; text-decoration : none; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:hover   { color : #000000; font-weight : normal; text-decoration : underline; background-color : yellow; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:active  { color : #000000; font-weight: normal; background-color : transparent; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
+  BODY { font-family : monospace, sans-serif;  color: black;}
+  P { font-family : monospace, sans-serif; color: black; margin:0px; padding: 0px;}
+  A:visited { text-decoration : none; margin : 0px; padding : 0px;}
+  A:link    { text-decoration : none; margin : 0px; padding : 0px;}
+  A:hover   { text-decoration: underline; background-color : yellow; margin : 0px; padding : 0px;}
+  A:active  { margin : 0px; padding : 0px;}
   .VERSION { font-size: small; font-family : arial, sans-serif; }
-  .NORM  { color: black;  background-color: transparent;}
-  .FIFO  { color: purple; background-color: transparent;}
-  .CHAR  { color: yellow; background-color: transparent;}
-  .DIR   { color: blue;   background-color: transparent;}
-  .BLOCK { color: yellow; background-color: transparent;}
-  .LINK  { color: aqua;   background-color: transparent;}
-  .SOCK  { color: fuchsia;background-color: transparent;}
-  .EXEC  { color: green;  background-color: transparent;}
-  -->
+  .NORM  { color: black;  }
+  .FIFO  { color: purple; }
+  .CHAR  { color: yellow; }
+  .DIR   { color: blue;   }
+  .BLOCK { color: yellow; }
+  .LINK  { color: aqua;   }
+  .SOCK  { color: fuchsia;}
+  .EXEC  { color: green;  }
  </style>
 </head>
 <body>
 	<h1>Directory structure of the examples</h1><p>
-	<a class="NORM" href="./src">./src</a><br>
+	<a class="DIR" href="./src">./src</a><br>
+	├── <a class="DIR" href="./src/adtTree/">adtTree</a><br>
 	├── <a class="DIR" href="./src/Aggregates/">Aggregates</a><br>
 	├── <a class="DIR" href="./src/Arrays/">Arrays</a><br>
 	├── <a class="DIR" href="./src/bcHandler/">bcHandler</a><br>
 	├── <a class="DIR" href="./src/Bindings/">Bindings</a><br>
-	├── <a class="DIR" href="./src/C++20/">C++20</a><br>
-	│   ├── <a class="DIR" href="./src/C++20/Concepts/">Concepts</a><br>
-	│   ├── <a class="DIR" href="./src/C++20/OrderingAndSpaceShip/">OrderingAndSpaceShip</a><br>
-	│   └── <a class="DIR" href="./src/C++20/RangesAndViews/">RangesAndViews</a><br>
 	├── <a class="DIR" href="./src/CompositionWithVariadicTemplates/">CompositionWithVariadicTemplates</a><br>
+	├── <a class="DIR" href="./src/Concepts/">Concepts</a><br>
 	├── <a class="DIR" href="./src/Constexpr/">Constexpr</a><br>
 	├── <a class="DIR" href="./src/CRTP/">CRTP</a><br>
+	├── <a class="DIR" href="./src/DataHeap/">DataHeap</a><br>
 	├── <a class="DIR" href="./src/Derivatives/">Derivatives</a><br>
 	├── <a class="DIR" href="./src/DesignPatterns/">DesignPatterns</a><br>
-	│   ├── <a class="DIR" href="./src/DesignPatterns/AbstractFactory/">AbstractFactory</a><br>
-	│   ├── <a class="DIR" href="./src/DesignPatterns/Builder/">Builder</a><br>
-	│   ├── <a class="DIR" href="./src/DesignPatterns/Composite/">Composite</a><br>
-	│   └── <a class="DIR" href="./src/DesignPatterns/Visitor/">Visitor</a><br>
+	│   ├── <a class="DIR" href="./srcDesignPatterns/AbstractFactory/">AbstractFactory</a><br>
+	│   ├── <a class="DIR" href="./srcDesignPatterns/Builder/">Builder</a><br>
+	│   ├── <a class="DIR" href="./srcDesignPatterns/Composite/">Composite</a><br>
+	│   ├── <a class="DIR" href="./srcDesignPatterns/Visitor/">Visitor</a><br>
+	│   └── <a class="DIR" href="./srcDesignPatterns/VisitorAndVariant/">VisitorAndVariant</a><br>
 	├── <a class="DIR" href="./src/ExpressionTemplates/">ExpressionTemplates</a><br>
-	│   ├── <a class="DIR" href="./src/ExpressionTemplates/Algebra/">Algebra</a><br>
-	│   └── <a class="DIR" href="./src/ExpressionTemplates/Integral/">Integral</a><br>
+	│   ├── <a class="DIR" href="./srcExpressionTemplates/Algebra/">Algebra</a><br>
+	│   └── <a class="DIR" href="./srcExpressionTemplates/Integral/">Integral</a><br>
 	├── <a class="DIR" href="./src/FixedPointSolver/">FixedPointSolver</a><br>
 	├── <a class="DIR" href="./src/FloatingPoint/">FloatingPoint</a><br>
-	│   ├── <a class="DIR" href="./src/FloatingPoint/FinDiff/">FinDiff</a><br>
-	│   ├── <a class="DIR" href="./src/FloatingPoint/FPComparison/">FPComparison</a><br>
-	│   ├── <a class="DIR" href="./src/FloatingPoint/FPExceptions/">FPExceptions</a><br>
-	│   ├── <a class="DIR" href="./src/FloatingPoint/FPFailure/">FPFailure</a><br>
-	│   └── <a class="DIR" href="./src/FloatingPoint/QuadraticRoot/">QuadraticRoot</a><br>
+	│   ├── <a class="DIR" href="./srcFloatingPoint/FinDiff/">FinDiff</a><br>
+	│   ├── <a class="DIR" href="./srcFloatingPoint/FPComparison/">FPComparison</a><br>
+	│   ├── <a class="DIR" href="./srcFloatingPoint/FPExceptions/">FPExceptions</a><br>
+	│   ├── <a class="DIR" href="./srcFloatingPoint/FPFailure/">FPFailure</a><br>
+	│   └── <a class="DIR" href="./srcFloatingPoint/QuadraticRoot/">QuadraticRoot</a><br>
 	├── <a class="DIR" href="./src/ForwardDeclaration/">ForwardDeclaration</a><br>
 	├── <a class="DIR" href="./src/Functors/">Functors</a><br>
 	├── <a class="DIR" href="./src/GenericFactory/">GenericFactory</a><br>
+	├── <a class="DIR" href="./src/HeapView/">HeapView</a><br>
 	├── <a class="DIR" href="./src/HeatExchange/">HeatExchange</a><br>
-	│   └── <a class="DIR" href="./src/HeatExchange/Figure/">Figure</a><br>
+	│   └── <a class="DIR" href="./srcHeatExchange/Figure/">Figure</a><br>
 	├── <a class="DIR" href="./src/Horner/">Horner</a><br>
+	├── <a class="DIR" href="./src/InPolygon/">InPolygon</a><br>
 	├── <a class="DIR" href="./src/IntegerOverflow/">IntegerOverflow</a><br>
 	├── <a class="DIR" href="./src/Interp1D/">Interp1D</a><br>
 	├── <a class="DIR" href="./src/LambdaExpr/">LambdaExpr</a><br>
 	├── <a class="DIR" href="./src/LinearAlgebra/">LinearAlgebra</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/CppNumericalSolvers/">CppNumericalSolvers</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/IML_Eigen/">IML_Eigen</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/MatrixData/">MatrixData</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/MatrixMarketReadersMatlab/">MatrixMarketReadersMatlab</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/redsvd-h/">redsvd-h</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/SparseBlockMatrix/">SparseBlockMatrix</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/spectra/">spectra</a><br>
-	│   ├── <a class="DIR" href="./src/LinearAlgebra/Thomas/">Thomas</a><br>
-	│   └── <a class="DIR" href="./src/LinearAlgebra/ZeroOfPolynomials/">ZeroOfPolynomials</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/CppNumericalSolvers/">CppNumericalSolvers</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/IML_Eigen/">IML_Eigen</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/MatrixData/">MatrixData</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/MatrixMarketReadersMatlab/">MatrixMarketReadersMatlab</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/redsvd-h/">redsvd-h</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/SparseBlockMatrix/">SparseBlockMatrix</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/spectra/">spectra</a><br>
+	│   ├── <a class="DIR" href="./srcLinearAlgebra/Thomas/">Thomas</a><br>
+	│   └── <a class="DIR" href="./srcLinearAlgebra/ZeroOfPolynomials/">ZeroOfPolynomials</a><br>
 	├── <a class="DIR" href="./src/LinearAlgebraUtil/">LinearAlgebraUtil</a><br>
-	│   └── <a class="DIR" href="./src/LinearAlgebraUtil/test/">test</a><br>
+	│   └── <a class="DIR" href="./srcLinearAlgebraUtil/test/">test</a><br>
 	├── <a class="DIR" href="./src/LineSearch/">LineSearch</a><br>
 	├── <a class="DIR" href="./src/Linkage/">Linkage</a><br>
 	├── <a class="DIR" href="./src/LoadLibraries/">LoadLibraries</a><br>
+	├── <a class="DIR" href="./src/Matrix/">Matrix</a><br>
 	├── <a class="DIR" href="./src/Mesh/">Mesh</a><br>
-	│   └── <a class="DIR" href="./src/Mesh/Test/">Test</a><br>
+	│   └── <a class="DIR" href="./srcMesh/Test/">Test</a><br>
 	├── <a class="DIR" href="./src/MetaProgramming/">MetaProgramming</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/DecltypeDeclVal/">DecltypeDeclVal</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/GCD/">GCD</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/ifthenelse/">ifthenelse</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/IsClonable/">IsClonable</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/MetaDot/">MetaDot</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/Pi/">Pi</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/SwitchType/">SwitchType</a><br>
-	│   ├── <a class="DIR" href="./src/MetaProgramming/transposeView/">transposeView</a><br>
-	│   └── <a class="DIR" href="./src/MetaProgramming/Trivial/">Trivial</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/DecltypeDeclVal/">DecltypeDeclVal</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/GCD/">GCD</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/ifthenelse/">ifthenelse</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/IsClonable/">IsClonable</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/MetaDot/">MetaDot</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/Pi/">Pi</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/SwitchType/">SwitchType</a><br>
+	│   ├── <a class="DIR" href="./srcMetaProgramming/transposeView/">transposeView</a><br>
+	│   └── <a class="DIR" href="./srcMetaProgramming/Trivial/">Trivial</a><br>
 	├── <a class="DIR" href="./src/MoveSemantic/">MoveSemantic</a><br>
 	├── <a class="DIR" href="./src/MoveSemantic_simple/">MoveSemantic_simple</a><br>
 	├── <a class="DIR" href="./src/MultiCity/">MultiCity</a><br>
 	├── <a class="DIR" href="./src/muParserInterface/">muParserInterface</a><br>
 	├── <a class="DIR" href="./src/MyMat0/">MyMat0</a><br>
-	│   └── <a class="DIR" href="./src/MyMat0/MyMat0_TypeTraitAndView/">MyMat0_TypeTraitAndView</a><br>
+	│   └── <a class="DIR" href="./srcMyMat0/MyMat0_TypeTraitAndView/">MyMat0_TypeTraitAndView</a><br>
 	├── <a class="DIR" href="./src/NewtonSolver/">NewtonSolver</a><br>
 	├── <a class="DIR" href="./src/NonLynSys/">NonLynSys</a><br>
 	├── <a class="DIR" href="./src/Numeric_Limits/">Numeric_Limits</a><br>
 	├── <a class="DIR" href="./src/Odr/">Odr</a><br>
 	├── <a class="DIR" href="./src/OneDMesh/">OneDMesh</a><br>
 	├── <a class="DIR" href="./src/OptimizationAndProfiling/">OptimizationAndProfiling</a><br>
+	├── <a class="DIR" href="./src/OrderingAndSpaceShip/">OrderingAndSpaceShip</a><br>
 	├── <a class="DIR" href="./src/Parallel/">Parallel</a><br>
-	│   ├── <a class="DIR" href="./src/Parallel/MPI/">MPI</a><br>
-	│   ├── <a class="DIR" href="./src/Parallel/OpenMP/">OpenMP</a><br>
-	│   └── <a class="DIR" href="./src/Parallel/ParallelSTL/">ParallelSTL</a><br>
+	│   ├── <a class="DIR" href="./srcParallel/MPI/">MPI</a><br>
+	│   ├── <a class="DIR" href="./srcParallel/OpenMP/">OpenMP</a><br>
+	│   ├── <a class="DIR" href="./srcParallel/ParallelSTL/">ParallelSTL</a><br>
+	│   └── <a class="DIR" href="./srcParallel/Utilities/">Utilities</a><br>
 	├── <a class="DIR" href="./src/Plugins/">Plugins</a><br>
-	│   ├── <a class="DIR" href="./src/Plugins/FactoryPlugin/">FactoryPlugin</a><br>
-	│   └── <a class="DIR" href="./src/Plugins/FactoryPluginII/">FactoryPluginII</a><br>
+	│   ├── <a class="DIR" href="./srcPlugins/FactoryPlugin/">FactoryPlugin</a><br>
+	│   └── <a class="DIR" href="./srcPlugins/FactoryPluginII/">FactoryPluginII</a><br>
+	├── <a class="DIR" href="./src/PointInSimplex/">PointInSimplex</a><br>
 	├── <a class="DIR" href="./src/Polygon/">Polygon</a><br>
 	├── <a class="DIR" href="./src/Polynomials/">Polynomials</a><br>
 	├── <a class="DIR" href="./src/Preprocessor/">Preprocessor</a><br>
+	├── <a class="DIR" href="./src/pybind11/">pybind11</a><br>
+	│   ├── <a class="DIR" href="./srcpybind11/basicZeroFun/">basicZeroFun</a><br>
+	│   ├── <a class="DIR" href="./srcpybind11/numpyEigen/">numpyEigen</a><br>
+	│   ├── <a class="DIR" href="./srcpybind11/OneDMesh/">OneDMesh</a><br>
+	│   ├── <a class="DIR" href="./srcpybind11/pybind11_examples/">pybind11_examples</a><br>
+	│   └── <a class="DIR" href="./srcpybind11/simple/">simple</a><br>
 	├── <a class="DIR" href="./src/QuadratureRule/">QuadratureRule</a><br>
-	│   ├── <a class="DIR" href="./src/QuadratureRule/AllDynamic/">AllDynamic</a><br>
-	│   └── <a class="DIR" href="./src/QuadratureRule/baseVersion/">baseVersion</a><br>
+	│   ├── <a class="DIR" href="./srcQuadratureRule/AllDynamic/">AllDynamic</a><br>
+	│   └── <a class="DIR" href="./srcQuadratureRule/baseVersion/">baseVersion</a><br>
 	├── <a class="DIR" href="./src/RandomDistibutions/">RandomDistibutions</a><br>
 	├── <a class="DIR" href="./src/Rational/">Rational</a><br>
 	├── <a class="DIR" href="./src/ReadingVectors/">ReadingVectors</a><br>
-	├── <a class="DIR" href="./src/RefBindings/">RefBindings</a><br>
 	├── <a class="DIR" href="./src/ReferenceWrapper/">ReferenceWrapper</a><br>
 	├── <a class="DIR" href="./src/Regression/">Regression</a><br>
-	│   ├── <a class="DIR" href="./src/Regression/auto/">auto</a><br>
-	│   └── <a class="DIR" href="./src/Regression/doc/">doc</a><br>
 	├── <a class="DIR" href="./src/Richardson/">Richardson</a><br>
-	│   └── <a class="DIR" href="./src/Richardson/auto/">auto</a><br>
 	├── <a class="DIR" href="./src/RK45/">RK45</a><br>
 	├── <a class="DIR" href="./src/RKFSolver/">RKFSolver</a><br>
-	│   └── <a class="DIR" href="./src/RKFSolver/RKStability/">RKStability</a><br>
+	│   └── <a class="DIR" href="./srcRKFSolver/RKStability/">RKStability</a><br>
 	├── <a class="DIR" href="./src/Scope/">Scope</a><br>
+	├── <a class="DIR" href="./src/SegmentIntersect/">SegmentIntersect</a><br>
 	├── <a class="DIR" href="./src/SharedLibrary/">SharedLibrary</a><br>
-	│   └── <a class="DIR" href="./src/SharedLibrary/DynamicLoading/">DynamicLoading</a><br>
+	│   └── <a class="DIR" href="./srcSharedLibrary/DynamicLoading/">DynamicLoading</a><br>
 	├── <a class="DIR" href="./src/SimpleProgram/">SimpleProgram</a><br>
 	├── <a class="DIR" href="./src/SmartPointers/">SmartPointers</a><br>
 	├── <a class="DIR" href="./src/StaticMembers/">StaticMembers</a><br>
 	├── <a class="DIR" href="./src/STL/">STL</a><br>
-	│   ├── <a class="DIR" href="./src/STL/cont/">cont</a><br>
-	│   ├── <a class="DIR" href="./src/STL/FileSystem/">FileSystem</a><br>
-	│   ├── <a class="DIR" href="./src/STL/Map/">Map</a><br>
-	│   ├── <a class="DIR" href="./src/STL/Optional/">Optional</a><br>
-	│   ├── <a class="DIR" href="./src/STL/Reduce/">Reduce</a><br>
-	│   ├── <a class="DIR" href="./src/STL/Set/">Set</a><br>
-	│   ├── <a class="DIR" href="./src/STL/SetEdge/">SetEdge</a><br>
-	│   ├── <a class="DIR" href="./src/STL/Sort/">Sort</a><br>
-	│   ├── <a class="DIR" href="./src/STL/SortAndPermute/">SortAndPermute</a><br>
-	│   ├── <a class="DIR" href="./src/STL/tuple/">tuple</a><br>
-	│   ├── <a class="DIR" href="./src/STL/UnorderedMap/">UnorderedMap</a><br>
-	│   └── <a class="DIR" href="./src/STL/Variant/">Variant</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/cont/">cont</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/FileSystem/">FileSystem</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/InitializerList/">InitializerList</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/Map/">Map</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/Optional/">Optional</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/RangesAndViews/">RangesAndViews</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/Reduce/">Reduce</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/Set/">Set</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/SetEdge/">SetEdge</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/Sort/">Sort</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/SortAndPermute/">SortAndPermute</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/tuple/">tuple</a><br>
+	│   ├── <a class="DIR" href="./srcSTL/UnorderedMap/">UnorderedMap</a><br>
+	│   └── <a class="DIR" href="./srcSTL/Variant/">Variant</a><br>
 	├── <a class="DIR" href="./src/Streams/">Streams</a><br>
-	│   ├── <a class="DIR" href="./src/Streams/binary_io/">binary_io</a><br>
-	│   ├── <a class="DIR" href="./src/Streams/fstream/">fstream</a><br>
-	│   ├── <a class="DIR" href="./src/Streams/iostream/">iostream</a><br>
-	│   ├── <a class="DIR" href="./src/Streams/redirect/">redirect</a><br>
-	│   ├── <a class="DIR" href="./src/Streams/Serialization/">Serialization</a><br>
-	│   └── <a class="DIR" href="./src/Streams/sstream/">sstream</a><br>
+	│   ├── <a class="DIR" href="./srcStreams/binary_io/">binary_io</a><br>
+	│   ├── <a class="DIR" href="./srcStreams/fstream/">fstream</a><br>
+	│   ├── <a class="DIR" href="./srcStreams/iostream/">iostream</a><br>
+	│   ├── <a class="DIR" href="./srcStreams/redirect/">redirect</a><br>
+	│   ├── <a class="DIR" href="./srcStreams/Serialization/">Serialization</a><br>
+	│   └── <a class="DIR" href="./srcStreams/sstream/">sstream</a><br>
 	├── <a class="DIR" href="./src/StringLiterals/">StringLiterals</a><br>
 	├── <a class="DIR" href="./src/Templates/">Templates</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/Compare/">Compare</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/ExplicitInstantiation/">ExplicitInstantiation</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/Fibonacci/">Fibonacci</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/Functions/">Functions</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/Interpolation/">Interpolation</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/Mean/">Mean</a><br>
-	│   ├── <a class="DIR" href="./src/Templates/traits/">traits</a><br>
-	│   └── <a class="DIR" href="./src/Templates/VariadicTemplates/">VariadicTemplates</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/Compare/">Compare</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/ExplicitInstantiation/">ExplicitInstantiation</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/Fibonacci/">Fibonacci</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/Functions/">Functions</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/Interpolation/">Interpolation</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/Mean/">Mean</a><br>
+	│   ├── <a class="DIR" href="./srcTemplates/traits/">traits</a><br>
+	│   └── <a class="DIR" href="./srcTemplates/VariadicTemplates/">VariadicTemplates</a><br>
 	├── <a class="DIR" href="./src/Utilities/">Utilities</a><br>
 	└── <a class="DIR" href="./src/Vector/">Vector</a><br>
-	&nbsp;&nbsp;&nbsp; ├── <a class="DIR" href="./src/Vector/Basics/">Basics</a><br>
-	&nbsp;&nbsp;&nbsp; └── <a class="DIR" href="./src/Vector/Remove/">Remove</a><br>
-	<br><br>
-	</p>
-	<p>
+	&nbsp;&nbsp;&nbsp; ├── <a class="DIR" href="./srcVector/Basics/">Basics</a><br>
+	&nbsp;&nbsp;&nbsp; └── <a class="DIR" href="./srcVector/Remove/">Remove</a><br>
+<br><br><p>
 
-141 directories
-	<br><br>
-	</p>
+152 directories
+
+</p>
 	<hr>
 	<p class="VERSION">
-		 tree v1.8.0 © 1996 - 2018 by Steve Baker and Thomas Moore <br>
+		 tree v2.0.2 © 1996 - 2022 by Steve Baker and Thomas Moore <br>
 		 HTML output hacked and copyleft © 1998 by Francesc Rocher <br>
 		 JSON output hacked and copyleft © 2014 by Florian Sesser <br>
 		 Charsets / OS/2 support © 2001 by Kyosuke Tokoro

@@ -1,15 +1,14 @@
 # A generic implementation of an Alternate Digital Tree (ADT) for spatial searches #
 
 An ADT tree is a binary tree that stores "Cartesian boxes" or points (a point is a 0d Box) and allows a fast search for intersections or inclusions.
-Compared to other binary spatial search strategies, like RB trees, its advantage is the flexibility in addition/deletion of new nodes,, at the price of no control on 
-equilibration of the underlying binary tree.  It may be therefore advantageous in a very dynamic setting, less in more static ones.
+Compared to other binary spatial search strategies, like RB trees, its advantage is the flexibility in addition/deletion of new node, at the price of lack of control on the equilibration of the underlying binary tree.  It may be therefore advantageous in a very dynamic setting, less in more static ones.
 
 It is a *region based* data structure: the position of a node depends on its coordinates, not on those of its parent node in the tree.
 
 The name comes from the fact that in theory (but complicated in practice) it may be reduced to the analysis of individual bits.
 
 Just to illustrate the point let's consider the case an ADT tree that stores four 1D points represented in binary format.
-The points are p1=1001 p2=0100 p3=0110 p4=0001. They are inserted in the structure one at a time. p1 will go at the root of the tree. Then we insert p2. The root is already used so we look at the digit corresponding to the root level (which is level 1). So we look at the first digit. if the digit is zero we move to the left, if it is one we move to the right. Since the first digit of p2 is 0 we place it to the left of p1:
+The points are p1=1001 p2=0100 p3=0110 p4=0001. They are inserted in the structure one at a time. p1 will go at the root of the tree. Then we insert p2. The root is already used so we look at the digit corresponding to the root level (which is level 0). So we look at the first digit. if the digit is zero we move to the left, if it is one we move to the right. Since the first digit of p2 is 0 we place it to the left of p1:
 
 ```
           p1
@@ -41,10 +40,10 @@ Now p4: the second digit is 0 and the place at the left of p2 is available:
 
 Clearly we normally operate with floating point numbers, and each point has more than one coordinate. 
 The fact that we use floating points and not binary numbers is solved easily 
-if we now the max and min coordinates of all points that are going to be inserted. 
+if we the max and min coordinates of all points that are going to be inserted. 
 This is indeed another requirement for our ADT implementation. Then, after a re-scaling 
 of the coordinates between 0 and 1, one can test them  against 2<sup>-l</sup>, l being the level of the tree, 
-to decide to move to the left or right branch.
+to decide whether to move to the left or the right branch.
 
 Finally, how to treat points in nD and Boxes? Here we find out the meaning of the term "alternating": 
 the test is done alternating across the dimension: in a nD, with point's coordinates (x<sub>0</sub>,..,x<sub>i</sub>,..x<sub>nD</sub>) the test is made rotating cycling the coordinates and against 2<sup>-l/nD</sup> (integer division). Note that it means that at tree level l we test coordinate with index l mod nD.
@@ -61,7 +60,7 @@ The code provides the class template
   template <std::size_t DIM, AdtType Type = AdtType::Box> 
   class Box
 ```
-tho define a Box. `AdtType` can be either `AdtType::Point` or `AdtType::Box`. 
+to define a Box. `AdtType` can be either `AdtType::Point` or `AdtType::Box`. 
 In the first case the Box is infact a single point. `DIM` is the physical dimension. 
 
 The basic element to be stored in the AdtTree is the **AdtNode**, defined by the variadic template class
@@ -196,7 +195,7 @@ The key is the following line in `AdtTree::visit()`
 - `GoRight` go only to the right branch (if not empty)
 - `GoAll`  continue preorder trasversal by visiting both branches (left first).
 
-The visitor technique allow to develop differnt search algorithm using the same structure. For instance the `BasicTrasversal` visitor just visits all mesh nodes collecting the indexes. While,
+The visitor technique allow to develop different search algorithms using the same structure. For instance the `BasicTrasversal` visitor just visits all mesh nodes collecting the indexes. While,
 
 ```
 template <std::size_t DIM, BOXTYPE>
@@ -212,8 +211,8 @@ template<typename ADTNODE>
 ```
 where 
 - `node` is the node being visited
-- `control` is the control structure of type   `template <std::size_t BOXDIMS> class NodeControl` whihc returns the information on the level and position in the tree structure
-- `level` The level of the tree.
+- `control` is the control structure of type   `template <std::size_t BOXDIMS> class NodeControl` which returns the information on the level and position in the tree structure
+- `level` The level on the tree.
 
 **A Note** The `control` structure is a bit complicated, but it is used to avoid code replication. It is a template class that returns the information on the level and position in the tree structure. The template parameter `BOXDIMS` is the dimension of the box.
 

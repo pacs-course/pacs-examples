@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+# A simple utility to transform a windows text file to a
+# unix text file, strimming out te hideous cr/lf pair.
+# For safety, it keeps the old file(s) by adding the suffix
+# .backup. You can remove them if everything is ok (and normally it is).
+# The script make sure that the converted file keeps permissions and
+# modification times as the original one. The only difference is the way
+# newline is represented.
+#
 SUFFIX=backup
 for f in $*; do
    echo $f

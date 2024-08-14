@@ -65,10 +65,11 @@ public:
     this->options = options;
   }
   //! To set, or change the iteration function
+  template <typename IF = IterationFunction>
   void
-  setIterationFunction(const IterationFunction &ifun)
+  setIterationFunction(IterationFunction&& ifun)
   {
-    phi = ifun;
+    phi = std::forward<IF>(ifun);
   }
   //! Allow to access the accelerator
   /*!

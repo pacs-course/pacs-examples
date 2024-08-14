@@ -62,7 +62,7 @@ main()
                        [](double const &x) { return std::sin(x); });
   factory.addToFactory("Function 2",
                        [](double const &x) { return std::cos(x); });
-  // if uncomemnted I have an error
+  // if uncommented I have an error
   // factory.addToFactory("Function 2",[](double const &x){return
   // std::tan(x);}); Get one function with the identifier
   auto fun = factory.getFunction("Function 2");

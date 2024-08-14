@@ -68,50 +68,15 @@ Brace list initialization is avaliable also for vectors and the other dynamic co
 of the standard library (like sets or lists). But **it is not aggregate initialization** (indeed, those containersa are not aggregates).
 See the next section to understand how brace initialization is valid also to std containers that are not aggregates.
 
-# Brace (uniform) initialization #
+### Relation with "Trivially Copy Constructible"
 
-With brace initialization we indicate the effort tha C++ has made since c++11 to provide a uniform way to initialize objects. This has very important implications that makes C++ programming simpler and safer, particularly in generic programming. The common characteristics is the use of braces `{}` instead of the 
-parentesis `()`. However the meaning of the braces may be different
+The concept of being "trivially copy constructible" is related but distinct from being an aggregate. A class is trivially copy constructible if:
 
-- POD data
-``````
-double a{10.}
-``````
-is just equivalent to `a(10.)`. The only difference is that braces do not allow narrowing, i.e. implicit conversions with potential loss of precision (which is a good safety measure):
+1. It has a copy constructor that is not user-provided (i.e., the compiler generates it).
+2. Its copy constructor is not deleted and is trivial (does not perform any custom operations).
+3. All its non-static data members and base classes are themselves trivially copy constructible.
 
-``````
-double c=5.; // this is just a copy-initialization, perfectly valid
-float a{c}; // ettor double -> float conversion loses precision 
-``````
+The relationship between aggregates and trivially copy constructible types lies in the simplicity and efficiency of operations. Aggregates, by definition, do not have custom constructors, destructors, or assignment operators, making them candidates for trivial operations, including copy construction. However, being an aggregate does not automatically make a class trivially copy constructible. The class must also meet the criteria for trivial copy construction, which includes having all of its non-static data members and any base classes be trivially copy constructible.
 
-- Initialization via constructors
-`std::complex<T>` has a constructor that takes to values of type `T`. Thus,
-
-``````
-std::complex<double> c{3.,4.};
-``````
-is equivalent to 
-
-``````
-std::complex<double> c(3.,4.);
-``````
-but. again, narrowing is not allowed.
-
-- Aggregate initialization. We have just discussed it. Valid for aggregates and, in particular, C-style arrays and `std::array`.
-For `std::array` there is a little caveat, since a `std::array` is an aggregate containing another aggregate (a C-style array). So sometimes you need to double the braces. I leave out those details here. In doubt, consult a good reference!
-
-- Initializer list initialization.
-`std::initializer_list<T>` is a template aggregate defined by the standard library with the purpose to extend to container-type objects
-the brace initialization syntax already available for fixed sixe C-style arrays and `std::array` (which are both aggregates). Indeed, if you look in a reference manual, you see that, for instance, `std::vector` has a constructor with signature
-``````
-vector(std::initializer_list<T> init,const Allocator& alloc = Allocator());
-``````
-Let's forget about the allocator, which has a default value. Here `init` is a `initializer_list` and is the tool that allows 
-``````
-std::vector<double> a{1.,2.,3.};
-// as well as
-std::vector<double> b={-1.,-2.};
-``````
-
-Brace initialization has several advantages and *should be preferred to the old parenthesis*. A part a few cases, notably `vector<int> a(2,10))` (a vector of 10 elements equal to 2)  cannot be replaced by `vector<double> a{2,10}` (a vector of 2 elements equal to 2 and 10). 
+In summary, while all aggregates have the potential to be trivially copy constructible if their members are also trivially copy constructible, not all trivially copy constructible classes are aggregates. The distinction primarily lies in the additional structural restrictions placed on aggregates (e.g., no user-declared constructors) that do not apply to all trivially copy constructible classes.
 

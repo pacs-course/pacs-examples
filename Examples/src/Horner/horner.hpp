@@ -20,13 +20,18 @@ double eval(std::vector<double> const &a, double const &x);
 */
 double horner(std::vector<double> const &a, double const &x);
 
-// This only to show the use of pointers to function to implement a policy
-//! A pointer to function.
-//
-//using polyEval = double (*)(std::vector<double> const &, double const &);
+//! It evaluates a polynomial using horner rule. Version using c++20 ranges
+/*!
+    \f$ y=(\ldots(a_n x+a_{n-1})x+a_{n-2})x\ldots +a_0   \f$
 
-// using function wrapper, nicer.
+    @param a vector containing the coefficients from lowest to highest order.
+    @param x evaluation point.
+*/
+double horner_range(std::vector<double> const &a, double const &x);
 
+
+
+// using a function wrapper to specify the policy
 using polyEval = std::function<double (std::vector<double> const &, double const &)>;
 //! Evaluates polynomial in a set of points.
 /*!
