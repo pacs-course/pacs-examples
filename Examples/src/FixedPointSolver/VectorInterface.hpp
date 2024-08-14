@@ -77,7 +77,8 @@ dot(std::vector<T> const &a, std::vector<T> const &b)
 }
 
 /*!
- * Eigen matrices (and thus also vectors) have a method saredNorm that return
+ * @brief Squared norm of an Eigen vector
+ * @details Eigen matrices (and thus also vectors) have a method sqaredNorm that returns
  * the square of the norm. I need to have an adapter that provides an interface
  * usable also with standard vectors. The considerations made for dot() apply
  * also here.
@@ -92,7 +93,7 @@ squaredNorm(const Eigen::MatrixBase<Derived> &a)
   return a.squaredNorm();
 }
 /*!
- * The overload of sqaredNorm for vector
+ * The definition of squaredNorm for vector
  * @tparam T The type stored in the vector
  * @param a the vector
  * @return the squared norm
@@ -108,9 +109,10 @@ squaredNorm(std::vector<T> const &a)
 /*!
  * Addition for vectors
  * @tparam T The type contained in the vector
- * @param a
- * @param b
+ * @param a The first vector
+ * @param b The second vector
  * @return the addition
+ * @pre The two vectors must have the same size
  */
 template <class T>
 std::vector<T>
@@ -129,6 +131,14 @@ operator+(std::vector<T> const &a, std::vector<T> const &b)
   return res;
 }
 
+/*!
+  * Subtraction for vectors
+  * @tparam T The type contained in the vector
+  * @param a The first vector
+  * @param b The second vector
+  * @return the subtraction
+  * @pre The two vectors must have the same size
+*/
 template <typename T>
 std::vector<T>
 operator-(std::vector<T> const &a, std::vector<T> const &b)
@@ -181,13 +191,15 @@ operator*(std::vector<T> const &b, T const &a)
 }
 
 /*!
- * Often we need the squared distance of the point. I wrota an utility for the
+ * Often we need the squared distance of two vectors. I wrote an utility for the
  * purpose. Here the version for Eigen.
  * @tparam Derived The type of the first vector
  * @tparam OtherDerived The type of the second vector
  * @param a the first vector
  * @param b the second vector
  * @return ||a-b||^2
+ * @note The return type is the same as the one returned by squaredNorm()
+ * @pre The two vectors must have the same size
  */
 template <typename Derived, typename OtherDerived>
 decltype(auto)
@@ -196,7 +208,15 @@ squaredDistance(const Eigen::MatrixBase<Derived> &     a,
 {
   return (a - b).squaredNorm();
 }
-
+/*!
+  * The version for standard vectors
+  * @tparam T The type contained in the vector
+  * @param a The first vector
+  * @param b The second vector
+  * @return ||a-b||^2
+  * @note The return type is the same as the one returned by squaredNorm()
+  * @pre The two vectors must have the same size
+  */
 template <typename T>
 T
 squaredDistance(std::vector<T> const &a, std::vector<T> const &b)

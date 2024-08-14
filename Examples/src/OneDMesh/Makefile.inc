@@ -1,3 +1,4 @@
+CXX+=-fopenmp
 LIBNAME=Mesh1D
 LDLIBS=-L$(PACS_LIB_DIR)
 LIBD=-L$(PACS_LIB_DIR) 

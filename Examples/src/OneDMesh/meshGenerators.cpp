@@ -1,23 +1,24 @@
 #include "meshGenerators.hpp"
 #include <algorithm>
 #include <stdexcept>
-//#include "rk45.hpp"
-// use the new version
+// #include "rk45.hpp"
+//  use the new version
 #include "RKF.hpp"
 namespace Geometry
 {
 MeshNodes
 Uniform::operator()() const
 {
-  auto const & n = this->M_num_elements;
-  auto const & a = this->M_domain.left();
-  auto const & b = this->M_domain.right();
+  auto const &n = this->M_num_elements;
+  auto const &a = this->M_domain.left();
+  auto const &b = this->M_domain.right();
   if(n == 0)
     throw std::runtime_error("At least two elements");
-  MeshNodes mesh(n + 1);
-  double    h = (b - a) / static_cast<double>(n);
+  MeshNodes    mesh(n + 1);
+  double const h = (b - a) / static_cast<double>(n);
+#pragma omp parallel for
   for(auto i = 0u; i < n; ++i)
-    mesh[i] = a + h * static_cast<double>(i);
+    mesh[i] = a + h * i;
   mesh[n] = b;
   return mesh;
 }
@@ -33,28 +34,36 @@ VariableSize::operator()() const
   auto const h_max = (T - t0) / 4.;
   auto const h_initial = h_max / 100.;
   double constexpr final_error = 1e-2;
-  std::size_t maxSteps = 20000;
+  std::size_t constexpr maxSteps = 20000;
 
   auto fun = [this](double const &x, double const &) {
     return 1. / this->M_h(x);
   };
-  apsc::RKF<apsc::RKFScheme::RK45_t, apsc::RKFKind::SCALAR> solver{
-    apsc::RKFScheme::RK45, fun};
-  // NOTE This part is a little cumbersome but needed to update from a previous
-  // version of the ODEs solver which returned the results in a different
-  // structure. I use a block scope to delete variables that are only used to
-  // interface with the new version of the RKF code
+  apsc::RKF<apsc::RKFScheme::RK45_t, apsc::RKFKind::SCALAR> solver{fun};
+  // NOTE This part is a little cumbersome but needed to update from a
+  // previous version of the ODEs solver which returned the results in a
+  // different structure. I use a block scope to delete variables that are
+  // only used to interface with the new version of the RKF code
   std::vector<std::pair<double, double>> solution;
   {
     auto RKFsolution = solver(t0, T, y0, h_initial, final_error, maxSteps);
     if(RKFsolution.failed)
       std::cerr << "MESH GENERATION HAD A PROBLEM. CONTINUING BUT CHECK!\n";
-    solution.reserve(RKFsolution.time.size());
+    solution.resize(RKFsolution.time.size());
+    /*for loop version */
+#pragma omp parallel for shared(solution, RKFsolution) default(none)
     for(auto i = 0u; i < RKFsolution.time.size(); ++i)
       {
-        solution.emplace_back(
-          std::make_pair(RKFsolution.time[i], RKFsolution.y[i]));
+        solution[i] = std::make_pair(RKFsolution.time[i], RKFsolution.y[i]);
       }
+    /* With a c++ algorithm
+          std::transform(std::execution::par,
+                        RKFsolution.time.begin(), RKFsolution.time.end(),
+                        RKFsolution.y.begin(), solution.begin(),
+                        [](double const &x, double const &y) {
+                        return std::make_pair(x, y);
+                         });
+    */
     // Here RKFResult is killed
   }
 
@@ -68,15 +77,19 @@ VariableSize::operator()() const
   // rescale
   using pDouble = std::pair<double, double>;
   double scaling = numElements / lastValue;
-  std::transform(solution.begin(), solution.end(), solution.begin(),
-                 [scaling](pDouble const &x) {
-                   return std::make_pair(x.first, x.second * scaling);
-                 });
-  mesh.reserve(numElements + 1);   // I need to store the nodes
-  mesh.push_back(M_domain.left()); // first node
+// rescale
+#pragma omp parallel for shared(solution) firstprivate(scaling) default(none)
+  for(auto i = 0u; i < solution.size(); ++i)
+    {
+      solution[i].second *= scaling;
+    }
+  // Now I need to interpolate the solution
+  mesh.resize(numElements + 1);   // I need to store the nodes
+  mesh.front() = M_domain.left(); // first node
   // Now the internal nodes
   auto pos = solution.cbegin() + 1;
-  for(std::size_t i = 1; i < numElements; ++i)
+  // this loop cannot be made parallel
+  for(std::size_t i = 1u; i < numElements; ++i)
     {
       // find_if finds the first element satisfying the predicate
       auto found =
@@ -96,10 +109,10 @@ VariableSize::operator()() const
         throw std::runtime_error(
           "__FILE__,__LINE__: something wrong in the spacing function h");
       auto xpos = (xpos1 * (ypos2 - i) + xpos2 * (i - ypos1)) / (ypos2 - ypos1);
-      mesh.push_back(xpos);
+      mesh[i] = xpos;
     }
   // The last node
-  mesh.push_back(M_domain.right());
+  mesh.back() = M_domain.right();
   return mesh;
 }
 

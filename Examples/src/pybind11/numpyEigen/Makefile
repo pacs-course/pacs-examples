@@ -47,9 +47,13 @@ PY_INCLUDES != python3-config --includes
 PY_EXT != python3-config --extension-suffix
 PY_FLAGS=-fPIC -flto #flto is not strictly needed
 PY_MODULE=$(MODULENAME)$(PY_EXT)
-CXXFLAGS+=$(PY_FLAGS)
+CXXFLAGS+=$(PY_FLAGS) 
+# comment if you do not want to use blas and lapack 
+CPPFLAGS+=-DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE
 CPPFLAGS+=$(PY_INCLUDES)
-LDFLAGS+=-flto
+LDFLAGS+=-flto 
+# comment if you do not want to use blas and lapack
+LDLIBS+=-lblas -llapacke
 
 #========================== NEW THE DEFINITION OF THE TARGETS
 .phony= all clean distclean doc

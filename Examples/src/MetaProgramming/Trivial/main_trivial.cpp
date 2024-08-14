@@ -96,7 +96,7 @@ main()
   std::cout << " TriviallyCopyable:   "
             << std::is_trivial<TriviallyCopyable>::value << std::endl;
   std::cout << " StandardLayout:      "
-            << std::is_trivial<StandardLayout>::value << std::endl
+            << std::is_trivial_v<StandardLayout><< std::endl //to show the use of _v
             << std::endl;
 
   std::cout << " Is it trivially copiable?" << std::endl;
@@ -128,7 +128,7 @@ main()
             << std::endl;
 
   StandardLayout sl{5, 3.14}; // use uniform initialization
-  // In a standard layout class I can do this:
+  // In a standard layout class I can do this (even if its use is very uniteresting)
   int *psl = reinterpret_cast<int *>(&sl); // convert to pointer to first member
   // initialise with the dereferenced pointer
   StandardLayout s2 = *(reinterpret_cast<StandardLayout *>(psl));

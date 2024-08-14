@@ -56,6 +56,7 @@ bool inPolygon(Poly const &poly, std::array<double, 2> const &point);
  * It works by testing if the horizontal line has an  even number of
  * intersection with the edges
  *
+ * @note This is a proprotypal version. 
  * @tparam Poly A structure so that [i] returns a std::array<double,2>
  * @param poly A structure so that [i] returns a std::array<double,2> and
  * [i][j] returns the j-th coordinate of the i--th vertex
@@ -100,21 +101,22 @@ bool
 inPolygonFast(Poly const &poly, std::array<double, 2> const &point)
 {
   using Point = std::array<double, 2>;
-  // the vector b-a stored in an array
+  //! Check if we are in the halfspace defined by the vertical line to the left of the point
   auto halfspace = [&point](Point const &a) { return a[0] >= point[0]; };
 
-  // Dot producto of two arrays
+  //! Check if the edge is valid for the horizontal line. At least one points is in the right halfspace
   auto edgeValid = [&point, &halfspace](Point const &a, Point const &b) {
     return halfspace(a) or halfspace(b);
   };
 
-  // Get the vector defining the normal to the  i-th edge of the polygon
+  //! Finds if the horizontal line intersects the edge
   auto intersectHorizontalHalfPlane = [&point, &edgeValid](Point const &a,
                                                            Point const &b)
   {
     bool ok=false;
     if (edgeValid(a, b))
       {
+        // note the fact the the interval is open on the left to avoid counting twice the vertexes
         if( (a[1] < point[1] and b[1] >= point[1]) or
              (b[1] < point[1] and a[1] >= point[1])
            )
@@ -127,14 +129,17 @@ inPolygonFast(Poly const &poly, std::array<double, 2> const &point)
   };
 
   unsigned count = 0u;
-  for(std::size_t i = 0u; i < poly.size(); ++i)
+  auto a=poly[0]; // initial point
+  for(std::size_t i = 1u; i <= poly.size(); ++i)
     {
-      auto a = poly[i];
-      auto b = poly[(i + 1u) % poly.size()];
+      auto b = poly[i % poly.size()];
+
       if(intersectHorizontalHalfPlane(a, b))
         ++count;
+      a=b;
     }
+    // Inside if only odd intersections
   return count % 2 == 1;
 }
 } // namespace apsc
-#endif // C_INTRIANGLE_HPP
+#endif // C_INPOLYGON_HPP

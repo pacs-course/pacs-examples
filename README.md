@@ -1,10 +1,8 @@
 EXAMPLES AND EXERCISES FOR AMSC and APSC (PACS) COURSES
 --------------------------------------
-
 This repo contains source code and descriptions for the examples and exercises
 that will be explained during the PACS (Programmazione Avanzata per il Calcolo
 Scientifico - Advanced Programming for Scientific Computing) and Advanced Methods for Scientific Computing (AMSC) courses at Politecnico di Milano.
-
 **A NOTE** For the AMSC course, only a subset of the examples will be used at the lectures and labs. 
 However, I encourage interested students to look at the various examples.
 
@@ -36,7 +34,7 @@ or just from this directory,
 The software requires a C++ compiler, i.e., gcc >= 8.0 or clang >= 8.
 You may check the version of your compiler with the option -v. Several examples have now been ported to c++17
 and some examples of c++20 are being added. Check whether your compile supports those standards. You may have a look
-on https://en.cppreference.com/w/cpp/compiler_support
+at https://en.cppreference.com/w/cpp/compiler_support
 
 You may want to use some IDE. Either [eclipse](https://www.eclipse.org/ide/), [CLion](https://www.jetbrains.com/clion/) or [VisualStudio](https://www.jetbrains.com/clion/). Clion and VisualStudio allow integration with Copilot.
 
@@ -54,24 +52,21 @@ or
 . load_modules.sh
 ```
 
-will load the main modules used in the examples, a part hdf5 which is used only on the example on iostreams (binary file).
+will load the main modules used in the examples, a part `hdf5` which is used only on the example on input-output streams.
 
-**  install_modules.sh
+## Installing git submodules ## 
 
 If you do not have used --recursive when cloning this repo and you want to use
 the git submodules containing third-party software type:
 ```
-./install_modules
+./install_git_submodules.sh
 ```
 
 The file submodule_commands.txt contains some reminders of useful git commands for operating with submodules
 
+- `change_submodules_url.sh` changes the protocol of the submodules to https. You should not need it!
 
-** change_submodules_url.sh
-Change the protocol of the submodules to https. You should not need it!
-
-** change_submodules_url_ssh.sh
-Change the protocol of the submodules to ssh. You should not need it!
+- `change_submodules_url_ssh.sh` changes the protocol of the submodules to ssh. You should not need it!
 
 ## WHAT DO DO NEXT? ##
 
@@ -81,5 +76,6 @@ Change the protocol of the submodules to ssh. You should not need it!
 ## What ELSE? ##
 
 If you want the repository of the laboratories of the course, you can clone  [this repo](https://github.com/HPC-Courses/AMSC-Labs)
+
 
 

@@ -120,7 +120,7 @@ public:
   {
     return *resource_;
   }
-
+  bool empty()const {return resource_==nullptr;}
 private:
   apsc::PointerWrapper<Base> resource_;
 };
@@ -149,7 +149,7 @@ main()
   B.resource().setValue(55.);
   std::cout << "Now the resource in B is: (should be Derived1)";
   B.resource().whoAmI();
-  // But in A is unchenged, since A own its own resource uniquely (it is a
+  // But in A is unchanged, since A own its own resource uniquely (it is a
   // composition).
   std::cout << "The resource in A is still: (should be Derived1)";
   A.resource().whoAmI();
@@ -166,7 +166,8 @@ main()
   C = std::move(A);
   // Now the resource of A is empty and C has stolen it
   // The resource previously contained in C has been deleted and memory freed
-  std::cout << "C has stolen resource from A: ";
+  std::cout << "C has stolen resource from A: Is A empty? " << A.empty()
+            << " Is C empty? " << C.empty() << std::endl;
   C.resource().whoAmI();
   // Clearly I can choose (also run time) the concrete type
   Container D;

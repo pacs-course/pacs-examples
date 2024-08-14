@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import numpy as np
 import matplotlib.pyplot as plt
 import OneDMesh as odm
@@ -7,6 +8,7 @@ def h(x):
     return 1.05+np.sin(x)
 gen=odm.VariableSize(d,h,100)
 m2=odm.Mesh1D(gen) # max 100 elements non-uniformly distributed
+print(m2)
 m1v=np.zeros([m1.numNodes(),1])
 m2v=0.1*np.ones([m2.numNodes(),1])
 
