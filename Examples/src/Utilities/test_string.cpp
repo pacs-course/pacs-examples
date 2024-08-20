@@ -15,7 +15,7 @@ main()
   cout << "Upper Case   :" << Utility::toupper(a) << endl;
   cout << "lower case   :" << Utility::tolower(a) << endl;
   Utility::GlobbedTextReader globbedText("test_string.cpp");
-  std::stringstream &        sstream = globbedText.globbedText();
+  std::stringstream         &sstream = globbedText.globbedText();
   std::cout << "the stream contains " << sstream.str().size()
             << " characters\n";
   while(!sstream.eof() && !sstream.bad())
@@ -43,4 +43,14 @@ main()
       std::cout << v1[i] << "\t" << v2[i] << "\t"
                 << Utility::stringDistance(v1[i], v2[i]) << std::endl;
     }
+  // testing
+  std::ifstream myfile("test_string.cpp", std::ios::in | std::ios::binary);
+  if(!myfile.is_open())
+    {
+      myfile.close();
+      throw std::runtime_error("Cannot open file test_string.cpp");
+    }
+  auto globbedfile = Utility::readWholeFile(myfile);
+  std::cout << "The file has " << globbedfile.size() << " characters\n";
+  myfile.close();
 }

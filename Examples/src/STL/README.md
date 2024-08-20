@@ -1,4 +1,4 @@
-#Some utilities of the standard library#
+# Some utilities of the standard library #
 
 Some code examples in this directory are modified version of those in
 *The C++ Standard Library - A Tutorial and Reference, 2nd Edition"
@@ -35,7 +35,10 @@ It contins also an example of use of `std::visit()`.
 * `SortAndPermute` An useful utility if you need to sort a vector and keep track of the performed
 permutation to be able to apply it to other vectors.
 
-* `Streams` A set of examples on streams, including binary i/o.
+* `Span` A simple example descibing the `std::span` utility introduced in C++20 that provides a view over a contiguous sequence of elements and is a lightweight, non-owning reference to an array or a portion of an array.
+
+* `Streams` A set of examples on streams, including binary i/o and string streams. In the example contained in `binary_io/` also show the use of an utility declared in `Utilities/string_utility.hpp`
+that allows to read a whole file in a string.
 
 * `Map` A simple program that shows the main functionalities of `std::map`
 
@@ -43,7 +46,7 @@ permutation to be able to apply it to other vectors.
 
 
 
-#What do I lean here?#
+## What do I learn here? ##
 
 - A few standard algorithms, of the many;
 - The use of different comparison operators for ordered containers (an example of the Strategy design pattern).

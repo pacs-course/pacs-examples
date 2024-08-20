@@ -23,9 +23,11 @@ ranges_to_vector(std::ranges::range auto &&r)
   // A note: you can replace auto&& above with const auto &.
   // auto&& creates a forwarding reference, but no need of it here!
   // Anyway, if you prefer auto&& it is fine.
+  // Here I use std::ranges::range_value_t to extact the type
+  // of the elements of the range.
   std::vector<std::ranges::range_value_t<decltype(r)>> v;
   // If the range has the method size() we reserve the memory to speed up the
-  // copy
+  // copy. Again I usa another c++20 feature: std::ranges::sized_range
   if constexpr(std::ranges::sized_range<decltype(r)>)
     {
       v.reserve(std::ranges::size(r));
