@@ -2,10 +2,12 @@
 #define HHH_STRING_UTILITIES
 #include <algorithm>
 #include <cctype>
+#include <fstream>
 #include <functional>
 #include <locale>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -111,8 +113,8 @@ std::istringstream nextLine(std::istream &stream);
  * When consuming whitespace-delimited input (e.g. int n; std::cin >> n;) any
  * whitespace that follows, including a newline character, will be left on the
  * input stream. Then, when switching to line-oriented input, the first line
- * retrieved with getline() will be just that whitespace. In the likely case that
- * this is unwanted behaviour, possible solutions is to call this function
+ * retrieved with getline() will be just that whitespace. In the likely case
+ * that this is unwanted behaviour, possible solutions is to call this function
  * passing the stream to be cleaned up.
  *
  * @param istream The input stream
@@ -233,6 +235,23 @@ GlobbedTextReader::operator>>(T &data)
 {
   this->MyGlobbedText >> data;
   return *this;
+}
+
+/*!
+@brief It reads a whole file into a string. A simpler implementation of the
+GlobbedTextReader
+@details It uses the Scott Mayers trick. Maybe less efficient than the
+GlobbedTextReader technique but more elegant and simple. It is meant to be used
+when you need to read a whole file in a string.
+@param file The flile sttrem from which to read. It must be open ad ready to
+read
+@return The whole file in a string
+*/
+inline std::string
+readWholeFile(std::istream &file)
+{
+  return std::string{std::istreambuf_iterator<char>(file),
+                     std::istreambuf_iterator<char>()};
 }
 
 /*!
