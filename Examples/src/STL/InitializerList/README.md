@@ -6,5 +6,5 @@ An inizialiser list can be constructed using *brace initialization*, and this  a
 
 Indeed, in this example we show how an object of a  `Poly` class, meant to be a simple class storing a polygon defined by its vertices, can be initialised with the wanted vertices using braces. We show also that indeed `initializer_list<T>` may be used not just for initialization!
 
-#What do you learn here?#
-A little utility of the Standard Library, meant to simplify life.
+# What do you learn here? #
+A little utility of the Standard Library, meant to mak ethe initialization of container-type structure more uniform.
