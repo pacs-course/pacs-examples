@@ -65,6 +65,8 @@ We hve also traits and concepts to test sparse and dense matrices separately.
 * `is_specialization.hpp`. Type traits and concepts to test if a class is the specialization of a class template.
 
 * `JoinVectors.hpp` Just an example on how to imitate the `join` phyton command. You can use it to iterate jointly on a set of vectors. 
+  
+* `overloaded` A facility, called `overloaded` that implements the overloaded design pattern that may be used to visit a `std::variant`.
 
 * `parallel_for` An example of metaprogramming to implement a parallel for loop. I show also some example of use of concepts.
 
@@ -88,7 +90,6 @@ utilities of the Standard Library, but with a simpler interface.
 
 * `tuple_utilities` Contains some utilities for tuples:  `tuple_common_type_t<Tuple>` that returns the common tpe of all types contained in a tuple, and `for_each<Tuple F>` and `for_each2<Tuple, F>` that apply (possibly in parallel) the function object `F` to all elements of the tuple. The first one returns a tuple with the result, the second one does not and is thus applicable also if `F` is a void function. `all_of<Tuple,F>` and `any_of<Tuple,F>`, that apply predicate `F` to all elements of a tuple. The first returns true if the predicate is true for all elements, the second if it is true for at least one element.
    
-* `overloaded` A facility, called `overloaded` that implements the overloaded design pattern that may be used to visit a `std::variant`.
 
 
 
