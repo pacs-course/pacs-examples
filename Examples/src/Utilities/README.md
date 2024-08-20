@@ -34,14 +34,14 @@ if the arguments are both of signed or unsigned type. It gives an error otherwis
 
 * `chrono`  An utility to take times, built on the chrono utilities of the standard library.
 
-* `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class T containes the (usually virtual) method
+* `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class `T` contains the (usually virtual) method
 
 ```c++
 std::unique_prt<B> clone() const;
 ```
 
 that returns the pointer to a copy of the object wrapped into a
-unique_prt.  B can be either T or a base class of T. It also contains
+unique_prt.  `B` can be either `T` or a base class of `T`. It also contains
 an interesting class, called `PointerWrapper`, which implements an owning pointer with deep copy
 semantic! The "pointed" class should be clonable. It means that you can use it to implement composition of a polymorphic object and have autometically the copy operators in the composing class!
 
@@ -66,6 +66,8 @@ We hve also traits and concepts to test sparse and dense matrices separately.
 
 * `JoinVectors.hpp` Just an example on how to imitate the `join` phyton command. You can use it to iterate jointly on a set of vectors. 
 
+* `parallel_for` An example of metaprogramming to implement a parallel for loop. I show also some example of use of concepts.
+
 * `Proxy.hpp` It is not a proxy (bad naming, sorry). It is an utility that may be used to register objects in an object Factory automatically.
 
 * `range_to_vector` If you create a view of a range, for example using `std::views::iota`, of by applying views to a vector, you cannot use it to initialize a vector. A proposal is made to do this in a next c++ standard but so far we need to do it ourselves. This utility converts a range to a vector. It is a simple wrapper around `std::ranges::copy`. More information may be found [here](https://timur.audio/how-to-make-a-container-from-a-c20-range). 
@@ -82,9 +84,12 @@ utilities of the Standard Library, but with a simpler interface.
 
 * `string_utility` Some extra utilities for strings: trimming (eliminate useless blanks) and lower-upper conversion. We have recetly added utilities for reading a whole text file in a buffer (it is faster, though potentially memory consuming, and an utility that computed the Levenshtein edit distance between two strings).
 
-* `toString` Converts anything for which there is the `<<` streming operator to a string. A use of `std::stringstream`.
+* `toString` Converts anything for which there is the `<<` streaming operator to a string. A use of `std::stringstream`.
 
-* `overloaded` A facility, called `overloaded` that implements the overloaded design pattern that may be used to visit a std::variant.
+* `tuple_utilities` Contains some utilities for tuples:  `tuple_common_type_t<Tuple>` that returns the common tpe of all types contained in a tuple, and `for_each<Tuple F>` and `for_each2<Tuple, F>` that apply (possibly in parallel) the function object `F` to all elements of the tuple. The first one returns a tuple with the result, the second one does not and is thus applicable also if `F` is a void function. `all_of<Tuple,F>` and `any_of<Tuple,F>`, that apply predicate `F` to all elements of a tuple. The first returns true if the predicate is true for all elements, the second if it is true for at least one element.
+   
+* `overloaded` A facility, called `overloaded` that implements the overloaded design pattern that may be used to visit a `std::variant`.
+
 
 
 ** Note ** `Factory.hpp` and `Proxy.hpp` are in fact links to the same file in the folder `GenericFactory`. If the files are not present for some reason you may safely copy in `Utility/` the files in `GenericFactory/`.
