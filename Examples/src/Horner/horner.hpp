@@ -1,7 +1,7 @@
 #ifndef __HORNER_HPP__
 #define __HORNER_HPP__
-#include <vector>
 #include <functional>
+#include <vector>
 //! It evaluates a polynomial using standard rule.
 /*!
   \f$ y=a_0+a_1x+\ldots+a_nx^n\f$
@@ -29,16 +29,17 @@ double horner(std::vector<double> const &a, double const &x);
 */
 double horner_range(std::vector<double> const &a, double const &x);
 
-
-
 // using a function wrapper to specify the policy
-using polyEval = std::function<double (std::vector<double> const &, double const &)>;
+using polyEval =
+  std::function<double(std::vector<double> const &, double const &)>;
 //! Evaluates polynomial in a set of points.
 /*!
   @param point   Vector of points to compute the polynomial.
   @param a       Polynomial coefficients.
   @result        A vector with the evaluated points
   @param method  Method to evaluate the polynomial
+  @note if compiled with PARALLEXEC defined, it will use std::transform with
+  parallel execution.
  */
 std::vector<double> evaluatePoly(std::vector<double> const &points,
                                  std::vector<double> const &a, polyEval method);

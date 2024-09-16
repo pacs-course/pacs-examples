@@ -8,13 +8,13 @@
 #include <vector>
 #if defined(SINGLE_PRECISION)
 using Real = float;
-std::string filename("single.dat");
+std::string filename("single.csv");
 #elif defined(EXTENDED_PRECISION)
 using Real = long double;
-std::string filename("extended.dat");
+std::string filename("extended.csv");
 #else
 using Real = double;
-std::string filename("double.dat");
+std::string filename("double.csv");
 #endif
 
 // Global values (are outside any scope so I can change them in
@@ -22,12 +22,12 @@ std::string filename("double.dat");
 constexpr Real a = 100.0;
 constexpr Real b = 4.0;
 
-// I use lambdas and I exploit the fact that constexpr are capured automatically!
+// I use lambdas and I exploit the fact that constexpr are capured
+// automatically!
 //! \f$ f(x)=a e^{bx}\f$
-auto funct= [](auto const & x){return a * std::exp(b * x);};
+auto funct = [](auto const &x) { return a * std::exp(b * x); };
 //! \f$ f^\prime(x)= ab e^{bx}\f$
-auto dfunct= [](auto const & x){return a * b* std::exp(b * x);};
-
+auto dfunct = [](auto const &x) { return a * b * std::exp(b * x); };
 
 //! Tests of accuracy of finite differences
 /*!
@@ -70,9 +70,9 @@ main()
   spacing.reserve(n);
   roundoffErrorEstimate.reserve(n);
 
-  Real constexpr half(0.5);
-  Real constexpr twelvth(1. / 12.);
-  Real constexpr twothird(2. / 3);
+  Real constexpr half = 0.5;
+  Real constexpr twelvth = 1. / 12.;
+  Real constexpr twothird = 2. / 3;
 
   for(unsigned int i = 0; i < n; ++i)
     {
@@ -99,14 +99,15 @@ main()
     }
   // Write data
   std::ofstream file(filename.c_str());
-  file.width(15);
-  file<<"# h\t d2\t e2\t estim\t d4\t without_a diff\n";
+  auto constexpr max_prec = std::numeric_limits<Real>::max_digits10;
+  file << "# h,\t diff2,\t error2,\t truncation error,\t error4,\t error "
+          "without_a diff\n";
+  file.precision(max_prec); // do this if you want the data in full precision!
   for(unsigned int i = 0; i < n; ++i)
     {
-      file.width(15);
-      file << std::scientific<< spacing[i] << "\t" << derNumer[i] << "\t" << Error[i] << "\t"
-           << roundoffErrorEstimate[i] << "\t" << Error4[i] << "\t" << Errorcx[i]
-           << std::endl;
+      file << std::scientific << spacing[i] << ",\t" << derNumer[i] << ",\t"
+           << Error[i] << ",\t" << roundoffErrorEstimate[i] << ",\t"
+           << Error4[i] << ",\t" << Errorcx[i] << std::endl;
     }
   file.close();
 }
