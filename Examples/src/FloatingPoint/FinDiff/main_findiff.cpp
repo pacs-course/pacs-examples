@@ -102,7 +102,10 @@ main()
   auto constexpr max_prec = std::numeric_limits<Real>::max_digits10;
   file << "# h,\t diff2,\t error2,\t truncation error,\t error4,\t error "
           "without_a diff\n";
-  file.precision(max_prec); // do this if you want the data in full precision!
+  file.precision(
+    max_prec); // do this if you want the data printed in full precision!
+  // file.precision(8); // do this if you want the data printed in a smaller
+  // precision!
   for(unsigned int i = 0; i < n; ++i)
     {
       file << std::scientific << spacing[i] << ",\t" << derNumer[i] << ",\t"
