@@ -9,6 +9,9 @@
 #include "FixedPointTraits.hpp"
 #include <cmath>
 #include <iostream>
+#include <set>
+#include <string>
+
 template <class T>
 void
 print_result(T solution)
@@ -33,7 +36,7 @@ main()
 {
   using namespace apsc;
   using FixedPointIterator =
-    apsc::FixedPointIteration<FixedPointArgumentType::VECTOR>;
+    apsc::FixedPointIteration<FixedPointArgumentType::EIGEN>;
   using IterationFunction = FixedPointIterator::IterationFunction;
 
   IterationFunction phi;
@@ -46,32 +49,49 @@ main()
   // y=0 and is unstable, the other is stable
   //                and we converge to the second one
   // Try to change lambda and see what happens
-  double                    lambda = 1.5;
+  double lambda = 1;
+  std::cout << "Give a lambda>=0; <1 for convergence to (0,0.7390085)\n";
+  std::cin >> lambda;
+  std::cout << "You have chosen lambda=" << lambda << "\n";
   std::pair<double, double> exact;
-  phi = [lambda](FixedPointIterator::ArgumentType const &x) {
-    return std::vector<double>{lambda * std::sin(x[0]), std::cos(x[1])};
+  using ArgumentType = FixedPointIterator::ArgumentType;
+  phi = [lambda](ArgumentType const &x) -> ArgumentType {
+    return FixedPointIterator::ArgumentType{{lambda * std::sin(x[0])},
+                                            {std::cos(x[1])}};
   };
 
-  FixedPointIterator               iterate{phi};
-  FixedPointIterator::ArgumentType startingPoint{5.0, 7.0};
-  std::cout << "*** WITH BASIC METHOD:\n";
+  std::set<std::string> accelerators{"NoAcceleration", "ASecant", "Anderson"};
+  std::string           accelerator;
+  bool                  ok = false;
+  unsigned int          m{0};
+  while(not ok)
+    {
+      std::cout << "Which acceleration do you want? (NoAcceleration, ASecant "
+                   "or Anderson)"
+                << std::endl;
+      std::cin >> accelerator;
+      if(accelerators.find(accelerator) != accelerators.end())
+        {
+          ok = true;
+          if(accelerator == "Anderson")
+            {
+              std::cout << "Give the number of stored vectors for Anderson\n";
+              std::cin >> m;
+              std::cout << "You have chosen " << m << " vectors\n";
+            }
+        }
+      else
+        {
+          std::cout << "Wrong accelerator name, retry\n";
+        }
+    }
+  apsc::FixedPointOptions options;
+  FixedPointIterator      iterate{phi, options, accelerator, m};
+
+  ArgumentType startingPoint{
+    {{5.0}, {7.0}}}; // strange way of construction a Eigen vector
+
+  std::cout << "*** Result:\n";
   print_result(iterate.compute(startingPoint));
-  // Now with acceleration and Eigen
-  using FixedPointIterator2 =
-    apsc::FixedPointIteration<FixedPointArgumentType::EIGEN,
-                              ASecantAccelerator>;
-  using IterationFunction2 = FixedPointIterator2::IterationFunction;
-  IterationFunction2 phi2;
-  phi2 = [lambda](FixedPointIterator2::ArgumentType const &x) {
-    FixedPointIterator2::ArgumentType res(2);
-    res[0] = lambda * std::sin(x[0]);
-    res[1] = std::cos(x[1]);
-    return res;
-  };
-  FixedPointIterator2               iterate2{phi2};
-  FixedPointIterator2::ArgumentType startingPoint2(2);
-  startingPoint2[0] = 5.0;
-  startingPoint2[1] = 7.0;
-  std::cout << "*** WITH SECANT ACCELERATION:\n";
-  print_result(iterate2.compute(startingPoint2));
+  return 0;
 }

@@ -29,34 +29,72 @@ struct FixedPointOptions
 
 //! A class for (possibly) accelerated fixed point iterations
 /*!
- * \tparam IterationFunction a system of equation that obeys the interface
- * defined in FixedPointTraits<ARG>::ArgumentType \tparam Accelerator A template
- * template parameter that identify a procedure to accelerate convergence.
+ * @param ARG the type used for the iterator function arguments (EIGEN or
+ * VECTOR)
  *
  */
-template <FixedPointArgumentType ARG,
-          template <FixedPointArgumentType> class Accelerator = NoAccelerator>
+template <FixedPointArgumentType ARG = FixedPointArgumentType::VECTOR>
 class FixedPointIteration
 {
 public:
   //! The type of the argument and return value
   using ArgumentType = typename FixedPointTraits<ARG>::ArgumentType;
-  using AcceleratorType = Accelerator<ARG>;
+  using AcceleratorType = std::unique_ptr<AcceleratorBase<ARG>>;
   using IterationFunction = typename FixedPointTraits<ARG>::IterationFunction;
-  //! Constructor that takes the iterator function and (optionally) the
-  //! convergence options
-  template <typename IF = IterationFunction>
-  FixedPointIteration(IF &&             ifun = IterationFunction(),
-                      FixedPointOptions opt = FixedPointOptions{})
-    : phi{std::forward<IF>(ifun)}, options{opt}, accelerator(phi)
+
+  /**
+   * @brief Constructs a FixedPointIteration object.
+   *
+   * @tparam IF Type of the iteration function.
+   * @param ifun The iteration function.
+   * @param opt Options for the fixed-point iteration, defaults to
+   * FixedPointOptions.
+   * @param AccelarationType Type of acceleration to use, defaults to
+   * "NoAcceleration". possible other values are "ASecant" and "Anderson".
+   * @param m Parameter for the accelerator (used only for Anderson), defaults
+   * to 10.
+   * @note I am using the trick of forward reference to avoid copies of the
+   * iteration function in case the argument can be moved. This is a C++11
+   * feature.
+   */
+  template <typename IF>
+  explicit FixedPointIteration(IF              &&ifun,
+                               FixedPointOptions opt = FixedPointOptions{},
+                               std::string  AccelarationType = "NoAcceleration",
+                               unsigned int m = 10)
+    : phi{std::forward<IF>(ifun)}, options{opt},
+      accelerator(apsc::createAccelerator<ARG>(AccelarationType, phi, m))
   {}
-  //! Default constructor. IterationFunction is not set. Options are the default
-  FixedPointIteration() : accelerator(phi){};
+  //! This class is not default constructible. Here I state it explicitely
+  FixedPointIteration() = delete;
+  //! This class is not copy constructible. Here I state it explicitely
+  /*!
+   * @note This is a design choice. The accelerator is a unique pointer to a
+   * polymprphic object that has not been designed to be copied. To make the
+   * class copyable we need a strong revision of the design.
+   */
+  FixedPointIteration(FixedPointIteration const &) = delete;
+  //! This class is not copy assigneable. Here I state it explicitly
+
+  FixedPointIteration &operator=(FixedPointIteration const &) = delete;
+  //! This class is move constructible. Here I state it explicitly
+  FixedPointIteration(FixedPointIteration &&) = default;
+  //! This class is move assignable. Here I state it explicitly
+  FixedPointIteration &operator=(FixedPointIteration &&) = default;
+
   //! Getter for options
   FixedPointOptions
   getOptions() const
   {
     return options;
+  }
+  /*
+  change acceleration method
+  */
+  void
+  setAcceleration(std::string AccelarationType, unsigned int m = 10)
+  {
+    accelerator = apsc::createAccelerator<ARG>(AccelarationType, phi, m);
   }
   //! setter for options
   void
@@ -67,13 +105,13 @@ public:
   //! To set, or change the iteration function
   template <typename IF = IterationFunction>
   void
-  setIterationFunction(IterationFunction&& ifun)
+  setIterationFunction(IterationFunction &&ifun)
   {
     phi = std::forward<IF>(ifun);
   }
   //! Allow to access the accelerator
   /*!
-   * In case we need to set its state.
+   * In case we need to change its state.
    */
   auto &
   getAccelerator()
@@ -92,7 +130,7 @@ public:
    *
    */
   auto
-  compute(ArgumentType const &x0)
+  compute(ArgumentType const &x0) const
   {
     double       currentDistance{std::numeric_limits<double>::max()};
     std::size_t  iter{0};
@@ -100,7 +138,7 @@ public:
     ArgumentType previous = x0;
     while(iter < options.maxIter && currentDistance > options.tolerance)
       {
-        current = this->accelerator(previous);
+        current = std::invoke(*accelerator, previous);
         currentDistance =
           std::sqrt(internals::squaredDistance(current, previous));
         previous = current;
@@ -112,7 +150,7 @@ public:
         std::cout << std::endl;
 #endif
       }
-    this->accelerator.reset();
+    accelerator->reset();
     return std::make_tuple(current, iter, currentDistance,
                            (iter < options.maxIter));
   }
