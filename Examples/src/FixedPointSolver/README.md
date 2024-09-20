@@ -14,8 +14,8 @@ with the following features
 to use some standard algorithms that allow a parallel version, even if in this version I do not use the parallel capability.
 * We can add an accelerator, and some are provided in `Accelerators.hpp`. 
     An accelerator takes as input the last iterate and returns a corrected value which hopefully
-    provides a better convergent sequence.
-* Test of convergence based on the distance of two consecutive iterates (which is classical for fixed oint iterations).
+    provides a better convergent sequence. I have made the choice to implement the accelerators as a policy, so that they can be developed independently of the main class. Moreover, I decided to agglomerate the iterator function in the accelerator, to save memory in case phi is a callable object of big size. With agglomeration the accelerator and the main class share the same memory for the iterator function.  
+* Test of convergence based on the distance of two consecutive iterates (which is classical for fixed point iterations).
 * I have used an aggregate (a `struct` called `FixedPointOptions`) to store the options, which have a default value. You may change the options by passing a modified
 `FixedPointOption` to the the solver class. A possibility is to make this struct internal to the `FixedPointIteration` class. Indeed, it is used only in conjunction with the use of a `FixedPointIteration`.  
 * If you want to have a more verbose output compile with
@@ -23,6 +23,12 @@ to use some standard algorithms that allow a parallel version, even if in this v
 ```
 make VERBOSE=yes
 ```
+
+## Accelerators implemented ##
+- `NoAccelerator`: the simplest accelerator, it does nothing.
+- `ASecant`: It is two level Anderson acceleration, that may be considered as the multidimensional estension of the secant method for finding the zero of $f(x)=x-\phi(x). A giid reference of the technique is *V. Eyert, A Comparative Study on Methods for Convergence Acceleration of Iterative Vector Sequences, Journal of Computational Physics 124 (1996)271–285.* or *H. Fang, Y. Saad, Two classes of multisecant methods for nonlinearacceleration, Numerical Linear Algebra with Applications 16 (2009) 197–221.*
+- `Anderson`. I timplements anderson acceleration. A good reference is *D. G. Anderson, Iterative procedures for nonlinear integral equations, J. Assoc. Comput. Mach. 12 (1965) 547–560.* or *D. G. Anderson, Iterative procedures for nonlinear integral equations, J. Assoc. Comput. Mach. 12 (1965) 547–560.*. The implementation is based on the algorithm described in *D. A. Smits, Accelerating the convergence of iterative vector sequences, Numerical Linear Algebra with Applications 4 (1997) 1–30.*. The algorithm is also described in *H. Fang, Y. Saad, Two classes of multisecant methods for nonlinearacceleration, Numerical Linear Algebra with Applications 16 (2009) 197–221.*. The implementation is based on the algorithm described in *D. A. Smits, Accelerating the convergence of iterative vector sequences, Numerical Linear Algebra with Applications 4 (1997) 1–30.*. The algorithm is also described in *H. Fang, Y. Saad, Two classes of multisecant methods for nonlinearacceleration, Numerical Linear Algebra with Applications 16 (2009) 197–221.*. The implementation is based on the algorithm described in *D. A. Smits, Accelerating the convergence of iterative vector sequences, Numerical Linear Algebra with Applications 4 (1997) 1–30.*. The algorithm is also described in *H. Fang, Y. Saad, Two classes of multisecant methods for nonlinearacceleration, Numerical Linear Algebra with Applications 16 (2009) 197–221.*. The implementation is based on the algorithm described in *D. A. Smits, Accelerating the convergence of iterative vector sequences, Numerical Linear Algebra with Applications 4 (1997) 1–30.*. The algorithm is also described in *H. Fang, Y. Saad, Two classes of multisecant methods for nonlinear acceleration, Numerical Linear Algebra with Applications 16 (2009) 197–221*. The implementation is based on the algorithm described in *D. A. Smits, Accelerating the convergence of iterative vector sequences, Numerical Linear Algebra with Applications 4 (1997) 1–30*. The algorithm is also described in the previously cited reference by *H. Fang, Y. Saad*.
+
 
 # What do I learn from this example? #
 
@@ -32,4 +38,5 @@ make VERBOSE=yes
 - The use of some standard algorithms
 - The use of traits to centralize the declaration of types used throughout the code and to enable the selection among different possible choices.
 - The use of policies (the accelerators) to implement part of an algorithm with a set of classes that can be developed separately. it is an example of the Bridge design pattern (here implemented via templates).
+- The use of user defined traits to check if an enumerator has a certain value. This is useful to check if we are using EIGEN vectors as argument for the iterator function, since the Anderson Accelerator works only in that case.
 
