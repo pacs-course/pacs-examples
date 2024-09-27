@@ -26,7 +26,7 @@ I have created a *concept* to ensure that the user provides as polygon a class o
 
 I have made a large use of lambda expressions to enucleate the different steps necessary for the tests.
 
-**A note:** Look also at the code in src/PointInSimplex, where you have a specialization for simpleces of 2 and 3 dimensions.
+**A note:** Look also at the code in src/PointInSimplex, where you have a specialization for simplexes of 2 and 3 dimensions.
 
 
 # What do I learn here?

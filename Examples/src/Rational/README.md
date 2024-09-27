@@ -1,4 +1,4 @@
-#An example of use of operator overloading.#
+# An example of use of operator overloading. #
 
 We provide a class that stores two integers to represent a rational
 number and we have overloaded all arithmetic operators. We also
@@ -12,6 +12,6 @@ Not also that I can initialise a Rational using a `std::ratio<N,M>`
 object. `std::ratio` is a tool of the Standard Library to hold
 **constant rational numbers**.
 
-#What do I learn here?#
+# What do I learn here? #
 - A rather complete example of overloading of arithmetic operators.
 
