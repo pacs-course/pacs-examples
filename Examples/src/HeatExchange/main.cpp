@@ -1,13 +1,13 @@
 #include "GetPot"               // for reading parameters
-#ifdef GNUPLOT
+#ifdef GNUPLOT                  // compiled with -DGNUPLOT
 #include "gnuplot-iostream.hpp" // interface with gnuplot
 #endif
 #include "readParameters.hpp"
 #include "thomas.hpp" // for thomas algorithm. Must be installed in the system
-#include <cmath>    // (for sqrt)
-#include <iostream> // input output
-#include <tuple> // I am using tuples to pass data to gnuplot iostream
-#include <vector> // For vectors
+#include <cmath>      // (for sqrt)
+#include <iostream>   // input output
+#include <tuple>      // I am using tuples to pass data to gnuplot iostream
+#include <vector>     // For vectors
 /*!
   @file main.cpp
   @brief Temperature distribution in a 1D bar.
@@ -43,7 +43,7 @@ main(int argc, char **argv)
 {
   using namespace std; // avoid std::
   int    status{0};    // final program status
-  bool jsonfile=false;
+  bool   jsonfile = false;
   GetPot cl(argc, argv);
   if(cl.search(2, "-h", "--help"))
     {
@@ -54,23 +54,23 @@ main(int argc, char **argv)
   bool verbose = cl.search(1, "-v");
   // Get file with parameter values
   string filename = cl.follow("parameters.pot", "-p");
-  auto pos = filename.find(".json");
+  auto   pos = filename.find(".json");
   if(pos != std::string::npos)
-  {
-    jsonfile=true;
-    std::cout<<"Json input file\n";
-  }
+    {
+      jsonfile = true;
+      std::cout << "Json input file\n";
+    }
   else
-  {
-    jsonfile=false;
-    std::cout<<"Getpot input file\n";
-  }
+    {
+      jsonfile = false;
+      std::cout << "Getpot input file\n";
+    }
   cout << "Reading parameters from " << filename << std::endl;
   parameters param;
-    if(jsonfile)
-      param=   readParameters_json(filename, verbose);
-    else
-      param=   readParameters(filename, verbose);
+  if(jsonfile)
+    param = readParameters_json(filename, verbose);
+  else
+    param = readParameters(filename, verbose);
 
 #if __cplusplus < 201703L
   // This version is perfectly fine and
@@ -84,22 +84,23 @@ main(int argc, char **argv)
   const double &toler = param.toler;  // Tolerance for stopping criterion
   // Here I use auto (remember that you need const and & if you want constant
   // references)
-  const auto &L  = param.L;  // Bar length
+  const auto &L = param.L;   // Bar length
   const auto &a1 = param.a1; // First longitudinal dimension
   const auto &a2 = param.a2; //  Second longitudinal dimension
   const auto &To = param.To; // Dirichlet condition
   const auto &Te = param.Te; // External temperature (Centigrades)
-  const auto &k  = param.k;  // Thermal conductivity
+  const auto &k = param.k;   // Thermal conductivity
   const auto &hc = param.hc; // Convection coefficient
   const auto &M = param.M;   // Number of grid elements
-  const auto &solverType = param.solverType; // 1 Gauss siedel, !=1 direct method
+  const auto &solverType =
+    param.solverType; // 1 Gauss siedel, !=1 direct method
 #else
   // C++17 onwards version. This version works only with at least C++17
   // A oneliner! This is called structured bindings. It works because parameter
   // class is an aggregate!
 
-    const auto &[itermax, toler, L, a1, a2, To, Te, k, hc, M, solverType] = param;
-     
+  const auto &[itermax, toler, L, a1, a2, To, Te, k, hc, M, solverType] = param;
+
 #endif
 
   //! Precomputed coefficient for adimensional form of equation
@@ -119,7 +120,7 @@ main(int argc, char **argv)
       // Gauss Siedel is initialised with a linear variation
       // of T
 
-      for(int m = 0; m <= M; ++m)
+      for(int m = 0; m <= M; ++readParameters_jsonm)
         theta[m] = (1. - m * h) * (To - Te) / Te;
 
       int    iter = 0;
@@ -143,8 +144,7 @@ main(int argc, char **argv)
           theta[M] = xnew;
 
           iter = iter + 1;
-        }
-      while((sqrt(epsilon) > toler) && (iter < itermax));
+      } while((sqrt(epsilon) > toler) && (iter < itermax));
 
       if(iter < itermax)
         cout << "M=" << M << "  Convergence in " << iter << " iterations"
@@ -167,7 +167,7 @@ main(int argc, char **argv)
       c[0] = 0;                           // correction for Dirichlet bc
       std::vector<double> source(
         M + 1, 0.); // The rhs term. all zero since it is an homogeneous problem
-      source[0] = (To - Te) / Te; // correction for Dirichlet bc.
+      source.front() = (To - Te) / Te; // correction for Dirichlet bc.
       theta = apsc::thomasSolve(a, b, c, source);
     }
   // Back to physical quantities
@@ -198,7 +198,7 @@ main(int argc, char **argv)
       f << m * h * L << "\t\t" << theta[m] << "\t\t" << thetaa[m] << "\n";
       coor[m] = m * h * L;
     }
-  // If you have gnuplot iostream you get the plot on the screen
+    // If you have gnuplot iostream you get the plot on the screen
 #ifdef GNUPLOT
   Gnuplot gp; // gnuplot iostream! Plots solution on the screen
   // It may not work on virtual machines. Take it out in that case

@@ -1,4 +1,4 @@
-#Usage of the random distribution utilities available in the Standard library#
+# Usage of the random distribution utilities available in the Standard library #
 
 
 The file `main_random.cpp` produces a set of samples generated with
