@@ -1,6 +1,7 @@
 #ifndef HH_THOMASSOLV_HH
 #define HH_THOMASSOLV_HH
 #include <algorithm>
+#include <type_traits>
 namespace apsc
 {
 //! Solution of a tridiagonal system
@@ -17,40 +18,42 @@ namespace apsc
   @note a, b and c MUST be of the dimension of the system even is some element
   are not used <b>The dimension of the system is determined by the size of
   a</b>.
-
-  @tparam C type of a stl compliant sequential container. Typically a
-  vector<double>
   @param a diagonal terms
   @param b subdiagonal terms
   @param c superdiagonal terms
   @param f right hand side
   @return the solution of the linear system
-  @pre a,b,c and f must be of the same type and have the same size
+  @pre a,b,c and f must obey the semantics of a stl compliant sequential
+  container
   @pre size of a,b,c, and f greater than one
   @pre <b>all elements of a are different from zero<\b>
  */
-template <class C>
-C
-thomasSolve(const C &a, const C &b, const C &c, const C &f)
+/*
+New version: I pass the arguments by forwarding reference to avoid copies
+if the arguments are rvalues
+In fact only a and f are modified, so I can use std::forward<decltype(a)>(a)
+and std::forward<decltype(f)>(f) to avoid copies. The other arguments are not
+modified so I can use const reference
+*/
+auto
+thomasSolve(auto &&a, auto const &b, auto const &c, auto &&f)
 {
-  using std::size_t;
-  using real = decltype(a[0]);
-  size_t n = a.size();
+  auto n = a.size();
   // Forward sweep
-  C B = a;
-  C D = f;
+  auto B = std::forward<decltype(a)>(a);
+  auto D = std::forward<decltype(f)>(f);
   for(size_t i = 1; i < n; ++i)
     {
-      real gamma = b[i] / B[i - 1];
+      auto gamma = b[i] / B[i - 1];
       B[i] = B[i] - gamma * c[i - 1];
       D[i] = D[i] - gamma * D[i - 1];
     }
   // back substitution
-  C x(n);
-  x.back() = D.back() / B.back();
+  auto x = std::move(D);
+  x.back() /= B.back();
   for(int i = n - 2; i >= 0; --i)
     {
-      x[i] = (D[i] - c[i] * x[i + 1]) / B[i];
+      x[i] = (x[i] - c[i] * x[i + 1]) / B[i];
     }
   return x;
 }
@@ -120,7 +123,7 @@ thomasSolveSym(const C &a, const C &b, const C &c, const C &f)
   @param b lower diagonal stored in b[1]... b[n-1]
   @param c upper diagonal stored in c[0] c[n-2]
   @param v the vector to be multiplied with
-  @param sym true is the system represents a symmetric problem,
+  @param sym true is the system represents a problem with jump conditions,
   see @ref thomasSolveSym
   @return the result
 
@@ -128,12 +131,12 @@ thomasSolveSym(const C &a, const C &b, const C &c, const C &f)
  n=a.size()</b>
 */
 
-template <class C>
-C
-matVecTrid(const C &a, const C &b, const C &c, const C &v,
+auto
+matVecTrid(auto const &a, auto const &b, auto const &c, auto const &v,
            const bool sym = false)
 {
   using size_t = decltype(a.size());
+  using C = std::remove_cvref_t<decltype(v)>;
   auto n = a.size();
   C    res;
   res.reserve(n);
