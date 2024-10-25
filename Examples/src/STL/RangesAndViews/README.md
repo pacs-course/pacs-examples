@@ -115,7 +115,7 @@ An example:
       std::string name;
       int age;
     };
-    std::vector<Person> people = {{"John", 20}, {"Jane", 30}, {"Bob", 25}};
+    std::vector<Person> people = { {"John", 20}, {"Jane", 30}, {"Bob", 25} };
     std::ranges::sort(people, {}, &Person::age);// the projector is a pointer to member!
     // people is now sorted by age
 ```
