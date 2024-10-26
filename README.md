@@ -38,7 +38,7 @@ You may check the version of your compiler with the option -v. Several examples 
 and some examples even to c++20. Please, check whether your compiler supports those standards. You may have a look
 at https://en.cppreference.com/w/cpp/compiler_support
 
-## Module (mk) ssystem ##
+## Module (mk) system ##
 In the course, we use the mk module system provided in [this repository](https://github.com/pcafrica/mk_) (nothing to do with girt submodules!). However, this is not strictly required, you can do without, if you have
 a recent Linux distribution.
 
