@@ -12,7 +12,7 @@
 \date{8 July 2021}
 \begin{document}
     \maketitle
-    
+
     Runge-Kutta embedded methods are methods for solving (systems of) ordinary differential equations of the form
     \[
     \begin{cases}
@@ -27,9 +27,11 @@ even problems in the complex plane.)
 
 
 Runge-Kutta methods are one-step multistage methods. 
-One step means that the computation of the solution at time $t_{n+1}=t_n+h$ requires the knowledge of the unknown at the previous time $t_n$.
+One step means that the computation of the solution at time $t_{n+1}=t_n+h$ 
+requires the knowledge of the unknown at the previous time $t_n$ only.
 This, as we will see, simplifies the implementation of adaptive schemes.
-Multistage means that the computation of the unknown at time $t_{n+1}$ is performed through $s>1$ intermediate steps. 
+Multistage means that the computation of the unknown at time $t_{n+1}$ 
+is performed through $s>1$ intermediate steps. 
 
 
 They are defined through the \emph{extended Butcher's tableau} (or Butcher's array)
@@ -43,29 +45,30 @@ B=\begin{array}{c|c}
 \]
 where $\mathbf{A}\in\mathbb{R}^{s\times s}$, while $\mathbf{c}$, $\mathbf{b}$ and $\hat{\mathbf{b}}$ are vectors of $\mathbb{R}^s$ and $s>0$ the number of \emph{stages}.
 For consistency considerations, we must have $c_i=\sum_{j=1}^s A_{ij}$.
-The presence of the two vectors $\mathbf{b}$ and $\hat{\mathbf{b}}$ characterize the embedded formula (the standard formula has just one vector $\mathbf{b}$).
+The presence of the two vectors $\mathbf{b}$ and $\hat{\mathbf{b}}$ 
+characterize the embedded formula (the standard formula has just one vector $\mathbf{b}$).
 
 
 The solution in a step $t^n\to t^{n+1}=t^n+h$, being $h$ the time step size, is obtained by solving the following problem,
 \begin{align}\label{eq:rk1}
 &\mathbf{K}_i = f(t+c_ih,\mathbf{y}n_+h\sum_j A_{ij}\mathbf{K}_j)\quad i=1,\ldots,s,\\
 \label{eq:rkt}
-&\mathbf{y}_{n+1}=\mathbf{y}n_ + h \mathbf{K}\mathbf{b},\\\label{eq:rk3}
-&\hat{\mathbf{y}}_{n+1}=\mathbf{y}n_ + h \mathbf{K}\hat{\mathbf{b}}.
+&\mathbf{y}_{n+1}=\mathbf{y}_n + h \mathbf{K}\mathbf{b},\\\label{eq:rk3}
+&\hat{\mathbf{y}}_{n+1}=\mathbf{y}_n + h \mathbf{K}\hat{\mathbf{b}}.
 \end{align}
 
-Here $K\in\mathbb{R}^{d\times s}$, with $\mathbf{K})i$ the $i$=th column and $\mathbf{y}n_\in\mathbb{R}^d$ the approximated solution at time $t^n$.
+Here $K\in\mathbb{R}^{d\times s}$, with $\mathbf{K}_i$ its $i$=th column and $\mathbf{y}n_\in\mathbb{R}^d$ the approximated solution at time $t^n$.
 
 If $\mathbf{A}$ is \emph{strictly} lower diagonal ($A_{ij}=0$ if $j\ge i$), then the  computation of $\mathbf{K}_i$ in ~\eqref{eq:rk1} is \emph{explicit}, i.e does not require the solution of any non-linear system, but solving in succession, for $i=1,\ldots s$,
 \[
 \mathbf{K}_i = f(t_n+c_ih,\mathbf{y}n_+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j).
 \]
-(Note that $\mathbf{K}_1=f(t_n,\mathbf{y}n_)$).
+(Note that $\mathbf{K}_1=f(t_n,\mathbf{y}n_)$). 
 
-Otherwise the method is implicit and the step~\eqref{eq:rk1} involves the solution of a non-linear system of $s\times d$ unknnown (the coefficients of $\mathbf{K}$.).
+Otherwise, the method is \emph{implicit} and the step~\eqref{eq:rk1} involves, in general, the solution of a non-linear system of $s\times d$ unknowns (the coefficients of $\mathbf{K}$.).
 
-There is an intermediate possibility. When $\mathbf{A}$ is \emph{lower triangular} (but not \emph{strictly lower triangular}) then the RK scheme is \emph{linearly} or \emph{diagonally} implicit
-(DIRK schemes). In this case, \eqref{eq:rk1} involves the solution of $s$ nonlinear systems of size $d$, solved in succession:
+There is an intermediate possibility. When $\mathbf{A}$ is \emph{lower triangular} (but not \emph{strictly lower triangular}) then the RK scheme is said to be \emph{linearly} or \emph{diagonally} implicit,
+(DIRK scheme). In this case, \eqref{eq:rk1} involves the solution of $s$ nonlinear systems of size $d$, for the unknown $\mathbf{K}_i$, solved in succession:
 \[
 \mathbf{K}_i - f(t+c_ih,\mathbf{y}n_+h\sum_{j=1}^{i-1} A_{ij}\mathbf{K}_j +hA_{ii}\mathbf{K}_i)=\mathbf{0}\quad i=1,\ldots,s\\\label{eq:rk2ex}
 \]
@@ -73,27 +76,46 @@ Finally, a subclass of the DIRK schemes are the ESDIRK~\cite{jorgensenFamilyESDI
 schemes, where $\mathbf{A}$ is lower triangular but the first row is zero. It means that the first stage is explicit and you have to solve only $s-1$ implicit stages at each time step. 
 \smallskip
 
-Equations~\eqref{eq:rkt} and~\eqref{eq:rk3} provide two different approximations of $\mathbf{y}(t^{n+1})$, the first is called the \emph{primal}, and is the one actually used to advance the numerical solution, the second is instead used to \emph{compute an extimate of the local truncation error (LTE)}.
-\section{Computation of the estimate of the LTE}
-The trick is that the coefficients of the Butcher tableau are given such that relations \eqref{eq:rkt} and~\eqref{eq:rk3} provide an approximation of \emph{different order}, typically the two orders differ by $1$. So lets assume that $\mathbf{y}_{n+1}$ is the solution of \emph{lower order} $p$ (we will see later $\mathbf{y}$ that it can be the opposite). Therefore, $\hat{\mathbf{y}}_{n+1}$ is of order $p+1$. 
+Equations~\eqref{eq:rkt} and~\eqref{eq:rk3} provide two different approximations 
+of $\mathbf{y}(t^{n+1})$, the former, $\mathbf{y}^{n+1}$, is called the \emph{primal}, and is the one actually 
+used to advance the numerical solution, the latter, $\hat{\mathbf{y}}^{n+1}$, sometimes called \emph{secondary},
+ is instead used  to \emph{compute an estimate of the local truncation error (LTE)}, that is the error in a single step (look any good book on numerical analysis
+for a formal definition of LTE).
 
-We recall that the \emph{order} of the method (more precisely the order of consistency) if the order of the \emph{truncation error} which bounds, under condition of regularity of $f$, the \emph{order of convergence}. Indeed we have that, indicating with $\tau_p(h)$ the truncation error of the low order scheme, and with $N$ the final step
+\section{Computation of the estimate of the LTE}
+The trick is that the coefficients of the Butcher tableau are given such 
+that relations \eqref{eq:rkt} and~\eqref{eq:rk3} provide an approximation of \emph{different order}, 
+typically the two orders differ by $1$. So let's assume that the solution of the primal scheme $\mathbf{y}_{n+1}$ 
+is that of \emph{lower order}, and let $p$ indicate the order (we will see later that we can switch the role of primal and secondary solution). 
+Therefore, $\hat{\mathbf{y}}_{n+1}$ is of order $p+1$. 
+
+We recall that the \emph{order} of the method (more precisely the order of consistency) is 
+the order of infinitesimal with respect to the time step  of the \emph{truncation error}, which bounds, 
+under condition of regularity of $f$, the \emph{order of convergence}. 
+
+
+Indeed we have that, indicating with $\tau_p(h)$ the truncation error of the low order scheme, and with $N$ the final step
 \begin{equation}\label{eq:converg}
-\Vert \mathbf{y}_{N}-\mathbf{y}(T)\Vert \le C_T \tau_p,
+\Vert \mathbf{y}_{N}-\mathbf{y}(T)\Vert \le C_T \tau_p(h),
 \end{equation}
 for a $C_T>0$.
-We remind again, that that result holds for sufficiently small $h$ and under conditions on the regularity of $f$, but here we assume it to be valid. You may also have similar results in other norms.
+We remind again, that the stated result holds for sufficiently small $h$ and under conditions 
+on the regularity of $f$. You may also have similar results in other norms.
+\emph{A scheme is said to be of order $p$ when $\tau_p=O(h^p)$}, therefore if the primal scheme is of order $p$ we have
+\[
+    \Vert \mathbf{y}_{N}-\mathbf{y}(T)\Vert \le C_T h^p,
+\]
 
-A scheme is of order $p$ when $\tau_p=O(h^p)$.
 
-The \emph{local truncation error} (LTE) is the error carried out on a \emph{single step} and is equal to $\boldsymbol{\tau}_{p,n}(h) h$, where $\boldsymbol{\tau}_{p,n}(h)$ is related to the truncation error by 
+
+The \emph{local truncation error} (LTE) is the error carried out on a \emph{single step} 
+and is equal to $h\boldsymbol{\tau}_{p,n}(h)$, where $\boldsymbol{\tau}_{p,n}(h)$ is linked to the truncation error by  
 \begin{equation}\label{eq:trunc}
 \tau_p=\max_n \Vert\boldsymbol{\tau}_{p,n}(h)\Vert.
 \end{equation}
-
-Thus, we have 
+and is defined as
 \begin{equation}\label{eq:ltelow}
-\mathbf{y}_{n+1}-\mathbf{y}(t^n) = \boldsymbol\tau_{p,n}(h) h =O(h^{p+1}).
+\boldsymbol\tau_{p,n}(h) h=\mathbf{y}_{n+1}-\mathbf{y}(t^n) =O(h^{p+1}).
 \end{equation}
 
 Analogously, since $\hat{\mathbf{y}}$ is an approximation of order $p+1$,
@@ -166,6 +188,12 @@ Some considerations are however necessary. Consistency error is not the only thi
 
 This is particularly true in DIRK and ESDIRK schemes (which are implicit). One wants to use an implicit scheme to have $A$ or $L$-stability in order to treat stiff problems. So the choice of which scheme to select as primal really depends on the properties of the specific method and often in implicit DIRK it is the lower order scheme that guarantees $A$-stability.
 
+\section{A note on DIRK schemes}
+Each stage of a linerarly implicit, ancd in particular a DIRK scheme, involve the solution of a probelm whihc is, in general, non-linear
+In this software we decided to solve the non-linear problem with a Broyden type iteration, implemented in the
+\texttt{NewtonSolver} code of these Examples. 
+
+This gives a general way of solving the problem. However, often specialised methodologies are developed to address a specific problem.
 
 \bibliographystyle{plain}
 \bibliography{rk.bib}
