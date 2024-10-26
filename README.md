@@ -1,8 +1,8 @@
-EXAMPLES AND EXERCISES FOR PACS COURSE
+EXAMPLES AND EXERCISES FOR THE PACS COURSE
 --------------------------------------
 This repo contains source code and descriptions for the examples and exercises
 that will be explained during the APSC (Advanced Programming for Scientific Computing) course at
-Politecnico di Milano, also known as PACS (Programmazioen Avanzata per il Calcolo Scientifico)
+Politecnico di Milano, also known as PACS (Programmazione Avanzata per il Calcolo Scientifico)
 
 The repository contains submodules, so to check it out properly you have to type
 
@@ -16,9 +16,9 @@ or (preferred choice!)
 git clone --recursive git@github.com:pacs-course/pacs-examples.git
 ```
 
-In the latter case you have to register your ssh keys on a github account.
+In the latter case, you must register your ssh keys on a GitHub account.
 
-To keep your local repo update with changes upstream do frequently
+To keep your local repo updated with changes upstream do frequently
 
 ```
 git pull --recurse-submodules
@@ -34,14 +34,19 @@ or just, from this directory,
 The software requires a c++ compiler, i.e. gcc >= 8.0 or clang >= 8, and the [Eigen library](https://eigen.tuxfamily.org) for linear algebra
 version 8.
 
-You may check the version of you compiler with the option -v. Several examples have now been ported to c++17
-and some examples to c++20. Check wether your compile support those standards. You may have a look
-on https://en.cppreference.com/w/cpp/compiler_support
+You may check the version of your compiler with the option -v. Several examples have now been ported to c++17
+and some examples even to c++20. Please, check whether your compiler supports those standards. You may have a look
+at https://en.cppreference.com/w/cpp/compiler_support
 
-This directory contains some utilities:
+## Module (mk) ssystem ##
+In the course, we use the mk module system provided in [this repository](https://github.com/pcafrica/mk_) (nothing to do with girt submodules!). However, this is not strictly required, you can do without, if you have
+a recent Linux distribution.
+
+If you use the modules this directory contains some utilities:
 
 **  load_modules
-If you use the module system, typing
+
+You load the most relevant modules with:
 
 ```
 source load_modules
@@ -51,26 +56,37 @@ or
 . load_modules.sh
 ```
 
-will load the main modules used in the examples, a part `hdf5` which is used only on the example on input-output streams.
+will load the main modules used in the examples, apart from  `hdf5`, which is used only in the example on input-output streams.
+
+
+
 
 ## Installing git submodules ## 
 
 If you do not have used --recursive when cloning this repo and you want to use
-the git submodules containing third party software type:
+the git submodules containing third-party software type:
 ```
 ./install_git_submodules.sh
 ```
 
-The file submodule_commands.txt contains some reminder of useful git commands for operating with submodules. We also have the following utilities
+The file submodule_commands.txt contains some reminders of useful git commands for operating with submodules. We also have the following utilities
 
 - `change_submodules_url.sh` changes the protocol of the submodules to https. You should not need it!
 
 - `change_submodules_url_ssh.sh` changes the protocol of the submodules to ssh. You should not need it!
 
+
+
 ## WHAT DO DO NEXT? ##
 
-- Go to the `Extras/` directory that contains additional software used by some examples and follow the instructions in the local `README.md` file.
+- Go to the `Extras/` directory, which contains additional software used by some examples and follow the instructions in the local `README.md` file.
 - Go to the `Examples/` directory and follow the instructions in the local `README.md` file. 
+
+## WHY MAKEFILES? ##
+I have used standard makefiles since I find that they allow simpler handling of "disaggregated software", where you have several partially independent examples which share, however, some common features. Indeed porting to `cmake` is possible, but so far it is not planned. 
+
+## DISCLAIMER ##
+The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your wish (give credits please), but remember that I do not make any claim on their suitability for your work, nor that they are free of bugs. 
 
 
 
