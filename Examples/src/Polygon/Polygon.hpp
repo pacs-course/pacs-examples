@@ -29,7 +29,7 @@ public:
   //! Constructor giving coordinates.
   Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {}
   //! A point is convertible to an array of double
-  operator std::array<double, 2>(){return coor;}
+  operator std::array<double, 2>() { return coor; }
   //! Returns coordinates in a array<double>.
   std::array<double, 2>
   get() const
@@ -55,7 +55,7 @@ public:
     return coor[1];
   }
   //! Subtraction is implemented as an external friend function
-  friend  Point2D operator-(Point2D const &a, Point2D const &b);
+  friend Point2D operator-(Point2D const &a, Point2D const &b);
   //! Addition is implemented as an external friend function
   friend Point2D operator+(Point2D const &a, Point2D const &b);
   //! I implement the streaming operator as a friend
@@ -153,13 +153,13 @@ public:
   {
     return vertexes[i];
   }
- //! Returns a vertex (read only)
+  //! Returns a vertex (read only)
   Point2D
   operator[](std::size_t i) const
   {
     return vertexes[i];
   }
- //! Returns a vertex (read and write)
+  //! Returns a vertex (read and write)
   Point2D &
   vertex(std::size_t i)
   {
@@ -315,7 +315,7 @@ public:
   bool
   checkConvexity() override
   {
-    return isconvex = true;
+    return true;
   };
   double area() const override; //! Specialised for Triangles
   //! Specialised for Triangles

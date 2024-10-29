@@ -60,7 +60,7 @@ In this document we give an overview of the classes that implement Newton-and qu
 The a general Newton and quasi-Newton algorithm build the iterates   $\mathbf{x}^{(k)}$ s:
 \emph{Given $\mathbf{x}^{(0)}$ and indicating with $\mathbf{B}:\mathbb{R}^n\to\mathbb{R}^{n\times n}$ the Jacobian $\nabla\mathbf{F}$ or an approximation of it, until a convergence criterion is met, repeat:} 
 \begin{itemize}
-    \item Solve $\mathbf{B}(\mathbf{x}^{(k)})\mathbf{d}^{(k)}=\mathbf{F}(\mathbf{x}^{(k)})$;
+    \item Solve $\mathbf{B}(\mathbf{x}^{(k)})\mathbf{d}^{(k)}=-\mathbf{F}(\mathbf{x}^{(k)})$;
     \item (backtracking) Compute $\alpha_k$ such that
     $\Vert\mathbf{F}(\mathbf{x}^{(k)}+\alpha_k\mathbf{d}^{(k)})\Vert^2\le(1-c\alpha_k) \Vert\mathbf{F}(\mathbf{x}^{(k)})\Vert^2$,
     for a $0<c<1$, by reducing its value starting from $\alpha_k=1$. If backtracking is not activated, set $\alpha_k=1$.
@@ -75,6 +75,33 @@ The convergence criteria include
 While, exceeding a maximum number of iteration or having $\Vert\mathbf{F}(\mathbf{x}^{(k)}\Vert$ not reducing with $k$
 is a considered lack of convergence.
 
+\section{When to use baktracking}
+The problem with Newton and quasi-Newton methods is that in general the convergence is guaranteed only if $\mathbf{x}^{(0)}$ is "sufficiently close" the actual zero. Despite the fact that there are some theoretical convergence results, they fail, in most cases to give useful indication on how to choose the initial iterate. 
+The backtracking technique tries to extend the convergence interval by the following considerations. First of all,  $\mathbf{F}(\mathbf{x})=\mathbf{0}$ is equivalent to $G(\mathbf{x})=\dfrac{1}{2}\Vert\mathbf{F}(\mathbf{x})\Vert^2=0$,
+which is obviously a minimum of $G$.
+
+The vector $\mathbf{d}=\mathbf{d}(\mathbf{y})$ is a \emph{descent direction} for $G$ at point $\mathbf{y}$ if $\nabla G(\mathbf{y})\cdot \mathbf{d}<0$. We have that: if $\mathbf{F}$ is of class $C^2$ then for every $\mathbf{y}\in\mathbb{R}^n$ where $\mathbf{G}(\mathbf{y})>0$ there exists an $\alpha >0$ so that
+\[
+G(\mathbf{y}+\alpha \mathbf{d})< G(\mathbf{y}),
+\]
+and that result is still true for all smaller values of $\alpha$.
+This result at the basis of the \emph{gradient method}, since $-\nabla G(\mathbf{y})$ is clearly a descent direction. However, using the gradient method on $G$ to find the zero of $\mathbf{F}$ is not a good choice since the gradient method converges only linearly, while Newton method has quadratic convergence. 
+
+We have the following result: the Newton step, given by $-\nabla\mathbf{F}(\mathbf{y})^{-1}\mathbf{F}(\mathbf{y})$, is a descent direction in $\mathbf{y})$ of $G$.
+Indeed
+\[
+\nabla G(\mathbf{y})=\nabla F(\mathbf{y})\mathbf{F}(\mathbf{y}), 
+\]
+and then
+\[
+\left(-\nabla\mathbf{F}(\mathbf{y})^{-1}\mathbf{F}(\mathbf{y})\right)\cdot \nabla G(\mathbf{y})=-\Vert\mathbf{F}(\mathbf{y})\Vert^2<0,\quad \text{if } G(\mathbf{y})\ne 0
+\]
+
+So backtracking works as follow: One starts with $\alpha=1$ and uses the Newton direction. This guarantees that if we are sufficiently near the zero we are indeed using the Newton step and we have quadratic convergence. However, if we discover that $G$ is not decreasing enough, and the formula in the algorithm description is called \emph{sufficient decrease condition}, we reduce $\alpha$. Being Newton a descent direction we know that a sufficiently small value for $\alpha$ would cause $G$ to decrease sufficiently.
+
+\subsection{Backtracking and quasi-Newton methods}
+Backtracking relies on the fact that the Newton step is a descent direction for $G$ and that our problem is equivalent to minimizing $G$. But in general we need to be very cautions to extend the technique to quasi-Newton schemes. 
+ 
 \section{Main ingredients of the code}
 In this code I need, as main ingredients
 \begin{enumerate}
