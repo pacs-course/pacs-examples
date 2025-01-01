@@ -18,8 +18,10 @@ namespace apsc
 {
 /*! @ brief a function factory
 
- * @details This is an example of a factory of functions built on top of NonLinSys.
- * You can add callable objects that respect the argument and return type specified
+ * @details This is an example of a factory of functions built on top of
+ NonLinSys.
+ * You can add callable objects that respect the argument and return type
+ specified
  * in the given trait, with an associated identifier (here given as a string).
  * You can the retrieve the function corresponding to that identifier.
  *
@@ -30,8 +32,8 @@ namespace apsc
  * @tparam R The scalar type
  * @tparam Traits The traits containing the main types used
  */
-template <typename R, template <typename> typename Traits =
-                        apsc::NonLinSysTraits::VectorTraits>
+template <typename R = double, template <typename> typename Traits =
+                                 apsc::NonLinSysTraits::VectorTraits>
 class FunctionFactory : protected apsc::NonLinSys<R, Traits>
 {
 public:
@@ -43,34 +45,39 @@ public:
   {
     return numEqs();
   }
-/*!
- * @brief adds a function to the factory
- *
- * It throws an exception if the identifier is already taken by another function
- * 
- * @tparam FUN The type of a functor compliant with the Trait
- * @param s A string used as identifier of the function
- * @param f The function to store. It can be any callable object complieant with the trait
- */
+  /*!
+   * @brief adds a function to the factory
+   *
+   * It throws an exception if the identifier is already taken by another
+   * function
+   *
+   * @tparam FUN The type of a functor compliant with the Trait
+   * @param s A string used as identifier of the function
+   * @param f The function to store. It can be any callable object complieant
+   * with the trait
+   */
   template <typename FUN>
   void
   addToFactory(std::string const &s, FUN &&f)
   {
     using namespace std::string_literals;
-    static_assert(std::is_convertible_v<FUN,typename Traits<R>::ScalarFunctionType>,
-                  "Cannot add a function with wrong signature!");
-//  add the identifier
+    static_assert(
+      std::is_convertible_v<FUN, typename Traits<R>::ScalarFunctionType>,
+      "Cannot add a function with wrong signature!");
+    //  add the identifier
     auto [it, success] = functionPos_.insert({s, numEqs()});
     if(!success)
       {
-        // Note the use of the string literal to be able to use +. Alternative: create a string with std::string
+        // Note the use of the string literal to be able to use +. Alternative:
+        // create a string with std::string
         throw std::runtime_error(
-            "Cannot insert function with same identifier twice. Identifier= "s + s);
+          "Cannot insert function with same identifier twice. Identifier= "s +
+          s);
       }
     // Add the function
-    // Here I need this->, since I am in a template method and I have to recall a base method
-    // not publicly accessible!
-    // Alternative: use the full qualified name; apsc::NonLinSys<R, Traits>::addToSystem
+    // Here I need this->, since I am in a template method and I have to recall
+    // a base method not publicly accessible! Alternative: use the full
+    // qualified name; apsc::NonLinSys<R, Traits>::addToSystem
     this->addToSystem(std::forward<FUN>(f));
   }
 
@@ -78,7 +85,8 @@ public:
    * @brief Get a function from the factory
    * It throws an exception if the function is not found
    * @param s the string
-   * @return the function (a callable object of the type specified in the Trait).
+   * @return the function (a callable object of the type specified in the
+   * Trait).
    */
   auto
   getFunction(std::string const &s) const
@@ -92,8 +100,7 @@ public:
     else
       {
         // note the string literal s to be able to use +
-        throw std::runtime_error(
-          "Cannot find function with identifier="s + s);
+        throw std::runtime_error("Cannot find function with identifier="s + s);
       }
   }
 

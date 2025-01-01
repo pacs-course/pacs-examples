@@ -2,12 +2,12 @@
 # This file must be renamed into Makefile.inc in order to work!!
 #
 
-# *****  This is the user defined part of the Makefile
+# *****  This is the user defined part of the Makefile ****
 #
 #  It is included in almost all Makefiles of the example (a part some particulare cases)
 #
-# It has been modified so to read some data from environmental variables
-# and be compatible with the system of modules used at MOX
+# It has been modified so to read some data from environmental variables (if set!)
+# and be compatible with the system of modules used at MOX Laboratory
 #
 # YOU CAN change it to suit your need!!!!
 #
@@ -21,12 +21,14 @@
 #
 
 # The directory where the examples reside (you HAVE to change this)
-PACS_ROOT?=/home/forma/PacsVirtualMachine/pacs/PACSCourse/Material/Examples
+export AMSC_ROOT?=/home/forma/Work/Didattica/HPC_Courses/AMSC-CodeExamples/Examples
+# For compatibility with the PACS course. Do not change it
+export PACS_ROOT=${AMSC_ROOT}
 # The directory with the Eigen (leave blank if they are in a standard directory)
 mkEigenInc?=/usr/local/include/eigen3/
 EIGEN_DIR=$(mkEigenInc)
 #
-# Mpi directories for library and include files
+# Mpi directories for library and include files (change if needed)
 #
 mkOpenmpiLib?=/usr/lib/x86_64-linux-gnu
 mkOpenmpiInc?=/usr/include
@@ -63,7 +65,7 @@ CXX = ${mkCxxCompiler}
 mkCCompiler?=gcc
 CC = ${mkCxxCompiler}
 
-# Since we are only uning c++ I set the linker LINK.o for object files
+# Since we are only using c++ I set the linker LINK.o for object files
 # so that it uses the c++ compiler. Make has no separate macro for the linker!
 LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
 #
