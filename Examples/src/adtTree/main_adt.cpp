@@ -105,7 +105,7 @@ main()
    constexpr size_t DIM=2u;
    using NODE=AdtNode<BOX>;
    std::vector<NODE> vp;
-   auto nbox = 20u;
+   auto nbox = 200u;
    for(auto i = 0u; i < nbox; ++i)
      {
        Point<DIM> l;
@@ -136,13 +136,14 @@ main()
      adtTree.add(b);
 
    adtTree.visit(PrintOutVisitor{std::cout});
-   Box<2,AdtType::Box> searchBox{{0.5,0.5},{0.5,0.5}};
+   Box<2,AdtType::Point> searchBox{{0.9,0.5}};
    apsc::adt::IntersectionVisitor intersect{searchBox};
    adtTree.visit(std::ref(intersect));
-   std::cout<<"intersecting ("<<searchBox.corner(0)[0]<<" "<<searchBox.corner(0)[0]<<")"<<" ("<<searchBox.corner(1)[0]<<" "<<searchBox.corner(1)[0]<<")"<<std::endl;
+   std::cout<<"intersecting ("<<searchBox.corner(0)[0]<<" "<<searchBox.corner(0)[1]<<")"<<" ("<<searchBox.corner(1)[0]<<" "<<searchBox.corner(1)[1]<<")"<<std::endl;
+   int counter{1};
    for (auto i:intersect.intersectingIndexes())
 
-     std::cout<<static_cast<BOX>(adtTree[i])<<" "<<"\n";
+     std::cout<<"Node n:"<<counter++<<"\n"<<static_cast<BOX>(adtTree[i])<<" "<<"\n";
    std::cout<<std::endl;
  }
 

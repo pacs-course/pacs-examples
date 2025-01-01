@@ -1,4 +1,4 @@
-#Packages for linear (and non linear) algebra#
+# Packages for linear (and non linear) algebra #
 
 * `CppNumericalSolvers` Solvers for optimization of a given cost functional. A modified copy of that in  `git@github.com:PatWie/CppNumericalSolvers.git`
 

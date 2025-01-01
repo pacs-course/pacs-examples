@@ -13,7 +13,7 @@ In the following, the name of the example is the name of the directory where the
 
 ## Utilities ##
   - `Utilities` A set of utilities that you may use also in your code. All described in the local `README.md` file. 
-  **You should go in the directory and type**
+  **You should go in the `Utilities` directory and type**
 
 ``` 
     make

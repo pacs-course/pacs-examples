@@ -29,7 +29,7 @@ public:
   //! Constructor giving coordinates.
   Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {}
   //! A point is convertible to an array of double
-  operator std::array<double, 2>(){return coor;}
+  operator std::array<double, 2>() { return coor; }
   //! Returns coordinates in a array<double>.
   std::array<double, 2>
   get() const
@@ -95,9 +95,9 @@ double distance(Point2D const &a, Point2D const &b);
 
 //! Point2D may be used also ad "vector" in 2D so it makes sense to compute
 //! the norm, which is the distance from the origin
-double norm(Point2D const &a);
+double norm(R2Vector const &a);
 //! Return the sin of the angle between two Point2d interpreted as vectors.
-double sinAngle(Point2D const &u, Point2D const &v);
+double sinAngle(R2Vector const &u, R2Vector const &v);
 //! Polygon vertices are just vectors of points.
 using Vertices = std::vector<Point2D>;
 
@@ -153,13 +153,13 @@ public:
   {
     return vertexes[i];
   }
- //! Returns a vertex (read only)
+  //! Returns a vertex (read only)
   Point2D
   operator[](std::size_t i) const
   {
     return vertexes[i];
   }
- //! Returns a vertex (read and write)
+  //! Returns a vertex (read and write)
   Point2D &
   vertex(std::size_t i)
   {
@@ -198,6 +198,7 @@ public:
   {
     return vertexes.cend();
   }
+
   //! Test convexity of the polygon
   virtual bool checkConvexity();
   //! Outputs some info on the polygon
@@ -314,7 +315,7 @@ public:
   bool
   checkConvexity() override
   {
-    return isconvex = true;
+    return true;
   };
   double area() const override; //! Specialised for Triangles
   //! Specialised for Triangles
