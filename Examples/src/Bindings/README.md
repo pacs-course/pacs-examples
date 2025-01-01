@@ -2,14 +2,16 @@
 
 The first part of the code in `main.cpp` deals with binding of lvalue and rvalue  references. 
 
-The general tule is that if there exists an overload of a function with a
+The general rule is that if there exists an overload of a function with a
 rvalue reference as parameter, this version is preferred when the
 argument is a rvalue. 
 
 C++ type categories are indeeed rather more complex than just
 lvalues and rvalues. We make the simplifying (but basically correct) assumption
 that the category (non const) rvalue indicates values that can be safely moved and
-thus preferably binds to rvalue references (irrespective of the fact  that they are eventually *moved* or not!). We also recall that with *moving* we mean that the object is moved to another location in memory, and the original object is left in a state of *empty* (i.e. it is not destroyed, but it is in a state that is not usable anymore). For this to be possible, a special move constructor and move assignment are needed. If not present, the move becomes equivalent to a copy.
+thus preferably binds to rvalue references (irrespective of the fact  that they are eventually *moved* or not!). We also recall that with *moving* we mean that the dynamic data contened in the object is moved to another location in memory, and the original object is left in a state of *empty* (i.e. it is not destroyed). For this to be possible, a special move constructor and move assignment are needed. If not present, the move becomes equivalent to a copy.
+
+I also recall that move can be different from copy only for objects that, directly or indirectly, handle memory dynamically. For example, a `std::vector` is a good candidate for move semantic, while a `std::array` is not. If you try to move an `std::array` you will see that the move constructor is equivalent to the copy constructor.
 
 In the example we present first the "pre c++11 " situation, with just lvalue references. In this case, const lvalue references can bind to any category,
 while non-const lvalue references bind only and preferably to non const lvalues. Normally, we use non-const lvalue reference when
@@ -58,6 +60,6 @@ double fun(double x) {
 
 # What do I learn with this example? #
 - A reminder of reference bindings rule.
-- Some basic concepts of move semantic. A way to optimize memory usage.
+- Some basic concepts of move semantic, a way to optimize memory usage.
 - How to suppress compiler warnings.
 - How to use `std::forward<T>` to perform perfect forwarding.

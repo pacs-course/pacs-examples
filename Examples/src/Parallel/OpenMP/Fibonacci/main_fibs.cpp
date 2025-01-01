@@ -1,3 +1,4 @@
+
 /*
  * main_fibs.hpp
  *
@@ -12,14 +13,12 @@ void
 printHelp()
 {
   std::cout << "Computes Fibonacci sequences. To run the program\n";
-  std::cout << "./main_fibs -t num_threads -l task_limit";
+  std::cout << "./main_fibs -t num_threads -l task_limit\n";
   std::cout
     << "num_threads: number of threads requested (def. 2),\n"
     << "task_limit when the parallel code computes fib(n)\n<<"<<
     " with n<task_limit it resorts to the serial version (def 1)\n";
-    std::cout<<"** Compile with make parallel_cpp if you want to test\n";
-    std::cout<<"also the parallel std::sort algorithm\n"
-    << std::endl;
+    std::cout<< std::endl;
 }
 int
 main(int argc, char **argv)

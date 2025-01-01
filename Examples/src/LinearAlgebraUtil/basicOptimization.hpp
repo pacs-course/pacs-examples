@@ -5,27 +5,27 @@
  *      Author: forma
  */
 
-
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_
 #define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_
 #include <array>
 #include <cmath>
-#include <tuple>
 #include <limits>
 #include <numbers> // C++20 stuff to get golden ration
+#include <tuple>
 #include <utility>
 /*
  * In this version (march 2023) I use concepts to constrain the
  * template parameter indicating the function. Function must be
  * double (double) or double (double const &)
  */
-#include "functionConcepts.hpp"// from Utility
+#include "functionConcepts.hpp" // from Utility
 
 namespace apsc
 {
 /*!
  *  Golden search method to find the extrema of a function. The function must be
- *  double (double) or double (double const &) and must be unimodal in the interval.
+ *  double (double) or double (double const &) and must be unimodal in the
+ * interval.
  *
  * @tparam Function The type of a callable object double (double)
  * @param f The callable object double (double)
@@ -33,7 +33,8 @@ namespace apsc
  * @param b the second end of an interval bracketing the extremum
  * @param tol The desired tolerance. It is guaranteed that the found extremum is
  * within the tolerance
- * @param maxIter Max number of iterations. Safeguard against non-convergence in case of floating point errors
+ * @param maxIter Max number of iterations. Safeguard against non-convergence in
+ * case of floating point errors
  * @return The found extremum and a status (=false max iterations reached)
  */
 template <TypeTraits::ScalarFunction Function>
@@ -41,36 +42,37 @@ std::tuple<double, bool>
 golden_search(Function const &f, double a, double b, double tol = 1.e-5,
               unsigned maxIter = 100)
 {
-  constexpr double phi = 1./std::numbers::phi_v<double>;//(std::sqrt(5.) + 1) / 2;
-  unsigned         iter{0u};
-  auto c = b - (b - a)* phi;
-  auto d = a + (b - a)* phi;
-  auto fc = f(c);
-  auto fd = f(d);
-  tol=std::abs(tol); // just in case
+  constexpr double phi =
+    1. / std::numbers::phi_v<double>; //(std::sqrt(5.) + 1) / 2;
+  unsigned iter{0u};
+  auto     c = b - (b - a) * phi;
+  auto     d = a + (b - a) * phi;
+  auto     fc = f(c);
+  auto     fd = f(d);
+  tol = std::abs(tol); // just in case
   while(std::abs(b - a) > tol && iter < maxIter)
     {
       ++iter;
       if(f(c) < f(d))
-      {
-        b = d;
-        d = c;
-        c = b - (b - a)*phi;
-        fd = fc;
-        fc = f(c);
-      }
+        {
+          b = d;
+          d = c;
+          c = b - (b - a) * phi;
+          fd = fc;
+          fc = f(c);
+        }
       else
-      {
-        a = c;
-        c = d;
-        d = a + (b - a)*phi;
-        fc = fd;
-        fd = f(d);
-      }
+        {
+          a = c;
+          c = d;
+          d = a + (b - a) * phi;
+          fc = fd;
+          fd = f(d);
+        }
     }
-    // test for convergence: have I found the minimum
-    // I estimate the derivative with a finite difference
-    bool ok= std::abs(f(c)-f(d))/std::abs(d-c) < tol;
+  // test for convergence: have I found the minimum
+  // I estimate the derivative with a finite difference
+  bool ok = std::abs(f(c) - f(d)) / std::abs(d - c) < tol;
   return {0.5 * (a + b), ok};
 }
 
@@ -98,7 +100,7 @@ bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
   auto y1 = f(x1);
   // Check monotonicity
   if(f(x1 - h) < y1 and f(x1 + h) > y1)
-    h = -h;                                  // change direction
+    h = -h;                             // change direction
   if(f(x1 - h) > y1 and f(x1 + h) > y1) // I have found the bracket
     return {x1 - h, x1 + h, 0};
   bool         isOk{false};
@@ -115,9 +117,8 @@ bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
           x1 = x2;
           y1 = y2;
         }
-        ++iter;
-    }
-  while(!isOk and iter < maxIter);
+      ++iter;
+  } while(!isOk and iter < maxIter);
   if(iter >= maxIter)
     status = iter;
   x1 -= h;
@@ -126,17 +127,17 @@ bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
   return std::make_tuple(x1, x2, status);
 }
 
-
 //****************************************************************************80
 /*
-Now a set of routines from the book of Richard Brent, ported to C++ by John Burkardt. 
-They are an adaptation of two routines found in https://people.math.sc.edu/Burkardt/cpp_src/brent 
-made by L.Formaggia to port them to more modern C++ style.
+Now a set of routines from the book of Richard Brent, ported to C++ by John
+Burkardt. They are an adaptation of two routines found in
+https://people.math.sc.edu/Burkardt/cpp_src/brent made by L.Formaggia to port
+them to more modern C++ style.
 
-For completeness and acknowledging the original authors I have kept the original comments, though I have
-added some doxygen comments as well to allow the automatic generation of documentation. 
+For completeness and acknowledging the original authors I have kept the original
+comments, though I have added some doxygen comments as well to allow the
+automatic generation of documentation.
 */
-
 
 //****************************************************************************80
 //
@@ -202,8 +203,8 @@ over [A,B] and that F''(X) <= M for all X in [A,B].
 @param b the right endpoint of the interval
 @param c an initial guess for the global minimizer.  If no good guess is known,
 C = A or B is acceptable.
-@param m an estimate of the bound on the second derivative. In fact it is an estimate of the
-Liptschitz constant of the first derivative
+@param m an estimate of the bound on the second derivative. In fact it is an
+estimate of the Liptschitz constant of the first derivative
 @param e a positive tolerance, a bound for the absolute error in the evaluation
 of F(X) for any X in [A,B].
 @param t a positive error tolerance.

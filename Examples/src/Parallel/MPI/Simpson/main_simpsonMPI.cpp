@@ -20,7 +20,7 @@ int main ()
   // This tuple is here to pack some data
   std::tuple<double,double,double,unsigned int> databuf;
   // I use a function wrapper to wrap the function
-  std::function<double (double const &)> f=[](double const & x){return std::sin(x)*x*x;};
+  std::function<double (double const &)> f=[](double const & x){return std::sin(x)*x*x*x;};
   MPI_Init(nullptr,nullptr);
   MPI_Comm mpi_comm=MPI_COMM_WORLD;
   MPI_Comm_rank(mpi_comm,&my_rank);

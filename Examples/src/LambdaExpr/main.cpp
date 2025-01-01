@@ -6,9 +6,9 @@
  *  Example of lambda expressions
  */
 #include <cmath>
+#include <complex>
 #include <iostream>
 #include <vector>
-#include <complex>
 /*!
  * A class to show the use of lambda expressions the uses the
  * object of the class
@@ -31,7 +31,7 @@ public:
     return f(2 * y);
   }
   /*!
-   * This function takes this by value
+   * This method takes this by value
    * In this case inside the lambda I have a copy of myself
    * In this example it is not of great use, but there are situations where
    * you may want the copy of the object and not a pointer to it
@@ -67,16 +67,15 @@ csin(double x)
 }
 
 // Since C++17 You can have template lambdas and automatic lambdas!!
-template<unsigned int N>
-auto power = [](auto x)
-{
-  if constexpr (N==0u)
+template <unsigned int N>
+auto power = [](auto x) {
+  if constexpr(N == 0u)
     // I assume that there is an constructor that may take 1 as argument
-      return decltype(x)(1);
-  else if constexpr (N==1u)
-      return x;
+    return decltype(x)(1);
+  else if constexpr(N == 1u)
+    return x;
   else
-      return x*power<N-1u>(x);
+    return x * power<N - 1u>(x);
 };
 
 int
@@ -95,8 +94,8 @@ main()
   // here the z in the scope of the lambda ia a copy of z
   auto l1 = [z](const double &y) { return z * y; };
   // here the z in the scope of the lambda is a reference (an alias) of z
-  // I also use an alternative sintax where I specify the return type (normally not needed,
-  // but sometimes necessary).
+  // I also use an alternative sintax where I specify the return type (normally
+  // not needed, but sometimes necessary).
   auto l2 = [&z](const double &y) -> double { return z * y; };
 
   // constexpr are automatically included in a lambda expession!
@@ -110,7 +109,8 @@ main()
   std::cout << " Now I change z\n";
   z = -3.5;
   // The value of the z local to l1 is unchanged. It is a copy of z at the
-  // moment of the creation of the lambda expression. While l2 stores a reference
+  // moment of the creation of the lambda expression. While l2 stores a
+  // reference
   // ... therefore:
   std::cout << "l1(5) and l2(5)" << l1(5) << " " << l2(5) << std::endl;
   // Using a function returning a lambda
@@ -119,12 +119,9 @@ main()
   std::cout << " w=" << w << " is equal to 4*sin(2)=" << 4. * std::sin(2.)
             << std::endl;
 
-
-  std::cout<< "5.3^5= "<<power<5>(5.3)<<std::endl;
-  // The power of automatic lambdas (and in general automatic deduction of types)
-  std::complex d{3.,8.};
-  std::cout<< "(3+8i)^3= "<<power<5>(d)<<std::endl;
-
-
-
+  std::cout << "5.3^5= " << power<5>(5.3) << std::endl;
+  // The power of automatic lambdas (and in general automatic deduction of
+  // types)
+  std::complex d{3., 8.};
+  std::cout << "(3+8i)^3= " << power<5>(d) << std::endl;
 }

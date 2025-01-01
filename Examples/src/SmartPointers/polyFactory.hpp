@@ -58,14 +58,19 @@ polyFactory_simple(Shape s)
   With the help of variadic templates I can use any constructor of the polymorphic object.
   Indeed,  different Polygon objects have
   different constructors, taking different arguments.
+
+  Here I use forwarding references to forward to the contractor the argument category value (move what can be moved
+  copy what should be copied). But I present also (commented) a simpler version.
 */
 template <class... Args>
 std::unique_ptr<AbstractPolygon>
-polyFactory(Shape s, Args&&... args)
+polyFactory(Shape s, Args&&... args)// simpler version:polyFactory(Shape s, const Args&... args)
 {
   switch(s)
     {
     case Shape::Triangle:
+      // simpler version
+      //return std::make_unique<Triangle>(args...);
         return std::make_unique<Triangle>(std::forward<Args>(args)...);
     case Shape::Square:
         return std::make_unique<Square>(std::forward<Args>(args)...);

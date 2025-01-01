@@ -202,7 +202,7 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
   // Iteration counter
   int iter = 0;
   // I want to check that the time step does not go ridiculosly small
-  // @todo make it a variable member!
+  // @todo make it a member variable!
   double hmin = 100 * timeInterval * std::numeric_limits<double>::epsilon();
   double h = std::max(hInit, hmin);
   double t = T0;
@@ -318,7 +318,7 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
   if(minimalh)
     {
       std::cerr << "RKF used minimal value for h=" << hmin
-                << " Error may be grater than expected\n";
+                << " Error may be greater than expected\n";
     }
   // std::cout<<"Oscillazioni="<<oscilla<<std::endl;
   return res;
