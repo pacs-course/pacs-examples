@@ -1,4 +1,4 @@
-#The preprocessor#
+# The preprocessor #
 
 These tests are just examples on the use of the preprocessor.
 
@@ -18,6 +18,6 @@ or
 
 Here `PLUTO` is a cpp macro. Look at `output.txt` and you will see the post-processed line. 
 
-#What do I get here?#
+# What do I get here? #
 - That the prepocessor exists;
 - That `#include` does exactly what it says.

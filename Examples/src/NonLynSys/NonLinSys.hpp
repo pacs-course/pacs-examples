@@ -9,9 +9,13 @@
 #define EXAMPLES_SRC_NONLYNSYS_NONLINSYS_HPP_
 #include "NonLinSysTraits.hpp"
 #include <algorithm>
-#include <execution>
-#include <utility>
+
+#ifdef PARALLELSTD
+#include <execution> //if you use parallel algorithm
+#endif
+
 #include <type_traits>
+#include <utility>
 namespace apsc
 {
 /*!
@@ -19,7 +23,7 @@ namespace apsc
  *
  * The system \f$ R^n\rightarrow R^m\f$ is stored as a vector of functions
  * \f$ R^n\rightarrow R\f$. You may call the single function or the whole system
- * In fact \f$R\f$ is a generic type (it may be a complex).
+ * In fact \f$R\f$ is a generic type representing a field (it may be a complex).
  *
  * The types used in this class are taken from a trait templatised on R. You can
  * change the trait if you want to change the types used in this class (for
@@ -28,8 +32,8 @@ namespace apsc
  * @tparam T The type of the arguments and return of the functions
  * @tparam Traits The trait defining all the basic type used in this class
  */
-template <typename R, template <typename> typename Traits =
-                        apsc::NonLinSysTraits::VectorTraits>
+template <typename R = double, template <typename> typename Traits =
+                                 apsc::NonLinSysTraits::VectorTraits>
 class NonLinSys
 {
 public:
@@ -68,7 +72,8 @@ public:
   addToSystem(scalarfunction &&f)
   {
     //@todo use concepts instead of static_assert
-    static_assert(std::is_convertible_v<scalarfunction,typename Traits<R>::ScalarFunctionType>,
+    static_assert(std::is_convertible_v<scalarfunction,
+                                        typename Traits<R>::ScalarFunctionType>,
                   "Cannot add a function with wrong signature!");
     system_.emplace_back(std::forward<scalarfunction>(f));
   }
@@ -93,7 +98,8 @@ public:
   void
   updateFunction(scalarfunction &&f, unsigned int i)
   {
-    static_assert(std::is_convertible_v<scalarfunction,typename Traits<R>::ScalarFunctionType>,
+    static_assert(std::is_convertible_v<scalarfunction,
+                                        typename Traits<R>::ScalarFunctionType>,
                   "Cannot add a function with wrong signature!");
     system_[i] = std::forward<scalarfunction>(f);
   }
@@ -123,18 +129,25 @@ public:
     // of data race when increasing size
     ResultType res_;
     res_.resize(system_.size());
-    /*
+    /* //standard for loop
      for (auto const & fun: system_)
       {
         res.emplace_back(fun(x));
       }
       */
     // Using parallel algorithms
+    // you have to include <execution> and link with -ltbb
+#ifdef PARALLELSTD
+    std::for_each(std::execution::par, system_.begin(), system_.end(),
+                  [&x, &res_](auto const &fun) { res_.emplace_back(fun(x)); });
+#else
+    // to use openMP you have to compile with -fopenmp
 #pragma omp parallel for
     for(std::size_t i = 0; i < system_.size(); ++i)
       {
         res_[i] = system_[i](x);
       }
+#endif
     return res_;
   }
   /*!
@@ -147,7 +160,7 @@ public:
   }
 
 protected:
-  FunctionContainerType         system_;
+  FunctionContainerType system_;
 };
 
 } // namespace apsc

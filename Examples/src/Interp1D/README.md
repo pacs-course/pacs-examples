@@ -6,9 +6,9 @@ vectors of couples of values, representing the key (the interpolation nodes) and
 It is rather generic and accepts in input iterators to any container with bi-directional iterators. Bi-directionality
 is indeed only needed if we do extrapolation on the right. In principle it could be checked out by using iterator_tags.
 
-Anyway, it is better to use it with containers that have a randomaccess iterators (like vector or array) because only in this case we have optimal complexity (log2 n).
+Anyway, it is better to use it with containers that have a random access iterators (like vector or array) because only in this case we have optimal complexity (log2 n).
 
-The generality comes from the fact that I wanted a function that takes in input sn object from which I can extract keys and values and I want also to specify the comparison operator among keys, in a general way. This is in `interp1D.hpp`.
+The generality comes from the fact that I wanted a function that takes in input an object from which I can extract keys and values and I want also to specify the comparison operator among keys, in a general way. This is in `interp1D.hpp`.
 
 Then I have written two oveloads that represent the more common usage of the tool.  A first overload that takes a vector of elements that have the operator [i] returning the key  (the interpolation nodes) for i=0 and the value (the interpolation point)  for i=1, for instance
 `std::vector<std::array<double,2>>` and an overload that takes a vector of keys and a vector of values. The second overload is very similar to the interp1D function of Matlab.

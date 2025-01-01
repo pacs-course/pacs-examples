@@ -14,7 +14,7 @@ int
 main()
 {
   using namespace apsc::NonLinSysTraits;
-  // The greater common division and largest common multiplies with 2 to 100
+  // The greater common division and largest common multipliers with 2 to 100
   apsc::NonLinSys<unsigned int, ScalarTraits> nls;
   // I extract the type from the non linear system (not really necessary, I know
   // it is an unsigned int)
@@ -40,7 +40,7 @@ main()
 
   // The case of a system of two equation of two variable. I use the default
   // trait
-  apsc::NonLinSys<double> nlsd;
+  apsc::NonLinSys nlsd;
   using ArgumentTyped = apsc::NonLinSys<double>::ArgumentType;
   nlsd.addToSystem(
     [](ArgumentTyped const &x) { return std::sin(x[0]) + std::cos(x[1]); });
@@ -62,8 +62,8 @@ main()
                        [](double const &x) { return std::sin(x); });
   factory.addToFactory("Function 2",
                        [](double const &x) { return std::cos(x); });
-  // if uncommented I have an error
-  // factory.addToFactory("Function 2",[](double const &x){return
+  // if uncommented I have an error you cannot have t2 functions with the same
+  // id factory.addToFactory("Function 2",[](double const &x){return
   // std::tan(x);}); Get one function with the identifier
   auto fun = factory.getFunction("Function 2");
   std::cout << "Function 2(3.1415)=" << fun(3.1415) << std::endl;

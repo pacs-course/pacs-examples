@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     }
   if(stop)
     {
-      MPI_Barrier(mpi_comm);
+      //MPI_Barrier(mpi_comm);
       MPI_Finalize();
       return 0;
     }
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
   auto local_mean=utilities::mean(local_v);
   auto local_minmax=utilities::minmax(local_v); // its an array of 2 doubles
   // Get in the root the full vector (an example of MPI_Gatherv)
-  myVector.resize(n);
+  if (mpi_rank==0) myVector.resize(n);
   MPI_Gatherv(local_v.data(),local_size,MPI_DOUBLE,myVector.data(),count_recv.data(),
               displacements.data(),MPI_DOUBLE,0,mpi_comm);
   // Get also all partial statistics

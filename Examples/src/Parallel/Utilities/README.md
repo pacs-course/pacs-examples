@@ -15,9 +15,9 @@ Given *n* and *p* the type of information we may wish to get is
 
 The partition can be made in many ways. In particular
 
--The *grouped* strategy sets the first *n mod p* chunks with dimension *n/p +1*, the other of dimension *n/p*. An alternative is to have the last of  dimension *n/p +1*. In any case, the vector is split into two consicutive portions (one of which can be empty) that provide chunks of equal size. It is very simple to implement, however the operation of extracting the chunk index of an arbitrary vector element is complicated. 
+- The *grouped* strategy sets the first *n mod p* chunks with dimension *n/p +1*, the other of dimension *n/p*. An alternative is to have the last of  dimension *n/p +1*. In any case, the vector is split into two consicutive portions (one of which can be empty) that provide chunks of equal size. It is very simple to implement, however the operation of extracting the chunk index of an arbitrary vector element is complicated. 
 If this information is needed it is better to resort to the other strategy.
--In the *distribution* stategy the number of elements in the *i-th* chunk is given by
+- The *distribution* stategy: the number of elements in the *i-th* chunk is given by
 
 	[(i+1) * n] / p - [i * n] / p
 and it may be shown that it is equal to either *n/p* or *n/p+1* and the sum for *i=0,...,p-1* is exactly *n*.
@@ -37,8 +37,8 @@ In particular it defines `MPI_SIZE_T`, useful when you want to send object of st
 
 ## The utility `SafeMPI.hpp` ##
 
-The new `override` clause is very useful, but since it has been introduced in the language only recently it is not used in several lagacy code, in particular some classes loaded by `mpi.h`.
-In the course, we use by default the very useful warning `-Wsuggest-override` that indeed tells where, according to the compile, you should add `override`.
+The new `override` clause is very useful, but since it has been introduced in the language only recently it is not used in several legacy code, in particular some classes loaded by `mpi.h`.
+In the course, we use by default the very useful warning `-Wsuggest-override` that indeed tells where, according to the compiler, you should add `override`.
 
 When you compile with the usual setting a file that includes `mpi.h` you get a lot of annoying warnings, This file uses `#pragma GCC diagostic` to wrap the inclusion of `mpi.h` and suppress the warning related to `override` and another one related to a potentially dangerous cast of function pointers (but we trust mpi programmers, don't we?).
 
