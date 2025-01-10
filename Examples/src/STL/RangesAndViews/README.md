@@ -91,7 +91,7 @@ Yet, they can still work with an iterator-sentinel pair if needed, offering flex
 ```
 
 - **Projections**: Projections allow for more sophisticated operations by transforming elements before processing them in the algorithm.
-  The are implemented as an additional and optional argument.
+  They are implemented as an additional and optional argument.
 
   ```cpp
     // Traditional algorithm to sort by absolute values
@@ -104,9 +104,10 @@ Yet, they can still work with an iterator-sentinel pair if needed, offering flex
 Projection can also be adopted to specify the element used in the algorithm. For instance, in the following example, we sort a vector of pairs by the second element of the pair:
 
 ```cpp
-    std::vector<std::pair<int, int>> v = {{1, 2}, {2, 1}, {3, 3}};
+    std::vector<std::pair<int, int>> v = { {1, 2}, {2, 1}, {3, 3} };
     std::ranges::sort(v, {}, [](auto p) { return p.second; });
 ```
+
 - **Pointer-to-Member Callables**: These algorithms support pointer-to-member callables, which can specify operations on member variables of class objects within a range.
 An example:
 ```cpp
@@ -114,7 +115,7 @@ An example:
       std::string name;
       int age;
     };
-    std::vector<Person> people = {{"John", 20}, {"Jane", 30}, {"Bob", 25}};
+    std::vector<Person> people = { {"John", 20}, {"Jane", 30}, {"Bob", 25} };
     std::ranges::sort(people, {}, &Person::age);// the projector is a pointer to member!
     // people is now sorted by age
 ```

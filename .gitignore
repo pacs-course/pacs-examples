@@ -101,7 +101,8 @@ a.out
 main
 *.a
 *.so
-
+#JetBrain stuff
+.idea/
 # makefile aux
 make.dep
 
@@ -269,3 +270,12 @@ make.dep
 /Examples/src/Utilities/test_overloaded
 /Examples/share/cmake/*
 /Examples/share/pkgconfig/*
+Examples/lib/libmuparser.so.2.3.4
+Examples/src/Parallel/OpenMP/Fibonacci/main_fibs
+Examples/src/STL/SortAndPermute/main_sortAndPermute
+Examples/src/STL/Span/main_span
+Examples/src/Utilities/parallel_for.hpp.gch
+Examples/src/Utilities/test_is_specialization
+Examples/src/Utilities/test_parallel_for
+Examples/src/Utilities/test_range_to_vector
+Examples/src/Utilities/test_tuple_util
