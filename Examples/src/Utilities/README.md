@@ -88,11 +88,10 @@ utilities of the Standard Library, but with a simpler interface.
 
 * `toString` Converts anything for which there is the `<<` streaming operator to a string. A use of `std::stringstream`.
 
-* `tuple_utilities` Contains some utilities for tuples:  `tuple_common_type_t<Tuple>` that returns the common tpe of all types contained in a tuple, and `for_each<Tuple F>` and `for_each2<Tuple, F>` that apply (possibly in parallel) the function object `F` to all elements of the tuple. The first one returns a tuple with the result, the second one does not and is thus applicable also if `F` is a void function. `all_of<Tuple,F>` and `any_of<Tuple,F>`, that apply predicate `F` to all elements of a tuple. The first returns true if the predicate is true for all elements, the second if it is true for at least one element.
+* `tuple_utilities.hpp` Contains some utilities for tuples:  `tuple_common_type_t<Tuple>` that returns the common tpe of all types contained in a tuple, and `for_each<Tuple F>` and `for_each2<Tuple, F>` that apply (possibly in parallel) the function object `F` to all elements of the tuple. The first one returns a tuple with the result, the second one does not and is thus applicable also if `F` is a void function. `all_of<Tuple,F>` and `any_of<Tuple,F>`, that apply predicate `F` to all elements of a tuple. The first returns true if the predicate is true for all elements, the second if it is true for at least one element.
+
+* `type_name.hpp` An utility to pretty-print the name of the type of a variable. It is useful for debugging. It is based on the `boost::core::demangle` function. 
    
-
-
-
 ** Note ** `Factory.hpp` and `Proxy.hpp` are in fact links to the same file in the folder `GenericFactory`. If the files are not present for some reason you may safely copy in `Utility/` the files in `GenericFactory/`.
 
 

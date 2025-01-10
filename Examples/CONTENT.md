@@ -87,6 +87,7 @@ since several examples make use of the utilities contained in this folder.
     * `Streams/redirect`. Straems can be redirected, also at run time!. Useful you you want to be able to switch from screen to file, or to a string.
     * `Streams/serialization`. A  example of serializaion of an aggregate (more complex serialization that may be performed with specialised libraries like `boost::serialization` are not covered here).
     * `Streams/sstream`. String streams are a very useful tool. They are strings that can act as a stream (or viceversa). Here you find some example of usage.
+    * `Streams/format` An example of the use of the new `std::format` utility. It is a new feature in C++20 that allows you to format strings in a more readable and maintainable way. It is similar to `printf` but with a more modern syntax. 
   * `Vector` Examples of use of `std::vector`, probably the most used container in C++.
     *`Vector/Basics` As the name says.
     *`Vector/Remove` What it means "removing" elements from a vector with `remove()`. It is not what you think!`

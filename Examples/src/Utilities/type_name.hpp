@@ -15,6 +15,8 @@ void foo(const T& variable)
 }
 @endcode
 */
+namespace apsc
+{
 template <class T>
 constexpr std::string_view
 type_name()
@@ -31,3 +33,5 @@ type_name()
 #endif
 #endif
 }
+} // namespace apsc
+
