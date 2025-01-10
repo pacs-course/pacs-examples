@@ -39,6 +39,14 @@ and some examples of c++20 are being added. Check whether your compile supports 
 at https://en.cppreference.com/w/cpp/compiler_support
 
 
+## Module (mk) system ##
+In the course, we use the mk module system provided in [this repository](https://github.com/pcafrica/mk_) (nothing to do with girt submodules!). However, this is not strictly required, you can do without, if you have
+a recent Linux distribution.
+
+If you use the modules this directory contains some utilities:
+
+**  load_modules
+
 You may want to use some IDE. Either [eclipse](https://www.eclipse.org/ide/), [CLion](https://www.jetbrains.com/clion/) or [VisualStudio](https://www.jetbrains.com/clion/). Clion and VisualStudio allow integration with Copilot.
 
 ## Directory Contents ##
@@ -91,5 +99,10 @@ I have used standard makefiles since I find that they allow simpler handling of 
 
 ## DISCLAIMER ##
 The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your wish (give credits please), but remember that I do not make any claim on their suitability for your work, nor that they are free of bugs. 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> master
 
 
