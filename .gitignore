@@ -1,3 +1,4 @@
+./shared_files/*
 /Examples/include/*
 /Examples/src/RK45/main_rk45
 /Examples/src/SimpleProgram/main_ch1
