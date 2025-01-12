@@ -1,31 +1,31 @@
 [submodule "Examples/src/LinearAlgebra/CppNumericalSolvers"]
 	path = Examples/src/LinearAlgebra/CppNumericalSolvers
-	url = https://github.com/pacs-course/CppNumericalSolvers.git
+	url = git@github.com:pacs-course/CppNumericalSolvers.git
         branch = master
 [submodule "Examples/src/LinearAlgebra/spectra"]
 	path = Examples/src/LinearAlgebra/spectra
-	url = https://github.com/pacs-course/spectra.git
+	url = git@github.com:pacs-course/spectra.git
         branch = master
 [submodule "Examples/src/LinearAlgebra/redsvd-h"]
 	path = Examples/src/LinearAlgebra/redsvd-h
-	url = https://github.com/pacs-course/redsvd-h.git
+	url = git@github.com:pacs-course/redsvd-h.git
         branch = master
 [submodule "Extras/muparser"]
 	path = Extras/muparser
-	url = https://github.com/pacs-course/muparser.git
+	url = git@github.com:pacs-course/muparser.git
         branch = master
 [submodule "Extras/muparserx"]
 	path = Extras/muparserx
-	url = https://github.com/pacs-course/muparserx.git
+	url = git@github.com:pacs-course/muparserx.git
 [submodule "Extras/json"]
 	path = Extras/json
-	url = https://github.com/pacs-course/json.git
+	url = git@github.com:pacs-course/json.git
 	branch = PACS
 [submodule "Extras/pybind11"]
 	path = Extras/pybind11
-	url = https://github.com/pacs-course/pybind11.git
+	url = git@github.com:pacs-course/pybind11.git
         branch = master
 [submodule "Examples/src/pybind11/pybind11_examples"]
 	path = Examples/src/pybind11/pybind11_examples
-	url = https://github.com/pacs-course/pybind11_examples.git
+	url = git@github.com:pacs-course/pybind11_examples.git
         branch = master
