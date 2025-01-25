@@ -120,7 +120,7 @@ main(int argc, char **argv)
       // Gauss Siedel is initialised with a linear variation
       // of T
 
-      for(int m = 0; m <= M; ++readParameters_jsonm)
+      for(int m = 0; m <= M; ++m)
         theta[m] = (1. - m * h) * (To - Te) / Te;
 
       int    iter = 0;
