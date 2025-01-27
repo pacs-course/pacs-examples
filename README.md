@@ -116,6 +116,24 @@ Or, if you already know what to do, simply use the docker hub address of the ima
 docker pull lucaformaggia/pacs-exercises:latest
 ```
 
+### For people using Visual Studio Code
+If you use Visual Studio Code you can use the `Remote - Containers` extension to open the Examples in a dev container. You can find the extension in the Visual Studio Code marketplace. 
+
+After having dowloaded the PacsContainer repo, you can open the Examples in a dev container by opening the command palette (Ctrl+Shift+P) and typing `Remote-Containers: Open Folder in Container...`. Then select the folder `vsCode_precompiled` in the PacsContainer repo.
+
+### For people using Apptainer
+If you use Apptainer, you can use the sandbox to open the Examples in a dev container. it is sufficient tu run the script `make_apptainer_sandbox.sh` in the `scripts` directory of the PacsContainer repo.    
+
+### For people using Docker
+You find the full Docker file that I use to build the container in the `Docker` directory of the PacsContainer repo. You can use it to build your own container.
+
+### For people using Clion
+You can use the `Remote Development` plugin of Clion to open the Examples in a dev container. You can find the plugin in the Clion marketplace.
+Unfortunatley dev containers in cLion are not as well integrated as in Visual Studio Code. You can use the `Remote Development` plugin to open the Examples in a dev container, but you have to manually set up the container. You can find the Dockerfile in the `Docker` directory of the PacsContainer repo.
+
+
 ## DISCLAIMER
 
-The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your wish (give credits please), but remember that I do not make any claim on their suitability for your work, nor that they are free of bugs. 
+The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your wish (give credits please and let me know of bugs or possible improvements), but remember that *I do not make any claim on their suitability for your work, nor that they are free of bugs*. 
+
+Luca Formaggia (github username: lformaggia)
