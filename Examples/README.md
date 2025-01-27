@@ -1,4 +1,4 @@
-# Examples of the Course on Advanced Programming for Scientific Computing (aka PACS)#
+# Examples of the Course on Advanced Programming for Scientific Computing (aka PACS)
 **Mathematical Engineering, Politecnico di Milano**
 **Copyright Luca Formaggia 2012-2024**
 
@@ -29,6 +29,8 @@ The software contained in the subfolders of this directory is free-software rele
 
 `setup.sh` A bash script that compiles the main utilities in one shot so that you have averything set. It is explained in the next section.
 
+`Makefile_description.md` A file that describes the structure of the makefiles used in the examples. It is explained in the next section.
+
 ## HOW TO COMPILE AND INSTALL THE EXAMPLES: ##
 
 ### THE FIRST STEP ###
@@ -36,13 +38,16 @@ The software contained in the subfolders of this directory is free-software rele
 Open a terminal and go in the directory `Examples` of the repository (*it is the directory that contains this README.md file!, from now on denoted as **root directory***) 
 The first operation is to copy the  file `Makefile.user` to `Makefile.inc`:
 
-    $ cp Makefile.user Makefile.inc
-
+```bash
+cp Makefile.user Makefile.inc
+```
 and edit the latter to suit your system. In particular, you have to set `PACS_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
 If you do not know it
 just type
 
-    pwd
+```bash
+pwd
+```
 in the terminal and you have it.
 
 (Almost) all `Makefiles` of the examples include the file `Makefile.inc` of the root directory
@@ -52,14 +57,14 @@ In particular, the user may modify the `Makefile.inc` to change some
 compilation options. But normally you don't need it.
 
 As an example:
-
+```makefile
     PACS_ROOT=/home/myname/pacs/Examples/
-
+```    
 Alternatively, to editing the file, you may set an environmental
 variable with the same name using the command 
-
+```makefile
     export PACS_ROOT=/home/myname/pacs/Examples/ 
-
+```
 in the `.profile` or in the `.bashrc` file in your home directory (see Note
 at the end of the file). The file `Makefile.inc` is included in all the Makefiles and defines and
 exports the following make macros:
@@ -106,6 +111,7 @@ Being all the first target of (almost all) the makefiles, to compile
 the examples is often sufficient to type `make`. with `make doc` you
 compile the documentation.
 
+More details in the `Makefile_description.md` file.
 
 ## WORKING WITH MODULES (but also if you do not use them...) ##
 
