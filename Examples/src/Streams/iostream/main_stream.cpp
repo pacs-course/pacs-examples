@@ -1,6 +1,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -116,4 +117,31 @@ main()
   // Back to normal
   cout << std::setprecision(oprec) << std::setfill(oldfill)
        << std::setiosflags(oldf);
+  cout << std::noboolalpha;
+
+  // The new formatting stuff!
+  std::cout << "Now with the new format facility introduced in C++20\n";
+  maxprec = std::numeric_limits<double>::digits10;
+  cout << std::format("{:.{}e} Max precision, Scientific format", pi, maxprec)
+       << endl; // scientific format with exponent indicated by e. note the
+                // double brace
+  cout << std::format("{:.4e} with 4 digits, Scientific format", pi) << endl;
+  // I like uppercase E
+  cout << std::format("{:.4E} with 4 digits, Scientific format, Uppercase E",
+                      pi)
+       << endl; // I specify the precision
+  //
+  cout << std::format("{:<25.15}{} Width 25 precision 15", pi, 123) << endl;
+  cout << std::format("{} This is a bool", a) << endl;
+  cout << std::boolalpha << std::format("{} This is again a bool", a) << endl;
+  //
+  cout << std::format("{:<25.8} {} Internal padding", pi, j) << endl;
+  cout << std::format("{:<25.8} {} Left padding", pi, j) << endl;
+  //
+  cout << std::format("{:#>25} {} Right padding with # as padding char", pi, j)
+       << endl;
+  //
+  cout << std::showbase << std::showpos;
+  cout << std::format("{:o} 1234 in octal base", i) << endl;
+  cout << std::format("{:x} 1234 in hexadecimal", i) << endl;
 }
