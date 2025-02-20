@@ -92,6 +92,10 @@ Examples/src/*/doc/*
 # configuration files
 Examples/Makefile.inc
 
+# generated clangd compilation commands and index
+compile_commands.json
+**/.cache/clangd/
+
 # backup files
 *~
 
