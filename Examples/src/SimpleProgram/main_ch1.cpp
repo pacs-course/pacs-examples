@@ -18,10 +18,17 @@ main()
   cin >> n >> m;                                   // input from terminal
   if(n > m)
     swap(n, m); // if n is bigger than m, swap them
-  int sum{0};   // sum is initialized to 0
-  // a loop, i changes from n to m with increment 1 each time
-  for(auto i = n; i <= m; ++i)
-    sum += i;
+  int sum{0};   // sum is initialized to 0.
+  // other ways to initialize sum (C++ loves having different way of doing the
+  // same thing) are at the bottom of the file a loop, i changes from n to m
+  // with increment 1 each time
+  for(auto i = n; i <= m; ++i) // automatic deduction of type for i
+    sum += i; // I do not need opening a scope with {} since it is just 1 line
+  // but doing it is not wrong:
+  // for (auto i = n; i <= m; ++i) {
+  //   sum += i;
+  // }
+
   std::cout << std::format("The sum of integers from {} to {} is: {}", n, m,
                            sum)
             << std::endl;
@@ -42,7 +49,8 @@ main()
 // We have used the brace initialization for sum
 // Alternatively you may use:
 // int sum(0); // old style initialization (but still perfectly valid)
-// int sum = 0;// Equivalent to int sum{0};
-// auto sum = 0; // Equivalent to int sum{0} with automatic type deduction
-// auto sum = 0.0; // Equivalent to double sum{0.0} with automatic type
-// deduction for floating point
+// int sum = 0; // (almost) equivalent to int sum{0};
+// auto sum = 0; // Equivalent to int sum=0 with automatic type deduction
+// auto sum = 0.0; // Equivalent to double sum=0.0; with automatic type
+// deduction for floating points!
+// auto sum{0ul}; // sum is an unsigned long integer initialized to 0
