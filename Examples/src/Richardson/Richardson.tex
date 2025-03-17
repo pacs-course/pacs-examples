@@ -33,18 +33,18 @@
   lineskip=0ex, %  frame=single
 }
 \lstset{morekeywords={byte,string,constexpr}}
-\title{A brief introduction to Rochardson acceleration}
+\title{A brief introduction to Richardson acceleration}
 \author{Luca Formaggia\\Politecnico di Milano\\ APSC Course}
 \date{January 2022}
 \begin{document}
 \maketitle
     \section{Richardson acceleration}
 
-    Richardson acceleration is a particular acceleration technique
+    Richardson acceleration (also called Richardson extrapolation) is a particular acceleration technique
     applicable when you have a quantity with a known convergence rate
     with respect to a parameter going to zero.
     
-    More precisely, is used when you are constructing an approximation
+    More precisely, it is used when you are constructing an approximation
     $y(h)$ of a quantity $y$ that depends on a parameter $h$
     (often a discretization step) and you may write, 
     \begin{equation}
@@ -79,13 +79,15 @@
   Moreover, the quantity $|y^R_{i+1}(h)- y^R_i(h)|$ is a measure of the error.
     
     An important note. If the expansion is correct, in \eqref{eq:Richbase} the numerator $t^{k_i}y^R_i(h/t)-y^R_i(h)$ will eventually lead to the difference of two nearby quantities: cancellation error! So, normally one does not take $m$ too large. Another aspect is that we need to know the $k_i$. Of course one may assume that, for a linear converging $y(h)$ we have $k_0=1$ and 
-    $k_{j+1}=k_j+1$, i.e. a Taylor like expansion. But if you know that some coefficients in the Taylor expansion are missing (for instance, only odd or even coefficients are different from zero) it is better to exploit it!
+    $k_{j+1}=k_j+1$, i.e. a Taylor like expansion. 
+	But if you know that some coefficients in the Taylor expansion are missing (for instance, only odd or even coefficients are different from zero) 
+	it is better to exploit it!
   
   \subsection{A pseudo code}
-  Let's suppose that our approximation satifies \eqref{eq:expansion}, for simplicity we take here $t=2$, which is often the case. We choose an $h$ and a $m$, we want to get $y^R_m(h)$.
-  Let's do thing step by step to realize what we need. Let $Y_{j,k}=y^R_k(h/t^{j-k})=y^R_k(h/2^{j-k})$, thus $Y_{j,0}=y(h/2^j)$ and $Y_{k,k}=y^R_k(h)$
+  Let's suppose that our approximation satisfies \eqref{eq:expansion}, for simplicity we take here $t=2$, which is often the case. We choose an $h$ and a $m$, we want to get $y^R_m(h)$.
+  Let's do things step by step to realize what we need. Let $Y_{j,k}=y^R_k(h/t^{j-k})=y^R_k(h/2^{j-k})$, thus $Y_{j,0}=y(h/2^j)$ and $Y_{k,k}=y^R_k(h)$
  
-  Let's look at the numerator of formula \eqref{eq:Richbase} (the denumerator are easy!)
+  Let's look at the numerator of formula \eqref{eq:Richbase} (the denominators are easy!)
   
 \noindent$\bullet$ First step, $i=0$, then
   \[

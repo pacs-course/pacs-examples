@@ -10,6 +10,7 @@
 #include "NonLinSysTraits.hpp"
 #include <algorithm>
 #include <concepts>
+#include <ranges>
 
 #ifdef PARALLELSTD
 #include <execution> //if you use parallel algorithm
@@ -140,11 +141,10 @@ public:
     // Note that to get the index I need to use some features of pointer
     // arithmetics
 #ifdef PARALLELSTD
-    std::for_each(std::execution::par, system_.begin(), system_.end(),
-                  [&x, &res_, this](auto const &fun) {
-                    std::size_t i = &fun - &system_[0];
-                    res_[i] = fun(x);
-                  });
+    auto indices = std::views::iota(0u, system_.size()) | std::views::common;
+    std::for_each(
+      std::execution::par, indices.begin(), indices.end(),
+      [&x, &res_, this](auto const &i) { res_[i] = system_[i](x); });
 #else
     // to use openMP you have to compile with -fopenmp
 #pragma omp parallel for
