@@ -1,0 +1,40 @@
+rm -f make.dep
+for f in main_rk45.cpp rk45.cpp; do \
+g++ -std=c++11 -I. -I./include -I/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//include  -I/usr/local/include/eigen3     -MM $f >> make.dep; \
+done
+make clean
+make[1]: Entering directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+rm -f -f main_rk45 main_rk45.o rk45.o
+make[1]: Leaving directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+make librk45.a LIBTYPE=STATIC 
+make[1]: Entering directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+g++ -g -std=c++11 -Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor -I. -I./include -I/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//include  -I/usr/local/include/eigen3      -c -o rk45.o rk45.cpp
+ar rsU librk45.a rk45.o
+make[1]: Leaving directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+make exec LIBTYPE=STATIC
+make[1]: Entering directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+g++ -g -std=c++11 -Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor -I. -I./include -I/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//include  -I/usr/local/include/eigen3      -c -o main_rk45.o main_rk45.cpp
+main_rk45.cpp: In lambda function:
+main_rk45.cpp:10:31: warning: unused parameter ‘t’ [-Wunused-parameter]
+   10 |   auto fun = [](double const &t, double const &y) { return -10 * y; };
+      |                 ~~~~~~~~~~~~~~^
+g++ -Wl,-rpath=. -Wl,-rpath=/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//lib -g   main_rk45.o librk45.a  -L. -lrk45 -o main_rk45
+make[1]: Leaving directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+make clean
+make[1]: Entering directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+rm -f -f main_rk45 main_rk45.o rk45.o
+make[1]: Leaving directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+make librk45.so LIBTYPE=DYNAMIC
+make[1]: Entering directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+g++ -g -std=c++11 -Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor -fPIC -I. -I./include -I/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//include  -I/usr/local/include/eigen3      -c -o rk45.o rk45.cpp
+g++ -shared -g -L/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//lib  rk45.o -o librk45.so
+make[1]: Leaving directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+make exec LIBTYPE=DYNAMIC
+make[1]: Entering directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'
+g++ -g -std=c++11 -Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor -fPIC -I. -I./include -I/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//include  -I/usr/local/include/eigen3      -c -o main_rk45.o main_rk45.cpp
+main_rk45.cpp: In lambda function:
+main_rk45.cpp:10:31: warning: unused parameter ‘t’ [-Wunused-parameter]
+   10 |   auto fun = [](double const &t, double const &y) { return -10 * y; };
+      |                 ~~~~~~~~~~~~~~^
+g++ -Wl,-rpath=. -Wl,-rpath=/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples//lib -g  -Wl,-rpath=.  main_rk45.o librk45.so  -L. -lrk45 -o main_rk45
+make[1]: Leaving directory '/home/forma/Work/Didattica/HPC_Courses/pacs-examples/Examples/src/RK45'

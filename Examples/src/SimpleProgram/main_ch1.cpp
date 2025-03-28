@@ -2,14 +2,14 @@
    integers between two given integers and outputs the sum to the screen. */
 
 #include <algorithm> // for std::swap
-#include <format>    // use noew c++20 format
+#include <format>    // use new c++20 format
 #include <iostream>  // include a standard library for input/output
 int
 main()
 {
   // using namespace std; // bring std names on the current namespace (avoid
   // doing it)
-  using std::cin;  // brings std:;cin in the current scope
+  using std::cin;  // brings std::cin in the current scope
   using std::swap; // brings swap in the current scope
   int n, m;        // declare n and m to be integer
   // I have not brought cout and endl in the current scope: i use the
