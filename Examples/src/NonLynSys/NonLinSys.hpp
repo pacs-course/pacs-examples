@@ -9,6 +9,8 @@
 #define EXAMPLES_SRC_NONLYNSYS_NONLINSYS_HPP_
 #include "NonLinSysTraits.hpp"
 #include <algorithm>
+#include <concepts>
+#include <ranges>
 
 #ifdef PARALLELSTD
 #include <execution> //if you use parallel algorithm
@@ -68,21 +70,29 @@ public:
    * @note Note the use of forwarding
    */
   template <typename scalarfunction>
+    requires std::is_convertible_v<scalarfunction,
+                                   typename Traits<R>::ScalarFunctionType>
   void
   addToSystem(scalarfunction &&f)
   {
-    //@todo use concepts instead of static_assert
-    static_assert(std::is_convertible_v<scalarfunction,
-                                        typename Traits<R>::ScalarFunctionType>,
-                  "Cannot add a function with wrong signature!");
+    // before concepts you could still check with static_assert
+    // you can still do it, nothing wrong with it (and works also with no C++20
+    // compliant compilers)
+    // static_assert(std::is_convertible_v<scalarfunction,
+    //                                    typename
+    //                                    Traits<R>::ScalarFunctionType>,
+    //              "Cannot add a function with wrong signature!");
+    // Note the use of std::forward, to enjoy the benefits of move semantics
     system_.emplace_back(std::forward<scalarfunction>(f));
   }
   /*!
    * Get the i-th function
    * @param i The index
    * @return A function \f$ R^n\rightarrow R\f$
+   * @note Returned as a const reference to allow s.getFunction(2)(3.1415) with
+   * no useless copies
    */
-  ScalarFunctionType
+  ScalarFunctionType const &
   getFunction(unsigned int i) const
   {
     return system_[i];
@@ -95,25 +105,16 @@ public:
    * @return A function \f$ R^n\rightarrow R\f$
    */
   template <typename scalarfunction>
+    requires std::is_convertible_v<scalarfunction,
+                                   typename Traits<R>::ScalarFunctionType>
   void
   updateFunction(scalarfunction &&f, unsigned int i)
   {
-    static_assert(std::is_convertible_v<scalarfunction,
-                                        typename Traits<R>::ScalarFunctionType>,
-                  "Cannot add a function with wrong signature!");
+    // static_assert(std::is_convertible_v<scalarfunction,
+    //                                     typename
+    //                                     Traits<R>::ScalarFunctionType>,
+    //               "Cannot add a function with wrong signature!");
     system_[i] = std::forward<scalarfunction>(f);
-  }
-
-  /*!
-   * The call operator for a single function
-   * @param i The index of the function
-   * @param x The argument
-   * @return The computed scalar value
-   */
-  ScalarType
-  operator()(std::size_t i, const ArgumentType &x) const
-  {
-    return system_[i](x);
   }
 
   /*!
@@ -137,9 +138,13 @@ public:
       */
     // Using parallel algorithms
     // you have to include <execution> and link with -ltbb
+    // Note that to get the index I need to use some features of pointer
+    // arithmetics
 #ifdef PARALLELSTD
-    std::for_each(std::execution::par, system_.begin(), system_.end(),
-                  [&x, &res_](auto const &fun) { res_.emplace_back(fun(x)); });
+    auto indices = std::views::iota(0u, system_.size()) | std::views::common;
+    std::for_each(
+      std::execution::par, indices.begin(), indices.end(),
+      [&x, &res_, this](auto const &i) { res_[i] = system_[i](x); });
 #else
     // to use openMP you have to compile with -fopenmp
 #pragma omp parallel for
@@ -155,6 +160,40 @@ public:
    */
   std::size_t
   numEqs() const
+  {
+    return system_.size();
+  }
+
+  // I want the system of equation satisfy the concept of a sized range
+  // so I need to implement the following methods
+  // I can use the default implementation for the iterators
+  // since I have a vector
+  // I can use the default implementation for the size
+  // since I have a vector
+  // I can use the default implementation for the begin and end
+  // since FunctionContainer is a vector
+  //*
+  /*!
+   * @return An iterator to the beginning of the system
+   */
+  auto
+  begin() const
+  {
+    return system_.cbegin();
+  }
+  /*!
+   * @return An iterator to the end of the system
+   */
+  auto
+  end() const
+  {
+    return system_.cend();
+  }
+  /*!
+   * @return The size of the system
+   */
+  std::size_t
+  size() const
   {
     return system_.size();
   }

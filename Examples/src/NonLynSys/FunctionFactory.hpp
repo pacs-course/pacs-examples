@@ -12,8 +12,8 @@
  */
 #include "NonLinSys.hpp"
 #include <exception>
-#include <map>
 #include <type_traits>
+#include <unordered_map>
 namespace apsc
 {
 /*! @ brief a function factory
@@ -40,11 +40,7 @@ public:
   //! The methods of NonLinSys I want expose to the public
   using apsc::NonLinSys<R, Traits>::numEqs;
   //! for compatibility with an earlier version
-  auto
-  size()
-  {
-    return numEqs();
-  }
+  using apsc::NonLinSys<R, Traits>::size;
   /*!
    * @brief adds a function to the factory
    *
@@ -65,7 +61,7 @@ public:
       std::is_convertible_v<FUN, typename Traits<R>::ScalarFunctionType>,
       "Cannot add a function with wrong signature!");
     //  add the identifier
-    auto [it, success] = functionPos_.insert({s, numEqs()});
+    auto [it, success] = functionPos_.emplace(s, numEqs());
     if(!success)
       {
         // Note the use of the string literal to be able to use +. Alternative:
@@ -106,7 +102,7 @@ public:
 
 private:
   // The dictionary map -> position in the vector stored in NonLinSys
-  std::map<std::string, std::size_t> functionPos_;
+  std::unordered_map<std::string, std::size_t> functionPos_;
 };
 } // namespace apsc
 
