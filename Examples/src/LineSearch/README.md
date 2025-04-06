@@ -43,13 +43,14 @@ In *main_linesearch.cpp* you have an example of use, with different options comm
 - A rather complete code (however, read the notes) that implements one of the basic technique for optimization.
 - The use of polymorphism to select different implementations of the descent direction computation
 - The use of aggregates to store the parameters of the algorithm in a single place
+- The use of mutable objects for the private state variables of the class part of the interface
+- The use of smart pointers to manage the memory of the descent direction objects
 
 
 ##Notes##
 
-The object containing the concrete implementation of the descent direction is stored in the LineSearchSolver class as a unique pointer to the base class. Since I have not implemented
-cloning it means that the object has to be passed as unique pointer by **moving** the pointer. Moreover, as a consequence LineSearchSolver class is not copy-constructible nor copy-assigneable. But I think it is
-not a great limitation.
+The object containing the concrete implementation of the descent direction is stored in the LineSearchSolver class as a unique pointer to the base class. I have  implemented
+cloning toenable a proper composition with a polymorphic objects. 
 
 Many improvement can be made. For instance: 
 - reading options from a text (maybe GetPot) file; 
@@ -57,7 +58,7 @@ Many improvement can be made. For instance:
 - extend it to more general contraints;
 - implement the 2nd Wolfe condition
 - make it a library.
-
+	
 
  
 
