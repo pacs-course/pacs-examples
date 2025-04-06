@@ -14,7 +14,7 @@
 
 namespace apsc
 {
-namespace Statitics
+namespace Statistics
 {
   /*!
    * Class Holding data for the naive algorithm. It can be bettered adding
@@ -108,11 +108,11 @@ namespace Statitics
     struct AggregatedOutput
     {
       unsigned int nSamples;
-      double       mean;
-      double       variance;
-      double       sampleVariance;
-      double       skewness;
-      double       kurtosis;
+      long double  mean;
+      long double  variance;
+      long double  sampleVariance;
+      long double  skewness;
+      long double  kurtosis;
     };
     /*!
      * Add new data
@@ -128,10 +128,10 @@ namespace Statitics
       auto delta_n2 = delta_n * delta_n;
       auto term1 = delta * delta_n * n1;
       mean += delta / count;
+      M2 += delta * (x - mean);
+      M3 += term1 * delta_n * (count - 2) - 3.0 * delta_n * M2;
       M4 += term1 * delta_n2 * (count * count - 3 * count + 3.0) +
             6.0 * delta_n2 * M2 - 4.0 * delta_n * M3;
-      M3 += term1 * delta_n * (count - 2) - 3.0 * delta_n * M2;
-      M2 += delta * (x - mean);
     }
     /*!
      * returns the computed statistics.
@@ -157,13 +157,13 @@ namespace Statitics
 
   private:
     unsigned int count = 0;
-    double       mean = 0.0;
-    double       M2 = 0.0;
-    double       M3 = 0.0;
-    double       M4 = 0.0;
+    long double  mean = 0.0;
+    long double  M2 = 0.0;
+    long double  M3 = 0.0;
+    long double  M4 = 0.0;
   };
 
-} // namespace Statitics
+} // namespace Statistics
 } // namespace apsc
 
 #endif /* EXAMPLES_SRC_UTILITIES_STATISTICSCOMPUTATIONS_HPP_ */
