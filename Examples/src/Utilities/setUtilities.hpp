@@ -1,6 +1,7 @@
 #ifndef HH__SETUTILITIES_HH
 #define HH__SETUTILITIES_HH
 #include <algorithm>
+#include <concepts>
 #include <iterator>
 
 /*
@@ -10,14 +11,15 @@
 */
 namespace Utility
 {
-/*!
-  Difference of two ordered containers.
-  @tparam OrderedContainer An ordered container (set or map)
-  @param a the first container
-  @param b the second container
-  @return \f$ a\setminus b \f$
-*/
-template <class OrderedContainer>
+typename<typename C1, typename C2> concept SameOrder = std::
+  /*!
+    Difference of two ordered containers.
+    @tparam OrderedContainer An ordered container (set or map)
+    @param a the first container
+    @param b the second container
+    @return \f$ a\setminus b \f$
+  */
+  template <class OrderedContainer>
 auto
 set_difference(OrderedContainer const &a, OrderedContainer const &b)
   -> OrderedContainer
