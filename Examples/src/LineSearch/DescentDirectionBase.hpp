@@ -21,26 +21,25 @@ public:
    * apsc::OptimizationCurrentValues returns a descent direction.
    * @param values The current values.
    * @return The descent direction
-   * @note It is not declared const since in some derived class it may modify
-   * the state of the object.
    */
   virtual apsc::LineSearch_traits::Vector
-  operator()(apsc::OptimizationCurrentValues const &values) = 0;
+  operator()(apsc::OptimizationCurrentValues const &values) const = 0;
   /*!
    * This function by default it does nothing, but it may be used to reset data
    * if needed
    */
-  virtual void
-  reset(){};
+  virtual void reset(){};
   virtual ~DescentDirectionBase() = default;
   /*!
    * @brief The class is clonable
    *
    * @return A clone of myself wrapped into a unique pointer
    */
-  virtual
-  std::unique_ptr<DescentDirectionBase>
-  clone() const {return nullptr;}
+  virtual std::unique_ptr<DescentDirectionBase>
+  clone() const
+  {
+    return nullptr;
+  }
 };
 
 } // namespace apsc
