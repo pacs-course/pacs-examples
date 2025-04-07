@@ -7,6 +7,7 @@
 
 #ifndef EXAMPLES_SRC_UTILITIES_STATISTICSCOMPUTATIONS_HPP_
 #define EXAMPLES_SRC_UTILITIES_STATISTICSCOMPUTATIONS_HPP_
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <limits>
@@ -113,6 +114,7 @@ namespace Statistics
       long double  sampleVariance;
       long double  skewness;
       long double  kurtosis;
+      long double  uncorrectedKurtosis;
     };
     /*!
      * Add new data
@@ -134,25 +136,40 @@ namespace Statistics
             6.0 * delta_n2 * M2 - 4.0 * delta_n * M3;
     }
     /*!
-     * returns the computed statistics.
+     * Returns the computed statistics.
      * @return The aggregate with all the computed statistics
      */
     AggregatedOutput
     finalize() const
     {
-      // If I do not have a sufficient number of samples or
-      // the samples are all equal, some of the terms may be
-      // equal to Inf (or NaN if count < 2)
-      // Alternative: use std::optional
-      // I use initialiser list to create the output aggregate on the fly!
-      // I rely on implicit conversion int->double
+      // If the sample size is too small, return default values
+      if(count < 4)
+        {
+          return {count, mean, M2 / count, M2 / (count - 1.0), 0.0, 0.0, 0.0};
+        }
+
+      // Compute uncorrected excess kurtosis
+      long double uncorrectedKurtosis = (count * M4) / (M2 * M2) - 3.0;
+
+      // Apply bias correction for kurtosis
+      long double correctedKurtosis =
+        (static_cast<long double>(count - 1.0) /
+         (static_cast<long double>(count - 2.0) *
+          static_cast<long double>(count - 3.0))) *
+        ((count + 1.0) * uncorrectedKurtosis + 6.0);
+
+      // Compute skewness
+      long double skewness =
+        std::sqrt(static_cast<long double>(count)) * M3 / std::pow(M2, 1.5);
+
+      // Return the aggregated statistics
       return {count,
               mean,
               M2 / count,
               M2 / (count - 1.0),
-              std::sqrt(static_cast<double>(count)) * M3 /
-                std::pow(M2, 3. / 2.),
-              (count * M4) / (M2 * M2) - 3.0};
+              skewness,
+              correctedKurtosis,
+              uncorrectedKurtosis};
     }
 
   private:
@@ -162,7 +179,49 @@ namespace Statistics
     long double  M3 = 0.0;
     long double  M4 = 0.0;
   };
+  /*!
+   * Normalize the data in place. The data is normalized to the range [0,1]
+   * @tparam Range A container type
+   * @param data The data to be normalized
+   * @return a pair with the min and max values
+   */
+  template <typename Range>
+  auto
+  normalizeInPlace(Range &data)
+  {
+    auto        minmax_prt = std::minmax_element(data.begin(), data.end());
+    std::pair   minmax = {*minmax_prt.first, *minmax_prt.second};
+    auto const &min = minmax.first;
+    auto const &max = minmax.second;
+    auto        delta = max - min;
+    if(delta == 0)
+      return minmax;
+    for(auto &x : data)
+      {
+        x = (x - min) / delta;
+      }
+    return minmax;
+  }
 
+  /*!
+   * Reset the statistics in place, reverting the effect of the normalization
+   * @tparam Range A container type
+   * @param stat The statistics to be reset
+   * @param minmax The min and max values of the data in a std::pair
+   */
+  template <typename T>
+  void
+  resetStatisticsInPlace(WelfordAlgorithm::AggregatedOutput &stat,
+                         std::pair<T, T> const              &minmax)
+  {
+    // Reset the statistics reverting the normalization
+    auto delta = minmax.second - minmax.first;
+    if(delta == 0)
+      return;
+    stat.mean = minmax.first + stat.mean * delta;
+    stat.variance *= delta * delta;
+    stat.sampleVariance *= delta * delta;
+  }
 } // namespace Statistics
 } // namespace apsc
 

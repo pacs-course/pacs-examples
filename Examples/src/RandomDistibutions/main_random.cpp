@@ -77,7 +77,7 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
         outfile << values.back() << "\n";
     }
   //@note To reduce floating point errors, particularly in the computation of
-  // high moments, I order the data
+  // high moments, I order the data and normalize them to the range [0,1]
   std::sort(values.begin(), values.end(),
             [](auto a, auto b) { return std::abs(a) < std::abs(b); });
   auto minValue = *std::min_element(values.begin(), values.end());
@@ -86,14 +86,21 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
   apsc::Statistics::WelfordAlgorithm stat;
   for(auto x : values)
     stat.update(x);
+
   std::cout << "Sample statistics:\n";
   auto output = stat.finalize();
+  // Reset the statistics reverting the normalization
   std::cout << "N. Samples :" << output.nSamples << std::endl;
+  std::cout << "Min       :" << minValue << std::endl;
+  std::cout << "Max       :" << maxValue << std::endl;
   std::cout << "Mean       :" << output.mean << std::endl;
   std::cout << "Variance   :" << output.variance << std::endl;
   std::cout << "Sample Var.:" << output.sampleVariance << std::endl;
   std::cout << "Skewness   :" << output.skewness << std::endl;
-  std::cout << "Ex.Kurtosis:" << output.kurtosis << std::endl;
+  std::cout << "Bias corrected (ex) kurtosis:" << output.kurtosis << std::endl;
+  std::cout << "Uncorrected (ex) kurtosis:" << output.uncorrectedKurtosis
+            << std::endl;
+
   if(file)
     outfile.close();
 
@@ -164,11 +171,12 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
 void
 printHelp()
 {
-  std::cout << "Usage: main_random [-h] [-f] [-nohist] [-s | --samples N]\n";
+  std::cout
+    << "Usage: main_random [-h] [-nofile] [-nohist] [-s | --samples N]\n";
   std::cout << "Options:\n";
-  std::cout << "  -h, --help       Show this help message\n";
-  std::cout << "  -f, --file       Generate output files (default true)\n";
-  std::cout << "  -nohist  Don-t show histogram on screen (default false)\n";
+  std::cout << "  -h, --help  Show this help message\n";
+  std::cout << "  -nofile     Suppress generation of output files\n";
+  std::cout << "  -nohist     Don't show histogram on screen\n";
   std::cout
     << "  -s, --samples    Number of samples to generate (default: 150000)\n";
 }
@@ -190,7 +198,7 @@ main(int argc, char *argv[])
       return 0;
     }
 
-  bool         file = cl.search("-f");
+  bool         file = !cl.search("-nofile");
   bool         hist = !cl.search("-nohist");
   unsigned int N = cl.follow(150000u, 2, "-s", "--samples");
   std::cout << "Number of samples: " << N << std::endl;
