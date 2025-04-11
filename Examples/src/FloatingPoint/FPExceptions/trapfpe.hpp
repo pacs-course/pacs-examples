@@ -1,4 +1,4 @@
-//#define _GNU_SOURCE 1
+// #define _GNU_SOURCE 1
 #ifndef __TRAPFPE_HPP__
 #define __TRAPFPE_HPP__
 /*! \file trapfpe.hpp An example of use of floating point environment
@@ -28,7 +28,8 @@ namespace
 {
 struct FpeTrap
 {
-  static void __attribute__((constructor)) trapfpe()
+  static void __attribute__((constructor))
+  trapfpe()
   {
     //! Enable some exceptions.  At startup all exceptions are masked.
     feenableexcept(FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW);
