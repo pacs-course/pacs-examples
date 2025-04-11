@@ -69,6 +69,7 @@ main()
   parcels.emplace_back(MetalBox{}, HeavyItem{});
   parcels.emplace_back(CartonBox{}, Fluid{});
   parcels.emplace_back(CartonBox{}, LightItem{});
+  parcels.emplace_back(PlasticBox{}, FragileItem{});
 
   std::cout << std::endl << std::endl;
 
