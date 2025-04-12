@@ -98,6 +98,11 @@ the identifier as key.
   }
 
 private:
+  //! The type of the container used to store the rules.
+  /*!
+  I am using an unordered map since I do not need ordering for the keys
+  Using a std::map is however possible.
+  */
   using Container_type = std::unordered_map<Identifier, Builder_type>;
   //! Made private since it is a Singleton
   Factory() = default;
