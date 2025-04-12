@@ -49,7 +49,7 @@ ifeq ($(LIBTYPE),DYNAMIC)
  # LDFLAGS+=-Wl,-rpath=.# If debug we use the local dynamic libraries
 endif
 else
-  OPTFLAGS=-O3 -funroll-loops
+  OPTFLAGS=-O3 -fopenmp
   CPPFLAGS+=-DNDEBUG
 endif
 ifeq ($(FPEABORT),yes)
