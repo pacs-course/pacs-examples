@@ -1,6 +1,7 @@
 #include "numerical_integration.hpp"
-#ifdef PALALLELCPP
+#ifdef PARALLELCPP
 #include <execution>
+#include <numeric>
 #endif
 namespace apsc::NumericalIntegration
 {
@@ -36,11 +37,12 @@ Quadrature::apply(FunPoint const &f) const
       result += rule_->apply(f, a, b);
     }
 #else
-  result = std::transform_reduce(
-    std::execution::par_unseq, mesh_.begin(), mesh_.end() - 1, mesh.begin(),
-    0.0, std::plus<double>(), [this, &f](double const a, double const b) {
-      return this->rule_->apply(f, a, b);
-    });
+  result = std::transform_reduce(std::execution::par_unseq, mesh_.cbegin(),
+                                 mesh_.cend() - 1, mesh_.cbegin() + 1, 0.0,
+                                 std::plus<double>(),
+                                 [this, &f](double const a, double const b) {
+                                   return this->rule_->apply(f, a, b);
+                                 });
 #endif
   return result;
 }
