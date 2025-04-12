@@ -98,7 +98,7 @@ the identifier as key.
   }
 
 private:
-  using Container_type = std::map<Identifier, Builder_type>;
+  using Container_type = std::unordered_map<Identifier, Builder_type>;
   //! Made private since it is a Singleton
   Factory() = default;
   //! Deleted since it is a Singleton
