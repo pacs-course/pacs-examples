@@ -104,18 +104,18 @@ double
 apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
   FunPoint const &f, double const &a, double const &b) const
 {
-  double h2 = (b - a) * 0.5; // half length
-  double xm = (a + b) * 0.5; // midpoint
+  double const h2 = (b - a) * 0.5; // half length
+  double const xm = (a + b) * 0.5; // midpoint
   // scale functions
   auto   fscaled = [&h2, &xm, &f](double x) { return f(x * h2 + xm); };
   double tmp = 0.0;
   // auto   np = n_.begin();
   //     for (auto wp=w_.begin();wp<w_.end();++wp,++np)
-  for(auto np = n_.cbegin(); auto weight : w_)
+  for(auto np = n_.cbegin(), weight = w_.cbegin(); weight != w_.cend();
+      ++np, ++weight)
     {
-      tmp += fscaled(*(np++)) * weight;
+      tmp += fscaled(*np) * (*weight);
     }
-
   return h2 * tmp;
 }
 
