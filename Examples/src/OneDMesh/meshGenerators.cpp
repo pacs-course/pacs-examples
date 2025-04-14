@@ -88,13 +88,20 @@ VariableSize::operator()() const
   mesh.front() = M_domain.left(); // first node
   // Now the internal nodes
   auto pos = solution.cbegin() + 1;
-  // this loop cannot be made parallel
   for(std::size_t i = 1u; i < numElements; ++i)
     {
       // find_if finds the first element satisfying the predicate
-      auto found =
-        std::find_if(pos, solution.cend(),
-                     [i](pDouble const &value) { return value.second > i; });
+      // Here I am using upper_bound to find the first element
+      // that is greater than i.second because it is more efficient than
+      // find_if when the searched range is ordered. Indeed I assume
+      // (precondition) that that solution.second is ordered (increasingly).
+      // Note the use of the projector to extract the second element
+      // std::ranges::less is the default comparator so I could have used {}
+      auto found = std::ranges::upper_bound(
+        pos, solution.cend(), i, std::ranges::less{}, &pDouble::second);
+      // This is the solution with find_if
+      // std::find_if(pos, solution.cend(),
+      //              [i](pDouble const &value) { return value.second > i; });
       if(found == solution.end())
         throw std::runtime_error(
           "__FILE__,__LINE__: Something wrong: cannot find node!");
