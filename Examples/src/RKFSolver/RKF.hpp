@@ -151,7 +151,7 @@ inline std::ostream &operator<<(std::ostream                     &out,
 //   ******    IMPLEMENTATIONS OF TEMPLATE FUNCTIONS
 //   ***********************************************
 
-template <class B, RKFKind KIND>
+template <apsc::ButcherArrayConcept B, RKFKind KIND>
 RKFResult<KIND>
 RKF<B, KIND>::operator()(const double &T0, const double &T,
                          const VariableType &y0, const double &hInit,
@@ -331,7 +331,7 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
 // RKFstep(const double & tstart, const VariableType & y0, const double& h)
 // const
 //
-template <class B, RKFKind KIND>
+template <apsc::ButcherArrayConcept B, RKFKind KIND>
 auto
 RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
                       const double &h) const

@@ -37,8 +37,9 @@ public:
     @param order Order of the quadrature (exactness +1). Required only if
     adaptive rule is used
    */
-  StandardQuadratureRule(std::array<double, NKNOTS> const & weight,
-                         std::array<double, NKNOTS> const & nodes, double order = 0)
+  constexpr StandardQuadratureRule(std::array<double, NKNOTS> const &weight,
+                                   std::array<double, NKNOTS> const &nodes,
+                                   double                            order = 0)
     : w_(weight), n_(nodes), my_order(order)
   {}
   //! class is default constructible
@@ -50,13 +51,13 @@ public:
     return NKNOTS;
   }
   //! access to the i-th node
-  double
+  constexpr double
   node(const unsigned int i) const
   {
     return n_[i];
   }
   //! access to the i-th weight
-  double
+  constexpr double
   weight(const unsigned int i) const
   {
     return w_[i];
@@ -66,7 +67,7 @@ public:
    * @note Used for error estimation
    * @return the order
    */
-  unsigned int
+  constexpr unsigned int
   order() const
   {
     return my_order;
@@ -74,9 +75,9 @@ public:
   //! returns a string that identify the general type of quadrature rule
   std::string
   name() const override
-    {
-      return "Standard Quadrature Rule";
-    };
+  {
+    return "Standard Quadrature Rule";
+  };
   //! The class is clonable.
   /*!
     Having a clonable class makes it possible to write copyconstructors
@@ -90,9 +91,9 @@ public:
   virtual ~StandardQuadratureRule() = default;
 
 protected:
-  std::array<double, NKNOTS> w_;
-  std::array<double, NKNOTS> n_;
-  unsigned int               my_order = 0;
+  const std::array<double, NKNOTS> w_;
+  const std::array<double, NKNOTS> n_;
+  const unsigned int               my_order = 0;
 
 private:
 };
@@ -103,19 +104,18 @@ double
 apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
   FunPoint const &f, double const &a, double const &b) const
 {
-  double h2=(b - a) * 0.5; // half length
-  double xm=(a + b) * 0.5; // midpoint
+  double const h2 = (b - a) * 0.5; // half length
+  double const xm = (a + b) * 0.5; // midpoint
   // scale functions
-  auto   fscaled = [&h2,&xm,&f](double x) { return f(x * h2 + xm); };
-  double tmp=0.0;
-  auto   np = n_.begin();
-  //    for (auto wp=w_.begin();wp<w_.end();++wp,++np)
-  for(auto weight : w_)
-      {
-        tmp += fscaled(*(np)) * weight;
-        ++np;
-      }
-
+  auto   fscaled = [&h2, &xm, &f](double x) { return f(x * h2 + xm); };
+  double tmp = 0.0;
+  // auto   np = n_.begin();
+  //     for (auto wp=w_.begin();wp<w_.end();++wp,++np)
+  for(auto np = n_.cbegin(), weight = w_.cbegin(); weight != w_.cend();
+      ++np, ++weight)
+    {
+      tmp += fscaled(*np) * (*weight);
+    }
   return h2 * tmp;
 }
 

@@ -51,10 +51,10 @@ else
 endif
 export DEBUG
 ifeq ($(DEBUG),no)
-  OPTFLAGS=-O3
+  OPTFLAGS+=-O3
   LIBRARIES=-L. -L$(PACS_LIB_DIR)  -l$(LIBNAME2) -l$(LIBNAME)  -l$(LIBNAME3) $(EXTRA_LIBS)
 else
-  OPTFLAGS=-g -O0
+  OPTFLAGS+=-g -O0
   LIBRARIES=-L.  -l$(LIBNAME2) -l$(LIBNAME) -l$(LIBNAME3) -L$(PACS_LIB_DIR) $(EXTRA_LIBS)
 endif
 
@@ -109,6 +109,7 @@ all:
 	@echo "macro LIBTYPE=DYNAMIC compiles against static lib"
 	@echo "macro DEBUG=no deactivates debugging and uses libraries in the"
 	@echo "root lib when compiling executable"
+	@echo "if you want parallel version look at the Makefile.inc file"
 	@echo "To run executable when compiling with DEBUG=no you need to type"
 	@echo "export LD_LIBRARY_PATH="$(PACS_LIB_DIR):.
 
@@ -162,7 +163,7 @@ $(DYNAMIC_LIBFILE): $(LIB_OBJS)
 	$(CXX) -shared $(OPTFLAGS)  $(LIB_OBJS) $(LDFLAGS)  -o $(DYNAMIC_LIBFILE)
 
 $(DYNAMIC_LIBFILE2): $(DYNAMIC_LIBFILE) $(LIB2_OBJS)
-	$(CXX) -shared $(OPTFLAGS) $(LIB2_OBJS) $(LIBD) $(LDFLAGS) -o $(DYNAMIC_LIBFILE2)
+	$(CXX) -shared $(OPTFLAGS) $(LIB2_OBJS) $(LIBD) $(LDFLAGS) -o $(DYNAMIC_LIBFILE2) $(LD2)
 
 $(DYNAMIC_LIBFILE3): $(LIB3_OBJS)
 	$(CXX) -shared $(OPTFLAGS) $(LIB3_OBJS) $(LDFLAGS) -o $(DYNAMIC_LIBFILE3)

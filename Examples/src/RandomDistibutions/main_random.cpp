@@ -14,6 +14,7 @@
   @brief An example on use of random number generation and distributions.
   @note  Additional comments and a few additions by Luca Formaggia.
  */
+#include "GetPot"
 #include "sampling.hpp"
 #ifndef NO_GNUPLOT
 #include "gnuplot-iostream.hpp"
@@ -39,11 +40,12 @@
  *  \param name A name for output and file
  *  \param file true is you want a file with generated numbers (def. false)
  *  \param hist true if you want a poor man histogram on the screen (true)
+ *  \param N number of samples to be generated (default 150000)
  */
 template <typename Distr, typename Eng>
 void
 distr(Distr &d, Eng &e, const std::string &name, bool file = false,
-      bool hist = true)
+      bool hist = true, unsigned N = 150000)
 {
   // The engine produce integer numbers whose width depends on the
   // engine (and possibly the chosen engine template argummnts)
@@ -53,8 +55,6 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
   // typedef typename Distr::result_type distr_result_type;
   // Remember to use typename since we have template parameter dependent types
   //
-  // Number of samples
-  constexpr int N = 150000;
   std::ofstream outfile;
   if(file)
     {
@@ -70,30 +70,37 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
             << d(e) << std::endl;
   std::vector<typename Distr::result_type> values;
   values.reserve(N);
-  for(int i = 0; i < N; ++i)
+  for(auto i = 0u; i < N; ++i)
     {
       values.emplace_back(d(e));
       if(file)
         outfile << values.back() << "\n";
     }
   //@note To reduce floating point errors, particularly in the computation of
-  //high moments, I order the data
+  // high moments, I order the data and normalize them to the range [0,1]
   std::sort(values.begin(), values.end(),
             [](auto a, auto b) { return std::abs(a) < std::abs(b); });
   auto minValue = *std::min_element(values.begin(), values.end());
   auto maxValue = *std::max_element(values.begin(), values.end());
   auto deltaValues = maxValue - minValue;
-  apsc::Statitics::WelfordAlgorithm stat;
+  apsc::Statistics::WelfordAlgorithm stat;
   for(auto x : values)
     stat.update(x);
+
   std::cout << "Sample statistics:\n";
   auto output = stat.finalize();
+  // Reset the statistics reverting the normalization
   std::cout << "N. Samples :" << output.nSamples << std::endl;
+  std::cout << "Min       :" << minValue << std::endl;
+  std::cout << "Max       :" << maxValue << std::endl;
   std::cout << "Mean       :" << output.mean << std::endl;
   std::cout << "Variance   :" << output.variance << std::endl;
   std::cout << "Sample Var.:" << output.sampleVariance << std::endl;
   std::cout << "Skewness   :" << output.skewness << std::endl;
-  std::cout << "Ex.Kurtosis:" << output.kurtosis << std::endl;
+  std::cout << "Bias corrected (ex) kurtosis:" << output.kurtosis << std::endl;
+  std::cout << "Uncorrected (ex) kurtosis:" << output.uncorrectedKurtosis
+            << std::endl;
+
   if(file)
     outfile.close();
 
@@ -124,7 +131,7 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
 
       std::vector<int> valuecounter;
       valuecounter.resize(nBars, 0);
-      for(int i = 0; i < N; ++i)
+      for(auto i = 0u; i < N; ++i)
         {
           auto value = values[i];
           int  pos = (value - minValue) / h;
@@ -152,14 +159,28 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
          << std::endl;
       // gp.send1d(std::make_tuple(barLegend,valuecounter));
       gp.send1d(gdata);
-      std::cout << "Type anything to continue" << std::endl;
-      std::string nothing;
-      std::cin >> nothing;
+      std::cout << "Press Enter to continue" << std::endl;
+      // std::string nothing;
+      // std::cin >> nothing;
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 #endif
     }
   std::cout << "====" << std::endl;
   std::cout << std::endl;
 }
+void
+printHelp()
+{
+  std::cout
+    << "Usage: main_random [-h] [-nofile] [-nohist] [-s | --samples N]\n";
+  std::cout << "Options:\n";
+  std::cout << "  -h, --help  Show this help message\n";
+  std::cout << "  -nofile     Suppress generation of output files\n";
+  std::cout << "  -nohist     Don't show histogram on screen\n";
+  std::cout
+    << "  -s, --samples    Number of samples to generate (default: 150000)\n";
+}
+
 //! Example printing several distributions.
 /*!
   All distribution have a defualt constructor which sets the parameter
@@ -167,10 +188,27 @@ distr(Distr &d, Eng &e, const std::string &name, bool file = false,
   complete list of the possible arguments.
  */
 int
-main()
+main(int argc, char *argv[])
 {
+  // Parse the command line arguments
+  GetPot cl(argc, argv);
+  if(cl.search(2, "-h", "--help"))
+    {
+      printHelp();
+      return 0;
+    }
+
+  bool         file = !cl.search("-nofile");
+  bool         hist = !cl.search("-nohist");
+  unsigned int N = cl.follow(150000u, 2, "-s", "--samples");
+  std::cout << "Number of samples: " << N << std::endl;
+  std::cout << "File: " << std::boolalpha << (file ? "true" : "false")
+            << std::endl;
+  std::cout << "Histogram: " << std::boolalpha << (hist ? "true" : "false")
+            << std::endl;
+
   // Set it to true if you also want the files
-  bool               file = true;
+  // bool               file = true;
   std::random_device re;
   // Try the random engine
   auto myseed = re();
@@ -186,26 +224,26 @@ main()
   std::cout << "Uniform real distribution in the interval [0,10), Mean=5, Var="
             << 100 / 12. << "Skew= 0, Ex. Kurt.=" << -6. / 5. << "\n";
   std::uniform_real_distribution ud{0., 10.};
-  distr(ud, e, "uniform-real-distribution-0-10", file);
+  distr(ud, e, "uniform-real-distribution-0-10", file, hist, N);
 
   // Default is mean 0 and standard deviation 1
   std::cout << "Normal distribution mean=0, Var=1, Skew=0 Ex Kurt =0\n";
   std::normal_distribution nd;
-  distr(nd, e, "normal-distribution-mean-0-stdev-1", file);
+  distr(nd, e, "normal-distribution-mean-0-stdev-1", file, hist, N);
 
   // Mean 1  Std dev 2.0
   std::cout << "Normal distribution mean=1, Var=4, Skew=0, Ex. Kurt.=0\n";
   std::normal_distribution nd2{1.0, 2.0};
-  distr(nd2, e, "normal-distribution-mean-1-stdev-2", file);
+  distr(nd2, e, "normal-distribution-mean-1-stdev-2", file, hist, N);
 
   std::cout << "Exponential distribution mean=1, Var=1, Skew=2, Ex Kurt= 6\n";
   std::exponential_distribution ed;
-  distr(ed, e, "exponential-distribution-lambda-1", file);
+  distr(ed, e, "exponential-distribution-lambda-1", file, hist, N);
 
   std::cout << "Gamma distribution k=2, theta=1, mean=2, Var=2, Skew="
             << 2. / std::sqrt(2.0) << ", Ex Kurt= 3\n";
   std::gamma_distribution gd{2., 1.};
-  distr(gd, e, "gamma-distribution-k2-t1", file);
+  distr(gd, e, "gamma-distribution-k2-t1", file, hist, N);
 
   std::cout << "LogNormal distribution mu=3, s=2, mean=" << std::exp(5.)
             << ", Var=" << (std::exp(4.) - 1) * std::exp(10)
@@ -214,7 +252,7 @@ main()
             << std::exp(16.) + 2 * std::exp(12.) + 3 * std::exp(8.) - 6.0
             << "3\n";
   std::lognormal_distribution lnd{3., 2.};
-  distr(lnd, e, "lognormal-distribution-m3-s2", file);
+  distr(lnd, e, "lognormal-distribution-m3-s2", file, hist, N);
 
   auto sigmaw = std::tgamma(3.) - std::tgamma(2.);
   std::cout << "Weibull Distribution k=1, l=1, mean=" << std::tgamma(2.0)
@@ -223,20 +261,20 @@ main()
                  (sigmaw * sigmaw * sigmaw)
             << std::endl;
   std::weibull_distribution wd{1., 1.};
-  distr(wd, e, "weibull-distribution-k1-l1", file);
+  distr(wd, e, "weibull-distribution-k1-l1", file, hist, N);
 
   // This produces a very "elongated" distribution
   // so I am not printing on the scrren
   std::student_t_distribution sd{2.0};
   std::cout << "Student T Distribution nu=2, mean=0, Var=Inf, Skew=Undef, Ex "
                "Kurt=Undef";
-  distr(sd, e, "student-t-distribution", true, true);
+  distr(sd, e, "student-t-distribution", file, hist, N);
   // Now a discrete distribution. The constructor
   // may take different forms, in this case we give the
   // weights for the values
   std::cout << "Discrete Distribution in [0,6) with weight 1 3 6 1 1 10\n";
   std::discrete_distribution<int> ddist{1., 3., 6., 1., 1., 10.};
-  distr(ddist, e, "discrete-distribution", true, true);
+  distr(ddist, e, "discrete-distribution", file, hist, N);
   //
   // **************** THE SHUFFLING PART
   // To show it works on any container I usa a map

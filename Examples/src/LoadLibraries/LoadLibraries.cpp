@@ -52,8 +52,8 @@ LoadLibraries::loadSingleLibrary(std::string libName, int mode)
   if(found)
     {
       std::cerr << libName << "WARNING: Library " << libName
-                << " already existing."
-                << "Cannot open the same library twice" << std::endl;
+                << " already existing." << "Cannot open the same library twice"
+                << std::endl;
     }
   else
     {
@@ -69,7 +69,7 @@ LoadLibraries::loadSingleLibrary(std::string libName, int mode)
       else
         {
           std::clog << libName << " Library opened" << std::endl;
-          loadedLibs.insert({libName, sdl_library});
+          loadedLibs.emplace(libName, sdl_library);
         }
     }
   return good;
