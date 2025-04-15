@@ -1,15 +1,14 @@
 # A very simple example of the use of shared libraries #
 
-
 The command `exec.sh` compiles and runs the example.
 
-This is just an example that creates two "relases" of a shared library an and sets up the technique used for versioning in Linux. 
+This is just an example that creates two "releases" of a shared library and sets up the technique used for versioning in Linux. 
 By changing some links you may use the old or new release of the library, without recompiling the main program. That's what happens when you install a new release of a library in your PC.
 
 We recall that the shared library is a collection of object files that are linked together in a single file. The library is loaded in memory when the program is run, and the objects are extracted from the library and linked to the program. We can distingush three type of names of a shared library:
 
 - the **link** name (e.g. `libmylib.so`), that is used when you compile the program;
-- the **soname** (e.g. `libmylib.so.1`), that is used when you run the program and conatins the information on the version of the library;
+- the **soname** (e.g. `libmylib.so.1`), that is used when you run the program and contains	 the information on the version of the library;
 - the **real** name (e.g. `libmylib.so.1.1.0`), that is the actual file that contains the library, and it normally contain also information on the release number.
 
 Usually, files with link and soname are just symbolik links to the real file.
@@ -39,7 +38,8 @@ When you link your executable with a shared library, you normally use the link n
 If the linked library has the soname information, the loader (also called dynamic linker) will use the soname to find the library, and not the link name. This is useful when you have to update the library, and you want to use the new version without recompiling the program.
 
 Here is the synopsis of the option `-soname` of the linker:
-```
+
+```bash
 -soname=name
            When creating an ELF shared object, set the internal DT_SONAME field to the specified name.  When an
            executable is linked with a shared object which has a DT_SONAME field, then when the executable is run
@@ -47,5 +47,8 @@ Here is the synopsis of the option `-soname` of the linker:
            using the file name given to the linker.
 ```
 
-#What do I learn here?#
+# A note #
+The versioning mechanism is important only for libraries that are distributed to the general public and constantly maintained. For libraries used only for internal use you may forget about versioning and use only the link name. In this case, the link name, soname and real name coincide.
+
+# What do I learn here? #
 - Some basic concepts of shared libraries. 
