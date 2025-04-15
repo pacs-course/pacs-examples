@@ -11,27 +11,29 @@ namespace apsc
 namespace TypeTraits
 {
   /*!
-   * A type trait than checks if your class contains a method called clone()
-   * the template parameter. I use it to implement clonable classes which enable
-   * the prototype design pattern on a polymorphic family of classes. This is
-   * the primary template, which maps to false
-   * @tparam T
-   * @tparam Sfinae
+   * A type trait than checks if a class contains a method called clone()
+   * with the right signature and return type.
+   * Clonable classes enable the prototype design pattern on a polymorphic
+   * family of classes. This is the primary template, which maps to false
+   * @tparam T The class type to be checked
+   * @tparam Sfinae A SFINAE parameter to enable the specialisation via
+   * enable_if
    */
   template <typename T, typename Sfinae = void>
   struct has_clone : public std::false_type
   {};
 
-  /*!  Specialised version that is activated if T is clonable.
+  /*!
+  @brief Specialised version that is activated if T is clonable.
 
-Indeed, if T is not clonable the second template parameter cannot
-be substituted with a valid type. So SFINAE applies and this
-version is discarded. Note that it inherits from std::true_type.
+  If T is not clonable the second template parameter cannot
+  be substituted with a valid type. So SFINAE applies and this
+  version is discarded. Note that it inherits from std::true_type.
 
-declval<T&>() allows to test the return type of clone() with no need of
-creating an object of type T.
+  declval<T&>() allows to test the return type of clone() with no need of
+  creating an object of type T.
 
-@tparam T the base class of the hierarchy of clonable classes
+@tparam T The class type to be checked
    */
   template <typename T>
   struct has_clone<
@@ -415,11 +417,7 @@ public:
   }
 
   /*! conversion to bool */
-  explicit
-  operator bool() const noexcept
-  {
-    return static_cast<bool>(DataPtr);
-  }
+  explicit operator bool() const noexcept { return static_cast<bool>(DataPtr); }
 
 private:
   Ptr_t DataPtr;
@@ -518,10 +516,11 @@ operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
 }
 /*!
 @brief Equivalence operator with nullptr
-@details I have copy and pasted from the analogous declaration for the 
-unique_ptr. The concepts verify that the underlying pointer is comparable with nullptr_t
-The return type is the corresponding three way comparison type returnd by the spaceship operator.
-However if you want you can simplify things eliminating concepts and use automatic return type
+@details I have copy and pasted from the analogous declaration for the
+unique_ptr. The concepts verify that the underlying pointer is comparable with
+nullptr_t The return type is the corresponding three way comparison type returnd
+by the spaceship operator. However if you want you can simplify things
+eliminating concepts and use automatic return type
 @code
 template< class T>
 auto
@@ -537,20 +536,20 @@ operator<=>( const PointerWrapper<T>& x, std::nullptr_t )
 @return true if the pointer is null
 
 */
-template< class T>
-    requires std::three_way_comparable<typename PointerWrapper<T>::pointer>
+template <class T>
+  requires std::three_way_comparable<typename PointerWrapper<T>::pointer>
 std::compare_three_way_result_t<typename PointerWrapper<T>::pointer>
-    operator<=>( const PointerWrapper<T>& x, std::nullptr_t )
-    {
-        return x.get() <=> nullptr;
-    };
- template< class T>
+operator<=>(const PointerWrapper<T> &x, std::nullptr_t)
+{
+  return x.get() <=> nullptr;
+};
+template <class T>
 bool
-    operator==( const PointerWrapper<T>& x, std::nullptr_t )
-    {
-        return x.get() == nullptr;
-    };
-   
+operator==(const PointerWrapper<T> &x, std::nullptr_t)
+{
+  return x.get() == nullptr;
+};
+
 #endif
 
 } // end namespace apsc

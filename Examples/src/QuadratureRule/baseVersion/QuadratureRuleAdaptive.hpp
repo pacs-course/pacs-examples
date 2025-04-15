@@ -73,14 +73,14 @@ public:
   //! The method that applies the rule.
   double apply(FunPoint const &, double const &a,
                double const &b) const override;
+  //! Returns a string identifying the rule
   std::string
   name() const override
   {
-    return "Adaptive";
+    return std::string{"Adaptive "} + therule_.name();
   }
 
-private:
-  //! inline since since c++17 this way we have  a definition.
+private: //! inline since since c++17 this way we have  a definition.
   QuadratureRulePlusError<SQR> therule_;
   double                       targetError_;
   unsigned int                 maxIter_;
@@ -116,7 +116,7 @@ QuadratureRuleAdaptive<SQR>::apply(FunPoint const &f, double const &a,
   double                      result(0);
   double                      dSize = b - a;
   queue<pair<double, double>> subint;
-  subint.push(make_pair(a, b));
+  subint.emplace(a, b);
 
   while(counter < maxIter_ && !subint.empty())
     {
@@ -134,8 +134,8 @@ QuadratureRuleAdaptive<SQR>::apply(FunPoint const &f, double const &a,
         result += lr;
       else
         {
-          subint.push(make_pair(x1, (x1 + x2) / 2));
-          subint.push(make_pair((x1 + x2) / 2, x2));
+          subint.emplace(x1, (x1 + x2) / 2);
+          subint.emplace((x1 + x2) / 2, x2);
         }
     }
   // std::clog<<"Number of Iterations in Adaptive Rule="<<counter<<std::endl;

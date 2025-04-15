@@ -28,51 +28,37 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 #
 
 # get all files *.cpp
-SRCS=$(wildcard *.cpp)
+tmp=$(wildcard *.cpp)
+exe_sources=$(filter main%.cpp,$(tmp))
+# take out second executable
+UTILITY=main_writeDensityFunction.cpp#
+SRCS=$(filter-out $(UTILITY),$(tmp))
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
-exe_sources=$(filter main%.cpp,$(SRCS))
+#exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
-
-CXXFLAGS+=-fPIC
-LDFLAGS+= $(OPTFLAGS) -Wl,-rpath,.
-LDLIBS+=-L. -lFactory -L$(PACS_ROOT)/lib -lloadlibs
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) library $(EXEC)
-
-library: libFactory.so libTS.so libQuad.so 
-
-libFactory.so: FactoryTraits.o
-	$(CXX) $(OPTFLAGS) -shared FactoryTraits.o  -o libFactory.so
-
-libTS.so: TriangleAndSquare.o Polygon.o
-	$(CXX) $(OPTFLAGS) -shared TriangleAndSquare.o Polygon.o  -L. -lFactory -o libTS.so
-
-libQuad.so: Quadrilateral.o  Polygon.o
-	$(CXX) $(OPTFLAGS) -shared Quadrilateral.o Polygon.o  -L. -lFactory  -o libQuad.so
-
-
+all: $(DEPEND) $(EXEC)
 
 clean:
-	$(RM) -f $(EXEC) $(OBJS)
+	$(RM) -f $(EXEC) $(OBJS) *.dat
 
 distclean:
 	$(MAKE) clean
 	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.bak *~ *.so
+	$(RM) *.out *.bak *~ *.dat
 
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): main_poly.o Polygon.o
-
+$(EXEC): $(OBJS)
 
 $(OBJS): $(SRCS)
 
