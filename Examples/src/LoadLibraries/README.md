@@ -1,21 +1,23 @@
 # An utility to load and store libraries dynamically #
 
 It is an utility, in the form of a library that enables you to
-- To load a set of shared library dynamically and store the corresponding handlers in a common repository
-- Close all libraries when it exits out of scope: it implements the RAII principle.
-- You may add a library one at a time or read them from a file
-- The dynamic library, produced by the given `Makefile` loads `libdl.so` automatically, so you do not have to specify `-ldl`  when creating your executable.
+- Load a set of shared library dynamically and store the corresponding handlers in a common repository;
+- Close all libraries when it exits out of scope: it implements the RAII principle;
+- Add libraries one at a time or read them from a file.
+- 
+The dynamic library, produced by the given `Makefile` loads `libdl.so` automatically, so you do not have to specify `-ldl`  when creating your executable.
 
 
-*Note* When going out of scope the code closes the libraries. So the lifetime of a `LoadLibraries` object should exceed  that of the code using the libraries! Therefore, it is normally better to use this tool in the main program, or store the object in a global static variable.
+**Note** When going out of scope, the code closes the libraries. Consequently, the lifetime of a `LoadLibraries` object should exceed  that of the code using the libraries! Therefore, it is normally better to use this tool in the main program, or store the object in a global variable.
  
- 
-`make alllibs` creates both static and dynamic libraries
-`make install` to install the libraries in the 
-`make exec` produces a test
+ ## compilation instructions ##
+
+- `make alllibs` creates both static and dynamic libraries
+- `make install` to install the libraries in the 
+- `make exec` produces a test
 
 ** The test is also an example of factories! Indeed it uses a generic factory to store functions. Have a look! **
 
 
 # What do I learn here? #
-- The use of a common repository can help to handle dynamic libraries loaded in a plugin architecture.
+- The use of a common repository can help handling dynamic libraries loaded in a plugin architecture.

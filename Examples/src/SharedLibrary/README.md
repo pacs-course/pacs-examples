@@ -7,15 +7,15 @@ By changing some links you may use the old or new release of the library, withou
 
 We recall that the shared library is a collection of object files that are linked together in a single file. The library is loaded in memory when the program is run, and the objects are extracted from the library and linked to the program. We can distingush three type of names of a shared library:
 
-- the **link** name (e.g. `libmylib.so`), that is used when you compile the program;
-- the **soname** (e.g. `libmylib.so.1`), that is used when you run the program and contains	 the information on the version of the library;
-- the **real** name (e.g. `libmylib.so.1.1.0`), that is the actual file that contains the library, and it normally contain also information on the release number.
+- the **link** name (e.g. `libmylib.so`), which is used when you compile the program;
+- the **soname** (e.g. `libmylib.so.1`), which is used when you run the program and contains	 the information on the version of the library;
+- the **real** name (e.g. `libmylib.so.1.1.0`), which is the actual file that contains the library, and it normally contains also information on the release number.
 
-Usually, files with link and soname are just symbolik links to the real file.
+Usually, files with link and soname are just symbolic links to the real file.
 
-The complexity of the handling of versions and releases is of course necessary in professional code. If the library is used only locally you can avoid the complexity of using the three names, and in this case link,soname and real name coincide   (e.g. `libmylib.so`).
+The complexity of the handling of versions and releases is of course necessary in professional code. If the library is used only locally you can avoid the complexity of using the three names, and in this case link, soname and real name coincide   (e.g. `libmylib.so`).
 
-In `DynamicLoading` we show another characteristics of shared libraries: the fact that you can dynamically load them, and extract objects contained in the library run time.
+In `DynamicLoading` we show another characteristic of shared libraries: the fact that you can dynamically load them, and extract objects contained in the library run time.
 
 ## Note ##
 If you use versioning, you need to store in the library the information on the version of the library. This is done with the `-Wl,-soname` option of the linker. The option is used as follows:
@@ -46,6 +46,21 @@ Here is the synopsis of the option `-soname` of the linker:
            the dynamic linker will attempt to load the shared object specified by the DT_SONAME field rather than
            using the file name given to the linker.
 ```
+
+## Linking and loading a dynamic library ##
+Linking a code with a dynamic library is done with the usual command -l:
+```bash
+	g++ -o myprog myprog.o -L. -lmylib
+```	
+where `-L.` indicates that the library is in the current directory, and `-lmylib` indicates that the library is called `libmylib.so`. The `-L` option is not needed if the library is in a standard directory for libraries. 
+
+The loader is the tool that loads your code, and all the dynamic libraries it is linked to, at the moment of the launch. It will look for the library in the directories specified by the environment variable `LD_LIBRARY_PATH`, and in the standard directories.
+
+When creating an executable, or a shared library, you can instruct the linker to put in the code the indication on where to look for the library, in case you plan to put it in a special place. The command is `-Wl,-rpath,/path/to/library`. For example
+```bash
+	g++ -o myprog myprog.o -L. -lmylib -Wl,-rpath,/home/user/lib
+```
+This will put in the executable the information that the library is in `/home/user/lib`. The loader will look for the library in this directory, and if it does not find it, it will look in the directories specified by `LD_LIBRARY_PATH`, and in the standard directories.
 
 # A note #
 The versioning mechanism is important only for libraries that are distributed to the general public and constantly maintained. For libraries used only for internal use you may forget about versioning and use only the link name. In this case, the link name, soname and real name coincide.
