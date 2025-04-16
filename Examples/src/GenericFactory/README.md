@@ -53,7 +53,7 @@ In the file `main_testAbstractFactory.cpp` you find an example of usage.
 
 
 
-## The GenericFactory::Proxy class ##
+## The GenericFactory:: Proxy class ##
 The class
 ```c++
 template <typename Factory, typename ConcreteProduct> class Proxy
@@ -80,7 +80,7 @@ static 	GenericFactory::Proxy<Factory,Concrete2> c2{"c2"};
 to oblige the compiler to construct `c1` and `c2` and thus register the objects with identifiers "c1" and "c2", respectively.
 
 # What do you lean with this example #
-- An example of a generic implementation of the *object factory* design pattern. The key for a plugin-type architecture and, in general, useful when you have to select an element of a hierarchy of polymorphic object run time;
+- A possible generic implementation of the *object factory* design pattern. It is the key for a plugin-type architecture and, in general, useful when you have to select an element of a hierarchy of polymorphic object run time;
 - How the same class template can be used to create a "factory of functions";
 - The use of generic programming to build a model for various implementations;
 - The use of *variadic templates* to pass a variable number of arguments to a function;
@@ -92,4 +92,4 @@ to oblige the compiler to construct `c1` and `c2` and thus register the objects 
 - The `Factory.hpp` file contains the implementation of the Factory. The `Proxy.hpp` file contains the implementation of the Proxy class. The file `main_testAbstractFactory.cpp` contains an example of the use.
 
 # A Note #
-Remember that just making a class a Singleton does not guarantee having only one instance of the object in your code. But it provides an additional safeguard. The safest way to be sure to have a single factory object in your code is to make you factory a Singleton *and* a global(namespace) variable, as shown in the example `NumericalQuadrature`.
+Remember that just making a class a Singleton does not guarantee having only one instance of the object in your code. But it provides an additional safeguard. The safest way to be sure to have a single factory object in your code is to make you factory a Singleton *and* a global(namespace) variable, as shown in the `NumericalQuadrature` example.
