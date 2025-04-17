@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 namespace GenericFactory
 {
@@ -41,9 +42,8 @@ public:
   //! The container for the rules.
   using AbstractProduct_type = AbstractProduct;
   //! The identifier.
-  /*
-We must have an ordering since we use a map with
-the identifier as key.
+  /*!
+  It is used to identify the rules.
   */
   using Identifier_type = Identifier;
   //! The builder type.
