@@ -108,11 +108,9 @@ alllibs: static dynamic
 static:
 	$(MAKE) clean
 	$(MAKE) library LIBTYPE=STATIC 
-	$(MAKE) exec LIBTYPE=STATIC 
 dynamic:
 	$(MAKE) clean
 	$(MAKE) library LIBTYPE=DYNAMIC
-	$(MAKE) exec LIBTYPE=DYNAMIC
 
 exec: $(EXEC)
 
