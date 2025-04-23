@@ -47,13 +47,13 @@ template <unsigned int NSTAGES> struct ButcherArray
    */
   Atable A;
   //! The b1 coefficient of the Butcher array (lower order)
-  std::array<double, NSTAGES> b1;
+  const std::array<double, NSTAGES> b1;
   //! The b2 coefficients of the Butcher array (higher order)
-  std::array<double, NSTAGES> b2;
+  const std::array<double, NSTAGES> b2;
   //! The c coefficient of the butcher array
   std::array<double, NSTAGES> c;
   //! I need the order to control time steps
-  int order;
+  const int order;
   /*!
    * Check if it correspond to an implicit RK scheme
    * @return true if implicit
@@ -100,18 +100,14 @@ protected:
 
 template <typename B>
 concept ButcherArrayConcept = requires(B b) {
-                                b.A;
-                                b.b1;
-                                b.b2;
-                                b.c;
-                                b.order;
-                                {
-                                  b.implicit()
-                                  } -> std::same_as<bool>;
-                                {
-                                  B::Nstages()
-                                  } -> std::convertible_to<unsigned int>;
-                              };
+  b.A;
+  b.b1;
+  b.b2;
+  b.c;
+  b.order;
+  { b.implicit() } -> std::same_as<bool>;
+  { B::Nstages() } -> std::convertible_to<unsigned int>;
+};
 
 namespace RKFScheme
 {
