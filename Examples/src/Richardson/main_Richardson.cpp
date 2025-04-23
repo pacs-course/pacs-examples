@@ -11,11 +11,11 @@
 int
 main()
 {
-  auto            f = [](double y, double t) { return -y * y; };
-  double          t0 = 0;
-  double          T = 5.0;
-  double          y0 = 1.;
-  unsigned        n = 1000;
+  auto     f = [](double y, [[maybe_unused]] double t) { return -y * y; };
+  double   t0 = 0;
+  double   T = 5.0;
+  double   y0 = 1.;
+  unsigned n = 1000;
   Timings::Chrono clock;
   clock.start();
   auto [time, sol] = apsc::CrankNicolson(f, y0, t0, T, n);
