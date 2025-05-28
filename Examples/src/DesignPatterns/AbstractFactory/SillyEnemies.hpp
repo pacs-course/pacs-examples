@@ -9,33 +9,25 @@
 #define SILLYENEMIES_HPP_
 #include "AbstractEnemyFactory.hpp"
 #include "enemies.hpp"
-class SillySoldier : public Soldier
+class SillySoldier final : public Soldier
 {
 public:
-  void speak() override;
-  virtual ~SillySoldier() = default;
+  void speak() const override;
 };
-class SillyMonster : public Monster
+class SillyMonster final : public Monster
 {
 public:
-  void speak() override;
-  virtual ~SillyMonster() = default;
+  void speak() const override;
 };
-class SillySuperMonster : public SuperMonster
+class SillySuperMonster final : public SuperMonster
 {
 public:
-  void speak() override;
-  virtual ~SillySuperMonster() = default;
+  void speak() const override;
 };
 
 class EasyLevelEnemyFactory : public AbstractEnemyFactory
 {
 public:
-  std::unique_ptr<Enemy> MakeSoldier() override;
-  std::unique_ptr<Enemy> MakeMonster() override;
-  std::unique_ptr<Enemy> MakeSuperMonster() override;
-  virtual ~EasyLevelEnemyFactory() = default;
+  std::unique_ptr<Enemy> operator()(std::string_view Identifier) const override;
 };
-
-std::unique_ptr<AbstractEnemyFactory> BuildEasyLevelEnemyFactory();
 #endif /* SILLYENEMIES_HPP_ */

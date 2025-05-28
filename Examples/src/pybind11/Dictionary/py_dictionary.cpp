@@ -12,8 +12,9 @@ namespace py = pybind11;
 @file dictionary.cpp
 @brief Process a Python dictionary in C++.
 @details This file contains a function that processes a Python dictionary in
-C++. The dictionary is of the form \code{.py} data = { "name": "string", "age":
-integer, "height": double, "is_student": boolean, "courses": std::vector<string>
+C++. The dictionary is of the form 
+\code{.py} 
+data = { "name": "string", "age":integer, "height": double, "is_student": boolean, "courses": std::vector<string>
 }
 \endcode
 
