@@ -100,11 +100,6 @@ I have used standard makefiles since I find that they allow simpler handling of 
 
 ## DISCLAIMER ##
 The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your wish (give credits please), but remember that I do not make any claim on their suitability for your work, nor that they are free of bugs. 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> master
 
 The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your wish (give credits please and let me know of bugs or possible improvements), but remember that *I do not make any claim on their suitability for your work, nor that they are free of bugs*. 
 
