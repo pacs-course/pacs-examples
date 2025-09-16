@@ -6,9 +6,9 @@ import time
 N = 1000
 A = np.random.rand(N,N)
 # convert to double
-A = A.astype(float)
+A = A.astype(np.float64)
 # contruct the vector of ones
-v = np.ones(N,dtype=float)
+v = np.ones(N,dtype=np.float64)
 # time the multiplication
 start = time.time()
 b=ew.multiply(A,v)

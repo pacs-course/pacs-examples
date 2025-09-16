@@ -47,8 +47,8 @@ all: lib0 lib1 $(EXEC)
 lib0:
 	$(CXX) -Wall -O3 -fPIC -c smalllib.cpp
 	$(CXX) -shared -Wl,-soname=libsmall.so.1 -o libsmall.so.1.0 smalllib.o
-	ln -s libsmall.so.1.0 libsmall.so
 	ln -s libsmall.so.1.0 libsmall.so.1
+	ln -s libsmall.so.1 libsmall.so
 	$(RM) -f smalllib.o
 lib1:
 	$(CXX) -Wall -fPIC -c smalllib2.cpp

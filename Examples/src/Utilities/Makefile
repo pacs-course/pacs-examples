@@ -16,6 +16,9 @@ CXXFLAGS+=-std=c++20
 MAKEFILEH_DIR=../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
+
+# Now the default target
+all: alllibs
 #
 # You may have an include file also in the current directory
 #
@@ -64,9 +67,8 @@ endif
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc library install test alllibs
 
-alllibs: all
 
-all: $(DEPEND) library
+alllibs: $(DEPEND) library
 
 library:
 	$(MAKE) static

@@ -7,8 +7,10 @@ namespace apsc
 {
 //! This function may throw exceptions if a fpe has been raised.
 //!
-//! @param on if true means that exception will be thrown if a floating point error occurred
-//! @return if on is false, it returns true if a floating point exception has occurred
+//! @param on if true means that exception will be thrown if a floating point
+//! error occurred
+//! @return if on is false, it returns true if a floating point exception has
+//! occurred
 bool test_fpe_exception(bool on = true);
 
 /*!
@@ -25,7 +27,8 @@ public:
   /*!
    * @brief The constructore takes t flag
    *
-   * @param flags A frag that may be a combination of FE_INVALID FE_OVERFLOW or FE_DIVBYZERO
+   * @param flags A flag that may be a combination of FE_INVALID FE_OVERFLOW or
+   * FE_DIVBYZERO
    */
   InvalidFPOperation(int flags);
   /*!

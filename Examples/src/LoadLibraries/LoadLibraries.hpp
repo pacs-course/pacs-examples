@@ -27,11 +27,23 @@ class LoadLibraries
 {
 public:
   LoadLibraries() = default;
+  //! This class can be moved but not copied
+  LoadLibraries(LoadLibraries &&) = default;
+  //! This class can be moved but not copied
+  LoadLibraries &operator=(LoadLibraries &&) = default;
+  //! This class is not copy-assignable
+  LoadLibraries &operator=(LoadLibraries const &) = delete;
+  //! This class is not copy-constructible
+  LoadLibraries(LoadLibraries const &) = delete;
   //! Constructor that loads libraries from file
   //!
   //! the file should contain the name of the libraries, one for each line
   //! library file names SHOULD NOT contain blanks
   //! @param fileName file containing the name of the libraries to load
+  //! @param mode the mode to load the libraries. Default is RTLD_NOW, all
+  //! symbols are resolved upfront. Use instead RTLD_LAZY if you want to resolve
+  //! the symbols only
+  //!              when needed
   explicit LoadLibraries(std::string const &fileName, int mode = RTLD_NOW)
   {
     this->load(fileName, mode);
@@ -39,6 +51,10 @@ public:
   //! loads libraries from a file
   //! the file should contain the name of the libraries, one for each line
   //! @param fileName file containing the name of the libraries to load
+  //! @param mode the mode to load the libraries. Default is RTLD_NOW, all
+  //! symbols are resolved upfront. Use instead RTLD_LAZY if you want to resolve
+  //! the symbols only
+  //!              when needed
   //! @return a bool: if true everything is ok
   bool load(std::string fileName, int mode = RTLD_NOW);
   //! Loads a single library given its name and adds it to the repository
@@ -50,8 +66,7 @@ public:
   //! Gets the handle to a specific library. Returns nullptr if library not
   //! present.
   void *getLibraryHandle(std::string libName) const;
-  //! destructor closes the libraries
-  ~LoadLibraries() { this->close(); }
+  ~LoadLibraries() { this->close(); } //! destructor closes the libraries
 
 private:
   // The handler of all libraries

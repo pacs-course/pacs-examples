@@ -8,47 +8,41 @@
 #include <iostream>
 
 void
-SillySuperMonster::speak()
+SillySuperMonster::speak() const
 {
   std::cout
-    << " I am a Silly SuperMonster and I'll kill you (or at least I try)"
+    << " I am a Silly SuperMonster and maybe I kill you (but I am not so sure)"
     << std::endl;
 }
 
 void
-SillyMonster::speak()
+SillyMonster::speak() const
 {
-  std::cout << " I am a Silly Monster and I'll kill you (or at least I try)"
+  std::cout << " I am a Silly Monster and I'll kill you (or at least I try to "
+               "do my best)"
             << std::endl;
 }
 
 void
-SillySoldier::speak()
+SillySoldier::speak() const
 {
-  std::cout << " I am a Silly Soldier and I'll kill you (or at least I try)"
-            << std::endl;
+  std::cout << " I am a Silly Soldier: hit me and I die" << std::endl;
 }
 
+/*!
+ * \brief Creates a silly enemy based on the identifier.
+ * @param Identifier The type of enemy to create (e.g., "Soldier", "Monster",
+ * "SuperMonster").
+ * @return A unique pointer to the created Enemy object.
+ */
 std::unique_ptr<Enemy>
-EasyLevelEnemyFactory::MakeSuperMonster()
+EasyLevelEnemyFactory::operator()(std::string_view Identifier) const	
 {
-  return std::make_unique<SillySuperMonster>();
-}
-
-std::unique_ptr<Enemy>
-EasyLevelEnemyFactory::MakeMonster()
-{
-  return std::make_unique<SillyMonster>();
-}
-
-std::unique_ptr<Enemy>
-EasyLevelEnemyFactory::MakeSoldier()
-{
-  return std::make_unique<SillySoldier>();
-}
-
-std::unique_ptr<AbstractEnemyFactory>
-BuildEasyLevelEnemyFactory()
-{
-  return std::unique_ptr<AbstractEnemyFactory>(new EasyLevelEnemyFactory);
+  if(Identifier == "Soldier")
+    return std::make_unique<SillySoldier>();
+  else if(Identifier == "Monster")
+    return std::make_unique<SillyMonster>();
+  else if(Identifier == "SuperMonster")
+    return std::make_unique<SillySuperMonster>();
+  return nullptr;
 }

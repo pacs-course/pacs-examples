@@ -1,14 +1,11 @@
 {
-"integrand":"parsedFunction",
+"integrand":"irregular",
 "udflib":[ 
 "./libudf.so"
 ],
 "library":[
-"./libAdamsRules.so", 
-"./libGaussRules.so",
-"./libMontecarloRules.so"
-],
-"rule":"AdaptiveSimpson",
+"./libGaussRules.so"],
+"rule":"AdaptiveGauss3",
 "a":-1.0,
 "b":3.0,
 "nint":25,

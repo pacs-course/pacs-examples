@@ -1,0 +1,204 @@
+# BEWARE
+# This file must be renamed into Makefile.inc in order to work!! It will be done by the container script
+#
+
+# *****  This is the user defined part of the Makefile
+#
+#  It is included in almost all Makefiles of the example (a part some particulare cases)
+#
+# It has been modified so to read some data from environmental variables
+# and be compatible with the system of modules used at MOX
+#
+# Recall that you may also change some options on the fly using
+#
+#   make target OPTION=MY_OPTION
+#
+# for instance if you want to change the compiler to clang on the fly
+#
+# make target CXX=clang++
+#
+
+# The directory where the examples reside (you HAVE to change this)
+PACS_ROOT?=/home/pacs/pacs-examples/Examples
+# The directory with the Eigen (leave blank if they are in a standard directory)
+mkEigenInc?=/usr/local/include/eigen3/
+EIGEN_DIR=$(mkEigenInc)
+#
+# Mpi directories for library and include files
+#
+mkOpenmpiLib?=/usr/lib/x86_64-linux-gnu
+mkOpenmpiInc?=/usr/include
+MPI_LIBDIR=${mkOpenmpiLib}
+MPI_INCDIR=${mkOpenmpiInc}
+#
+# C++ native parallelization support with g++ needs the TBB libraries
+#
+mkTbbInc?=/usr/include
+mkTbbLib?=/usr/lib/x86_64-linux-gnu/
+TBB_LIBDIR=${mkTbbLib}
+TBB_INCDIR=${mkTbbIn}
+#
+# Boost libraries
+# 
+mkBoostInc?=/usr/include/boost/
+mkBoostLib?=/usr/lib/x86_64-linux-gnu/
+BOOST_INCDIR=mkBoostInc
+BOOST_LIBDIR=mkBoostLib
+#
+# Name of additional libraries (set by the local Makefile.inc if necessary)
+#
+LIBRARIES=
+# Extra directories. Set by local Makefile.inc if required
+OTHER_LIB_DIR=
+OTHER_INC_DIR=
+
+#
+# The C++ compiler (taken from an environmental variable)
+#
+mkCxxCompiler?=g++
+CXX = ${mkCxxCompiler}
+#
+CC = ${mkCxxCompiler}
+
+# Since we are only uning c++ I set the linker LINK.o for object files
+# so that it uses the c++ compiler. Make has no separate macro for the linker!
+LINK.o = $(CXX) $(LDFLAGS) $(TARGET_ARCH)
+#
+# If you are using intel compilers
+ifeq ($(findstring icc, $(CXX)),icc)
+inteldir=$(dir $(CXX))
+# Change it for the location of your compiler!
+OTHER_LIB_DIR+=/usr/local/opt/intel/cc/9.0/lib
+endif
+#
+# Maybe you have to add the library for the clang compiler
+# if not installed in the standard directories.
+#
+ifeq ($(findstring clang, $(CXX)),clang)
+ OTHER_LIB_DIR+=
+endif
+#
+#  DEFINES: Possible -DXX statements
+# Example
+# -DNDEBUG disactivates asserts
+DEFINES=
+#
+#  OPTIMIZATION
+# Warning flags: Level of warning
+# -Wall main warnings activated
+# -Wextra some extra warnings activated
+# -Wsuggest-override  as the name says
+# -Wnon-virtual-dtor Warns if a class with virtual meths oda does not have virt dstructors
+# -Weffc++ Wanrs about violation of the coding style in Scott Mayer's Effective C++
+
+WARNFLAGS=-Wall -Wextra -Wsuggest-override -Wnon-virtual-dtor
+#
+# Optimization flags : May be selected by using the variable RELEASE
+#
+# -c       compile only, generate corresponding .o files
+# -g       generate code suitable for the debugger
+# -p       generate code suitable for the profiler
+# -O       attemp code optimizations
+####
+#
+# Common file for Doxygen documentation
+export DOXYFILE=$(PACS_ROOT)/DoxyfileCommon
+##
+# PYBIND11 SETTINGS
+# remember to install pybind11 in the $(PACS_ROOT)/include directory
+# To do it: go in Extra/pybind11 and run ./install_PACS.sh
+PYBIND11_DIR=$(PACS_ROOT)/include
+##
+# ************ END USER MODIFIABLE PART *****************
+##
+
+ifdef RELEASE
+DEBUG?=no
+else
+DEBUG?=yes
+endif
+
+ifeq ($(DEBUG),yes)
+  OPTFLAGS=-g
+# If debugging we use the local dynamic libraries and avoid ldconfig -d
+# or setting LD_LIBRARY_PATH
+  LDFLAGS=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib# 
+else
+  # Since aa 18-19 I have decided to indicate the libraries even if DEBUG=no.
+  # Remember however that normally release code does not have hardwired in the
+  # executables the directories where the loader looks for libraries.
+  # You take the responsibility of installing them in the right place.
+  # But here I want to avoid students messing around with LD_LIBRARY_PATH
+  # or ldconfig.
+  LDFLAGS=-Wl,-rpath=. -Wl,-rpath=$(PACS_ROOT)/lib#
+  OPTFLAGS=-O3 -funroll-loops #maybe you want -O3
+  DEFINES+=-DNDEBUG
+endif
+# Add verbosity if needed
+ifeq ($(VERBOSE),yes)
+  VERBOSITY=-DVERBOSE
+endif
+#
+# Flags for standard 
+#
+STANDARD=c++20
+# 
+# Location of
+# Doxygen configuration file
+#
+export STDFLAGS=-std=$(STANDARD)
+#
+# PACS libraries are stored here
+#
+export PACS_LIB_DIR=$(PACS_ROOT)/lib
+#
+# Main PACS include directory
+#
+export PACS_INC_DIR=$(PACS_ROOT)/include
+#
+# Other directories with libraries (if needed)
+#
+export OTHER_LIB_DIR
+#
+# Other include directories (if needed)
+#
+export OTHER_INC_DIR
+export CC
+export CXX
+#
+# Compose options
+#
+# collect all includes
+ALL_INC_DIR= $(PACS_INC_DIR) $(OTHER_INC_DIR) $(EIGEN_DIR)
+includes := $(foreach inc,$(ALL_INC_DIR),-I$(inc) )
+# where to look for include files:
+# first the current directory, then the directory ./include
+# and then the possible other specifyed in OTHER_INC_DIR
+INCLS  = -I. -I./include $(includes) 
+# collect all library dirs
+ALL_LIB_DIR=$(PACS_LIB_DIR) $(OTHER_LIB_DIR)
+LIBD := $(foreach lib,$(ALL_LIB_DIR),-L$(lib) )
+#
+# Set make macros
+#
+export CPPFLAGS=$(INCLS) $(DEFINES) $(VERBOSITY)
+export CXXFLAGS=$(OPTFLAGS) $(STDFLAGS) $(WARNFLAGS)
+#
+# For C Programs 
+#
+export CCFLAGS=$(CXXFLAGS)
+#
+# name of file with dependencies
+#
+#header files
+export LDFLAGS+=$(OPTFLAGS) 
+export DEPEND=make.dep
+# to avoid nasty warnings
+export ARFLAGS=rsU
+# Rule to generate pdf from latex files
+# Twice to solve undefined labels
+%.pdf:%.tex
+	pdflatex $<
+	pdflatex $<
+
+

@@ -8,43 +8,33 @@
 #include <iostream>
 
 void
-BadSuperMonster::speak()
+BadSuperMonster::speak() const
 {
-  std::cout << " I am a Bad SuperMonster and I'll kill you" << std::endl;
+  std::cout << " I am a Bad SuperMonster, you must be brave to fight me"
+            << std::endl;
 }
 
 void
-BadMonster::speak()
+BadMonster::speak() const
 {
-  std::cout << " I am a Bad Monster and I'll kill you" << std::endl;
+  std::cout << " I am a Bad Monster, you'd better hide" << std::endl;
 }
 
 void
-BadSoldier::speak()
+BadSoldier::speak() const
 {
-  std::cout << " I am a Bad Soldier and I'll kill you" << std::endl;
+  std::cout << " I am a Bad Soldier and I'll kill you unless you are very good"
+            << std::endl;
 }
 
 std::unique_ptr<Enemy>
-AdvancedLevelEnemyFactory::MakeMonster()
+AdvancedLevelEnemyFactory::operator()(std::string_view Identifier) const
 {
-  return std::make_unique<BadMonster>();
-}
-
-std::unique_ptr<Enemy>
-AdvancedLevelEnemyFactory::MakeSuperMonster()
-{
-  return std::make_unique<BadSuperMonster>();
-}
-
-std::unique_ptr<Enemy>
-AdvancedLevelEnemyFactory::MakeSoldier()
-{
-  return std::make_unique<BadSoldier>();
-}
-
-std::unique_ptr<AbstractEnemyFactory>
-BuildAdvancedLevelEnemyFactory()
-{
-  return std::unique_ptr<AbstractEnemyFactory>(new AdvancedLevelEnemyFactory);
+  if(Identifier == "Soldier")
+    return std::make_unique<BadSoldier>();
+  else if(Identifier == "Monster")
+    return std::make_unique<BadMonster>();
+  else if(Identifier == "SuperMonster")
+    return std::make_unique<BadSuperMonster>();
+  return nullptr;
 }

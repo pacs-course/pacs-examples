@@ -8,9 +8,9 @@ flag is raised, and take the appropriate action, if you wish. But it requires  s
 
 This directory contains two utilities
 
-* `trapfpe.hpp`, a header only utility that you should include in your main source file if you want to be able to activate *abort on major fp exceptions*.  To activate this feature, you have to compile your code with the cpp option `-DFPE_ABORT`. If not, you have the default behaviour in case of floating point exceptions.  With major floating point exceptions here I mean: invalid operation, divide by zero, overflow.
+* `trapfpe.hpp`, a header only utility that you should include **in the source file containing your main program** if you want to be able to activate *abort on major fp exceptions*.  To activate this feature, you have to compile your code with the cpp option `-DFPE_ABORT`. If not, you have the default behaviour in case of floating point exceptions.  With major floating point exceptions here I mean: invalid operation, divide by zero, overflow.
 
-* `fpeUtilities.[hc]pp` the sources of a little library that introduces some exception classes inherited from std::runtime_error and a function that tests if major fp exception has been raised, and in that case launches the relevant exception, or returns a boolean equal to true. To use this utility you need to link the `libfpe.so` library created by this example. 
+* `fpeUtilities.[hc]pp` the sources of a little library that introduces some exception classes inherited from std::runtime_error and a function that tests if major fp exception has been raised, and in that case launches the relevant exception, or alternatively returns a boolean equal to true. To use this utility you need to link the `libfpe.so` library created by this example. 
 
 A test is available, `main_fpe.cpp`, to test the utilities.
 

@@ -31,6 +31,8 @@ The software contained in the subfolders of this directory is free-software rele
 
 `setup.sh` A bash script that compiles the main utilities in one shot so that you have averything set. It is explained in the next section.
 
+`Makefile_description.md` A file that describes the structure of the makefiles used in the examples. It is explained in the next section.
+
 ## HOW TO COMPILE AND INSTALL THE EXAMPLES: ##
 
 ### THE FIRST STEP ###
@@ -44,7 +46,9 @@ and edit the latter to suit your system. In particular, you have to set `AMSC_RO
 If you do not know it
 just type
 
-    pwd
+```bash
+pwd
+```
 in the terminal and you have it.
 
 (Almost) all `Makefiles` of the examples include the file `Makefile.inc` of the root directory
@@ -109,6 +113,7 @@ Being all the first target of (almost all) the makefiles, to compile
 the examples is often sufficient to type `make`. with `make doc` you
 compile the documentation.
 
+More details in the `Makefile_description.md` file.
 
 ## WORKING WITH MODULES (but also if you do not use them...) ##
 

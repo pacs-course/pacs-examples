@@ -5,26 +5,26 @@
 
 namespace py = pybind11;
 using namespace apsc;
-/*
+/*cmake_check_build_system
 I need to explicitely instantiate the templates for the functions I want to
 export to python.
 */
 using funct = const std::function<double(double)> &;
-template std::tuple<double, bool>
-apsc::golden_search(funct f, double a, double b, double tol, unsigned maxIter);
-template std::array<double, 2> apsc::Brent_glomin(double a, double b, double x0,
-                                                  double m, double e, double t,
-                                                  funct f);
-template std::array<double, 2> apsc::Brent_local_min(double a, double b,
-                                                     double tol, funct f);
-template std::tuple<double, double, int>
-apsc::bracketIntervalMinimum(funct f, double x1, double h, unsigned maxIter);
+//template std::tuple<double, bool>
+//apsc::golden_search(funct f, double a, double b, double tol, unsigned maxIter);
+//template std::array<double, 2> apsc::Brent_glomin(double a, double b, double x0,
+//                                                  double m, double e, double t,
+//                                                  funct f);
+//template std::array<double, 2> apsc::Brent_local_min(double a, double b,
+//                                                     double tol, funct f);
+//template std::tuple<double, double, int>
+//apsc::bracketIntervalMinimum(funct f, double x1, double h, unsigned maxIter);
 
 PYBIND11_MODULE(basicOptim, m)
 {
-    m.def("golden_search", &golden_search<funct>),
-    py::arg("f"),py::arg("a"),py::arg("b"),py::arg("tol"),py::arg("maxIter"), 
-    R"pbdoc(
+    m.def("golden_search", &golden_search<funct>,
+          py::arg("f"), py::arg("a"), py::arg("b"), py::arg("tol"), py::arg("maxIter"),
+          R"!(
         Golden search function.
 
         This function performs golden search optimization to find the minimum of a given function.
@@ -39,11 +39,11 @@ PYBIND11_MODULE(basicOptim, m)
         Returns:
             tuple: A tuple containing the minimum value and a boolean indicating if the optimization converged.
 
-        )pbdoc");
+        )!");
 
     m.def("Brent_glomin", &Brent_glomin<funct>, py::arg("a"), py::arg("b"),
           py::arg("x0"), py::arg("m"), py::arg("e"), py::arg("t"), py::arg("f"),
-          R"pbdoc(
+          R"!(
         Brent glomin function.
 
         This function performs Brent's method for global optimization to find the minimum of a given function.
@@ -60,7 +60,7 @@ PYBIND11_MODULE(basicOptim, m)
         Returns:
             array: An array containing the minimum value and the number of iterations performed.
 
-        )pbdoc");
+        )!");
 
     m.def("Brent_local_min", &Brent_local_min<funct>, py::arg("a"),
           py::arg("b"), py::arg("tol"), py::arg("f"),
@@ -82,7 +82,7 @@ PYBIND11_MODULE(basicOptim, m)
 
     m.def("bracketIntervalMinimum", &bracketIntervalMinimum<funct>,
           py::arg("f"), py::arg("x1"), py::arg("h"), py::arg("maxIter"),
-          R"pbdoc(
+          R"!(
         Bracket interval minimum function.
 
         This function finds an interval containing the minimum of a given function.
@@ -96,5 +96,5 @@ PYBIND11_MODULE(basicOptim, m)
         Returns:
             tuple: A tuple containing the minimum value, the minimum value's derivative, and the number of iterations performed.
 
-        )pbdoc");
+        )!");
 }
