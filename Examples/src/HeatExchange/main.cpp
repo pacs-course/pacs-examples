@@ -8,6 +8,10 @@
 #include <iostream>   // input output
 #include <tuple>      // I am using tuples to pass data to gnuplot iostream
 #include <vector>     // For vectors
+// write directive to test if I am using at least c++20
+#if __cplusplus > 201703L
+#include <format> // New in C++20. For formatted output
+#endif
 /*!
   @file main.cpp
   @brief Temperature distribution in a 1D bar.
@@ -120,7 +124,7 @@ main(int argc, char **argv)
       // Gauss Siedel is initialised with a linear variation
       // of T
 
-      for(int m = 0; m <= M; ++readParameters_jsonm)
+      for(int m = 0; m <= M; ++m)
         theta[m] = (1. - m * h) * (To - Te) / Te;
 
       int    iter = 0;
@@ -158,13 +162,16 @@ main(int argc, char **argv)
     }
   else
     {
-      // Thomas algorithm
-      std::vector<double> a(M + 1, 1.); // a vector filled with 1.
-      std::vector<double> b(
-        M + 1, -1. / (2. + h * h * act)); // a vector filled with values
-      std::vector<double> c = b;          // The matrix is symmetric
-      b.back() = -1;                      // correction for Neumann bc
-      c[0] = 0;                           // correction for Dirichlet bc
+      // Thomas algorithm. I need to build the vector a, b,c that define the
+      // tridiagonal matrix
+      std::vector<double> a(
+        M + 1, 1.); // a vector filled with 1. using the constructor
+      // to fill vectors with values you can also do like this
+      std::vector<double> b;                     // an empty vector
+      b.assign(M + 1, -1. / (2. + h * h * act)); // fill with values
+      std::vector<double> c = b;                 // The matrix is symmetric
+      b.back() = -1;                             // correction for Neumann bc
+      c.front() = 0;                             // correction for Dirichlet bc
       std::vector<double> source(
         M + 1, 0.); // The rhs term. all zero since it is an homogeneous problem
       source.front() = (To - Te) / Te; // correction for Dirichlet bc.
@@ -176,6 +183,7 @@ main(int argc, char **argv)
   // Analytic solution
 
   vector<double> thetaa(M + 1);
+  // Analytic solution
   for(int m = 0; m <= M; m++)
     thetaa[m] =
       Te + (To - Te) * cosh(sqrt(act) * (1 - m * h)) / cosh(sqrt(act));
@@ -190,6 +198,15 @@ main(int argc, char **argv)
   // In gnuplot lines beginning with # are comments
   // \t writes a tab
   f << "#node coordinate\tcomputed solution\texact solution" << std::endl;
+#if __cplusplus > 201703L
+  // I show the new format facility
+  for(int m = 0; m <= M; m++)
+    {
+      f << std::format("{:<18.15f}\t\t{:<18.15f}\t\t{:<18.15f}\n", m * h * L,
+                       theta[m], thetaa[m]);
+      coor[m] = m * h * L;
+    }
+#else
   for(int m = 0; m <= M; m++)
     {
       f.setf(std::ios::left, std::ios::adjustfield);
@@ -198,6 +215,7 @@ main(int argc, char **argv)
       f << m * h * L << "\t\t" << theta[m] << "\t\t" << thetaa[m] << "\n";
       coor[m] = m * h * L;
     }
+#endif
     // If you have gnuplot iostream you get the plot on the screen
 #ifdef GNUPLOT
   Gnuplot gp; // gnuplot iostream! Plots solution on the screen

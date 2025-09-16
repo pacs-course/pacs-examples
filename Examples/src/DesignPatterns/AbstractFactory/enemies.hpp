@@ -7,33 +7,35 @@
 
 #ifndef ENEMIES_HPP_
 #define ENEMIES_HPP_
-
-class Enemy
-{
-public:
-  virtual void speak() = 0;
-  virtual ~Enemy() = default;
-};
+#include "AbstractEnemyFactory.hpp"
+#include "enemiesBase.hpp"
 
 class Soldier : public Enemy
 {
 public:
-  virtual void speak() override;
-  virtual ~Soldier() = default;
+  void speak() const override;
 };
 
 class Monster : public Enemy
 {
 public:
-  virtual void speak() override;
-  virtual ~Monster() = default;
+  void speak() const override;
 };
 
 class SuperMonster : public Enemy
 {
 public:
-  virtual void speak() override;
-  virtual ~SuperMonster() = default;
+  void speak() const override;
 };
 
+class NormalEnemyFactory : public AbstractEnemyFactory
+{
+public:
+  /*! \brief Creates an enemy based on the identifier.
+   * @param Identifier The type of enemy to create (e.g., "Soldier", "Monster",
+   * "SuperMonster").
+   * @return A unique pointer to the created Enemy object.
+   */
+  std::unique_ptr<Enemy> operator()(std::string_view Identifier) const override;
+};
 #endif /* ENEMIES_HPP_ */

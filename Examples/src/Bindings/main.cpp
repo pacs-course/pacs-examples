@@ -107,14 +107,16 @@ goo(const std::vector<int> &a)
  * It is shown here only for completeness.
  * @param a the value.
  */
+/*
 void
 goo(const std::vector<int> &&a)
 {
   auto av = a[0];
   // ok i can read a
   // a[0]=10.// Error! I cannot change a
-  std::cout << "using void goo(const vector<int> &&)" << std::endl;
+  std::cout << "using void goo(const std::vector<int> &&)" << std::endl;
 }
+*/
 
 // Here with universal references
 using Vector = std::vector<double>; // to save typing
@@ -205,14 +207,14 @@ main()
     std::cout << "calling goo(std::move(v)): an r-value" << std::endl;
     goo(std::move(v)); //  goo(vector<int>&&)
     std::cout << "The size of v after the call is " << v.size() << "\n";
-    std::cout << "calling goo(std::move(cv)) (cv is const, move retorns a "
+    std::cout << "calling goo(std::move(cv)) (cv is const, move returns a "
                  "const rvalue):"
               << std::endl;
     goo(std::move(cv)); // goo(const vector<int> && )
     std::cout << "The size of cv after the call is " << cv.size() << "\n";
     // If you comment out the definition of goo(const vector<int> &&).
     // goo(const vector<int> &) is used instead, which is normally fine. So
-    // goo(const vector<int> &&) is generally of no practicall use
+    // goo(const vector<int> &&) is generally of no practical use
   }
   std::cout << "\nNOW SOMETHING MORE INTERESTING\n";
   Vector v(100, 3.0); // a vector containing 3 of size 100

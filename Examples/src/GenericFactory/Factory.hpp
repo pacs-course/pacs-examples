@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 namespace GenericFactory
 {
@@ -41,9 +42,8 @@ public:
   //! The container for the rules.
   using AbstractProduct_type = AbstractProduct;
   //! The identifier.
-  /*
-We must have an ordering since we use a map with
-the identifier as key.
+  /*!
+  It is used to identify the rules.
   */
   using Identifier_type = Identifier;
   //! The builder type.
@@ -98,7 +98,12 @@ the identifier as key.
   }
 
 private:
-  using Container_type = std::map<Identifier, Builder_type>;
+  //! The type of the container used to store the rules.
+  /*!
+  I am using an unordered map since I do not need ordering for the keys
+  Using a std::map is however possible.
+  */
+  using Container_type = std::unordered_map<Identifier, Builder_type>;
   //! Made private since it is a Singleton
   Factory() = default;
   //! Deleted since it is a Singleton

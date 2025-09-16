@@ -38,8 +38,8 @@ exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
 CXXFLAGS+=-fPIC
-LDFLAGS= $(OPTFLAGS) -Wl,-rpath,.
-LDLIBS=-L. -lFactory -ldl
+LDFLAGS+= $(OPTFLAGS) -Wl,-rpath,.
+LDLIBS+=-L. -lFactory -L$(PACS_ROOT)/lib -lloadlibs
 #========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
 .phony= all clean distclean doc
 
@@ -71,7 +71,7 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): main_poly.o Polygon.o loadPolyFactory.o
+$(EXEC): main_poly.o Polygon.o
 
 
 $(OBJS): $(SRCS)

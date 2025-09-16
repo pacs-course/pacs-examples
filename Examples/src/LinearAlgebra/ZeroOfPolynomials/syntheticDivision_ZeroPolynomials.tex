@@ -51,7 +51,8 @@ be a (real or complex) polynomial of degree at most $m$, expressed in terms of t
 \begin{lstlisting}
 auto horner(a,z)
     b[m-1]=a[m];
-    for k=m-2,...0 b[k]+=b[k+1]*z + a[k+1]; 
+    for k=m-2,...,0 
+	   b[k]+=b[k+1]*z + a[k+1]; 
     return {b[0]*z + a[0],b}; 
 \end{lstlisting}
 \end{algo}

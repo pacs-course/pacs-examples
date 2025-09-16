@@ -2,6 +2,9 @@
 mkTbbLib?=/usr/lib/x86_64-linux-gnu/
 mkTbbInc?=/usr/include
 
-CPPFLAGS+=-I. -fopenmp
-CXXFLAGS+=-fopenmp
-LDLIBS+=-L${mkTbbLib} -ltbb -fopenmp
+openmp:
+	$(MAKE) all CPPFLAGS+="-I. -fopenmp" CXXFLAGS+="-fopenmp" LDFLAGS=-fopenmp
+
+parallel:
+	$(MAKE) all CPPFLAGS+="-I. -DPARALLELSTD" LDLIBS+="-L${mkTbbLib} -ltbb"
+

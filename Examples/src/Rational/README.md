@@ -12,6 +12,20 @@ Not also that I can initialise a Rational using a `std::ratio<N,M>`
 object. `std::ratio` is a tool of the Standard Library to hold
 **constant rational numbers**.
 
+## The spaceship operator ##
+We also provide the spaceship operator `<=>` that is a new feature of
+C++20. This operator returns an integer that is negative if the left
+operand is smaller, positive if the right operand is smaller, and zero
+if they are equal. 
+
+More importantly, by defining the spaceship operator we automatically
+get the `==`, `!=`, `<`, `>`, `<=`, `>=` operators.
+
+For completeness, I report in the code also what should be done to implement consistent comparison operators if you do not want (or cannot) use the spaceship operator.
+
 # What do I learn here? #
-- A rather complete example of overloading of arithmetic operators.
+- The design of a fully working class that represents a rational number;
+- The overloading of arithmetic operators;
+- A rather complete example of overloading of arithmetic operators and the use of the spaceship
+ operator;
 

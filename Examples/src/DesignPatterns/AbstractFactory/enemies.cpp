@@ -5,19 +5,34 @@
  *      Author: formaggia
  */
 #include "enemies.hpp"
+#include <iostream>
 
 void
-Enemy::speak()
-{}
+Soldier::speak() const
+{
+  std::cout << "A soldier: ready for battle!" << std::endl;
+}
 
 void
-Soldier::speak()
-{}
+Monster::speak() const
+{
+  std::cout << "A monster: grrr!" << std::endl;
+}
 
 void
-Monster::speak()
-{}
+SuperMonster::speak() const
+{
+  std::cout << "A super monster: I'm (almost) invincible!" << std::endl;
+}
 
-void
-SuperMonster::speak()
-{}
+std::unique_ptr<Enemy>
+NormalEnemyFactory::operator()(std::string_view Identifier) const
+{
+  if(Identifier == "Soldier")
+    return std::make_unique<Soldier>();
+  else if(Identifier == "Monster")
+    return std::make_unique<Monster>();
+  else if(Identifier == "SuperMonster")
+    return std::make_unique<SuperMonster>();
+  return nullptr;
+}

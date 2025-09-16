@@ -2,6 +2,7 @@
 #include "helperfunction.hpp"
 #include <cmath>
 #include <cstddef>
+#include <iomanip>
 //! Helper function to read data from terminal
 namespace apsc::NumericalIntegration
 {
@@ -13,20 +14,13 @@ readParameters(const int argc, char **argv, double &a, double &b, int &nint,
   const double pi = 2 * std::atan(1.0);
   if(cl.search(2, "--help", "-h"))
     {
-      out << "Compute integral from a to b with nint intervals"
-          << "\n";
-      out << "Possible arguments:"
-          << "\n";
-      out << "a=Value  (default 0)"
-          << "\n";
-      out << "b=Value (default pi)"
-          << "\n";
-      out << "nint=Value (default 10)"
-          << "\n";
-      out << "targetError=Value (default 1e-4)"
-          << "\n";
-      out << "-h or --help : this help"
-          << "\n";
+      out << "Compute integral from a to b with nint intervals" << "\n";
+      out << "Possible arguments:" << "\n";
+      out << "a=Value  (default 0)" << "\n";
+      out << "b=Value (default pi)" << "\n";
+      out << "nint=Value (default 10)" << "\n";
+      out << "targetError=Value (default 1e-4)" << "\n";
+      out << "-h or --help : this help" << "\n";
       std::exit(1);
     }
   a = cl("a", 0.);
@@ -44,22 +38,14 @@ readParameters(const int argc, char **argv, double &a, double &b, int &nint,
   const double pi = 2 * std::atan(1.0);
   if(cl.search(2, "--help", "-h"))
     {
-      out << "Compute integral from a to b with nint intervals"
-          << "\n";
-      out << "Possible arguments:"
-          << "\n";
-      out << "a=Value  (default 0)"
-          << "\n";
-      out << "b=Value (default pi)"
-          << "\n";
-      out << "nint=Value (default 10)"
-          << "\n";
-      out << "targetError=Value (default 1e-4)"
-          << "\n";
-      out << "library=string (default libintegrands.so)"
-          << "\n";
-      out << "integrand=string (default fsincos)"
-          << "\n";
+      out << "Compute integral from a to b with nint intervals" << "\n";
+      out << "Possible arguments:" << "\n";
+      out << "a=Value  (default 0)" << "\n";
+      out << "b=Value (default pi)" << "\n";
+      out << "nint=Value (default 10)" << "\n";
+      out << "targetError=Value (default 1e-4)" << "\n";
+      out << "library=string (default libintegrands.so)" << "\n";
+      out << "integrand=string (default fsincos)" << "\n";
       std::exit(1);
     }
   a = cl("a", 0.);
@@ -75,7 +61,7 @@ printout(double const value, double const exact, double const error,
          std::string const &title, std::ostream &out)
 {
   out << "*** " << title << " ***" << std::endl;
-  out << "Computed value " << value << std::endl;
+  out << std::setprecision(15) << "Computed value " << value << std::endl;
   out << "Error          " << (exact - value) << std::endl;
   out << "Target error   " << error << std::endl << std::endl;
 }

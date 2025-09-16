@@ -9,34 +9,26 @@
 #define BADENEMIES_HPP_
 #include "AbstractEnemyFactory.hpp"
 #include "enemies.hpp"
-class BadSoldier : public Soldier
+class BadSoldier final : public Soldier
 {
 public:
-  void speak() override;
-  virtual ~BadSoldier() = default;
+  void speak() const override;
 };
-class BadMonster : public Monster
+class BadMonster final : public Monster
 {
 public:
-  void speak() override;
-  virtual ~BadMonster() = default;
+  void speak() const override;
 };
-class BadSuperMonster : public SuperMonster
+class BadSuperMonster final : public SuperMonster
 {
 public:
-  void speak() override;
-  virtual ~BadSuperMonster() = default;
+  void speak() const override;
 };
 
 class AdvancedLevelEnemyFactory : public AbstractEnemyFactory
 {
 public:
-  std::unique_ptr<Enemy> MakeSoldier() override;
-  std::unique_ptr<Enemy> MakeMonster() override;
-  std::unique_ptr<Enemy> MakeSuperMonster() override;
-  virtual ~AdvancedLevelEnemyFactory() = default;
+  std::unique_ptr<Enemy> operator()(std::string_view Identifier) const override;
 };
-
-std::unique_ptr<AbstractEnemyFactory> BuildAdvancedLevelEnemyFactory();
 
 #endif /* BADENEMIES_HPP_ */

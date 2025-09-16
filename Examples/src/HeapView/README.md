@@ -5,26 +5,25 @@ of a given node are always not "before" the value associated to the node, accord
 ordering relation is less-than, the children have always values not less than the parent value and, consequently, the
 root of the heap is the node with the smallest value.
 
-Another important feature of a heap is that the binary tree is always complete, therefore it can be **stored
-conveniently in a vector**. It this case, the children of node indexed `i` are
+Another important feature of a heap is that the binary tree is always complete, therefore it can be **stored conveniently in a vector**. In this case, the children of node indexed `i` are
 `2i+1` and `2i+2`, and the parent of node indexed `i` is `(i-1)/2` (integer division). If `<` indicates the chosen
 ordering relation, we then have that `value(i)>= value((i-1)/2)`. The root of the heap is then stored in the first
 element of the vector.
 
-The standard library od C++ provides tools for handling heaps (`std::heap`) where however the value associated to a node
-is directly the value stored in the node. This is fine but limiting. Often one wants to create a heap structure over a
+The standard library of C++ provides tools for handling heaps (`std::make_heap`) where however the value associated to a node
+is directly the value stored in the node. This is fine, but limiting. Often one wants to create a heap structure over a
 given data vector, without operating on the vector.
 
-This can be done by storing in the heap the indexes of the data vector elements, and use the comparision operator not on
+This can be done by storing in the heap the indexes of the data vector elements, and use the comparison operator not on
 the values stored in the heap but on the data elements addressed by the heap elements. In this context it is important
 to keep also a reverse map, that I have called `iter`, that given the index `i` of an element of the data vector `data`
 returns the index `j` in the heap that contains `i`. In other words you have `heap[iter[i]]=i`. This way, you can easily
 operate on data element `i`, since you can recover its position in the heap.
 
 The code on `heapView.hpp` contains the class `apsc::HeapView` that implements exacly what previously described. It
-stores the data vector internally, so it is not really a view (maybe one can make one as an alternative by storing a
-reference to the data vector). This is however a safety feature since you cannot modify the data elements directly, but
-only with the methods `update` and `add`, which keep track of the possible modifications in the heap.
+stores the data vector internally, so it is not really a view (you can make one as an alternative by storing a
+reference to the data vector). Using composition is however a safety feature since you cannot modify the data elements directly, but
+only through the methods `update` and `add`, which keep track of the possible modifications in the heap. A method of the class allow you to access the vector only as a const reference, to avoid modifying the data directly.
 
 The class is a template class, whose template parameters are the type stored in the data vector and the type of the
 callable object that should be used to compare elements in the data vector, defaulted to `std::less` (the default is
@@ -35,10 +34,10 @@ according to the given comparison operator), adding new elements to the data vec
 remove elements from the heap with `remove()`, beware however that in the case of `remove` *the element is not
 eliminated from the data vector* only from the heap.
 
-** A Note ** 
-The data is composed in the heap (so it is not really a view) to avoid the user modyfing the data without updating the heap. However, the data vector values are not 
-changed by an heap operation, a part from `update` that, as the names says, updates a value. For instance, after `pop()` the value in the data vector is unchanged: the
-element is removed from the heap and not from the data
+## A Note ##
+
+The data is composed in the heap (so it is not really a view) to avoid the user modifying the data without updating the heap. However, the data vector values are not 
+changed by a heap operation, apart from `update()` that, as the name says, updates a value. For instance, after `pop()` the value in the data vector is unchanged: ** the element is removed from the heap and not from the data. **
 
 ``` c++
     auto [where value]=heap.pop(); // top value removed from the heap
@@ -52,6 +51,7 @@ One can put back the element in the heap, possibly with changed value, using `up
     heap.update(where,newvalue); // put back the element with a new value.
 ```
 
+The reason I have chosen not to remove the data after a `pop()` operation, is that a removal of an element in a vector implies the renumbering of the indexes of the elements. Therefore, I would have to do a full update the `iter` map, which is not a trivial operation.
 
 # What do I learn here ? #
  
