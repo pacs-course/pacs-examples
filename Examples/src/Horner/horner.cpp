@@ -1,7 +1,8 @@
 #include "horner.hpp"
 #include <algorithm>
 #include <cmath>
-// Comment/uncomment next line if you dont want/want parallelization
+#include <ranges> // for ranges
+// Uncomment the next line to enable parallelization
 #ifdef PARALLELEXEC
 #include <execution>
 #endif
@@ -9,6 +10,8 @@
 double
 eval(std::vector<double> const &a, double const &x)
 {
+  if(a.empty())
+    return 0.0; // or throw std::invalid_argument("Empty coefficient vector");
   double sum = a[0];
   for(std::size_t k = 1; k < a.size(); ++k)
     {
@@ -16,10 +19,14 @@ eval(std::vector<double> const &a, double const &x)
     }
   return sum;
 }
-
 double
 horner(std::vector<double> const &a, double const &x)
 {
+  if(a.empty())
+    {
+      throw std::invalid_argument(
+        "Input coefficient vector 'a' must not be empty.");
+    }
   double u = a.back(); // last value
   for(auto i = a.crbegin() + 1; i != a.crend(); ++i)
     u = u * x + *i;
@@ -27,15 +34,17 @@ horner(std::vector<double> const &a, double const &x)
 }
 
 /*
-This version used the new ranges library. Look how nicer
+This version uses the new ranges library. Look how nicer
 it is compared to the previous version.
 */
-#include <ranges>
-
 double
 horner_range(std::vector<double> const &a, double const &x)
 {
+  if(a.empty())
+    return 0.0; // or throw std::invalid_argument("Empty coefficient vector");
   double u = a.back(); // last value
+  // Iterate over the coefficients in reverse order, skipping the last element
+  // (which is already in 'u')
   for(auto const &i : a | std::views::reverse | std::views::drop(1))
     u = u * x + i;
 

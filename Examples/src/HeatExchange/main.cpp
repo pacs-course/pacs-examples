@@ -8,15 +8,16 @@
 #include <iostream>   // input output
 #include <tuple>      // I am using tuples to pass data to gnuplot iostream
 #include <vector>     // For vectors
+#include <fstream>    // For file output (ofstream)
 // write directive to test if I am using at least c++20
 #if __cplusplus > 201703L
-#include <format> // New in C++20. For formatted output
+#include <format> // Available in C++20 and later. For formatted output
 #endif
 /*!
   @file main.cpp
   @brief Temperature distribution in a 1D bar.
 
-  @detail
+  @details
   We solve  \f$ -T^{\prime\prime}(x)+act*(T(x)-T_e)=0, 0<x<L \f$ with
   boundary conditions \f$ T(0)=To; T^\prime(L)=0\f$
 
@@ -75,6 +76,13 @@ main(int argc, char **argv)
     param = readParameters_json(filename, verbose);
   else
     param = readParameters(filename, verbose);
+
+  // Check if parameter reading failed (assuming readParameters returns a default/invalid struct on failure)
+  if(param.M <= 0 || param.L <= 0 || param.k <= 0) // Add more checks as appropriate
+    {
+      cerr << "Error: Invalid or missing parameters in input file." << endl;
+      return 1;
+    }
 
 #if __cplusplus < 201703L
   // This version is perfectly fine and

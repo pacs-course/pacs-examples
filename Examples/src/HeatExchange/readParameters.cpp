@@ -1,11 +1,10 @@
 #include "GetPot"
-#include "readParameters.hpp"
 #include "json.hpp"
+#include "readParameters.hpp"
 #include <fstream>
 parameters
 readParameters(std::string const &filename, bool verbose)
 {
-  // Parameter default constructor fills it with the defaults values
   parameters defaults;
   // checks if file exixts and is readable
   std::ifstream check(filename);
@@ -25,6 +24,7 @@ readParameters(std::string const &filename, bool verbose)
   GetPot     ifile(filename.c_str());
   parameters values;
   // Read parameters from getpot ddata base
+  // Read parameters from GetPot database
   values.itermax = ifile("itermax", defaults.itermax);
   values.toler = ifile("toler", defaults.toler);
   values.L = ifile("L", defaults.L);
@@ -36,16 +36,12 @@ readParameters(std::string const &filename, bool verbose)
   values.hc = ifile("hc", defaults.hc);
   values.M = ifile("M", defaults.M);
   values.solverType = ifile("solverType", defaults.solverType);
-  if(verbose)
-    {
-      std::cout << "PARAMETER VALUES IN GETPOT FILE"
-                << "\n";
-      ifile.print();
-      std::cout << std::endl;
-      std::cout << "ACTUAL VALUES"
-                << "\n"
-                << values;
-    }
+  {
+    std::cout << "PARAMETER VALUES IN GETPOT FILE" << "\n";
+    ifile.print();
+    std::cout << std::endl;
+    std::cout << "ACTUAL VALUES" << "\n" << values;
+  }
   return values;
 }
 
@@ -69,11 +65,11 @@ readParameters_json(std::string const &filename, bool verbose)
   else
     check.close();
 
-  std::ifstream jfile(filename);
+  std::ifstream  jfile(filename);
   nlohmann::json ifile;
-  jfile>>ifile;
+  jfile >> ifile;
   parameters values;
-  // Read parameters from getpot ddata base
+  // Read parameters from JSON object
   values.itermax = ifile.value("itermax", defaults.itermax);
   values.toler = ifile.value("toler", defaults.toler);
   values.L = ifile.value("L", defaults.L);
@@ -87,13 +83,10 @@ readParameters_json(std::string const &filename, bool verbose)
   values.solverType = ifile.value("solverType", defaults.solverType);
   if(verbose)
     {
-      std::cout << "PARAMETER VALUES IN JSON FILE"
-                << "\n";
-      std::cout<<std::setw(4)<<ifile;
+      std::cout << "PARAMETER VALUES IN JSON FILE" << "\n";
+      std::cout << std::setw(4) << ifile;
       std::cout << std::endl;
-      std::cout << "ACTUAL VALUES"
-                << "\n"
-                << values;
+      std::cout << "ACTUAL VALUES" << "\n" << values;
     }
   return values;
 }
