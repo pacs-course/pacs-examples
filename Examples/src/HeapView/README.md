@@ -14,6 +14,7 @@ The standard library of C++ provides tools for handling heaps (`std::make_heap`)
 is directly the value stored in the node. This is fine, but limiting. Often one wants to create a heap structure over a
 given data vector, without operating on the vector.
 
+
 This can be done by storing in the heap the indexes of the data vector elements, and use the comparison operator not on
 the values stored in the heap but on the data elements addressed by the heap elements. In this context it is important
 to keep also a reverse map, that I have called `iter`, that given the index `i` of an element of the data vector `data`

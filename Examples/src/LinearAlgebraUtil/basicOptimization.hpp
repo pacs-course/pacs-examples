@@ -10,7 +10,7 @@
 #include <array>
 #include <cmath>
 #include <limits>
-#include <numbers> // C++20 stuff to get golden ration
+#include <numbers> // C++20 stuff to get golden ratio
 #include <tuple>
 #include <utility>
 /*
@@ -53,7 +53,7 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
   while(std::abs(b - a) > tol && iter < maxIter)
     {
       ++iter;
-      if(f(c) < f(d))
+      if(fc < fd)
         {
           b = d;
           d = c;
@@ -72,7 +72,10 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
     }
   // test for convergence: have I found the minimum
   // I estimate the derivative with a finite difference
-  bool ok = std::abs(f(c) - f(d)) / std::abs(d - c) < tol;
+  constexpr double epsilon = std::numeric_limits<double>::epsilon();
+  bool             ok = std::abs(d - c) > epsilon
+                          ? std::abs(f(c) - f(d)) / std::abs(d - c) < tol
+                          : true; // If d and c are too close, consider converged
   return {0.5 * (a + b), ok};
 }
 
@@ -96,11 +99,11 @@ bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
 {
   constexpr double expandFactor = 1.5;
   int              status = 0;
-  // First test
-  auto y1 = f(x1);
-  // Check monotonicity
-  if(f(x1 - h) < y1 and f(x1 + h) > y1)
-    h = -h;                             // change direction
+  if(f(x1 - h) < y1 && f(x1 + h) > y1)
+    h = -h;                            // change direction
+  if(f(x1 - h) > y1 && f(x1 + h) > y1) // I have found the bracket
+    return {x1 - h, x1 + h, 0};
+  h = -h;                               // change direction
   if(f(x1 - h) > y1 and f(x1 + h) > y1) // I have found the bracket
     return {x1 - h, x1 + h, 0};
   bool         isOk{false};
@@ -704,5 +707,4 @@ Brent_local_min(double a, double b, double t,
 }
 
 } // namespace apsc
-
 #endif /* EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_BASICOPTIMIZATION_HPP_ */
