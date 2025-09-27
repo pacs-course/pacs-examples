@@ -2,17 +2,16 @@
  * @file
  * @brief Class for NewtonTraits
  *
- * This class is a template class used to define the types used by the Newton solver
- * It is used to simplify the implementation of the Newton solver
- * It is a template class to allow the user to select different types
- * for the non-linear system and for the Jacobian matrix
+ * This class is a template class used to define the types used by the Newton
+ * solver It is used to simplify the implementation of the Newton solver It is a
+ * template class to allow the user to select different types for the non-linear
+ * system and for the Jacobian matrix
  * @author Luca Formaggia
  * @date 19 Feb 2020
  */
 /*
  * NewtonTraits.hpp
  *
- *  Created on: Feb 19, 2020
  * NetwtonTraits.hpp
  *
  *  Created on: Feb 19, 2020
@@ -21,7 +20,7 @@
  */
 #ifndef NONLINSYSSOLVER_NEWTONTRAITS_HPP_
 #define NONLINSYSSOLVER_NEWTONTRAITS_HPP_
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 #include <functional>
 namespace apsc
 {
@@ -31,7 +30,7 @@ namespace apsc
 Here I base the class on Eigen matrices and vectors. This is a choice, but
 it is a good one, since Eigen is a very efficient library for linear algebra,
 
-However, by changing the trait and add some adaptors I can do as in 
+However, by changing the trait and add some adaptors I can do as in
 the FixedPoint class and use standard vectors or other types of containers.
 */
 struct NewtonTraits
