@@ -14,12 +14,12 @@
 #include <stdexcept>
 namespace apsc
 {
-//! Enumerator for different Jacobias
+//! Enumerator for different Jacobians
 //!
 //! I use a simple enumerator because it is convertible to an int
 //! I explicitly indicate the numbering, only to facilitate the identification
-//! of the integer corresponding to three enum (if I want to read it from a file,
-//! for instance)
+//! of the integer corresponding to three enum (if I want to read it from a
+//! file, for instance)
 //!
 enum JacobianKind
 {
@@ -32,35 +32,32 @@ enum JacobianKind
 };
 
 //! A simple factory that returns a JacobianBase polymorphic object wrapped in a
-//! unique_prt
+//! unique_ptr
 //!
-//! /param kind The kind of Jacobian type class you want
-//! /param args Optional arguments to be forwarded to the constructor
+//! \param kind The kind of Jacobian type class you want
+//! \param args Optional arguments to be forwarded to the constructor
 //!
 template <typename... Args>
 std::unique_ptr<apsc::JacobianBase>
-make_Jacobian(JacobianKind kind, Args&&...args)
+make_Jacobian(JacobianKind kind, Args &&...args)
 {
   switch(kind)
     {
     case DISCRETEJACOBIAN:
-      return std::make_unique<apsc::DiscreteJacobian>(std::forward<Args>(args)...);
-      break;
+      return std::make_unique<apsc::DiscreteJacobian>(
+        std::forward<Args>(args)...);
     case IDENTITYJACOBIAN:
-      return std::make_unique<apsc::IdentityJacobian>(std::forward<Args>(args)...);
-      break;
+      return std::make_unique<apsc::IdentityJacobian>(
+        std::forward<Args>(args)...);
     case FULLJACOBIAN:
       return std::make_unique<apsc::FullJacobian>(std::forward<Args>(args)...);
-      break;
     case BROYDENB:
       return std::make_unique<apsc::BroydenB>(std::forward<Args>(args)...);
-      break;
     case BROYDENG:
       return std::make_unique<apsc::BroydenG>(std::forward<Args>(args)...);
-      break;
     case EIROLANEVANLINNA:
-      return std::make_unique<apsc::Eirola_Nevanlinna>(std::forward<Args>(args)...);
-      break;
+      return std::make_unique<apsc::Eirola_Nevanlinna>(
+        std::forward<Args>(args)...);
     default:
       throw std::runtime_error(
         "Error in JacobianKind: You must specify a valid type");
