@@ -98,7 +98,8 @@ bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
                        unsigned int maxIter = 100)
 {
   constexpr double expandFactor = 1.5;
-  int              status = 0;
+  int              status = 0;  
+auto y1 = f(x1);
   if(f(x1 - h) < y1 && f(x1 + h) > y1)
     h = -h;                            // change direction
   if(f(x1 - h) > y1 && f(x1 + h) > y1) // I have found the bracket

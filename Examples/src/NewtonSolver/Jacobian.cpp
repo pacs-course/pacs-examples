@@ -13,6 +13,7 @@ apsc::DiscreteJacobian::solve(const ArgumentType &x,
   using namespace apsc;
   std::size_t                                M = x.size();
   apsc::DiscreteJacobian::JacobianMatrixType J(M, M);
+  double                                     two_tol = 2 * tol;
   for(std::size_t i = 0; i < M; ++i)
     {
       ArgumentType x1(x);
@@ -21,17 +22,19 @@ apsc::DiscreteJacobian::solve(const ArgumentType &x,
       x2[i] += tol;
       ArgumentType r1 = (*M_sys)(x1);
       ArgumentType r2 = (*M_sys)(x2);
-      r2 -= r1;              // r2-r1 -> r2
-      r2 = r2 / (2 * tol); // Finite difference
-      J.col(i) = r2;         // fill i-th column
+      r2 -= r1;          // r2-r1 -> r2
+      r2 = r2 / two_tol; // Finite difference
+      J.col(i) = r2;     // fill i-th column
     }
   if(this->lambda != 0.0)
     {
       // add regularization
-      Eigen::DiagonalMatrix<double, Eigen::Dynamic> I;
-      I.setIdentity(M);
+      Eigen::DiagonalMatrix<double, Eigen::Dynamic> I(M);
+      I.setIdentity();
       J += lambda * I;
     }
+  // I solve J d = b
+  // @todo allow user to choose the solver. This solver is safe but slow
   return J.fullPivLu().solve(b);
 }
 
@@ -61,13 +64,13 @@ apsc::BroydenB::solve(const ArgumentType &x, const ArgumentType &r) const
     {
       ArgumentType s = x - previousX;  // step
       ArgumentType dr = r - previousR; // residual difference
-      auto         factor = 1. / (dr.norm() * dr.norm());
+      auto         factor = 1. / dr.squaredNorm();
       B += factor * (s - B * dr) * dr.transpose();
     }
   previousX = x;
   previousR = r;
   return B * r;
-};
+}
 
 apsc::BroydenG::ArgumentType
 apsc::BroydenG::solve(const ArgumentType &x, const ArgumentType &r) const
@@ -117,7 +120,7 @@ apsc::Eirola_Nevanlinna::solve(const ArgumentType &x,
     {
       ArgumentType p = -B * r;
       ArgumentType q = M_sys->operator()(x + p) - r;
-      auto                    factor = 1. / (p.transpose() * B * q);
+      auto         factor = 1. / (p.transpose() * B * q);
       B += factor * (p - B * q) * (p.transpose() * B);
     }
   previousX = x;
