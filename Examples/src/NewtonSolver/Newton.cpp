@@ -8,6 +8,7 @@
 #include "Newton.hpp"
 #include <exception>
 #include <iostream>
+#include <type_traits>
 apsc::NewtonResult
 apsc::Newton::solve(const ArgumentType &x0)
 {
@@ -49,7 +50,14 @@ apsc::Newton::solve(const ArgumentType &x0)
 
   // I make sure that the Jacobian has the correct non linear system
   // This is important if the Newton object has been moved
-  Jacobian_ptr->setNonLinSys(&nonLinSys);
+  if(!Jacobian_ptr)
+    {
+      throw std::runtime_error("ERROR: Jacobian_ptr is not initialized");
+    }
+  static_assert(std::is_assignable<decltype(currentSolution) &,
+                                   const ArgumentType &>::value,
+                "ArgumentType must be assignable to currentSolution type");
+  currentSolution = x0;
   // The initial step is to compute the relevant quantities
   // from the initial conditions
   currentSolution = x0;
