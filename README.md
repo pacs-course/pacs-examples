@@ -6,6 +6,8 @@ Scientifico - Advanced Programming for Scientific Computing) and Advanced Method
 *For the AMSC course, only a subset of the examples will be used at the lectures and labs.*
 I encourage interested students to look at the various examples.
 
+**Essential note**: The examples are located in the `AMSC` branch, which has been designated as the main branch, not in the `master` branch. 
+You can create other branches for your experiments, if you want, but **do not mess around with the `master` branch**
 
 The repository contains git submodules, so to check it out properly, you have to type
 
