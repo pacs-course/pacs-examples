@@ -94,7 +94,9 @@ public:
    * @brief Constuctor
    *
    * @tparam T anything convertible to a vector of complex numbers
-   * @param coeff coefficients for the polynomial
+   * @param coeff coefficients for the polynomial, ordered from lowest to
+   * highest monomial degree The container should provide the coefficients in
+   * increasing order of degree.
    */
   template <class T>
     requires std::convertible_to<T, Coefficients>
@@ -312,7 +314,10 @@ protected:
   static constexpr unsigned int
   factor(unsigned int p, unsigned int n = 0)
   {
-    return (n == 0 || p < n) ? 1u : factor(p - 1u, n - 1) * p;
+    if(n == 0 || p < n)
+      return 1u;
+    else
+      return factor(p - 1u, n - 1) * p;
   }
   Coefficients pCoeff; //!< The coefficients of the polynomial
   /*!
@@ -353,7 +358,18 @@ polyRoots(Coefficients &&polyCoefficients, unsigned int numRoots,
   std::vector<double>               residual;
   if(degree == 0u)
     {
+      // zero polynomial, no roots
+      numRoots = 0u;
       return {roots, residual, false};
+    }
+  if(degree == 1u)
+    {
+      // linear polynomial, one root
+      roots.emplace_back(-polyHolder.pCoefficients()[0] /
+                         polyHolder.pCoefficients()[1]);
+      residual.emplace_back(0.);
+      numRoots = 1u;
+      return {roots, residual, true};
     }
   numRoots = std::min(numRoots, degree - 1u);
   roots.reserve(numRoots);
@@ -370,8 +386,14 @@ polyRoots(Coefficients &&polyCoefficients, unsigned int numRoots,
           auto values = polyHolder.derivatives(x, 1u);
           // to avoid division by zero. If the denominator is very small
           // I do one step of a basic fixed point scheme: x_{n+1}== x_n-p(x)
-          auto d = std::abs(values[1]) == 0.0 ? std::complex<double>{1., 0.}
-                                              : values[1];
+          std::complex<double> d;
+          if(values.size() > 1)
+            d = std::abs(values[1]) == 0.0 ? std::complex<double>{1., 0.}
+                                           : values[1];
+          else
+            d = std::complex<double>{
+              1., 0.}; // fallback for constant/degenerate polynomial
+
           auto delta = -values[0] / d;
           x += delta;
           // To make the loop simpler I am testing the residual at
@@ -390,6 +412,8 @@ polyRoots(Coefficients &&polyCoefficients, unsigned int numRoots,
       polyHolder.setCoeff(polyHolder.qCoefficients());
       // Start next search from conjugate (to speed up computation if
       // coefficients are real)
+      //@todo if coefficients are complex this may not be the best choice
+      // maybe random perturbation?
       x = std::conj(x);
     }
   return {roots, residual, status};
