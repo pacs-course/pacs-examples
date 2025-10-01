@@ -7,7 +7,6 @@
 
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_MATHUTILS_HPP_
 #define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_MATHUTILS_HPP_
-#include "../../include/Arithmetic.hpp"
 #include "Arithmetic.hpp"
 #include "is_complex.hpp"
 #include "is_eigen.hpp"
@@ -50,7 +49,7 @@ namespace math_util
       operator()(T const &a, T const &b)
       {
         if constexpr(apsc::TypeTraits::is_complex_v<T>)
-          return a.real() * b.real() + a.imag() * b.imag();
+          return a * std::conj(b);
         else
           return a * b;
       }
@@ -88,7 +87,7 @@ namespace math_util
         // using product_type=typename product<value_type>::result_type;
         // Here I use result_of instread of decltype (pre c++20 version)
         using product_type =
-          std::result_of_t<innerProduct<value_type>(value_type, value_type)>;
+          std::invoke_result_t<innerProduct<value_type>, value_type, value_type>;
         // using product_type = decltype(
         //     std::declval<innerProduct<value_type> >()(value_type(0),
         //     value_type(0)));
@@ -98,13 +97,24 @@ namespace math_util
           static_cast<product_type>(0), std::plus<product_type>(),
           innerProduct<value_type>());
 #else
-        product_type             res{0};
+        product_type             res = 0;
         innerProduct<value_type> prod;
-#pragma omp parallel for reduction(+ : res)
-        for(std::size_t i = 0u; i < a.size(); ++i)
+
+        // OpenMP reduction does not support user-defined types like std::complex,
+        // so we need to do a manual reduction for such types.
+        #pragma omp parallel
+        {
+          product_type local_res = 0;
+          #pragma omp for nowait
+          for(std::size_t i = 0u; i < a.size(); ++i)
+            {
+              local_res += prod(a[i], b[i]);
+            }
+          #pragma omp critical
           {
-            res += prod(a[i], b[i]);
+            res += local_res;
           }
+        }
         return res;
 #endif
       }
@@ -210,7 +220,7 @@ namespace math_util
     operator+(std::vector<T> const &a, std::vector<T> const &b)
     {
 #ifndef _OPENMP
-      std::vector<T> res(a.size(), 0); // a vector of zeros
+      std::vector<T> res(a.size(), T{}); // a vector of default-initialized elements
       // I use std::transform because, by adding an execution policy I can make
       // it parallel! A note: the non parallel version can be made more
       // efficient... but then I cannot use std::transform
@@ -231,7 +241,7 @@ namespace math_util
     operator-(std::vector<T> const &a, std::vector<T> const &b)
     {
 #ifndef _OPENMP
-      std::vector<T> res(a.size(), 0);
+      std::vector<T> res(a.size(), T{});
       // I use std::transform because, by adding an execution policy I can make
       // it parallel! the sqme considerations for the + version apply here.
       std::transform(std::execution::par, a.begin(), a.end(), b.begin(),
@@ -333,8 +343,7 @@ namespace math_util
   auto
   squaredDistance(std::vector<T> const &a, std::vector<T> const &b)
   {
-    using namespace vectorOperators;
-    return squaredNorm(a - b);
+    return squaredNorm(vectorOperators::operator-(a, b));
   }
 
 } // namespace math_util

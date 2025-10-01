@@ -30,7 +30,7 @@ public:
   /*! The constructor does the registration.
     @param name The identifier
     @note I use the builder type provided by the factory. No check is made to
-    verify that it is consistant with the one provided by this Proxy. the
+    verify that it is consistent with the one provided by this Proxy. the
     builder type must take no arguments and have a return type that accepts a
     pointer to the ConcreteProduct as argument.
   */
@@ -41,7 +41,7 @@ public:
     @param name The identifier
     @param builder The builder
    */
-  Proxy(Identifier_type const &name, Builder_type const &b = Builder_type{});
+  Proxy(Identifier_type const &name, Builder_type const &b);
 
   //! The in-built builder. Must comply with the signature.
   /*!
@@ -51,7 +51,7 @@ public:
     and that Result_type can be constructed with a pointer the
     concrete product. I also assume that Result_type takes
     care of memory handling (i.e. is a unique_ptr or something
-    that behaves like a unique_prt).
+    that behaves like a unique_ptr).
    */
   static Result_type
   Build()

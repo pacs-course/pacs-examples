@@ -5,8 +5,8 @@
  *      Author: forma
  */
 
-#ifndef SRC_LINEARALGEBRA_UTILITIES_RotatingMatrix_HPP_
-#define SRC_LINEARALGEBRA_UTILITIES_RotatingMatrix_HPP_
+#ifndef ROTATINGMATRIX_HPP_
+#define ROTATINGMATRIX_HPP_
 #include "Eigen/Dense"
 #include <algorithm>
 #include <vector>
@@ -28,7 +28,7 @@ enum class InsertStrategy
 };
 
 //! This class represents a matrix with N columns that keeps only the latest
-//! inserted columns. It is strongly baded on the eigen
+//! inserted columns. It is strongly based on the Eigen library
 //!
 //! @tparam T The type stored in the matrix
 //! @tparam M the number of rows
@@ -152,7 +152,7 @@ private:
  *  It is a thin wrapper around an std::vector, where I redefine
  *  emplace_back and push_back, and back methods.
  *  The vector is composed in the class.
-    /tparam T the type stored in the rotating vector
+ *  @tparam T the type stored in the rotating vector
  */
 
 template <class T, InsertStrategy Strategy = InsertStrategy::Shift>
@@ -232,7 +232,7 @@ public:
   {
     return N_size == 0u;
   }
-  //! Add a new comlumn
+  //! Add a new column
   void
   push_back(const Vector &arg)
   {
@@ -259,12 +259,12 @@ public:
   void
   reset()
   {
-    N_size = 0;
+    N_size = 0u;
   }
 
 private:
-  size_t      N{0u};
-  size_t      M{0u};
+  size_t      N = 0u;
+  size_t      M = 0u;
   std::size_t N_size = 0u;
   Matrix      M_vec;
   size_t      oldestCol = 0u;
@@ -272,4 +272,4 @@ private:
 
 } // end namespace apsc
 
-#endif /* SRC_LINEARALGEBRA_UTILITIES_RotatingMatrix_HPP_ */
+#endif /* ROTATINGMATRIX_HPP_ */

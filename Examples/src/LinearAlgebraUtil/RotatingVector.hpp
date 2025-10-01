@@ -10,13 +10,14 @@
 #include <algorithm>
 #include <vector>
 #include <array>
+#include <stdexcept>
 
 namespace apsc
 {
 
-//! This class represents a vector that keeps only the latest insertions
+//! @brief This class represents a vector that keeps only the latest insertions
 /*!
- *  Useful if you need to keep track of just the last inserted
+ *  @detail Useful if you need to keep track of just the last inserted
  *  elements, up to a maximal number, when a newly inserted element
  *  causes the elimination of the front element, a shift to the left
  *  by one, and the addition at the back. It is a thin wrapper around
@@ -38,10 +39,10 @@ template <class T, std::size_t N> class RotatingVector
 {
 public:
   /*!
-     * @fn  getVector() const
+   * @fn  getVector() const
    * @brief Returns the underlying container
    *
-   * @note this methos is not present in RotatingVector<T,N> for obvious reasons
+   * @note this method is not present in RotatingVector2<T,N> for obvious reasons
    * @return The container with the elements ordered in the order of insertion
    */
   auto
@@ -50,12 +51,12 @@ public:
     return M_vec;
   }
   /*!
-      * @fn  getVector()
-    * @brief Returns the underlying container
-    *
-    * @note this method is not present in RotatingVector<T,N> for obvious reasons
-    * @return The container with the elements ordered in the order of insertion
-    */
+    * @fn  getVector()
+   * @brief Returns the underlying container
+   *
+   * @note this method is not present in RotatingVector2<T,N> for obvious reasons
+   * @return The container with the elements ordered in the order of insertion
+   */
 auto &
   getVector()
   {
@@ -73,14 +74,31 @@ auto &
   {
     return M_vec[i];
   }
+  //! Returns i-th stored item
+  T
+  at(std::size_t i) const
+  {
+	if(i>=M_size)
+	  throw std::out_of_range("Index out of range");
+	return M_vec[i];
+  }
+  //! Returns i-th stored item
+  T &
+  at(std::size_t i)
+  {
+	if(i>=M_size)
+	  throw std::out_of_range("Index out of range");
+	return M_vec[i];
+  }
   //! The current size
   auto
+  constexpr
   size() const
   {
     return M_size;
   }
   //! The max number of elements
-  auto constexpr max_size() { return N; }
+  static constexpr auto max_size() { return N; }
   //! The last element
   auto &
   back()
@@ -187,7 +205,13 @@ private:
 template <class T, std::size_t N> class RotatingVector2
 {
 public:
-
+  RotatingVector2()
+  {
+	for(std::size_t i = 0; i < N; ++i)
+	  {
+		M_iter[i] = M_vec.begin() + i;
+	  }
+  }
   //! Returns i-th stored item
   T
   operator[](std::size_t i) const
@@ -199,9 +223,26 @@ public:
   operator[](std::size_t i)
   {
     return *(M_iter[i]);
+  } 
+  //! Returns i-th stored item
+  T
+  at(std::size_t i) const
+  {
+	if(i>=M_size)
+	  throw std::out_of_range("Index out of range");
+    return *(M_iter[i]);
   }
+  //! Returns i-th stored item
+  T &
+  at(std::size_t i)
+  {
+	if(i>=M_size)
+	  throw std::out_of_range("Index out of range");
+    return *(M_iter[i]);
+  }
+
   //! The current size
-  auto
+  auto constexpr
   size() const
   {
     return M_size;
@@ -250,7 +291,7 @@ public:
   {
     return M_size == 0u;
   }
-  //! Add an element to the end of the vector by callint T(args)
+  //! Add an element to the end of the vector by calling T(args)
   template <class... Args>
   void
   emplace_back(Args &&... args)
@@ -271,17 +312,7 @@ public:
   void
   push_back(const T &args)
   {
-    if(M_vec.size() < M_size)
-      {
-        M_vec[M_size] = args;
-        M_iter[M_size]=M_vec.begin()+M_size;
-        M_size++;
-      }
-    else
-      {
-        std::rotate(M_vec.begin(), M_vec.begin() + 1, M_vec.end());
-        *(M_iter.back()) = args;
-      }
+    this->emplace_back(args);
   }
 
 private:
@@ -349,14 +380,14 @@ public:
         // I have to save the last elements up to m: If I shrink I want to keep
         // the last elements!
         std::vector<T> tmp{M_vec.begin() +
-                             std::max(std::size_t(0), M_vec.size() - m),
+                             (M_vec.size() > m ? (M_vec.size() - m) : 0),
                            M_vec.end()};
         M_vec = std::move(tmp); // to spare useless temporaries
       }
     M_N = m;
   }
   //! The max number of elements
-  auto constexpr max_size() { return M_N; }
+  auto max_size() const { return M_N; }
   //! The last element
   auto &
   back()
@@ -391,7 +422,7 @@ public:
   bool
   full() const
   {
-    return this->size() = M_N;
+    return this->size() == M_N;
   }
   //! true if empty
   bool

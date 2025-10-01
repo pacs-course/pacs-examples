@@ -64,7 +64,7 @@ public:
 
     \note The default builder does not take any argument. This version is
     provided in case the template is specialized with a builder that takes
-    arguments. The method is disabled if AsbtractProduct is void
+    arguments. The method is disabled if AbstractProduct is void
   */
   template <typename... Args>
   std::unique_ptr<AbstractProduct> create(Identifier const &name,
@@ -90,7 +90,7 @@ public:
   {
     _storage.clear();
   }
-  //! Test if factory has some itemes registered
+  //! Test if factory has some items registered
   bool
   empty() const
   {

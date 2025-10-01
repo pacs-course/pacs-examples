@@ -15,7 +15,7 @@ namespace apsc
  * comparison between quantities of different type.
  *
  * @tparam T1 the type of the first parameter
- * @tparam T2 Te type of the second parameter
+ * @tparam T2 The type of the second parameter
  * @param a The first value
  * @param b The second value
  * @return The absolute difference between a and b. The type is equivalent to
@@ -28,10 +28,9 @@ requires requires(T1 a, T2 b) { a - b; }
 constexpr auto
 absdiff(T1 const &a, T2 const &b)
 {
-  using namespace std;
   static_assert(
-    (is_signed_v<T1> and is_signed_v<T2>) or
-      (is_unsigned_v<T1> and is_unsigned_v<T2>),
+    (std::is_signed_v<T1> and std::is_signed_v<T2>) or
+      (std::is_unsigned_v<T1> and std::is_unsigned_v<T2>),
     "absdiff error: arguments must be both of unsigned or signed type");
   return a > b ? a - b : b - a;
 }
