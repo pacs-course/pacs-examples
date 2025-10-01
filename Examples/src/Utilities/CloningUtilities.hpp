@@ -38,7 +38,7 @@ namespace TypeTraits
   template <typename T>
   struct has_clone<
     T, typename std::enable_if_t<std::is_convertible_v<
-         std::unique_ptr<T>, decltype(std::declval<const T>().clone())> > >
+         std::unique_ptr<T>, decltype(std::declval<const T>().clone())>>>
     : std::true_type
   {};
 
@@ -197,6 +197,7 @@ public:
   using deleter_type = typename Ptr_t::deleter_type;
   //! The default constructor
   /*
+   * Creates an empty (null) PointerWrapper.
    * The synthetic one is ok since the default constructor of a unique_ptr
    * sets it to the null pointer.
    */
@@ -264,10 +265,11 @@ public:
     return *this;
   }
   /*!
-   * @brief copying assignement allowing for conversions
+   * @brief copying assignment allowing for conversions
    *
-   * This assignemt allow to convere PointerWrapper<Derived> in a
-   * PointeWrapper<Base>
+   * This assignment allows converting PointerWrapper<Derived> to
+   * PointerWrapper<Base>. If U is not convertible to T, a static assertion will
+   * trigger a compilation error.
    * @tparam U The derived type
    * @param original The Wrapper to convert-copy
    * @return a reference to myself
@@ -276,6 +278,9 @@ public:
   PointerWrapper &
   operator=(const PointerWrapper<U> &original)
   {
+    static_assert(std::is_convertible_v<U *, T *>,
+                  "Cannot assign PointerWrapper<U> to PointerWrapper<T>: U* is "
+                  "not convertible to T*.");
     using OtherType = typename PointerWrapper<U>::Ptr_t;
     static_assert(std::is_constructible_v<Ptr_t, OtherType &&>,
                   "Cannot assign a non convertible PointerWrapper");
@@ -301,7 +306,7 @@ public:
   PointerWrapper &
   operator=(const Ptr_t &p)
   {
-    DataPtr = p->clone(); // note that this is a move-assignment
+    DataPtr = p ? p->clone() : Ptr_t{}; // note that this is a move-assignment
     return *this;
   }
 
@@ -417,7 +422,11 @@ public:
   }
 
   /*! conversion to bool */
-  explicit operator bool() const noexcept { return static_cast<bool>(DataPtr); }
+  explicit
+  operator bool() const noexcept
+  {
+    return static_cast<bool>(DataPtr);
+  }
 
 private:
   Ptr_t DataPtr;
@@ -559,7 +568,9 @@ operator==(const PointerWrapper<T> &x, std::nullptr_t)
  *  @note I rely on the fact the the standard library provides the hash for any
  * pointer type
  */
-template <class T> struct std::hash<class apsc::PointerWrapper<T> >
+namespace std
+{
+template <class T> struct hash<apsc::PointerWrapper<T>>
 {
   std::size_t
   operator()(const apsc::PointerWrapper<T> &w) const noexcept
@@ -567,6 +578,7 @@ template <class T> struct std::hash<class apsc::PointerWrapper<T> >
     return std::hash<typename apsc::PointerWrapper<T>::pointer>{}(w.get());
   }
 };
+} // namespace std
 
 #endif
 /*
