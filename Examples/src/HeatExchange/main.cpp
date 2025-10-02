@@ -1,9 +1,11 @@
-#include "GetPot"               // for reading parameters
-#ifdef GNUPLOT                  // compiled with -DGNUPLOT
+// HeatExchange/main.cpp
+#include "GetPot"      // for command line and input file processing
+#ifdef GNUPLOT          // compiled with -DGNUPLOT
 #include "gnuplot-iostream.hpp" // interface with gnuplot
 #endif
-#include "readParameters.hpp"
-#include "thomas.hpp" // for thomas algorithm. Must be installed in the system
+#include "readParameters.hpp" // for reading parameters
+#include "thomas.hpp" // for Thomas algorithm. You need to have the file thomas.hpp
+					  // in the include path
 #include <cmath>      // (for sqrt)
 #include <iostream>   // input output
 #include <tuple>      // I am using tuples to pass data to gnuplot iostream
@@ -50,7 +52,7 @@ main(int argc, char **argv)
   int    status{0};    // final program status
   bool   jsonfile = false;
   GetPot cl(argc, argv);
-  if(cl.search(2, "-h", "--help"))
+  if(cl.search(2, "-h", "--help")) // help required
     {
       printHelp();
       return 0;
@@ -58,8 +60,9 @@ main(int argc, char **argv)
   // check if we want verbosity
   bool verbose = cl.search(1, "-v");
   // Get file with parameter values
-  string filename = cl.follow("parameters.pot", "-p");
-  auto   pos = filename.find(".json");
+  string filename = cl.follow("parameters.pot", "-p");// Look if -p option is there
+  // if not use default parameters.pot
+  auto   pos = filename.find(".json");// look for substring ".json" in filename
   if(pos != std::string::npos)
     {
       jsonfile = true;
@@ -86,7 +89,7 @@ main(int argc, char **argv)
 
 #if __cplusplus < 201703L
   // This version is perfectly fine and
-  // works also if you compile with C++17, but with C++17 you
+  // works also if you compile with C++17+, but since C++17 you
   // may make things simpler
   // Transfer parameters to local variables, to avoid having towrite every time
   // param.xx. I use references to save memory (not really an issue here, it is
@@ -110,6 +113,7 @@ main(int argc, char **argv)
   // C++17 onwards version. This version works only with at least C++17
   // A oneliner! This is called structured bindings. It works because parameter
   // class is an aggregate!
+  // This stuff is just to avoid writing param.xx all the time!
 
   const auto &[itermax, toler, L, a1, a2, To, Te, k, hc, M, solverType] = param;
 
@@ -119,10 +123,14 @@ main(int argc, char **argv)
   const auto act = 2. * (a1 + a2) * hc * L * L / (k * a1 * a2);
 
   // mesh size
-  const auto h = 1. / M;
+  const auto h = 1. / M; // I am using 1. because 1/M is an integer division since
+						 // M is an integer! I want a double. You can also do
+						 // static_cast<double>(M) to be more explicit. I am using auto here only
+						 // to show you can do it. You can also write double h=1./M;
 
   // Solution vector this constructs a vector of size M+1
-  std::vector<double> theta(M + 1);
+  std::vector<double> theta(M + 1);// dont asssume that the vector is filled with
+								   // zeros. It is not guaranteed
 
   if(solverType == 1)
     {
