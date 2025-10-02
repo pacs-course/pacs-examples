@@ -123,7 +123,7 @@ main(int argc, char **argv)
   const auto act = 2. * (a1 + a2) * hc * L * L / (k * a1 * a2);
 
   // mesh size
-  const auto h = 1. / M; // I am using 1. because 1/M is an integer division since
+  const double h = 1. / M; // I am using 1. because 1/M is an integer division since
 						 // M is an integer! I want a double. You can also do
 						 // static_cast<double>(M) to be more explicit. I am using auto here only
 						 // to show you can do it. You can also write double h=1./M;
@@ -163,8 +163,7 @@ main(int argc, char **argv)
           epsilon += (xnew - theta[M]) * (xnew - theta[M]);
           theta[M] = xnew;
 
-          iter = iter + 1;
-      } while((sqrt(epsilon) > toler) && (iter < itermax));
+      } while((sqrt(epsilon) > toler) && (++iter < itermax));
 
       if(iter < itermax)
         cout << "M=" << M << "  Convergence in " << iter << " iterations"
@@ -187,7 +186,7 @@ main(int argc, char **argv)
       b.assign(M + 1, -1. / (2. + h * h * act)); // fill with values
       std::vector<double> c = b;                 // The matrix is symmetric
       b.back() = -1;                             // correction for Neumann bc
-      c.front() = 0;                             // correction for Dirichlet bc
+      c.front() = 0;                             // correction for Dirichlet bc c[0]=0
       std::vector<double> source(
         M + 1, 0.); // The rhs term. all zero since it is an homogeneous problem
       source.front() = (To - Te) / Te; // correction for Dirichlet bc.
