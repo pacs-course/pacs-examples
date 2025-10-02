@@ -20,8 +20,8 @@ main()
     swap(n, m); // if n is bigger than m, swap them
   int sum{0};   // sum is initialized to 0.
   // other ways to initialize sum (C++ loves having different way of doing the
-  // same thing) are at the bottom of the file a loop, i changes from n to m
-  // with increment 1 each time
+  // same thing) are at the bottom of the file. A loop to compute the sum 
+  // sum changes from n to m with increment 1 each time
   for(auto i = n; i <= m; ++i) // automatic deduction of type for i
     sum += i; // I do not need opening a scope with {} since it is just 1 line
   // but doing it is not wrong:
@@ -54,3 +54,16 @@ main()
 // auto sum = 0.0; // Equivalent to double sum=0.0; with automatic type
 // deduction for floating points!
 // auto sum{0ul}; // sum is an unsigned long integer initialized to 0
+// Are they really identical? Not really. The form
+// int sum = x; // allows implicit narrowing conversions
+// int sum(x); // allows implicit narrowing conversions
+// int sum{x}; // does not allow implicit narrowing conversions
+// int sum = {x}; // does not allow implicit narrowing conversions
+// For example
+// int x = 2.3; // implicit conversion from double to int
+// int sum = x; // ok
+// int sum(x); // ok
+// int sum{x}; // error: narrowing conversion
+// int sum = {x}; // error: narrowing conversion
+// This is one of the reasons why the brace initialization has been
+// introduced in C++11.
