@@ -16,26 +16,31 @@ main()
   // full qualified name
   std::cout << "Enter two integers:" << std::endl; // output to screen
   cin >> n >> m;                                   // input from terminal
+  // test the stream state to check that the input succeeded 
+  if (cin.fail()) {                             // check that input succeeded
+	std::cerr << "Error: invalid input\n";         // output error message to screen
+	return 1;                                      // return with error code
+  }
   if(n > m)
     swap(n, m); // if n is bigger than m, swap them
   int sum{0};   // sum is initialized to 0.
   // other ways to initialize sum (C++ loves having different way of doing the
-  // same thing) are at the bottom of the file. A loop to compute the sum 
-  // sum changes from n to m with increment 1 each time
+  // same thing) are at the bottom of the file. 
+  // A loop to compute the sum: sum changes from n to m with increment 1 each time
   for(auto i = n; i <= m; ++i) // automatic deduction of type for i
     sum += i; // I do not need opening a scope with {} since it is just 1 line
   // but doing it is not wrong:
   // for (auto i = n; i <= m; ++i) {
-  //   sum += i;
+  //   sum += i; // prefer it to sum = sum + i;
   // }
-
+  // output the result to screen using std::format (C++20)
   std::cout << std::format("The sum of integers from {} to {} is: {}", n, m,
                            sum)
             << std::endl;
   /*
   // without std::format
   std::cout << "The sum of integers from " << n << " to " << m << " is: " << sum
-       << std::endl; // output sum to screen
+       << std::endl; // outputs sum to screen
 */
   // How Gauss would have computed it
   sum = (m + n) * (m - n + 1) / 2;
@@ -44,17 +49,18 @@ main()
                  m, sum)
             << std::endl;
 }
-// Note: Using std::endl prints out a newline and flushes the output buffer.
+// Notes: 
+// - Using std::endl prints out a newline and flushes the output buffer.
 // Alternatively, you can use "\n", which does not flush.
-// We have used the brace initialization for sum
+// - We have used the brace initialization for sum
 // Alternatively you may use:
 // int sum(0); // old style initialization (but still perfectly valid)
 // int sum = 0; // (almost) equivalent to int sum{0};
-// auto sum = 0; // Equivalent to int sum=0 with automatic type deduction
+// auto sum = 0; // Equivalent to int sum=0 with automatic type deduction for integers!!
 // auto sum = 0.0; // Equivalent to double sum=0.0; with automatic type
-// deduction for floating points!
+// deduction for double floating points!
 // auto sum{0ul}; // sum is an unsigned long integer initialized to 0
-// Are they really identical? Not really. The form
+// Are they really identical? Not really:
 // int sum = x; // allows implicit narrowing conversions
 // int sum(x); // allows implicit narrowing conversions
 // int sum{x}; // does not allow implicit narrowing conversions
