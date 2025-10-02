@@ -11,7 +11,8 @@ main()
   // doing it)
   using std::cin;  // brings std::cin in the current scope
   using std::swap; // brings swap in the current scope
-  int n, m;        // declare n and m to be integer
+  int n;
+  int m;        // declare n and m to be integer
   // I have not brought cout and endl in the current scope: i use the
   // full qualified name
   std::cout << "Enter two integers:" << std::endl; // output to screen
@@ -67,9 +68,9 @@ main()
 // int sum = {x}; // does not allow implicit narrowing conversions
 // For example
 // int x = 2.3; // implicit conversion from double to int
-// int sum = x; // ok
-// int sum(x); // ok
-// int sum{x}; // error: narrowing conversion
-// int sum = {x}; // error: narrowing conversion
+// int sum = 2.3; // ok
+// int sum(2.3); // ok
+// int sum{2.3}; // error: narrowing conversion
+// int sum = {2.3}; // error: narrowing conversion
 // This is one of the reasons why the brace initialization has been
 // introduced in C++11.
