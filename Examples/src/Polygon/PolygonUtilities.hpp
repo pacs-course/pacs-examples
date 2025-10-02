@@ -3,6 +3,7 @@
 #include "Polygon.hpp"
 #include <memory>
 #include <string>
+#include <string_view>
 namespace Geometry
 {
 /*!
@@ -18,16 +19,17 @@ namespace Geometry
  */
 template <typename... Args>
 std::unique_ptr<AbstractPolygon>
-createPolygon(std::string const &name, const Args &...args)
+createPolygon(std::string const &name, Args&&... args)
 {
   if(name == "Polygon")
-    return std::make_unique<Polygon>(args...);
+    return std::make_unique<Polygon>(std::forward<Args>(args)...);
   if(name == "Square")
-    return std::make_unique<Square>(args...);
+    return std::make_unique<Square>(std::forward<Args>(args)...);
   if(name == "Triangle")
-    return std::make_unique<Triangle>(args...);
+    return std::make_unique<Triangle>(std::forward<Args>(args)...);
   // this way I can easily check if I try to construct a non existent Polygon
   return std::unique_ptr<AbstractPolygon>{nullptr};
 }
-} // namespace Geometry
+}
+ // namespace Geometry
 #endif

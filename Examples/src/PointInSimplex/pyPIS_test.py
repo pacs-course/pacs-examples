@@ -22,8 +22,9 @@ x = float(input("x: "))
 y = float(input("y: "))
 z = float(input("z: "))
 point3d = np.array([x,y,z],np.float64)
-inside = pis.pointInTriangle3(p=point3d,t=triangle3d,eps=1.e-03)
-print("the point is in the triangle: ", inside[0], " and the barycentric coordinates are: ", inside[1])
-
-
-
+# retrieve the tuple returned by pis.pointInTriangle3
+inside, inplane, distance, barycentric = pis.pointInTriangle3(p=point3d,t=triangle3d,eps=1.e-03)
+print("Point is inside:", inside)
+print("Point is in triangle plane: ", inplane)
+print("Distance to triangle plane: ", distance)
+print("Barycentric coordinates: ", barycentric)
