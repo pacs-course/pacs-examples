@@ -8,10 +8,10 @@
 
 /*!  @file Polygon.hpp
   @brief This is an example of class hierarchy that
-  represents poligonal object.
+  represents polygonal object.
 
   @detail This module is wrapped in the namespace `Geometry`. It
-  represent a first example of class hierarchy with public
+  represents a first example of class hierarchy with public
   inheritance. The class `AbstractPolygon` defines the general public
   interface of all other classes representing polygonal objects.
 
@@ -29,7 +29,7 @@ public:
   //! Constructor giving coordinates.
   Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {}
   //! A point is convertible to an array of double
-  operator std::array<double, 2>() { return coor; }
+  operator std::array<double, 2>() const { return coor; }
   //! Returns coordinates in a array<double>.
   std::array<double, 2>
   get() const
@@ -114,7 +114,7 @@ public:
   /*!
     I can also give the vertexes directly
     as a vector of Point2D
-    @param v The verices
+    @param v The vertices
     @param checkConvex if true verify if the polygon is convex
   */
   AbstractPolygon(Vertices const &v, bool checkConvex = true);
@@ -225,7 +225,7 @@ protected:
 class Polygon final : public AbstractPolygon
 {
 public:
-  //! I inherit all constuctors of AbstractPolygon (C++17)
+  //! I inherit all constructors of AbstractPolygon (C++17)
   using AbstractPolygon::AbstractPolygon;
   //! Destructor
   ~Polygon(){};
@@ -259,9 +259,9 @@ public:
   Square() : AbstractPolygon{4} { isconvex = true; }
   //! Special constructor valid only for squares.
   /*!
-    /param origin Point which gives the first vertex of the square.
-    /param length The length of the side.
-    /param angle In radians, tells how the square is  rotated.
+    @param origin Point which gives the first vertex of the square.
+    @param length The length of the side.
+    @param angle In radians, tells how the square is  rotated.
    */
   Square(Point2D origin, double length, double angle = 0.0);
   // Specialised version for square
@@ -283,7 +283,7 @@ public:
   //! Specialised version for squares.
   std::ostream &showMe(std::ostream &out = std::cout) const override;
   //! Just to show the use of a static constexpr
-  static size_t constexpr nVertices = 4;
+  static std::size_t constexpr nVertices = 4;
 
 protected:
   //! make it clonable
@@ -323,7 +323,7 @@ public:
   //! Specialised for Triangles
   std::ostream &showMe(std::ostream &out = std::cout) const override;
   //! Just to show the use of a static constexpr
-  static size_t constexpr nVertices = 3;
+  static std::size_t constexpr nVertices = 3;
 
 protected:
   //! make it clonable

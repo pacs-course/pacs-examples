@@ -33,10 +33,12 @@ template <class DataElementType> struct heapViewTraits
    * HeapIndex(i) returns the index of the i-th element in the heap
    */
   using HeapIndex = std::vector<Index>;
-  /*! An internal structure storing the indexes of the data vector
+ /*! An internal structure storing the indexes of the data vector
    * HeapIter(i) returns the index of the i-th heap element in the data vector
    * We have HeapIndex(HeapIter(i))=i if i is a valid index of the heap
-   */
+   */  
+  using HeapIter = std::vector<std::optional<Index>>;
+
 };
 
 } // namespace apsc
