@@ -85,7 +85,7 @@ AbstractPolygon::checkConvexity()
     }
   //! Since we are dealing with floating points it is better to have
   //  a small number so that |a| < smallNumber means for us a==0
-  //  numeric_limit<dpuble>::epsilon() is a constexp function
+  //  std::numeric_limits<double>::epsilon() is a constexpr function
   double constexpr smallNumber = std::numeric_limits<double>::epsilon();
   double res{0.0};
   double newres{0.0};
@@ -140,7 +140,7 @@ Polygon::area() const
       Point2D const &p1 = vertexes[i];
       // Other point
       Point2D const &p2 = vertexes[(i + 1) % siz];
-      Point2D const &p0 = vertexes[(i - 1) % siz];
+      Point2D const &p0 = vertexes[(i + siz - 1) % siz];
       result += p1.x() * (p2.y() - p0.y());
     }
   return 0.5 * result;
@@ -149,7 +149,7 @@ Polygon::area() const
 std::ostream &
 Polygon::showMe(std::ostream &out) const
 {
-  std::cout << " A Generic Polygon" << std::endl;
+  out << " A Generic Polygon" << std::endl;
   return AbstractPolygon::showMe(out);
 }
 
@@ -163,12 +163,13 @@ Square::checkSquare()
       throw std::runtime_error(
         " A square must be created giving four vertices");
     }
-  double constexpr smallNumber = 100 * std::numeric_limits<double>::epsilon();
+  // Tolerance for floating point comparison; 100*epsilon is chosen to account for accumulated rounding errors in geometric calculations.
+  double constexpr squareTolerance = 100 * std::numeric_limits<double>::epsilon();
   // Check if it is a square!
   double l1 = distance(vertexes[1], vertexes[0]);
   double l2 = distance(vertexes[2], vertexes[3]);
   auto   ratio = std::abs(this->area()) / (l1 * l2);
-  if(std::abs(ratio - 1.0) > smallNumber)
+  if(std::abs(ratio - 1.0) > squareTolerance)
     {
       throw std::runtime_error("Vertexes do not define a square");
     }
@@ -257,7 +258,6 @@ Triangle::area() const
   Point2D w{this->vertexes[2] - this->vertexes[0]};
   // area = 0.5* v \times w. Positive if triangle counterclockwise oriented
   return 0.5 * (v.x() * w.y() - v.y() * w.x());
-  ;
 }
 
 std::ostream &

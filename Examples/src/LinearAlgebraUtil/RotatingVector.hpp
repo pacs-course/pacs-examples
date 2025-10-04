@@ -242,7 +242,7 @@ public:
   }
 
   //! The current size
-  auto constexpr
+  auto
   size() const
   {
     return M_size;
