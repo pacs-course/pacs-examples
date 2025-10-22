@@ -38,8 +38,10 @@ int main()
     //Checking if the point is inside the triangle
     std::cout<<"Insert the coordinates of the 3D point\n";
     std::cin>>p3[0]>>p3[1]>>p3[2];
-    auto [in3D,lambda3D]=apsc::pointInTriangle3(p3,t3);
+    auto [in3D,Inplane,distance,lambda3D]=apsc::pointInTriangle3(p3,t3);
     std::cout<<"The point is "<<(in3D?"":"not ")<<"inside the triangle\n";
+	std::cout<<"The point is "<<(Inplane?"":"not ") << "in the triangle plane\n";
+	std::cout<<"The distance from the triangle plane is "<<distance<<std::endl;
     std::cout<<"The baricentric coordinates are "<<lambda3D[0]<<", "<<lambda3D[1]<<", "<<lambda3D[2]<<'\n';   
 
     return 0;

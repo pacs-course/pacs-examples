@@ -19,7 +19,7 @@ namespace apsc{
         using Triangle3D=Eigen::Matrix<double,3,3>;
     };
 /*!
- * @tparam Derived The type of the actual Eigen sparse matrix (or vector)
+ * @tparam Derived The type of the actual Eigen matrix (or vector)
  * @param a a Eigen Vector
  * @param b a Eigen vector
  * @return the dot product
@@ -32,7 +32,7 @@ dot(const Eigen::MatrixBase<Derived1> &a, const Eigen::MatrixBase<Derived2> &b)
   return a.dot(b);
 }
 /*!
- * @tparam Derived The type of the actual Eigen sparse matrix (or vector)
+ * @tparam Derived The type of the actual Eigen matrix (or vector)
  * @param a a Eigen matrix
  * @return the 2-norm
  */
@@ -43,7 +43,7 @@ norm(const Eigen::MatrixBase<Derived> &a)
   return a.norm();
 }
 /*!
- * @tparam Derived The type of the actual Eigen sparse matrix (or vector)
+ * @tparam Derived The type of the actual Eigen matrix (or vector)
  * @param a a Eigen matrix represending a simplex
  * @param i the index of the vertex
  * @return the ith vertex of the simplex
@@ -85,7 +85,7 @@ norm(const std::array<double,N> &a)
     return std::sqrt(dot(a,a));
 }
 template <class T, std::size_t N>
-decltype(auto)
+auto
 extract(const std::array<T,N> &a, int i)
 {
   return a[i];
