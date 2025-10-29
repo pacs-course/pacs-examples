@@ -88,3 +88,4 @@ Requirements:
 - `Newton.hpp`, `JacobianFactory.hpp` — utilities used to solve nonlinear stage equations for implicit schemes.
 - `Makefile` — build instructions for compiling the RKFSolver example and linking against the Newton library.
 -  README.md — A file containing further information about the RKFSolver module and its usage.
+-  RKFExplanation.tex — A LaTeX document providing a detailed explanation of the Runge Kutta schemes for the solution of ODEs
