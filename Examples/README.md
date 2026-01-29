@@ -21,7 +21,7 @@ The software contained in the subfolders of this directory is free-software rele
 
 `src/` -> Directory with the example sources. Probably the most important directory. Look at the `CONTENT.md` file for a description of the examples.
 
-`astyle_scripts_and_hooks/` Some tools to beautify your code, based on [Artistic Style](http://astyle.sourceforge.net/) (you mast install astyle if you wish to use the tools in this directory).
+`astyle_scripts_and_hooks/` Some tools to beautify your code, based on [Artistic Style](http://astyle.sourceforge.net/) (you must install astyle if you wish to use the tools in this directory).
 
 `clang-format_scripts_and_hooks/` Some tools to beautify your code, based on [clang-format](https://www.electronjs.org/docs/latest/development/clang-format) (you must have clang-tools installed! if you want to use the utilities in this directory)
 
@@ -29,7 +29,7 @@ The software contained in the subfolders of this directory is free-software rele
 
 `Makefile.user` A makefile that you must copy to `Makefile.inc` and edit to suit your system. It is used by all the examples. It is explained in the next section.
 
-`setup.sh` A bash script that compiles the main utilities in one shot so that you have averything set. It is explained in the next section.
+`setup.sh` A bash script that compiles the main utilities in one shot so that you have everything set. It is explained in the next section.
 
 `Makefile_description.md` A file that describes the structure of the makefiles used in the examples. It is explained in the next section.
 
@@ -147,7 +147,7 @@ not  used in `Makefile.user` but may be used by other makefiles of the examples 
 
 So, you have two main choices
 
-  * You use the module system provided with the virtual machine givern in the course. Then
+  * You use the module system provided with the virtual machine given in the course. Then
 in your `Makefile.inc` you have to set only `PACS_ROOT`, all other
 variables are set by the module system.  I recall that if you want to
 see all environmental variables set by the modules you may do (all
