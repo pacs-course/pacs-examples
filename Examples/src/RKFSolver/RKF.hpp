@@ -13,37 +13,16 @@
 #include "RKFTraits.hpp"
 #include <cmath>
 #include <concepts>
+#include <exception>
 #include <functional>
 #include <iostream>
 #include <limits>
 #include <vector>
 namespace apsc
 {
-/*!
- * Structure holding the results of the integration
- *
- * @todo It can be made an internal structure of RKF. Indeed, it's use is
- * intrinsically linked with the RKF class.
- * @tparam KIND The type of traits to be used
- */
-template <RKFKind KIND> struct RKFResult
-{
-  //! Time steps
-  std::vector<double> time;
-  //! values
-  std::vector<typename RKFTraits<KIND>::VariableType> y;
-  //! estimated error
-  double estimatedError{0.0};
-  //! Failure
-  bool failed{false};
-  //! Number of time step expansions
-  int expansions{0};
-  //! Number of time step contractions
-  int contractions{0};
-};
 
 /*!
- * A class for explicit ir diagonally implicit Runge-Kutta Fehlberg type
+ * A class for explicit or diagonally implicit Runge-Kutta Fehlberg type
  * solution of ODEs
  * @tparam B The Butcher table of the scheme. Must be defined following the
  * scheme shown in ButcherRKF.hpp
@@ -55,16 +34,86 @@ class RKF : public RKFTraits<KIND>
 public:
   using VariableType = typename RKFTraits<KIND>::VariableType;
   using Function = typename RKFTraits<KIND>::ForcingTermType;
+  /*!
+   * Structure holding the results of the integration
+   */
+  struct RKFResult
+  {
+    //! Absolute time values (units as in integration interval)
+    std::vector<double> time;
+    //! Solution values (state variables) at each time step
+    std::vector<VariableType> y;
+    //! estimated error
+    double estimatedError{0.0};
+    //! Failure
+    bool failed{false};
+    //! Number of time step expansions
+    int expansions{0};
+    //! Number of time step contractions
+    int contractions{0};
+    /*
+     * Provide a non-templated friend streaming operator for this concrete
+     * RKFResult instantiation. Defining it here (inside the nested struct)
+     * makes a dedicated non-template operator<< available for each
+     * `RKF<B,KIND>::RKFResult` type which avoids template-deduction issues
+     * that occur when trying to deduce the enclosing Butcher-table template
+     * parameter from a nested dependent type.
+     */
+    friend std::ostream &
+    operator<<(std::ostream &out, const RKFResult &res)
+    {
+      out << "# Number of time steps:" << res.time.size()
+          << " N. contractions:" << res.contractions
+          << " N. expansions:" << res.expansions << std::endl;
+      out << "#   t    y   Estimated error=" << res.estimatedError << std::endl;
+      double hmin = 0.0;
+      double hmax = 0.0;
+      if(res.time.size() >= 2)
+        {
+          hmin = res.time[1] - res.time[0];
+          hmax = hmin;
+          for(unsigned int i = 0; i < res.time.size() - 1; ++i)
+            {
+              auto delta = res.time[i + 1] - res.time[i];
+              hmax = std::max(hmax, delta);
+              hmin = std::min(hmin, delta);
+            }
+        }
+      out << "# hmin:" << hmin << " hmax:" << hmax << std::endl;
+      std::size_t i = 0;
+      if constexpr(KIND == RKFKind::SCALAR)
+        {
+          for(auto const &t : res.time)
+            out << t << " " << res.y[i++] << "\n";
+        }
+      else
+        {
+          for(auto const &t : res.time)
+            {
+              out << t << " ";
+              apsc::RKFTraits<RKFKind::VECTOR>::VariableType const &yy =
+                res.y[i++];
+              for(int k = 0; k < yy.size(); ++k)
+                out << yy[k] << " ";
+              out << "\n";
+            }
+        }
+      return out;
+    }
+  };
+
   //! Constructor just taking the function
   template <class F = Function>
     requires std::convertible_to<F, Function>
-  RKF(F &&f) : M_f{std::forward<F>(f)} {};
+  RKF(F &&f) : M_f{std::forward<F>(f)}
+  {}
   // Constructor passing butcher table and forcing function
   // Butcher table is now a constant expression
   // this constructor is there only to activate template parameter deduction
   template <class F = Function>
     requires std::convertible_to<F, Function>
-  RKF(B const &bt, F &&f) : RKF{f} {};
+  RKF(B const &bt, F &&f) : RKF{f}
+  {}
 
   //! Default constructor
   RKF() = default;
@@ -91,34 +140,37 @@ public:
    * @todo It would be better to group the parameters tol and maxStep into an
    * (internal?) struct
    */
-  RKFResult<KIND> operator()(double const &T0, double const &T,
-                             VariableType const &y0, double const &hInit,
-                             double const &tol = 1e-6,
-                             int           maxStep = 2000) const;
+  RKFResult operator()(double const &T0, double const &T,
+                       VariableType const &y0, double const &hInit,
+                       double const &tol = 1e-6, int maxStep = 2000) const;
   /*!
    * Kept public to simplify handling
    * Mutable because I should be free to modify it also on a const object
    */
   mutable apsc::Newton newtonSolver{apsc::make_Jacobian(apsc::BROYDENG),
                                     newtonOptions};
+  /*! The default options for the quasi newton solver
+  @details
+  These options can be changed by the user after constructing the RKF object
+  I used designated initializers (C++20 feature) to make it clearer how
+  each option is named in the struct
+  */
+  apsc::NewtonOptions newtonOptions{
+    // Designated initializers in action
+    .tolerance = 1.e-10,       // tolerance for step in Newton
+    .minRes = 1.e-10,          // tolerance on residual
+    .maxIter = 100,            // max number of iterations
+    .backtrackOn = true,       // use backtracking
+    .stopOnStagnation = false, // do not stop on stagnation
+    .alpha = 1.e-4, // parameter for 1st wolfe condition (backtracking)
+    .backstepReduction = 0.5, // Reduction coefficient (backtracking)
+    .maxBackSteps = 4,        // Max number backstep
+    .lambdaInit = 1.          // initial lambda
+  };
 
 private:
   Function           M_f;
   static constexpr B ButcherTable = B{};
-  //! The default options for the quasi newton solver
-  //! @todo make it a member of the class. You should be able to change them!
-  static constexpr apsc::NewtonOptions newtonOptions{
-    1.e-10, // tolerance on step \f$||x_{new}-x_{old}||<tolerance\$
-    1.e-10, // tolerance on residual
-    100,    // max iterations
-    true,   // backtracking is on
-    false,  // don't stop on stagnation
-    1.e-4,  // parameter for 1st wolfe condition (backtracking)
-    0.5,    // Reduction coefficient (backtracking)
-    4,      // Max number backstep
-    1.      // initial lambda
-  };
-
   /*! Function for a single step. It is private since is used only internally.
    *
    * @note
@@ -140,24 +192,17 @@ private:
                const double &h) const -> std::pair<VariableType, VariableType>;
 };
 
-//! streaming operators to dump the results in gnuplot format
-//!  For simplicity I inline them so I have everything in this header file
-inline std::ostream &operator<<(std::ostream                     &out,
-                                RKFResult<RKFKind::SCALAR> const &res);
-inline std::ostream &operator<<(std::ostream                     &out,
-                                RKFResult<RKFKind::VECTOR> const &res);
-
 //   ***********************************************
 //   ******    IMPLEMENTATIONS OF TEMPLATE FUNCTIONS
 //   ***********************************************
 
 template <apsc::ButcherArrayConcept B, RKFKind KIND>
-RKFResult<KIND>
+RKF<B, KIND>::RKFResult
 RKF<B, KIND>::operator()(const double &T0, const double &T,
                          const VariableType &y0, const double &hInit,
                          const double &tol, int maxSteps) const
 {
-  RKFResult<KIND> res;
+  RKFResult res;
   // Useful alias to simplify typing
   std::vector<double>       &time = res.time;
   std::vector<VariableType> &y = res.y;
@@ -377,8 +422,8 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
             }
           else
             {
-              std::cerr << " cannot use implicit RK if KIND is not VECTOR\n";
-              std::exit(1);
+              throw std::runtime_error(
+                " cannot use implicit RK if KIND is not VECTOR");
             }
         }
       else
@@ -392,58 +437,6 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
       v2 += K[i] * b2[i];
     }
   return std::make_pair(v1, v2);
-}
-
-std::ostream &
-operator<<(std::ostream &out, const RKFResult<RKFKind::SCALAR> &res)
-{
-  out << "# Number ot time steps:" << res.time.size()
-      << " N. contractions:" << res.contractions
-      << " N. expansions:" << res.expansions << std::endl;
-  out << "#   t    y   Estimated error=" << res.estimatedError << std::endl;
-  double hmin = res.time[1] - res.time[0];
-  double hmax = hmin;
-  for(unsigned int i = 0; i < res.time.size() - 1; ++i)
-    {
-      auto delta = res.time[i + 1] - res.time[i];
-      hmax = std::max(hmax, delta);
-      hmin = std::min(hmin, delta);
-    }
-  out << "# hmin:" << hmin << " hmax:" << hmax << std::endl;
-  std::size_t i = 0;
-  for(auto const &t : res.time)
-    out << t << " " << res.y[i++] << "\n";
-  return out;
-}
-
-std::ostream &
-operator<<(std::ostream &out, const RKFResult<RKFKind::VECTOR> &res)
-{
-  out << "# Number ot time steps:" << res.time.size()
-      << " N. contractions:" << res.contractions
-      << " N. expansions:" << res.expansions << std::endl;
-  out << "#   t    y(0)...   Estimated error=" << res.estimatedError
-      << std::endl;
-  double hmin = res.time[1] - res.time[0];
-  double hmax = hmin;
-  for(unsigned int i = 0; i < res.time.size() - 1; ++i)
-    {
-      auto delta = res.time[i + 1] - res.time[i];
-      hmax = std::max(hmax, delta);
-      hmin = std::min(hmin, delta);
-    }
-  out << "# hmin:" << hmin << " hmax:" << hmax << std::endl;
-  std::size_t i = 0;
-  for(auto const &t : res.time)
-    {
-      out << t << " ";
-      apsc::RKFTraits<RKFKind::VECTOR>::VariableType const &yy = res.y[i];
-      ++i;
-      for(int k = 0; k < yy.size(); ++k)
-        out << yy[k] << " ";
-      out << "\n";
-    }
-  return out;
 }
 
 } // namespace apsc

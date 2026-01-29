@@ -15,21 +15,21 @@
 #include <limits>
 #include <tuple>
 // In this version (march 2023) I have added concepts, just to show their use
-// I constrain the template parameter defining the function to be convertible to a
-// function wrapper with the same signature.
+// I constrain the template parameter defining the function to be convertible to
+// a function wrapper with the same signature.
 #include "functionConcepts.hpp" // from Utility/
 namespace apsc
 {
- /*!
+/*!
  * Computes the zero of a scalar function with the method of the Regula Falsi
- * We stop when the residual is below lolerance;
+ * We stop when the residual is below tolerance;
  *
  * @tparam Function
  * @param f The function
  * @param a First end of initial interval
  * @param b Second end of initial interval
  * @param tol Tolerance (relative)
- * @parma tola Tolerance (absolute)
+ * @param tola Tolerance (absolute)
  * @return The approximation of the zero of f
  * @pre f(a)*f(b)<0
  */
@@ -52,7 +52,7 @@ regulaFalsi(Function const &f, double a, double b, double tol = 1.e-6,
       double incra = -ya / (yb - ya);
       double incrb = 1. - incra;
       double incr = std::min(incra, incrb);
-      ASSERTM((std::max(incra, incrb) <= 1.0 && incr >= 0), "Chord is failing")
+      ASSERTM((std::max(incra, incrb) <= 1.0 && incr >= 0), "Chord is failing");
       c = a + incra * delta;
       // std::cout << c << std::endl;
       yc = f(c);
@@ -173,9 +173,10 @@ secant(Function const &f, double a, double b, double tol = 1e-4,
  * converging)
  *
  */
-template <TypeTraits::ScalarFunction Function, TypeTraits::ScalarFunction Dfunction>
+template <TypeTraits::ScalarFunction Function,
+          TypeTraits::ScalarFunction Dfunction>
 std::tuple<double, bool>
-Newton(Function const &f, Dfunction const & df, double a, double tol = 1e-4,
+Newton(Function const &f, Dfunction const &df, double a, double tol = 1e-4,
        double tola = 1.e-10, unsigned int maxIt = 150)
 {
   double       ya = f(a);
@@ -186,7 +187,7 @@ Newton(Function const &f, Dfunction const & df, double a, double tol = 1e-4,
   while(goOn && iter < maxIt)
     {
       ++iter;
-      a += - ya/df(a);
+      a += -ya / df(a);
       ya = f(a);
       resid = std::abs(ya);
       goOn = resid > check;
@@ -265,6 +266,7 @@ brent_search(const Function &f, double a, double b, double tol = 1.e-5,
 {
   auto ya = f(a);
   auto yb = f(b);
+  SURE_ASSERT(ya * yb < 0, "Function must change sign at the two end values");
   // First check.
   if((ya * yb) >= 0.0)
     {
@@ -344,8 +346,7 @@ brent_search(const Function &f, double a, double b, double tol = 1.e-5,
           std::swap(ya, yb);
         }
       //
-    }
-  while(ys != 0. && std::abs(b - a) > tol && iter < maxIter);
+  } while(ys != 0. && std::abs(b - a) > tol && ++iter < maxIter);
   return {s, iter < maxIter};
 }
 } // namespace apsc

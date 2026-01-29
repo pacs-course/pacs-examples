@@ -38,7 +38,8 @@ public:
   @param opt The options
   */
   Newton(std::unique_ptr<JacobianBase> j, NewtonOptions opt = NewtonOptions{})
-    : Jacobian_ptr{std::move(j)}, options{opt} {};
+    : Jacobian_ptr{std::move(j)}, options{opt}
+  {}
   /*!
   This class is not copy constructible. TO make it copy constructible I should
   implement a clone() method in the Jacobian classes.
@@ -152,7 +153,9 @@ protected:
   It is a virtual function, so it can be overridden by a derived class
   The default implementation does nothing
   */
-  virtual void callback() const {};
+  virtual void
+  callback() const
+  {}
   //! Internal structure giving the state
   //! Used for the callback
   struct NewtonState
@@ -182,6 +185,11 @@ struct NewtonVerbose : public Newton
   //! Inherit constructors
   using Newton::Newton;
   //! Specialization of callback()
+  /*!
+   * @brief Callback function to provide verbose output at each Newton
+   * iteration. This override prints information about the current state of the
+   * solver.
+   */
   void callback() const override;
 };
 }; // namespace apsc

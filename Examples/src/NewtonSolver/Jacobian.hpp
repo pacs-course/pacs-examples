@@ -10,7 +10,7 @@
 #include "NewtonTraits.hpp"
 namespace apsc
 {
-//! @brief 
+//! @brief
 //! The base class for the Jacobian.
 //! It inherits from NonLinSolveTraits to get all types defined there
 //! This is possible since the trait is not a template.
@@ -70,9 +70,8 @@ public:
    * @param spacing The spacing |h| for the computation of the approximate
    * derivative
    */
-  DiscreteJacobian(NonLinearSystemType *sys = nullptr,
-                   double               spacing = defaultTol,
-                   double               lambda  = defaultLambda)
+  DiscreteJacobian(NonLinearSystemType const *sys = nullptr,
+                   double spacing = defaultTol, double lambda = defaultLambda)
     : JacobianBase{sys}, tol{spacing}, lambda{lambda} {};
   //! Solves the system
   /*!
@@ -84,27 +83,27 @@ public:
   ArgumentType solve(ArgumentType const &x,
                      ArgumentType const &b) const override;
 
-/*!
-  @brief Set the parameters for the computation of the Jacobian
-  @param tol The spacing |h| for the computation of the approximate derivative
-  @param lambda The regularization parameter
-*/
+  /*!
+    @brief Set the parameters for the computation of the Jacobian
+    @param tol The spacing |h| for the computation of the approximate derivative
+    @param lambda The regularization parameter
+  */
   void
   setParameters(double tol = defaultTol, double lambda = defaultLambda)
   {
-    this->tol=tol;
-    this->lambda=lambda;
+    this->tol = tol;
+    this->lambda = lambda;
   }
   //! The current spacing |h|
   double tol = defaultTol;
   //! Regularization (if needed)
   double lambda = defaultLambda;
+
 private:
   //! Default tolerance.
   static double constexpr defaultTol = 1e-4;
   static double constexpr defaultLambda = 0.0;
 };
-
 
 /*!
  * The identityJacobian just scales the residual by a factor defaulted to 1
@@ -151,7 +150,7 @@ public:
   //! @brief I can pass the JacobianFunction via constructor
   //! @param j an object convertible to a JacobianFunction
   FullJacobian(JacobianFunctionType const &j,
-               NonLinearSystemType *       nls = nullptr)
+               NonLinearSystemType  const      *nls = nullptr)
     : JacobianBase{nls}, Jac{j} {};
 
   //! I can change the JacobianFunction
@@ -164,7 +163,7 @@ public:
     Jac = std::forward<J>(j);
   }
   //! I may get a copy of the jacobianFunction
-  //! \return A copy of the sored JacobianFunction
+  //! \return A copy of the stored JacobianFunction
   JacobianFunctionType
   getJacobianFunction() const
   {
@@ -203,14 +202,17 @@ public:
   //! I have to give an inital matrix, approximation of the Jacobian
   //!
   //! \param B the initial approximation of the Jacobian
-  BroydenB(JacobianMatrixType const &B) : B{B}, firstTime{false} {}
+  BroydenB(JacobianMatrixType const &B) : B{B}, firstTime{true} {}
   //!
-  //! Sets the inital matrix, approximation of the Jacobian
+  //! Sets the initial matrix, approximation of the Jacobian.
   //!
   //! It can be used also for restarting purposes. When given the matrix
-  //! the method restarts from the new iteration given in the method solve()
+  //! the method restarts from the new iteration given in the method solve().
   //!
-  //! \param newB the initial approximation of the Jacobian
+  //! \param newB the initial approximation of the Jacobian. If not provided,
+  //!        a default-constructed JacobianMatrixType is used, which may be a
+  //!        zero or identity matrix depending on the implementation of
+  //!        JacobianMatrixType.
   void
   setB(const JacobianMatrixType &newB = JacobianMatrixType{})
   {
@@ -272,7 +274,7 @@ public:
   //! I have to give an inital matrix, approximation of the Jacobian
   //!
   //! \param B the initial approximation of the Jacobian
-  BroydenG(JacobianMatrixType const &B) : B{B}, firstTime{false} {}
+  BroydenG(JacobianMatrixType const &B) : B{B}, firstTime{true} {}
   //!
   //! Sets the inital matrix, approximation of the Jacobian
   //!
@@ -342,7 +344,7 @@ public:
   //! I have to give an inital matrix, approximation of the Jacobian
   //!
   //! \param B the initial approximation of the Jacobian
-  Eirola_Nevanlinna(JacobianMatrixType const &B) : B{B}, firstTime{false} {}
+  Eirola_Nevanlinna(JacobianMatrixType const &B) : B{B}, firstTime{true} {}
   //!
   //! Sets the inital matrix, approximation of the Jacobian
   //!

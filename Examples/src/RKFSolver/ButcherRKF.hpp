@@ -35,12 +35,11 @@ template <unsigned int NSTAGES> struct ButcherArray
    */
   constexpr ButcherArray(Atable const &a, std::array<double, NSTAGES> const &b1,
                          std::array<double, NSTAGES> const &b2, int ord)
-    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}, implicit_{false}
+    : A{a}, b1{b1}, b2{b2}, c{}, order{ord}, implicit_{set_implicit<NSTAGES>()}
   {
     std::transform(A.begin(), A.end(), c.begin(), [](auto const &row) {
       return std::accumulate(row.begin(), row.end(), 0.0);
     });
-    implicit_ = set_implicit<NSTAGES>();
   }
   /* I store the full array even if only the part below the main diagonal is
    * different from zero. For simplicity
@@ -82,6 +81,9 @@ template <unsigned int NSTAGES> struct ButcherArray
 
 protected:
   bool implicit_ = false;
+  //! Recursively checks if the Butcher array corresponds to an implicit RK
+  //! scheme. Returns true if any diagonal element of A is non-zero, indicating
+  //! implicitness. Used at construction to set the implicit_ member variable.
   template <unsigned int N>
   constexpr bool
   set_implicit()
@@ -203,7 +205,7 @@ namespace RKFScheme
           {{0.10239940061991099768, -0.3768784522555561061,
             0.83861253012718610911, 0.43586652150845899942}}, // 3rd order
           {{0.15702489786032493710, 0.11733044137043884870,
-            0.61667803039212146434, 0.10896663037711474985}}, // 4nd order
+            0.61667803039212146434, 0.10896663037711474985}}, // 4th order
           3}
     {}
   };

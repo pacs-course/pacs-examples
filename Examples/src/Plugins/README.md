@@ -28,7 +28,7 @@ libraries providing different polygons and load in a factory their
 The libraries are loaded dynamically in the main program using the facility `LoadLibraries` provided 
 in folder `LoadLibraries`. 
 
-** You have first to go in the folder `LoadLibdaries` and do `make alllibs; make install` to install the library libloadlibs.so in the Examples/lib directory.**
+** You have first to go in the folder `LoadLibraries` and do `make alllibs; make install` to install the library libloadlibs.so in the Examples/lib directory.**
 
 
 The main program will then be able to upload the plugins (dynamic libraries) indicated in the file
