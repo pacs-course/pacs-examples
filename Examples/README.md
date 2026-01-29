@@ -1,6 +1,8 @@
-# Examples of the Course on Advanced Programming for Scientific Computing (aka PACS)
-**Mathematical Engineering, Politecnico di Milano**
-**Copyright Luca Formaggia 2012-2024**
+# Course on Advanced programming for scientific computing #
+## Mathematical Engineering, Politecnico di Milano ##
+# Course on Advanced Modelling for scientific computing #
+## HPC and Big Data, Politecnico di Milano ##
+## Copyright Luca Formaggia 2012-2023 ##
 
 ## LICENCING ##
 The software contained in the subfolders of this directory is free-software released under a GNU General Public Licens (GPL). The details of the licence are availabe in the `COPYRIGHT` file in the root directory.
@@ -38,10 +40,9 @@ The software contained in the subfolders of this directory is free-software rele
 Open a terminal and go in the directory `Examples` of the repository (*it is the directory that contains this README.md file!, from now on denoted as **root directory***) 
 The first operation is to copy the  file `Makefile.user` to `Makefile.inc`:
 
-```bash
-cp Makefile.user Makefile.inc
-```
-and edit the latter to suit your system. In particular, you have to set `PACS_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
+    $ cp Makefile.user Makefile.inc
+
+and edit the latter to suit your system. In particular, you have to set `AMSC_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
 If you do not know it
 just type
 
@@ -57,19 +58,20 @@ In particular, the user may modify the `Makefile.inc` to change some
 compilation options. But normally you don't need it.
 
 As an example:
-```makefile
-    PACS_ROOT=/home/myname/pacs/Examples/
-```    
+
+    AMSC_ROOT=/home/myname/pacs/Examples/
+
 Alternatively, to editing the file, you may set an environmental
 variable with the same name using the command 
-```makefile
-    export PACS_ROOT=/home/myname/pacs/Examples/ 
-```
+
+    export AMSC_ROOT=/home/myname/pacs/Examples/ 
+
 in the `.profile` or in the `.bashrc` file in your home directory (see Note
 at the end of the file). The file `Makefile.inc` is included in all the Makefiles and defines and
 exports the following make macros:
 
-- `PACS_ROOT` the directory where the Examples resides
+- `AMSC_ROOT` the directory where the Examples resides
+- `PACS_ROOT` for compatibility with the APSC course
 - `CXX` the c++ compiler of choice
 - `STANDARD` contains the C++ standard used in compilation
 - `MPI_LIBDIR` and `MPI_INCDIR` where to find mpi libraries and header files, respectively
@@ -161,8 +163,9 @@ env | grep mk
 
   * You do not use the module system. Then you have again two choices
    * You set the various macro in your `Makefile.inc` (and possibly the other Makefiles, if needed) by yourself
-   * You simulate the module environment by creating the environmental variables: you have to put in the `.profile `file in your home directory the corresponding instructions
-        for the bash (the `~/.profile` file is read by the bash shell every time you do a login).  For example, in my `.profile` I have:
+   * You simulate the module environment by creating the environmental variables: you have to put in the `.bash-profile` (or `.profile `) 
+   file in your home directory the corresponding instructions
+        for the bash (the `.bash-profile` and `~/.profile` files are sourced by the bash shell every time you do a login).  For example, in my `.profile` I have:
 
 -------------------------------------------------------------------------------
 
@@ -264,13 +267,13 @@ content is run as if typed on a terminal). Everytime you open a bash
 shell the `.bashrc` file is sourced. 
 
 What's the difference? Well today people prefer to put everything in
-the `.bashrc` file, but in principle envronmental variables
-definitions should be put in the `.profile` (or `.bash_profile`),
+the `.bashrc` file, but in principle definitions of environmental variables
+should be put in the `.bash_profile`  (or `.profile`),
 while `.bashrc` should be reserved for command alias or customization
-that need to change wether you are in a interactive shell (terminal)
+that need to change depending whether you are in a interactive shell (i.e. a terminal)
 or not (batch job). 
 
-A practical difference is that if you change `.profile` (or `.bash_profile`)
+A practical difference is that if you change `.bash_profile`  (or `.profile`)
 the changes become operative only after a new login. 
 Changes in `.bashrc` becomes active just by opening a new terminal.
 
