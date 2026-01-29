@@ -35,7 +35,7 @@ OBJS = $(SRCS:.cpp=.o)
 LIB_OBJS=$(filter-out main%.o test%.o,$(OBJS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
-HEADERS+=GetPot
+#HEADERS+=GetPot
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
