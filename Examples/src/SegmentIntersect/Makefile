@@ -27,8 +27,8 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 # all other files are XX.cpp
 #
 
-# get all files *.cpp
-SRCS=$(wildcard *.cpp)
+# get all files *.cpp a part pyIntersect.cpp
+SRCS=$(filter-out pyIntersect.cpp,$(wildcard *.cpp))
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
 # get all headers in the working directory
@@ -36,7 +36,14 @@ HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
-
+#========================== END OF THE DEFINITION OF VARIABLES
+# Variables for python bynding
+PY_INCLUDE=$(shell python3 -m pybind11 --includes)
+PY_LIBS=$(shell python3-config --ldflags)
+PY_MODULE_NAME=pyIntersect
+PY_MODULE_EXTENSION=$(shell python3-config --extension-suffix)
+# Standard flags for compilation
+STDFLAGS= -std=c++23 -O3 -Wall
 #========================== NEW THE DEFINITION OF THE TARGETS
 .phony= all clean distclean doc
 
@@ -50,7 +57,7 @@ clean:
 distclean:
 	$(MAKE) clean
 	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.bak *~
+	$(RM) *.so *.out *.bak *~
 
 doc:
 	doxygen $(DOXYFILE)
@@ -61,6 +68,11 @@ $(OBJS): $(SRCS)
 
 install:
 	cp *.hpp $(PACS_INC_DIR)
+
+python:
+	$(CXX) $(STDFLAGS) $(CPPFLAGS) $(PY_INCLUDE) -shared -fPIC \
+		$(LDFLAGS) -o $(PY_MODULE_NAME)$(PY_MODULE_EXTENSION) pyIntersect.cpp \
+		$(PY_LIBS)
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)

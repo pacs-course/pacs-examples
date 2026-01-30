@@ -93,7 +93,7 @@ class GaussLobatto5p final : public StandardQuadratureRule<5>
 public:
   GaussLobatto5p()
     : StandardQuadratureRule<5>{
-        {1.10, 49. / 90, 32 / 45., 29. / 90, 1.10},
+        {1. / 10., 49. / 90, 32 / 45., 29. / 90, 1.10},
         {-1, -std::sqrt(3. / 7.), 0, std::sqrt(3. / 7.), 1},
         8}
   {}
