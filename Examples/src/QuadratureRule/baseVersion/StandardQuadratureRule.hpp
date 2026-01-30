@@ -110,7 +110,7 @@ apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
   // scale functions
   auto   fscaled = [&h2, &xm, &f](double x) { return f(x * h2 + xm); };
   double tmp = 0.0;
-  for(auto [node, weight] : std::views::zip(n_, w_))
+  for(auto [node, weight] : std::views::zip(n_, w_)) // zip is a c++23 feature
     {
       tmp += fscaled(node) * weight;
     }
