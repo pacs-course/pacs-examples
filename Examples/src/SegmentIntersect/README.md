@@ -13,7 +13,7 @@ Here I propose a template function
     template <class Edge_t>
     IntersectionStatus segmentIntersect(const Edge_t &, const Edge_t &,double tol)
 
-That takes two edges of generic type `Edge_t`, where the only requirement is that `operator[int i]` on an `Edge_t` object returns the coordinates of the corresponding end stored in a `std::array<double,2>`.
+That takes two edges of generic type `Edge_t`, where the only requirement is that `operator[int i]` on an `Edge_t` object returns the coordinates of the corresponding end stored in an object that behaves like an array of doubles.
 
 `tol` is a tolerance, which is defaulted to the square root of the
 machine epsilon, (approx 1.e-8). The choice of this tolerance may be
@@ -24,13 +24,35 @@ about the possible intersection. The code handles alle the possibilities mention
 
 ## Note ##
 
-The folder contains also a Matlab version of the algorithm. Useful for comparison. 
 
 
 # What do I learn here? #
 - That also apparently simple computational problems require a lot of care if one wants an algorithm capable of treating all the particular cases;
-- The use of an anonymous namespace to hide functions that are used only locally (the alternative is to use a namespace with a spacial name, like `internals`)
-- The use of `inline` to avoid the one-definition-rule, since the header file containes the definition of non-template functions;
+- The use nested namespaces
 - An overloading of the output streaming operator to prettiprint the results;
 - The use of 'block scope' to simplify the repetition of a test on different data.
 - The use of a concept to specify a prerequisite on a type
+- The binding with pybind11
+
+## Folder contents ##
+
+- `SegmentIntersect.hpp`: core implementation of the segment intersection algorithm and the `IntersectionStatus` result struct.
+- `EdgeGeo.hpp`: lightweight geometric primitives (`Point` as `std::array<double,2>` and `EdgeGeo`) plus concepts for type requirements.
+- `main_intersect.cpp`: C++ demo program that exercises the intersection routine.
+- `pyIntersect.cpp`: pybind11 bindings exposing `Point`, `EdgeGeo`, and `segment_intersect` to Python.
+- `segmentIntersect.py`: small Python CLI script that prompts for two segments and prints the intersection result.
+- `Makefile`: build targets for the C++ example and the Python extension module.
+- `pyIntersect.cpython-*.so`: built Python extension module (generated artifact).
+- `main_intersect`: compiled C++ executable (generated artifact).
+
+# The instructions to compile: #
+
+```bash
+make
+```
+for the c++ executable
+
+```bash
+make python
+```
+for the python module.
