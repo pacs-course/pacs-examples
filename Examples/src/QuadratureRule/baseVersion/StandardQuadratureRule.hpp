@@ -1,6 +1,7 @@
 #ifndef QUADRATURE_RULE_HPP
 #define QUADRATURE_RULE_HPP
 #include <array>
+#include <ranges>
 #include <utility>
 
 #include "QuadratureRuleBase.hpp"
@@ -109,12 +110,9 @@ apsc::NumericalIntegration::StandardQuadratureRule<N>::apply(
   // scale functions
   auto   fscaled = [&h2, &xm, &f](double x) { return f(x * h2 + xm); };
   double tmp = 0.0;
-  // auto   np = n_.begin();
-  //     for (auto wp=w_.begin();wp<w_.end();++wp,++np)
-  for(auto np = n_.cbegin(), weight = w_.cbegin(); weight != w_.cend();
-      ++np, ++weight)
+  for(auto [node, weight] : std::views::zip(n_, w_))
     {
-      tmp += fscaled(*np) * (*weight);
+      tmp += fscaled(node) * weight;
     }
   return h2 * tmp;
 }

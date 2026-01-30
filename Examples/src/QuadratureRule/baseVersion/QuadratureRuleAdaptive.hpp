@@ -80,10 +80,10 @@ public:
     return std::string{"Adaptive "} + therule_.name();
   }
 
-private: //! inline since since c++17 this way we have  a definition.
-  QuadratureRulePlusError<SQR> therule_;
-  double                       targetError_;
-  unsigned int                 maxIter_;
+private:
+  inline static QuadratureRulePlusError<SQR> therule_;
+  double                                     targetError_;
+  unsigned int                               maxIter_;
 };
 
 // *** IMPLEMENTATIONS

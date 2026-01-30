@@ -146,7 +146,7 @@ endif
 #
 # Flags for standard 
 #
-STANDARD=c++20
+STANDARD=c++23
 # 
 # Location of
 # Doxygen configuration file

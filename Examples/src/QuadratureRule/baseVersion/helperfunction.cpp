@@ -2,13 +2,13 @@
 #include "helperfunction.hpp"
 #include <cmath>
 #include <cstddef>
+#include <format>
 #include <iomanip>
-//! Helper function to read data from terminal
 namespace apsc::NumericalIntegration
 {
 void
-readParameters(const int argc, char **argv, double &a, double &b, int &nint,
-               double &targetError, std::ostream &out)
+readParameters(const int argc, char **argv, double &a, double &b,
+               unsigned int &nint, double &targetError, std::ostream &out)
 {
   GetPot       cl(argc, argv);
   const double pi = 2 * std::atan(1.0);
@@ -30,8 +30,8 @@ readParameters(const int argc, char **argv, double &a, double &b, int &nint,
 }
 
 void
-readParameters(const int argc, char **argv, double &a, double &b, int &nint,
-               double &targetError, std::string &library,
+readParameters(const int argc, char **argv, double &a, double &b,
+               unsigned int &nint, double &targetError, std::string &library,
                std::string &integrand, std::ostream &out)
 {
   GetPot       cl(argc, argv);
@@ -60,10 +60,10 @@ void
 printout(double const value, double const exact, double const error,
          std::string const &title, std::ostream &out)
 {
-  out << "*** " << title << " ***" << std::endl;
-  out << std::setprecision(15) << "Computed value " << value << std::endl;
-  out << "Error          " << (exact - value) << std::endl;
-  out << "Target error   " << error << std::endl << std::endl;
+  out << std::format("*** {} ***\n", title);
+  out << std::format("Computed value {:<20.15}\n", value);
+  out << std::format("Error          {:<20.15}\n", exact - value);
+  out << std::format("Target error   {:<20.15}\n\n", error);
 }
 
 } // namespace apsc::NumericalIntegration
