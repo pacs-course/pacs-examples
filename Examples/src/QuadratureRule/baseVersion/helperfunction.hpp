@@ -14,7 +14,7 @@ namespace apsc::NumericalIntegration
 //! @param targetError Target error (for adaptive)
 //! @param cout Output stream for the '-h' option
 void readParameters(const int argc, char **argv, double &a, double &b,
-                    int &nint, double &targetError,
+                    unsigned int &nint, double &targetError,
                     std::ostream &out = std::cout);
 
 // A simple utility to output some results

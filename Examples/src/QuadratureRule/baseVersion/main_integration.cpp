@@ -1,5 +1,6 @@
 #include "GetPot"
 #include <cmath>
+#include <format>
 #include <iostream>
 
 #include "Adams_rule.hpp"
@@ -18,29 +19,28 @@ main(int argc, char **argv)
   using namespace std;
   FunPoint f = fsincos;
 
-  double a, b;
-  int    nint;
-  double targetError;
+  double       a, b;
+  unsigned int nint;
+  double       targetError;
   readParameters(argc, argv, a, b, nint, targetError);
-  cout << "Integral from " << a << " to " << b << " on " << nint << " intervals"
-       << endl;
+  cout << format("Integral from {} to {} on {} intervals\n", a, b, nint);
   double exactVal = exact(a, b);
 
-  Domain1D domain(a, b);
-  Mesh1D   mesh(domain, nint);
+  Domain1D domain{a, b};
+  Mesh1D   mesh{domain, nint};
 
-  Quadrature s(Simpson{}, mesh);
-  Quadrature m(MidPoint{}, mesh);
-  Quadrature t(Trapezoidal{}, mesh);
-  Quadrature gL(GaussLegendre3p{}, mesh);
+  Quadrature s{Simpson{}, mesh};
+  Quadrature m{MidPoint{}, mesh};
+  Quadrature t{Trapezoidal{}, mesh};
+  Quadrature gL{GaussLegendre3p{}, mesh};
 
   cout << " Now the mesh has " << mesh.numNodes() << " nodes" << endl;
 
   double approxs = s.apply(f);
   double approxm = m.apply(f);
-  cout << "MidPoint=" << approxm << " Trapezoidal=" << t.apply(f)
-       << " Simpson=" << approxs << " GaussLegendre3p=" << gL.apply(f)
-       << " Exact=" << exactVal << endl;
+  cout << format("MidPoint={:.7} Trapezoidal={:.7} Simpson={:.7} "
+                 "GaussLegendre3p={:.7} Exact={:.7}\n",
+                 approxm, t.apply(f), approxs, gL.apply(f), exactVal);
 
   // Now with MonteCarlo
 
@@ -50,20 +50,20 @@ main(int argc, char **argv)
   Quadrature mc(mcRule, mesh);
 
   auto approxmc = mc.apply(f);
-  cout << "MonteCarlo=" << approxmc
-       << " error=" << std::abs(exactVal - approxmc) << " Estimated/error="
-       << dynamic_cast<MonteCarlo const &>(mc.myRule()).cumulatedError() /
-            std::abs(exactVal - approxmc)
-       << endl;
+  cout << format(
+    "MonteCarlo={:.7} error={:.7} Estimated/error={:.7}\n", approxmc,
+    std::abs(exactVal - approxmc),
+    dynamic_cast<MonteCarlo const &>(mc.myRule()).cumulatedError() /
+      std::abs(exactVal - approxmc));
 
   // Now the adaptive
-  Quadrature sa(QuadratureRuleAdaptive<Simpson>(targetError, 10000), mesh);
+  Quadrature sa{QuadratureRuleAdaptive<Simpson>(targetError, 10000), mesh};
   double     adaptiveResult = sa.apply(f);
   printout(adaptiveResult, exactVal, targetError, "SImpson Adaptive");
 
   // Now the adaptive
-  Quadrature ga(QuadratureRuleAdaptive<GaussLobatto4p>(targetError, 10000),
-                mesh);
+  Quadrature ga{QuadratureRuleAdaptive<GaussLobatto4p>(targetError, 10000),
+                mesh};
   adaptiveResult = ga.apply(f);
   printout(adaptiveResult, exactVal, targetError, "Gauss Lobatto Adaptive");
 }

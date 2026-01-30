@@ -1,6 +1,7 @@
 #ifndef MONTECARLO_HPP
 #define MONTECARLO_HPP
 #include "QuadratureRuleBase.hpp"
+#include <random>
 namespace apsc::NumericalIntegration
 {
 //! Implements montecarlo quadrature
@@ -67,12 +68,11 @@ private:
   //! Default mx number of iterations
   static constexpr unsigned int max_iter_def = 10000;
   //! Default error level;
-  /*
-    definition in the cpp file
-   */
   static constexpr double error_level_def = 1.0e-2;
+  // initialize a random engine with the
+  // random device
+  mutable std::knuth_b rengine{std::random_device{}()};
 };
-//  constexpr double MonteCarlo::error_level_def(1.0e-2);
 
 } // namespace apsc::NumericalIntegration
 
