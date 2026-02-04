@@ -30,9 +30,9 @@ A variable defined in an scope  exists only
 within that scope, and it's destroyed when the code exit the scope in which
 it has been defined. 
 
-To avoid unwanted hiding of variables becouse of the scoping rules
-it's better *using long and significant name* and *use namespaces* to
-group names that refer to the same logical units or. For instance
+To avoid unwanted hiding of variables because of the scoping rules
+it's better to *use long and significant name* and *use namespaces* to
+group names that refer to the same logical units. For instance
 `std` is the namespace used for all utilities of the Standard
 Library. However, sometimes for more special objects, we have a nested
 namespace. For instance `std::execution` is the namespace for all

@@ -6,6 +6,7 @@ main()
 {
   std::string version;
   std::cout<<"version id is "<< __cplusplus<<"\n";
+
   if(Utilities::is_cxx11())
     version = "C++11";
   else if(Utilities::is_cxx14())
@@ -14,8 +15,10 @@ main()
     version = "C++17";
   else if(Utilities::is_cxx98())
     version = "C++98";
-  else if(Utilities::is_cxx20())
-      version = "C++20";
+  else if(Utilities::is_cxx23())
+      version = "C++23";
+  else if(Utilities::is_cxx26())
+      version = "C++26";
   else
     version = "UNKNOWN";
 
