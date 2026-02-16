@@ -1,3 +1,7 @@
+# IMPORTANT NOTICE #
+On the 16th of February 2026, this repo underwent a major update. It is no longer compatible with the previous state
+If you cloned the repository before the 16th of February, you need to clone it again! Pull and push will not work
+
 EXAMPLES AND EXERCISES FOR AMSC and APSC (PACS) COURSES
 --------------------------------------
 This repo contains source code and descriptions for the examples and exercises
@@ -6,8 +10,10 @@ Scientifico - Advanced Programming for Scientific Computing) and Advanced Method
 *For the AMSC course, only a subset of the examples will be used at the lectures and labs.*
 I encourage interested students to look at the various examples.
 
-**Essential note**: The examples are located in the `AMSC` branch, which has been designated as the main branch, not in the `master` branch. 
+**Essential note**: The examples for the AMSC course are located in the `AMSC` branch, not in the `master` branch. 
 You can create other branches for your experiments, if you want, but **do not mess around with the `master` branch**
+The master branch is the main branch for the APSC (PACS) course.
+
 
 The repository contains git submodules, so to check it out properly, you have to type
 
