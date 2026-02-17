@@ -52,7 +52,18 @@ enum class FixedPointArgumentType
   VECTOR,
   EIGEN
 };
-
+/*!
+ * @brief A primary template for `FixedPointTraits` which is specialized for
+ * different `FixedPointArgumentType` values. This template is used to define
+ * type aliases for the argument type, return type, and iteration function type
+ * based on the specified `FixedPointArgumentType`.
+ *
+ * The primary template is left undefined, and specializations are provided for
+ * each `FixedPointArgumentType` value.
+ *
+ * @tparam ARG The `FixedPointArgumentType` value for which the traits are being
+ * defined.
+ */
 template <FixedPointArgumentType ARG> struct FixedPointTraits
 {};
 
@@ -62,6 +73,7 @@ template <> struct FixedPointTraits<FixedPointArgumentType::VECTOR>
   using ReturnType = ArgumentType;
   using IterationFunction = std::function<ReturnType(ArgumentType const &)>;
 };
+
 
 template <> struct FixedPointTraits<FixedPointArgumentType::EIGEN>
 {

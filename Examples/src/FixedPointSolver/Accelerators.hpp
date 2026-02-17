@@ -141,6 +141,8 @@ public:
   static constexpr FPAcceleratorId id = ASecant;
 
 protected:
+// mutable members used for cache results. Beware however of possible
+// race conditions if the same accelerator is used in different threads (it is not the case here)
   mutable ArgumentType deltaXOld;
   mutable ArgumentType xOld;
   mutable ArgumentType phiOld;
@@ -274,25 +276,24 @@ ASecantAccelerator<ARG>::operator()(ArgumentType const &x) const
       this->xNew = this->M_I(x);
       // compute \Delta x_n = phi(x_n)-x_n
       deltaXNew = xNew - x;
-      ArgumentType tmp(length);
       // \Delta x_n - \Delta x_{n-1}
-      tmp = deltaXNew - deltaXOld;
+      ArgumentType tmp = deltaXNew - deltaXOld;
       // Get ||\Delta x_n - \Delta x_{n-1}||^2
       double norm2 = squaredNorm(tmp);
-      // to do: check norm2
-      norm2 = 1.0 / norm2;
-      ArgumentType tmp2(length);
-      //! Scaling:  \Delta x_n - \Delta x_{n-1}/||\Delta x_n - \Delta
-      //! x_{n-1}||^2
-      tmp2 = norm2 * tmp;
+      if (norm2 == 0.0)
+        {
+          // No acceleration, since the two secant vectors are the same
+          return xNew;
+        }
+      tmp /=norm2;
       //! Do the dot product with \Delta x_n
-      double factor = dot(tmp2, deltaXNew);
+      double factor = dot(tmp, deltaXNew);
       // Save phi(X_n) for later use
-      tmp2 = xNew;
+      tmp = xNew;
       // scale (phi(x_n)-\phi(x_{n-1}) by factor and subtract
       //
       xNew = xNew - factor * (xNew - phiOld);
-      phiOld = tmp2;
+      phiOld = tmp;
       deltaXOld = deltaXNew;
     }
   return xNew;

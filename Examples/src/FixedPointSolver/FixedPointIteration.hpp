@@ -105,7 +105,7 @@ public:
   //! To set, or change the iteration function
   template <typename IF = IterationFunction>
   void
-  setIterationFunction(IterationFunction &&ifun)
+  setIterationFunction(IF &&ifun)
   {
     phi = std::forward<IF>(ifun);
   }

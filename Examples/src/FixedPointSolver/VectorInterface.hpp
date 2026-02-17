@@ -11,6 +11,7 @@
 #include <Eigen/Core>
 #include <numeric>
 #include <vector>
+#include <algorithm>
 // This nested namespace is meant to hide the functions defined here. You should
 // use the fullly qualified name or using namespace apsc::internals if you want
 // to use them
@@ -118,7 +119,7 @@ template <class T>
 std::vector<T>
 operator+(std::vector<T> const &a, std::vector<T> const &b)
 {
-  std::vector<T> res(a.size, 0); // a vector of zeros
+  std::vector<T> res(a.size(), 0); // a vector of zeros
   // I use std::transform because, by adding an execution policy I can make it
   // parallel! A note: the non parallel version can be made more efficient...
   // but then I cannot use std::transform
