@@ -11,12 +11,16 @@
 #include "JacobianFactory.hpp"
 #include "Newton.hpp"
 #include "RKFTraits.hpp"
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <concepts>
 #include <exception>
 #include <functional>
 #include <iostream>
 #include <limits>
+#include <tuple>
+#include <utility>
 #include <vector>
 namespace apsc
 {
@@ -64,37 +68,36 @@ public:
     {
       out << "# Number of time steps:" << res.time.size()
           << " N. contractions:" << res.contractions
-          << " N. expansions:" << res.expansions << std::endl;
-      out << "#   t    y   Estimated error=" << res.estimatedError << std::endl;
+          << " N. expansions:" << res.expansions << '\n';
+      out << "#   t    y   Estimated error=" << res.estimatedError << '\n';
       double hmin = 0.0;
       double hmax = 0.0;
       if(res.time.size() >= 2)
         {
           hmin = res.time[1] - res.time[0];
           hmax = hmin;
-          for(unsigned int i = 0; i < res.time.size() - 1; ++i)
+          for(std::size_t i = 0; i + 1 < res.time.size(); ++i)
             {
               auto delta = res.time[i + 1] - res.time[i];
               hmax = std::max(hmax, delta);
               hmin = std::min(hmin, delta);
             }
         }
-      out << "# hmin:" << hmin << " hmax:" << hmax << std::endl;
+      out << "# hmin:" << hmin << " hmax:" << hmax << '\n';
       std::size_t i = 0;
       if constexpr(KIND == RKFKind::SCALAR)
         {
           for(auto const &t : res.time)
             out << t << " " << res.y[i++] << "\n";
         }
-      else
+      else if constexpr(KIND == RKFKind::VECTOR || KIND == RKFKind::MATRIX)
         {
           for(auto const &t : res.time)
             {
               out << t << " ";
-              apsc::RKFTraits<RKFKind::VECTOR>::VariableType const &yy =
-                res.y[i++];
+              auto const &yy = res.y[i++];
               for(int k = 0; k < yy.size(); ++k)
-                out << yy[k] << " ";
+                out << yy(k) << " ";
               out << "\n";
             }
         }
@@ -140,15 +143,14 @@ public:
    * @todo It would be better to group the parameters tol and maxStep into an
    * (internal?) struct
    */
-  RKFResult operator()(double const &T0, double const &T,
-                       VariableType const &y0, double const &hInit,
-                       double const &tol = 1e-6, int maxStep = 2000) const;
+  [[nodiscard]] RKFResult operator()(double T0, double T,
+                                     VariableType const &y0, double hInit,
+                                     double tol = 1e-6,
+                                     int    maxStep = 2000) const;
   /*!
    * Kept public to simplify handling
    * Mutable because I should be free to modify it also on a const object
    */
-  mutable apsc::Newton newtonSolver{apsc::make_Jacobian(apsc::BROYDENG),
-                                    newtonOptions};
   /*! The default options for the quasi newton solver
   @details
   These options can be changed by the user after constructing the RKF object
@@ -167,6 +169,8 @@ public:
     .maxBackSteps = 4,        // Max number backstep
     .lambdaInit = 1.          // initial lambda
   };
+  mutable apsc::Newton newtonSolver{apsc::make_Jacobian(apsc::BROYDENG),
+                                    newtonOptions};
 
 private:
   Function           M_f;
@@ -198,9 +202,8 @@ private:
 
 template <apsc::ButcherArrayConcept B, RKFKind KIND>
 RKF<B, KIND>::RKFResult
-RKF<B, KIND>::operator()(const double &T0, const double &T,
-                         const VariableType &y0, const double &hInit,
-                         const double &tol, int maxSteps) const
+RKF<B, KIND>::operator()(double T0, double T, const VariableType &y0,
+                         double hInit, double tol, int maxSteps) const
 {
   RKFResult res;
   // Useful alias to simplify typing
@@ -240,6 +243,7 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
   double timeInterval = T - T0;
   if(timeInterval <= 0)
     {
+      failed = true;
       std::cerr << "Time interval must me greater than zero\n";
       return res;
     }
@@ -299,7 +303,11 @@ RKF<B, KIND>::operator()(const double &T0, const double &T,
       {
         std::tie(yprimal, ytest) = RKFstep(t, ycurr, h); // step
         double currentError = this->norm(yprimal - ytest);
-        double ratio = errorPerTimeStep / currentError;
+        double ratio = 0.0;
+        if(currentError <= std::numeric_limits<double>::epsilon())
+          ratio = std::numeric_limits<double>::infinity();
+        else
+          ratio = errorPerTimeStep / currentError;
         double mu = std::max(
           maxreduction,
           std::pow(ratio, factor_contraction)); // very expensive:alternative
@@ -383,19 +391,19 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
   -> std::pair<VariableType, VariableType>
 {
   auto constexpr Nstages = B::Nstages();
-  std::array<VariableType, Nstages> K;
+  std::array<VariableType, Nstages> K{};
   // They are constant expressions!
-  auto constexpr A = ButcherTable.A;
-  auto constexpr c{ButcherTable.c};
-  auto constexpr b1{ButcherTable.b1};
-  auto constexpr b2{ButcherTable.b2};
+  auto const &A = ButcherTable.A;
+  auto const &c = ButcherTable.c;
+  auto const &b1 = ButcherTable.b1;
+  auto const &b2 = ButcherTable.b2;
   //@todo Test if implicit no KIND=MATRIX
   //@todo Identify if implicit outside this heavily used routine!
-  for(unsigned int i = 0; i < Nstages; ++i)
+  for(std::size_t i = 0; i < Nstages; ++i)
     {
       double       time = tstart + c[i] * h;
       VariableType value = y0;
-      for(unsigned int j = 0; j < i; ++j)
+      for(std::size_t j = 0; j < i; ++j)
         value += A[i][j] * K[j];
       if constexpr(ButcherTable.implicit())
         {
@@ -431,12 +439,12 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
     }
   VariableType v1 = y0;
   VariableType v2 = y0;
-  for(unsigned int i = 0; i < Nstages; ++i)
+  for(std::size_t i = 0; i < Nstages; ++i)
     {
       v1 += K[i] * b1[i];
       v2 += K[i] * b2[i];
     }
-  return std::make_pair(v1, v2);
+  return {v1, v2};
 }
 
 } // namespace apsc

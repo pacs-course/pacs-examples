@@ -11,7 +11,7 @@
 #include <complex>
 #include <fstream>
 #include <iostream>
-constexpr double pi = 3.141592653589793238462643383279;
+#include <numbers>
 int
 main()
 {
@@ -24,11 +24,12 @@ main()
   std::cout << res << std::endl;
   std::cout << compute({-1., 0.}) << std::endl;
   std::cout << compute({0., 1.}) << std::endl;
-  auto [x, status] = compute.computeLimit(3. * pi / 4.);
+  auto [x, status] =
+    compute.computeLimit(3. * std::numbers::pi_v<double> / 4.);
   std::cout << x << " status=" << status << std::endl;
   compute.options.verbose = true;
   auto          values = compute.computeStabilityRegion(1000, {-1., 1.0});
   std::ofstream out("stability.dat");
-  for(auto xp = values.begin(); xp != values.end(); ++xp)
-    out << xp->real() << " " << xp->imag() << "\n";
+  for(auto const &xp : values)
+    out << xp.real() << " " << xp.imag() << "\n";
 }

@@ -12,6 +12,7 @@
 #include <complex>
 #include <iostream>
 #include <limits>
+#include <numbers>
 #include <tuple>
 #include <vector>
 namespace apsc
@@ -55,19 +56,19 @@ public:
   {
     auto const &                           A = my_B.A;
     std::array<double, Butcher::Nstages()> b;
-    if(Level == 1)
+    if constexpr(Level == 1)
       b = my_B.b1;
     else
       b = my_B.b2;
     std::array<complex, Butcher::Nstages()> K;
     K.fill(z);
-    for(unsigned int stage = 1u; stage < my_B.Nstages(); ++stage)
+    for(std::size_t stage = 1u; stage < my_B.Nstages(); ++stage)
       {
-        for(unsigned int j = 0; j < stage; ++j)
+        for(std::size_t j = 0; j < stage; ++j)
           K[stage] += z * A[stage][j] * K[j];
       }
     complex res{1., 0.};
-    for(unsigned int stage = 0; stage < my_B.Nstages(); ++stage)
+    for(std::size_t stage = 0; stage < my_B.Nstages(); ++stage)
       res += b[stage] * K[stage];
     return res;
   }
@@ -102,7 +103,7 @@ public:
    * @return A tuple with the point and a boolean representing the status
    * (false=not found).
    */
-  std::tuple<complex, bool>
+  [[nodiscard]] std::tuple<complex, bool>
   computeLimit(double const &angle, complex const &centerPoint = {-1., 0.})
   {
     auto [a, b] = bracket(angle, centerPoint);
@@ -147,6 +148,7 @@ public:
       {
         x1 = x2;
         x2 += step;
+        ++iTry;
       }
     return {x1, x2};
   }
@@ -158,15 +160,25 @@ public:
    * @see{computeLimit}
    * @return A vector of conplex with the found points.
    */
-  std::vector<complex>
+  [[nodiscard]] std::vector<complex>
   computeStabilityRegion(unsigned int   numSamples,
                          complex const &centerPoint = {-1., 0.})
   {
-    constexpr double     pi = 3.141592653589793238462643383279;
     constexpr double     start = 0.;
-    constexpr double     end = pi;
+    constexpr double     end = std::numbers::pi_v<double>;
     std::vector<complex> result;
+    if(numSamples == 0)
+      return result;
     result.reserve(numSamples);
+    if(numSamples == 1)
+      {
+        auto [x, status] = computeLimit(start, centerPoint);
+        if(status)
+          result.emplace_back(x);
+        else if(options.verbose)
+          std::cerr << "Point at angle " << start << " Not found\n";
+        return result;
+      }
     for(unsigned int i = 0; i < numSamples; ++i)
       {
         double angle = start + i * (end - start) / (numSamples - 1);

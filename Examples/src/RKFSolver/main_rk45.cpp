@@ -23,11 +23,9 @@ main()
     // RKF<RKFScheme::RK12_t> solver{fun};
     auto   solution = solver(t0, T, y0, h_init, errorDesired);
     double max_error = 0.;
-    int    count = 0;
-
-    for(auto i : solution.y)
-      max_error =
-        std::max(max_error, std::abs(exact(solution.time[count++]) - i));
+    for(std::size_t i = 0; i < solution.y.size(); ++i)
+      max_error = std::max(max_error,
+                           std::abs(exact(solution.time[i]) - solution.y[i]));
     std::cout << std::boolalpha;
     std::cout << "effective Max error " << max_error << " Desired max error "
               << errorDesired << " Failed:" << solution.failed
