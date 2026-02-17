@@ -169,7 +169,7 @@ public:
     .maxBackSteps = 4,        // Max number backstep
     .lambdaInit = 1.          // initial lambda
   };
-  mutable apsc::Newton newtonSolver{apsc::make_Jacobian(apsc::BROYDENG),
+  mutable apsc::Newton newtonSolver{apsc::make_Jacobian(apsc::JacobianKind::BroydenG),
                                     newtonOptions};
 
 private:

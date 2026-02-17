@@ -187,7 +187,7 @@ Newton(NLS &&nls, std::unique_ptr<JacobianBase> j, NewtonOptions opt = NewtonOpt
 template <class NLS, class JAC>
 Newton(NLS &&nls, JAC  j, NewtonOptions opt = NewtonOptions{});
 template <class NLS>
-Newton(NLS &&nls, apsc::JacobianKind JAC, NewtonOptions opt = NewtonOptions{});
+Newton(NLS &&nls, apsc::JacobianKind jacKind, NewtonOptions opt = NewtonOptions{});
 
 
 void setJacobianPtr(std::unique_ptr<JacobianBase> jacobianPtr);
@@ -220,11 +220,11 @@ NewtonState                   state;
 
 \end{lstlisting}
 
-I have different contructors to provide flexibility in the contruction of a \cpp{Newton} object.
+I have different constructors to provide flexibility in the construction of a \cpp{Newton} object.
 \subsection{The Jacobian}
 I have implemented different approximation of the jacobian
 \begin{itemize}
-    \item \cpp{FullJacobian} The user must provide the full jacobian as any callable object converible to
+    \item \cpp{FullJacobian} The user must provide the full jacobian as any callable object convertible to
     \cpp{NewtonTraits::JacobianFunctionType}.
     \item \cpp{DiscreteJacobian}. Jacobian is approximated by finite differences.
     \item \cpp{IdentityJacobian.} Does nothing. With this "approximation" the Newton method becomes a simple fixed point iteration 
@@ -236,14 +236,14 @@ I have implemented different approximation of the jacobian
 
 The \cpp{JacobianFactory} allows the user to create the desired concrete object of the \cpp{Jacobian} hierarchy.
 \begin{lstlisting}
-enum JacobianKind
+enum class JacobianKind : int
 {
-DISCRETEJACOBIAN = 0,
-IDENTITYJACOBIAN = 1,
-FULLJACOBIAN = 2,
-BROYDENB = 3,
-BROYDENG = 4,
-EIROLANEVANLINNA = 5
+DiscreteJacobian = 0,
+IdentityJacobian = 1,
+FullJacobian = 2,
+BroydenB = 3,
+BroydenG = 4,
+EirolaNevanlinna = 5
 };
 
 template <typename... Args>

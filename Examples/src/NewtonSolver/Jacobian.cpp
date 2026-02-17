@@ -5,12 +5,17 @@
  *      Author: forma
  */
 #include "Jacobian.hpp"
+#include <cmath>
+#include <limits>
+#include <stdexcept>
 
 apsc::DiscreteJacobian::ArgumentType
 apsc::DiscreteJacobian::solve(const ArgumentType &x,
                               const ArgumentType &b) const
 {
   using namespace apsc;
+  if(!M_sys)
+    throw std::runtime_error("ERROR: Non linear system not set in Jacobian");
   std::size_t                                M = x.size();
   apsc::DiscreteJacobian::JacobianMatrixType J(M, M);
   double                                     two_tol = 2 * tol;
@@ -41,6 +46,8 @@ apsc::DiscreteJacobian::solve(const ArgumentType &x,
 apsc::FullJacobian::ArgumentType
 apsc::FullJacobian::solve(const ArgumentType &x, ArgumentType const &b) const
 {
+  if(!Jac)
+    throw std::runtime_error("ERROR: Jacobian function not set");
   apsc::FullJacobian::JacobianMatrixType J = this->Jac(x);
   return J.fullPivLu().solve(b);
 }
@@ -48,6 +55,8 @@ apsc::FullJacobian::solve(const ArgumentType &x, ArgumentType const &b) const
 apsc::BroydenB::ArgumentType
 apsc::BroydenB::solve(const ArgumentType &x, const ArgumentType &r) const
 {
+  if(!M_sys)
+    throw std::runtime_error("ERROR: Non linear system not set in Jacobian");
   // If I have not given the matrix, we take the identity
   if(firstTime)
     {
@@ -55,7 +64,10 @@ apsc::BroydenB::solve(const ArgumentType &x, const ArgumentType &r) const
         {
           ArgumentType dx = -r;
           ArgumentType dr = r - M_sys->operator()(x + dx);
-          B = (dx.norm() / dr.norm()) *
+          double       denom = dr.norm();
+          if(denom <= std::numeric_limits<double>::epsilon())
+            denom = 1.0;
+          B = (dx.norm() / denom) *
               BroydenB::JacobianMatrixType::Identity(x.size(), x.size());
         }
       firstTime = false;
@@ -64,7 +76,10 @@ apsc::BroydenB::solve(const ArgumentType &x, const ArgumentType &r) const
     {
       ArgumentType s = x - previousX;  // step
       ArgumentType dr = r - previousR; // residual difference
-      auto         factor = 1. / dr.squaredNorm();
+      auto denom = dr.squaredNorm();
+      if(denom <= std::numeric_limits<double>::epsilon())
+        denom = 1.0;
+      auto factor = 1. / denom;
       B += factor * (s - B * dr) * dr.transpose();
     }
   previousX = x;
@@ -75,6 +90,8 @@ apsc::BroydenB::solve(const ArgumentType &x, const ArgumentType &r) const
 apsc::BroydenG::ArgumentType
 apsc::BroydenG::solve(const ArgumentType &x, const ArgumentType &r) const
 {
+  if(!M_sys)
+    throw std::runtime_error("ERROR: Non linear system not set in Jacobian");
   // If I have not given the matrix, we take the identity
   if(firstTime)
     {
@@ -82,7 +99,10 @@ apsc::BroydenG::solve(const ArgumentType &x, const ArgumentType &r) const
         {
           ArgumentType dx = -r;
           ArgumentType dr = r - M_sys->operator()(x + dx);
-          B = (dx.norm() / dr.norm()) *
+          double       denom = dr.norm();
+          if(denom <= std::numeric_limits<double>::epsilon())
+            denom = 1.0;
+          B = (dx.norm() / denom) *
               BroydenG::JacobianMatrixType::Identity(x.size(), x.size());
         }
       firstTime = false;
@@ -91,7 +111,10 @@ apsc::BroydenG::solve(const ArgumentType &x, const ArgumentType &r) const
     {
       ArgumentType s = x - previousX;  // step delta
       ArgumentType dr = r - previousR; // residual difference
-      auto         factor = 1. / (s.transpose() * B * dr);
+      auto denom = (s.transpose() * B * dr).value();
+      if(std::abs(denom) <= std::numeric_limits<double>::epsilon())
+        denom = 1.0;
+      auto factor = 1. / denom;
       B += factor * (s - B * dr) * (s.transpose() * B);
     }
   previousX = x;
@@ -103,6 +126,8 @@ apsc::Eirola_Nevanlinna::ArgumentType
 apsc::Eirola_Nevanlinna::solve(const ArgumentType &x,
                                const ArgumentType &r) const
 {
+  if(!M_sys)
+    throw std::runtime_error("ERROR: Non linear system not set in Jacobian");
   // If I have not given the matrix, we take the identity
   if(firstTime)
     {
@@ -110,8 +135,11 @@ apsc::Eirola_Nevanlinna::solve(const ArgumentType &x,
         {
           ArgumentType dx = -r;
           ArgumentType dr = r - M_sys->operator()(x + dx);
+          double       denom = dr.norm();
+          if(denom <= std::numeric_limits<double>::epsilon())
+            denom = 1.0;
           B =
-            (dx.norm() / dr.norm()) *
+            (dx.norm() / denom) *
             Eirola_Nevanlinna::JacobianMatrixType::Identity(x.size(), x.size());
         }
       firstTime = false;
@@ -120,7 +148,10 @@ apsc::Eirola_Nevanlinna::solve(const ArgumentType &x,
     {
       ArgumentType p = -B * r;
       ArgumentType q = M_sys->operator()(x + p) - r;
-      auto         factor = 1. / (p.transpose() * B * q);
+      auto denom = (p.transpose() * B * q).value();
+      if(std::abs(denom) <= std::numeric_limits<double>::epsilon())
+        denom = 1.0;
+      auto factor = 1. / denom;
       B += factor * (p - B * q) * (p.transpose() * B);
     }
   previousX = x;

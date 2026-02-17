@@ -12,7 +12,7 @@
 /*
  * NewtonTraits.hpp
  *
- * NetwtonTraits.hpp
+ * NewtonTraits.hpp
  *
  *  Created on: Feb 19, 2020
  *      Author: forma

@@ -10,8 +10,7 @@
 #include "NewtonTraits.hpp"
 namespace apsc
 {
-//! @brief
-//! The base class for the Jacobian.
+//! @brief The base class for the Jacobian.
 //! It inherits from NonLinSolveTraits to get all types defined there
 //! This is possible since the trait is not a template.
 //! It implements the basic methods for the application of the Jacobian, which
@@ -22,11 +21,11 @@ class JacobianBase : public NewtonTraits
 {
 public:
   //! Takes a pointer to an existing non linear system
-  JacobianBase(NonLinearSystemType const *nls = nullptr) : M_sys{nls} {};
+  JacobianBase(NonLinearSystemType const *nls = nullptr) : M_sys{nls} {}
   //! Solves the system \f$J(x)z= b\f$
-  //! /param x the point where to evaluate the Jacobian
-  //! /param b the right hand side of the system J(x) y=b
-  //! /return the result z
+  //! @param x the point where to evaluate the Jacobian
+  //! @param b the right hand side of the system J(x) y=b
+  //! @return the result z
   virtual ArgumentType solve(ArgumentType const &x,
                              ArgumentType const &b) const = 0;
   //! Sets the non linear system.
@@ -34,15 +33,15 @@ public:
   setNonLinSys(NonLinearSystemType const *s)
   {
     M_sys = s;
-  };
-  virtual ~JacobianBase(){};
+  }
+  virtual ~JacobianBase() = default;
 
 protected:
   //! A pointer to the non-linear system
   NonLinearSystemType const *M_sys;
 };
 
-//! @brief Computes the jacobian by finite differences.
+//! @brief Computes the Jacobian by finite differences.
 /*!
   @details Final class that implements the following approximation of
   the Jacobian
@@ -72,11 +71,11 @@ public:
    */
   DiscreteJacobian(NonLinearSystemType const *sys = nullptr,
                    double spacing = defaultTol, double lambda = defaultLambda)
-    : JacobianBase{sys}, tol{spacing}, lambda{lambda} {};
+    : JacobianBase{sys}, tol{spacing}, lambda{lambda} {}
   //! Solves the system
   /*!
    * @param x the point where to evaluate the Jacobian
-   * @param b he right hand side of the system J(x) y=b
+   * @param b the right hand side of the system J(x) y=b
    * @return The result
    */
   //!
@@ -115,9 +114,9 @@ class IdentityJacobian final : public JacobianBase
 public:
   using JacobianBase::JacobianBase;
   //! Returns the rhs b scaled by lambda
-  //! /param x (not used)
-  //! /param b the right hand side of the system \f$\alpha^{-1} I y=b\f$
-  //! /return the result
+  //! @param x (not used)
+  //! @param b the right hand side of the system \f$\alpha^{-1} I y=b\f$
+  //! @return the result
 
   ArgumentType
   solve(ArgumentType const & /*x*/, ArgumentType const &b) const override
@@ -125,7 +124,7 @@ public:
     return this->lambda * b;
   }
   //! Set the scaling factor
-  //! /param l the scaling factor
+  //! @param l the scaling factor
   void
   setLambda(double l)
   {
@@ -151,7 +150,7 @@ public:
   //! @param j an object convertible to a JacobianFunction
   FullJacobian(JacobianFunctionType const &j,
                NonLinearSystemType  const      *nls = nullptr)
-    : JacobianBase{nls}, Jac{j} {};
+    : JacobianBase{nls}, Jac{j} {}
 
   //! I can change the JacobianFunction
   //! \tparam J a type convertible to JacobianFunction

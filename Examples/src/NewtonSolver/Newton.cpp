@@ -18,13 +18,13 @@ apsc::Newton::solve(const ArgumentType &x0)
   // options.something every time
   //  Note that structured bindings are nice, but you need to know the order the
   //  members defined in the struct. This is not a problem here, but it is
-  //  something to keep in mind. The old stile (you see an example below) is
+  //  something to keep in mind. The old style (you see an example below) is
   //  more verbose, but it is also clearer and safer.
   const auto &[tolerance, minRes, maxIter, backtrackOn, stopOnStagnation, alpha,
                backStepReduction, maxBackSteps, lambdaInit] = this->options;
   // get all variables that go in the state
   // This is needed to allow an overridden callback to access the state
-  // avoinding having to write state.something every time
+  // avoiding having to write state.something every time
   auto &[currentSolution, currentIteration, currentResidualNorm,
          currentStepLength] = this->state;
 
@@ -54,10 +54,12 @@ apsc::Newton::solve(const ArgumentType &x0)
     {
       throw std::runtime_error("ERROR: Jacobian_ptr is not initialized");
     }
-  static_assert(std::is_assignable<decltype(currentSolution) &,
-                                   const ArgumentType &>::value,
+  Jacobian_ptr->setNonLinSys(&nonLinSys);
+  static_assert(std::is_assignable_v<decltype(currentSolution) &,
+                                     const ArgumentType &>,
                 "ArgumentType must be assignable to currentSolution type");
-  currentSolution = x0;
+  currentIteration = 0u;
+  currentStepLength = std::numeric_limits<double>::max();
   // The initial step is to compute the relevant quantities
   // from the initial conditions
   currentSolution = x0;
@@ -77,6 +79,7 @@ apsc::Newton::solve(const ArgumentType &x0)
   if(currentResidualNorm <= minRes)
     {
       converged = true;
+      currentStepLength = 0.0;
       return NewtonResult{currentSolution,   currentResidualNorm,
                           currentStepLength, currentIteration,
                           converged,         stagnation};

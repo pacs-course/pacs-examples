@@ -20,10 +20,10 @@ namespace apsc
 struct NewtonOptions
 {
   //! @brief Tolerance for two successive iterations.
-  /*! @detail The iteration stops if \f$||x_{new}-x_{old}||<tolerance\f$. */
+  /*! @details The iteration stops if \f$||x_{new}-x_{old}||<tolerance\f$. */
   double tolerance{1.e-8};
   //! @brief Tolerance on residual.
-  /*! @detail The iteration stops if \f$||F(x)||<minRes\f$.*/
+  /*! @details The iteration stops if \f$||F(x)||<minRes\f$.*/
   double minRes{1.e-6};
   //! Max. number of iterations (not including possible backtracking steps).
   unsigned int maxIter{50};
@@ -68,8 +68,8 @@ struct NewtonResult
   double stepLength{0.0};
   //! The last value of the iteration counter
   unsigned int iterations{0u};
-  //! \brief Convergence flag. True if convergence is reached
-  //! \detail Convergence is reached when both conditions on residual and step
+  //! @brief Convergence flag. True if convergence is reached
+  //! @details Convergence is reached when both conditions on residual and step
   //! length are met.
   bool converged = false;
   //! Stagnation flag. True if we have stagnated.

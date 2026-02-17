@@ -21,14 +21,14 @@ namespace apsc
 //! of the integer corresponding to three enum (if I want to read it from a
 //! file, for instance)
 //!
-enum JacobianKind
+enum class JacobianKind : int
 {
-  DISCRETEJACOBIAN = 0,
-  IDENTITYJACOBIAN = 1,
-  FULLJACOBIAN = 2,
-  BROYDENB = 3,
-  BROYDENG = 4,
-  EIROLANEVANLINNA = 5
+  DiscreteJacobian = 0,
+  IdentityJacobian = 1,
+  FullJacobian = 2,
+  BroydenB = 3,
+  BroydenG = 4,
+  EirolaNevanlinna = 5
 };
 
 //! A simple factory that returns a JacobianBase polymorphic object wrapped in a
@@ -38,24 +38,24 @@ enum JacobianKind
 //! \param args Optional arguments to be forwarded to the constructor
 //!
 template <typename... Args>
-std::unique_ptr<apsc::JacobianBase>
+[[nodiscard]] std::unique_ptr<apsc::JacobianBase>
 make_Jacobian(JacobianKind kind, Args &&...args)
 {
   switch(kind)
     {
-    case DISCRETEJACOBIAN:
+    case JacobianKind::DiscreteJacobian:
       return std::make_unique<apsc::DiscreteJacobian>(
         std::forward<Args>(args)...);
-    case IDENTITYJACOBIAN:
+    case JacobianKind::IdentityJacobian:
       return std::make_unique<apsc::IdentityJacobian>(
         std::forward<Args>(args)...);
-    case FULLJACOBIAN:
+    case JacobianKind::FullJacobian:
       return std::make_unique<apsc::FullJacobian>(std::forward<Args>(args)...);
-    case BROYDENB:
+    case JacobianKind::BroydenB:
       return std::make_unique<apsc::BroydenB>(std::forward<Args>(args)...);
-    case BROYDENG:
+    case JacobianKind::BroydenG:
       return std::make_unique<apsc::BroydenG>(std::forward<Args>(args)...);
-    case EIROLANEVANLINNA:
+    case JacobianKind::EirolaNevanlinna:
       return std::make_unique<apsc::Eirola_Nevanlinna>(
         std::forward<Args>(args)...);
     default:

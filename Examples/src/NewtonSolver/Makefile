@@ -2,11 +2,11 @@
 #
 # An example of Makefile for the course on 
 # Advanced Programming for Scientific Computing
-# It should be modified for adapting it to the various examples
+# It should be modified to adapt it to the various examples
 #
 ############################################################
 #
-# The environmental variable PACS_ROOT should be set to the
+# The environment variable PACS_ROOT should be set to the
 # root directory where the examples reside. In practice, the directory
 # where this file is found. The resolution of PACS_ROOT is made in the
 # Makefile.h file, where other important variables are also set.
@@ -39,7 +39,7 @@ ifeq ($(LIBTYPE),DYNAMIC)
  LDFLAGS+=-dynamic 
 else
  export LIBRARY=$(STATIC_LIBFILE)
-# LDFLAGS+=-static # this is causing problems if you do not have static system lbraries
+# LDFLAGS+=-static # this is causing problems if you do not have static system libraries
 endif
 
 ifeq ($(DEBUG),yes)
@@ -59,7 +59,7 @@ endif
 
 #
 # The general setting is as follows:
-# mains are identified bt main_XX.cpp
+# mains are identified by main_XX.cpp
 # all other files are XX.cpp
 #
 
@@ -90,7 +90,7 @@ all:
 	@echo "make static makes static library and executable"
 	@echo "make dynamic makes dynamic library and executable"
 	@echo "make depend just makes dependency file"
-	@echo "make clean cleans all but not not library"
+	@echo "make clean cleans all but not the library"
 	@echo "make library LIBTYPE=[DYNAMIC|STATIC] makes dyn/stat library"
 	@echo "make alllibs makes both dynamic and static library"
 	@echo "make exec makes the executable (once libraries are present)"
@@ -162,7 +162,6 @@ $(DEPEND): $(SRCS)
 	done
 
 -include $(DEPEND)
-
 
 
 

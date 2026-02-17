@@ -8,6 +8,7 @@
 #include "Newton.hpp"
 #include <iomanip>
 #include <iostream>
+#include <numbers>
 int
 main()
 {
@@ -37,7 +38,7 @@ main()
   */
 
   auto nonLinFun = [](const ArgumentType &x) -> ArgumentType {
-    constexpr double pi = 3.141592653589793238;
+    constexpr double pi = std::numbers::pi_v<double>;
     ArgumentType     y(3);
     y(0) = 3 * x[0] - std::cos(x[1] * x[2]) - 0.5;
     y(1) =
@@ -50,12 +51,12 @@ main()
     JacobianType J(3, 3);
     J(0, 0) = 3.;
     J(0, 1) = x[2] * std::sin(x[1] * x[2]);
-    J(0, 2) = x[1] * sin(x[1] * x[2]);
+    J(0, 2) = x[1] * std::sin(x[1] * x[2]);
     J(1, 0) = 2. * x[0];
     J(1, 1) = -162. * (x[1] + 0.1);
-    J(0, 2) = std::cos(x[2]);
-    J(2, 0) = -x[1] * exp(-x[0] * x[1]);
-    J(2, 1) = -x[0] * std::exp(x[0] * x[1]);
+    J(1, 2) = std::cos(x[2]);
+    J(2, 0) = -x[1] * std::exp(-x[0] * x[1]);
+    J(2, 1) = -x[0] * std::exp(-x[0] * x[1]);
     J(2, 2) = 20.;
     return J;
   };
@@ -101,7 +102,8 @@ auto jacobianFun = [](const ArgumentType & x)->JacobianType
               << " has stagnated:" << stagnated << std::endl;
   }
   // now with discrete jacobian
-  newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::DISCRETEJACOBIAN));
+  newtonSolver.setJacobianPtr(
+    apsc::make_Jacobian(apsc::JacobianKind::DiscreteJacobian));
   {
     auto [solution, resNorm, stepLen, iter, converged, stagnated] =
       newtonSolver.solve(x0);
@@ -116,7 +118,8 @@ auto jacobianFun = [](const ArgumentType & x)->JacobianType
   // Now with Broyden
   newtonOptions.maxIter = 100; // increase max iterations
   newtonSolver.setOptions(newtonOptions);
-  newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::BROYDENB));
+  newtonSolver.setJacobianPtr(
+    apsc::make_Jacobian(apsc::JacobianKind::BroydenB));
   {
     auto [solution, resNorm, stepLen, iter, converged, stagnated] =
       newtonSolver.solve(x0);
@@ -127,7 +130,8 @@ auto jacobianFun = [](const ArgumentType & x)->JacobianType
               << " has stagnated:" << stagnated << std::endl;
   }
   // Now with Broyden
-  newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::BROYDENG));
+  newtonSolver.setJacobianPtr(
+    apsc::make_Jacobian(apsc::JacobianKind::BroydenG));
   {
     auto [solution, resNorm, stepLen, iter, converged, stagnated] =
       newtonSolver.solve(x0);
@@ -142,7 +146,8 @@ auto jacobianFun = [](const ArgumentType & x)->JacobianType
   // newtonSolver.setOptions(newtonOptions);
   // apsc::IdentityJacobian I;
   // I.setLambda(0.01);
-  newtonSolver.setJacobianPtr(apsc::make_Jacobian(apsc::EIROLANEVANLINNA));
+  newtonSolver.setJacobianPtr(
+    apsc::make_Jacobian(apsc::JacobianKind::EirolaNevanlinna));
   {
     auto [solution, resNorm, stepLen, iter, converged, stagnated] =
       newtonSolver.solve(x0);
