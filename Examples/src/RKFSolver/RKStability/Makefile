@@ -2,11 +2,11 @@
 #
 # An example of Makefile for the course on 
 # Advanced Programming for Scientific Computing
-# It should be modified for adapting it to the various examples
+# It should be modified to adapt it to the various examples
 #
 ############################################################
 #
-# The environmental variable PACS_ROOT should be set to the
+# The environment variable PACS_ROOT should be set to the
 # root directory where the examples reside. In practice, the directory
 # where this file is found. The resolution of PACS_ROOT is made in the
 # Makefile.h file, where other important variables are also set.
@@ -23,7 +23,7 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 
 #
 # The general setting is as follows:
-# mains are identified bt main_XX.cpp
+# mains are identified by main_XX.cpp
 # all other files are XX.cpp
 #
 

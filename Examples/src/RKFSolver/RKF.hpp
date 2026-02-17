@@ -26,7 +26,7 @@ namespace apsc
 {
 
 /*!
- * A class for explicit or diagonally implicit Runge-Kutta Fehlberg type
+ * A class for explicit or diagonally implicit Runge-Kutta-Fehlberg type
  * solution of ODEs
  * @tparam B The Butcher table of the scheme. Must be defined following the
  * scheme shown in ButcherRKF.hpp
@@ -51,9 +51,9 @@ public:
     double estimatedError{0.0};
     //! Failure
     bool failed{false};
-    //! Number of time step expansions
+  //! Number of time-step expansions
     int expansions{0};
-    //! Number of time step contractions
+  //! Number of time-step contractions
     int contractions{0};
     /*
      * Provide a non-templated friend streaming operator for this concrete
@@ -112,7 +112,7 @@ public:
   {}
   // Constructor passing butcher table and forcing function
   // Butcher table is now a constant expression
-  // this constructor is there only to activate template parameter deduction
+  // This constructor is there only to activate template parameter deduction
   template <class F = Function>
     requires std::convertible_to<F, Function>
   RKF(B const &bt, F &&f) : RKF{f}
@@ -138,8 +138,8 @@ public:
    * @param T  final time
    * @param y0 initial condition
    * @param hInit initial time step
-   * @param tol desired global error max. norm
-   * @param maxstep Safeguard to avoid too many steps (default 2000)
+   * @param tol desired global error max-norm
+   * @param maxStep Safeguard to avoid too many steps (default 2000)
    * @todo It would be better to group the parameters tol and maxStep into an
    * (internal?) struct
    */
@@ -148,15 +148,12 @@ public:
                                      double tol = 1e-6,
                                      int    maxStep = 2000) const;
   /*!
-   * Kept public to simplify handling
-   * Mutable because I should be free to modify it also on a const object
+   * @brief Default options for the quasi-Newton solver.
+   * @details Kept public to simplify handling. Mutable because it can be
+   * modified also on a const object. These options can be changed by the user
+   * after constructing the RKF object. Designated initializers (C++20) are
+   * used to make it clearer how each option is named in the struct.
    */
-  /*! The default options for the quasi newton solver
-  @details
-  These options can be changed by the user after constructing the RKF object
-  I used designated initializers (C++20 feature) to make it clearer how
-  each option is named in the struct
-  */
   apsc::NewtonOptions newtonOptions{
     // Designated initializers in action
     .tolerance = 1.e-10,       // tolerance for step in Newton
@@ -164,7 +161,7 @@ public:
     .maxIter = 100,            // max number of iterations
     .backtrackOn = true,       // use backtracking
     .stopOnStagnation = false, // do not stop on stagnation
-    .alpha = 1.e-4, // parameter for 1st wolfe condition (backtracking)
+    .alpha = 1.e-4, // parameter for 1st Wolfe condition (backtracking)
     .backstepReduction = 0.5, // Reduction coefficient (backtracking)
     .maxBackSteps = 4,        // Max number backstep
     .lambdaInit = 1.          // initial lambda
@@ -244,13 +241,13 @@ RKF<B, KIND>::operator()(double T0, double T, const VariableType &y0,
   if(timeInterval <= 0)
     {
       failed = true;
-      std::cerr << "Time interval must me greater than zero\n";
+      std::cerr << "Time interval must be greater than zero\n";
       return res;
     }
 
   // Iteration counter
   int iter = 0;
-  // I want to check that the time step does not go ridiculosly small
+  // I want to check that the time step does not go ridiculously small
   // @todo make it a member variable!
   double hmin = 100 * timeInterval * std::numeric_limits<double>::epsilon();
   double h = std::max(hInit, hmin);
@@ -279,7 +276,7 @@ RKF<B, KIND>::operator()(double T0, double T, const VariableType &y0,
       //  options.tolerance=0.1*errorPerTimeStep;
       //  newtonSolver.setOptions(options);
       // Check if new time step will cross the final time step and we are not
-      // expandin
+      // expanding
       /* if(t+h>=T && !expanded)
         {
           h=T-t; // fix h
@@ -366,12 +363,12 @@ RKF<B, KIND>::operator()(double T0, double T, const VariableType &y0,
   if(iter > maxSteps)
     {
       failed = true;
-      std::cerr << "RKF: Max number of steps exceeded\n";
+      std::cerr << "RKF: maximum number of steps exceeded\n";
     }
   if(minimalh)
     {
-      std::cerr << "RKF used minimal value for h=" << hmin
-                << " Error may be greater than expected\n";
+      std::cerr << "RKF used the minimal value for h=" << hmin
+                << ". Error may be greater than expected.\n";
     }
   // std::cout<<"Oscillazioni="<<oscilla<<std::endl;
   return res;
@@ -381,7 +378,7 @@ RKF<B, KIND>::operator()(double T0, double T, const VariableType &y0,
 // write
 //
 // std::pair<typename RKFTraits::VariableType, typename RKFTraits::VariableType>
-// RKFstep(const double & tstart, const VariableType & y0, const double& h)
+// RKFstep(const double &tstart, const VariableType &y0, const double &h)
 // const
 //
 template <apsc::ButcherArrayConcept B, RKFKind KIND>
@@ -397,7 +394,7 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
   auto const &c = ButcherTable.c;
   auto const &b1 = ButcherTable.b1;
   auto const &b2 = ButcherTable.b2;
-  //@todo Test if implicit no KIND=MATRIX
+  //@todo Test if implicit, no KIND=MATRIX
   //@todo Identify if implicit outside this heavily used routine!
   for(std::size_t i = 0; i < Nstages; ++i)
     {
@@ -409,7 +406,7 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
         {
           if constexpr(KIND == apsc::RKFKind::VECTOR)
             {
-              // implicit (at the moment I support only DIRK!
+              // Implicit (at the moment I support only DIRK)
               auto fun = [&value, &time, &A, &i, &h,
                           this](VariableType const &x) -> VariableType {
                 return M_f(time, value + h * A[i][i] * x) - x;
@@ -418,20 +415,20 @@ RKF<B, KIND>::RKFstep(const double &tstart, const VariableType &y0,
               auto result = newtonSolver.solve(M_f(time, value));
               if(!result.converged)
                 {
-                  std::cerr << "Solution of non-linear problem failed\n";
+                  std::cerr << "Solution of the nonlinear problem failed\n";
                   std::cerr << "Last residual " << result.residualNorm
                             << std::endl;
                   std::cerr << "y0, value, h, time, stage, fun" << y0 << " "
                             << value << " " << h << " " << time << " " << i
                             << " " << M_f(time, value) << std::endl;
-                  throw std::runtime_error("Newton did not converge");
+                  throw std::runtime_error("Newton iteration did not converge");
                 }
               K[i] = result.solution * h;
             }
           else
             {
               throw std::runtime_error(
-                " cannot use implicit RK if KIND is not VECTOR");
+                "Cannot use implicit RK unless KIND is VECTOR");
             }
         }
       else

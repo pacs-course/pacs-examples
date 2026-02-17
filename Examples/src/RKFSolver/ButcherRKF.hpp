@@ -15,18 +15,18 @@ namespace apsc
 {
 //! The class containing the prototype of a Butcher table for RKF methods
 /*!
- * A Butcher table (or Buttcher array) for an embedded Runge Kutta method is
+ * A Butcher table (or Butcher array) for an embedded Runge-Kutta method is
  * defined by a matrix A and two vectors b1 and b2. Another vector, called c is
  * required but it may be computed as the row sum of A
  *
- * \tpar NSTAGES The total number of stages
+ * @tparam NSTAGES The total number of stages
  */
 template <unsigned int NSTAGES> struct ButcherArray
 {
   //! The actual Butcher array A
   using Atable = std::array<std::array<double, NSTAGES>, NSTAGES>;
   //! The constructor
-  /*
+  /*!
    * @param a The array A
    * @param b1 The array b1 (primal method)
    * @param b2 The array b2 (secondary method)
@@ -49,12 +49,12 @@ template <unsigned int NSTAGES> struct ButcherArray
   const std::array<double, NSTAGES> b1;
   //! The b2 coefficients of the Butcher array (higher order)
   const std::array<double, NSTAGES> b2;
-  //! The c coefficient of the butcher array
+  //! The c coefficient of the Butcher array
   std::array<double, NSTAGES> c;
   //! I need the order to control time steps
   const int order;
   /*!
-   * Check if it correspond to an implicit RK scheme
+   * Check if it corresponds to an implicit RK scheme
    * @return true if implicit
    * @todo try to do it in the constructor. I need to check if it is possible to
    * maintain it constexpr
@@ -69,7 +69,7 @@ template <unsigned int NSTAGES> struct ButcherArray
   //! The number of steps.
   /*!
    * As a constexpr function since I need it to be resolved at compile time!
-   * It is static because is a method of the class, not of a specific object
+   * It is static because it is a method of the class, not of a specific object
    * so I may call it with ButcherArray<N>::Nstages() without creating an object
    * of type ButcherArray
    */
@@ -114,7 +114,7 @@ concept ButcherArrayConcept = requires(B b) {
 namespace RKFScheme
 {
   // SOME COMMON RK embedded schemes
-  //! RK45, the actual RK <Fehlberg scheme
+  //! RK45, the actual RK-Fehlberg scheme
   struct RK45_t : public ButcherArray<6>
   {
     constexpr RK45_t()
@@ -189,7 +189,7 @@ namespace RKFScheme
     {}
   };
 
-  //! ESDIRK23 scheme 3nd order
+  //! ESDIRK23 scheme 3rd order
   struct ESDIRK34_t : public ButcherArray<4>
   {
     constexpr ESDIRK34_t()

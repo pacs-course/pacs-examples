@@ -19,7 +19,7 @@ namespace apsc
 {
 /*!
  * This class computes the amplification factor for a Runge-Kutta explicit
- * method. The amplification factor is the factor \f$ R(z) \f$ has the property
+ * method. The amplification factor is the factor \f$ R(z) \f$ with the property
  * that, when applied on the model problem \f[ y^\prime(t)=\lambda y,\
  * t>0,\qquad y(0)=1, \f] with \f$\lambda\f$ a complex number, with a spacing
  * \f$ h\f$ the method produces \f[ u_{n+1} = R(z)u_{n},\qquad z=h\lambda \f]
@@ -28,7 +28,7 @@ namespace apsc
  *
  * The absolute stability region \f$ A\f$ is defined as
  * \f[
- * A = \{z\in C:\ |R(z)|<1 \}
+ * A = \{z\in \mathbb{C}:\ |R(z)|<1 \}
  * \f]
  *
  * @tparam Butcher the type of ButcherArray (defined in ButcherRKF.hpp)
@@ -96,10 +96,10 @@ public:
    * \f]
    *
    * The center point is by default \f$c= -1 + 0i\f$ but may be changed. It
-   * should be a point \bf inside \bf the region of absolute stability.
+   * should be a point \b inside \b the region of absolute stability.
    *
    * @param angle The angle \f$ \alpha\f$
-   * @param centerPoint The centerpoint \f$ c\f$.
+   * @param centerPoint The center point \f$ c\f$.
    * @return A tuple with the point and a boolean representing the status
    * (false=not found).
    */
@@ -119,15 +119,15 @@ public:
     return std::make_tuple(res, status);
   };
   /*!
-   * It finds two \f! x_1 \f$ and \f$ x_4 \f$ in the complex plane where \f$
-   * |R(r(x)|-1\le 0 \f$ and \f$ |R(r(x))|-1 \ge 0 \f$, respectively. It
-   * operated along a line starting from centerPoint \f$ c\f$ with angle \f$
+   * It finds two values \f$ x_1 \f$ and \f$ x_2 \f$ in the complex plane where
+   * \f$ |R(r(x))|-1 \le 0 \f$ and \f$ |R(r(x))|-1 \ge 0 \f$, respectively. It
+   * operates along a line starting from centerPoint \f$ c\f$ with angle \f$
    * \alpha\f$. \f[ r(x) = c + xe^{i \alpha} \f]
    *
    * The center point is by default \f$c= -1 + 0i\f$ but may be changed. It
-   * should be a point \bf inside \bf the region of absolute stability.
+   * should be a point \b inside \b the region of absolute stability.
    *
-   * @param angle The angle \f$ \lapha \f$
+   * @param angle The angle \f$ \alpha \f$
    * @param centerPoint The center point
    * @return A pair containing the two points.
    */
@@ -153,12 +153,12 @@ public:
     return {x1, x2};
   }
   /*!
-   * Computes a numSamples point at the border of the stability region.
+   * Computes numSamples points at the border of the stability region.
    *
    * @param numSamples The number of points
    * @param centerPoint The center point used in the construction
    * @see{computeLimit}
-   * @return A vector of conplex with the found points.
+   * @return A vector of complex values with the found points.
    */
   [[nodiscard]] std::vector<complex>
   computeStabilityRegion(unsigned int   numSamples,
@@ -176,7 +176,7 @@ public:
         if(status)
           result.emplace_back(x);
         else if(options.verbose)
-          std::cerr << "Point at angle " << start << " Not found\n";
+          std::cerr << "Point at angle " << start << " not found\n";
         return result;
       }
     for(unsigned int i = 0; i < numSamples; ++i)
@@ -191,7 +191,7 @@ public:
           {
             if(options.verbose)
               {
-                std::cerr << "Point at angle " << angle << " Not found\n";
+                std::cerr << "Point at angle " << angle << " not found\n";
               }
           }
       }
