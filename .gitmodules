@@ -1,7 +1,3 @@
-[submodule "Examples/src/LinearAlgebra/CppNumericalSolvers"]
-	path = Examples/src/LinearAlgebra/CppNumericalSolvers
-	url = https://github.com/pacs-course/CppNumericalSolvers.git
-        branch = master
 [submodule "Examples/src/LinearAlgebra/spectra"]
 	path = Examples/src/LinearAlgebra/spectra
 	url = https://github.com/pacs-course/spectra.git
