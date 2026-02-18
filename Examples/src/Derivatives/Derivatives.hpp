@@ -1,7 +1,42 @@
+/*!
+ * @file Derivatives.hpp
+ * @brief Finite difference derivative approximation library
+ * 
+ * This header provides a comprehensive set of tools for computing numerical derivatives
+ * of callable objects using finite difference methods. It supports multiple difference
+ * schemes (forward, backward, and centered) and arbitrary derivative orders.
+ * 
+ * @details
+ * The library is built around the `NthDerivative` template class, which computes the
+ * Nth derivative of a function using finite differences. Key features include:
+ * 
+ * - **Multiple Difference Schemes**: Forward, backward, and centered difference methods
+ * - **Arbitrary Derivative Orders**: Recursive computation of Nth derivatives through
+ *   composition of lower-order derivatives, with automatic alternation between difference schemes
+ * - **Flexible Input Types**: Works with any callable object (functions, lambdas, functors)
+ *   and any numeric type supporting the required arithmetic operations
+ * - **Compile-time Optimization**: Uses C++20 concepts and `constexpr` for type safety
+ *   and compile-time computations
+ * 
+ * @namespace apsc
+ * Main namespace containing all derivative computation utilities.
+ * 
+ * @namespace apsc::DifferenceType
+ * Namespace defining difference scheme types (FORWARD, BACKWARD, CENTERED) and
+ * a concept for validating difference types.
+ * 
+ * @see NthDerivative
+ * @see makeForwardDerivative
+ * @see makeBackwardDerivative
+ * @see makeCenteredDerivative
+ * @see derive
+ */
 #ifndef HH__DERIVATIVESHPP_HH
 #define HH__DERIVATIVESHPP_HH
+#include <concepts>
 #include <functional>
 #include <type_traits>
+#include <utility>
 namespace apsc
 {
   namespace DifferenceType
@@ -27,77 +62,99 @@ namespace apsc
     {
       using otherType = CENTERED;
     };
+
+/*!
+@brief Concept for valid difference types.
+*/
+    template <typename DT>
+    concept Valid = std::same_as<DT, FORWARD> || std::same_as<DT, BACKWARD> ||
+                    std::same_as<DT, CENTERED>;
   } // namespace DifferenceType
+/*!
+@brief Concept for a differentiable function.
+A differentiable function is a callable object that takes a single argument of type T
+and returns a value that can be converted to T.
+@note Using F& and not just F is important to allow for stateful functors 
+and lambdas that capture by reference. It means the callable is tested as 
+a non-temporary object.
+*/
+  template <typename F, typename T>
+  concept DifferentiableFunction =
+    std::invocable<F &, const T &> &&
+    std::convertible_to<std::invoke_result_t<F &, const T &>, T>;
 
   //! Computes the Nth derivative of a function by finite difference
   /*!
-  \tparam N the order of the derivative
-  \tparam F the callable object of signature T (T const &)
-  \tparam T The argument and return type of the callable object
-  \tparam DT The type of differencing: either DifferenceType::FORWARD or
-  DifferenceType::BACKWARD or DifferenceType::CENTERED
+  @tparam N Order of the derivative.
+  @tparam F Callable object type.
+  @tparam T Argument and return type of the callable object.
+  @tparam DT Difference scheme: DifferenceType::FORWARD,
+             DifferenceType::BACKWARD, or DifferenceType::CENTERED.
    */
   template <unsigned N, typename F, typename T = double,
       typename DT = DifferenceType::FORWARD>
+    requires(DifferenceType::Valid<DT> && DifferentiableFunction<F, T>)
   class NthDerivative
   {
   public:
-    //! the previous derivative, the type is switched.
+    //! Previous derivative order (difference type may switch).
     using PreviousDerivative = NthDerivative<N - 1, F, T, typename DT::otherType>;
-    //! Constructor
+    //! Constructor.
     /*!
-    \param f The function (callable object)
-    \param h The spacing to be used in the formula
+    \param f Callable object.
+    \param h Step used by finite-difference formulas.
      */
-    NthDerivative(const F &f, T h) : pDerivative{f, h}, h{h} {}
-    //! The call operator that computes the derivative
+    explicit NthDerivative(F f, T h) : p_derivative_{std::move(f), h}, h_{h} {}
+
+    //! Computes the derivative at the requested point.
     /*!
-    \param x The point where the derivative is computed
-    \return The derivative value
+    \param x Point where the derivative is computed.
+    \return Approximation of the derivative.
      */
     T
     operator()(const T &x) const
     {
-      if constexpr(std::is_same_v<DifferenceType::FORWARD, DT>)
-          return (pDerivative(x + h) - pDerivative(x)) / h;
-      else if constexpr(std::is_same_v<DifferenceType::BACKWARD, DT>)
-          return (pDerivative(x) - pDerivative(x - h)) / h;
+      if constexpr(std::same_as<DT, DifferenceType::FORWARD>)
+          return (p_derivative_(x + h_) - p_derivative_(x)) / h_;
+      else if constexpr(std::same_as<DT, DifferenceType::BACKWARD>)
+          return (p_derivative_(x) - p_derivative_(x - h_)) / h_;
       else
-        return (pDerivative(x + h) - pDerivative(x - h)) / (2 * h);
+        return (p_derivative_(x + h_) - p_derivative_(x - h_)) / (T{2} * h_);
     }
 
   private:
-    PreviousDerivative pDerivative;
-    T const            h;
+    PreviousDerivative p_derivative_;
+    T                  h_;
   };
 
   /*!
    * Specialization for first derivative
-   * @tparam F A callable object type
-   * @tparam T The type of the varaible
-   * @tparam DT The difference type
+   * @tparam F Callable object type.
+   * @tparam T Variable type.
+   * @tparam DT Difference type.
    */
-  template <typename F, typename T, typename DT> class NthDerivative<1u, F, T, DT>
+  template <typename F, typename T, typename DT>
+    requires(DifferenceType::Valid<DT> && DifferentiableFunction<F, T>)
+  class NthDerivative<1u, F, T, DT>
   {
   public:
-    //! Constructor
-    NthDerivative(const F &f, T h) : f{f}, h{h} {}
+    //! Constructor.
+    explicit NthDerivative(F f, T h) : f_{std::move(f)}, h_{h} {}
     T
     operator()(const T &x) const
     {
-      //! This is C++17 syntax. Don't use a simple  if if you want efficiency!
-      if constexpr(std::is_same_v<DifferenceType::FORWARD, DT>)
-          return (f(x + h) - f(x)) / h;
-      else if constexpr(std::is_same_v<DifferenceType::BACKWARD, DT>)
-          return (f(x) - f(x - h)) / h;
+      if constexpr(std::same_as<DT, DifferenceType::FORWARD>)
+          return (std::invoke(f_, x + h_) - std::invoke(f_, x)) / h_;
+      else if constexpr(std::same_as<DT, DifferenceType::BACKWARD>)
+          return (std::invoke(f_, x) - std::invoke(f_, x - h_)) / h_;
       else
-        return (f(x + h) - f(x - h)) / (2. * h);
+        return (std::invoke(f_, x + h_) - std::invoke(f_, x - h_)) /
+               (T{2} * h_);
     }
 
   private:
-    // Now I store the function
-    F const &f;
-    T const  h;
+    F f_;
+    T h_;
   };
 
   //! Only for consistency: 0th derivative
@@ -105,108 +162,130 @@ namespace apsc
   //! It avoids infinite loops if someone creates
   //! a 0-th derivative object.
   //!
-  template <typename F, typename T, typename DT> class NthDerivative<0u, F, T, DT>
+  template <typename F, typename T, typename DT>
+    requires(DifferenceType::Valid<DT> && DifferentiableFunction<F, T>)
+  class NthDerivative<0u, F, T, DT>
   {
   public:
-    //! Constructor
-    NthDerivative(const F &f, T h) : f{f}, h{h} {}
-    //! The call operator returns the value of the function
+    //! Constructor.
+    explicit NthDerivative(F f, [[maybe_unused]] T h) : f_{std::move(f)} {}
+    //! The call operator returns the value of the function.
     T
     operator()(const T &x) const
     {
-      return f(x);
+      return std::invoke(f_, x);
     }
 
   private:
-    F const &f;
-    T const  h;
+    F f_;
   };
 
 
-  //! Utility to simplify the creation of a Nthderivative object
-  /*
+  //! @brief Utility to simplify creation of a forward Nth-derivative object.
+  /*!
+   *@details  Example of usage:
    *  Example of usage:
    *  /code
-   *  auto f =[](const double & x){return x*std::sin(x);};
+   *  auto f = [](double x){ return x * std::sin(x); };
    *  double h =0.1;
    *  auto d = apsc::makeForwardDerivative<3>(f,h);
    *  auto value = d(3.0);// 3rd derivative at 3.0
    *  /endcode
    *
-   * /param f a callable function with the rigth signature
-   * /param h the step for computing derivatives
+   * @param f a callable function with the right signature
+   * @param h the step for computing derivatives
    */
   template <unsigned N, typename F, typename T>
   auto
-  makeForwardDerivative(const F &f, const T &h)
+  makeForwardDerivative(F &&f, T h)
   {
-    return NthDerivative<N, F, T, DifferenceType::FORWARD>{f, h};
+  // The use of std::decay_t allows us to strip away references and cv-qualifiers
+  // from the types of F and T, ensuring that we work with the underlying types.
+    using Function = std::decay_t<F>;
+    using ValueType = std::decay_t<T>;
+    return NthDerivative<N, Function, ValueType, DifferenceType::FORWARD>{
+      std::forward<F>(f), std::move(h)};
   }
 
-  //! Utility to simplify the creation of a Nthderivative object
-  /*
-   *  Example of usage:
+  //! @brief Utility to simplify creation of a backward Nth-derivative object.
+  /*!
+   *  @details  
+   * Example of usage:
    *  /code
-   *  auto f =[](const double & x){return x*std::sin(x);};
+   *  auto f = [](double x){ return x * std::sin(x); };
    *  double h =0.1;
    *  auto d = apsc::makeBackwardDerivative<3>(f,h);
    *  auto value = d(6.0) //3rd derivative at 6.0
    *  /endcode
-   * /param f a callable function with the rigth signature
-   * /param h the step for computing derivatives
+   * @param f a callable function with the right signature
+   * @param h the step for computing derivatives
    */
   template <unsigned N, typename F, typename T>
   auto
-  makeBackwardDerivative(const F &f, const T &h)
+  makeBackwardDerivative(F &&f, T h)
   {
-    return NthDerivative<N, F, T, DifferenceType::BACKWARD>{f, h};
+    // The use of std::decay_t allows us to strip away references and cv-qualifiers
+    // from the types of F and T, ensuring that we work with the underlying types.
+    using Function = std::decay_t<F>;
+    using ValueType = std::decay_t<T>;
+    return NthDerivative<N, Function, ValueType, DifferenceType::BACKWARD>{
+      std::forward<F>(f), std::move(h)};
   }
-  //! Utility to simplify the creation of a Nthderivative object
-  /*
-   *  Example of usage:
+  //! @brief Utility to simplify creation of a centered Nth-derivative object.
+  /*!
+   * @details  
+   * Example of usage:
    *  /code
-   *  auto f =[](const double & x){return x*std::sin(x);};
+   *  auto f = [](double x){ return x * std::sin(x); };
    *  double h =0.1;
-   *  auto d = apsc::makeBackwardDerivative<3>(f,h);
+   *  auto d = apsc::makeCenteredDerivative<3>(f,h);
    *  auto value = d(6.0) //3rd derivative at 6.0
    *  /endcode
-   * /param f a callable function with the rigth signature
-   * /param h the step for computing derivatives
+   * @param f a callable function with the right signature
+   * @param h the step for computing derivatives
    */
   template <unsigned N, typename F, typename T>
   auto
-  makeCenteredDerivative(const F &f, const T &h)
+  makeCenteredDerivative(F &&f, T h)
   {
-    return NthDerivative<N, F, T, DifferenceType::CENTERED>{f, h};
+    // The use of std::decay_t allows us to strip away references and cv-qualifiers
+    using Function = std::decay_t<F>;
+    using ValueType = std::decay_t<T>;
+    return NthDerivative<N, Function, ValueType, DifferenceType::CENTERED>{
+      std::forward<F>(f), std::move(h)};
   }
 
   /*!
-   * A lambda recursive function!
+   * @brief Recursive lambda for computing Nth centered derivatives.
+   * @details Recursive lambda utility.
    *
-   * It performs the nth centered derivative.
+   * It computes the Nth centered derivative as a lambda expression.
    *
    * Example of use:
    *
-   * f = auto [](double x){return std::sin(x);}
-   * auto d4 = lambda::derive<4>(f,1.e-4);
-   * auto d  = f(3.4);// fourth derivative of f in 3.4
+   * auto f = [](double x){ return std::sin(x); };
+   * auto d4 = apsc::derive<4>(f,1.e-4);
+   * auto d  = d4(3.4); // fourth derivative of f at 3.4
    *
-   * Taken from Discovering Modern C++, II Edition, by Peter Gottschling
-   *
+   * @note Taken from Discovering Modern C++, II Edition, by Peter Gottschling
+   * @param N Order of the derivative.
+   * @param f Callable object.
+   * @param h Step size for finite difference approximation.
+   * @return A lambda function that computes the Nth centered derivative of f at a given point.
    */
 
   template<unsigned int N>
-  constexpr auto derive =[](auto f, auto h)
+  constexpr auto derive = [](auto f, auto h)
   {
-    if constexpr (N==0u)
+    if constexpr(N == 0u)
      {
-        return [f](auto x){return f(x);};
+        return [f](auto x) { return f(x); };
      }
     else
       {
-        auto prev = derive<N-1u>(f,h);
-        return [=] (auto x){
-        return (prev(x+h)-prev(x-h))/(2.*h);
+        auto prev = derive<N - 1u>(f, h);
+        return [=](auto x) {
+          return (prev(x + h) - prev(x - h)) / (decltype(h){2} * h);
         };
       }
   };
