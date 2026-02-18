@@ -1,6 +1,6 @@
 #Various Utilities#
 
-In this directory you have utilities thay may be included and used in
+In this directory you have utilities that may be included and used in
 other examples. So, you need to install them before moving to the other
 examples.
 
@@ -30,24 +30,24 @@ if the arguments are both of signed or unsigned type. It gives an error otherwis
 
 * `Arithmetic.hpp`  introduces concepts to constrain template types to floating point or integral types, possibly including also complex numbers. 
 
-* `booleanConcept.hpp` A concept that expesses the semantic of a boolean type.
+* `booleanConcept.hpp` A concept that expresses the semantic of a boolean type.
 
-* `chrono`  An utility to take times, built on the chrono utilities of the standard library.
+* `chrono`  A utility to take times, built on the chrono utilities of the standard library.
 
-* `CloningUtilities` Tools for clonable classes (Prototye design pattern). It contains some type traits to test if a class `T` contains the (usually virtual) method
+* `CloningUtilities` Tools for clonable classes (Prototype design pattern). It contains some type traits to test if a class `T` contains the (usually virtual) method
 
-```c++
-std::unique_prt<B> clone() const;
+```cpp
+std::unique_ptr<B> clone() const;
 ```
 
 that returns the pointer to a copy of the object wrapped into a
-unique_prt.  `B` can be either `T` or a base class of `T`. It also contains
+unique_ptr.  `B` can be either `T` or a base class of `T`. It also contains
 an interesting class, called `PointerWrapper`, which implements an owning pointer with deep copy
-semantic! The "pointed" class should be clonable. It means that you can use it to implement composition of a polymorphic object and have autometically the copy operators in the composing class!
+semantic! The "pointed" class should be clonable. It means that you can use it to implement composition of a polymorphic object and have automatically the copy operators in the composing class!
 
 * `cxxversion` To test with which version of C++ you are compiling your code
 
-* `extendedAssert`  Asserts with a message. It extends assert macro so that you can insert a message. There are also swithches that can be activated with the `-DXXX` compiler option to change the behaviour of some of them.
+* `extendedAssert`  Asserts with a message. It extends assert macro so that you can insert a message. There are also switches that can be activated with the `-DXXX` compiler option to change the behaviour of some of them.
 
 * `Factory`  A generic object factory. Inspired by a code by [Andrei Alexandrescu](https://en.wikipedia.org/wiki/Andrei_Alexandrescu). 
 
@@ -55,7 +55,7 @@ semantic! The "pointed" class should be clonable. It means that you can use it t
 
 * `gnuplot-iostream` A stream to open gnuplot from within a program. Useful for simple visualizations within your code. You need[gnuplot](http://www.gnuplot.info/) installed in your system (it is available as debian package).
 
-* `hashCombine.hpp` Provides the function object `hash_combine` that may be used to combine the hash key of object of different types, provided the latter have `std::hash` defined. It can be used to creat the hash key of an user-defined class by combining that of non-static members of the class, in order to achieve better uniformity. The usage is explained in the file.
+* `hashCombine.hpp` Provides the function object `hash_combine` that may be used to combine the hash key of object of different types, provided the latter have `std::hash` defined. It can be used to create the hash key of an user-defined class by combining that of non-static members of the class, in order to achieve better uniformity. The usage is explained in the file.
 
 * `is_complex.hpp` A header file containing a type trait to interrogate is a type is a `std::complex<T>`. It also include the definition of the concept `Complex` to constrain a template type to be an `std::complex<T>` and `ArithmeticComplex`, where we also impose that `T` be either a floating point or an integer.
 
@@ -64,7 +64,7 @@ We hve also traits and concepts to test sparse and dense matrices separately.
 
 * `is_specialization.hpp`. Type traits and concepts to test if a class is the specialization of a class template.
 
-* `JoinVectors.hpp` Just an example on how to imitate the `join` phyton command. You can use it to iterate jointly on a set of vectors. 
+* `JoinVectors.hpp` Just an example on how to imitate the `join` Python command. You can use it to iterate jointly on a set of vectors. 
   
 * `overloaded` A facility, called `overloaded` that implements the overloaded design pattern that may be used to visit a `std::variant`.
 
@@ -72,7 +72,7 @@ We hve also traits and concepts to test sparse and dense matrices separately.
 
 * `Proxy.hpp` It is not a proxy (bad naming, sorry). It is an utility that may be used to register objects in an object Factory automatically.
 
-* `range_to_vector` If you create a view of a range, for example using `std::views::iota`, of by applying views to a vector, you cannot use it to initialize a vector. A proposal is made to do this in a next c++ standard but so far we need to do it ourselves. This utility converts a range to a vector. It is a simple wrapper around `std::ranges::copy`. More information may be found [here](https://timur.audio/how-to-make-a-container-from-a-c20-range). 
+* `range_to_vector` If you create a view of a range, for example using `std::views::iota`, of by applying views to a vector, you cannot use it to initialize a vector. A proposal is made to do this in a next C++ standard but so far we need to do it ourselves. This utility converts a range to a vector. It is a simple wrapper around `std::ranges::copy`. More information may be found [here](https://timur.audio/how-to-make-a-container-from-a-C++20-range). 
 
 * `readCSV` A class to read csv files. Useful if you have data in a speadsheet and you want to load it into a C++ code. There are better tools than this one around. But this is relativley simple and handy
 
@@ -84,23 +84,23 @@ utilities of the Standard Library, but with a simpler interface.
 
 * `StatisticsComputations.hpp` Some tools to compute basic statistics of a sample.
 
-* `string_utility` Some extra utilities for strings: trimming (eliminate useless blanks) and lower-upper conversion. We have recetly added utilities for reading a whole text file in a buffer (it is faster, though potentially memory consuming, and an utility that computed the Levenshtein edit distance between two strings).
+* `string_utility` Some extra utilities for strings: trimming (eliminate useless blanks) and lower-upper conversion. We have recently added utilities for reading a whole text file in a buffer (it is faster, though potentially memory consuming, and an utility that computed the Levenshtein edit distance between two strings).
 
 * `toString` Converts anything for which there is the `<<` streaming operator to a string. A use of `std::stringstream`.
 
-* `tuple_utilities.hpp` Contains some utilities for tuples:  `tuple_common_type_t<Tuple>` that returns the common tpe of all types contained in a tuple, and `for_each<Tuple F>` and `for_each2<Tuple, F>` that apply (possibly in parallel) the function object `F` to all elements of the tuple. The first one returns a tuple with the result, the second one does not and is thus applicable also if `F` is a void function. `all_of<Tuple,F>` and `any_of<Tuple,F>`, that apply predicate `F` to all elements of a tuple. The first returns true if the predicate is true for all elements, the second if it is true for at least one element.
+* `tuple_utilities.hpp` Contains some utilities for tuples:  `tuple_common_type_t<Tuple>` that returns the common type of all types contained in a tuple, and `for_each<Tuple F>` and `for_each2<Tuple, F>` that apply (possibly in parallel) the function object `F` to all elements of the tuple. The first one returns a tuple with the result, the second one does not and is thus applicable also if `F` is a void function. `all_of<Tuple,F>` and `any_of<Tuple,F>`, that apply predicate `F` to all elements of a tuple. The first returns true if the predicate is true for all elements, the second if it is true for at least one element.
 
-* `type_name.hpp` An utility to pretty-print the name of the type of a variable. It is useful for debugging. It is based on the `boost::core::demangle` function. 
+* `type_name.hpp` A utility to pretty-print the name of the type of a variable. It is useful for debugging. It is based on the `boost::core::demangle` function. 
    
 ** Note ** `Factory.hpp` and `Proxy.hpp` are in fact links to the same file in the folder `GenericFactory`. If the files are not present for some reason you may safely copy in `Utility/` the files in `GenericFactory/`.
 
 
 ## An explanation of `hash_combine`.##
-The functor `apsc::hash_combine` provided by  `hashCombine.hpp` is given in two formats, one used *fold expressions* introduced in C++17, the other requires just c++11 to work. Since they are short but complicated it is worthwile giving some explanation.
+The functor `apsc::hash_combine` provided by  `hashCombine.hpp` is given in two formats, one used *fold expressions* introduced in C++17, the other requires just C++11 to work. Since they are short but complicated it is worthwhile giving some explanation.
 We recall that a good hash function should satisfy as far as possible the uniformity property: the probability distribution of the hash keys (conditioned to the distribution of the possible arguments) should be uniform. Since we do not normally know the distribution of the arguments, it is normally assumed that it is uniform as well.
 This is not so easy to achieve and a badly unbalanced hash function may make your unordered container very inefficient! That's why a lot of "tricks" are used to increase entropy and avoid "clustering".
 
-Here the c+=17 version of my `hash_combine` (taken from the web, I thank the unknown author):
+Here the C++=17 version of my `hash_combine` (taken from the web, I thank the unknown author):
 
 	template <typename T, typename... Rest>
 	void hash_combine(std::size_t& seed, const T& v, const Rest&... rest)
@@ -119,14 +119,14 @@ After doing that, we have the `<<` and `>>` operators. These are the left and ri
 `(a<< 1)=0b0010`, `(a<< 2)=0b0100`, and `(a>>1)=0100`, `(a>>2)=0010`. I hope it is clear. Again, all this fuss is to scatter the digits around (in fact the bits).
 
 Finally, I am using here a fold expression in `(hash_combine(seed,rest), ...);` to expand the variadic template. It means that, for intance,
-`hash_combine(0,a,b,c)` expands in
+`hash_combine(0,a,b,C++)` expands in
 
 	std::hash<T> hasher;
 	seed ^= hasher(a) + 0x9e3779b97f4a7c15 + (seed << 6) + (seed >> 2);
 	hash_combine(seed,b);
-	hash_combine(seed,c);
+	hash_combine(seed,C++);
 
-thanks to the magic of a fold expression. The pre-c++17 version achieves fold expression with a dirty tick that I avoid explaining (after all, c++17 is now well extablished).
+thanks to the magic of a fold expression. The pre-C++17 version achieves fold expression with a dirty trick that I avoid explaining (after all, C++17 is now well established).
 
 ## What you can learn from these examples##
 

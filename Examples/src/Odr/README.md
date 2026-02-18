@@ -21,7 +21,7 @@ Example:
 
 file `myfun.hpp`:
 
-```C++
+```cpp
 template <class T>
 double myfun(const T & x){...}
 
@@ -30,7 +30,7 @@ double myfun(const T & x){...}
 
 file `f1.cpp`:
 
-```C++
+```cpp
 #include "myfun.hpp"
 ...
 double c=myfun(5.0) // will instantiate myfun(const double &)
@@ -42,7 +42,7 @@ double c=myfun(5.0) // will instantiate myfun(const double &)
 
 file `f2.cpp`:
 
-``` C++
+```cpp
 #include "myfun.hpp"
 ...
 double c=myfun(7.0) // will instantiate myfun(const double &)

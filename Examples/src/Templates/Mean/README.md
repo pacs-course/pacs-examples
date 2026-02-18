@@ -20,5 +20,5 @@ You may note that some computations have been resolved compile time (symbol not 
 so the effect of the `constexpr` specifier is activated when optimization is on.
 
 # What do I learn here? #
-- Another use of function tempalte overloading
-- A use of variadic tempaltes
+- Another use of function template overloading
+- A use of variadic templates

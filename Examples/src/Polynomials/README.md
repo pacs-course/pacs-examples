@@ -9,7 +9,7 @@ Things to note
 * I have implemented an output streaming operator for the polynomials, to be able to pretty-print them.
     
 * I have implemented an algorithm for polynomial division. Here a few thing should be noted:
-	- I have used al lot of standard algorithms, even if they can be replaced easily by for loops. This gives more generality, but the main purpose was educational: to show you their use. They can all be made parallel adding an execution policy. Actually, I do not thing it is worthwile, unless you have polynomials of very high degree!
+	- I have used al lot of standard algorithms, even if they can be replaced easily by for loops. This gives more generality, but the main purpose was educational: to show you their use. They can all be made parallel adding an execution policy. Actually, I do not thing it is worthwhile, unless you have polynomials of very high degree!
 	- The algorithm  works also for complex polynomials;
 	- I have used references to access Polynomial members directly, in particular the coefficients;
 	- I have used **function template overloading** to treat the case of division by a constant polinomial. Why was it necessary? Because I have used `unsigned int` as template parameter, and the 

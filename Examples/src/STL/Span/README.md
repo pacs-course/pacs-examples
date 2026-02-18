@@ -90,4 +90,4 @@ int main() {
 ## Conclusion ##
 `std::span` is a versatile and efficient utility for working with contiguous sequences of elements in C++. It provides a safe and convenient way to pass arrays and array-like containers to functions without copying data, making it a valuable addition to the C++ standard library.
 ## What do I learn Here? ##
-A nice utility that can be helpsul when is necessary to mix C-style arrays and C++ contiguos containers.
+A nice utility that can be helpsul when is necessary to mix C++-style arrays and C++ contiguos containers.

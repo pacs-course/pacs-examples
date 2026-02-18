@@ -55,8 +55,7 @@ module load boost
 If you do not want to use gnuplot-iostream, for instance becouse your virtual machine does not support graphics, you should modify the local  `Makefile.inc` file,
 commenting out (or deleting) the lines
 
-```
-    CPPFLAGS+=-I$(mkBoostInc) -DGNUPLOT
+```CPPFLAGS+=-I$(mkBoostInc) -DGNUPLOT
     LDLIBS+=-L$(mkBoostLib) -lboost_iostreams -lboost_system -lboost_filesystem
 
 ```

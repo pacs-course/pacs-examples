@@ -12,10 +12,10 @@
 	
 * *IsClonable.* An example to show how to check if a class has a particular method, in this case the method `clone()`. Now C++17 has introduced the type trait `std::void_t` which can be used instead of my handcrafted one. You can also check if `clone()` returns the right return type, but it is too involved so I decided to omit the test.
 
-* *Metadot* Implementtion of the dot product between two std::array. We use recursion to unwrap the loop!
+* *Metadot* Implementation of the dot product between two std::array. We use recursion to unwrap the loop!
 
 * *Pi*  Computing Pi using a truncated series. You can specify the number of elements of the series you wish to use: recursion is used. 
-	You can also specify in a tempalte argument which type of float to store the result.
+	You can also specify in a template argument which type of float to store the result.
 	
 * *Switch*	We show first how types stored in a class can be used to determine template derived types. A mesh class selects automatically 
 	the type of the boundary elements according to the type of the domain elements. We show also an approach where an integer representing
@@ -27,5 +27,5 @@
 	specific Matrix, 2) the use of `std::is_const<Matrix>` to verify if the stored matrix is const (in this case I cannot change the elements).
 	
 * *Trivial*. This example shows the difference and some application of `std::is_trivial`, `std::is_trivially_constuctible` and `std::has_standard_layout`. If an object is trivially constuctible can be serialized (sufficient condition!) if it has standard layout it may be converted to pointer to the
- 	first member or passed to a c/fortran function as a normal struct (in c) or a structure type in Fortran. Again, it is just a sufficient 
+ 	first member or passed to a C++/fortran function as a normal struct (in C++) or a structure type in Fortran. Again, it is just a sufficient 
  	condition.

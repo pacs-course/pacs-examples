@@ -57,7 +57,7 @@ Data normalization can reduce rond-off errors in some cases, in `StatisticsCompu
 
 # What do I learn here? #
 - The different random number generators and engines of the standard library
-- An utility to extract statistical information from a sample (univariate)
+- A utility to extract statistical information from a sample (univariate)
 - A use of `gnuplot-iostream`
 - The effect of bias and round-off errors on the computation of higher order moments
 
@@ -85,7 +85,7 @@ However if you forget the dots
 ```cpp
     std::lognormal_distribution lnd{3, 2};
 ```
-The compiler generates a `std::lognormal_distribution<int>` and gives a compilation error since the tempalte argument for this can be only a floating point type. This does not happen with 
+The compiler generates a `std::lognormal_distribution<int>` and gives a compilation error since the template argument for this can be only a floating point type. This does not happen with 
 
 ```cpp
 std::lognormal_distribution<> lnd{3, 2};
@@ -109,7 +109,7 @@ If you do not want to use the automatic template deduction, in this case you hav
 ```
 if you really want to use the version for `floats`
 
-The message I want to give you in this note is that selecting all the default template parameters requires to indicate `<>`. You can avoid it (since c++17) if you can use the new automatic parameter deduction feature for class templates, but then remember that the deduced template parameters depend on the type of the constructor arguments. 
+The message I want to give you in this note is that selecting all the default template parameters requires to indicate `<>`. You can avoid it (since C++17) if you can use the new automatic parameter deduction feature for class templates, but then remember that the deduced template parameters depend on the type of the constructor arguments. 
 
 ## Important ##
 

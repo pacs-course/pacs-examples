@@ -42,7 +42,7 @@ The first operation is to copy the  file `Makefile.user` to `Makefile.inc`:
 
     $ cp Makefile.user Makefile.inc
 
-and edit the latter to suit your system. In particular, you have to set `AMSC_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
+and edit the latter to suit your system. In particular, you have to set `PACS_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
 If you do not know it
 just type
 
@@ -59,19 +59,19 @@ compilation options. But normally you don't need it.
 
 As an example:
 
-    AMSC_ROOT=/home/myname/pacs/Examples/
+    PACS_ROOT=/home/myname/pacs/Examples/
 
 Alternatively, to editing the file, you may set an environmental
-variable with the same name using the command 
+variable with the same name inserting the bash command 
 
-    export AMSC_ROOT=/home/myname/pacs/Examples/ 
+    export PACS_ROOT=/home/myname/pacs/Examples/ 
 
 in the `.profile` or in the `.bashrc` file in your home directory (see Note
 at the end of the file). The file `Makefile.inc` is included in all the Makefiles and defines and
 exports the following make macros:
 
-- `AMSC_ROOT` the directory where the Examples resides
-- `PACS_ROOT` for compatibility with the APSC course
+- `PACS_ROOT` the directory where the Examples resides
+- `AMSC_ROOT` for compatibility with the AMSC course
 - `CXX` the c++ compiler of choice
 - `STANDARD` contains the C++ standard used in compilation
 - `MPI_LIBDIR` and `MPI_INCDIR` where to find mpi libraries and header files, respectively
@@ -126,7 +126,7 @@ one that you have created by copying Makefile.user).  In particular
 - `mkOpenmpiInc`  The directory with the mpi headers
 - `mkTbbInc`  Include files for the threding building block libraries (needed for parallel algorithms)
 - `mkTbbLib`  Library files for the threading building block libraries (needed for parallel algorithms)
-- `mkCxxCompiler` The c++ compiler of your choice
+- `mkCxxCompiler` The C++ compiler of your choice
 - `mkEigenHome`      Where the Eigen files are kept (normally equal to MkEigenInc)
 
 

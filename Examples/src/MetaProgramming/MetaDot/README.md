@@ -13,4 +13,4 @@ To see the effect you have to compile with the optimization on `make DEBUG=no`. 
 - Use of concepts to select the correct branch
 
 **A technical note** 
-The `conj` operator for a complex number has been made constexpr only since C++20. So, if your compiler is not c++20 compiant `metadot17` will be only inlined but not resolved compile time when used with arrays of complex numbers.
+The `conj` operator for a complex number has been made constexpr only since C++20. So, if your compiler is not C++20 compliant `metadot17` will be only inlined but not resolved compile time when used with arrays of complex numbers.

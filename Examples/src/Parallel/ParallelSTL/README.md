@@ -6,7 +6,7 @@ At the time being (but in the future more can be added) we have the following po
 
 - `std::execution::seq`  No parallelization. The algorithm will be executed in the scalar mode. For several algorithms, this is the default if the execution policy is not specified at all.
 - `std::execution::par`  The classic multi-threaded parallelization. The obeicts in the range are subdivaded into groups and each thread  performs the algorithm operation on a group. 
-- `std::execution::unseq` (since c++20) A SIMD approach. The same operation is performed on several data at the same time. Meant for vector architectures or GPUs.
+- `std::execution::unseq` (since C++20) A SIMD approach. The same operation is performed on several data at the same time. Meant for vector architectures or GPUs.
 - `set::execution::par_unseq` indicates that a parallel algorithm's execution may be parallelized, vectorized, or migrated across threads. For mixed type architectures.
 
 **A note:** The effective use of one or the other policies depends on the hardware and the support of the operative system. For instance, in INTEL type architecture, with the use of g++ or clang++ compilers you have to link with the threading building block library (`libtbb`), if you want that your code compile if you use a STL parallel algorithm.

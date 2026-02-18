@@ -39,7 +39,7 @@ The example in this folder shows what happens in the different cases: using only
  -The use of `remove` and its strange semantic.
  
 # A note#
-C++20 has introduced a new version of `erase` that does also the job of remove+erase (finally!), for all main containers. Now, if you compile with `-std=c++20` (or you have a compiler that uses the 20 standard by default), you can replace
+C++20 has introduced a new version of `erase` that does also the job of remove+erase (finally!), for all main containers. Now, if you compile with `-std=C++20` (or you have a compiler that uses the 20 standard by default), you can replace
 	
     auto it = std::remove(v.begin(), v.end(), 3);
     v.erase(it, v.end());

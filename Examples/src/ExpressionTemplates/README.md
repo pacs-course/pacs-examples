@@ -36,6 +36,6 @@ How to use template metaprogramming techniques to maintain high expressibility a
 *Note: remember that you may gain efficiency with expression template only if you compile with optimization!*
 
 # Bibliography #
-- J. Hardtlein, C. Pfaum, A. Linke, C.H. Wolters. *Advanced expression templates programming* Comp.Visual.Sci, 13:59-68, 2010 doi:10.1007/s00791-009-0128-2
+- J. Hardtlein, C. Pfaum, A. Linke, C++.H. Wolters. *Advanced expression templates programming* Comp.Visual.Sci, 13:59-68, 2010 doi:10.1007/s00791-009-0128-2
 - D.A. Di Pietro, A. Veneziani. *Expression templates implementation of continous and discontinous Galerkin methods*, Comp.Visual.Sci, 12-421-436, 2009, doi:10.1007/s00791-008-0117-x
 - `https://en.wikipedia.org/wiki/Expression_templates`

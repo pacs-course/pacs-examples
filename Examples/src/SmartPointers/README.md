@@ -1,8 +1,8 @@
 # A look to smart pointers # 
 
-* `polyFactory_simple(Shape):` a simple object factory for Polygons (the Polygon classes are defined in `Polygon.[h|c]pp`). By selecting an enumerator that indicates which concrete polygon you want, the function returns the pointer to the base class pointing to the concrete object of the wanted type. The object is default constructed.
+* `polyFactory_simple(Shape):` a simple object factory for Polygons (the Polygon classes are defined in `Polygon.[h|C++]pp`). By selecting an enumerator that indicates which concrete polygon you want, the function returns the pointer to the base class pointing to the concrete object of the wanted type. The object is default constructed.
 
-* `PolyFactory(Stape, Args...)` This more sophisticated factory uses variadic tempalte to enable constructing the wanted concrete object possibly passing constructor arguments. See **Note** below.
+* `PolyFactory(Shape, Args...)` This more sophisticated factory uses variadic template to enable constructing the wanted concrete object possibly passing constructor arguments. See **Note** below.
 
 * `enable_shared`. A simple class only to show the enable_shared
 utility of the standard library. It is a simple utility: if you
@@ -56,7 +56,7 @@ a constructor not present, for instance in `Triangle`.
 
 So far so good. However, I here wanted to exploit variadic templates in order to design an object factory where I can pass arguments to the constructor:
 
-``````c++
+``````cpp
 template <class... Args>
 std::unique_ptr<AbstractPolygon>
 polyFactory(Shape s, Args&&... args)
@@ -75,11 +75,11 @@ polyFactory(Shape s, Args&&... args)
 }
 ``````
 It looks nice; indeed I can now do 
-````````c++
+````````cpp
 auto s = polyFactory(Shape::Square,origin, length,angle);
 ````````
 to generate a square with 
-``````c++
+``````cpp
 std::make_unique<Square>(origin, length,angle);
 ``````
 which, in turn, calls the corresponding constructor of `Square`.
@@ -99,20 +99,20 @@ taking a `Point2D` and two doubles!**
 
 The only solution is then to add a dummy constructor of that sort in the base class `AbstractPolygon`, and let all derived class `inherit` the constructor defined in `AbstractPolygon` with
 
-````````c++
+````````cpp
 using AbstractPolygon::AbstractPolygon;
 ````````
 
 Of course, `Square` will redefine the constructor for the square
 
-````c++
+````cpp
   Square(Point2D const &origin, double length, double angle = 0.0);
 ````
 
 while the other derived classes will not.
 
 The problem is that now I can in principle call
-``````c++
+``````cpp
 Triangle t{origin,length,angle}
 ``````
 which does not make sense. I need to rely on the good usage of the code by part of the user.

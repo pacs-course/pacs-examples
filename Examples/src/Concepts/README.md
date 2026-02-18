@@ -1,6 +1,6 @@
 # Concepts#
 
-Concepts allow to impose contraints on the value of template parameter types. 
+Concepts allow to impose constraints on the value of template parameter types. 
 
 
 Indeed they allow to represent the semantic of types. 
@@ -12,9 +12,9 @@ For instance with
 	}
 we can verify if a given type provides an object that contains a member called `data`.
 
-At this point we can contrain a tempalte function of class, for instance
+At this point we can constrain a function or class template, for instance
 	
-	```c++
+	```cpp
 	template <Has_data T>
 	void print_data(T v)
 	{
@@ -24,7 +24,7 @@ At this point we can contrain a tempalte function of class, for instance
 	```
 	or using a constrained auto
 	
-	```c++
+	```cpp
 	void print (Has_data auto v)
 	{
 		std::cout << v.data << std::endl;
@@ -35,14 +35,14 @@ At this point we can contrain a tempalte function of class, for instance
 With concepts you can obtain
 
 - Safer code;
-- More understandable compiler errors in cade of wrong template usage;
+- More understandable compiler errors in case of wrong template usage;
 - More understandable code for the user.
 
 It is one of the major addition of C++20.
 
-Another important characteristics is that overloading and template specialization can be constrained by concepts.
+Another important characteristic is that overloading and template specialization can be constrained by concepts.
 An example:
-```c++
+```cpp
 auto fun(auto v) // primary template
 auto fun(std::integral auto v) // specialization for integral types
 

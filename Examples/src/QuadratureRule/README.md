@@ -7,7 +7,7 @@
 * `AllDynamic/` Here we add an object factory to be able to load also
   the quadrature rules dynamically. We use the Generic Factory in the
   folder `GenericFactory`, replicated in `Utility/`. The integrands
-  are also loaded dynamically but with the trick of using C style
+  are also loaded dynamically but with the trick of using C++ style
   linkage so that in the library the functiosn are stored with their
   name, not mangled.  Clearly, it is also possible to use a factory to
   load the functions, using a similar structure used for the rules.

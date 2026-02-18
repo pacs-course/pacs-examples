@@ -2,7 +2,7 @@
 
 We define a class template `FixedPointIteration` that implements the simple fixed point iteration 
 
-``` C++
+```cpp
 x(k+1)=phi(x(k)) 
 ```
 with the following features

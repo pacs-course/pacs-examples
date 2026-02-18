@@ -36,7 +36,7 @@ We also provide a helper function to simplify the creation of the view. And, in 
 - That a simple solution, maybe sufficient for your problem at hand, becomes less simple if you wish to increase generality and be able to treat different situations;
 - The use of some sophisticated type traits of the standard library;
 - The use of traits to allow the user to change template parameter dependent types via specialization;
-- *An example of the use of deduction guides (since c++17)*
+- *An example of the use of deduction guides (since C++17)*
 
 
 

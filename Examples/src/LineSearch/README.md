@@ -55,7 +55,7 @@ cloning toenable a proper composition with a polymorphic objects.
 Many improvement can be made. For instance: 
 - reading options from a text (maybe GetPot) file; 
 - adding more methods for the computation of the descent direction;
-- extend it to more general contraints;
+- extend it to more general constraints;
 - implement the 2nd Wolfe condition
 - make it a library.
 	

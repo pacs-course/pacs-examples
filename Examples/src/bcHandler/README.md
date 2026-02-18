@@ -5,7 +5,7 @@ An example of a class that handles boundary conditions. But in fact is an exampl
 To run the example you should have `muparserX` installed locally. To do so, go into `Example/Extras/muparserx` and launch the script `install_PACS.sh`. 
 It should be enough.
 
-The idea is that when solving a differential probelms you have to handle boundary conditions (which normally are more an implementation headache than the differential equation). The idea here is to have a class that encapsulate the concept of a boundary condition. We identify a boundary condition by the following attributes
+The idea is that when solving a differential problems you have to handle boundary conditions (which normally are more an implementation headache than the differential equation). The idea here is to have a class that encapsulate the concept of a boundary condition. We identify a boundary condition by the following attributes
 
 - An optional descriptor, useful to remember what the bc is about. For instance "top left side" of "inflow section".
 - A type that allows to identify the type of boundary condition. Typically Dirichlet, Neumann etc. Since the application will proebably have to treat different types differently.

@@ -1,5 +1,5 @@
 # A critical section in MPI #
-A critical section is a block of code that can be executed by a process at a time. MPI doeas not have a specific function to define critical section. We have `MPI_Barrier()` that however is just a syncronization point: all processes stop until the last one calls it.
+A critical section is a block of code that can be executed by a process at a time. MPI does not have a specific function to define critical section. We have `MPI_Barrier()` that however is just a syncronization point: all processes stop until the last one calls it.
 
 To simulate a critical section we have to use a little trick. 
 

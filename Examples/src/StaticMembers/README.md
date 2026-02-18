@@ -12,15 +12,13 @@ members of the class.  For instance, a class of a `Polygon` family may
 have as static member variable the number of vertices of specific
 Polygons: for `Triangle` is 3, for a `Square` is 4 ...
 
-In modern C++ you can initialize in-class 
-static variable members (before c++11 ou could do it only with ints),
-but **you have to declare them inline**.
+In modern C++ you can initialize in-class  static variable members, but **you have to declare them inline**.
 
 Only to recall the issue:
 
 If you want to initialise a static member variable
 
-- Before c++11 (valid also now)
+- Before C++11 (valid also now)
 
 **in the header file Foo.h**
 
@@ -37,7 +35,7 @@ static double x; // Declaration only
 double Foo::x = 6.0; Definition and initialization
 ```
 
-- Since c++11
+- Since C++11
 
 ```
 class Foo

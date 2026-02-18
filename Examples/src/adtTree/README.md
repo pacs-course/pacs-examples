@@ -37,8 +37,7 @@ Now p4: the second digit is 0 and the place at the left of p2 is available:
        /  \
       p4    p3
 ```
-
-Clearly we normally operate with floating point numbers, and each point has more than one coordinate. 
+We normally operate with floating point numbers, and each point has more than one coordinate. 
 The fact that we use floating points and not binary numbers is solved easily 
 if we the max and min coordinates of all points that are going to be inserted. 
 This is indeed another requirement for our ADT implementation. Then, after a re-scaling 

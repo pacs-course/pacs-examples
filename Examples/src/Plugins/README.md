@@ -46,7 +46,7 @@ the factory throughout the program. Here for simplicity I have not used
 a singleton pattern for the factory, as in the `GenericFactory`
 example, (it is not strictly necessary). Instead I have given
 `polyFactory` external linkage using the `extern` keyword: it is a
-**global variable** (in a namespace though, so tecnically is a namespace variable). 
+**global variable** (in a namespace though, so technically is a namespace variable). 
 * `Polygon.hpp|cpp` Declares/defines the base class. Note that the
   corresponding object all "plugin" dynamic libraries must be linked
   against the object file. Otherwise the derived classes will not be

@@ -2,7 +2,7 @@
 
 This is a short but sophisticated template metaprogramming example. SFINAE at its best!  We show a use of `void_t` and `declval`.
 We only test of a class has a method called `clone()` in its public interface. We do not test the return type. However we offer in a comment
-how to do it if we wish to test also the return type, in particular if the return type is convertible to a `unique_prt` to the base class.
+how to do it if we wish to test also the return type, in particular if the return type is convertible to a `unique_ptr` to the base class.
 
 # What do you learn here? #
 

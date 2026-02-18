@@ -7,9 +7,9 @@ This code illustrates
 - the use of the `json.hpp` utility to read a (very simple) json file with some data;
 - the use of `std::function<>`, the C++ function wrapper.
 
-Composite Simpson rule compute the approximation of a definite integral by summing contributions coming by a subdivision of the original interval into n subintervals (often called elements). A MPI parallel implementation is rather straighforward: ech process computes the integral on a subset of the elements and, eventually, a reduction is made to collect the result. The algorithm is thus almost embarassingly parallel, so we expect a reasonable speed-up even on a ordinary multicore PC (until the number of processes exceeeds the number of cores).
+Composite Simpson rule compute the approximation of a definite integral by summing contributions coming by a subdivision of the original interval into n subintervals (often called elements). A MPI parallel implementation is rather straightforward: each process computes the integral on a subset of the elements and, eventually, a reduction is made to collect the result. The algorithm is thus almost embarrassingly parallel, so we expect a reasonable speed-up even on an ordinary multicore PC (until the number of processes exceeds the number of cores).
 
-In the json file we store the interval ends, `a` and `b`, and the number of interfal. For instance
+In the json file we store the interval ends, `a` and `b`, and the number of interval. For instance
 
 ```
 { 
@@ -19,7 +19,7 @@ In the json file we store the interval ends, `a` and `b`, and the number of inte
 } 
 ```
 The integrand is given in the `main()` program as a lambda expession. Not very general, but sufficient for this example, and it is conveniently wrapped into a 
-C+++ function wrapper:
+C++ function wrapper:
 
 	  std::function<double (double const &)> f=[](double const & x){return std::sin(x)*x*x;};
 	

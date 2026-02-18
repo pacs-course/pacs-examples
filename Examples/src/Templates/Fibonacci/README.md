@@ -1,11 +1,11 @@
-#COmpting Fibonacci numbers (possibly) at compile time#
+#Compting Fibonacci numbers (possibly) at compile time#
 
 We compute compile-time the Nth Fibonacci number (of course N should
 be known at compile time).
 
 We show three options, one using template class specialization,
-compatible with c++98, the second, much more flexible (and simpler)
-that uses a recursive coxnstexpr function. The latter has also the
+compatible with C++98, the second, much more flexible (and simpler)
+that uses a recursive constexpr function. The latter has also the
 advantage that it works also if `N` is not known at compile time but
 at run time. In the latter case, it resolves as an ordinary recursive
 function. Il `N` is a constant expression instead, the result is

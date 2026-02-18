@@ -20,7 +20,7 @@ This loop **never ends**: `std::size_t` is an unsigned integer (normally an `uns
 it reaches `0` you still subtract `1` from it at the end of the loop. You think to get `-1`, and the end of the loop. But
 instead.... run the program to see.
 
-The probelm is that
+The problem is that
 
 ````
 0u - 1u = max representable unsigned integer!

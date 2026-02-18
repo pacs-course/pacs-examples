@@ -40,7 +40,7 @@ In particular it defines `MPI_SIZE_T`, useful when you want to send object of st
 The new `override` clause is very useful, but since it has been introduced in the language only recently it is not used in several legacy code, in particular some classes loaded by `mpi.h`.
 In the course, we use by default the very useful warning `-Wsuggest-override` that indeed tells where, according to the compiler, you should add `override`.
 
-When you compile with the usual setting a file that includes `mpi.h` you get a lot of annoying warnings, This file uses `#pragma GCC diagostic` to wrap the inclusion of `mpi.h` and suppress the warning related to `override` and another one related to a potentially dangerous cast of function pointers (but we trust mpi programmers, don't we?).
+When you compile with the usual setting a file that includes `mpi.h` you get a lot of annoying warnings, This file uses `#pragma GC diagostic` to wrap the inclusion of `mpi.h` and suppress the warning related to `override` and another one related to a potentially dangerous cast of function pointers (but we trust mpi programmers, don't we?).
 
 
 

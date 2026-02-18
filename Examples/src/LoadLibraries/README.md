@@ -1,4 +1,4 @@
-# An utility to load and store libraries dynamically #
+# A utility to load and store libraries dynamically #
 
 It is an utility, in the form of a library that enables you to
 - Load a set of shared library dynamically and store the corresponding handlers in a common repository;

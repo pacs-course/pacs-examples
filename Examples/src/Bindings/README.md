@@ -13,7 +13,7 @@ thus preferably binds to rvalue references (irrespective of the fact  that they 
 
 I also recall that move can be different from copy only for objects that, directly or indirectly, handle memory dynamically. For example, a `std::vector` is a good candidate for move semantic, while a `std::array` is not. If you try to move an `std::array` you will see that the move constructor is equivalent to the copy constructor.
 
-In the example we present first the "pre c++11 " situation, with just lvalue references. In this case, const lvalue references can bind to any category,
+In the example we present first the "pre C++11 " situation, with just lvalue references. In this case, const lvalue references can bind to any category,
 while non-const lvalue references bind only and preferably to non const lvalues. Normally, we use non-const lvalue reference when
 we want to possibly modify the argument and pass back the modified value to the caller.
 
@@ -50,7 +50,7 @@ you how to suppress compiler warnings with a pragma:
 
 **A note: a dirty trick to avoid the warning**. If you don't want to use the pragma, you can use the following trick: just add a line of code that uses the parameter with zero computational cost. It is sfficient to cast it to void. For example:
 
-```C++
+```cpp
 // a function that does not use the parameter
 double fun(double x) {
   (void) x;// this line avoids the warning

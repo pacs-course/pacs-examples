@@ -20,7 +20,7 @@ some example of structured bindings
 * `Optional/` the new optional template class of the standard library,
 that allows to mark a value as *unset value* in a safe way. *Useful to mark missing data!*
 
-* `Variant/` The variant template class (c++17) is a sophisticated and
+* `Variant/` The variant template class (C++17) is a sophisticated and
 type-safe C++ extension of a union. It allows to have variables that
 may hold different types. Useful if you have to read from a file where
 the content may be interpreted as belonging to different types.

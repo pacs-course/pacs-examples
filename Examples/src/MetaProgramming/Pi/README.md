@@ -14,7 +14,7 @@ I have also put in a namespace some constexpr that contain the value of pi at di
 
 This is only an example, if you want pi in your code there are simpler ways:
 
-- include <numbers> (c++20) where a lot of numerical constants are provided 
+- include <numbers> (C++20) where a lot of numerical constants are provided 
 ```c++
 #include <numbers>
 inline constexpr double pi=std::numbers::pi;
@@ -54,4 +54,4 @@ This is the "old way" (cannot use `constexpr`)
  #include<cmath>
  constexpr double pi = M_PI;
  ```
-This is what you would have done before c++20. Now you have `<numbers>` and you  can avoid this technique. The fact is that `M_PI` is a preprocessor macro, and in modern c++ we tend to use cpp macros only when strictly necessary. So use the first technique shown here.
+This is what you would have done before C++20. Now you have `<numbers>` and you  can avoid this technique. The fact is that `M_PI` is a preprocessor macro, and in modern c++ we tend to use cpp macros only when strictly necessary. So use the first technique shown here.

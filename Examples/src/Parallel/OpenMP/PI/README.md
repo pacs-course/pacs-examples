@@ -8,8 +8,8 @@ The first, defined in `main_pi.cpp`, is less efficient. We create a team of thre
 	
 	#pragma omp parallel private(x), firstprivate(sum), shared(pi,h) num_threads(num_threads)
 
-Note that `sum` is defined here as a **private** variable. `firstprivate` ensures that the local variable is initialised with the 
-value of the variable with the same name already defined by the program. In this case the value is 0. This way we endure that sum is correctly initialised. the variable `pi`, also initialised by 0, is the global variable that will eventually store the desired approximation.
+Note that `sum` is defined here as a **private** variable. `firstprivate` ensures that the local variable is initialized with the 
+value of the variable with the same name already defined by the program. In this case the value is 0. This way we endure that sum is correctly initialized. the variable `pi`, also initialized by 0, is the global variable that will eventually store the desired approximation.
 
 We then perform a for loop in parallel, within the parallel section.
 

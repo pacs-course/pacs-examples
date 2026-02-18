@@ -12,7 +12,7 @@ Here is a simple example of using `std::format`:
   std::string message = std::format("Hello, {}!", "world");
   std::cout << message << std::endl;
 ```
-In the given file you find more significant examples of the `std::format` utility. This utility makes writing formatted output much easier and more readable. Moreover, comparing to C-style formatting, it is type-safe and more secure.
+In the given file you find more significant examples of the `std::format` utility. This utility makes writing formatted output much easier and more readable. Moreover, comparing to C++-style formatting, it is type-safe and more secure.
 
 # What do I learn here?
 You will learn how to use the `std::format` utility to format strings in C++20. More details may be found in the [C++ reference](https://en.cppreference.com/w/cpp/utility/format/format).

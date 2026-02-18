@@ -5,10 +5,10 @@ approximating them by finite differencing. It is an example of recursion. In pra
 as the 1st derivative of the Nth-1 derivative, and so on recursively until we get to the 1st derivative, where I use a standard two point formula.
 
 To get a more stable (and accurate) formula for higher order derivatives I alternate backward and
-forward differences, but you can also use centered formula. Howver, beware that the standard three point formula for the second derivative is obtained
+forward differences, but you can also use centered formula. However, beware that the standard three point formula for the second derivative is obtained
 by choosing the backward or forward alternative, not the centered ones. With the algorithm I have implemented a centered second order derivative will use a stencil of five points, not three.
 
-In this example I also show a use or template lambda for the same purpose.  Instead of using a template class, here I use a template (automatic) lambda expression! Clearly I had to decide wich finite difference to use (centered in this case), but the code is very neat! And the use of `if constexpr` allows closing the recursion without need of specialization (but you can do specialization if you prefer).
+In this example I also show a use or template lambda for the same purpose.  Instead of using a template class, here I use a template (automatic) lambda expression! Clearly I had to decide which finite difference to use (centered in this case), but the code is very neat! And the use of `if constexpr` allows closing the recursion without need of specialization (but you can do specialization if you prefer).
 
 ** Note ** The code in this folder may be used by other examples. Do `make install` to install it in the right folder.
 

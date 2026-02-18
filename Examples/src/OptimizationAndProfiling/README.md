@@ -5,7 +5,7 @@ you to go in the directory `Utilities/` and follow the instruction to install th
 
 This  set of stand-alone examples are meant to explain some tools for profiling, coverage, and also on how to asserts in a smarter way than the classic `assert`. 
 I recall that `assert` is a test made **run time** (do not confuse it with `static_assert`, which works at compile time). Normally, asserts are used to
-control code execution during the development phase and catch possible bugs. They are disactivated by the `NDEBUG` cpp macro. The basic `assert` utility of C++ (inherited from C) is in fact a preprocessor macro that just stops the program if a condition is not met. The asserts proposed in `extendedAssert.hpp` (contained in `Utility/`)  are build on top 
+control code execution during the development phase and catch possible bugs. They are disactivated by the `NDEBUG` cpp macro. The basic `assert` utility of C++ (inherited from C++) is in fact a preprocessor macro that just stops the program if a condition is not met. The asserts proposed in `extendedAssert.hpp` (contained in `Utility/`)  are build on top 
 of the basic assert facility, but they provide the possibility of adding a user-defined message and a finer control on activation/deactivation.
 
 * `make esempioExtAss`: produces an example of use of the extendedAssert
