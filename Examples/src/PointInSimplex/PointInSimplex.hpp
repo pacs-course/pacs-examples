@@ -1,8 +1,10 @@
 #ifndef HH_POINTINSIMPLEX_HH
 #define HH_POINTINSIMPLEX_HH
 #include "PointInS_Vector_Traits.hpp"
+#include <cmath>
+#include <limits>
 #include <tuple>
-#include <iostream>
+
 namespace apsc
 {
     /*!
@@ -30,6 +32,11 @@ inline std::tuple<bool,PointInS_Traits::Vector4D>
     Vector s   = p - extract(t, 0);
     auto c23 = cross(v02, v03);
     auto V  = dot(v01, c23);
+    if(std::abs(V) <= std::numeric_limits<double>::epsilon())
+      {
+        auto nan = std::numeric_limits<double>::quiet_NaN();
+        return {false, {nan, nan, nan, nan}};
+      }
     auto l1 = dot(c23, s) / V;
     auto l2 = dot(cross(v03, v01), s) / V;
     auto l3 = dot(cross(v01, v02), s) / V;
@@ -63,6 +70,11 @@ inline std::tuple<bool, PointInS_Traits::Vector3D>
     Vector v02 = extract(t, 2) - v0;
     Vector s   = p - v0;
     auto V  = cross(v01, v02);
+    if(std::abs(V) <= std::numeric_limits<double>::epsilon())
+      {
+        auto nan = std::numeric_limits<double>::quiet_NaN();
+        return {false, {nan, nan, nan}};
+      }
     auto l2 = cross(v01, s) / V;
     auto l1 = cross(s, v02) / V;
 	auto l0=1.0-l1-l2;
@@ -93,6 +105,11 @@ inline std::tuple<bool, bool, double, PointInS_Traits::Vector3D>
         Vector s   = p - extract(t, 0);
         Vector n = cross(v01,v02);
         double A = norm(n);
+        if(A <= std::numeric_limits<double>::epsilon())
+          {
+            auto nan = std::numeric_limits<double>::quiet_NaN();
+            return {false, false, nan, {nan, nan, nan}};
+          }
         auto z = dot(n,s)/A;
 		bool Onplane=std::abs(z)<=eps;
         A*=A; // square it   

@@ -1,6 +1,6 @@
 #include "Polygon.hpp"
+#include <algorithm>
 #include <cmath>
-#include <cstdlib>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
@@ -32,21 +32,26 @@ norm(Point2D const &a)
 double
 sinAngle(Point2D const &u, Point2D const &v)
 {
-  return (u.x() * v.y() - u.y() * v.x()) / (norm(u) * norm(v));
+  auto const nu = norm(u);
+  auto const nv = norm(v);
+  if(nu <= std::numeric_limits<double>::epsilon() ||
+     nv <= std::numeric_limits<double>::epsilon())
+    return 0.0;
+  return (u.x() * v.y() - u.y() * v.x()) / (nu * nv);
 }
 // ********************* BASE CLASS **********************
 
 AbstractPolygon::AbstractPolygon(Vertices const &v, bool check) : vertexes{v}
 {
   if(check)
-    this->checkConvexity();
+    this->isconvex = this->checkConvexity();
 }
 
 void
 AbstractPolygon::setVertexes(Vertices const &v)
 {
   vertexes = v;
-  checkConvexity();
+  isconvex = checkConvexity();
 }
 
 std::ostream &
@@ -74,9 +79,8 @@ AbstractPolygon::showMe(std::ostream &out) const
 bool
 AbstractPolygon::checkConvexity()
 {
-  //! for simplicity
   Vertices const &myV = this->vertexes;
-  auto            mysize = this->size();
+  auto const      mysize = this->size();
   // We consider segments and triangles as convex
   if(mysize <= 3)
     {
@@ -87,33 +91,28 @@ AbstractPolygon::checkConvexity()
   //  a small number so that |a| < smallNumber means for us a==0
   //  std::numeric_limits<double>::epsilon() is a constexpr function
   double constexpr smallNumber = std::numeric_limits<double>::epsilon();
-  double res{0.0};
-  double newres{0.0};
+  double           previousSign{0.0};
   for(std::size_t i = 0; i < mysize; ++i)
     {
-      Point2D p = myV[i];
-      //  next point (circulating around)
-      Point2D v = myV[(i + 1) % myV.size()] - p;
-      // next next point
-      Point2D u = myV[(i + 2) % myV.size()] - p;
-      if(i == 0)
+      auto const &p0 = myV[i];
+      auto const &p1 = myV[(i + 1) % mysize];
+      auto const &p2 = myV[(i + 2) % mysize];
+      auto const  e1 = p1 - p0;
+      auto const  e2 = p2 - p1;
+      auto const  cross = e1.x() * e2.y() - e1.y() * e2.x();
+      if(std::abs(cross) < smallNumber)
         // in first loop direction is unknown, so save it in res
         {
-          res = sinAngle(u, v);
+          continue;
         }
-      else
+      auto const sign = (cross > 0.0) ? 1.0 : -1.0;
+      if(previousSign == 0.0)
         {
-          newres = sinAngle(u, v);
-          if(std::abs(res) < smallNumber)
-            {
-              // The two edges are aligned, skip test and update res
-              res = newres;
-            }
-          else if(newres * res < 0)
-            {
-              // angle has changed sign
-              return this->isconvex = false;
-            }
+          previousSign = sign;
+        }
+      else if(sign * previousSign < 0.0)
+        {
+          return this->isconvex = false;
         }
     } // end for
   return this->isconvex = true;
@@ -163,13 +162,35 @@ Square::checkSquare()
       throw std::runtime_error(
         " A square must be created giving four vertices");
     }
-  // Tolerance for floating point comparison; 100*epsilon is chosen to account for accumulated rounding errors in geometric calculations.
-  double constexpr squareTolerance = 100 * std::numeric_limits<double>::epsilon();
-  // Check if it is a square!
-  double l1 = distance(vertexes[1], vertexes[0]);
-  double l2 = distance(vertexes[2], vertexes[3]);
-  auto   ratio = std::abs(this->area()) / (l1 * l2);
-  if(std::abs(ratio - 1.0) > squareTolerance)
+  double constexpr tol = 100.0 * std::numeric_limits<double>::epsilon();
+  auto const       e0 = vertexes[1] - vertexes[0];
+  auto const       e1 = vertexes[2] - vertexes[1];
+  auto const       e2 = vertexes[3] - vertexes[2];
+  auto const       e3 = vertexes[0] - vertexes[3];
+  auto const sqLen = [](Point2D const &v)
+  { return v.x() * v.x() + v.y() * v.y(); };
+  auto const dot = [](Point2D const &a, Point2D const &b)
+  { return a.x() * b.x() + a.y() * b.y(); };
+
+  auto const l0 = sqLen(e0);
+  auto const l1 = sqLen(e1);
+  auto const l2 = sqLen(e2);
+  auto const l3 = sqLen(e3);
+
+  if(l0 <= tol || l1 <= tol || l2 <= tol || l3 <= tol)
+    {
+      throw std::runtime_error("Vertexes define a degenerate square");
+    }
+
+  auto const sameLen = [tol](double a, double b)
+  { return std::abs(a - b) <= tol * std::max({1.0, std::abs(a), std::abs(b)}); };
+
+  auto const orthogonal = [tol, &dot](Point2D const &a, Point2D const &b)
+  { return std::abs(dot(a, b)) <= tol * std::max({1.0, norm(a) * norm(b)}); };
+
+  if(!(sameLen(l0, l1) && sameLen(l1, l2) && sameLen(l2, l3) &&
+       orthogonal(e0, e1) && orthogonal(e1, e2) && orthogonal(e2, e3) &&
+       orthogonal(e3, e0)))
     {
       throw std::runtime_error("Vertexes do not define a square");
     }

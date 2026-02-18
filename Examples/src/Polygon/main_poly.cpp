@@ -38,19 +38,28 @@ main()
   Triangle pippo{Vertices{{0., 1}, {1., 0.}, {0., 0.}}};
   std::cout << "Area of unitary triangle: " << pippo.area() << std::endl;
   std::cout << "Triangle vertices: " << std::endl;
-  for(auto k : pippo)
+  for(auto const &k : pippo)
     std::cout << k;
 
   // testing the factory
-  auto ppoly = createPolygon("Polygon",v);
-  //ppoly->setVertexes(v);
+  auto ppoly = createPolygon("Polygon", v);
+  if(!ppoly)
+    {
+      std::cerr << "Factory failed to create Polygon\n";
+      return 1;
+    }
   ppoly->showMe();
   std::cout << "Area: " << ppoly->area() << std::endl;
-    Vertices q{{0, 0}, {0, 1}, {1, 1}, {1, 0}};
-    
-    auto     anotherSquare = createPolygon("Square",q);
 
-  //anotherSquare->setVertexes(q);
+  Vertices q{{0, 0}, {0, 1}, {1, 1}, {1, 0}};
+  auto     anotherSquare = createPolygon("Square", q);
+  if(!anotherSquare)
+    {
+      std::cerr << "Factory failed to create Square\n";
+      return 1;
+    }
   anotherSquare->showMe();
   std::cout << "Area: " << anotherSquare->area() << std::endl;
+
+  return 0;
 }

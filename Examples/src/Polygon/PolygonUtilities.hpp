@@ -2,12 +2,11 @@
 #define HH_POLYGONUTILITIES_HH
 #include "Polygon.hpp"
 #include <memory>
-#include <string>
 #include <string_view>
 namespace Geometry
 {
 /*!
- * @fn std::unique_ptr<AbstractPolygon> createPolygon(const std::string&,
+ * @fn std::unique_ptr<AbstractPolygon> createPolygon(std::string_view,
  * Args...)
  * @brief A simple factory of polygons
  *
@@ -18,8 +17,8 @@ namespace Geometry
  * concrete Polygon
  */
 template <typename... Args>
-std::unique_ptr<AbstractPolygon>
-createPolygon(std::string const &name, Args&&... args)
+[[nodiscard]] std::unique_ptr<AbstractPolygon>
+createPolygon(std::string_view name, Args &&...args)
 {
   if(name == "Polygon")
     return std::make_unique<Polygon>(std::forward<Args>(args)...);
@@ -30,6 +29,5 @@ createPolygon(std::string const &name, Args&&... args)
   // this way I can easily check if I try to construct a non existent Polygon
   return std::unique_ptr<AbstractPolygon>{nullptr};
 }
-}
- // namespace Geometry
+} // namespace Geometry
 #endif

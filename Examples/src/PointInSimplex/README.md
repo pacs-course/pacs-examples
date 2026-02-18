@@ -4,10 +4,10 @@ We provide a set of utilities to verify if a point is inside a 2D or 3D simplex 
 - The simplex is a tetrahedron in the 3D space (a 3-simplex).
 - The simplex is a triangle in the 3D space (a 2-simplex in 3D).
 
-The code is self explanatory. We have implemented the possibility of using the Eigen library (the default) of use standard containers for the simple structures holding
+The code is self explanatory. We have implemented the possibility of using the Eigen library (the default) or use standard containers for the simple structures holding
 points and simplices.
 
-The actual code is just in a headed file `PointInSimplex.h`. The file `pointInSimplex.cpp` is just a bider for a python module 
+The actual code is just in a header file `PointInSimplex.hpp`. The file `pyPointInSimplex.cpp` is just a binder for a python module 
 
 You can compile the code with the following commands:
 
@@ -32,7 +32,15 @@ The python code `pyPIS_test.py` is a simple test of the python module. You can r
 python pyPIS_test.py
 ```
 
+## Utility to create a simplex from the point
+I have created an utility called make_simplex, to ease the creation of a simplex, using
+advanced C++ template programming (variadic templates and fold expressions)
+Two things to note:
+ - The simplex to be created is passed as reference to the function. In this way we can rely to automatic parameter type deduction
+ - We perform static tests to check consistency of inputs
+
 ## What do I learn here?
 - The use of Eigen library for linear algebra.
 - The use of traits to define the type of the container holding the points and the simplices and the use of adaptors to be able to use semilessly eigen martices or standard containers
+- A use of fold expressions with variadic templates
 - The use of pybind11 to create a python module.

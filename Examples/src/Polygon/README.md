@@ -1,8 +1,41 @@
-#An example of polymorphism.#
+# Polygon: Polymorphism and Geometry Checks
 
-A set of classes that derive from an abstract `Polygon` class. The method `showme` is virtual and allows to print  at run time which Polygon we are using.
+This folder provides a small C++20 example of OOP polymorphism for 2D polygons.
 
-#What do I learn here#
-- The use of public inheritance and polymoprhism to create a hyerarchy of objects that share the fact that "they are a polygon".
-- A simple example of object factory with the use of variadic templates;
-- The classes have been made clonable to allow them to be composed into a container.
+## What is included
+- `Polygon.hpp` / `Polygon.cpp`: geometry types and implementations.
+- `PolygonUtilities.hpp`: simple factory (`createPolygon`).
+- `main_poly.cpp`: usage example.
+
+## Main ideas
+- `AbstractPolygon` defines the common polymorphic interface.
+- `Polygon` is a generic N-vertex polygon.
+- `Triangle` and `Square` are specialized final classes with shape validation.
+- Signed area is used (`> 0` for counterclockwise ordering, `< 0` for clockwise).
+
+## Correctness notes
+- Convexity is checked via consistent sign of edge cross products.
+- Degenerate edges (zero length) are handled safely in angle/convexity helpers.
+- `Square` validation checks:
+  - exactly 4 vertices
+  - non-degenerate edges
+  - equal side lengths
+  - orthogonality of consecutive sides
+
+## Modern C++ style used
+- `std::unique_ptr` for polymorphic ownership.
+- `std::string_view` + perfect forwarding in factory.
+- `[[nodiscard]]` on geometric query functions.
+- const-correct iterators and `override` for virtual methods.
+
+## Build and run
+```bash
+cd Examples/src/Polygon
+make
+./main_poly
+```
+
+## What you learn
+- Public inheritance and runtime polymorphism.
+- Basic geometric predicates (convexity and area).
+- Factory-based runtime object creation.

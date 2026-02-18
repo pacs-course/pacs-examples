@@ -1,6 +1,7 @@
 #ifndef HH_POLYGON_HH
 #define HH_POLYGON_HH
 #include <array>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -15,8 +16,7 @@
   inheritance. The class `AbstractPolygon` defines the general public
   interface of all other classes representing polygonal objects.
 
-  We make use of some syntax of the C++11 new standard so you need to
-  compile with *-std=c++11*
+  This code is modernized for C++20 style.
    */
 namespace Geometry
 {
@@ -29,7 +29,7 @@ public:
   //! Constructor giving coordinates.
   Point2D(double xx = 0.0, double yy = 0.0) : coor{xx, yy} {}
   //! A point is convertible to an array of double
-  operator std::array<double, 2>() const { return coor; }
+  explicit operator std::array<double, 2>() const { return coor; }
   //! Returns coordinates in a array<double>.
   std::array<double, 2>
   get() const
@@ -38,7 +38,7 @@ public:
   }
   //! Sets point coordinates
   void
-  set(double const &xx, double const &yy)
+  set(double xx, double yy)
   {
     coor = {{xx, yy}};
   }
@@ -91,13 +91,13 @@ operator+(Point2D const &a, Point2D const &b)
 }
 
 //! Distance between points
-double distance(Point2D const &a, Point2D const &b);
+[[nodiscard]] double distance(Point2D const &a, Point2D const &b);
 
 //! Point2D may be used also ad "vector" in 2D so it makes sense to compute
 //! the norm, which is the distance from the origin
-double norm(R2Vector const &a);
+[[nodiscard]] double norm(R2Vector const &a);
 //! Return the sin of the angle between two Point2d interpreted as vectors.
-double sinAngle(R2Vector const &u, R2Vector const &v);
+[[nodiscard]] double sinAngle(R2Vector const &u, R2Vector const &v);
 //! Polygon vertices are just vectors of points.
 using Vertices = std::vector<Point2D>;
 
@@ -133,7 +133,7 @@ public:
     In this case, however, int would have been fine (size_type is
     guaranteed to be an unsigned integral type).
   */
-  virtual std::size_t
+  [[nodiscard]] virtual std::size_t
   size() const
   {
     return vertexes.size();
@@ -142,19 +142,19 @@ public:
   /*!
     If you are changing vertices you need first to run checkConvexity()
   */
-  bool
+  [[nodiscard]] bool
   isConvex() const
   {
     return isconvex;
   }
   //! Returns a vertex (read only)
-  Point2D
+  [[nodiscard]] Point2D
   vertex(std::size_t i) const
   {
     return vertexes[i];
   }
   //! Returns a vertex (read only)
-  Point2D
+  [[nodiscard]] Point2D
   operator[](std::size_t i) const
   {
     return vertexes[i];
@@ -180,9 +180,21 @@ public:
   {
     return vertexes.begin();
   }
+  //! This allows to iterate on vertices like a vector (const overload)
+  auto
+  begin() const
+  {
+    return vertexes.begin();
+  }
   //! This allows to iterate on vertices like a vector
   auto
   end()
+  {
+    return vertexes.end();
+  }
+  //! This allows to iterate on vertices like a vector (const overload)
+  auto
+  end() const
   {
     return vertexes.end();
   }
@@ -200,7 +212,7 @@ public:
   }
 
   //! Test convexity of the polygon
-  virtual bool checkConvexity();
+  [[nodiscard]] virtual bool checkConvexity();
   //! Outputs some info on the polygon
   virtual std::ostream &showMe(std::ostream &out = std::cout) const;
   //! The area of the polygon (with sign!).
@@ -208,11 +220,11 @@ public:
     It is a pure virtual function.
     The implementation is left to the derived classes.
   */
-  virtual double area() const = 0;
+  [[nodiscard]] virtual double area() const = 0;
 
 protected:
   //! make it clonable
-  virtual std::unique_ptr<AbstractPolygon> clone() = 0;
+  [[nodiscard]] virtual std::unique_ptr<AbstractPolygon> clone() const = 0;
   Vertices                                 vertexes;
   bool                                     isconvex = false;
 };
@@ -228,19 +240,19 @@ public:
   //! I inherit all constructors of AbstractPolygon (C++17)
   using AbstractPolygon::AbstractPolygon;
   //! Destructor
-  ~Polygon(){};
+  ~Polygon() = default;
   /*!
     The area is positive if vertices are given in
     counterclockwise order
   */
-  double area() const override;
+  [[nodiscard]] double area() const override;
   //! Specialised version for generic polygons.
   std::ostream &showMe(std::ostream &out = std::cout) const override;
 
 protected:
   //! make it clonable
-  std::unique_ptr<AbstractPolygon>
-  clone() override
+  [[nodiscard]] std::unique_ptr<AbstractPolygon>
+  clone() const override
   {
     return std::make_unique<Polygon>(*this);
   }
@@ -265,19 +277,19 @@ public:
    */
   Square(Point2D origin, double length, double angle = 0.0);
   // Specialised version for square
-  std::size_t
+  [[nodiscard]] std::size_t
   size() const override
   {
     return nVertices;
   }
   //! specialised version for Square
-  bool
+  [[nodiscard]] bool
   checkConvexity() override
   {
     return true;
   }
   //! Specialised version for squares
-  double area() const override;
+  [[nodiscard]] double area() const override;
   //! Specialised version for squares
   void setVertexes(Vertices const &v) override;
   //! Specialised version for squares.
@@ -287,8 +299,8 @@ public:
 
 protected:
   //! make it clonable
-  std::unique_ptr<AbstractPolygon>
-  clone() override
+  [[nodiscard]] std::unique_ptr<AbstractPolygon>
+  clone() const override
   {
     return std::make_unique<Square>(*this);
   }
@@ -306,18 +318,18 @@ public:
   //! Specialised for Triangles
   Triangle() : AbstractPolygon{3} { isconvex = true; }
   // Specialised version for triangle
-  std::size_t
+  [[nodiscard]] std::size_t
   size() const override
   {
     return nVertices;
   }
   //! specialised version for Triangle
-  bool
+  [[nodiscard]] bool
   checkConvexity() override
   {
     return true;
   };
-  double area() const override; //! Specialised for Triangles
+  [[nodiscard]] double area() const override; //! Specialised for Triangles
   //! Specialised for Triangles
   void setVertexes(Vertices const &v) override;
   //! Specialised for Triangles
@@ -327,8 +339,8 @@ public:
 
 protected:
   //! make it clonable
-  std::unique_ptr<AbstractPolygon>
-  clone() override
+  [[nodiscard]] std::unique_ptr<AbstractPolygon>
+  clone() const override
   {
     return std::make_unique<Triangle>(*this);
   }
