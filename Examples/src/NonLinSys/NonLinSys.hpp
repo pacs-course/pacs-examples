@@ -9,6 +9,7 @@
 #define EXAMPLES_SRC_NONLYNSYS_NONLINSYS_HPP_
 #include "NonLinSysTraits.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <concepts>
 #include <ranges>
 
@@ -16,6 +17,7 @@
 #include <execution> //if you use parallel algorithm
 #endif
 
+#include <stdexcept>
 #include <type_traits>
 #include <utility>
 namespace apsc
@@ -49,7 +51,7 @@ public:
    * If you know the size of the system better reserve the space
    * @param numEqs  Number of equations (0= no reserve)
    */
-  NonLinSys(std::size_t numEqs = 0u) { this->reserve(numEqs); }
+  explicit NonLinSys(std::size_t numEqs = 0u) { this->reserve(numEqs); }
   /*!
    * If you know the size of the system better reserve the space
    * @param numEqs  Number of equations (0= no reserve)
@@ -57,10 +59,7 @@ public:
   void
   reserve(std::size_t numEqs)
   {
-    if(numEqs > 0u)
-      {
-        system_.reserve(numEqs);
-      }
+    system_.reserve(numEqs);
   }
 
   /*!
@@ -70,8 +69,8 @@ public:
    * @note Note the use of forwarding
    */
   template <typename scalarfunction>
-    requires std::is_convertible_v<scalarfunction,
-                                   typename Traits<R>::ScalarFunctionType>
+    requires std::convertible_to<scalarfunction,
+                                 typename Traits<R>::ScalarFunctionType>
   void
   addToSystem(scalarfunction &&f)
   {
@@ -92,9 +91,15 @@ public:
    * @note Returned as a const reference to allow s.getFunction(2)(3.1415) with
    * no useless copies
    */
-  ScalarFunctionType const &
-  getFunction(unsigned int i) const
+  [[nodiscard]] ScalarFunctionType const &
+  getFunction(std::size_t i) const
   {
+#ifndef NDEBUG 
+    if(i >= system_.size()) // check bounds only if debugging, otherwise just let the vector throw the exception
+      {
+        throw std::out_of_range("Function index out of range");
+      }
+#endif
     return system_[i];
   }
   /*!
@@ -105,15 +110,17 @@ public:
    * @return A function \f$ R^n\rightarrow R\f$
    */
   template <typename scalarfunction>
-    requires std::is_convertible_v<scalarfunction,
-                                   typename Traits<R>::ScalarFunctionType>
+    requires std::convertible_to<scalarfunction,
+                                 typename Traits<R>::ScalarFunctionType>
   void
-  updateFunction(scalarfunction &&f, unsigned int i)
+  updateFunction(scalarfunction &&f, std::size_t i)
   {
-    // static_assert(std::is_convertible_v<scalarfunction,
-    //                                     typename
-    //                                     Traits<R>::ScalarFunctionType>,
-    //               "Cannot add a function with wrong signature!");
+#ifndef NDEBUG
+    if(i >= system_.size()) // bounds checks only if debugging, otherwise just let the vector throw the exception
+      {
+        throw std::out_of_range("Function index out of range");
+      }
+#endif
     system_[i] = std::forward<scalarfunction>(f);
   }
 
@@ -146,8 +153,11 @@ public:
       std::execution::par, indices.begin(), indices.end(),
       [&x, &res_, this](auto const &i) { res_[i] = system_[i](x); });
 #else
-    // to use openMP you have to compile with -fopenmp
+    // Use OpenMP only when the compiler enables it, otherwise fallback to a
+    // standard serial loop.
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
     for(std::size_t i = 0; i < system_.size(); ++i)
       {
         res_[i] = system_[i](x);
@@ -158,7 +168,7 @@ public:
   /*!
    * @return Current number of equations
    */
-  std::size_t
+  [[nodiscard]] std::size_t
   numEqs() const
   {
     return system_.size();
@@ -176,7 +186,7 @@ public:
   /*!
    * @return An iterator to the beginning of the system
    */
-  auto
+  [[nodiscard]] auto
   begin() const
   {
     return system_.cbegin();
@@ -184,7 +194,7 @@ public:
   /*!
    * @return An iterator to the end of the system
    */
-  auto
+  [[nodiscard]] auto
   end() const
   {
     return system_.cend();
@@ -192,7 +202,7 @@ public:
   /*!
    * @return The size of the system
    */
-  std::size_t
+  [[nodiscard]] std::size_t
   size() const
   {
     return system_.size();

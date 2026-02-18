@@ -10,25 +10,31 @@
  * Here we show how the utility in NonLynSys may be used to build Function
  * Factory: an object factory where the objects are in fact callable objects
  */
+#ifndef EXAMPLES_SRC_NONLYNSYS_FUNCTIONFACTORY_HPP_
+#define EXAMPLES_SRC_NONLYNSYS_FUNCTIONFACTORY_HPP_
+
 #include "NonLinSys.hpp"
-#include <exception>
+#include <concepts>
+#include <stdexcept>
+#include <string>
 #include <type_traits>
 #include <unordered_map>
+#include <utility>
 namespace apsc
 {
-/*! @ brief a function factory
+/*! @brief A function factory.
 
  * @details This is an example of a factory of functions built on top of
- NonLinSys.
+ * NonLinSys.
  * You can add callable objects that respect the argument and return type
- specified
+ * specified
  * in the given trait, with an associated identifier (here given as a string).
- * You can the retrieve the function corresponding to that identifier.
+ * You can then retrieve the function corresponding to that identifier.
  *
- * @note it is an example of protected inheritance. I inherit from NonLinSys
+ * @note This is an example of protected inheritance. I inherit from NonLinSys
  * since the factory is an extension of it, but I do not want to expose all
  * methods of NonLinSys, in particular the method addToSystem. Otherwise
- * I could add a function without identifier!.
+ * I could add a function without an identifier.
  * @tparam R The scalar type
  * @tparam Traits The traits containing the main types used
  */
@@ -49,17 +55,15 @@ public:
    *
    * @tparam FUN The type of a functor compliant with the Trait
    * @param s A string used as identifier of the function
-   * @param f The function to store. It can be any callable object complieant
+   * @param f The function to store. It can be any callable object compliant
    * with the trait
    */
   template <typename FUN>
+    requires std::convertible_to<FUN, typename Traits<R>::ScalarFunctionType>
   void
   addToFactory(std::string const &s, FUN &&f)
   {
     using namespace std::string_literals;
-    static_assert(
-      std::is_convertible_v<FUN, typename Traits<R>::ScalarFunctionType>,
-      "Cannot add a function with wrong signature!");
     //  add the identifier
     auto [it, success] = functionPos_.emplace(s, numEqs());
     if(!success)
@@ -83,8 +87,10 @@ public:
    * @param s the string
    * @return the function (a callable object of the type specified in the
    * Trait).
+   * @note I return here a const reference to avoid useless copies if the intent is to call the function ditectly, 
+   * since the function is stored as a std::function, which is a wrapper that can be expensive to copy.
    */
-  auto
+  [[nodiscard]] auto const &
   getFunction(std::string const &s) const
   {
     using namespace std::string_literals;
@@ -105,8 +111,5 @@ private:
   std::unordered_map<std::string, std::size_t> functionPos_;
 };
 } // namespace apsc
-
-#ifndef EXAMPLES_SRC_NONLYNSYS_FUNCTIONFACTORY_HPP_
-#define EXAMPLES_SRC_NONLYNSYS_FUNCTIONFACTORY_HPP_
 
 #endif /* EXAMPLES_SRC_NONLYNSYS_FUNCTIONFACTORY_HPP_ */

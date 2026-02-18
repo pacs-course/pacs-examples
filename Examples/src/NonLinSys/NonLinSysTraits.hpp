@@ -17,10 +17,10 @@ namespace NonLinSysTraits
   /*!
    * @brief The trait for a system \f$ S^n \to S^m\f$ where S is a scalar field
    * @details The system is represented by a vector of functions
-   * 
+   *
    * @tparam Scalar The scalar field type
    */
-  template <class Scalar=double> struct VectorTraits
+  template <class Scalar = double> struct VectorTraits
   {
     //! The type of the function argument
     using ArgumentType = std::vector<Scalar>;
@@ -29,14 +29,14 @@ namespace NonLinSysTraits
     //! The type of the result of a single equation
     using ScalarType = Scalar;
     //! The type of the single function
-    using ScalarFunctionType = std::function<ScalarType (ArgumentType const &)>;
-    //! The type that can be used to wrap the whole system
-    using VectorFunctionType = std::function<ResultType (ArgumentType const &)>;
+    using ScalarFunctionType = std::function<ScalarType(ArgumentType const &)>;
+    //! The type that can be used to wrap the whole system.
+    using VectorFunctionType = std::function<ResultType(ArgumentType const &)>;
     //!  The container where the single functions are stored
     using FunctionContainerType = std::vector<ScalarFunctionType>;
   };
 
-  template <class Scalar=double> struct EigenVectorTraits
+  template <class Scalar = double> struct EigenVectorTraits
   {
     using ArgumentType = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
     using ResultType = ArgumentType;
@@ -47,14 +47,13 @@ namespace NonLinSysTraits
   };
 
   /*!
-   * Here  we show how to change traits to have a scalar as argument and not a
-   * vector
+   * @brief A trait with scalar argument and vector-valued output.
    *
-   * The system will be \f$ S \to S^m\f$ where S is a scalar field.
+   * The system is \f$ S \to S^m\f$, where S is a scalar field.
    *
-   * @tparam Scalar
+   * @tparam Scalar The scalar field type
    */
-  template <class Scalar=double> struct ScalarTraits
+  template <class Scalar = double> struct ScalarTraits
   {
     using ArgumentType = Scalar;
     using ResultType = std::vector<Scalar>;
