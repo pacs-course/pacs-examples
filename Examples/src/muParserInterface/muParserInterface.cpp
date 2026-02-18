@@ -5,6 +5,7 @@ namespace MuParserInterface
 {
 muParserInterface::muParserInterface()
 {
+  // Bind parser symbols to members so Eval() reads current values.
   this->M_parser.DefineVar("t", &M_t);
   this->M_parser.DefineVar("x", &M_x);
   this->M_parser.DefineVar("y", &M_y);
@@ -27,6 +28,7 @@ muParserInterface::operator()(double const t, double const x, double const y) co
 muParserInterface::muParserInterface(muParserInterface const &mpi)
   : M_parser(), M_t(mpi.M_t), M_x(mpi.M_x), M_y(mpi.M_y), M_expr(mpi.M_expr)
 {
+  // Rebuild parser state: variable addresses must point to this instance.
   this->M_parser.SetExpr(M_expr);
   this->M_parser.DefineVar("t", &M_t);
   this->M_parser.DefineVar("x", &M_x);
@@ -43,6 +45,7 @@ muParserInterface::operator=(muParserInterface const &mpi)
       this->M_t = mpi.M_t;
       this->M_x = mpi.M_x;
       this->M_y = mpi.M_y;
+      // Same reasoning as copy constructor: restore expression and bindings.
       this->M_parser.SetExpr(M_expr);
       this->M_parser.DefineVar("t", &M_t);
       this->M_parser.DefineVar("x", &M_x);
@@ -62,8 +65,7 @@ void
 printMuException(mu::Parser::exception_type &e)
 {
   using std::cout;
-  cout << "Content of muParser exception"
-       << "\n";
+  cout << "Content of muParser exception\n";
   cout << "Message:  " << e.GetMsg() << "\n";
   cout << "Formula:  " << e.GetExpr() << "\n";
   cout << "Token:    " << e.GetToken() << "\n";
