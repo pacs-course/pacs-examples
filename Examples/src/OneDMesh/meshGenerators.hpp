@@ -1,8 +1,10 @@
 #ifndef HH_GENERATOR_HH
 #define HH_GENERATOR_HH
 #include "domain.hpp"
+#include <cstddef>
 #include <functional>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 namespace Geometry
 {
@@ -11,9 +13,9 @@ using MeshNodes = std::vector<double>;
 class OneDMeshGenerator
 {
 public:
-  OneDMeshGenerator(Geometry::Domain1D const &d) : M_domain{d} {}
+  explicit OneDMeshGenerator(Geometry::Domain1D const &d) : M_domain{d} {}
   virtual MeshNodes operator()() const = 0;
-  Domain1D
+  [[nodiscard]] Domain1D const &
   getDomain() const
   {
     return M_domain;
@@ -33,7 +35,7 @@ public:
 @param domain A 1D domain
 @param b num_elements Number of elements
   */
-  Uniform(Geometry::Domain1D const &domain, unsigned int num_elements)
+  Uniform(Geometry::Domain1D const &domain, std::size_t num_elements)
     : OneDMeshGenerator(domain), M_num_elements(num_elements)
   {}
   //! Call operator
@@ -61,16 +63,16 @@ class VariableSize : public OneDMeshGenerator
 {
 public:
   /*! The spacing function type */
-  using SpacingFunction = std::function<double(double const &x)>;
+  using SpacingFunction = std::function<double(double)>;
   /*!
     @brief Constructor
     @param domain A 1D domain
     @param h spacing function
     @param max_num_elements Maximum number of elements
   */
-  VariableSize(const Geometry::Domain1D &domain, SpacingFunction const &h,
-               const unsigned int max_num_elements)
-    : OneDMeshGenerator(domain), M_h(h), M_num_elements(max_num_elements)
+  VariableSize(const Geometry::Domain1D &domain, SpacingFunction h,
+               std::size_t max_num_elements)
+    : OneDMeshGenerator(domain), M_h(std::move(h)), M_num_elements(max_num_elements)
   {}
   MeshNodes operator()() const override;
 

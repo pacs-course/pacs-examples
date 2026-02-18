@@ -1,9 +1,10 @@
 #include "mesh.hpp"
 #include <algorithm>
-#include <numeric>
+#include <limits>
+#include <stdexcept>
 namespace Geometry
 {
-Mesh1D::Mesh1D(Domain1D const &d, unsigned int const &n) : myDomain(d)
+Mesh1D::Mesh1D(Domain1D const &d, std::size_t n) : myDomain(d)
 {
   Uniform g(d, n);
   myNodes = g();
@@ -12,17 +13,27 @@ Mesh1D::Mesh1D(Domain1D const &d, unsigned int const &n) : myDomain(d)
 double
 Mesh1D::hmax() const
 {
-  std::vector<double> tmp(myNodes.size());
-  std::adjacent_difference(myNodes.begin(), myNodes.end(), tmp.begin());
-  return *std::max_element(++tmp.begin(), tmp.end());
+  if(myNodes.size() < 2u)
+    throw std::logic_error("hmax() requires at least two mesh nodes");
+  double max_h = 0.0;
+  for(std::size_t i = 1u; i < myNodes.size(); ++i)
+    {
+      max_h = std::max(max_h, myNodes[i] - myNodes[i - 1u]);
+    }
+  if(max_h <= 0.0)
+    throw std::logic_error("Mesh nodes must be strictly increasing");
+  return max_h;
 }
 
 double
 Mesh1D::hmin() const
 {
-  std::vector<double> tmp(myNodes.size());
-  std::adjacent_difference(myNodes.begin(), myNodes.end(), tmp.begin());
-  return *std::min_element(++tmp.begin(), tmp.end());
+  if(myNodes.size() < 2u)
+    throw std::logic_error("hmin() requires at least two mesh nodes");
+  double min_h = std::numeric_limits<double>::max();
+  for(std::size_t i = 1u; i < myNodes.size(); ++i)
+    min_h = std::min(min_h, myNodes[i] - myNodes[i - 1u]);
+  return min_h;
 }
 
 void

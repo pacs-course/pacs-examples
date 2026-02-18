@@ -2,7 +2,7 @@
 #define _HH_MESH_HH
 #include "domain.hpp"
 #include "meshGenerators.hpp"
-#include <functional>
+#include <cstddef>
 #include <vector>
 namespace Geometry
 {
@@ -16,12 +16,12 @@ public:
     \param d  A domain
     \param n  Number of intervals (not nodes!)
   */
-  Mesh1D(Domain1D const &d, unsigned int const &n);
+  Mesh1D(Domain1D const &d, std::size_t n);
   //! Constructor for an variably spaced mesh
   /*!
     \param gf the policy for generating mesh
   */
-  Mesh1D(Geometry::OneDMeshGenerator const &gf)
+  explicit Mesh1D(Geometry::OneDMeshGenerator const &gf)
     : myDomain{gf.getDomain()}, myNodes{gf()} {};
   //! Generate mesh (it will destroy old mesh)
   /*!
@@ -30,20 +30,26 @@ public:
   void reset(OneDMeshGenerator const &mg);
 
   //! Number of nodes.
-  unsigned int
-  numNodes() const
+  [[nodiscard]] std::size_t
+  numNodes() const noexcept
   {
     return myNodes.size();
   }
   //! The i-th node.
-  double
-  operator[](int i) const
+  [[nodiscard]] double
+  operator[](std::size_t i) const
   {
     return myNodes[i];
   }
+  [[nodiscard]] double at(std::size_t i) const { return myNodes.at(i); }
   //! To use the mesh in range based for loop I need begin()
   std::vector<double>::iterator
   begin()
+  {
+    return myNodes.begin();
+  }
+  std::vector<double>::const_iterator
+  begin() const
   {
     return myNodes.begin();
   }
@@ -59,23 +65,28 @@ public:
     return myNodes.end();
   }
   std::vector<double>::const_iterator
+  end() const
+  {
+    return myNodes.end();
+  }
+  std::vector<double>::const_iterator
   cend() const
   {
     return myNodes.cend();
   }
-  //! I return a copy of the DOmain1D.
+  //! Return the domain associated with this mesh.
   /*!
-    In case it is needed.
+    The mesh generator may store state, so this provides direct access.
   */
-  Domain1D
-  domain() const
+  [[nodiscard]] Domain1D const &
+  domain() const noexcept
   {
     return myDomain;
   }
-  //! The max mesh size.
-  double hmin() const;
-  //! The max mesh size.
-  double hmax() const;
+  //! The minimum mesh size (distance between consecutive nodes).
+  [[nodiscard]] double hmin() const;
+  //! The maximum mesh size (distance between consecutive nodes).
+  [[nodiscard]] double hmax() const;
 
 private:
   Domain1D            myDomain;

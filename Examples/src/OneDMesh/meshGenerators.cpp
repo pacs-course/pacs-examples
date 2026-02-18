@@ -1,5 +1,8 @@
 #include "meshGenerators.hpp"
 #include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <limits>
 #include <stdexcept>
 // #include "rk45.hpp"
 //  use the new version
@@ -13,7 +16,7 @@ Uniform::operator()() const
   auto const &a = this->M_domain.left();
   auto const &b = this->M_domain.right();
   if(n == 0)
-    throw std::runtime_error("At least two elements");
+    throw std::invalid_argument("Uniform mesh requires at least one interval");
   MeshNodes    mesh(n + 1);
   double const h = (b - a) / static_cast<double>(n);
 #pragma omp parallel for
@@ -30,14 +33,20 @@ VariableSize::operator()() const
   MeshNodes  mesh;
   auto const t0 = this->M_domain.left();
   auto const T = this->M_domain.right();
-  auto const y0 = 0;
+  double const y0 = 0.0;
   auto const h_max = (T - t0) / 4.;
   auto const h_initial = h_max / 100.;
   double constexpr final_error = 1e-2;
   std::size_t constexpr maxSteps = 20000;
+  if(M_num_elements < 2u)
+    throw std::invalid_argument(
+      "VariableSize mesh requires max_num_elements >= 2");
 
-  auto fun = [this](double const &x, double const &) {
-    return 1. / this->M_h(x);
+  auto fun = [this](double x, double) {
+    const double h_value = this->M_h(x);
+    if(h_value <= 0.0)
+      throw std::domain_error("Spacing function must be strictly positive");
+    return 1. / h_value;
   };
   apsc::RKF<apsc::RKFScheme::RK45_t, apsc::RKFKind::SCALAR> solver{fun};
   // NOTE This part is a little cumbersome but needed to update from a
@@ -49,6 +58,9 @@ VariableSize::operator()() const
     auto RKFsolution = solver(t0, T, y0, h_initial, final_error, maxSteps);
     if(RKFsolution.failed)
       std::cerr << "MESH GENERATION HAD A PROBLEM. CONTINUING BUT CHECK!\n";
+    if(RKFsolution.time.empty() || RKFsolution.y.empty())
+      throw std::runtime_error(
+        "VariableSize mesh generation failed: empty RKF solution");
     solution.resize(RKFsolution.time.size());
     /*for loop version */
 #pragma omp parallel for shared(solution, RKFsolution) default(none)
@@ -68,12 +80,16 @@ VariableSize::operator()() const
   }
 
   auto lastValue = solution.back().second;
+  if(lastValue <= 0.0)
+    throw std::runtime_error(
+      "VariableSize mesh generation failed: non-positive integrated spacing");
   // make it an integer
   std::size_t numElements =
     std::max(static_cast<std::size_t>(std::round(lastValue)),
              static_cast<std::size_t>(2));
   if(numElements > M_num_elements)
-    throw std::runtime_error("__FILE__,__LINE__: too many elements");
+    throw std::runtime_error(
+      "VariableSize mesh generation failed: required elements exceed maximum");
   // rescale
   using pDouble = std::pair<double, double>;
   double scaling = numElements / lastValue;
@@ -102,9 +118,9 @@ VariableSize::operator()() const
       // This is the solution with find_if
       // std::find_if(pos, solution.cend(),
       //              [i](pDouble const &value) { return value.second > i; });
-      if(found == solution.end())
-        throw std::runtime_error(
-          "__FILE__,__LINE__: Something wrong: cannot find node!");
+      if(found == solution.cend())
+        throw std::runtime_error("VariableSize mesh generation failed: "
+                                 "cannot locate interpolation node");
       pos = found - 1;
       auto xpos1 = pos->first;
       auto ypos1 = pos->second;
@@ -112,9 +128,9 @@ VariableSize::operator()() const
       auto ypos2 = found->second;
       // Linear interpolation
       // Division by zero should not happen. But.. just in case
-      if((ypos2 - ypos1) == 0)
-        throw std::runtime_error(
-          "__FILE__,__LINE__: something wrong in the spacing function h");
+      if(std::abs(ypos2 - ypos1) < std::numeric_limits<double>::epsilon())
+        throw std::runtime_error("VariableSize mesh generation failed: "
+                                 "degenerate interpolation interval");
       auto xpos = (xpos1 * (ypos2 - i) + xpos2 * (i - ypos1)) / (ypos2 - ypos1);
       mesh[i] = xpos;
     }
