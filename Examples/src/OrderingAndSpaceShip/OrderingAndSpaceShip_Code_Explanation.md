@@ -1,20 +1,9 @@
-# Ordering and Spaceship Operator in C++20
+# Ordering and spaceship operator in C++20
 
-## Overview
-The `main.cpp` file in the `OrderingAndSpaceShip` folder demonstrates the use of the C++20 spaceship operator (`<=>`) to define ordering relations for custom types. The spaceship operator simplifies the implementation of comparison operators (`<`, `<=`, `>`, `>=`, `==`, `!=`) by allowing them to be defined in one go. This file also explores the concepts of strong, weak, and partial ordering.
+This folder demonstrates how C++20 comparison works in real code, using `operator<=>` and ordering categories.
 
-## Key Concepts and Classes
+## 1. `Point`: defaulted `<=>` on floating-point members
 
-### 1. **Spaceship Operator (`<=>`)**
-The spaceship operator is a three-way comparison operator introduced in C++20. It returns an ordering type that can be one of the following:
-- `std::strong_ordering`: For types with a strict total order.
-- `std::weak_ordering`: For types with a total order but not strict equality.
-- `std::partial_ordering`: For types with a partial order.
-
-### 2. **`Point` Class**
-The `Point` class demonstrates the use of the defaulted spaceship operator. By defaulting the operator, all six relational operators (`<`, `<=`, `>`, `>=`, `==`, `!=`) are automatically generated with lexicographic ordering.
-
-#### Code:
 ```cpp
 struct Point
 {
@@ -24,126 +13,70 @@ struct Point
 };
 ```
 
-#### Explanation:
-- The default ordering is lexicographic (first `x`, then `y`).
-- The return type is `std::strong_ordering` because `double` supports strict total ordering.
+Key points:
 
-#### Example:
-```cpp
-Point a{4., 5.};
-Point b{5., 6.};
-std::cout << (a < b); // true
-std::cout << (a == b); // false
-```
+- Comparison is lexicographic (`x`, then `y`).
+- Because members are `double`, the category is `std::partial_ordering` (NaN can make comparisons unordered).
+- Relational operators (`<`, `<=`, `>`, `>=`) and equality operators are available from the defaulted comparison machinery.
 
-### 3. **`Rational` Class**
-The `Rational` class demonstrates weak ordering. Since the class does not normalize fractions, equivalent fractions (e.g., `1/2` and `2/4`) are not considered equal.
+## 2. `Rational`: weak ordering + equivalence-based equality
 
-#### Code:
 ```cpp
 struct Rational
 {
-  int den = 1;
   int num = 0;
+  int den = 1;
   friend std::weak_ordering operator<=>(Rational const &, Rational const &);
   friend bool operator==(Rational const &, Rational const &);
 };
 ```
 
-#### Explanation:
-- The spaceship operator returns `std::weak_ordering` because equivalent fractions are not strictly equal.
-- The `==` operator is explicitly defined to use `std::is_eq` for consistency with `<=>`.
+`<=>` compares values by cross multiplication and returns `less`, `greater`, or `equivalent`.
 
-#### Example:
+`==` is explicitly defined as:
+
 ```cpp
-Rational r1{1, 2};
-Rational r2{2, 4};
-std::cout << (r1 == r2); // true
-std::cout << (r1 < r2); // false
+return std::is_eq(r1 <=> r2);
 ```
 
-### 4. **`Rational2` Class**
-The `Rational2` class is similar to `Rational` but defaults the `==` operator. This means equality is based on the numerator and denominator being identical.
+So `1/2` and `2/4` are considered equal here.
 
-#### Code:
+## 3. `Rational2`: weak ordering + representation equality
+
 ```cpp
 struct Rational2
 {
-  int den = 1;
   int num = 0;
+  int den = 1;
   friend std::weak_ordering operator<=>(Rational2 const &, Rational2 const &);
   friend bool operator==(Rational2 const &, Rational2 const &) = default;
 };
 ```
 
-#### Explanation:
-- The `==` operator checks if both the numerator and denominator are equal.
-- The spaceship operator still returns `std::weak_ordering`.
+- Ordering is still value-based (`1/2` equivalent to `2/4`).
+- Equality is member-wise (`num` and `den` must match exactly).
+- Therefore, `1/2` and `2/4` are equivalent by ordering but not `==`.
 
-#### Example:
-```cpp
-Rational2 r1{1, 2};
-Rational2 r2{2, 4};
-std::cout << (r1 == r2); // false
-std::cout << (r1 < r2); // false
-```
+This is a useful example of keeping **ordering equivalence** and **object equality** distinct.
 
-### 5. **`Poset` Class**
-The `Poset` class demonstrates partial ordering. Two `Poset` objects are only comparable if their `data` vectors have the same length.
+## 4. `Poset`: partial ordering with `unordered`
 
-#### Code:
-```cpp
-struct Poset
-{
-  std::vector<int> data;
-  std::partial_ordering operator<=>(Poset const &);
-};
-```
+`Poset` compares vectors only if sizes are equal; otherwise it returns `std::partial_ordering::unordered`.
 
-#### Explanation:
-- The spaceship operator returns `std::partial_ordering`.
-- If the vectors have different lengths, the objects are unordered.
-- Otherwise, lexicographic comparison is used.
+Practical checks:
 
-#### Example:
-```cpp
-Poset ap{{1, 2, 3}};
-Poset bp{{1, 2}};
-std::cout << (ap < bp); // false
-std::cout << std::is_eq(ap <=> bp); // unordered
-```
+- `std::is_eq(a <=> b)` for equivalence
+- `(a <=> b) == std::partial_ordering::unordered` for incomparability
 
-## Examples and Outputs
-The `main` function demonstrates the behavior of these classes:
+## 5. C++20 rules demonstrated
 
-1. **Points**:
-   ```cpp
-   Point a{4., 5.};
-   Point b{5., 6.};
-   std::cout << (a < b); // true
-   std::cout << (a == b); // false
-   ```
+- Defaulted `<=>` chooses the weakest comparison category among members.
+- Manual `<=>` does not automatically imply a manual `==`; if needed, define it explicitly.
+- For partial ordering, relational expressions like `a < b` are `false` when values are unordered.
 
-2. **Rationals**:
-   ```cpp
-   Rational r1{1, 2};
-   Rational r2{2, 4};
-   std::cout << (r1 == r2); // true
-   std::cout << (r1 < r2); // false
-   ```
+## 6. Expected runtime behavior
 
-3. **Posets**:
-   ```cpp
-   Poset ap{{1, 2, 3}};
-   Poset bp{{1, 2}};
-   std::cout << std::is_eq(ap <=> bp); // unordered
-   ```
-
-## C++20 Features Used
-- **Spaceship Operator (`<=>`)**: Simplifies comparison operator definitions.
-- **Ordering Types**: `std::strong_ordering`, `std::weak_ordering`, `std::partial_ordering`.
-- **Ranges Library**: Used in `Poset` for vector comparison.
-- **Defaulted Operators**: Simplifies equality operator definitions.
-
-## Conclusion
-The `OrderingAndSpaceShip` folder provides a comprehensive demonstration of the C++20 spaceship operator and its applications. By leveraging this operator, developers can simplify the implementation of comparison logic while ensuring consistency and clarity.
+- `Point(4,5) < Point(5,6)` is `true`.
+- `Rational{1,2}` and `Rational{2,4}` are equivalent and `== true`.
+- `Rational2{1,2}` and `Rational2{2,4}` are equivalent but `== false`.
+- Two `Poset` values with different vector sizes are unordered.
