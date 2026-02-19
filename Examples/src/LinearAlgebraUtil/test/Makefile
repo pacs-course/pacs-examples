@@ -2,11 +2,16 @@ include ../../../Makefile.inc
 # I need -I.. at the beginning
 OCPPFLAGS:=$(CPPFLAGS)
 CPPFLAGS=-I.. $(OCPPFLAGS)
-# for multithreading
-#LDLIBS+=-L$(TBB_LIBDIR) -ltbb#
+# for multithreading (std::execution::par needs TBB)
+ifdef TBB_LIBDIR
+LDLIBS+=-L$(TBB_LIBDIR)
+endif
+LDLIBS+=-ltbb
 # for openmp
 CXXFLAGS+=-fopenmp
 LDFLAGS+=-fopenmp
+# Silence OpenMP shared-memory warnings during test runs (no behavior change).
+export KMP_WARNINGS=0
 # You may have an include file also in the current directory
 #
 -include Makefile.inc
