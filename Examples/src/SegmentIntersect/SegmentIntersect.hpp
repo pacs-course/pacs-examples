@@ -1,6 +1,7 @@
 #ifndef HPP_SEGMENTINTERSECT_HPP
 #define HPP_SEGMENTINTERSECT_HPP
 #include "EdgeGeo.hpp"
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <concepts>
@@ -50,7 +51,7 @@ operator*(double const &a, POINT const &b) noexcept
  * false). The second element is the found point.
  */
 template <concepts::Point2D POINT>
-inline auto
+[[nodiscard]] inline auto
 solve(std::array<std::array<double, 2>, 2> const &A, POINT const &b,
       double const &tol = 1.e-8) noexcept -> std::pair<bool, POINT>
 {
@@ -58,7 +59,7 @@ solve(std::array<std::array<double, 2>, 2> const &A, POINT const &b,
   if(std::abs(D) <= tol)
     return std::make_pair(false, POINT{0, 0});
   auto const invD = 1. / D;
-  POINT      res;
+  POINT      res{};
   res[0] = invD * (A[1][1] * b[0] - A[0][1] * b[1]);
   res[1] = invD * (A[0][0] * b[1] - A[1][0] * b[0]);
   return {true, res};
@@ -140,21 +141,27 @@ template <concepts::Point2D POINT = Point> struct IntersectionStatus
   intersection
  */
 template <concepts::Edge Edge_t>
-auto
+[[nodiscard]] auto
 segmentIntersect(
   const Edge_t &S1, const Edge_t &S2,
   double const tol = std::sqrt(std::numeric_limits<double>::epsilon()))
   -> IntersectionStatus<typename Edge_t::Point_t>
 {
-  IntersectionStatus out;
+  IntersectionStatus<typename Edge_t::Point_t> out;
   //[0][0] ->1
   //[0][1] ->2
   //[1][0] ->3
   //[1][1] ->4
-  std::array<double, 2> const v1 = S1[1] - S1[0];
-  std::array<double, 2> const v2 = S2[1] - S2[0];
-  auto const                  len1 = norm(v1);
-  auto const                  len2 = norm(v2);
+  auto const v1 = S1[1] - S1[0];
+  auto const v2 = S2[1] - S2[0];
+  auto const len1 = norm(v1);
+  auto const len2 = norm(v2);
+  if(len1 <= std::numeric_limits<double>::epsilon() ||
+     len2 <= std::numeric_limits<double>::epsilon())
+    {
+      out.good = false;
+      return out;
+    }
   // Tolerance for distances
   double tol_dist = tol * std::max(len1, len2);
   // I need to scale the tolerance to check
@@ -167,7 +174,7 @@ segmentIntersect(
       for(auto j = 0u; j < 2u; ++j)
         {
           auto const &P2 = S2[j];
-          auto        dist = norm(P1 - P2);
+          auto dist = norm(P1 - P2);
           if(dist <= tol_dist)
             {
 #ifndef NDEBUG
@@ -202,20 +209,20 @@ segmentIntersect(
     }
   // Now solve the linear system that returns the
   // parametric coordinates of the intersection
-  std::array<std::array<double, 2>, 2> A;
+  std::array<std::array<double, 2>, 2> A{};
   // to make life easier I call A and B the
   // ends of the two segmensts
   auto const &A1 = S1[0];
   auto const &B1 = S1[1];
   auto const &A2 = S2[0];
   auto const &B2 = S2[1];
-  auto        V1 = B1 - A1;
-  auto        V2 = B2 - A2;
+  auto V1 = B1 - A1;
+  auto V2 = B2 - A2;
   A[0][0] = dot(V1, V1);
   A[0][1] = -dot(V1, V2);
   A[1][0] = A[0][1];
   A[1][1] = dot(V2, V2);
-  std::array<double, 2> b;
+  typename Edge_t::Point_t b{};
   b[0] = dot(A2 - A1, V1);
   b[1] = dot(A1 - A2, V2);
   // find parametric coordinate of the intersection
@@ -226,8 +233,8 @@ segmentIntersect(
       auto const &t = result.second;
       // Make a stupid check (only in debugging phase)
 #ifndef NDEBUG
-      const std::array<double, 2> P1 = A1 + t[0] * (B1 - A1);
-      const std::array<double, 2> P2 = A2 + t[1] * (B2 - A2);
+      auto const P1 = A1 + t[0] * (B1 - A1);
+      auto const P2 = A2 + t[1] * (B2 - A2);
       if(norm(P1 - P2) > tol_dist)
         std::cerr << " Something strange, intersection points not coincident. "
                      "Distance= "

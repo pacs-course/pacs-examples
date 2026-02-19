@@ -5,6 +5,8 @@
 #ifndef EXAMPLES_EDGEGEO_HPP
 #define EXAMPLES_EDGEGEO_HPP
 #include <array>
+#include <concepts>
+#include <cstddef>
 namespace apsc::Geometry
 {
 namespace concepts
@@ -14,7 +16,7 @@ namespace concepts
   */
   template <typename P>
   concept Point2D = requires(P p) {
-    P{0., 0.}; // constructible from two doubles
+    P{0.0, 0.0}; // constructible from two doubles
     { p[0] } -> std::convertible_to<double>;
     { p[1] } -> std::convertible_to<double>;
   };
@@ -27,16 +29,15 @@ template <concepts::Point2D POINT = Point> class EdgeGeo
 public:
   using Point_t = POINT;
   // Constructor giving end points
-  EdgeGeo(const POINT &left, const POINT &right) : M_points{left, right} {};
+  EdgeGeo(const POINT &left, const POINT &right) : M_points{left, right} {}
   //! Set end points
-  void
-  set(POINT &&left, POINT &&right)
-  {
-    M_points = {left, right};
-  };
+  void set(const POINT &left, const POINT &right) { M_points = {left, right}; }
 
-  POINT
-  operator[](std::size_t i) const { return M_points[i]; };
+  const POINT &
+  operator[](std::size_t i) const noexcept
+  {
+    return M_points[i];
+  }
 
   POINT &
   operator[](std::size_t i) noexcept

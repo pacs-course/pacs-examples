@@ -8,19 +8,19 @@ Finding the intersection of two segments in a plane looks easy. Indeed, it is no
 - Segments may "barely intersect", but what does "barely" mean when we deal with floating point numbers, and the consequent round-off errors?
 - Segments may not intersect.
 
-Here I propose a template function
+Here I propose a C++20 template function:
 
     template <class Edge_t>
     IntersectionStatus segmentIntersect(const Edge_t &, const Edge_t &,double tol)
 
-That takes two edges of generic type `Edge_t`, where the only requirement is that `operator[int i]` on an `Edge_t` object returns the coordinates of the corresponding end stored in an object that behaves like an array of doubles.
+That takes two edges of generic type `Edge_t`, where the only requirement is that `operator[](int i)` on an `Edge_t` object returns the coordinates of the corresponding end stored in an object that behaves like a 2D point (indexable and convertible to `double`).
 
 `tol` is a tolerance, which is defaulted to the square root of the
-machine epsilon, (approx 1.e-8). The choice of this tolerance may be
+machine epsilon (approximately `1.e-8`). The choice of this tolerance may be
 critical to sort out the limit cases.
 
-The function returns a structure that contains an extended information
-about the possible intersection. The code handles alle the possibilities mentioned above.
+The function returns a structure that contains extended information
+about the possible intersection. The code handles all the possibilities mentioned above.
 
 ## Note ##
 
@@ -28,10 +28,10 @@ about the possible intersection. The code handles alle the possibilities mention
 
 # What do I learn here? #
 - That also apparently simple computational problems require a lot of care if one wants an algorithm capable of treating all the particular cases;
-- The use nested namespaces
-- An overloading of the output streaming operator to prettiprint the results;
+- The use of nested namespaces;
+- An overload of the output streaming operator to pretty-print the results;
 - The use of 'block scope' to simplify the repetition of a test on different data.
-- The use of a concept to specify a prerequisite on a type
+- The use of a concept to specify a prerequisite on a type;
 - The binding with pybind11
 
 ## Folder contents ##
@@ -45,7 +45,7 @@ about the possible intersection. The code handles alle the possibilities mention
 - `pyIntersect.cpython-*.so`: built Python extension module (generated artifact).
 - `main_intersect`: compiled C++ executable (generated artifact).
 
-## The instructions to compile: ##
+## Build instructions ##
 
 ```bash
 make
