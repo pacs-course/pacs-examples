@@ -48,6 +48,10 @@ inline static double x=6.0; // Definition and initialization
 If the static variable is `constexpr` you can avoid inline 
 since `constexpr` implies `inline` (since C++14).
 
+## Note:
+Non-static member variables may cause data race in a multithreaded setting if more than one thread is writing on the static variable. 
+You need to set an atomic access. 
+
 
 # What do I get from this example? #
 - A possible use of static variables to track statistics of the class objects;
