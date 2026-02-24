@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpacs.a CMakeFiles/pacs_static.dir/readCSV.cpp.o CMakeFiles/pacs_static.dir/string_utility.cpp.o
+/usr/bin/ranlib libpacs.a
