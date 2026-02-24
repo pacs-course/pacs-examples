@@ -119,7 +119,7 @@ since several examples use the utilities contained in this folder.
   * `NonLinSys` A class that holds a system of callable objects, where you can add the objects one at a time. It also contains a `FunctionFactory`, a factory of
   callable objects. The latter may be used in a program where the user gives functions and then uses them throughout the program, for instance, functions that define boundary conditions.
   A different Function Factory is present in `Factory` as a specialization of the generic factory contained therein.
-  * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Various tools have been integrated into the Makefile. If you read the Makefile, you see how tools are called.
+  * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Various tools have been integrated into the build recipes; see the local `CMakeLists.txt` for how tools are called.
   * `Parallel` Some examples of parallelization
     - `Parallel/MPI` MPI Examples
     - `Parallel/OpenMP` OpenMO Examples
@@ -182,5 +182,4 @@ I have tried to find and fix all bugs I have found, but I cannot guarantee that 
 If you find a mistake, or if you think that an example can be bettered, **please tell me!**. I will be happy to include your corrections/suggestions, and give credits to you.
 
 -------------------------------------------------------------------------------
-
 

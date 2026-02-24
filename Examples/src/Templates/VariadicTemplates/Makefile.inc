@@ -1,2 +1,0 @@
-# Activate optimization
-RELEASE=yes
