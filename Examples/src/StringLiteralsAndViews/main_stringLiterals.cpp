@@ -90,15 +90,25 @@ main()
             << e_normal_str.size() << " and " << e_accented_str.size()
             << std::endl;
   std::cout << "Printing è stored in a std::string: ";
-  std::cout << e_accented_str[0] << "," << e_accented_str[1] << std::endl;
+  std::cout << e_accented_str << std::endl;
   // Handling multybyte character strings is not easy
-  // I can use a wide string but the following code is not working on my PC
-  // Better use std::string and not single characters.
-
-  std::u8string utf8_str = u8"è";           // this is a utf-8 string
-  wchar_t       e_u8accented = utf8_str[0]; // here I extract the character è
-  // that I store in a wchar_t (4 bytes long).
-  std::wcout << L"Printing the character è stored in a wchar_t: "
-             << e_u8accented << std::endl; // but still it does not work
+  // You can use a library like ICU or C++20 char8_t and u8string
+  // Here a simple example of the use of char8_t and u8string
+  std::u8string u8_str = u8"è";
+  std::cout << "The size of the u8string is " << u8_str.size() << std::endl;
+  std::cout << "The u8string is: "
+            << reinterpret_cast<const char *>(u8_str.c_str()) << std::endl;
+  // but is muuch simpler using std::string with the right encoding (e.g. UTF-8)
+  // UTF-8 is the defualt on many system (and on mine), that's why è in
+  // e_accented_str was printing fine For completeness, however, I show hor to
+  // chenge the locale Her I ser global locale to UTF-8 Italian locale For
+  // strings processign what matters is the UTF-8 encoding, the full locale
+  // specification is important or other things like convention for numbers or
+  // monetary units.
+  std::locale::global(
+    std::locale("it_IT.UTF-8")); // setting the locale to Italian UTF-8
+  std::cout << "The size of the string is " << e_accented_str.size()
+            << std::endl;
+  std::cout << "The string is: " << e_accented_str << std::endl;
   return 0;
 }
