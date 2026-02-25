@@ -47,7 +47,7 @@ You may check the version of your compiler with the option -v. Several examples 
 
 ## Module (mk) system
 
-In the course, we use the mk module system provided in [this repository](https://github.com/pcafrica/mk_) (nothing to do with girt submodules!). However, this is not strictly required; you can do without it if you have
+In the course, we use the mk module system provided in [this repository](https://github.com/pcafrica/mk_) (nothing to do with git submodules!). However, this is not strictly required; you can do without it if you have
 a recent Linux distribution.
 
 You may want to use an IDE. Either [eclipse](https://www.eclipse.org/ide/), [CLion](https://www.jetbrains.com/clion/) or [VisualStudio](https://www.jetbrains.com/clion/). Clion and Visual Studio support integration with Copilot. Visual Studio also allows integration with dev containers
