@@ -1,6 +1,7 @@
 # Content of the Examples/src directory #
 
-We provide an overview of the content in the `src` directory, where all the example sources are stored. *All examples have a `README.md` file with a more detailed description*.
+We provide an overview of the content in the `src` directory, where all the example sources are stored. *All examples have a `README.md` file with a more detailed description*. SOme examples may have also other
+Markdown or LaTeX files with more details on the problem being addressed or the code structure.
 
 We can divide the examples into four categories:
 
@@ -33,7 +34,7 @@ since several examples make use of the utilities.
 
 since several examples use the utilities contained in this folder.
 
-- `GenericFactory`. Copied also in `Utility`, it is a generic object factory. You may use and specialize it for your needs.
+- `GenericFactory`. Copied to `Utility` as well, it is a generic object factory. You may use and specialize it for your needs.
 - `muParserInterface` Some examples on how to interface with [MuParser](https://beltoforion.de/article.php?a=muparser) and [MuParseX](https://beltoforion.de/article.php?a=muparserx) libraries
   for parsing mathematical expressions. Use them as a guideline if you plan to use these tools. The source of the libraries is contained in the `Extra` folder under the root directory of this repo: you need to install them before being able to compile these examples. Go in the `Extra` folder and follow the instructions in the `README.md` file.
 - `LoadLibraries` A utility to hold dynamically loaded  libraries (you have it also in `FactoryPlugin`). It simplifies recalling all the tools needed to access dynamic libraries, and it implements the RAII principle: when destroyed, it unloads the libraries.
@@ -51,29 +52,29 @@ since several examples use the utilities contained in this folder.
   * `Horner` The Horner rule to compute polynomials efficiently, in a serial environment at least, the code is inherently scalar.
   * `IntegerOverflow` An example that shows how integer overflow produces non-intuitive results. *Beware of integer overflows*. In `Ulilities/absdiff.hpp` you find a function that computes the absolute difference of two integers, eliminating the risk of overflow
   * if the integers are unsigned.
-  * `LambdaExpr` Some examples of lambda expressions. Lambda expressions are a very powerful tool, they are the equivalent of function handles in Matlab.
+  * `LambdaExpr` Some examples of lambda expressions. Lambda expressions are a very powerful tool; they are the equivalent of function handles in MATLAB.
   * `Linkage` Use of `extern` to create variables with external linkage (i.e. global/namespace variable) and unnamed `namespace` and `static` specifiers to have functions with local linkage (i.e. visible only in the current translation unit). A bit of technical stuff.
   * `MoveSemantic_simple` An illustration of move semantics that shows which constructor/assignment operator is called
   on l-values and r-values.
   * `Numeric_limits`. An example that uses almost all the facilities provided by `numeric_limits<>`, just to show what they do.
-  * `Odr` An example on the one definition rules and also on a dangerous situation if things are not done correctly. A bit technical stuff.
-  * `OrderingAndSpaceShip` An example of the ordering relation concepts introduced in C++20. It also shows how to use the spaceship operator and defaulted comparison operators.
+  * `Odr` An example of the one definition rules and also a dangerous situation if things are not done correctly. A bit of technical stuff.
+  * `OrderingAndSpaceShip` An example of the ordering relation concepts introduced in C++20. It also shows how to use the spaceship operator and default comparison operators.
   * `Polygon`. A classic example of *polymorphism*: a hierarchy of polygon classes.
-  * `Preprocessor`. A simple example that shows what happens if you look at a code after having run the preprocessor. Just to show that `#include` does what it says and that `-D` sets a preprocessor variable.
-  * `RandomDistribution` An example of use of different random number engines and distribution of the standard library. It uses `gnuplot-iostream` to plot histograms on the screen. You must have `gnuplot` installed and also some boost libraries. `gnuplot-iostream` is provided with the Utilities.
-  * `Rational`. An example on operator overloading: a class for rational numbers.
+  * `Preprocessor`. A simple example showing what happens when you look at the code after running the preprocessor. Just to show that `#include` does what it says and that `-D` sets a preprocessor variable.
+  * `RandomDistribution` An example of the use of different random number engines and distribution of the standard library. It uses `gnuplot-iostream` to plot histograms on-screen. You must have `gnuplot` installed, as well as some Boost libraries. `gnuplot-iostream` is provided with the Utilities.
+  * `Rational`. An example of operator overloading: a class for rational numbers.
   * `RefBindings` Another example of reference bindings rules, where I show all the possibilities of reference bindings. See also `Bindings`.
   * `ReferenceWrapper` Just to show that thanks to the reference wrapper utility, you may store "references" in a container. Typically, containers may contain only first-class objects, not references; however, reference wrappers come to the rescue.
   * `Scope`: An old example of scoping rules.
   * `SimpleProgram` A simple program that adds two numbers. Just a little more complicated than `Hello World`.
   * `SmartPointers`: An example of the use of smart pointers. 
   * `StaticMembers` A possible use of static member variables: count how many objects of a given type you have in the code.
-  * `STL/` A folder with examples on various utilities of the STL, and some tricks! .
+  * `STL/` A folder with examples on various utilities of the STL, and some tricks!
     - `STL/cont` The use of some containers.
     - `STL/FileSystem` The new facility to traverse and examine file systems.
     - `STL/Map` The powerful C++ associative container.
     - `STL/Optional` The new `std::optional` utility to represent *missing data*.
-    - `STL/RangesAndViews` An example of the use of ranges and views, introduced in c++20. It also contains example of the use of the new *contrained algorithms*: more convenient to use and more powerful than the usual ones.
+    - `STL/RangesAndViews` An example of the use of ranges and views, introduced in C++20. It also contains examples of the use of the new *constrained algorithms*: more convenient to use and more powerful than the usual ones.
     - `STL/Reduce` The new utilities `reduce` and `transform_reduce` that perform reduction and transformation operations on ranges, possibly in parallel 
     - `STL/Set` The use of set with different comparison operators.
     - `STL/SetEdge` Again, the use of a comparison operator to distinguish between directed or undirected graphs.
@@ -83,22 +84,22 @@ since several examples use the utilities contained in this folder.
     - `STL/UnorderedMap` The powerful C++ associative container. The unordered version. Is the C++ version of the Python dictionary.
     - `STL/Variant` An example of this new utility, a class that may store values of different types. A safer version of `union`.
   * `Streams/` A folder containing several examples of the use of stream, 
-    * `Streams/binary_io`. An example of binary i/o that shows how faster it is on large data set! It shows also an example of the use of HDF (you need hdf installed).
+    * `Streams/binary_io`. An example of binary i/o that shows how much faster it is on a large dataset! It also shows an example of using HDF (you need HDF installed).
     * `Streams/fstream`. Streaming a file (basic stuff).
     * `Streams/iostream`. Basic streaming operations.
     * `Streams/redirect`. Streams can be redirected, even at runtime. Useful if you want to switch from screen to file, or to a string.
     * `Streams/serialization`. An example of serialization of an aggregate (more complex serialization that may be performed with specialised libraries like `boost::serialization` is not covered here).
     * `Streams/sstream`. String streams are a handy tool. They are strings that can act as a stream (or vice versa). Here you find some examples of usage.
-    * `Streams/format` An example of the use of the new `std::format` utility. It is a new feature in C++20 that allows you to format strings in a more readable and maintainable way. It is similar to `printf` but with a more modern syntax. 
+    * `Streams/format` An example of the use of the new `std::format` utility. It is a C++20 feature that allows you to format strings more readably and maintainably. It is similar to `printf` but with a more modern syntax. 
   * `Vector` Examples of use of `std::vector`, probably the most used container in C++.
     *`Vector/Basics` As the name says.
-    *`Vector/Remove` What it means "removing" elements from a vector with `remove()`. It is not what you think!`
+    *`Vector/Remove` The method `remove()` removes elements from a vector. But probably it does not do what you think!. 
   
 ## Advanced examples
-  * `adtTree` A binary search structure based on the alternating digital tree algorithm. It can search for "points inside boxes"
+  * `adtTree` A binary search structure based on the alternating digital tree algorithm. It can search for "points inside boxes."
   and "possibly intersecting boxes". It is a pretty dynamic structure where nodes (boxes or points) can be added/deleted dynamically. A very complex example.
-  * `bcHandler` An example of a possible way to handle the information about boundary conditions in a numerical code. It also shows 
-  an example of use of `muparserx`. To install `muparserX`, go in the sub-folder `Extra`.
+  * `bcHandler`: An example of a possible way to handle the information about boundary conditions in a numerical code. It also shows 
+  an example of the use of `muparserx`. To install `muparserX`, go to the sub-folder `Extra`.
   * `CompositionWithVariadicTemplates` The Composer design pattern done with variadic templates: constructing complex objects by composing simple ones. The technique is more "rigid" than the classical one, which uses polymorphism, but somewhat flexible and efficient. 
   * `DataHeap` A class that implements a heap structure operating on a vector without moving the vector elements around. It is a very efficient implementation of a heap.
   * `DesignPatterns/` A set of examples of Design Patterns, a C++ implementation of the techniques illustrated in the famous [Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns)book and in [this site](https://refactoring.guru/design-patterns/cpp). 
@@ -117,7 +118,7 @@ since several examples use the utilities contained in this folder.
   * `Mesh` example of tools to store and read a 2D mesh of polygons (currently implemented for triangles and quads).
   * `MoveSemantic` A example that uses [valgrind](https://valgrind.org/ "The valgrind site") to show the advantages of move semantics when handling large objects (you must have valgrind installed in your system).
   * `NonLinSys` A class that holds a system of callable objects, where you can add the objects one at a time. It also contains a `FunctionFactory`, a factory of
-  callable objects. The latter may be used in a program where the user gives functions and then uses them throughout the program, for instance, functions that define boundary conditions.
+  callable objects. The latter may be used in a program where the user provides functions and then uses them throughout the program, for instance, to define boundary conditions.
   A different Function Factory is present in `Factory` as a specialization of the generic factory contained therein.
   * `OptimizationAndProfiling/` A set of examples on code optimization and profiling. Various tools have been integrated into the Makefile. If you read the Makefile, you see how tools are called.
   * `Parallel` Some examples of parallelization
@@ -159,7 +160,7 @@ since several examples use the utilities contained in this folder.
     * `MatrixData` Some matrices taken from [Matrix Market](https://math.nist.gov/MatrixMarket/), a repo of data for comparative studies of algorithms.
     * `MatrixMarketReadersMatlab` If you want to load the matrices into Matlab
     * `redsvd-h` A submodule containing the fork of the homonymous tool [on Github](https://github.com/ntessore/redsvd-h), which implements
-    in a templated fashion the algorithms in [redsvd](https://code.google.com/archive/p/redsvd/), for solving several matrix decompositions including singular value decomposition (SVD), principal component analysis (PCA), and eigenvalue decomposition. It uses a stochastic technique to be able to extract low rank approximations of possibly very large sparse matrices at low cost. See [Finding Structure with Randomness: Probabilistic Algorithms for Constructing Approximate Matrix Decompositions](https://doi.org/10.1137/090771806)
+    in a templated fashion the algorithms in [redsvd](https://code.google.com/archive/p/redsvd/), for solving several matrix decompositions including singular value decomposition (SVD), principal component analysis (PCA), and eigenvalue decomposition. It uses a stochastic technique to be able to extract low-rank approximations of possibly very large sparse matrices at low cost. See [Finding Structure with Randomness: Probabilistic Algorithms for Constructing Approximate Matrix Decompositions](https://doi.org/10.1137/090771806)
     * `spectra` A submodule containing a fork of the homonymous tool on [GitHub](https://github.com/yixuan/spectra.git). The name is the acronim of Sparse Eigenvalue Computation Toolkit as a Redesigned ARPACK. It is a C++ library for large-scale eigenvalue problems, built on top of the Eigen linear algebra library
     * `Thomas` An implementation of the Thomas algorithm to solve tridiagonal systems of equations. It is a well known O(n) algorithm, you find the general desctiption on [Wikipedia](https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm)
     * `SparseBlockMatrix` A tool to construct block matrices where each block is a sparse Eigen matrix.
@@ -167,7 +168,7 @@ since several examples use the utilities contained in this folder.
   * `Mesh`, an example of a class for 2D meshes, with a few utilities.
   * `MyMat0/` Example of a class for Matrices with different implementations and some views.
   * `Multicity` It uses `RKFSolver` to implement a multicity epidemic model.
-  * `NewtonSolver` Solving F(x)=0. It supports Newton's method, as well as quasi-Newton schemes. Indeed, it is very general. **Note** The use of a `callback`, a technique to allow getting information on the internal state of a class, when needed. A complete and working example.
+  * `NewtonSolver` Solving F(x)=0. It supports Newton's method and quasi-Newton schemes. Indeed, it is very general. **Note** The use of a `callback`, a technique to allow getting information on the internal state of a class, when needed. A complete and working example.
   * `OneDMesh`. A class for 1D meshes. Build with a structure that mimics what you may have also in 2 or 3D meshes. It also implements an algorithm for non-uniform meshes by specifying a spacing function.
   * `QuadratureRule/` Classes and techniques for numerical integration of univariate functions. It also offers examples of dynamic loading of polymorphism, cloneable classes, dynamic loading of libraries, the decorator design pattern, and templates—a complete and working example.
   * `Regression`. An example of univariate linear regression. You can choose different polynomial models. At the moment, only least squares fitting is implemented.
@@ -177,7 +178,7 @@ since several examples use the utilities contained in this folder.
 ## A DISCLAIMER ##
 
 The code is provided as-is, without any claim of correctness or fitness for any purpose, as part of learning C++.
-I have tried to find and fix all bugs I have found, but I cannot guarantee that errors aren't still present (actually, it is very likely that they are).
+I have tried to find and fix all the bugs I found, but I cannot guarantee that errors aren't still present (in fact, it is very likely they are).
 
 If you find a mistake, or if you think that an example can be bettered, **please tell me!**. I will be happy to include your corrections/suggestions, and give credits to you.
 
