@@ -36,6 +36,7 @@ Many more things can be said about strings. For instance, you should remember th
 
 Another important question if you go multilingual is that of the encoding system, i.e. the map between the printable character and the number(s) used to represent it in memory (remember, in a computer we only have numbers..). But this will be too much for this example.
 
+## String views
 In this example we show also a possible use of string view. `std::string_view` is a non-owning reference to a sequence of characters. It was introduced with C++17 and serves several useful purposes:
 
 1. **Performance Optimization:** It allows the creation of lightweight, non-owning references to strings without the need to copy the underlying string data. This can lead to performance improvements, as it avoids potentially expensive copy operations.
@@ -50,12 +51,22 @@ In this example we show also a possible use of string view. `std::string_view` i
 
 It's important to note that since `std::string_view` does not own the string it references, care must be taken that the underlying string outlives the `string_view`. Otherwise, you could end up with a dangling reference, which could lead to undefined behavior. Sting views are useful in code that operates heavily on strings, such as parsers, compilers, and other text-processing applications.
 
+## Locale
+In this example I show also how to change the locale. Normally it does not matter much for string handling since
+most system use the UTF-8 encoding by default, which supports all European and Asian languages. But it is useful to know that C++ allows you to change the locale setting using the POSIX convention "language[_territory][.codeset][@modifier]"
 
+In your Linux PC type
 
-#What do I learn here#
+```bash
+locale
+```
+to see the locale used by your PC!
+
+# What do I learn here
 - Some pieces of information and curiosities about strings;
 - How to interpret a string verbatim;
-- The difference between C++ strings and C++ strings.
+- The difference between C strings and C++ strings;
+- Something about locale
 
 
 
