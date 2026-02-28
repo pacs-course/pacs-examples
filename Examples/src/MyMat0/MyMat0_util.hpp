@@ -23,7 +23,12 @@ matMul(MyMat0<T, storagePolicy1> const &m1, MyMat0<T, storagePolicy2> const &m2)
   for(size_type i = 0; i < m1.nrow(); ++i)
     for(size_type j = 0; j < m2.ncol(); ++j)
       for(size_type k = 0; k < m2.nrow(); ++k)
+// if c++23 I can use [k,j] instead of (k,j)
+#if __cplusplus >= 202100L
+        res(i, j) += m1[i, k] * m2[k, j];
+#else
         res(i, j) += m1(i, k) * m2(k, j);
+#endif
   return res;
 }
 
@@ -150,12 +155,12 @@ MyMat0<double, ROWMAJOR> matMulOptBlas(MyMat0<double, ROWMAJOR> const &m1,
                                        MyMat0<double, ROWMAJOR> const &m2);
 
 MyMat0<double, ROWMAJOR> matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
-                                       MyMat0<double, ROWMAJOR> const &   m2);
+                                       MyMat0<double, ROWMAJOR> const    &m2);
 
 MyMat0<double, ROWMAJOR> matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
                                        MyMat0<double, COLUMNMAJOR> const &m2);
 
-MyMat0<double, ROWMAJOR> matMulOptBlas(MyMat0<double, ROWMAJOR> const &   m1,
+MyMat0<double, ROWMAJOR> matMulOptBlas(MyMat0<double, ROWMAJOR> const    &m1,
                                        MyMat0<double, COLUMNMAJOR> const &m2);
 #endif
 /*! @}*/

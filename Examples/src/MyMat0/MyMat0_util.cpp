@@ -27,7 +27,7 @@ matMulOptBlas(MyMat0<double, ROWMAJOR> const &m1,
 
 MyMat0<double, ROWMAJOR>
 matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
-              MyMat0<double, ROWMAJOR> const &   m2)
+              MyMat0<double, ROWMAJOR> const    &m2)
 {
   // I need a temporary matrix. doublehis is very costly memoriwise
   // but I do not have alternatives here
@@ -59,7 +59,7 @@ matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
 }
 
 MyMat0<double, ROWMAJOR>
-matMulOptBlas(MyMat0<double, ROWMAJOR> const &   m1,
+matMulOptBlas(MyMat0<double, ROWMAJOR> const    &m1,
               MyMat0<double, COLUMNMAJOR> const &m2)
 {
   MyMat0<double, ROWMAJOR> res(m1.nrow(), m2.ncol(), 0.);

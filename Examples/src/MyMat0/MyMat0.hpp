@@ -93,12 +93,12 @@ private:
     @{
 
    */
-  size_type
+  constexpr size_type
   getIndex(size_type const i, size_type const j, StorageType<ROWMAJOR>) const
   {
     return j + i * nc;
   }
-  size_type
+  constexpr size_type
   getIndex(size_type const i, size_type const j, StorageType<COLUMNMAJOR>) const
   {
     return i + j * nr;
@@ -133,7 +133,7 @@ public:
   /*
     Made public to be able to do faster operations on indexes
    */
-  size_type
+  constexpr size_type
   getIndex(size_type const i, size_type const j) const
   {
     return getIndex(i, j, StorageType<storagePolicy>());
@@ -151,7 +151,7 @@ public:
     @param init Initializer (default to default constructor)
    */
   explicit MyMat0(size_type n = 0, size_type m = 0, T const &init = T())
-    : nr(n), nc(m), data(n * m, init){};
+    : nr(n), nc(m), data(n * m, init) {};
   //! Default copy constructor is ok
   MyMat0(MyMat0 const &) = default;
   //! Copy constructor for other policy
@@ -232,6 +232,7 @@ public:
   {
     return data[getIndex(i, j)];
   }
+
   //! Returns element with no bound check (non-const version)
   /*!
     It allows m(1,1)=1 on non-constant matrix m
@@ -241,6 +242,29 @@ public:
   {
     return data[getIndex(i, j)];
   }
+// Activate this part only if compiler with std=c++23
+#if __cplusplus >= 202100L
+  //! Returns element with no bound check (const version)
+  /*!
+    It allows a=m[i,j] on constant matrix m
+  This feature requires C++23
+  */
+  T const &
+  operator[](const size_type i, const size_type j) const
+  {
+    return data[getIndex(i, j)];
+  }
+/*!
+    It allows m[i,j]=1 on non-constant matrix m
+  This feature requires C++23
+*/
+#endif
+  T &
+  operator[](const size_type i, const size_type j)
+  {
+    return data[getIndex(i, j)];
+  }
+
   //! Policy cannot be changed, but it may be queried
   constexpr StoragePolicySwitch
   getStoragePolicy() const
@@ -341,7 +365,7 @@ public:
  */
 template <class T, StoragePolicySwitch storagePolicy>
 std::vector<T> operator*(MyMat0<T, storagePolicy> const &m,
-                         std::vector<T> const &          v);
+                         std::vector<T> const           &v);
 
 //                 DEFINITIONS
 
@@ -460,7 +484,7 @@ MyMat0<T, storagePolicy>::normF() const
 template <class T, StoragePolicySwitch storagePolicy>
 void
 MyMat0<T, storagePolicy>::vecMultiply(const std::vector<T> &v,
-                                      std::vector<T> &      res) const
+                                      std::vector<T>       &res) const
 {
   if(v.size() != nc)
     {

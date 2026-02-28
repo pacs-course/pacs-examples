@@ -80,7 +80,7 @@ main()
     std::cout << "Gain: " << 100 * (t1 - t2) / t1 << "%" << std::endl;
     std::cout << "Speedup: " << t1 / t2 << std::endl;
 #ifndef NOBLAS
-    std::cout << " Blas Optimized Matrix Moltiplication"
+    std::cout << " Blas Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res3 = matMulOptBlas(A, B);
@@ -121,7 +121,7 @@ main()
     std::cout << "Gain: " << 100 * (t1 - t2) / t1 << "%" << std::endl;
     std::cout << "Speedup: " << t1 / t2 << std::endl;
 #ifndef NOBLAS
-    std::cout << " Blas Optimized Matrix Moltiplication"
+    std::cout << " Blas Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res3 = matMulOptBlas(A, B);
