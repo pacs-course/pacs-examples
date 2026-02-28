@@ -71,7 +71,8 @@ since several examples use the utilities contained in this folder.
   * `StaticMembers` A possible use of static member variables: count how many objects of a given type you have in the code.
   * `STL/` A folder with examples on various utilities of the STL, and some tricks!
     - `STL/cont` The use of some containers.
-    - `STL/FileSystem` The new facility to traverse and examine file systems.
+    - `STL/FileSystem` A facility to traverse and examine file systems.
+    - `STL/mdspan` The c++23 view for matrices
     - `STL/Map` The powerful C++ associative container.
     - `STL/Optional` The new `std::optional` utility to represent *missing data*.
     - `STL/RangesAndViews` An example of the use of ranges and views, introduced in C++20. It also contains examples of the use of the new *constrained algorithms*: more convenient to use and more powerful than the usual ones.
