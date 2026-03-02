@@ -1,39 +1,25 @@
 # Numeric limits and numerical constants #
 
-A simple program that shows the main utilities provided by `std::numeric_limits`. This utility allows to interrogate some characteristics of basic type, like the
-machine epsilon, the maximum representable number etc. It also provides some tools to assess some capabilities or characteristics of our floating point system. In particular
-if it has the `Inf` and `NaN` symbols. Look at the code, it is commented heavily.
+This example program presents the main utilities provided by `std::numeric_limits`. It shows how to inspect key properties of fundamental types, such as machine epsilon and the maximum representable value. It also demonstrates how to query floating-point capabilities, including support for `Inf` and `NaN`. The source code is extensively commented.
 
-We also show a recent addition to the standard library, provided in the header `<numbers>`. This header defines, as constant expressions, several mathematical constants, in the
-different floating point resolution (`double`, `long double`, `float`). In particular you have Pi, the Euler number e, and, since they are often needed, the square root of 2 and the golden ratio. 
-Being set as constant expressions 
-you are sure that the compiler will try to resolve expressions containing them at compile time, whenever possible.
+The example also introduces the `<numbers>` header, a modern addition to the standard library. This header provides mathematical constants as constant expressions for multiple floating-point types (`double`, `long double`, `float`). Notable constants include pi, Euler's number `e`, the square root of 2, and the golden ratio. Since these values are `constexpr`, expressions that use them can be evaluated at compile time when possible.
 
-### Quiet and non quiet NaN, what's that? ###
+### Quiet and non-quiet NaN: what are they? ###
 
-In IEEE compliant floating point arithmetic, `NaN` indicates the result of an invalid arithmetic operation. `NaN` are viral: any arithmetic operation involving a `NaN` producees a `NaN`.
-In an IEEE compliant computer architecture, the issue of a `NaN` does not stop computation, for efficiency reasons However, normally the production of a `NaN` issues a signal that is recorded, and
-you have way of checking it (we have a specific lecture on this). 
+In IEEE-compliant floating-point arithmetic, `NaN` denotes the result of an invalid arithmetic operation. `NaN`s are propagating values: operations involving a `NaN` typically produce a `NaN`. In IEEE-compliant architectures, producing a `NaN` generally does not stop execution. However, the event may still raise a floating-point signal that can be inspected.
 
-However, traditionally `NaN` is also used to indicate **missing data**. So if you store experimental data in a vector, to indicate that a datum is not available
-some adopt the trick of setting it to `NaN`. However, in this case you do not want to issue any signal! You are not making an incorrect arithmetic operation. So, for this purspose you should
-use a *quiet `NaN`* also called *non-signalling `NaN`*. That's why among the utilities in  `numeric_limits` you have the one that produces a quiet `NaN` and one that asks the 
-system whether they are supported (not all architectures have quiet `NaN`s).
+Traditionally, `NaN` has also been used to represent **missing data**. For example, unavailable entries in experimental datasets are sometimes encoded as `NaN`. In that case, no arithmetic error has occurred, so signaling behavior is usually undesirable. For this reason, one typically uses a *quiet `NaN`* (also called a *non-signaling `NaN`*). `std::numeric_limits` provides utilities both to generate a quiet `NaN` and to test whether quiet `NaN`s are supported on the target architecture.
 
-**An Important Note!** In modern C++ you do not need using the `NaN` trick to indicate missing data. **We have `std::optional` for this purpose!**.
+**Important note:** In modern C++, missing data should generally be modeled with `std::optional` rather than by using `NaN` as a sentinel value.
 
 
-**A hint:** If you want to print a floating point with the maximal precision allowed by its type you can do (here for a `double`)
+**Hint:** To print a floating-point value with the maximum useful precision for its type (here for `double`):
     
-    std::cout<<std::setprecision(std::numeric_limits<doube>:digits10 +1)<< mydouble
-(you need to include `<iomanip>` for `setprecision`). In the folder `Utility` you have `scientific_precision.hpp` that contains a function to set an output stream to maximal precision.
+    std::cout << std::setprecision(std::numeric_limits<double>::digits10 + 1) << mydouble;
+(include `<iomanip>` for `std::setprecision`). The `Utility` folder also contains `scientific_precision.hpp`, which provides a helper to configure an output stream with maximal precision.
 
-**A compilation note** Compilation of the executable provided in this directory gives a warning about integer overflow. This warning in fact normally hides a nasty error! 
-Remember that if you add 1 to the maximal representable (signed)
-integer you normally get... the minimum representable integer! (and no runtime error). In this specific case, however, the warning is not an error since one of the
-objectives of the example is to show what happens in practice when you do an integer overflow.
+**Compilation note:** Building the executable in this directory produces a warning about integer overflow. In production code, this warning often indicates a serious bug.
+For signed integers, adding 1 to the maximum representable value may wrap to the minimum representable value, typically without a runtime error. In this example, the warning is intentional because integer overflow behavior is part of what the code demonstrates.
 
 # What do I learn here? #
-- A set of very useful tools. For instance `std::numeric_limit<double>::digit10` tells you how many significant digits you have in a double and 
-`std::numeric_limits<double>::epsilon()` is the equivalent of `eps` in Matlab.
-
+- A practical set of tools for reasoning about numerical representations. For example, `std::numeric_limits<double>::digits10` gives the number of significant decimal digits in a `double`, while `std::numeric_limits<double>::epsilon()` is analogous to `eps` in MATLAB.

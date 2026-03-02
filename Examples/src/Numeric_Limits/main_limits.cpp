@@ -33,75 +33,73 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <string>
 #include <map>
+#include <string>
 // numbers has been introduced in C++20
 #if __cplusplus >= 202002L
 #include <numbers>
 #endif
 /*!
- * \file numeric_limits.cpp
- *  An example of numeric_limits
- *  It provides a simple example of the content of numeric_limits<>
- *  class template of the standard library. We give also an example of
- *  the properties of eps and of integer overflow.
+ * \file main_limits.cpp
+ * \brief An example of std::numeric_limits.
+ *
+ * It provides a simple example of the content of the
+ * std::numeric_limits<> class template from the standard library.
+ * It also gives examples of epsilon and integer overflow.
  */
 
 /*!
-  \brief A template function to print properties of a floating point type
-  \tpar F A float type
-  \param type a string with the name of the type
-
-  \details Some less obvious stuff
-
-   <b>Rounding style</b>. Different architectures may support
-   different styles when rounding after an arithmetic operation
-   or when converting a floating point to a representation with
-   less precision, like a double to a float
-   The rounding styles are
-    -1  undeterminate
-     0  towards zero
-     1  to nearest value (IEEE compliant)
-     2  towards infinity
-     3  towards negative infinity
-
-     Round error: it is indeed linked to the rounding style. It is
-     the largest possible rounding error (expressed in
-     round-off units u).
-     If rounding style is 1 the round error is 0.5, since the maximim
-     possible rounding error is 0.5u.
-
-   <b> Signalling and non signalling NaN.</b> Depending on the
-   architecture the occurrence of a NaN may raise a floating point
-   exception (but the execution usually IS NOT TERMINATED). A quiet NaN
-   is a special representation of a floating point that represents a
-   "Not A Number", which however does NOT raise any exception.  Useful
-   if you want to test if a number is NaN, without reasing the
-   exception because of the test. Note however that <cmath> introduces
-   the function isnan() that allows you to make the test without
-   bothering about these details.
-
-   A signalling NaN is a NaN that raises the exception.
-
-   Numeric limits allow to test if the architecture supports NaN (and Inf)
-   and for NaN whether the signalling and/or the quiet versions are
-   implemented. If the system is IEEE compliant you should have both
-   quiet and signalling NaN. But you may check it easily with the magic of
-   numeric_limits.
-*/
+ * \brief A template function to print properties of a floating-point type.
+ * \tparam F A floating-point type.
+ * \param type A string with the name of the type.
+ *
+ * \details Some less obvious aspects.
+ *
+ * <b>Rounding style</b>. Different architectures may support
+ * different styles when rounding after an arithmetic operation
+ * or when converting a floating-point value to a representation with
+ * less precision, such as from double to float.
+ * The rounding styles are:
+ *  - -1: indeterminate
+ *  -  0: toward zero
+ *  -  1: to nearest value (IEEE compliant)
+ *  -  2: toward infinity
+ *  -  3: toward negative infinity
+ *
+ * <b>Round error</b>. It is linked to the rounding style. It is
+ * the largest possible rounding error (expressed in
+ * round-off units, u).
+ * If the rounding style is 1, the round error is 0.5, since the maximum
+ * possible rounding error is 0.5u.
+ *
+ * <b>Signaling and non-signaling NaN</b>. Depending on the
+ * architecture, the occurrence of a NaN may raise a floating-point
+ * exception (but execution is usually NOT TERMINATED). A quiet NaN
+ * is a special floating-point representation of "Not A Number" that
+ * does NOT raise any exception. It is useful when testing whether a
+ * number is NaN, without raising an exception due to the test itself.
+ * Note that <cmath> provides std::isnan(), which allows this test
+ * without dealing with these details.
+ *
+ * A signaling NaN is a NaN that raises the exception.
+ *
+ * std::numeric_limits allows you to test whether the architecture supports
+ * NaN (and Inf), and for NaN whether signaling and/or quiet versions are
+ * implemented. If the system is IEEE compliant, you should have both.
+ */
 template <class F>
 void
 printFloatLimits(std::string const &type)
 {
   using namespace std; // to simplify life
   // This map is to have a more significant name for the rounding style
-  map<std::float_round_style,std::string> roundStyleName {
+  map<std::float_round_style, std::string> roundStyleName{
     {std::float_round_style::round_indeterminate, "round_indeterminate"},
     {std::float_round_style::round_toward_zero, "round_toward_zero"},
     {std::float_round_style::round_to_nearest, "round_to_nearest"},
     {std::float_round_style::round_toward_infinity, "round_toward_infinity"},
-    {std::float_round_style::round_toward_neg_infinity, "round_toward_neg_infinity"}
-  };
+    {std::float_round_style::round_toward_neg_infinity,
+     "round_toward_neg_infinity"}};
   cout << "**********************************************" << endl;
   cout << "*************** " << type << " ******************" << endl;
   cout << "**********************************************" << endl;
@@ -116,18 +114,19 @@ printFloatLimits(std::string const &type)
   cout << "max exponent in base 10= " << numeric_limits<F>::max_exponent10
        << '\n';
   cout << "base of exponent       = " << numeric_limits<F>::radix << '\n';
-  cout << "Has infinity:            " << numeric_limits<F>::has_infinity
+  cout << "Has infinity           = " << numeric_limits<F>::has_infinity
        << endl;
   cout << "infinity               = " << numeric_limits<F>::infinity() << '\n';
-  cout << "Has not a number (quiet):" << numeric_limits<F>::has_quiet_NaN
+  cout << "Has a quiet NaN        = " << numeric_limits<F>::has_quiet_NaN
        << endl;
-  cout << "Has not a number (signalling):"
-       << numeric_limits<F>::has_signaling_NaN << endl;
+  cout << "Has a signaling NaN    = " << numeric_limits<F>::has_signaling_NaN
+       << endl;
   cout << "Not a number           = " << numeric_limits<F>::quiet_NaN() << '\n';
   cout << "machine epsilon        = " << numeric_limits<F>::epsilon() << '\n';
   cout << "round off              = " << numeric_limits<F>::round_error()
        << '\n';
-  cout << "rounding style         = " << roundStyleName[numeric_limits<F>::round_style] << '\n';
+  cout << "rounding style         = "
+       << roundStyleName[numeric_limits<F>::round_style] << '\n';
   cout << "# of binary digits in mantissa= " << numeric_limits<F>::digits
        << '\n';
   cout << "# of decimal digits in mantissa= " << numeric_limits<F>::digits10
@@ -147,7 +146,17 @@ printFloatLimits(std::string const &type)
      round-off units u). If rounding style is 1 the round error is 0.5,
      */
 }
-
+template <class F>
+void
+printIntegerLimits(std::string const &type)
+{
+  using namespace std; // to simplify life
+  cout << "**********************************************" << endl;
+  cout << "*************** " << type << " ******************" << endl;
+  cout << "**********************************************" << endl;
+  cout << "largest                = " << numeric_limits<int>::max() << endl;
+  cout << "smallest               = " << numeric_limits<int>::min() << endl;
+}
 int
 main()
 {
@@ -163,44 +172,16 @@ main()
   printFloatLimits<float>(" FLOAT ");
   printFloatLimits<double>(" DOUBLE ");
   printFloatLimits<long double>(" LONG DOUBLE ");
-
-  cout << endl;
-  cout << "**********************************************" << endl;
-  cout << "***************    INT   **********************" << endl;
-  cout << "**********************************************" << endl;
-  cout << "largest                = " << numeric_limits<int>::max() << '\n';
-  cout << "smallest               = " << numeric_limits<int>::min() << '\n';
-
-  cout << endl;
-  cout << "**********************************************" << endl;
-  cout << "***************    Unsigned INT   ************" << endl;
-  cout << "**********************************************" << endl;
-  cout << "largest                = " << numeric_limits<unsigned int>::max()
-       << '\n';
-  cout << "smallest               = " << numeric_limits<unsigned int>::min()
-       << '\n';
-
-  cout << "**********************************************" << endl;
-  cout << endl << "***************    long int   *********" << endl;
-  cout << "**********************************************" << endl;
-  cout << "largest                = " << numeric_limits<long int>::max()
-       << '\n';
-  cout << "smallest               = " << numeric_limits<long int>::min()
-       << '\n';
-  cout << "**********************************************" << endl;
-  cout << endl << "***************    long unsigned   *********" << endl;
-  cout << "**********************************************" << endl;
-  cout << "largest                = " << numeric_limits<long unsigned int>::max()
-       << '\n';
-  cout << "smallest               = " << numeric_limits<long unsigned int>::min()
-       << '\n';
-
+  printIntegerLimits<int>(" INT ");
+  printIntegerLimits<unsigned int>(" UNSIGNED INT ");
+  printIntegerLimits<long int>(" LONG INT ");
+  printIntegerLimits<long unsigned int>(" LONG UNSIGNED INT ");
   cout << endl;
   cout << "**********************************************" << endl;
   cout << "***************    CHAR   ********************" << endl;
   cout << "**********************************************" << endl;
-  cout << "is char an integral type?: " << numeric_limits<char>::is_integer
-       << '\n';
+  cout << "is char an integral type?: " << std::boolalpha
+       << numeric_limits<char>::is_integer << '\n';
   cout << "**********************************************" << endl << endl;
 
   cout << "We set cout to maximal precision for a double and use scientific "
@@ -248,4 +229,22 @@ main()
   std::cout << "e  (float)         " << e_v<float> << std::endl;
   std::cout << "sqr(2)(float)      " << sqrt2_v<float> << std::endl;
 #endif
+  /*
+  The value 0.1 is not representable in binary with a finite number of digits,
+  so it is approximated by the closest representable double-precision number,
+  which is 0.100000000000000006
+  This is a common issue with floating-point arithmetic, where certain decimal
+  fractions cannot be represented exactly in binary, leading to small rounding
+  errors.
+  When we set the precision to numeric_limits<double>::digits10, we see the
+  value of x with all significant digits, which is 0.1. However, when we set
+  the precision to numeric_limits<double>::max_digits10, we see the full
+  precision of the double representation, which reveals the approximation error
+  and shows 0.100000000000000006 instead of 0.1.
+ */
+  double x = 0.1;
+  cout.precision(numeric_limits<double>::digits10);
+  cout << "x=0.1 with all significant digits = " << x << endl;
+  cout.precision(numeric_limits<double>::max_digits10);
+  cout << "x=0.1 with max precision          = " << x << endl;
 }
