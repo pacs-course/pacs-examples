@@ -43,35 +43,24 @@ main()
   double startx = 0.00;
   double endx = 1.00;
   double interval = 0.0001;
-  int    numinterval =
-    static_cast<int>((endx - startx) / interval); // truncated if not integer!
-  cout << "Computing " << numinterval << " evaluation of polynomial"
-       << " with standard formula" << endl;
 
   vector<double> points;
-  points.reserve(numinterval + 1);
-  double x = startx;
-  // create a vector with some values
-  for(int i = 0; i <= numinterval; ++i)
+  for(double x = startx; x <= endx; x += interval)
     {
       points.emplace_back(x);
-      x += interval;
     }
+  auto numinterval = points.size();
+  cout << "Computing " << numinterval << " evaluation of polynomial"
+       << " with standard formula" << endl;
   Chrono timer; // start clock
   timer.start();
   auto sol1 = evaluatePoly(points, a, &eval);
   timer.stop(); // stop clock
   auto timeStandard = timer.wallTime();
-  cout << endl;
-
   cout << timer << endl;
 
   cout << "Computing " << numinterval << " evaluation of the polynomial with"
        << " Horner's rule";
-#ifdef PARALLELEXEC
-  cout << " (parallel version of transform_reduce)";
-#endif
-  cout << endl;
   timer.start();
   auto sol2 = evaluatePoly(points, a, &horner);
   timer.stop();
@@ -84,7 +73,7 @@ main()
   auto sol3 = evaluatePoly(points, a, &horner_range);
   timer.stop(); // stop clock
   auto timeHornerRange = timer.wallTime();
-  cout << timeHornerRange << endl;
+  cout << timer << endl;
 
   // compute || sol1 - sol2 ||^2_2 using std::transform_reduce
 #ifdef PARALLELEXEC // parallel version
@@ -108,12 +97,15 @@ main()
        << " (it should be close to zero)" << endl;
   cout << "||sol1-sol3||_2/N=" << std::sqrt(diff2) / sol1.size()
        << " (it should be close to zero)" << endl;
-  std::string message = "Speedup standard/Horner ";
+  std::string message = "Speedup: standard/Horner ";
 #ifdef PARALLELEXEC
   message += "(parallel version of transform_reduce) ";
 #endif
   cout << message << timeStandard / timeHorner << endl;
-  cout << "Speedup standard/HornerRange " << timeStandard / timeHornerRange
-       << endl;
+  message = "Speedup: standard/HornerRange ";
+#ifdef PARALLELEXEC
+  message += "(parallel version of transform_reduce) ";
+#endif
+  cout << message << timeStandard / timeHornerRange << endl;
   return 0;
 } // end of main()

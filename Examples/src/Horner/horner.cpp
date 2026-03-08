@@ -41,7 +41,7 @@ double
 horner_range(std::vector<double> const &a, double const &x)
 {
   if(a.empty())
-    return 0.0; // or throw std::invalid_argument("Empty coefficient vector");
+    throw std::invalid_argument("Empty coefficient vector. a cannot be empty");
   double u = a.back(); // last value
   // Iterate over the coefficients in reverse order, skipping the last element
   // (which is already in 'u')
@@ -51,11 +51,9 @@ horner_range(std::vector<double> const &a, double const &x)
   return u;
 }
 
-//! Evaluates polynomial in a set of points (parallel version if PARALLELEXEC is
-//! set)
 std::vector<double>
 evaluatePoly(std::vector<double> const &points, std::vector<double> const &a,
-             polyEval method)
+             polyEval const &method)
 {
   std::vector<double> result(points.size());
   // if you prefer a normal loop
@@ -63,7 +61,6 @@ evaluatePoly(std::vector<double> const &points, std::vector<double> const &a,
   // Here I use std::transform to be consistent with the parallel version
   auto compute = [&a, &method](double const &x) { return method(a, x); };
 #ifdef PARALLELEXEC
-#pragma message("Using parallel implementation of std::transform")
   std::transform(std::execution::par, points.begin(), points.end(),
                  result.begin(), compute);
 #else
