@@ -16,7 +16,7 @@ namespace NonLinSysTraits
 {
   /*!
    * @brief The trait for a system \f$ S^n \to S^m\f$ where S is a scalar field
-   * @details The system is represented by a vector of functions
+   * @details The system is represented by a vector (std::vector) of functions
    *
    * @tparam Scalar The scalar field type
    */
@@ -36,6 +36,12 @@ namespace NonLinSysTraits
     using FunctionContainerType = std::vector<ScalarFunctionType>;
   };
 
+  /*!
+   * @brief The trait for a system \f$ S^n \to S^m\f$ where S is a scalar field
+   * @details The system is represented by a vector (Eigen Vectors) of functions
+   *
+   * @tparam Scalar The scalar field type
+   */
   template <class Scalar = double> struct EigenVectorTraits
   {
     using ArgumentType = Eigen::Matrix<Scalar, Eigen::Dynamic, 1>;
