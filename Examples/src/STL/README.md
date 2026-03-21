@@ -32,6 +32,8 @@ It contins also an example of use of `std::visit()`.
   
 * `RangesAndViews` An example of use of the new ranges and views of the standard library.
 
+* `Niebloids` A simple custom niebloid, implemented as a function object in the style used by the ranges library, to compute the 2-norm of a range.
+
 * `SortAndPermute` An useful utility if you need to sort a vector and keep track of the performed
 permutation to be able to apply it to other vectors.
 

@@ -72,6 +72,7 @@ since several examples use the utilities contained in this folder.
   * `STL/` A folder with examples on various utilities of the STL, and some tricks!
     - `STL/cont` The use of some containers.
     - `STL/FileSystem` A facility to traverse and examine file systems.
+    - `STL/Niebloid` An example of function objects as global variables
     - `STL/mdspan` The c++23 view for matrices
     - `STL/Map` The powerful C++ associative container.
     - `STL/Optional` The new `std::optional` utility to represent *missing data*.
