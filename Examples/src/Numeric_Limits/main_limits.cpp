@@ -21,13 +21,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+HOLDER OR
+    {std::float_round_style::round_toward_zero, "round_toward_zero"},
+    {std::float_round_style::round_to_nearest, "round_to_nearest"},
+    {std::float_round_style::round_toward_infinity, "round_toward_infinity"},
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+OF SUCH DAMAGE.
 */
 #include <cmath> // for isnan and isfinite
 #include <iomanip>
@@ -154,8 +158,8 @@ printIntegerLimits(std::string const &type)
   cout << "**********************************************" << endl;
   cout << "*************** " << type << " ******************" << endl;
   cout << "**********************************************" << endl;
-  cout << "largest                = " << numeric_limits<int>::max() << endl;
-  cout << "smallest               = " << numeric_limits<int>::min() << endl;
+  cout << "largest                = " << numeric_limits<F>::max() << endl;
+  cout << "smallest               = " << numeric_limits<F>::min() << endl;
 }
 int
 main()
@@ -188,7 +192,7 @@ main()
           "notation"
        << endl;
   cout.setf(ios::scientific);
-  auto maxprec = numeric_limits<double>::digits10;
+  auto maxprec = numeric_limits<double>::max_digits10;
   cout.precision(maxprec);
   cout << " We test if epsilon is what it is meant to be!\n";
   double one(1.0);
@@ -214,7 +218,7 @@ main()
 #if __cplusplus >= 202002L
   cout << "\n***    Now some c++20 goodies. Predefined constants ***\n";
   using namespace std::numbers;
-  std::cout << "Pi (double)        " << pi << std::endl;
+  std::cout << "Pi (double)        " << std::numbers::pi << std::endl;
   std::cout << "e  (double)        " << e << std::endl;
   std::cout << "sqr(2)(double)     " << sqrt2 << std::endl;
 
