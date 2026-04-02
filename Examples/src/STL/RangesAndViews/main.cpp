@@ -247,7 +247,7 @@ main()
     auto   gt0 = [](double const &x) { return x > 0; };
     double sum{0};
     auto   v = l | std::views::filter(gt0) |
-             std::views::transform([](double x) { return x * x; });
+               std::views::transform([](double x) { return x * x; });
     // This works since we have a common range
     // sum=std::reduce(v.begin(),v.end());
     // in general you should do this
@@ -265,7 +265,7 @@ main()
     std::vector<std::string> course{"Advanced "s, "Programming "s, "for "s,
                                     "Scientific "s, "Computing"s};
     auto                     joined = course | std::views::join;
-    std::string              joinedString{joined.begin(),
+    std::string joinedString{joined.begin(),
                              joined.end()}; // you hace to copy the string
     std::cout << joinedString;
     std::cout << std::endl;
@@ -326,9 +326,17 @@ main()
     for(auto i : conv_vector)
       std::cout << i << " ";
     std::cout << std::endl;
-    // Now I take the first two elements and insert them in another vector
-    auto first_two = conv | take(2) | common; // common is needed here
+// Now I take the first two elements and insert them in another vector
+// In c++23 I can use std::ranges_to create a vector from a view without
+// using the iterators and the need of common
+#if __cplusplus >= 202300L
+    std::vector<double> first_two_vector =
+      conv | take(2) | std::ranges::to<std::vector>();
+#else
+    auto first_two =
+      conv | take(2) | common; // common is needed here to create a common_range
     std::vector<double> first_two_vector{first_two.begin(), first_two.end()};
+#endif
     std::cout << "The first two elements are: ";
     for(auto i : first_two_vector)
       std::cout << i << " ";
@@ -338,8 +346,8 @@ main()
     // How to create a view from a pair of iterators
     /*
     You have a pair of iterators that define a sequence and you vant to create a
-    vew in order to use and standard contrained algorithms or any user defined
-    algorithm that may take a view as input. For example I want to all values
+    vew in order to use and standard constrained algorithms or any user defined
+    algorithm that may take a range as input. For example I want to all values
     greater then five associated to a key of a multimap
     */
     std::multimap<int, double> m{{1, 3.}, {1, 4.}, {3, 5.}, {4, 6.},
@@ -351,7 +359,7 @@ main()
     std::cout << "The values associated to key 1 greater than 5 are: ";
     using namespace std::views;
     // I compose the view with the values view that extracts just the values
-    // frem the elements of the map and the filter view that selects the values
+    // from the elements of the map and the filter view that selects the values
     // greater than 5
     for(auto const v :
         maprange | values | filter([](double x) { return x > 5.; }))
