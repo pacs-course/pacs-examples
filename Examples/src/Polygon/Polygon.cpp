@@ -91,7 +91,7 @@ AbstractPolygon::checkConvexity()
   //  a small number so that |a| < smallNumber means for us a==0
   //  std::numeric_limits<double>::epsilon() is a constexpr function
   double constexpr smallNumber = std::numeric_limits<double>::epsilon();
-  double           previousSign{0.0};
+  double previousSign{0.0};
   for(std::size_t i = 0; i < mysize; ++i)
     {
       auto const &p0 = myV[i];
@@ -154,8 +154,8 @@ Polygon::showMe(std::ostream &out) const
 
 // ********************* SQUARE **********************
 
-void
-Square::checkSquare()
+  void
+  Square::checkSquare()
 {
   if(vertexes.size() != 4)
     {
@@ -163,14 +163,16 @@ Square::checkSquare()
         " A square must be created giving four vertices");
     }
   double constexpr tol = 100.0 * std::numeric_limits<double>::epsilon();
-  auto const       e0 = vertexes[1] - vertexes[0];
-  auto const       e1 = vertexes[2] - vertexes[1];
-  auto const       e2 = vertexes[3] - vertexes[2];
-  auto const       e3 = vertexes[0] - vertexes[3];
-  auto const sqLen = [](Point2D const &v)
-  { return v.x() * v.x() + v.y() * v.y(); };
-  auto const dot = [](Point2D const &a, Point2D const &b)
-  { return a.x() * b.x() + a.y() * b.y(); };
+  auto const e0 = vertexes[1] - vertexes[0];
+  auto const e1 = vertexes[2] - vertexes[1];
+  auto const e2 = vertexes[3] - vertexes[2];
+  auto const e3 = vertexes[0] - vertexes[3];
+  auto const sqLen = [](Point2D const &v) {
+    return v.x() * v.x() + v.y() * v.y();
+  };
+  auto const dot = [](Point2D const &a, Point2D const &b) {
+    return a.x() * b.x() + a.y() * b.y();
+  };
 
   auto const l0 = sqLen(e0);
   auto const l1 = sqLen(e1);
@@ -182,11 +184,13 @@ Square::checkSquare()
       throw std::runtime_error("Vertexes define a degenerate square");
     }
 
-  auto const sameLen = [tol](double a, double b)
-  { return std::abs(a - b) <= tol * std::max({1.0, std::abs(a), std::abs(b)}); };
+  auto const sameLen = [tol](double a, double b) {
+    return std::abs(a - b) <= tol * std::max({1.0, std::abs(a), std::abs(b)});
+  };
 
-  auto const orthogonal = [tol, &dot](Point2D const &a, Point2D const &b)
-  { return std::abs(dot(a, b)) <= tol * std::max({1.0, norm(a) * norm(b)}); };
+  auto const orthogonal = [tol, &dot](Point2D const &a, Point2D const &b) {
+    return std::abs(dot(a, b)) <= tol * std::max({1.0, norm(a) * norm(b)});
+  };
 
   if(!(sameLen(l0, l1) && sameLen(l1, l2) && sameLen(l2, l3) &&
        orthogonal(e0, e1) && orthogonal(e1, e2) && orthogonal(e2, e3) &&

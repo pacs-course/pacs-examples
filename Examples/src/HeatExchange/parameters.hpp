@@ -4,7 +4,8 @@
  *
  * This header contains the definition of the `parameters` struct, which holds
  * all the configurable parameters for the heat exchange simulation, including
- * solver settings, physical dimensions, material properties, and boundary conditions.
+ * solver settings, physical dimensions, material properties, and boundary
+ * conditions.
  *
  * The struct is designed as an aggregate, allowing for brace initialization and
  * structured bindings. An overloaded stream insertion operator is provided for
@@ -26,8 +27,9 @@ struct parameters
 /**
  * @brief Parameters for the heat exchange simulation.
  *
- * @details This structure contains all the configurable parameters used in the heat exchange problem,
- * including solver settings, physical dimensions, material properties, and boundary conditions.
+ * @details This structure contains all the configurable parameters used in the
+ * heat exchange problem, including solver settings, physical dimensions,
+ * material properties, and boundary conditions.
  *
  * Members:
  * - int itermax: Maximum number of iterations for the Gauss-Seidel solver.
