@@ -11,24 +11,25 @@
 namespace apsc::TypeTraits
 {
 /*!
- * Primary template
+ * @brief Primary template.
  *
- * Defaults to false
+ * Defaults to false.
  *
- * @note The term "specialized" here is misplace. It should be called
- * is_instance_of
- * @todo change the name. It's misleading. It does not really tests
- * specializations but instances
- * @tparam T The class we want to check if it is a specialization
- * @tparam Template The unspecialized type
+ * @note The name is kept for backward compatibility, although the trait checks
+ * whether T is an instantiation of Template.
+ * @tparam T Type to test
+ * @tparam Template Primary class template to match against
  */
 template <class T, template <class...> class Template>
 struct is_specialization : std::false_type
 {};
 /*!
- * Checks if a class template is a specialization of a primary
+ * @brief Partial specialization matching Template<Args...>.
  *
- * Usage:
+ * This specialization is selected when the tested type is an instantiation of
+ * the same primary class template.
+ *
+ * @par Usage
  * @code
  * // true
  * static_assert(is_specialization<std::vector<int>, std::vector>{}, "");
@@ -36,38 +37,40 @@ struct is_specialization : std::false_type
  * static_assert(!is_specialization<std::vector<int>, std::list>{}, "");
  * @endcode
  *
- * @tparam Template<Args..> The class we want to check is is a specialization
- * @tparam Template The unspecialised class
+ * @tparam Template Primary class template
+ * @tparam Args Template arguments used in the instantiation
  *
  */
 template <template <class...> class Template, class... Args>
 struct is_specialization<Template<Args...>, Template> : std::true_type
 {};
 /*!
- * The values of is_specialization
+ * @brief Convenience variable template for is_specialization.
  *
- * is_specialization_v<S,T>{} is equivalent to true if S is a template,
- * specialization of T
+ * is_specialization_v<S, T> is true when S is an instantiation of T.
  *
- * This is the utility the user should use, since std::decay_t will take away
- * possible const and references from the Args.
+ * This is the utility most users should prefer, since std::remove_cvref_t
+ * strips cv-qualifiers and references before evaluating the trait.
  */
 template <class T, template <class...> class Template>
 inline constexpr bool is_specialization_v =
-  is_specialization<std::decay_t<T>, Template>::value;
+  is_specialization<std::remove_cvref_t<T>, Template>::value;
 /*!
- * Concept that tests specialization
+ * @brief Concept matching instantiations of a given class template.
  *
- * Usage
+ * @par Usage
  * @code
  * template <class T>
- * requires Specialization_of<T,std::vector>
+ * requires Specialization_of<T, std::vector>
  * Foo{};
  *
- * Foo<std::vector<int>> foo // fine
- * Foo<std::list<int>> foo // fails
+ * Foo<std::vector<int>> foo; // fine
+ * Foo<std::list<int>> foo;   // fails
  *
  * @endcode
+ *
+ * @tparam T Type to test
+ * @tparam Template Primary class template to match against
  *
  */
 template <class T, template <class...> class Template>

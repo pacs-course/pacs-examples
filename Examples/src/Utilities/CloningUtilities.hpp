@@ -1,68 +1,63 @@
 #ifndef CLONINGANDPOINTERWRAPPER_H
 #define CLONINGANDPOINTERWRAPPER_H
+#include <compare>
+#include <concepts>
 #include <functional>
 #include <memory>
 #include <type_traits>
+#include <utility>
 namespace apsc
 {
 /*
- * @note To use this utilities you need apsc::TypeTraits,
+ * @note Utilities in this header rely on apsc::TypeTraits.
  */
 namespace TypeTraits
 {
   /*!
-   * A type trait than checks if a class contains a method called clone()
-   * with the right signature and return type.
-   * Clonable classes enable the prototype design pattern on a polymorphic
-   * family of classes. This is the primary template, which maps to false
+   * @brief Type trait checking whether a type provides a valid clone().
+   *
+   * The primary template maps to false.
    * @tparam T The class type to be checked
-   * @tparam Sfinae A SFINAE parameter to enable the specialisation via
-   * enable_if
+   * @tparam Sfinae SFINAE parameter used by specializations
    */
   template <typename T, typename Sfinae = void>
   struct has_clone : public std::false_type
   {};
 
   /*!
-  @brief Specialised version that is activated if T is clonable.
+  @brief Specialization enabled when a const object provides clone().
 
-  If T is not clonable the second template parameter cannot
-  be substituted with a valid type. So SFINAE applies and this
-  version is discarded. Note that it inherits from std::true_type.
+  This specialization is true only if the expression const T&.clone() exists
+  and std::unique_ptr<T> is convertible to the clone() return type.
 
-  declval<T&>() allows to test the return type of clone() with no need of
-  creating an object of type T.
-
-@tparam T The class type to be checked
+  @tparam T The class type to be checked
    */
   template <typename T>
-  struct has_clone<
-    T, typename std::enable_if_t<std::is_convertible_v<
-         std::unique_ptr<T>, decltype(std::declval<const T>().clone())>>>
-    : std::true_type
+  struct has_clone<T, std::void_t<decltype(std::declval<const T &>().clone())>>
+    : public std::bool_constant<std::is_convertible_v<
+        std::unique_ptr<T>, decltype(std::declval<const T &>().clone())>>
   {};
 
   //! A helper function
   /*!
-   *  It returns true if the class is clonable
-   *  \tparam T T the base class of the hierarchy of clonable classes
+   * @brief Returns true if T satisfies has_clone.
+   * @tparam T Type to test
    */
   template <class T>
   constexpr bool
   isClonable()
   {
-    return has_clone<T>();
+    return has_clone<T>::value;
   }
 
   /*!
-   * C++17 style for extracting the value of type trait. It is true if T is
-   * clonable.
-   * @tparam T the base class of the hierarchy of clonable classes
+   * @brief Convenience variable template exposing has_clone<T>::value.
+   * @tparam T Type to test
    */
-  template <typename T> constexpr bool has_clone_v = isClonable<T>();
+  template <typename T> constexpr bool has_clone_v = has_clone<T>::value;
 
   /*!
-   * Concept expressing the traits
+   * @brief Concept matching types with a valid clone().
    */
   template <class T>
   concept Clonable = has_clone_v<T>;
@@ -85,7 +80,7 @@ cloning the resource.
 We make an example to illustrate the problem. Let's consider first a
 solution with aggregation
 
-\code
+@code
 
 //A hierarchy of classes which implements a certain rule
 
@@ -104,17 +99,17 @@ to B
 ....
 private:
 B * Impl;  //A pointer (or reference) to B
-\endcode
+@endcode
 
 The problem here is that the scope of an object of type UseB and
 that of the object of the base class B (or possibly reference)
 passed to the constructor are linked. For instance the statements
 
-\code
+@code
 B* a = new D1;
 UseB foo(a)
 delete a;
-\endcode
+@endcode
 
 would be invalid because the copy of a stored in foo is now
 dangling. A similar situation happens with references.  Moreover,
@@ -125,14 +120,14 @@ class UseB: we want composition not aggregation!
 But how to compose a polymorphic object? A possibility is to add
 to B and to D1 the method clone()
 
-\code
+@code
 virtual std::unique_ptr<B> clone() const {return std::make_unique<D>(*this);}
-\endcode
+@endcode
 
 Then, if useB::Impl is now a unique_ptr<B>, the constructor of useB may do
-\code
+@code
 useB(const B&):Impl(B.clone()){}
-\endcode
+@endcode
 
 But now we have to delegate to the class B the handling of the
 "cloning", by writing also specific copy constructors etc.
@@ -159,7 +154,7 @@ of the wrapper transparent!.
 
 In the previous example the situation would change in
 
-\code
+@code
 class UseB{
 public:
 UseB(const B &):Impl(B); The constructor takes a reference to B
@@ -169,11 +164,11 @@ methods that use B* polymorphically
 private:
 // I use the wrapper that behaves like a pointer!
 PointerWrapper<B> Impl;
-\endcode
+@endcode
 
 
-\pre The parameter class T must have a virtual and constant
-clone() method with the indicated signature.
+@pre The parameter class T must expose clone() on const objects,
+and clone() must return a type convertible to std::unique_ptr<T>.
 
 @tparam T the base class
   */
@@ -244,12 +239,13 @@ public:
    * @tparam U the type of the origin Wrapper, must be T or derived from T
    * @param original The original wrapper
    */
-  template <class U> PointerWrapper(const PointerWrapper<U> &original)
+  template <class U>
+    requires std::is_convertible_v<U *, T *>
+  PointerWrapper(const PointerWrapper<U> &original)
   {
     if(original.get())
       {
-        // DataPtr.reset(static_cast<Ptr_t>(original.DataPtr->clone()));
-        DataPtr = static_cast<Ptr_t>(original.get()->clone());
+        DataPtr = original.get()->clone();
       }
   }
 
@@ -268,24 +264,18 @@ public:
    * @brief copying assignment allowing for conversions
    *
    * This assignment allows converting PointerWrapper<Derived> to
-   * PointerWrapper<Base>. If U is not convertible to T, a static assertion will
-   * trigger a compilation error.
+   * PointerWrapper<Base>. If U is not convertible to T, the requires-clause
+   * rejects this overload.
    * @tparam U The derived type
    * @param original The Wrapper to convert-copy
    * @return a reference to myself
    */
   template <class U>
+    requires std::is_convertible_v<U *, T *>
   PointerWrapper &
   operator=(const PointerWrapper<U> &original)
   {
-    static_assert(std::is_convertible_v<U *, T *>,
-                  "Cannot assign PointerWrapper<U> to PointerWrapper<T>: U* is "
-                  "not convertible to T*.");
-    using OtherType = typename PointerWrapper<U>::Ptr_t;
-    static_assert(std::is_constructible_v<Ptr_t, OtherType &&>,
-                  "Cannot assign a non convertible PointerWrapper");
-    DataPtr =
-      original.get() ? static_cast<Ptr_t>(original.get()->clone()) : Ptr_t{};
+    DataPtr = original.get() ? original.get()->clone() : Ptr_t{};
     return *this;
   }
 
@@ -317,12 +307,14 @@ public:
    */
   PointerWrapper(PointerWrapper<T> &&rhs) = default;
   /*!
-   *  To allow conversion in move constructor
+   * @brief Move conversion constructor.
+   *
+   * Enabled only when U* is convertible to T*.
    * @param rhs the wrapper to be moved
    */
   template <class U>
-  PointerWrapper(PointerWrapper<U> &&rhs) noexcept
-    : DataPtr{static_cast<T *>(rhs.release())}
+    requires std::is_convertible_v<U *, T *>
+  PointerWrapper(PointerWrapper<U> &&rhs) noexcept : DataPtr{rhs.release()}
   {}
 
   //! Move assignement
@@ -331,24 +323,23 @@ public:
    */
   PointerWrapper &operator=(PointerWrapper<T> &&rhs) = default;
   /*!
-   * To allow for conversion Derived -> Base
+   * @brief Move assignment allowing conversion Derived -> Base.
+   *
+   * Enabled only when U* is convertible to T*.
    * @param rhs the wrapper to be moved, may be a wrapper to a derived type
-   * @note maybe not required since I have conversion in the move constructor.
-   * After the assignment the rhs is null.
+   * @note After assignment rhs is null.
    */
   template <class U>
+    requires std::is_convertible_v<U *, T *>
   PointerWrapper &
   operator=(PointerWrapper<U> &&rhs) noexcept
   {
-    using OtherPType = typename PointerWrapper<U>::pointer;
-    static_assert(std::is_constructible<pointer, OtherPType>::value,
-                  "Pointers must be convertible");
     if(this->get() != static_cast<pointer>(rhs.get()))
       {
         DataPtr.reset(rhs.release());
       }
     return *this;
-  };
+  }
 
   /*! Dereferencing operator. The PointerWrapper works like a pointer to T*/
   const T &
@@ -376,14 +367,14 @@ public:
     return DataPtr.get();
   }
   //! It releases the resource returning a pointer
-  auto
+  pointer
   release() noexcept
   {
     return DataPtr.release();
   }
   /*! Deletes the resource
    *  You can pass the pointer of a new resource to hold
-   *  @param ptr the pointer to the new resource, defaulted to nullprt
+   *  @param ptr the pointer to the new resource, defaulted to nullptr
    */
   void
   reset(pointer ptr = nullptr) noexcept
@@ -406,7 +397,7 @@ public:
    * @return The deleter object which would be used for destruction of the
    * managed object.
    */
-  auto &
+  deleter_type &
   get_deleter() noexcept
   {
     return DataPtr.get_deleter();
@@ -415,7 +406,7 @@ public:
    * @return The deleter object which would be used for destruction of the
    * managed object.
    */
-  auto const &
+  deleter_type const &
   get_deleter() const noexcept
   {
     return DataPtr.get_deleter();
@@ -433,30 +424,32 @@ private:
 };
 //! Utility to make a PointerWrapper
 /*!
-Creates a PointerWrapper<Base> indicating Base and Derived class.
-I need two compulsory template parameters, one for the Base
-and one for the concrete Derived class since I need to construct
-a derived object. Of  course,
+@brief Creates a PointerWrapper<Base> owning a Derived object.
 
-@note I may have B=D.
+This overload takes both Base and Derived template parameters.
 
-@tparam B A base class. The function returns PointerWrapper<B>
-@tparam D The derived class. The wrapper will own an object of type D.
-@tparam Args Automatically deduced possible arguments for the constructor of D
-@param args The (possible) arguments of type Args
+@note B and D may be the same type.
+@note This overload is constrained with std::derived_from and
+std::constructible_from.
+
+@tparam B Base class type of the wrapper
+@tparam D Concrete class to instantiate and own
+@tparam Args Constructor argument types for D
+@param args Arguments forwarded to D's constructor
 @return A PointerWrapper<B>
  */
 template <class B, class D, typename... Args>
+  requires std::derived_from<D, B> && std::constructible_from<D, Args...>
 PointerWrapper<B>
 make_PointerWrapper(Args &&...args)
 {
   return PointerWrapper<B>{std::make_unique<D>(std::forward<Args>(args)...)};
 }
 /*!
-Creates a PointerWrapper the class to hold.
+@brief Creates a PointerWrapper with inferred base type.
 @tparam D The PointerWrapper will own an object of type D.
-@tparam Args Automatically deduced possible arguments for the constructor of D
-@param args The (possible) arguments of type Args
+@tparam Args Automatically deduced constructor argument types for D.
+@param args Arguments forwarded to D's constructor.
 @return A PointerWrapper<D>
  */
 // template <class D, typename... Args>
@@ -512,24 +505,22 @@ operator!=(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
 /* C++20 use the spaceship operator to simplify things */
 template <class T, class U>
 auto // you need auto, let the compiler to the stuff
-operator<=>(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
+operator<=>(PointerWrapper<T> const &a, PointerWrapper<U> const &b) noexcept
 {
   return a.get() <=> b.get();
 }
 template <class T, class U>
 //! Equivalence operator. I need it since it cannot be deduced by <=>
 bool
-operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b)
+operator==(PointerWrapper<T> const &a, PointerWrapper<U> const &b) noexcept
 {
   return a.get() == b.get();
 }
 /*!
-@brief Equivalence operator with nullptr
-@details I have copy and pasted from the analogous declaration for the
-unique_ptr. The concepts verify that the underlying pointer is comparable with
-nullptr_t The return type is the corresponding three way comparison type returnd
-by the spaceship operator. However if you want you can simplify things
-eliminating concepts and use automatic return type
+@brief Three-way comparison with nullptr.
+@details This overload mirrors the corresponding std::unique_ptr comparison.
+The requires-clause ensures the underlying pointer type is three-way
+comparable with std::nullptr_t.
 @code
 template< class T>
 auto
@@ -538,23 +529,24 @@ operator<=>( const PointerWrapper<T>& x, std::nullptr_t )
     return x.get() <=> nullptr;
 };
 @endcode
-@note I need it since it cannot be deduced by <=>
+@note This overload is required because it is not deduced from wrapper-wrapper
+comparison.
 @tparam T The type of the pointer
 @param x The wrapper
-@param nullptr
-@return true if the pointer is null
+@param nullptr Null pointer literal used in the comparison
+@return Result of comparing x.get() with nullptr
 
 */
 template <class T>
   requires std::three_way_comparable<typename PointerWrapper<T>::pointer>
 std::compare_three_way_result_t<typename PointerWrapper<T>::pointer>
-operator<=>(const PointerWrapper<T> &x, std::nullptr_t)
+operator<=>(const PointerWrapper<T> &x, std::nullptr_t) noexcept
 {
   return x.get() <=> nullptr;
 };
 template <class T>
 bool
-operator==(const PointerWrapper<T> &x, std::nullptr_t)
+operator==(const PointerWrapper<T> &x, std::nullptr_t) noexcept
 {
   return x.get() == nullptr;
 };
