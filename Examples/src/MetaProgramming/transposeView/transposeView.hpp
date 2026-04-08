@@ -25,15 +25,16 @@ template <typename T> struct Matrix_Traits
   using size_type = std::size_t;
 };
 //*! A concept to check if a class is a matrix according to my definition
-template <typename Matrix> 
-concept MatrixConcept = requires (Matrix m)
-{
-  typename Matrix_Traits<Matrix>::size_type;// The size type must be defined
-  typename Matrix_Traits<Matrix>::value_type;// The value type must be defined
-  {std::declval<Matrix>()(0, 0)}->std::convertible_to<typename Matrix_Traits<Matrix>::value_type>;// The operator must be defined
+template <typename Matrix>
+concept MatrixConcept = requires(Matrix m) {
+  typename Matrix_Traits<Matrix>::size_type;  // The size type must be defined
+  typename Matrix_Traits<Matrix>::value_type; // The value type must be defined
+  {
+    std::declval<Matrix>()(0, 0)
+  } -> std::convertible_to<
+    typename Matrix_Traits<Matrix>::value_type>; // The operator must be defined
 };
-template <MatrixConcept Matrix> 
-class TransposedView
+template <MatrixConcept Matrix> class TransposedView
 {
 public:
   using size_type = typename Matrix_Traits<Matrix>::size_type;
@@ -58,19 +59,34 @@ public:
   /*!
    The non const version is enabled only if the viewed matrix
     is non-const.
-    Uncomment if you want this version of the solution to the problem.
   */
+  // The SFINAE solution using aneble_if is a bit more verbose and less clear
+  // than the requires clause solution, but it works in C++20 compliant
+  // compilers and in C++17 compliant compilers as well. COmpile with -DSFINAE
+  // to see this version in action.
+#if SFINAE
   template <typename T = Matrix>
   std::enable_if_t<!std::is_const_v<T>, value_type &>
   operator()(size_type r, size_type c)
   {
     return ref(c, r);
   }
-
+#else
+  // if I compile with a C++20 compliant compiler I can use the requires clause
+  // to enable the non const version only if the stored matrix is not const.
+  // This is cleaner than the SFINAE solution.
+  // template <typename T = Matrix>
+  value_type &
+  operator()(size_type r, size_type c)
+    requires(!std::is_const_v<Matrix>)
+  {
+    return ref(c, r);
+  }
+#endif
   /*!
    * A possible alternative is to have the non const operator return
-   * a const reference if the stored matrix is const. Uncomment it if you want this version.
-   * (however I think the previous solution is cleaner)
+   * a const reference if the stored matrix is const. Uncomment it if you want
+   * this version. (however I think the previous solution is cleaner)
    */
   /*
   std::conditional_t<std::is_const_v<Matrix>, const value_type &, value_type &>
@@ -79,7 +95,7 @@ public:
     return ref(c, r);
   }
    */
-  /*! 
+  /*!
    * This is the const version. The only available on a const view.
    */
   const value_type
@@ -92,8 +108,8 @@ private:
   Matrix &ref;
 };
 /*!
- This is a deduction guide. It allows to have the correct constructor if you pass a const matrix without specifying the
- template argument!
+ This is a deduction guide. It allows to have the correct constructor if you
+pass a const matrix without specifying the template argument!
 @code
 const Matrix M;
 ...

@@ -1,7 +1,7 @@
-#include <vector>
 #include "Eigen/Dense"
 #include "transposeView.hpp"
 #include <iostream>
+#include <vector>
 
 // I need to specialize the trait for a Eigen matrix of float since
 // the value_type in this case is float and not the default value of double!
@@ -29,20 +29,24 @@ template <> struct Matrix_Traits<const Eigen::Matrix3f>
 class APMMatrix
 {
 public:
-  APMMatrix(std::size_t nr, std::size_t nc):nrow{nr},ncol{nc}{
-    data.resize(nrow*ncol);
-  }
-  double operator()(std::size_t r,std::size_t c) const
+  APMMatrix(std::size_t nr, std::size_t nc) : nrow{nr}, ncol{nc}
   {
-    return data[c+ncol*r];
+    data.resize(nrow * ncol);
   }
-  double & operator()(std::size_t r,std::size_t c)
-   {
-     return data[c+ncol*r];
-   }
+  double
+  operator()(std::size_t r, std::size_t c) const
+  {
+    return data[c + ncol * r];
+  }
+  double &
+  operator()(std::size_t r, std::size_t c)
+  {
+    return data[c + ncol * r];
+  }
+
 private:
-  std::size_t nrow;
-  std::size_t ncol;
+  std::size_t         nrow;
+  std::size_t         ncol;
   std::vector<double> data;
 };
 
@@ -75,14 +79,15 @@ main()
       std::cout << std::endl;
     }
   // If you ancomment the following line you have a compiler error!
-  // mtc(0,1)=10.f; //Error even if mtc is not constant the stored matrix is
+  // mtc(0, 1) = 10.f; // Error even if mtc is not constant the stored matrix is
   // constant!!
 
   // Now a different way to build a trasposedView, without the helper function,
   // thanks to the deduction guide The template argument is automatically
   // deduced thanks to the deduction guide!
 
-  apsc::LinearAlgebra::TransposedView anotherView{m}; // this is a view to a const matrix
+  apsc::LinearAlgebra::TransposedView anotherView{
+    m}; // this is a view to a non-const matrix
   std::cout << "Matrix build with the deduction guide\n";
   for(auto i = 0; i < 3; ++i)
     {
@@ -95,15 +100,12 @@ main()
 
   // To show that it works also with my poor man matrix
 
-  APMMatrix poorMe{4,5};
-  poorMe(2,3)=10;
-  poorMe(3,2)=100;
-  std::cout<<"original  PMatrix elements: (2,3)="<<poorMe(2,3)<<" (3,2)="<<poorMe(3,2)<<std::endl;
+  APMMatrix poorMe{4, 5};
+  poorMe(2, 3) = 10;
+  poorMe(3, 2) = 100;
+  std::cout << "original  PMatrix elements: (2,3)=" << poorMe(2, 3)
+            << " (3,2)=" << poorMe(3, 2) << std::endl;
   apsc::LinearAlgebra::TransposedView poorMet{poorMe};
-  std::cout<<"Transpose PMatrix elements: (2,3)="<<poorMet(2,3)<<" (3,2)="<<poorMet(3,2)<<std::endl;
-
-
-
-
-
+  std::cout << "Transpose PMatrix elements: (2,3)=" << poorMet(2, 3)
+            << " (3,2)=" << poorMet(3, 2) << std::endl;
 }
