@@ -17,7 +17,7 @@ struct Aggregate
 //! A trivially copyable class
 struct TriviallyCopyable
 {
-  TriviallyCopyable(int a = 0, double b = 9) : m_a(a), m_b(b){};
+  TriviallyCopyable(int a = 0, double b = 9) : m_a(a), m_b(b) {};
   int
   a() const
   {
@@ -38,7 +38,8 @@ struct TriviallyCopyable
   {
     return m_b;
   }
-
+  bool operator==(TriviallyCopyable const &rhs) const =
+    default; // to compare two objects of this type
 private:
   int    m_a;
   double m_b;
@@ -47,7 +48,7 @@ private:
 //! A class with standard layout
 struct StandardLayout
 {
-  StandardLayout(int a, double b) : m_a(a), m_b(b){};
+  StandardLayout(int a, double b) : m_a(a), m_b(b) {};
   //! Copy constructor
   /*!
     This is useless since this constructor
@@ -59,7 +60,7 @@ struct StandardLayout
     @note Don't define a copy contructor if the synthetic one is provided and
     is what you need!!
    */
-  StandardLayout(StandardLayout const &rhs) : m_a(rhs.m_a), m_b(rhs.m_b){};
+  StandardLayout(StandardLayout const &rhs) : m_a(rhs.m_a), m_b(rhs.m_b) {};
   int
   a() const
   {
@@ -95,9 +96,10 @@ main()
             << std::endl;
   std::cout << " TriviallyCopyable:   "
             << std::is_trivial<TriviallyCopyable>::value << std::endl;
-  std::cout << " StandardLayout:      "
-            << std::is_trivial_v<StandardLayout><< std::endl //to show the use of _v
-            << std::endl;
+  std::cout
+    << " StandardLayout:      "
+    << std::is_trivial_v<StandardLayout> << std::endl // to show the use of _v
+    << std::endl;
 
   std::cout << " Is it trivially copiable?" << std::endl;
   std::cout << " Aggregate:           "
@@ -128,7 +130,8 @@ main()
             << std::endl;
 
   StandardLayout sl{5, 3.14}; // use uniform initialization
-  // In a standard layout class I can do this (even if its use is very uniteresting)
+  // In a standard layout class I can do this (even if its use is very
+  // uniteresting)
   int *psl = reinterpret_cast<int *>(&sl); // convert to pointer to first member
   // initialise with the dereferenced pointer
   StandardLayout s2 = *(reinterpret_cast<StandardLayout *>(psl));
@@ -149,6 +152,11 @@ main()
   char buffer[m];
   // copy into the buffer using memcpy
   std::memcpy(buffer, &tc, m);
+  // copy back the buffer into a new object of type TriviallyCopyable
+  TriviallyCopyable td;
+  std::memcpy(&td, buffer, m);
+  std::cout << "Are td and tc equal? " << std::boolalpha << (td == tc)
+            << std::endl;
   // open a binary file
   std::string   filename("a.dat");
   std::ofstream pippo(filename, std::ios::binary);
@@ -163,9 +171,8 @@ main()
   TriviallyCopyable d;
   // read into d directly
   pluto.read(reinterpret_cast<char *>(&d), m);
-  std::cout << "The following two values should be equal:\n";
-  std::cout << tc.a() << " " << tc.b() << std::endl;
-  std::cout << d.a() << " " << d.b() << std::endl;
+  std::cout << "Are d and tc equal? " << std::boolalpha << (d == tc)
+            << std::endl;
 
   // If I am using MPI I can send the TriviallyCopyable object with
   // MPI_Send(&tc,m,MPI_BYTE,1,0,MPI_COMM_WORLD);
