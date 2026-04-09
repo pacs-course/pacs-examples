@@ -31,7 +31,7 @@ main()
     A.getBlock({0, 1}).setFromTriplets(coeff.begin(), coeff.end());
     // Block 1,0
     A.addTranspose({1, 0}, {0, 1});
-    // output
+    // Output
     std::cout << "A00=\n" << A.getBlock({0, 0}) << std::endl;
     std::cout << "A01=\n" << A.getBlock({0, 1}) << std::endl;
     std::cout << "A10=\n" << A.getBlock({1, 0}).transpose() << std::endl;
@@ -69,7 +69,7 @@ main()
   A.getBlock({0, 1}).setFromTriplets(coeff.begin(), coeff.end());
   // Block 1,0
   A.addTranspose({1, 0}, {0, 1});
-  // output
+  // Output
   std::cout << "A00=\n" << A.getBlock({0, 0}) << std::endl;
   std::cout << "A01=\n" << A.getBlock({0, 1}) << std::endl;
   std::cout << "A10=\n" << A.getBlock({1, 0}).transpose() << std::endl;
@@ -89,7 +89,7 @@ main()
   std::cout << "Norm =" << A.norm() << std::endl;
 
   auto B = A;
-  // output
+  // Output
   std::cout << "b00=\n" << B.getBlock({0, 0}) << std::endl;
   std::cout << "b01=\n" << B.getBlock({0, 1}) << std::endl;
   std::cout << "b10=\n" << B.getBlock({1, 0}).transpose() << std::endl;

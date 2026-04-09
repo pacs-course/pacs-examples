@@ -1,16 +1,16 @@
 ############################################################
 #
-# An example of Makefile for the course on 
+# An example Makefile for the course on
 # Advanced Programming for Scientific Computing
-# It should be modified for adapting it to the various examples
+# It should be adapted to the different examples
 #
 ############################################################
 #
-# The environmental variable PACS_ROOT should be set to the
-# root directory where the examples reside. In practice, the directory
-# where this file is found. The resolution of PACS_ROOT is made in the
+# The environment variable PACS_ROOT should be set to the
+# root directory where the examples reside, in practice the directory
+# where this file is located. PACS_ROOT is resolved in the
 # Makefile.h file, where other important variables are also set.
-# The only user defined variable that must be set in this file is
+# The only user-defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../../
@@ -18,26 +18,26 @@ MAKEFILEH_DIR=../../../
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
-# This is optional. If not present is not an error
+# This is optional. If it is not present, it is not an error
 -include Makefile.inc
 
 #
 # The general setting is as follows:
-# mains are identified bt main_XX.cpp
+# mains are identified by main_XX.cpp
 # all other files are XX.cpp
 #
 
-# get all files *.cpp
+# Get all .cpp files
 SRCS=$(wildcard *.cpp)
-# get the corresponding object file
+# Get the corresponding object files
 OBJS = $(SRCS:.cpp=.o)
-# get all headers in the working directory
+# Get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
 exe_sources=$(filter main%.cpp,$(SRCS))
 EXEC=$(exe_sources:.cpp=)
 
-#========================== NEW THE DEFINITION OF THE TARGETS
+#========================== TARGET DEFINITIONS
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
