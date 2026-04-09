@@ -18,7 +18,7 @@
 \newtheorem{algo}{Algorithm}
 \author{Luca Formaggia}
 \date{AY 2021-22}
-\title{A note on synthetic division and zero of polynomials}
+\title{A Note on Synthetic Division and Polynomial Zeros}
 \begin{document}
   \lstset{language=c++,%
      %basicstyle=\color{red},
@@ -38,13 +38,13 @@
  }
  
  \maketitle
- \section{Synthetic division and Horner algorithm}
+ \section{Synthetic Division and Horner's Algorithm}
  Let
  \[
  p_m(x)=\sum_{i=0}^{m} a_i x^i,
  \]
 be a (real or complex) polynomial of degree at most $m$, expressed in terms of the monomial basis.
-  The \emph{Synthetic Division} or \emph{Horner's algoritm} reads
+  The \emph{synthetic division} algorithm, or \emph{Horner's algorithm}, reads
 
 \begin{algo}\label{alg:horner}
 \emph{Computes $p(z)$}
@@ -56,17 +56,17 @@ auto horner(a,z)
     return {b[0]*z + a[0],b}; 
 \end{lstlisting}
 \end{algo}
-This version of the algorithm, beside computing $p_m(z)$,
-  returns the coefficients $b_j$, $j=0,\ldots m-1$ of the so called \emph{associated polynomial}
+This version of the algorithm, besides computing $p_m(z)$,
+  returns the coefficients $b_j$, $j=0,\ldots m-1$, of the so-called \emph{associated polynomial}
 \begin{equation}
 \label{eq:associated}
 q_{m-1}(x;z)=\sum_{j=0}^{m-1}b_j x^j.
 \end{equation}
 It is a polynomial of degree at most $m$, and the $z$ in $q_{m-1}(x;z)$ indicates
-  that the coefficients $b_j$ are the results of the synthetic division applied in $x=z$ (see Algorithm~\ref{alg:horner}). Indeed, the value of the coefficients $b_j$ depends on the chosen point $z$.
+  that the coefficients $b_j$ are obtained by applying synthetic division at $x=z$ (see Algorithm~\ref{alg:horner}). Indeed, the values of the coefficients $b_j$ depend on the chosen point $z$.
 
 We have the following \emph{important result}: the polynomial $q_{m-1}(x;z)$ is the quotient
-  of the division of $p_m$ by $x-z$. Which means that
+  obtained by dividing $p_m$ by $x-z$. This means that
 \begin{equation}
 \label{eq:quotient}
 \boxed{p_m(x)=q_{m-1}(x;z)(x-z) + p_m(z),}
@@ -76,29 +76,29 @@ and, consequently,
 \label{eq:quotientder}
 \boxed{\frac{d}{dx}p_m(x)=\frac{d}{dx}q_{m-1}(x;z)(x-z) + q_{m-1}(x;z),}
 \end{equation}
-by which,
+hence,
 \begin{equation}
 \label{eq:quotientdertwo}
 \boxed{\frac{d}{dx}p_m(z)=q_{m-1}(z;z).}
 \end{equation}
 
-Therefore, the synthetic division is a tool to compute not only the value at a point $z$, but also the derivative at that point, and the quotient of the division with the factor $x-z$. It provides the basic ingredients of the \textbf{Newton-Horner} algorithm for computing the zeros of a polynomial. But first we need to illustrate the deflation.
+Therefore, synthetic division can be used to compute not only the value at a point $z$, but also the derivative at that point and the quotient obtained by dividing by the factor $x-z$. It provides the basic ingredients of the \textbf{Newton-Horner} algorithm for computing the zeros of a polynomial. But first we need to discuss deflation.
 \subsection{Deflation}
-Let $\{\alpha_j,\ j=1,\ldots,n\}$ be a zeroes of the polynomial $p_n$. Then, $\{\alpha_j,\ j=1,\ldots,n-1\}$ are the zeroes of 
+Let $\{\alpha_j,\ j=1,\ldots,n\}$ be the zeros of the polynomial $p_n$. Then, $\{\alpha_j,\ j=1,\ldots,n-1\}$ are the zeros of 
 the polynomial
 \begin{equation}
 p_{n-1}=p_n/(x-\alpha_n).
 \end{equation} 
 The proof is trivial.
-But $p_{n-1}(x)=q_{m-1}(x;\alpha_n)$, according to~\eqref{eq:quotient}, being $p_n(\alpha_n)=0$! This allows to set a very efficient algorithm for 
-finding all zeroes of a polynomial.
+Moreover, $p_{n-1}(x)=q_{m-1}(x;\alpha_n)$, according to~\eqref{eq:quotient}, since $p_n(\alpha_n)=0$. This allows us to define a very efficient algorithm for 
+finding all the zeros of a polynomial.
 \subsection{Newton-Horner with deflation}
-The algorithm here implemented is Newton-Horner with deflation:
+The algorithm implemented here is Newton-Horner with deflation:
 
 \begin{algo}
-    Given the polynomial $p_n$, the initial point $x_0$ and tolerances $tolr$ (tolerance on residual) and $told$
-    (tolerance on iteration length)
-    do:
+    Given the polynomial $p_n$, the initial point $x_0$, and the tolerances $tolr$ (tolerance on the residual) and $told$
+    (tolerance on the iteration step),
+    do the following:
     \begin{description}
         \item[] Set $q=p_n$.
         \item[] For $k=1,n$:
@@ -107,37 +107,35 @@ The algorithm here implemented is Newton-Horner with deflation:
             \begin{enumerate}
                 \item Compute $q(x_n)$ and $q^\prime(x_n)$ using synthetic division;
                 \item Compute $x_{n+1}=x_{n}-q^\prime(x_{n})^{-1}q(x_n)$;
-                \item If $|q(x_{n+1})|<tol$ and $|x_{n+1}=x_{n}|$ terminate iteration and set
+                \item If $|q(x_{n+1})|<tol$ and $|x_{n+1}-x_{n}|<told$, terminate the iteration and set
             $\alpha_k=x_{n+1}$ (the $k$-th zero);
             \end{enumerate}
-            \item Set $q=q/(x-x^{(k)})$ (deflation) using the associated polynomial given by the last synthetic division!;
-            \item Set $x_0=\overline{\alpha_k}$ (to facilitate finding conjugate zeroes);
+            \item Set $q=q/(x-\alpha_k)$ (deflation) using the associated polynomial returned by the last synthetic division;
+            \item Set $x_0=\overline{\alpha_k}$ (to facilitate the search for conjugate zeros);
         \end{enumerate}
     \end{description}
 \end{algo}
 
-This algorithm  exploits the fact that the synthetic division (Horner's algorithm) is able to provide the evaluation at a point of both the polynomial and its derivative and, when the zero is found, also the coefficients of the deflated polynomial! 
+This algorithm exploits the fact that synthetic division (Horner's algorithm) provides the value of both the polynomial and its derivative at a point and, once a zero has been found, also the coefficients of the deflated polynomial. 
 \subsection{Some comments}
-Newton-Holder algorithm is a very nice and relatively efficient algorithm. However
+The Newton-Horner algorithm is very elegant and relatively efficient. However:
 \begin{itemize}
-    \item We have global convergence (i.e. for all $x_0$) only for polynomial with real coefficients under some conditions on the zeroes (look at specialized literature if you want more information). Therefore, in general convergence of the basic algorithm depends on the choice of $x_0$. You may implement techniques like backtracking, or randomization, to better convergence properties. It must be said that in all the tests I have made the basic method worked fine.
-    \item The deflation is only approximate! Indeed, we will "divide" not by the real zero, but by the \emph{approximated zero}. This means that we may accumulate errors that may reduce the accuracy of the last computed zeroes: a small value of the \emph{approximated} deflated polynomial may not imply a small value of the original polynomial. Consequently, the algorithm may terminate at a point far from the real zero. 
-    However, this may happen only if you compute all zeroes of a polynomial of high degree, and for the last computed zeroes! Normally, you do not have to worry if you have set the tolerances reasonably tight. 
-    \item In real polynomials, complex roots come in pairs. Cannot we deflate by $(x-\alpha)(x-\overline{\alpha})$ directly?
-    Indeed we can, it is a modification of the basic algorithm that however I have not implemented here.
-    \item You have to avoid division by zero in   $q^\prime(x_n)^{-1}p(x_n)$!.
-    This is a tricky business. What you can try to do is
-    to set a small number at the denominator. For instance, using $p(x_n)/d$ with $d=\epsilon<<1$ if $|q^\prime(x_n)|=0$ and $d=q^\prime(x_n)$ otherwise. 
-    \item Operating with complex numbers makes the algorithm more general. But if $x_0$ is a pure real number (i.e. zero imaginary part), then the algorithm will find only the real zeroes. Since we do not know how, in general, how many real zeroes we have, the algorithm may fail to find a zero simply because we do not have other real zeroes! Therefore, we need to modify the algorithm to detect non convergence. Here I have decided to keep things simple, but then you have always to start with an 
-    $x_0$ with non-sero imaginary part, unless you know beforehand that \emph{all} zeroes are real (or, at least, the number of real zeroes, since the given algorithm allows to search only for a certain number of zeroes).
-    \item When a complex numer is in fact a pure real number? The answer seems straightforward: when the imaginary part is zero. This is true in the ideal world of complex numbers, not in the real world of \emph{floating point complex numbers}. Roundoff errors
-    will often cause the imaginary part be very small, but not zero.  A rule of thumb is to consider zero the imaginary part of the
-    approximated root found by the algorithm if its absolute value is smaller than the given tolerances. Of course, if you know a priori that the root is real you will consider only the real part of the found approximation.
+    \item We have global convergence (i.e. for all $x_0$) only for polynomials with real coefficients, and only under some conditions on the zeros; see the specialized literature for more details. Therefore, in general, convergence of the basic algorithm depends on the choice of $x_0$. You may implement techniques such as backtracking or randomization to improve convergence properties. In all the tests I carried out, however, the basic method worked well.
+    \item Deflation is only approximate. Indeed, we divide not by the exact zero, but by an \emph{approximate zero}. This means that errors may accumulate and reduce the accuracy of the last computed zeros: a small value of the \emph{approximate} deflated polynomial may not imply a small value of the original polynomial. Consequently, the algorithm may terminate at a point far from the true zero. 
+    However, this is mainly an issue when computing all the zeros of a high-degree polynomial, especially the last ones. Normally, if the tolerances are reasonably tight, there is no need for concern. 
+    \item In polynomials with real coefficients, complex roots come in conjugate pairs. Can we deflate directly by $(x-\alpha)(x-\overline{\alpha})$?
+    Indeed we can; this is a modification of the basic algorithm that I have not implemented here.
+    \item You must avoid division by zero in $q^\prime(x_n)^{-1}p(x_n)$.
+    This is a delicate issue. One possible workaround is to use a small number in the denominator. For instance, use $p(x_n)/d$, with $d=\epsilon \ll 1$ if $|q^\prime(x_n)|=0$, and $d=q^\prime(x_n)$ otherwise. 
+    \item Working with complex numbers makes the algorithm more general. However, if $x_0$ is purely real (i.e. it has zero imaginary part), then the algorithm will find only real zeros. Since, in general, we do not know how many real zeros there are, the algorithm may fail to find a zero simply because no additional real zeros exist. Therefore, we need to modify the algorithm to detect non-convergence. Here I decided to keep things simple, but this means that you should always start with an 
+    $x_0$ with non-zero imaginary part, unless you already know that \emph{all} zeros are real or, at least, that you know how many real zeros there are, since the given algorithm allows one to search only for a prescribed number of zeros.
+    \item When is a complex number actually real? The answer seems straightforward: when the imaginary part is zero. This is true in the ideal world of exact complex arithmetic, but not in the real world of \emph{floating-point complex numbers}. Roundoff errors
+    often make the imaginary part very small, but not exactly zero. A rule of thumb is to treat the imaginary part of the approximate root found by the algorithm as zero if its absolute value is smaller than the given tolerances. Of course, if you know a priori that the root is real, you will consider only the real part of the computed approximation.
 \end{itemize}
 
 
 \section{Derivatives}
-Leveraging Equations~\eqref{eq:quotientder} and~\eqref{eq:quotient} we can also compute higher derivatives at point $z$. Let's first look to the second derivative
+By leveraging Equations~\eqref{eq:quotientder} and~\eqref{eq:quotient}, we can also compute higher derivatives at the point $z$. Let us first look at the second derivative:
 \begin{multline}\label{eq:secderexp}
 \frac{d^2p_m}{dx^2}(x)=\frac{d^2q_{m-1}}{dx^2}(x;z)(x-z) + \frac{dq_{m-1}}{dx} (x;z) + \frac{dq_{m-1}}{dx} (x;z)=\\ \frac{d^2}{dx^2}q_{m-1}(x;z)(x-z) + 2 \frac{d}{dx} q_{m-1}(x;z),
 \end{multline}
@@ -150,12 +148,12 @@ Using~\eqref{eq:quotientder},
 \begin{equation}\label{eq:firstderass}
 \frac{d}{dx}q_{m-1}(x;z)=\frac{d}{dx}q_{m-2}(x;z)(x-z)+ q_{m-2}(x;z),
 \end{equation}
-which combined with~\eqref{eq:secder} gives
+which, combined with~\eqref{eq:secder}, gives
 \begin{equation}\label{eq:secderivative}
 \frac{d^2p_m}{dx^2}(z)=2 q_{m-2}(z;z).
 \end{equation}
-So the second derivative at $z$ is twice the associated polynomial of $q_{m-1}(x;z)$ at the given point. So it can be computed just by using two synthetic divisions.
-What about the third derivative? We have, from~\eqref{eq:secderexp}
+So the second derivative at $z$ is twice the associated polynomial of $q_{m-1}(x;z)$ evaluated at the same point. Therefore, it can be computed with just two applications of synthetic division.
+What about the third derivative? From~\eqref{eq:secderexp} we have
 \begin{multline}\label{eq:secderexptwo}
 \frac{d^3p_m}{dx^3}(x)=\frac{d^3}{dx^3}q_{m-1}(x;z)(x-z) +\frac{d^2}{dx^2}q_{m-1}(x;z) + 2 \frac{d^2}{dx^2} q_{m-1}(x;z)=\\
 \frac{d^3}{dx^3}q_{m-1}(x;z)(x-z) +3\frac{d^2}{dx^2}q_{m-1}(x;z).
@@ -179,18 +177,18 @@ In general, for any $n\le m$,
 \boxed{\frac{d^n}{dx^n}p_m(z)=n! q_{m-n}(z;z).}
 \end{equation}
 
-Therefore, all derivatives at a given point $z$ may be computed with a repeated use of synthetic division.
+Therefore, all derivatives at a given point $z$ may be computed by repeated application of synthetic division.
 
 
 \section{The code in \texttt{polyHolder.hpp}}
-The code in \texttt{polyHolder.hpp} contains
+The code in \texttt{polyHolder.hpp} contains:
 \begin{itemize}
-    \item The function \lstinline|polyEval()| which uses the basic Holder's algoritm to compute the value of a polynomial at a point;
-    \item The class \lstinline|polyHolder|, which is a helper class for the Holder-Newton algorithm and it allows also to compute derivatives of a polynomial (given its coefficients) at a given point.
-    \item The function \lstinline|polyRoots()| which computes the roots of a polynomial using the basic \emph{Newton-Holder} procedure.
+    \item The function \lstinline|polyEval()|, which uses the basic Horner algorithm to compute the value of a polynomial at a point;
+    \item The class \lstinline|PolyHolder|, which is a helper class for the Newton-Horner algorithm and also allows one to compute derivatives of a polynomial, given its coefficients, at a given point;
+    \item The function \lstinline|polyRoots()|, which computes the roots of a polynomial using the basic \emph{Newton-Horner} procedure.
 \end{itemize}
 
-You may argue that I am not respecting the \emph{single responsibility principle} here: the class \texttt{polyHolder} should only provide the synthetic division. The computation of derivatives should be the responsibility of a function (or another class) that uses \texttt{polyHolder}. You are right, but the world is not perfect, and the \emph{principles} should be taken with a grain of salt.
+One may argue that I am not fully respecting the \emph{single-responsibility principle} here: the class \texttt{PolyHolder} should provide only synthetic division. The computation of derivatives should instead be the responsibility of a function, or of another class, that uses \texttt{PolyHolder}. That objection is reasonable, but the world is not perfect, and \emph{principles} should sometimes be applied with a grain of salt.
 
 
 \end{document}

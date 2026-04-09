@@ -5,7 +5,7 @@
  *      Author: forma
  */
 /*!
- * @brief An utility for the zeros of polynomials
+ * @brief A utility for finding polynomial zeros
  *
  */
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_POLYHOLDER_HPP_
@@ -20,23 +20,23 @@
 namespace apsc
 {
 /*!
-  * @brief Helper function. Computes the polynomial given the coefficients
+  * @brief Helper function. Evaluates a polynomial from its coefficients.
   *
-  * It is just a different version of Holder algorithm already seen in other
-  examples.
-  * coefficient are stored in a container, ordered from lowest to highest
-  monomial degree.
+  * It is simply a different version of Horner's algorithm, already seen in
+  * other examples.
+  * Coefficients are stored in a container, ordered from the lowest to the
+  * highest monomial degree.
   * The function is templated on the container type and on the coefficient type.
-  * The coefficient type must be convertible to a complex<double> number.
+  * The coefficient type must be convertible to a `std::complex<double>`.
 
   * @pre Coefficients is a container of Coefficient.
   * @tparam Coefficients The container of coefficients (must be a sequential
-  container)
+  * container)
   * @tparam Coefficient The type of a polynomial coefficient
   * @param pCoeff The coefficients
-  * @param x The value where to compute the polynomual
-  * @return The polynomial at x
-  * @note added a requires clause to check the concept of the input
+  * @param x The value at which the polynomial is evaluated
+  * @return The polynomial value at x
+  * @note A requires clause checks the expected interface of the input.
   */
 template <class Coefficients, class Coefficient>
   requires requires(Coefficients cs, Coefficient c) {
@@ -63,23 +63,23 @@ polyEval(const Coefficients &pCoeff, const Coefficient &x)
 }
 
 /*!
- * @brief A class to support root finding for algebraic polynomials
+ * @brief A class supporting root finding for algebraic polynomials
  *
- * It works internally with complex numbers to be able to compute also complex
+ * It works internally with complex numbers so that it can also compute complex
  * roots, even if the polynomial has been given by real coefficients.
  *
- * It also provide a method to compute derivatives of polynomials at a point
+ * It also provides a method to compute polynomial derivatives at a point
  * using synthetic division. It is provided here since it is a simple extension
- * of what needed for the root finding. An exception to the one responsibility
- * principle.
+ * of what is needed for root finding. This is an exception to the
+ * single-responsibility principle.
  *
- * Alterrnatively, one may build a class to encapsulate the synthetic division
- * an  keep root finding and derivatives separate. This would be more in line
- * with the one responsibility principle.
+ * Alternatively, one could build a separate class to encapsulate synthetic
+ * division and keep root finding and derivative computation separate. That
+ * would be more in line with the single-responsibility principle.
  *
- * The algorithm should always work for polynomial with real coefficients. For
- * polynomyal on the complex field however, the situation is more complex. Look
- * at specialised literature on the subject.
+ * The algorithm should always work for polynomials with real coefficients. For
+ * polynomials over the complex field, however, the situation is more delicate.
+ * See the specialized literature on the subject.
  *
  */
 class PolyHolder
@@ -87,24 +87,24 @@ class PolyHolder
 public:
   //! The coefficient (and values) type
   using Coefficient = std::complex<double>;
-  //! The container for the coefficients of the polynomials from lowest to
-  //! highest
+  //! The container for the polynomial coefficients, from lowest to highest
   using Coefficients = std::vector<Coefficient>;
   /*!
-   * @brief Constuctor
+   * @brief Constructor
    *
-   * @tparam T anything convertible to a vector of complex numbers
-   * @param coeff coefficients for the polynomial, ordered from lowest to
-   * highest monomial degree The container should provide the coefficients in
-   * increasing order of degree.
+   * @tparam T Any type convertible to a vector of complex numbers
+   * @param coeff Coefficients of the polynomial, ordered from the lowest to
+   * the highest monomial degree. The container should provide the coefficients
+   * in increasing order of degree.
    */
   template <class T>
     requires std::convertible_to<T, Coefficients>
   PolyHolder(T &&coeff) : pCoeff(std::forward<T>(coeff)){};
   /*!
-   * @brief Constuctor
-   * Specialization if the coefficients are real. Internally I use complex.
-   * @param coeff Coefficients of the polynomial (lowest to highest)
+   * @brief Constructor
+   * Specialized version for real coefficients. Internally, coefficients are
+   * stored as complex numbers.
+   * @param coeff Coefficients of the polynomial (from lowest to highest degree)
    */
   PolyHolder(std::vector<double> const &coeff)
   {
@@ -120,9 +120,9 @@ public:
   PolyHolder() = default;
 
   /*!
-   * @brief Set new polynomial coefficients
+   * @brief Sets new polynomial coefficients
    *
-   * @tparam T anything convertible to vector of complex
+   * @tparam T Any type convertible to a vector of complex numbers
    * @param coeff Coefficients
    */
   template <class T>
@@ -134,10 +134,10 @@ public:
     qCoeff.clear();
   }
   /*!
-   * @brief Sets coefficients
+   * @brief Sets the coefficients
    * Version for real coefficients.
-   * I need to convert them to complex
-   * @param coeff
+   * The coefficients are converted to complex values internally.
+   * @param coeff The real coefficients
    */
   void
   setCoeff(std::vector<double> const &coeff)
@@ -153,21 +153,21 @@ public:
   }
 
   /*!
-   * @brief Computes derivatives up to given order
+   * @brief Computes derivatives up to a given order
    *
-   *  All derivatives at given point and up to given order are computed and
+   * All derivatives at a given point and up to a given order are computed and
    * stored in the returned vector of complex numbers. Derivative of order 0 is
    * the value at x.
    *
-   *  For Newton-Horner algorithm for the zeroes of a polynomial only the first
-   * order derivative is needed. Nevertheless, since it is not a big problem
-   * extending to the case of a generic derivative I have implemented the
-   * general case. First derivative is the default.
+   * For the Newton-Horner algorithm for the zeros of a polynomial, only the
+   * first derivative is needed. Nevertheless, since extending the method to
+   * generic derivatives is straightforward, I implemented the general case.
+   * The first derivative is the default.
    *
-   * @param x The point where derivatives are computed
-   * @param order The order of derivative to be computed (defaulted to 1)
-   * @return A vector with all the derivative (at 0 you have the 0th derivative
-   * = the value at x)
+   * @param x The point where the derivatives are computed
+   * @param order The derivative order to be computed (default is 1)
+   * @return A vector containing all derivatives. Entry 0 is the 0-th
+   * derivative, that is, the value at x.
    */
   std::vector<std::complex<double>>
   derivatives(Coefficient const &x, unsigned int order = 1) const
@@ -182,8 +182,8 @@ public:
       {
         values.emplace_back(this->sintDivision(x));
         values.emplace_back(polyEval(this->qCoeff, x));
-        // this is the case of derivatives higher than one. I apply synthetic
-        // division recursively
+        // This is the case of derivatives of order higher than one.
+        // I apply synthetic division recursively.
         if(order > 1)
           {
             PolyHolder   tmp(this->qCoeff);
@@ -205,7 +205,7 @@ public:
     return values;
   }
   /*!
-   * @return Polynomial coefficients (readOnly);
+   * @return Polynomial coefficients (read-only).
    */
   auto
   pCoefficients() const
@@ -213,7 +213,7 @@ public:
     return pCoeff;
   }
   /*!
-   * @return q-Polynomial coefficients (readOnly);
+   * @return The coefficients of the associated q-polynomial (read-only).
    */
   auto
   qCoefficients() const
@@ -221,18 +221,18 @@ public:
     return qCoeff;
   }
   /*!
-   * @brief The  coefficients of the nth derivative
+   * @brief Returns the coefficients of the n-th derivative
    *
-   * If n=0 it is a stupid way of getting the polynomial coefficient. Indeed for
-   * n=0 the derivative is the polynomial itself. This is a different algorithm
-   * than the one presented in the folder src/Polynomials. It is a not recursive
-   * implementation, that however needs the computation of a factorial
-   * coefficient, which is in the protected section since it is not of general
-   * use.
+   * If `n = 0`, this is simply an indirect way of retrieving the polynomial
+   * coefficients, because the 0-th derivative is the polynomial itself.
+   * This is a different algorithm from the one presented in the folder
+   * `src/Polynomials`. It is a non-recursive implementation, but it requires
+   * the computation of a factorial-like coefficient, implemented in the
+   * protected section because it is not of general use.
    *
    * @pre Polynomial coefficients must be set
    * @param n The order of the derivative.
-   * @return The coefficients of the n-th order derivative of the stored
+   * @return The coefficients of the n-th derivative of the stored
    * polynomial
    */
   Coefficients
@@ -252,9 +252,9 @@ public:
 
 protected:
   /*!
-   * @brief Exchange p and q coefficients. Used for computing derivatives
-   * Is not a real swap. The new coefficients are the old q's and the old q is
-   * cleared Not for general use.
+   * @brief Exchanges p and q coefficients. Used for computing derivatives.
+   * This is not a true swap. The new coefficients become the old q-values,
+   * and q is then cleared. Not intended for general use.
    */
   void
   swap()
@@ -270,7 +270,7 @@ protected:
    *
    * Used internally. Not of general use.
    *
-   * @pre pCoeff should have been set
+   * @pre pCoeff must have been set
    * @param x The point
    * @return The value of the polynomial at the point
    */
@@ -301,14 +301,14 @@ protected:
     return (*prevq) * x + *startp;
   }
   /*!
-   * @brief  Computes p(p-1)(p-2)...(p-n+1)= n! (p|n)
+   * @brief Computes p(p-1)(p-2)...(p-n+1) = n! * binomial(p, n)
    *
-   * It is a helper function, I put it in the protected section since it is not
-   * of general use
+   * This is a helper function. It is placed in the protected section because
+   * it is not of general use.
    *
-   * Returns 1 if p<=n
-   * @param p
-   * @param n
+   * Returns 1 if p <= n.
+   * @param p The upper index
+   * @param n The order
    * @return p(p-1)(p-2)...(p-n+1)
    */
   static constexpr unsigned int
@@ -327,22 +327,22 @@ protected:
   mutable Coefficients qCoeff;
 };
 /*!
- * @brief Finds roots of a polynomial
+ * @brief Finds the roots of a polynomial
  *
  * @tparam Coefficients The container for the coefficients of the polynomial
- * Typically a std::vector<complex>
- * @tparam Coefficient The type of the polynomial coefficient (typycally
- * std::complex)
+ * Typically `std::vector<std::complex<double>>`
+ * @tparam Coefficient The type of the polynomial coefficient (typically
+ * `std::complex<double>`)
  * @param polyCoefficients The coefficients of the polynomial, in increasing
  * order
- * @param numRoots The number of roots sought (max=the degree of polynomial)
- * @param x0 The initial point for the search.  If you want to find all roots
- * the complex part should be !=0
- * @param tole Tolerance on iteration steps (default 1e-6)
- * @param tolr Tolerance on residual (|p(x)|) (default 1e-6)
- * @param maxIter The maximum number of iterations (default=200)
+ * @param numRoots The number of roots sought (max = the polynomial degree)
+ * @param x0 The initial point for the search. If you want to find all roots,
+ * the imaginary part should be different from zero.
+ * @param tole Tolerance on the iteration step (default 1e-6)
+ * @param tolr Tolerance on the residual `|p(x)|` (default 1e-6)
+ * @param maxIter The maximum number of iterations (default = 200)
  * @return A tuple with the vector of found zeros, the vector of residuals and a
- * status (true=ok, false=failure).
+ * status (`true` = success, `false` = failure).
  */
 
 template <class Coefficients, class Coefficient>

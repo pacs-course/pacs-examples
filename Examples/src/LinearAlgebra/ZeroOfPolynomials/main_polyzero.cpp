@@ -23,7 +23,7 @@ int main()
     {5.,0.}
   };
   */
-    // seventth grade polynomial
+  // Seventh-degree polynomial
   Coefficients coeff{
     {1.,0.},
     {-3,0.},
@@ -51,9 +51,9 @@ int main()
 
 
   auto der = holder.derivatives(x,5);
-  std::cout<<"Testing computation of Derivatives at x= "<<x<<std::endl;
-  std::cout<<" Computed with synthetic division or with the coefficients\n";
-  std::cout<<"Order\t synt.div.\t\t coeff.\n";
+  std::cout<<"Testing the computation of derivatives at x = "<<x<<std::endl;
+  std::cout<<" Computed with synthetic division or from the coefficients\n";
+  std::cout<<"Order\t synt. div.\t\t coeff.\n";
   std::cout.precision(2);
 
   std::cout.setf( std::ios::fixed|std::ios::showpos, std:: ios::floatfield ); // floatfield set to fixed
@@ -64,13 +64,13 @@ int main()
       auto valDer = polyEval(coeffDer, x);
       std::cout<<i++<<"\t"<<v<<"\t\t"<<valDer<<std::endl;
     }
-  std::cout<<"Testing zeros of  polynomial"<<std::endl;
-// If i want to find complex zeros the initial point must have non null imaginary part!
+  std::cout<<"Testing polynomial zeros"<<std::endl;
+  // To find complex zeros, the initial point must have a nonzero imaginary part.
 
   auto [zeros,res,status]=
       polyRoots(coeff,coeff.size()-1, std::complex<double>{0.,1.});
 
-  std::cout<<"Zeroes and residuals"<<std::endl;
+  std::cout<<"Zeros and residuals"<<std::endl;
   std::cout<<"Zero\t\tResidual\t\t|p(zero)|\n";
   auto r =res.begin();
   std::cout.setf( std::ios::scientific, std:: ios::floatfield ); // floatfield set to scientific
@@ -81,7 +81,7 @@ int main()
       std::cout<<zero<<"\t\t"<<*(r++)<<"\t\t"<<restrue<<std::endl;
     }
 
-  std::cout<<"Testing zeros of  polynomial with complex coefficients:"<<std::endl;
+  std::cout<<"Testing polynomial zeros with complex coefficients:"<<std::endl;
   coeff[1]={2.,-2.};
   coeff[2]={0.,-1.};
   exp=0;
@@ -135,5 +135,3 @@ int main()
 
 
 }
-
-
