@@ -17,9 +17,19 @@ namespace apsc
 
   @note a, b and c MUST be of the dimension of the system even is some element
   are not used <b>The dimension of the system is determined by the size of
-  a</b>.
-  @param a diagonal terms
-  @param b subdiagonal terms
+  a.
+  @param a diagonal terms. A vector of size n, where n is the system dimension.
+  a[0]... a[n-1]
+  @param b subdiagonal terms. A vector of size n, where n is the system
+  dimension. b[1]... b[n-1]
+   @param c superdiagonal terms. A vector of size n, where n is the system
+  dimension. c[0]... c[n-2]
+  @param f right hand side. A vector of size n, where n is the system dimension.
+  f[0]... f[n-1]
+  @return the solution of the linear system
+  @pre a,b,c and f must be of the same type and have the same size
+  @pre size of a,b,c, and f greater than one
+  @pre <b>all elements of a are different from zero</b>
   @param c superdiagonal terms
   @param f right hand side
   @return the solution of the linear system
@@ -29,7 +39,7 @@ namespace apsc
   @pre <b>all elements of a are different from zero<\b>
  */
 /*
-New version: I pass the arguments by forwarding reference to avoid copies
+I pass the arguments by forwarding reference to avoid copies
 if the arguments are rvalues
 In fact only a and f are modified, so I can use std::forward<decltype(a)>(a)
 and std::forward<decltype(f)>(f) to avoid copies. The other arguments are not
@@ -38,11 +48,11 @@ modified so I can use const reference
 auto
 thomasSolve(auto &&a, auto const &b, auto const &c, auto &&f)
 {
-  auto n = a.size();
+  std::size_t n = a.size();
   // Forward sweep
   auto B = std::forward<decltype(a)>(a);
   auto D = std::forward<decltype(f)>(f);
-  for(size_t i = 1; i < n; ++i)
+  for(std::size_t i = 1; i < n; ++i)
     {
       auto gamma = b[i] / B[i - 1];
       B[i] = B[i] - gamma * c[i - 1];
@@ -51,9 +61,12 @@ thomasSolve(auto &&a, auto const &b, auto const &c, auto &&f)
   // back substitution
   auto x = std::move(D);
   x.back() /= B.back();
-  for(int i = n - 2; i >= 0; --i)
+  if(n > 1u)
     {
-      x[i] = (x[i] - c[i] * x[i + 1]) / B[i];
+      for(std::size_t i = n - 1u; i > 0u; --i)
+        {
+          x[i - 1u] = (x[i - 1u] - c[i - 1u] * x[i]) / B[i - 1u];
+        }
     }
   return x;
 }
