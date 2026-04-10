@@ -1,8 +1,7 @@
-/*
- * SaddlePointMat.hpp
- *
- *  Created on: Jul 9, 2020
- *      Author: forma
+/*!
+ * @file SaddlePointMat.hpp
+ * @brief Lightweight block representation of the saddle-point matrix used by
+ *        the Darcy example.
  */
 
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_IML_EIGEN_SADDLEPOINTSOLVER_SADDLEPOINTMAT_HPP_
@@ -14,36 +13,28 @@
 #include <stdexcept>
 namespace FVCode3D
 {
-//! Class for assembling a saddle point matrix.
+//! Block wrapper for the sparse saddle-point operator.
 /*!
  * @class SaddlePointMat
- * This class implements a generic saddle point matrix. It consists of 3 block
- * matrices M, B and T. It will be build up through an object of type
- * SaddlePoint_StiffMatrix that is the assembler of the numerical method and it
- * overloads the *(Vector) operator to use the blocks matrix to compute the
- * matrix-vector product. In this way we avoid to store the whole system matrix
- * and we use the same 3 blocks (without any copy of them) to make everything we
- * need: matrix-vector product, building and inverting the preconditioner.
- * Clearly, this class is interesting only with an iterative system solving the
- * system. Constructors, assignement, destructor and so on are all defaulted.
- * The matrix will always contain the blocks in this form
+ * The class stores the matrix through its natural blocks M, B and T and
+ * delegates the actual sparse storage to `apsc::SparseBlockMatrix`.
+ *
+ * This design is useful in two ways:
+ * - iterative solvers can apply matrix-vector products without assembling
+ *   auxiliary dense objects;
+ * - preconditioners can reuse the same blocks directly when forming Schur
+ *   complement approximations.
+ *
+ * The matrix is stored in the symmetric-indefinite form
  * \f[
  * \begin{bmatrix}
  * M & B^T\\
  * B & T
  * \end{bmatrix}
  * \f]
- *  being \f$T=-K\f$ and \f$K\f$ a symmetric non-negative definite matrix.
- * However, if isSymUndef is set to false, it operates like the un-symmetric
- * matrix \f[ \begin{bmatrix}
- * M & B^T\\
- * -B & -T
- * \end{bmatrix}=
- * \begin{bmatrix}
- * M & B^T\\
- * -B & K
- * \end{bmatrix}=
- * \f]
+ * where typically \f$T=-K\f$ and \f$K\f$ is symmetric positive semidefinite.
+ *
+ * The current implementation only supports this symmetric layout.
  */
 class SaddlePointMat
 {
@@ -54,13 +45,13 @@ public:
   //! Empty-Constructor
   SaddlePointMat() = default;
 
-  //! Construct a saddle point matrix
+  //! Construct the 2x2 saddle-point operator from its sparse blocks.
   /*!
    * @tparam SMAT anything convertible to a SpMat
    * @param Mmat M matrix
    * @param Bmat B matrix
    * @param Tmat T matrix
-   * @param isSymUndef true: symmetric form
+   * @param isSymUndef Must be true in the current implementation.
    */
   template <typename SMAT>
   SaddlePointMat(SMAT &&Mmat, SMAT &&Bmat, SMAT &&Tmat, bool isSymUndef = true)
@@ -75,11 +66,11 @@ public:
     matrixData.setBlock({1, 1}, std::forward<SMAT>(Tmat));
     matrixData.addTranspose({0, 1}, {1, 0});
   }
-  //! Construct a saddle point matrix
+  //! Construct an empty saddle-point operator with the requested block sizes.
   /*!
    * @param Mdim M block dimension
    * @param Brow B block row
-   * @param Bcol B block col
+   * @param isSymUndef Must be true in the current implementation.
    */
   SaddlePointMat(const UInt Mdim, const UInt Brow, bool isSymUndef = true)
     : isSymUndef(isSymUndef), matrixData{
@@ -105,7 +96,7 @@ public:
 
   //! @name Methods
   //!@{
-  //! Sets the saddle point matrix
+  //! Replace the stored blocks with new sparse matrices.
   /*!
    * @tparam SMAT anything convertible to a SpMat
    * @param Mmat M matrix
@@ -122,9 +113,12 @@ public:
     matrixData.addTranspose({0, 1}, {1, 0});
   }
 
-  //! Set the flag isSymUndef
+  //! Set the matrix layout flag.
   /*!
-   * @param coeff The flag to be set 1=is  Sym Undef -1 is UnSym pdef
+   * Only the symmetric-indefinite form is supported, so passing `false`
+   * results in an exception.
+   *
+   * @param coeff Non-zero for symmetric-indefinite form.
    */
   void
   Set_isSymUndef(const int coeff)
@@ -135,7 +129,7 @@ public:
         "This version supports only symmetric saddle point matrices");
   }
 
-  //! Compress the block matrices
+  //! Compress all internal sparse blocks.
   /*!
    * Compress the block matrices M, B and T
    */
@@ -211,7 +205,7 @@ public:
 
   //! @name Methods
   //!@{
-  //! Resize the system
+  //! Resize the block structure without populating the coefficients.
   /*!
    *
    * @param Mdim number or wows
@@ -223,30 +217,19 @@ public:
     matrixData.resize({Eigen::Index(Mdim), Eigen::Index(Brow)},
                       {Eigen::Index(Mdim), Eigen::Index(Brow)});
   }
-  /*!
-   * Frobenius norm of the matrix sqared
-   *
-   * @return the norm squared
-   */
+  //! Frobenius norm squared of the assembled block matrix.
   Real
   squaredNorm() const
   {
     return matrixData.squaredNorm();
   }
-  /*!
-   * Frobenius norm of the matrix
-   *
-   * @return the norm
-   */
+  //! Frobenius norm of the assembled block matrix.
   Real
   norm() const
   {
     return std::sqrt(this->squaredNorm());
   }
-  //! Get the number of non zero
-  /*!
-   * @return the number of non zero
-   */
+  //! Number of non-zero coefficients across all stored blocks.
   UInt
   nonZeros() const
   {
@@ -256,25 +239,23 @@ public:
 
   //! @name Operators
   //!@{
-  //! Overload of matrix-vector product operator using the blocks
+  //! Apply the block matrix to a vector.
   /*!
-   * @param x A const reference to the vector
-   * @return The Vector resulting from the matrix-vector product
+   * @param x Input vector.
+   * @return Product between the saddle-point operator and `x`.
    */
   Vector
   operator*(const Vector &x) const
   {
     return matrixData * x;
   }
-  //! Clears matrix and frees memory
+  //! Clear all blocks and release their storage.
   void
   clear()
   {
     matrixData.clear();
   }
-  /*!
-   * @return the full matrix
-   */
+  //! Assemble and return the full sparse matrix.
   SpMat
   fullMatrix() const
   {
@@ -282,14 +263,17 @@ public:
   };
   //!@}
 
-  //! A flag indicating if it is sym-undef or defpos-unsym
+  //! Flag describing the selected block layout.
   bool isSymUndef = true;
   /*!
-   * Converts the matrix to a double saddle point structire
+   * Split the lower-right block into cell and fracture sub-blocks.
+   *
+   * After this transformation the internal representation becomes a 3x3 block
+   * operator used by the `DoubleSaddlePoint*` preconditioners.
    */
   void convertToDoubleSaddlePoint();
 
-  //! Returns the contained block matrix as constant reference
+  //! Return the internal block matrix representation.
 
   apsc::SparseBlockMatrix<double, 3, 3> const &
   sparseBlockMatrix() const
@@ -304,6 +288,9 @@ private:
 inline void
 SaddlePointMat::convertToDoubleSaddlePoint()
 {
+  // The code assumes that fracture unknowns correspond to the non-empty part of
+  // the trailing block T. Those rows/columns are separated to expose the 3x3
+  // structure required by the double saddle-point preconditioners.
   auto        nVel = matrixData.cols({0, 0});
   auto const &T = matrixData.getBlock({1, 1});
   UInt        nFrac = 0;

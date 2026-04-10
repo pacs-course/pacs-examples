@@ -1,8 +1,7 @@
-/*
- * preconditionerWrapper.hpp
- *
- *  Created on: May 12, 2020
- *      Author: forma
+/*!
+ * @file preconditionerFactory.hpp
+ * @brief Small runtime factory used by the example driver to instantiate the
+ *        selected preconditioner.
  */
 
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_IML_EIGEN_SADDLEPOINTSOLVER_PRECONDITIONERFACTORY_HPP_
@@ -17,8 +16,12 @@ namespace FVCode3D
 using PrecondBuilder = std::function<std::unique_ptr<preconditioner>()>;
 using PreconditionerFactory = std::unordered_map<PrecondSwitch, PrecondBuilder>;
 /*!
- * A simple factory for the preconditioners
- * @return The factory (a std::map)
+ * Build the map from `PrecondSwitch` values to nullary constructors.
+ *
+ * The main program uses this factory after parsing `data.pot`, so no
+ * preconditioner type needs to be mentioned explicitly in the solver loop.
+ *
+ * @return Factory map keyed by `PrecondSwitch`.
  */
 PreconditionerFactory
 make_PreconditionerFactory()

@@ -4,6 +4,16 @@
 // All IML++
 #include "GetPot"
 #include "SaddlePointUtilities.hpp"
+/*!
+ * Driver for the saddle-point solver example.
+ *
+ * Workflow:
+ * 1. read a GetPot configuration file;
+ * 2. load the M, B and T blocks from Matrix Market files;
+ * 3. assemble the block saddle-point operator;
+ * 4. build the selected preconditioner;
+ * 5. run either an eigenvalue analysis or an iterative/direct solve.
+ */
 int
 main(int argc, char *argv[])
 {
@@ -51,7 +61,7 @@ main(int argc, char *argv[])
   using SpMat = FVCode3D::SpMat;
   using SpVec = FVCode3D::Vector;
 
-  // Read matrices
+  // Read the three sparse blocks defining the saddle-point operator.
   std::string matrixFile;
   matrixFile = testParameters.MMatrixFileName;
   SpMat M = Eigen::read_MM_Matrix<SpMat>(matrixFile);
@@ -67,7 +77,8 @@ main(int argc, char *argv[])
   SpMat T = Eigen::read_MM_Matrix<SpMat>(matrixFile);
   std::clog << "T Matrix size:" << T.rows() << "X" << T.cols() << std::endl;
   std::clog << "Non zero entries:" << T.nonZeros() << std::endl;
-  // assign to saddle point matrix
+  // Assemble the block operator without materializing the full matrix unless a
+  // direct solver or eigenvalue analysis explicitly requests it.
   FVCode3D::SaddlePointMat saddlePointMat(M, B, T, testParameters.isSymUndef);
   std::cout << "Matrix norm" << saddlePointMat.norm() << std::endl;
 
@@ -79,8 +90,8 @@ main(int argc, char *argv[])
   M.data().squeeze();
   B.data().squeeze();
   T.data().squeeze();
-  // The saddlepoint matrix is composed with the block matrices (to be changed)
-  // free memory
+  // Once the block wrapper has taken ownership of the sparse data we can
+  // release the original matrices.
   if(testParameters.solverSwitch == eigenvalues)
     {
       long int        maxit = testParameters.EIGmaxit;
@@ -108,10 +119,10 @@ main(int argc, char *argv[])
       return 0;
     }
 
-  // Just to make sure it is in a compressed mode
+  // Ensure Eigen stores the sparse blocks in compressed format before the
+  // iterative solves and factorizations start.
   saddlePointMat.makeCompressed();
-  // Create the right hand side so that the solution is a vector of 1s
-  //
+  // Build a manufactured solution test: x_exact is random and b = A x_exact.
   SpVec e = SpVec::Random(saddlePointMat.rows());
   SpVec b = saddlePointMat * e;
   SpVec x(saddlePointMat.rows());
@@ -128,9 +139,9 @@ main(int argc, char *argv[])
 
   loadPreconditioner(precond, saddlePointMat, testParameters);
 
-  // Status
+  // Status flag returned by the selected solver.
   int result{0};
-  // timer
+  // Wall-clock timer used for logging.
   Timings::Chrono timer;
 
   // Only to save typing I create an alias to testParameters

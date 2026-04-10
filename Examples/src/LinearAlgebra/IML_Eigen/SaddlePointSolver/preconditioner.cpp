@@ -1,7 +1,11 @@
 /*!
- * @file preconditioner.hpp
- * @brief These classes implement simple classes that perform the "inversion" of
- * the preconditioner (definition version)
+ * @file preconditioner.cpp
+ * @brief Implementation of the saddle-point preconditioners declared in
+ *        preconditioner.hpp.
+ *
+ * This file assembles the diagonal approximations and sparse factorizations
+ * used to apply P^{-1} inside Krylov methods without ever forming a dense
+ * preconditioner matrix.
  */
 
 #include "BasicType.hpp"
@@ -18,10 +22,12 @@ namespace FVCode3D
 DiagMat
 ComputeApproximateInverseInnerProd(const SaddlePointMat &SP, bool lumping)
 {
+  // Build a diagonal surrogate of M^{-1}. All block preconditioners in this
+  // file use this object as their cheap approximation of the velocity block.
   if(lumping)
     {
       std::cout << "Using lumped M matrix" << std::endl;
-      auto & M = SP.getM();
+      auto  &M = SP.getM();
       Vector ML(M.rows());
       ML.setZero();
       for(int j = 0; j < M.outerSize(); ++j)
@@ -43,7 +49,7 @@ ComputeApproximateInverseInnerProd(const SaddlePointMat &SP, bool lumping)
 SpMat
 ComputeApproximateSchur(const SaddlePointMat &SP, const DiagMat &D)
 {
-  // T - B D^{-1} B^T
+  // D already approximates M^{-1}, therefore this is T - B D B^T.
   SpMat res = -SP.getB() * D * SP.getB().transpose();
   res += SP.getT();
   return res;
@@ -76,8 +82,8 @@ BamCt(const SaddlePointMat &Mat, const DiagMat &D)
 Vector
 diagonal_preconditioner::solve(const Vector &r) const
 {
-  auto & M = *Mptr;
-  auto & T = *Tptr;
+  auto  &M = *Mptr;
+  auto  &T = *Tptr;
   Vector z = Vector::Zero(M.rows() + T.rows()); // The preconditioned residual
   for(int i = 0; i < M.rows(); i++)
     {
@@ -101,7 +107,7 @@ diagonal_preconditioner::solve(const Vector &r) const
 Vector
 BlockDiagonal_preconditioner::solve(const Vector &r) const
 {
-  auto & B = *Bptr;
+  auto  &B = *Bptr;
   Vector z(Md_inv.rows() + B.rows());
   // First step: solve Inexact Schur Complement linear system
   z.head(Md_inv.rows()) = Md_inv * (r.head(Md_inv.rows()));
@@ -157,7 +163,7 @@ HSS_preconditioner::set(const SaddlePointMat &SP)
   auto &B = SP.getB();
   auto &T = SP.getT();
   Bptr = &SP.getB();
-  //! scaling M
+  // Scale M before building H_alpha, as required by the HSS construction.
   this->scaledM.resize(M.rows());
   this->scaledM.setZero();
   double scaling2 = 1.0 / static_cast<double>(M.rows());
@@ -177,6 +183,8 @@ HSS_preconditioner::set(const SaddlePointMat &SP)
   for(int i = 0; i < M.rows(); i++)
     Halpha.coeffRef(i, i) += alpha;
 
+  // Infer the size of the fracture block by counting the non-empty columns of
+  // T. The remaining rows belong to the cell block.
   UInt c = 0; // To count number of fracture facets
   UInt cc = 0;
   for(int k = 0; k < T.outerSize(); ++k)
@@ -212,10 +220,9 @@ HSS_preconditioner::set(const SaddlePointMat &SP)
 Vector
 HSS_preconditioner::solve(const Vector &r) const
 {
-  auto & B = *Bptr;
+  auto  &B = *Bptr;
   Vector rscaled = 2.0 * alpha * r;
-  // First step: solve the H linear system
-  // Vector omega1 = cg.solve(rscaled.head(Halpha.rows()));
+  // Step 1: approximately solve the shifted H block with CG.
   Eigen::DiagonalPreconditioner<double> D(Halpha);
   Vector                                omega1(Halpha.rows());
   omega1.fill(0.0);
@@ -223,14 +230,14 @@ HSS_preconditioner::solve(const Vector &r) const
   int    maxitcg = MaxIt;
   Vector b = this->scaledM.asDiagonal() * rscaled.head(Halpha.rows());
   LinearAlgebra::CG(Halpha, omega1, b, D, maxitcg, tolrcg);
-  // Second step: solve the T linear system
+  // Step 2: solve the fracture block through the LDLT factorization.
   Vector omega2(Ncell + Nfrac);
   omega2.tail(Nfrac) = cholT.solve(rscaled.tail(Nfrac));
   for(UInt i = 0; i < Ncell; i++)
     {
       omega2[i] = 2. * r[Halpha.rows() + i];
     }
-  // Third step: solve the BBt linear system
+  // Step 3: recover the coupled cell/fracture and velocity corrections.
   Vector z(Halpha.rows() + Ncell + Nfrac);
   z.tail(Ncell + Nfrac) = cholBBt.solve(B * omega1 + alpha * omega2);
   z.head(Halpha.rows()) =
@@ -244,6 +251,8 @@ DoubleSaddlePoint_preconditioner::solve(const Vector &r) const
   auto const &B = *Bptr;
   auto const &C = *Cptr;
   Vector      z(nVel + nCell + nFrac);
+  // Reverse block solve for the 3x3 form: fracture block, then cell block,
+  // then the velocity correction.
   z.segment(nVel + nCell, nFrac) =
     Schur_chol.solve(r.segment(nVel + nCell, nFrac));
   z.segment(nVel, nCell) = BAB_chol.solve(
@@ -257,9 +266,9 @@ DoubleSaddlePoint_preconditioner::solve(const Vector &r) const
 Vector
 DoubleSaddlePointSym_preconditioner::solve(const Vector &r) const
 {
-  auto const &B = *Bptr;
-  auto const &C = *Cptr;
-  Vector      z(nVel + nCell + nFrac);
+  // Same block structure as the non-symmetric variant, but with the sign
+  // convention required by the symmetric-indefinite formulation.
+  Vector z(nVel + nCell + nFrac);
   z.segment(nVel + nCell, nFrac) =
     Schur_chol.solve(-r.segment(nVel + nCell, nFrac));
   z.segment(nVel, nCell) = BAB_chol.solve(-r.segment(nVel, nCell));

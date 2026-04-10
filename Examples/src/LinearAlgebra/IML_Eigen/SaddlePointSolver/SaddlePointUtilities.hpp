@@ -1,8 +1,11 @@
-/*
- * SaddlePointUtilities.hpp
+/*!
+ * @file SaddlePointUtilities.hpp
+ * @brief Runtime support for the saddle-point example.
  *
- *  Created on: May 19, 2020
- *      Author: forma
+ * This header groups together:
+ * - the parameter structure populated from a GetPot file,
+ * - the string-to-enum maps used by the command driver,
+ * - helper functions to configure the selected preconditioner.
  */
 
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_IML_EIGEN_SADDLEPOINTSOLVER_SADDLEPOINTUTILITIES_HPP_
@@ -28,7 +31,7 @@
 #include <string>
 namespace SaddlePointUtilities
 {
-//! Select solvers
+//! Solvers supported by `main.cpp`.
 enum SolverSwitch
 {
   umfpack,
@@ -41,7 +44,12 @@ enum SolverSwitch
 };
 // enum PrecondSwitch {Diagonal, BlockDiagonal, BlockTriDiagonal, ILU, HH,
 // Identity};
-//! where to store parameters
+//! Parameters read from the GetPot configuration file.
+/*!
+ * The fields mirror the keys used in `data.pot` and are consumed by the main
+ * program to select matrices, solver, preconditioner, and algorithm-specific
+ * tolerances.
+ */
 struct TestParameters
 {
   double                  tol;
@@ -63,13 +71,13 @@ struct TestParameters
   double                  EIGtol = 1.e-8;
 };
 
-//! A global variable that maps a string to the enum that indicates the solver
+//! Map solver names as they appear in `data.pot` to runtime enums.
 inline const std::map<std::string, SolverSwitch> getSolver = {
   {"umfpack", umfpack},        {"gmres", gmres},   {"gmresr", gmresr},
   {"fgmres", fgmres},          {"minres", minres}, {"tminres", tminres},
   {"eigenvalues", eigenvalues}};
 
-//! A global variable that maps a string to the enum that indicates the solver
+//! Map preconditioner names as they appear in `data.pot` to runtime enums.
 inline const std::map<std::string, FVCode3D::PrecondSwitch> getPreconditioner{
   {"Diagonal", FVCode3D::Diagonal},
   {"BlockDiagonal", FVCode3D::BlockDiagonal},
@@ -80,7 +88,15 @@ inline const std::map<std::string, FVCode3D::PrecondSwitch> getPreconditioner{
   {"DoubleSaddlePoint", FVCode3D::DoubleSaddlePoint},
   {"DoubleSaddlePointSym", FVCode3D::DoubleSaddlePointSym}};
 
-//! Read parameters from a getpot object
+//! Read and validate the configuration of a saddle-point test case.
+/*!
+ * @param ifl Parsed GetPot input file.
+ * @return Fully populated parameter structure.
+ * @throw std::runtime_error if the solver or preconditioner name is unknown.
+ *
+ * Matrix file names are also checked for basic consistency before the program
+ * starts loading Matrix Market data.
+ */
 inline TestParameters
 read_parameters(GetPot const &ifl)
 {
@@ -152,12 +168,15 @@ read_parameters(GetPot const &ifl)
 
   return r;
 }
+//! Configure a preconditioner instance from the parsed input parameters.
 /*!
- * The name is misleading. It does not load anything. It sets the values needed
- * by the preconditioner
- * @param p the preconditioner
- * @param m The matrix to which the preconditioner will be applied
- * @param param The parameters
+ * The helper forwards the generic options shared by all preconditioners and
+ * also passes the HSS-specific tuning parameters. For preconditioners that do
+ * not use those values the setter hooks are harmless no-ops.
+ *
+ * @param p Preconditioner object selected at runtime.
+ * @param m Saddle-point matrix to be preconditioned.
+ * @param param Parsed parameter set.
  */
 inline void
 loadPreconditioner(FVCode3D::preconditioner &      p,
@@ -170,11 +189,14 @@ loadPreconditioner(FVCode3D::preconditioner &      p,
   p.set_MaxIt(param.HSSMaxIter);
   p.set_tol(param.HSStol);
 }
+//! Pretty-print the effective runtime configuration.
 /*!
- * Writes the current value of the parameters
- * @param out an output stream
- * @param p The parameter
- * @param The output stream
+ * This is used both on screen and on the optional log stream so each run keeps
+ * a compact summary of the chosen matrices, solver, and preconditioner.
+ *
+ * @param out Output stream.
+ * @param p Parameter set.
+ * @return `out`.
  */
 inline std::ostream &
 operator<<(std::ostream &out, TestParameters const &p)
