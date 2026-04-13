@@ -1,5 +1,9 @@
 # C++ Ranges, Views, and Range Adaptors #
 
+**NOTE** I am using the `std::ranges::to` c++23 feature. Not all the compilers supports it yet, you need
+g++ version at least 14 or clang++ at least veersion 18.1. If you do not have it, go in the code and 
+toggle comments on the parts that uses this feature.
+ 
 ## Ranges ##
 A **Range** is a concept that refers to anything you can iterate over with a beginning and an end. In C++, ranges provide a more modern and powerful abstraction for dealing with sequences of values. The range library, introduced in C++20, offers several utilities to work with ranges conveniently.
 In modern c++ a range is any object that can be used in a range-based for loop. This includes containers, as well as views, and in general any class that implements the `begin()` and `end()` functions, returning valid iterators, or that returns valid iterators when called with `std::begin()` and `std::end()`.

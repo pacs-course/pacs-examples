@@ -36,7 +36,7 @@ operator<<(std::ostream &out, Person const &p)
 
 /*!
    std::span is a view of a contiguous range of elements
-   Thos steaming operator works for array, vectors and fixed size C-arrays of
+   This steaming operator works for array, vectors and fixed size C-arrays of
    doubles!
 */
 auto &
@@ -65,13 +65,15 @@ printn(std::ostream &out, std::ranges::range auto const &r, std::size_t n)
 }
 
 /*!
-  @brief A function that estracts the digits from a string
-  "number1,number2,number3,..."
-  @param csv a string containing a list of numbers separated by commas
+  @brief A function that joins the digits of a string of comma separated numbers
+  @details A function that estracts the digits from a string of comma separated
+  numbers "number1,number2,number3,...", and returns a vector of integers
+  containing the digits
+  @param csv a string view containing a list of numbers separated by commas
   @return a vector containing the numbers joined together
 */
 auto
-join_numbers(std::string_view const &csv)
+join_numbers(std::string_view const csv)
 {
   // let csv="10,11,12"
   auto digits = csv | std::views::split(',') // [ [1, 0], [1, 1], [1, 2] ]
@@ -79,14 +81,13 @@ join_numbers(std::string_view const &csv)
   std::vector<int> numbers;
   for(auto const &d : digits)
     /*
-    The expression d - '0' is converting the character d to its corresponding
-    integer value. In ASCII, the characters '0' to '9' are represented by the
-    values 48 to 57. So, subtracting the ASCII value of '0' (which is 48) from
-    the ASCII value of a digit character gives you the integer value of that
-    digit. For example, if d is the character '7', then d - '0' is 55 - 48 which
-    equals 7.
-    */
-    numbers.emplace_back(d - '0');
+      I am converting the character to a string and then to an integer,
+      but you could do it in a more efficient way by using the ASCII code of the
+      character (i.e. '0' is 48 in ASCII, so you can do d - '0' to get the
+      integer value of the digit) The more efficient variant is
+      numbers.emplace_back(d - '0');
+      */
+    numbers.emplace_back(std::stoi(std::string(1, d)));
   return numbers;
 }
 
@@ -106,8 +107,6 @@ main()
     // container
     std::ranges::sort(a);
     // but you could use also std::ranges::sort(a.begin(),a.end())
-    // and you also have the parallel version
-    // std::ranges::sort(std::execution::par,a)
     std::cout << "Sorted vector: " << a << std::endl;
   }
 
@@ -156,54 +155,28 @@ main()
   std::cout << std::endl;
   {
     // Partition a vector into odd end even
+    // I create a iterator on an output strem to print the result
     std::ostream_iterator<int> out{
       std::cout, ", "}; // an output iterator with a space as separator
     std::vector<int> v{-3, 7, 9, 0, 2, 1, 4, 3, 7, 6, 5, 8, 9};
     std::cout << "Original vector:  \t";
     std::ranges::copy(v, out); // the use of copy to print!
-    // first the elements for which the predicate returns true
+    // put first the elements for which the predicate returns true
+    // partition returns an iterator to the first element of the second part
     auto tail = std::ranges::partition(v, [](int i) { return i % 2 == 0; });
 
     std::cout << "\nPartitioned vector: \t";
-    std::ranges::copy(std::ranges::begin(v), std::ranges::begin(tail), out);
+    std::ranges::copy(std::ranges::begin(v), std::ranges::begin(tail),
+                      out); // first half
     std::cout << "│ ";
-    std::ranges::copy(tail, out);
-    std::cout << std::endl;
-  }
-
-  {
-    // Sort a vector (the simplest case!)
-    std::ostream_iterator<int> out{std::cout, " "};
-    std::vector<int>           v{-3, 7, 9, 0, 2, 1, 4, 3, 7, 6, 5, 8, 9};
-    std::cout << "Original vector:  \t";
-    std::ranges::copy(v, out);
-
-    std::ranges::sort(v);
-
-    std::cout << "\nSorted vector: \t";
-    std::ranges::copy(v, out);
-    std::cout << std::endl;
-  }
-
-  {
-    // Sort a vector (with a projector)
-    std::ostream_iterator<int> out{std::cout, " "};
-    std::vector<int>           v{-3, 7, 9, 0, 2, 1, 4, 3, 7, 6, 5, 8, 9};
-    std::cout << "Original vector:  \t";
-    std::ranges::copy(v, out);
-
-    // default comparison, squared
-    std::ranges::sort(v, {}, [](int x) { return x * x; });
-
-    std::cout << "\nSorted vector^2: \t";
-    std::ranges::copy(v, out);
+    std::ranges::copy(tail, out); // second half
     std::cout << std::endl;
   }
 
   {
     // Another more complex example of projections
     // and a use of a view. I compute v^2_i - v^2_{n-i}
-    std::ostream_iterator<int> out{std::cout, " "};
+    std::ostream_iterator<int> out{std::cout, ", "};
     std::vector<int>           v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     std::cout << "Original vector:  \t";
     std::ranges::copy(v, out);
@@ -217,7 +190,7 @@ main()
       [](int v) { return v * v; },  // projection on the first range
       [](int v) { return v * v; }); // projection on the II range
     std::cout << "v^2_i - v^2_{n-i}\t";
-    std::ranges::copy(result, std::ostream_iterator<int>(std::cout, ","));
+    std::ranges::copy(result, out);
     std::cout << std::endl;
   }
 
@@ -264,9 +237,19 @@ main()
     using namespace std::literals;
     std::vector<std::string> course{"Advanced "s, "Programming "s, "for "s,
                                     "Scientific "s, "Computing"s};
-    auto                     joined = course | std::views::join;
-    std::string joinedString{joined.begin(),
-                             joined.end()}; // you hace to copy the string
+    /* Before c++23
+        auto                     joined = course | std::views::join;
+        std::string joinedString{joined.begin(),
+                                 joined.end()}; // you have to copy the string
+       view
+                              */
+    /* Since C++23
+    Beware, not all compiler supports it yet
+    g++ at least version 14
+    clang++ at least version 18.1.3
+    */
+    auto joinedString =
+      course | std::views::join | std::ranges::to<std::string>();
     std::cout << joinedString;
     std::cout << std::endl;
   }
@@ -318,10 +301,21 @@ main()
     std::vector<double> v{1., 2., 3.e-15, -4.e-18, -5., 6.3, -7.2e-20, 8., 2.7};
     using namespace std::views;
     constexpr double cut = 1.e-10;
-    auto             large = [cut](double x) { return std::abs(x) > cut; };
-    auto             square = [](double x) { return x * x; };
-    auto conv = v | filter(large) | transform(square); // here common non needed
-    std::vector<double> conv_vector{conv.begin(), conv.end()};
+    // constexpr are automatically captured
+    auto large = [](double x) { return std::abs(x) > cut; };
+    auto square = [](double x) { return x * x; };
+    /* BEFORE C++23
+      auto conv = v | filter(large) | transform(square); // here common non
+      needed std::vector<double> conv_vector{conv.begin(), conv.end()};
+    */
+    /*
+    Since C++23, but you need a recent compiler
+    g++ at least v 14
+    clang++ at least version 18.1
+    */
+    auto conv_vector =
+      v | filter(large) | transform(square) | std::ranges::to<std::vector>();
+
     std::cout << "The square of elements greater than tolerance is: ";
     for(auto i : conv_vector)
       std::cout << i << " ";
@@ -330,11 +324,11 @@ main()
 // In c++23 I can use std::ranges_to create a vector from a view without
 // using the iterators and the need of common
 #if __cplusplus >= 202300L
-    std::vector<double> first_two_vector =
-      conv | take(2) | std::ranges::to<std::vector>();
+    auto first_two_vector =
+      conv_vector | take(2) | std::ranges::to<std::vector>();
 #else
-    auto first_two =
-      conv | take(2) | common; // common is needed here to create a common_range
+    auto first_two = conv_vector | take(2) |
+                     common; // common is needed here to create a common_range
     std::vector<double> first_two_vector{first_two.begin(), first_two.end()};
 #endif
     std::cout << "The first two elements are: ";
