@@ -5,8 +5,13 @@
  *      Author: forma
  */
 /*!
- * @brief A utility for finding polynomial zeros
+ * @brief Utilities for polynomial evaluation, differentiation and zero finding
  *
+ * The core idea is Newton-Horner iteration: synthetic division is used to
+ * evaluate both p(x) and the coefficients of the deflated quotient q(x) in a
+ * single pass. Since p(x) = (x - alpha) q(x) + p(alpha), the derivative can be
+ * recovered as p'(alpha) = q(alpha). This makes Newton's method particularly
+ * convenient for polynomials.
  */
 #ifndef EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_POLYHOLDER_HPP_
 #define EXAMPLES_SRC_LINEARALGEBRA_UTILITIES_POLYHOLDER_HPP_
@@ -14,6 +19,7 @@
 #include <complex>
 #include <concepts>
 #include <limits>
+#include <ranges>
 #include <tuple>
 #include <utility>
 #include <vector>
@@ -40,11 +46,11 @@ namespace apsc
   */
 template <class Coefficients, class Coefficient>
   requires requires(Coefficients cs, Coefficient c) {
-             Coefficient{0}; // constructible with 0.
-             cs[0];          // has addressing operator
-             cs.rbegin();    // has method rbegin
-             cs.rend();      // has method rend
-           }
+    Coefficient{0}; // constructible with 0.
+    cs[0];          // has addressing operator
+    cs.rbegin();    // has method rbegin
+    cs.rend();      // has method rend
+  }
 auto
 polyEval(const Coefficients &pCoeff, const Coefficient &x)
 {
@@ -63,15 +69,20 @@ polyEval(const Coefficients &pCoeff, const Coefficient &x)
 }
 
 /*!
- * @brief A class supporting root finding for algebraic polynomials
+ * @brief Stores a polynomial and the temporary quotient produced by synthetic
+ * division
  *
  * It works internally with complex numbers so that it can also compute complex
  * roots, even if the polynomial has been given by real coefficients.
  *
- * It also provides a method to compute polynomial derivatives at a point
- * using synthetic division. It is provided here since it is a simple extension
- * of what is needed for root finding. This is an exception to the
- * single-responsibility principle.
+ * The class stores two coefficient vectors:
+ * - `pCoeff`: the current polynomial
+ * - `qCoeff`: the quotient obtained by dividing `pCoeff` by `(x - alpha)` at a
+ *   chosen evaluation point `alpha`
+ *
+ * Synthetic division therefore provides both the residual `p(alpha)` and the
+ * data needed for the Newton-Horner step. The same mechanism is reused to
+ * compute derivatives.
  *
  * Alternatively, one could build a separate class to encapsulate synthetic
  * division and keep root finding and derivative computation separate. That
@@ -153,7 +164,7 @@ public:
   }
 
   /*!
-   * @brief Computes derivatives up to a given order
+   * @brief Computes derivatives up to a given order at a point
    *
    * All derivatives at a given point and up to a given order are computed and
    * stored in the returned vector of complex numbers. Derivative of order 0 is
@@ -166,6 +177,12 @@ public:
    *
    * @param x The point where the derivatives are computed
    * @param order The derivative order to be computed (default is 1)
+   * The computation starts from one synthetic division on the original
+   * polynomial. For a polynomial
+   * `p(z) = (z - x) q(z) + p(x)`,
+   * one has `p'(x) = q(x)`. Repeating the same idea on `q` yields higher
+   * derivatives, up to the appropriate factorial factor.
+   *
    * @return A vector containing all derivatives. Entry 0 is the 0-th
    * derivative, that is, the value at x.
    */
@@ -252,9 +269,11 @@ public:
 
 protected:
   /*!
-   * @brief Exchanges p and q coefficients. Used for computing derivatives.
-   * This is not a true swap. The new coefficients become the old q-values,
-   * and q is then cleared. Not intended for general use.
+   * @brief Replaces the current polynomial with the last quotient polynomial
+   *
+   * This helper is used only in the recursive derivative construction. Despite
+   * its name, it is not a symmetric swap: `pCoeff` is overwritten with the
+   * contents of `qCoeff`.
    */
   void
   swap()
@@ -263,10 +282,16 @@ protected:
   }
 
   /*!
-   * @brief Synthetic division
+   * @brief Performs synthetic division by `(z - x)`
    *
-   * It computes the value of the polynomial at a point and sets qCoeff for the
-   * calculation of the derivatives.
+   * If
+   * `p(z) = a_0 + a_1 z + ... + a_n z^n`,
+   * this routine builds the quotient coefficients of
+   * `p(z) = (z - x) q(z) + p(x)`.
+   *
+   * The returned value is the remainder `p(x)`, while `qCoeff` stores the
+   * quotient polynomial `q`. In Newton-Horner, evaluating `q` again at `x`
+   * gives `p'(x)`.
    *
    * Used internally. Not of general use.
    *
@@ -327,12 +352,23 @@ protected:
   mutable Coefficients qCoeff;
 };
 /*!
- * @brief Finds the roots of a polynomial
+ * @brief Finds polynomial roots with a Newton-Horner iteration plus deflation
  *
  * @tparam Coefficients The container for the coefficients of the polynomial
  * Typically `std::vector<std::complex<double>>`
  * @tparam Coefficient The type of the polynomial coefficient (typically
  * `std::complex<double>`)
+ * The algorithm repeatedly:
+ * 1. applies Newton's method to the current polynomial,
+ * 2. accepts one root when both the residual and the Newton step are small,
+ * 3. deflates the polynomial by dividing by `(x - root)`,
+ * 4. restarts from the conjugate root as a cheap heuristic for real
+ *    polynomials.
+ *
+ * The coefficients are first normalized by removing trailing entries that are
+ * numerically zero. This avoids treating a lower-degree polynomial as a higher
+ * one because of redundant trailing coefficients.
+ *
  * @param polyCoefficients The coefficients of the polynomial, in increasing
  * order
  * @param numRoots The number of roots sought (max = the polynomial degree)
@@ -352,64 +388,108 @@ polyRoots(Coefficients &&polyCoefficients, unsigned int numRoots,
           unsigned int maxIter = 200)
 {
   PolyHolder polyHolder(std::forward<Coefficients>(polyCoefficients));
-  PolyHolder::Coefficient           x{x0};
-  unsigned int const                degree = polyHolder.pCoefficients().size();
+  auto normalizedCoeff = polyHolder.pCoefficients();
+  if(!normalizedCoeff.empty())
+    {
+      // Use a scale-dependent threshold so that tiny trailing coefficients do
+      // not artificially increase the degree.
+      auto const scale = std::ranges::max(
+        normalizedCoeff | std::views::transform([](auto const &c) {
+          return std::abs(c);
+        }));
+      auto const coeffTol =
+        std::numeric_limits<double>::epsilon() * (1.0 + scale);
+      while(!normalizedCoeff.empty() &&
+            std::abs(normalizedCoeff.back()) <= coeffTol)
+        {
+          normalizedCoeff.pop_back();
+        }
+      polyHolder.setCoeff(normalizedCoeff);
+    }
+
+  PolyHolder::Coefficient x{x0};
+  auto const              coeff = polyHolder.pCoefficients();
+  auto const              numCoeff = coeff.size();
   std::vector<std::complex<double>> roots;
   std::vector<double>               residual;
-  if(degree == 0u)
+  if(numCoeff == 0u)
     {
-      // zero polynomial, no roots
-      numRoots = 0u;
+      // The zero polynomial does not have a finite set of isolated roots, so
+      // the current interface reports failure.
       return {roots, residual, false};
     }
-  if(degree == 1u)
+  if(numCoeff == 1u)
     {
-      // linear polynomial, one root
-      roots.emplace_back(-polyHolder.pCoefficients()[0] /
-                         polyHolder.pCoefficients()[1]);
-      residual.emplace_back(0.);
-      numRoots = 1u;
+      // A nonzero constant polynomial has no finite roots.
       return {roots, residual, true};
     }
-  numRoots = std::min(numRoots, degree - 1u);
+  auto const degree = static_cast<unsigned int>(numCoeff - 1u);
+  if(degree == 1u)
+    {
+      // For degree one, solve explicitly instead of entering Newton iteration.
+      roots.emplace_back(-coeff[0] / coeff[1]);
+      residual.emplace_back(0.);
+      return {roots, residual, true};
+    }
+  numRoots = std::min(numRoots, degree);
   roots.reserve(numRoots);
   residual.reserve(numRoots);
-  unsigned int iter{0u};
   bool         status{true};
   for(auto i = 0u; i < numRoots; ++i)
     {
-      bool good = false;
-      iter = 0u;
-      double res;
-      while(!good)
+      bool   good = false;
+      double res = std::numeric_limits<double>::infinity();
+      for(unsigned int iter = 0u; iter < maxIter; ++iter)
         {
           auto values = polyHolder.derivatives(x, 1u);
-          // to avoid division by zero. If the denominator is very small
-          // I do one step of a basic fixed point scheme: x_{n+1}== x_n-p(x)
-          std::complex<double> d;
-          if(values.size() > 1)
-            d = std::abs(values[1]) == 0.0 ? std::complex<double>{1., 0.}
-                                           : values[1];
-          else
-            d = std::complex<double>{
-              1., 0.}; // fallback for constant/degenerate polynomial
+          auto const fx = values[0];
+          auto const dfx = values.size() > 1u ? values[1] : PolyHolder::Coefficient{};
+          auto const dfxNorm = std::abs(dfx);
+          if(dfxNorm <= std::numeric_limits<double>::epsilon())
+            {
+              if(std::abs(fx) < tolr)
+                {
+                  // We are already close enough to a root, even if the local
+                  // derivative is numerically singular.
+                  res = std::abs(fx);
+                  good = true;
+                  break;
+                }
+              // Avoid the meaningless step -fx/0 by perturbing the iterate and
+              // trying again. This is only a safeguard, not a robust
+              // globalization strategy.
+              auto const shift = std::max(1.e-3 * tole, 1.e-12);
+              x += PolyHolder::Coefficient{shift, shift};
+              continue;
+            }
 
-          auto delta = -values[0] / d;
-          x += delta;
-          // To make the loop simpler I am testing the residual at
-          // the previous iteration, not that in x.
-          res = std::abs(values[0]);
-          good =
-            ((res < tolr) && (std::abs(delta) < tole)) || (iter++ >= maxIter);
+          // Newton-Horner step on the current deflated polynomial.
+          auto const delta = -fx / dfx;
+          auto const xNext = x + delta;
+          // Test convergence at the accepted iterate, not at the previous one.
+          res = std::abs(polyEval(polyHolder.pCoefficients(), xNext));
+          x = xNext;
+          if((res < tolr) && (std::abs(delta) < tole))
+            {
+              good = true;
+              break;
+            }
         }
-      // store the root
+
       roots.emplace_back(x);
-      // store the residual
       residual.emplace_back(res);
-      // check status (false if at least one of the roots search failed).
-      status = status && (iter <= maxIter);
-      // Store deflated polynomial
+      status = status && good;
+      if(!good)
+        {
+          break;
+        }
+
+      // Recompute the quotient polynomial at the accepted root before
+      // deflation. The previous `qCoeff` was built at the last trial iterate,
+      // which may differ from the accepted one.
+      polyHolder.derivatives(x, 1u);
       polyHolder.setCoeff(polyHolder.qCoefficients());
+
       // Start next search from conjugate (to speed up computation if
       // coefficients are real)
       //@todo if coefficients are complex this may not be the best choice
