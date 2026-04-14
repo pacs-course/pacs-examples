@@ -152,6 +152,7 @@ main()
         std::cout << p;
     }
   }
+
   std::cout << std::endl;
   {
     // Partition a vector into odd end even
