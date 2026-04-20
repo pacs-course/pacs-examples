@@ -109,10 +109,6 @@ public:
 };
 
 //! I want to use range for loops with Vector objects.
-/*!
-  Note the use of declval. I do not need to istantiate a vector to interrogate
-  the type returned by begin!
- */
 inline auto
 begin(Vector &a)
 {
