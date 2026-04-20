@@ -347,7 +347,9 @@ main()
     */
     std::multimap<int, double> m{{1, 3.}, {1, 4.}, {3, 5.}, {4, 6.},
                                  {1, 7.}, {3, 8.}, {1, 9.}};
-    auto interval = m.equal_range(1); // interval is a pair of iterators
+    // extract all elements with key=1; interval is a pair of iterators
+    auto interval = m.equal_range(1);
+    // maprange is a range that identifies the sequence of elements with key=1
     auto maprange = std::ranges::subrange(interval.first, interval.second);
     // mapview is a view that over the sequence identifies by the iterators in
     // interval
