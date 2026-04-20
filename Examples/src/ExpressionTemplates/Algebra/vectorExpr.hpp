@@ -22,7 +22,7 @@ public:
   //! A vector may also be moved in a Vector
   explicit Vector(std::vector<double> &&v) : M_data{std::move(v)} {};
   //! Construct a Vector of n elements initialised by value
-  Vector(unsigned int n, double value=0.0) : M_data(n, value){};
+  Vector(unsigned int n, double value = 0.0) : M_data(n, value) {};
   //! Copy constructor
   Vector(Vector const &) = default;
   //! Move constructor
@@ -114,7 +114,7 @@ public:
   the type returned by begin!
  */
 inline auto
-begin(Vector &a) -> decltype(std::declval<std::vector<double> >().begin())
+begin(Vector &a)
 {
   // I exploit the fact tha I have a casting operator to std::vector<double>&
   return static_cast<std::vector<double> &>(a).begin();
@@ -123,7 +123,7 @@ begin(Vector &a) -> decltype(std::declval<std::vector<double> >().begin())
 }
 
 inline auto
-end(Vector &a) -> decltype(std::declval<std::vector<double> >().end())
+end(Vector &a)
 {
   // I exploit the fact tha I have a casting operator to std::vector<double>&
   return static_cast<std::vector<double> &>(a).end();
@@ -131,7 +131,6 @@ end(Vector &a) -> decltype(std::declval<std::vector<double> >().end())
 
 inline auto
 cbegin(Vector const &a)
-  -> decltype(std::declval<std::vector<double> >().cbegin())
 {
   // I exploit the fact tha I have a casting operator to std::vector<double>
   // const &
@@ -139,7 +138,7 @@ cbegin(Vector const &a)
 }
 
 inline auto
-cend(Vector const &a) -> decltype(std::declval<std::vector<double> >().cend())
+cend(Vector const &a)
 {
   // I exploit the fact tha I have a casting operator to std::vector<double>
   // const &
