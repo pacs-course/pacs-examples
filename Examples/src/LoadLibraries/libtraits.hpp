@@ -12,15 +12,36 @@
 #include <string>
 #include "Factory.hpp"
 /*!
-* @namespace loadlibraries
-* @brief Some functions just to show how the loadlibrary utility works
+ * @namespace loadlibraries
+ * @brief Facilities used by the dynamically loaded norm examples.
  *
+ * The example libraries register functions into a shared factory during the
+ * library constructor phase. The main program later queries the factory by
+ * name to retrieve the registered callables.
  */
 namespace loadlibraries
 {
-using FunType=std::function<double (std::vector<double> const &)>;
-using FunFactory=GenericFactory::FunctionFactory<std::string,FunType>;
-extern FunFactory& funFactory; // The factory as an external object
+/*!
+ * @brief Signature of every function exported through the example plugin
+ * factory.
+ */
+using FunType = std::function<double(std::vector<double> const &)>;
+
+/*!
+ * @brief Factory type used to map a string identifier to a registered norm
+ * function.
+ */
+using FunFactory = GenericFactory::FunctionFactory<std::string, FunType>;
+
+/*!
+ * @brief Shared singleton factory populated by the dynamically loaded
+ * libraries.
+ *
+ * Entries stored here must be cleared before unloading the libraries, because
+ * each stored callable ultimately refers to code that lives inside those
+ * shared objects.
+ */
+extern FunFactory &funFactory;
 }
 
 

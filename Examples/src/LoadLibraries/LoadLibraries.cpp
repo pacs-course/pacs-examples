@@ -16,7 +16,7 @@ LoadLibraries::load(std::string fileName, int mode)
 {
   bool          good = true;
   std::ifstream pFile(fileName);
-  if(pFile.bad())
+  if(!pFile.is_open())
     {
       std::cerr << " Cannot open plugin files" << std::endl;
       return false;

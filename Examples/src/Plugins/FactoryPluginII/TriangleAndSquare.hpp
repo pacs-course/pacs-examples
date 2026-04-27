@@ -11,31 +11,37 @@
 namespace Geometry
 {
 /*!
- * Derived class for triangles
+ * @brief Concrete polygon type representing a triangle.
  */
 class Triangle : public Polygon
 {
 public:
+  //! Builds an empty triangle.
   Triangle() = default;
+
+  //! Builds a triangle from its vertices.
   explicit Triangle(Vertices const &v);
-  // virtual double diameter() const;
-  // virtual double inscibedCircle() const;
+
+  //! Prints a textual description of the triangle.
   void showMe(ostream &out = cout) const override;
-  // qui vanno le altre funzionalita`..
 };
 
 /*!
- * Derived calss for squared
+ * @brief Concrete polygon type representing a square.
  */
 class Square : public Polygon
 {
 public:
+  //! Builds an empty square.
   Square() = default;
+
+  //! Builds a square from its vertices.
   explicit Square(Vertices const &v);
-  // virtual double diameter() const;
-  // virtual double inscibedCircle() const;
+
+  //! Prints a textual description of the square.
   void showMe(ostream &out = cout) const override;
-  // Metodi propri del quadrato
+
+  //! Placeholder for the diagonal-length computation.
   double diagLen() const;
 };
 

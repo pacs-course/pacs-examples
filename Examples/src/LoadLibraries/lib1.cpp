@@ -12,11 +12,9 @@
 namespace
 {
 /*!
- * @fn double norm2(const std::vector<double>&)
- * @brief 2-norm of a vector
- *
- * @param x the vector
- * @return the 2-norm
+ * @brief Computes the Euclidean norm of a vector.
+ * @param x Input vector.
+ * @return The value of `sqrt(sum_i x_i^2)`.
  */
 double
 norm2(std::vector<double> const &x)
@@ -27,19 +25,26 @@ norm2(std::vector<double> const &x)
   return std::sqrt(res);
 }
 /*!
- * @fn double norminf(const std::vector<double>&)
- * @brief Infinity (maximum) norm of a vector
+ * @brief Computes the infinity norm of a vector.
+ * @param x Input vector.
+ * @return The value of `max_i |x_i|`.
  *
- * @param x the vector
- * @return the 2-norm
  */
-
 double
 norminf(std::vector<double> const &x)
 {
-  return *std::max_element(x.begin(), x.end());
+  return std::abs(*std::max_element(x.begin(), x.end(), [](double x, double y) {
+    return std::abs(x) < std::abs(y);
+  }));
 }
 } // namespace
+
+/*!
+ * @brief Registers the functions exported by this shared library.
+ *
+ * The GNU constructor attribute makes this function run automatically when the
+ * shared object is loaded with `dlopen()`.
+ */
 __attribute__((constructor)) void
 load()
 {

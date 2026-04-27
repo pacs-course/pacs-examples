@@ -14,62 +14,83 @@
 namespace apsc
 {
 /*!
- * @brief An utility to load dynamic libraries by name and keep them in a common
- * repository
+ * @brief Loads shared libraries and keeps their handles alive for a controlled
+ * lifetime.
  *
- * The object of this class must be in the accessible for all the time the
- * libraries are used. Indeed it applies the RAII principle, and the descructor
- * closes the libraries. When a dynamic library is closed the symbols it
- * provides are not accessible anymore.
- *
+ * The class owns the handles returned by `dlopen()` and releases them in the
+ * destructor through `dlclose()`. Any symbol or object obtained from a loaded
+ * library becomes invalid as soon as the corresponding handle is closed.
+ * Therefore a `LoadLibraries` instance must outlive every object that depends
+ * on code or data defined in the loaded libraries.
  */
 class LoadLibraries
 {
 public:
+  //! Builds an empty repository of loaded libraries.
   LoadLibraries() = default;
-  //! This class can be moved but not copied
+  //! Moves the repository, transferring ownership of every loaded handle.
   LoadLibraries(LoadLibraries &&) = default;
-  //! This class can be moved but not copied
+  //! Moves the repository, transferring ownership of every loaded handle.
   LoadLibraries &operator=(LoadLibraries &&) = default;
-  //! This class is not copy-assignable
+  //! Copy assignment is disabled because the class uniquely owns library handles.
   LoadLibraries &operator=(LoadLibraries const &) = delete;
-  //! This class is not copy-constructible
+  //! Copy construction is disabled because the class uniquely owns library handles.
   LoadLibraries(LoadLibraries const &) = delete;
-  //! Constructor that loads libraries from file
-  //!
-  //! the file should contain the name of the libraries, one for each line
-  //! library file names SHOULD NOT contain blanks
-  //! @param fileName file containing the name of the libraries to load
-  //! @param mode the mode to load the libraries. Default is RTLD_NOW, all
-  //! symbols are resolved upfront. Use instead RTLD_LAZY if you want to resolve
-  //! the symbols only
-  //!              when needed
+  /*!
+   * @brief Builds the repository and immediately loads libraries from a file.
+   *
+   * The input file is interpreted as one library name per line. Leading and
+   * trailing blanks are ignored, while embedded blanks terminate the library
+   * name because the parser extracts the first blank-separated token.
+   *
+   * @param fileName Path to the file containing the libraries to load.
+   * @param mode Dynamic loader mode forwarded to `dlopen()`.
+   */
   explicit LoadLibraries(std::string const &fileName, int mode = RTLD_NOW)
   {
     this->load(fileName, mode);
   }
-  //! loads libraries from a file
-  //! the file should contain the name of the libraries, one for each line
-  //! @param fileName file containing the name of the libraries to load
-  //! @param mode the mode to load the libraries. Default is RTLD_NOW, all
-  //! symbols are resolved upfront. Use instead RTLD_LAZY if you want to resolve
-  //! the symbols only
-  //!              when needed
-  //! @return a bool: if true everything is ok
+  /*!
+   * @brief Loads all libraries listed in a text file.
+   *
+   * The file is read sequentially and loading stops on the first failure.
+   * Empty or blank-only lines are ignored.
+   *
+   * @param fileName Path to the file containing the libraries to load.
+   * @param mode Dynamic loader mode forwarded to `dlopen()`.
+   * @return `true` if every requested library was loaded successfully,
+   * `false` otherwise.
+   */
   bool load(std::string fileName, int mode = RTLD_NOW);
-  //! Loads a single library given its name and adds it to the repository
+  /*!
+   * @brief Loads one shared library and stores its handle.
+   *
+   * If the same library name is already present, the repository is left
+   * unchanged.
+   *
+   * @param libName Library path or soname accepted by `dlopen()`.
+   * @param mode Dynamic loader mode forwarded to `dlopen()`.
+   * @return `true` on success, `false` if `dlopen()` fails.
+   */
   bool loadSingleLibrary(std::string libName, int mode = RTLD_NOW);
-  //! closes all libraries and empties the container
+  //! Closes every loaded library and clears the internal repository.
   void close();
-  //! closes a specific library. If library not present, it is a NoOp.
+  /*!
+   * @brief Closes a specific library and removes it from the repository.
+   * @param libname Library name used as the key in the repository.
+   */
   void close(std::string libname);
-  //! Gets the handle to a specific library. Returns nullptr if library not
-  //! present.
+  /*!
+   * @brief Returns the handle associated with a loaded library.
+   * @param libName Library name used as the key in the repository.
+   * @return The `dlopen()` handle, or `nullptr` if the library is not loaded.
+   */
   void *getLibraryHandle(std::string libName) const;
-  ~LoadLibraries() { this->close(); } //! destructor closes the libraries
+  //! Closes every loaded library owned by the repository.
+  ~LoadLibraries() { this->close(); }
 
 private:
-  // The handler of all libraries
+  //! Maps library names to the raw handles returned by `dlopen()`.
   std::unordered_map<std::string, void *> loadedLibs;
 };
 

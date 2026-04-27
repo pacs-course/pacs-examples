@@ -14,7 +14,7 @@ main()
   Vector c(10);
   c = a + bb; // conversion by construction!
   std::cout << a.size() << " " << b.size() << " " << c.size() << std::endl;
-  Vector d(a + b + c);
+  Vector d = a + b + c;
   std::cout << " c contains:" << std::endl;
   for(auto i : c)
     std::cout << i << " ";
@@ -52,7 +52,7 @@ main()
   std::cout << std::endl;
 
   // NOw we take the logarithm
-  a = log(a)+ c;
+  a = log(a) + c;
   for(auto i : a)
     std::cout << i << " ";
   std::cout << std::endl;

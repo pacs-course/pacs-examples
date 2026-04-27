@@ -37,11 +37,15 @@ Square::diagLen() const
 
 namespace
 {
-  //! This will register the objects in the factory automatically when the
-  //! library is loaded
+  /*!
+   * @brief Registers triangle and square builders when the plugin is loaded.
+   *
+   * The GNU constructor attribute makes this function run automatically during
+   * `dlopen()`, so the library self-registers into the shared factory.
+   */
   void __attribute__((constructor)) LoadF()
   {
-    // add triangle and square to the factory
+    // Add Triangle and Square to the shared polygon factory.
     polyFactory["Triangle"] = []() { return std::make_unique<Triangle>(); };
     polyFactory["Square"] = []() { return std::make_unique<Square>(); };
   }

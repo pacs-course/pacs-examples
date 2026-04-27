@@ -107,7 +107,7 @@ goo(const std::vector<int> &a)
  * It is shown here only for completeness.
  * @param a the value.
  */
-/*
+
 void
 goo(const std::vector<int> &&a)
 {
@@ -116,13 +116,12 @@ goo(const std::vector<int> &&a)
   // a[0]=10.// Error! I cannot change a
   std::cout << "using void goo(const std::vector<int> &&)" << std::endl;
 }
-*/
 
 // Here with universal references
 using Vector = std::vector<double>; // to save typing
 
 /*
-// Standard way, comment if you want to use the the std::forward magic
+// Standard way, comment if you do not want to use the the std::forward magic
 void gvect(const Vector& v)
 {
   std::cout<<"using void gvect(const T&), v size is "<<v.size()<<std::endl;

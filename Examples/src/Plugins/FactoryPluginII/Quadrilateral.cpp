@@ -28,6 +28,12 @@ Quadrilateral::showMe(ostream &out) const
 
 namespace
 {
+  /*!
+   * @brief Registration helper executed during static initialization.
+   *
+   * When the shared library is loaded, this namespace-scope object is
+   * constructed and inserts the quadrilateral builder into `polyFactory`.
+   */
   struct LoadF
   {
     LoadF()
@@ -37,6 +43,7 @@ namespace
       };
     }
   };
-  const LoadF loadf; // local variable when created loads the stuff
+  //! Static registration object whose construction performs the registration.
+  const LoadF loadf;
 } // namespace
 } // namespace Geometry

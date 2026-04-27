@@ -1,106 +1,372 @@
-# LoadLibraries — Detailed explanation
+# `LoadLibraries`: detailed explanation
 
-This folder contains a small utility library and example that demonstrates loading shared libraries at runtime (plugins) using the POSIX `dlopen`/`dlclose` API and registering functions exposed by those libraries in a generic factory. The design focuses on simple, safe handling of dynamic libraries via RAII and on a straightforward mechanism for plugin registration using library constructors.
+This folder contains a small example of a plugin-like architecture based on
+runtime loading of shared libraries. The central idea is simple:
 
-Files of interest
-- `LoadLibraries.hpp` / `LoadLibraries.cpp` — the loader class using `dlopen` and keeping handles in a map. Implements load-from-file, load-single-library, close, and get-handle operations.
-- `main.cpp` — example program that uses `LoadLibraries` and a small `FunctionFactory` to execute functions exported by the loaded libraries.
-- `libtraits.hpp` / `libFactory.cpp` — glue that defines the `FunFactory` type and provides the shared factory instance.
-- `lib1.cpp`, `lib2.cpp` — example plugin libraries exposing functions by registering them with `funFactory` in a constructor function.
-- `libraries.txt` — list of shared-object files to load (one per line).
-- `Makefile` / `README.md` — build/run notes.
+1. the program reads a list of shared objects from a text file;
+2. it opens them with `dlopen()`;
+3. each shared object registers some functions in a common factory as soon as
+   it is loaded;
+4. the main program retrieves the registered functions by name and executes
+   them.
 
-High-level design and methodology
+The example is intentionally compact, but it shows several important concepts:
+resource management with RAII, symbol registration through shared state, and
+the lifetime issues that arise when code is unloaded dynamically.
 
-1. Dynamic loading with RAII
-   - `apsc::LoadLibraries` wraps the `dlopen`/`dlclose` calls and keeps loaded handles in an internal `std::unordered_map<std::string, void*> loadedLibs`.
-   - The `LoadLibraries` destructor calls `close()` to `dlclose` any opened handles (RAII): libraries are closed automatically when the loader object is destroyed.
-   - The loader exposes `load(fileName)` to read a file with library names and `loadSingleLibrary(libName)` to open an individual library and add it to `loadedLibs`.
+## Files in the folder
 
-2. Plugin registration via constructors
-   - Each plugin (e.g., `lib1.cpp`, `lib2.cpp`) declares some functions and registers them in a shared factory `funFactory` by using a constructor function annotated with `__attribute__((constructor))`.
-   - Example in `lib1.cpp`:
-     ```cpp
-     __attribute__((constructor)) void load() {
-       funFactory.add("norm2", FunType{norm2});
-       funFactory.add("norminf", FunType{norminf});
-     }
-     ```
-   - The constructor function runs automatically when the shared object is loaded with `dlopen`, inserting function wrappers into the global factory.
+### `LoadLibraries.hpp`
 
-3. Shared factory for exported symbols
-   - `libtraits.hpp` defines types used for the example: `FunType` (callable signature) and `FunFactory` (a `FunctionFactory` from `Factory.hpp`).
-   - `libFactory.cpp` defines `FunFactory& funFactory = FunFactory::Instance();` — a global factory instance accessible by both the main program and the dynamically loaded plugins (they all link to the same symbol instance).
-   - When plugin constructor functions call `funFactory.add(...)`, the main program later queries the factory to obtain std::function wrappers that call the plugin functions.
+This header defines the class `apsc::LoadLibraries`, which is the small utility
+used to manage dynamically loaded libraries.
 
-Step-by-step runtime flow
+Its responsibilities are:
 
-1. The main program constructs a `LoadLibraries` instance with the name of a file listing libraries (e.g., `LoadLibraries libraries("libraries.txt");`).
-   - `LoadLibraries::load()` reads the file line-by-line (trimming blanks) and calls `loadSingleLibrary(libName)` for each entry.
+- store the handles returned by `dlopen()`;
+- provide functions to load libraries one at a time or from a file;
+- close individual libraries or all loaded libraries;
+- release all opened handles automatically in the destructor.
 
-2. For each library file name, `loadSingleLibrary` calls `dlopen(libName.c_str(), mode)` and stores the returned handle in `loadedLibs`.
-   - `dlopen` runs library initializers which call the plugins' constructor functions. Those constructors register functions into `funFactory`.
+The class is moveable but not copyable because it owns raw library handles.
+Conceptually, it behaves like a repository of open shared libraries.
 
-3. After libraries are loaded, the main code queries `funFactory.registered()` to get the list of registered names and calls `funFactory.get(name)` to retrieve a `FunType` callable for each registered function. The example then invokes these callables on a sample vector.
+### `LoadLibraries.cpp`
 
-4. Before closing the libraries the main code clears `funFactory` (factory entries) to ensure no pointers to plugin code remain. Finally, it calls `libraries.close()` or relies on the `LoadLibraries` destructor to `dlclose` the libraries.
+This file implements the loader.
 
-Important implementation details
+The relevant member functions are:
 
-- `LoadLibraries::load` reads `fileName`, extracts non-blank tokens from each line and calls `loadSingleLibrary`. It prints a message for empty lines.
-- `LoadLibraries::loadSingleLibrary` checks if the library is already present in `loadedLibs`; if not it calls `dlopen` and stores the handle; on failure it prints `dlerror()` and returns false.
-- `LoadLibraries::close()` iterates loaded handles and calls `dlclose`; `close(libName)` closes a single library by name.
-- `LoadLibraries::getLibraryHandle(libName)` returns the raw `void*` handle (useful for `dlsym` or advanced operations).
+- `load(std::string fileName, int mode)`: opens the file containing the list of
+  libraries and tries to load them one by one;
+- `loadSingleLibrary(std::string libName, int mode)`: calls `dlopen()` on a
+  single library and stores the resulting handle in the internal map;
+- `close()`: calls `dlclose()` on all stored handles and clears the map;
+- `close(std::string libName)`: closes only one named library;
+- `getLibraryHandle(std::string libName) const`: returns the raw handle, if
+  present.
 
-Safety, lifetime and pitfalls
+Internally, the class stores
 
-- Lifetime coupling: plugin objects and function pointers often refer to code/data in the loaded shared object. After `dlclose`, those addresses become invalid. Therefore:
-  - Keep the `LoadLibraries` instance alive as long as you need plugin-provided code/data.
-  - Do not keep callable wrappers (or objects) around after you `dlclose` the library; clear factory entries first.
-
-- Symbol visibility: the plugins and the main program must agree on where the shared factory `funFactory` is defined. The typical patterns are:
-  - Define `funFactory` in a shared library that both the main program and plugins link against.
-  - Or define it in the main executable and ensure exported symbols are visible to dlopen-ed libraries (on Linux use `-rdynamic` when linking the main executable so the symbol is exported).
-  - In this project `libFactory.cpp` creates `funFactory` using `FunFactory::Instance()`; ensure build/link settings make this symbol available to plugins.
-
-- Constructor attribute portability:
-  - The code uses GCC/Clang `__attribute__((constructor))` to run registration code at `dlopen` time. This is convenient but not standard C++.
-  - Portable alternative: export a known C function (e.g. `extern "C" void register_plugin()`), and after `dlopen` call `dlsym(handle, "register_plugin")` and call it explicitly.
-
-- Error handling and diagnostics:
-  - `LoadLibraries` prints `dlerror()` on `dlopen` failure. You may want to propagate errors or throw exceptions in library code depending on how critical plugin loading is.
-
-- Threading:
-  - Neither `funFactory` nor `LoadLibraries` use internal synchronization. If loading plugins concurrently or registering from multiple threads, add mutexes.
-
-Example usage (main.cpp flow)
-
-1. Build shared libs (`lib1.so`, `lib2.so`) and place them relative to `libraries.txt` entries.
-2. Run the test program. It will load each .so, plugin constructors register function names (`norm2`, `norminf`, `norm1`, `norm0`) into `funFactory`.
-3. The example obtains the list of registered functions and executes each on a sample vector.
-
-Commands (example, from inside `src/LoadLibraries`)
-
-```bash
-# build shared libraries and example (project uses provided Makefile targets)
-make alllibs
-make exec
-./main       # or the produced test executable
+```cpp
+std::unordered_map<std::string, void *> loadedLibs;
 ```
 
-Potential improvements and alternatives
+so the key is the library name and the value is the raw `dlopen()` handle.
 
-- Replace constructor-based registration with an explicit `register_plugin` symbol + `dlsym` for portability and control.
-- Add logging and more robust error propagation instead of printing to `stderr`.
-- Make `LoadLibraries` thread-safe.
-- Allow versioning or plugin metadata parsing to avoid loading incompatible plugins.
+### `libtraits.hpp`
 
-Conclusion
+This header defines the types shared by the example plugins and by the main
+program.
 
-The `LoadLibraries` folder implements a lightweight, clear demonstration of runtime plugin loading and registration via `dlopen` and constructor attributes. It is suitable for didactic purposes and small projects but should be adapted (explicit registration, symbol visibility checks, thread-safety) for production-level plugin systems.
+It introduces:
 
----
+- `loadlibraries::FunType`, which is a function object with signature
+  `double(std::vector<double> const &)`;
+- `loadlibraries::FunFactory`, which is a specialization of the generic
+  `FunctionFactory` template;
+- `loadlibraries::funFactory`, declared as an external object.
 
-If you want, I can:
-- Add a `dlsym`-based registration example (modify a plugin to provide `register_plugin()` and update `LoadLibraries::loadSingleLibrary` to call it), or
-- Add a short README snippet with exact build commands (Makefile commands) tailored to your environment. Which would you like next?
+The idea is that all dynamically loaded libraries will register callable
+objects into the same factory instance, and `main.cpp` will later query that
+factory.
+
+### `libFactory.cpp`
+
+This file defines the shared factory object:
+
+```cpp
+FunFactory& funFactory = FunFactory::Instance();
+```
+
+This is a key part of the example. The plugins do not return function pointers
+directly to the caller. Instead, when they are loaded, they insert named
+functions into this common factory. The main program and the plugins therefore
+communicate indirectly through shared registration state.
+
+### `lib1.cpp`
+
+This file implements one example shared library.
+
+It defines two functions:
+
+- `norm2`, the Euclidean norm;
+- `norminf`, the infinity norm, implemented as `max_i |x_i|`.
+
+At the end of the file there is a function marked with
+`__attribute__((constructor))`. This attribute tells the system to execute that
+function automatically when the shared library is loaded with `dlopen()`.
+
+The constructor function registers:
+
+- `"norm2"` mapped to `norm2`;
+- `"norminf"` mapped to `norminf`.
+
+### `lib2.cpp`
+
+This file implements a second example shared library.
+
+It defines:
+
+- `norm1`, the 1-norm, that is the sum of the absolute values;
+- `norm0`, which in this example counts how many entries are not zero.
+
+As in `lib1.cpp`, the library has a constructor function that is run
+automatically at load time. That function registers:
+
+- `"norm1"` mapped to `norm1`;
+- `"norm0"` mapped to `norm0`.
+
+### `main.cpp`
+
+This is the driver program that shows how the mechanism works in practice.
+
+It does not call `dlsym()`. Instead, it relies on automatic registration:
+loading the libraries causes them to populate `funFactory`, and the program
+then uses the factory to discover and execute the available functions.
+
+### `libraries.txt`
+
+This file contains the list of libraries that `LoadLibraries` will load. In the
+current example it contains
+
+```text
+./lib1.so
+./lib2.so
+```
+
+Each line is read as a library name or path and passed to `dlopen()`.
+
+### `Makefile`, `Makefile.inc`, `README.md`
+
+These files support compilation and provide short usage notes. The Makefile
+builds:
+
+- the support shared libraries `lib1.so`, `lib2.so`, and `libFactory.so`;
+- the loader library `libloadlibs.so`;
+- the example executable `main`.
+
+## How the loader works
+
+The class `LoadLibraries` is a small RAII wrapper around `dlopen()` and
+`dlclose()`.
+
+### Loading from a file
+
+When `load("libraries.txt")` is called, the file is read line by line. For each
+line, the code:
+
+1. extracts the first non-blank token;
+2. treats that token as a library name;
+3. passes it to `loadSingleLibrary()`.
+
+Blank lines are ignored. Loading stops if one library fails to load.
+
+### Loading a single library
+
+`loadSingleLibrary()` first checks whether that library name is already present
+in `loadedLibs`. If it is not, it calls:
+
+```cpp
+dlopen(libName.c_str(), mode);
+```
+
+If `dlopen()` succeeds, the returned handle is stored in the map. If it fails,
+the code prints the diagnostic from `dlerror()`.
+
+### Closing libraries
+
+The class provides two ways to unload:
+
+- close one specific library by name;
+- close all currently loaded libraries.
+
+The destructor calls `close()`, so cleanup also happens automatically when the
+`LoadLibraries` object goes out of scope.
+
+## What happens when a plugin is loaded
+
+The crucial mechanism in this example is the constructor attribute in
+`lib1.cpp` and `lib2.cpp`.
+
+When `dlopen("./lib1.so", ...)` succeeds, the dynamic loader runs the library's
+constructor function automatically. That function performs the registration:
+
+```cpp
+funFactory.add("norm2", FunType{norm2});
+funFactory.add("norminf", FunType{norminf});
+```
+
+The same happens for `lib2.so`, which adds `norm1` and `norm0`.
+
+As a consequence, the main program does not need explicit knowledge of which
+functions each library exports. It only needs to know that loading the library
+causes registration into the common factory.
+
+## Detailed walkthrough of `main.cpp`
+
+The `main()` function is short, but each line is doing something important.
+
+### 1. Select the relevant namespaces and types
+
+At the beginning:
+
+```cpp
+using namespace loadlibraries;
+using apsc::LoadLibraries;
+```
+
+This makes the plugin factory types available and imports the loader class.
+
+### 2. Load the libraries listed in `libraries.txt`
+
+The line
+
+```cpp
+LoadLibraries libraries("libraries.txt");
+```
+
+constructs a loader object and immediately asks it to read `libraries.txt`.
+
+In the current setup, that means:
+
+1. `./lib1.so` is loaded;
+2. `./lib2.so` is loaded.
+
+During each `dlopen()`, the corresponding constructor function runs, so the
+factory is populated as a side effect of loading.
+
+At this point `funFactory` already contains the functions registered by both
+libraries.
+
+### 3. Print a status message
+
+The program prints
+
+```cpp
+std::cout << "Libraries loaded" << std::endl;
+```
+
+This is only diagnostic output confirming that the loading phase is complete.
+
+### 4. Ask the factory which functions are available
+
+The next statement is
+
+```cpp
+auto registeredFunctions = funFactory.registered();
+```
+
+This retrieves the names currently registered in the factory. Given the current
+two plugins, the list contains four entries:
+
+- `norm0`
+- `norm1`
+- `norm2`
+- `norminf`
+
+The exact iteration order depends on the factory implementation and should not
+be interpreted as semantically meaningful.
+
+### 5. Build the input vector used for the demo
+
+The example then creates
+
+```cpp
+std::vector x{1., 0., 3., 4., 5., 6., -9.};
+```
+
+This vector is passed to every registered function so that the output of the
+different norms can be compared on the same data.
+
+For this specific vector:
+
+- `norm0(x)` returns `1`, because there is one zero entry;
+- `norm1(x)` returns `28`;
+- `norm2(x)` returns `sqrt(168)`, approximately `12.9615`;
+- `norminf(x)` returns `9`.
+
+### 6. Retrieve each function from the factory and execute it
+
+The central loop is:
+
+```cpp
+for(auto fun : registeredFunctions)
+{
+  FunType f;
+  f = funFactory.get(fun);
+  auto result = f(x);
+  std::cout << fun << "(x)=" << result << std::endl;
+}
+```
+
+What this does is:
+
+1. take one registered name, for example `"norm2"`;
+2. ask the factory for the corresponding callable object;
+3. invoke that callable on the sample vector `x`;
+4. print the result.
+
+This is the main didactic point of the example: the executable does not know at
+compile time which concrete functions it will call. It discovers them at
+runtime from the set of loaded libraries.
+
+### 7. Clear the factory before unloading the libraries
+
+Before the libraries are closed, the code executes:
+
+```cpp
+funFactory.clear();
+```
+
+This is an important lifetime precaution. The factory stores callable wrappers
+that ultimately refer to code living inside the shared libraries. If the
+libraries were unloaded first, the factory could retain handles to code that no
+longer exists.
+
+So the intended order is:
+
+1. remove the registered callables from the factory;
+2. unload the shared libraries.
+
+### 8. Close the libraries
+
+Finally, the program does:
+
+```cpp
+libraries.close();
+```
+
+This explicitly unloads the libraries. Even if this line were omitted, the
+destructor of `libraries` would close them automatically at the end of `main()`.
+
+The explicit call is useful here because it makes the intended cleanup order
+visible in the example.
+
+## Why this example is useful
+
+This folder demonstrates a common pattern used in plugin systems:
+
+- a core application loads extension modules at runtime;
+- the modules self-register into a common registry;
+- the application discovers capabilities dynamically;
+- cleanup must respect object and code lifetime.
+
+The example is intentionally minimal, but the architecture scales to more
+realistic settings where plugins register algorithms, solvers, boundary
+conditions, post-processing tools, or application-specific commands.
+
+## Important limitations of the example
+
+This example is good for teaching, but it is deliberately simple.
+
+- It uses GCC/Clang-specific `__attribute__((constructor))`.
+- It does not use `dlsym()` to resolve explicit entry points.
+- It assumes the main program and the plugins all refer to the same factory
+  instance.
+- It relies on manual discipline for cleanup order.
+- It does not add synchronization, so it is not designed for concurrent plugin
+  loading.
+
+Those limitations are acceptable here because the goal is to show the mechanism
+clearly rather than to build a full production plugin framework.

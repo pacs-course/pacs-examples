@@ -28,9 +28,15 @@ Quadrilateral::showMe(ostream &out) const
 
 namespace
 {
+  /*!
+   * @brief Registers the quadrilateral builder when the plugin is loaded.
+   *
+   * The GNU constructor attribute makes this function run automatically during
+   * `dlopen()`, so the library self-registers into the shared factory.
+   */
   void __attribute__((constructor)) LoadF()
   {
-    // add quadrilateral to the factory
+    // Add Quadrilateral to the shared polygon factory.
     polyFactory["Quadrilateral"] = []() {
       return std::make_unique<Quadrilateral>();
     };

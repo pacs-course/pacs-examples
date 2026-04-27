@@ -10,87 +10,118 @@
 #include <vector>
 namespace GenericFactory
 {
-/*! @brief A generic object factory.
-
-  Freely inspired from the Alexandrescu Book.
-
-  It is implemented as a Singleton. The compulsory way to
-  access a method is Factory::Instance().method().
-  Typically to access the factory one does
-  \code
-  auto&  myFactory = Factory<A,I,B>::Instance();
-  myFactory.add(...)
-  \endcode
-  @tparam AbstractProduct The type of the base abstract class whose object are
-  produced by the factory
-  @tparam Identifier The identifier used to select the concrete object produced
-  by the factory. It must have an ordering relation since they will be stored as
-  key in a std::map
-  @tparam Builder The type of the callable object that produces the the concrete
-  object derived from AbstractProduct It may have arguments but its return type
-  must be std::unique_ptr<AbstractProduct>.
-  @throw  A std::invalid_argument exception if something goes wrong when
-  querying the factory.
-  @note   The Identifier should have a output stream operator for the
-  construction of the exception.
-*/
+/*!
+ * @brief Singleton factory mapping identifiers to builders.
+ *
+ * This template implements a generic factory pattern. A factory instance stores
+ * builder objects indexed by an identifier and later uses them either to create
+ * concrete objects derived from a common base class or, in the special
+ * function-factory case, to retrieve callable objects directly.
+ *
+ * The factory is implemented as a Meyers singleton, so all access goes through
+ * `Factory::Instance()`.
+ *
+ * Typical usage:
+ * @code
+ * using MyFactory = GenericFactory::Factory<Base, std::string>;
+ * auto &factory = MyFactory::Instance();
+ * factory.add("item", [] { return std::make_unique<Derived>(); });
+ * auto object = factory.create("item");
+ * @endcode
+ *
+ * @tparam AbstractProduct Base type of the objects produced by the factory.
+ * Use `void` when the factory stores functions instead of object builders.
+ * @tparam Identifier Key type used to select the builder.
+ * @tparam Builder Callable type stored in the factory. Its return type must be
+ * compatible with `std::unique_ptr<AbstractProduct>` when `create()` is used.
+ *
+ * @throw std::invalid_argument Thrown by `get()` and `add()` on lookup failure
+ * or duplicate registration.
+ *
+ * @note `Identifier` must be streamable to `std::ostream`, because diagnostic
+ * messages are built through `std::stringstream`.
+ */
 template <typename AbstractProduct, typename Identifier,
           typename Builder = std::function<std::unique_ptr<AbstractProduct>()> >
 class Factory
 {
 public:
-  //! The container for the rules.
+  //! Base-product type associated with the factory.
   using AbstractProduct_type = AbstractProduct;
-  //! The identifier.
-  /*!
-  It is used to identify the rules.
-  */
+  //! Identifier type used as the lookup key.
   using Identifier_type = Identifier;
-  //! The builder type.
+  //! Builder type stored in the factory.
   /*!
-    The default is a function wrapper that returns a unique_ptr<AbstractProduct>
-    and with no arguments.
-  */
+   * The default is a nullary function wrapper returning
+   * `std::unique_ptr<AbstractProduct>`.
+   */
   using Builder_type = Builder;
-  //! Method to access the only instance of the factory
+  //! Returns the unique singleton instance of the factory.
   static Factory &Instance();
-  //! Get the rule with given name .
-  /*!
-    The pointer is null if no rule is present.
-    \tparam Args Automatically deduced parameter pack, it is the
-    list of types of the builder arguments. It may be empty.
-    \param name The identifier
-    \param args The arguments pack to be passed to the builder. It may be empty
 
-    \note The default builder does not take any argument. This version is
-    provided in case the template is specialized with a builder that takes
-    arguments. The method is disabled if AbstractProduct is void
-  */
+  /*!
+   * @brief Creates an object by invoking the builder associated with `name`.
+   *
+   * The arguments are perfectly forwarded to the stored builder. This allows
+   * the factory to work also with builders that take runtime parameters.
+   *
+   * @tparam Args Argument types forwarded to the builder.
+   * @param name Identifier selecting the registered builder.
+   * @param args Arguments forwarded to the stored builder.
+   * @return A smart pointer to the created object.
+   *
+   * @note This method is intended for object factories. When
+   * `AbstractProduct = void`, use `get()` instead.
+   */
   template <typename... Args>
   std::unique_ptr<AbstractProduct> create(Identifier const &name,
                                           Args &&...args) const;
+
   /*!
-     Returns the builder
-  */
+   * @brief Returns the builder associated with an identifier.
+   * @param name Identifier selecting the builder.
+   * @return A copy of the registered builder.
+   * @throw std::invalid_argument If `name` is not registered.
+   */
   Builder get(Identifier const &name) const;
-  //
-  //! Register the given rule.
+
+  /*!
+   * @brief Registers a builder under the given identifier.
+   * @param name Identifier used as the registration key.
+   * @param builder Builder to be stored in the factory.
+   * @throw std::invalid_argument If `name` is already registered.
+   */
   void add(Identifier const &, Builder_type const &);
-  //! Returns a list of registered rules.
+
+  /*!
+   * @brief Returns the list of currently registered identifiers.
+   * @return A vector containing every identifier stored in the factory.
+   */
   std::vector<Identifier> registered() const;
-  //! Unregister a rule.
+
+  /*!
+   * @brief Removes one registered builder.
+   * @param name Identifier to erase.
+   *
+   * If `name` is not present, the operation is a no-op.
+   */
   void
   unregister(Identifier const &name)
   {
     _storage.erase(name);
   }
-  //! clear the factory
+
+  //! Removes every registered builder from the factory.
   void
   clear()
   {
     _storage.clear();
   }
-  //! Test if factory has some items registered
+
+  /*!
+   * @brief Checks whether the factory is empty.
+   * @return `true` if no builders are currently registered.
+   */
   bool
   empty() const
   {
@@ -98,28 +129,31 @@ public:
   }
 
 private:
-  //! The type of the container used to store the rules.
   /*!
-  I am using an unordered map since I do not need ordering for the keys
-  Using a std::map is however possible.
-  */
+   * @brief Internal associative container used to store the builders.
+   *
+   * An `std::unordered_map` is used because the factory needs fast lookup and
+   * does not rely on any ordering of the identifiers.
+   */
   using Container_type = std::unordered_map<Identifier, Builder_type>;
-  //! Made private since it is a Singleton
+
+  //! Constructor is private because the factory is a singleton.
   Factory() = default;
-  //! Deleted since it is a Singleton
+
+  //! Copy construction is disabled because the factory is a singleton.
   Factory(Factory const &) = delete;
-  //! Deleted since it is a Singleton
+
+  //! Copy assignment is disabled because the factory is a singleton.
   Factory &operator=(Factory const &) = delete;
-  //! It contains the actual object factory.
+
+  //! Storage of registered identifier-to-builder associations.
   Container_type _storage;
 };
 
-//! This template alias may be used to store functions: the builder is here the
-//! function type and get returns a FunType object
+//! Convenience alias for a factory of callable objects.
 /*!
- * @note In this version you cannot use the method create()
- * @todo use enable_if to eliminate the method create() when
- * AbstractProduct=void
+ * In this case the factory stores functions directly instead of object
+ * builders, so client code typically uses `get()` rather than `create()`.
  */
 template <typename Identifier, typename FunType>
 using FunctionFactory = Factory<void, Identifier, FunType>;
@@ -130,7 +164,7 @@ template <typename AbstractProduct, typename Identifier, typename Builder>
 Factory<AbstractProduct, Identifier, Builder> &
 Factory<AbstractProduct, Identifier, Builder>::Instance()
 {
-  // We use the Meyer's trick to istantiate the factory as Singleton
+  // Meyers singleton: initialized on first use.
   static Factory theFactory;
   return theFactory;
 }
@@ -143,7 +177,7 @@ Factory<AbstractProduct, Identifier, Builder>::get(Identifier const &name) const
   if(f == _storage.end())
     {
       std::stringstream idAsString;
-      // I am assuming that identifier has a output streaming operator
+      // The identifier is rendered into the diagnostic message.
       idAsString << name;
       std::string out =
         "Identifier " + idAsString.str() + " is not stored in the factory";
@@ -163,7 +197,7 @@ Factory<AbstractProduct, Identifier, Builder>::create(Identifier const &name,
 {
   static_assert(!std::is_same_v<AbstractProduct, void>,
                 "You should use get() not create() on FunctionFactories");
-  // Use of std::forward to forward arguments to the constructor
+  // Perfect forwarding preserves value category and constness.
   return this->get(name)(std::forward<Args>(args)...);
 }
 
