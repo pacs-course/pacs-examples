@@ -48,11 +48,6 @@ using Identifier = int;
 using Builder = std::function<std::unique_ptr<Abstract>()>;
 using MyObjectFactory = GenericFactory::Factory<Abstract, Identifier, Builder>;
 
-// Defining the builders for the different concrete objects
-Builder build1 = [] { return std::make_unique<Derived1>(); };
-Builder build2 = [] { return std::make_unique<Derived2>(); };
-Builder build3 = [] { return std::make_unique<Derived3>(); };
-
 //! Normally this is done elsewhere, but this is only a test
 /*!
   Filling the factory with the first 2 builders
@@ -60,6 +55,10 @@ Builder build3 = [] { return std::make_unique<Derived3>(); };
 void
 loadFactory()
 {
+  // Defining the builders for the different concrete objects
+  Builder build1 = [] { return std::make_unique<Derived1>(); };
+  Builder build2 = [] { return std::make_unique<Derived2>(); };
+
   auto &factory = MyObjectFactory::Instance();
   factory.add(1, build1);
   factory.add(2, build2);
@@ -67,11 +66,12 @@ loadFactory()
 // the third with the proxy
 namespace
 {
-GenericFactory::Proxy<MyObjectFactory, Derived3> P3{3, build3};
-}
 
-//! now an example of using the Factory with function (an alternative to the
-//! C-linkage)
+Builder build3 = [] { return std::make_unique<Derived3>(); };
+GenericFactory::Proxy<MyObjectFactory, Derived3> P3{3, build3};
+} // namespace
+
+//! now an example of using the Factory with functions as products
 
 using FunType = std::function<double(const double &, const double &)>;
 using FunFactory = GenericFactory::FunctionFactory<Identifier, FunType>;
