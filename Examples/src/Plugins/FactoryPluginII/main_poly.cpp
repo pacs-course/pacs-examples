@@ -39,7 +39,9 @@ main()
           cout << "ERROR: this polygon is not registered!" << endl;
         }
     }
-  // In a larger program you should clear the factory before unloading the
+  // you should clear the factory before unloading the
   // libraries, otherwise the stored builders would refer to unloaded code.
   polyFactory.clear();
+  // now close libraries
+  loadPlugins.close();
 }
