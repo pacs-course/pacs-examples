@@ -41,5 +41,5 @@ main()
     }
   // In a larger program you should clear the factory before unloading the
   // libraries, otherwise the stored builders would refer to unloaded code.
-  //  polyFactory.clear();
+  polyFactory.clear();
 }
