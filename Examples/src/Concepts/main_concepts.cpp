@@ -46,7 +46,7 @@ main()
 
   /* This fails to compile */
   Foo2 foo2;
-  auto pp = apsc::concepts::cloneMe(foo2);
+  // auto pp = apsc::concepts::cloneMe(foo2);
 
   using apsc::concepts::dot;
   std::vector v1{1., 2., 3., 4., 5.};
