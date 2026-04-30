@@ -1,3 +1,7 @@
+/*!
+ * @file meshGenerators.cpp
+ * @brief Implementation of one-dimensional mesh generation policies.
+ */
 #include "meshGenerators.hpp"
 #include <algorithm>
 #include <cmath>

@@ -1,23 +1,194 @@
-# Tools for Newton and quasi-Newton methods for the zero of a system of non linear equations #
+# Newton And Quasi-Newton Solvers
 
-We present here a set of tools to implement generic Newton or quasi newton methods. They are based on the Eigen library and  on the following main classes
+This directory contains a small library and a test program for solving
+nonlinear systems
+\[
+F(x)=0, \qquad F:\mathbb{R}^n \to \mathbb{R}^n,
+\]
+with Newton and quasi-Newton techniques built on top of `Eigen`.
 
-* `JacobianBase` a base class which implements the action of a "quasi-Jacobian", the user may choose among `FullJacobian`, where the actual Jacobian (or an approximation of it) must be specified by the user, `DiscreteJacobian`, that computes an approximate Jacobian via finite differences, `IdentityJacobian`, that just implements a scaled identity map, `BroydenB`, that implements the "bad" Broyden iteration and the `BroydenG` that implements the classic Broyden.
-* `Newton` A class that given the non linear functions and a `JacobianBase` will perform the Newton iterations.
+The code is organized around two main abstractions:
 
-We have also:
+- `Newton`: drives the nonlinear iteration, stopping tests, optional
+  backtracking, and user callback.
+- `JacobianBase`: polymorphic interface used to compute the Newton-like
+  correction. Concrete implementations include exact, discrete, and
+  quasi-Newton updates.
 
-* `NewtonTraits` Contains the definition of the types used by the main classes, to guarantee uniformity;
-* `NewtonOptions` and `NewtonResults`, structs that encapsulate the options and results;
-* `JacobianFactory` to generate a concrete class of the `JacobianBase` family on the fly.
+## Main Components
 
-**Note** the use of the virtual function member `callback` in `Newton` allows the user to get hold of the state at each iteration. See `NewtonVerbose` in `Newton.hpp`, to see a possible use of it.
+- `NewtonTraits.hpp`
+  Defines the common types used by the whole module:
+  `ArgumentType`, `ReturnType`, `NonLinearSystemType`,
+  `JacobianMatrixType`, and `JacobianFunctionType`.
 
-The file `main_Newton.cpp` contains a test.
+- `NewtonMethodsSupport.hpp`
+  Defines `NewtonOptions` and `NewtonResult`, the aggregates used to pass
+  solver parameters and collect the outcome of a run.
 
-If you launch `pdflatex NewtonSolver.tex` you get `NewtonSolver.pdf` with some more details on the procedure.
+- `Jacobian.hpp` and `Jacobian.cpp`
+  Implement the Jacobian hierarchy:
+  `JacobianBase`, `FullJacobian`, `DiscreteJacobian`,
+  `IdentityJacobian`, `BroydenB`, `BroydenG`, and
+  `Eirola_Nevanlinna`.
 
-# What do I learn here? #
-- A rather complete example where we use traits, aggregates to collect strictly related variables, polymorphism, object factories.
-- The use of a `callback()` function to allow the user to get hold of the state at each iteration.
-- The integration of various Jacobian implementations to suit different problem requirements.
+- `JacobianFactory.hpp`
+  Provides `JacobianKind` and `make_Jacobian()` to create a concrete
+  Jacobian object at runtime.
+
+- `Newton.hpp` and `Newton.cpp`
+  Implement the solver itself. `NewtonVerbose` shows how to specialize the
+  `callback()` hook to inspect the iterations.
+
+- `main_Newton.cpp`
+  Example driver that solves a test nonlinear system with several Jacobian
+  strategies and prints convergence information.
+
+- `NewtonSolver.tex`
+  Additional mathematical and design notes. Running `pdflatex` on this file
+  produces a more formal description of the algorithm.
+
+## Building
+
+This folder uses the project-wide build infrastructure from the repository
+root `Makefile.inc`. In practice you should run commands from this directory.
+
+Requirements:
+
+- a C++23-capable compiler
+- `Eigen`
+- the common PACS build variables resolved by the top-level make setup
+
+Typical commands:
+
+```bash
+make
+make exec
+make static
+make dynamic
+make alllibs
+make clean
+make distclean
+```
+
+What they do:
+
+- `make exec`
+  Builds the static library if needed and links the example executable
+  `main_Newton`.
+
+- `make static`
+  Builds `libNewton.a` and the executable.
+
+- `make dynamic`
+  Builds `libNewton.so` and the executable.
+
+- `make alllibs`
+  Builds both `libNewton.a` and `libNewton.so`.
+
+- `make clean`
+  Removes object files and executables.
+
+- `make distclean`
+  Also removes generated libraries, dependency files, and documentation
+  artefacts.
+
+Build configuration:
+
+- `DEBUG=yes` keeps debug information.
+- `DEBUG=no` enables `-DNDEBUG` and optimized compilation.
+- `LIBTYPE=STATIC` or `LIBTYPE=DYNAMIC` selects the library kind where
+  relevant.
+
+Examples:
+
+```bash
+make exec
+make static DEBUG=no
+make dynamic DEBUG=no
+make alllibs DEBUG=no
+```
+
+## Installation
+
+The target
+
+```bash
+make install
+```
+
+copies:
+
+- all local headers (`*.hpp`) into `$(PACS_INC_DIR)`
+- `libNewton.a` and `libNewton.so` into `$(PACS_LIB_DIR)`
+
+Before installing, build the libraries first:
+
+```bash
+make alllibs
+make install
+```
+
+If you compile in release mode and rely on shared libraries installed in the
+project library directory, make sure the runtime loader can find them. In the
+rest of this repository that is usually done by exporting `LD_LIBRARY_PATH`
+appropriately.
+
+## Running The Example
+
+After building:
+
+```bash
+./main_Newton
+```
+
+The driver tests:
+
+- exact Newton with a user-provided Jacobian
+- Newton with a finite-difference Jacobian
+- Broyden bad
+- Broyden good
+- Eirola-Nevanlinna
+
+The verbose callback prints residual norm and step length at each iteration.
+
+## Design Notes
+
+- `Newton` stores the nonlinear system by value and the Jacobian strategy
+  through a `std::unique_ptr<JacobianBase>`.
+- Copy operations are deliberately disabled because the Jacobian hierarchy is
+  polymorphic and does not implement cloning.
+- The callback mechanism is the intended extension point if you want custom
+  logging, statistics, or monitoring during iterations.
+
+## Possible Issues To Keep In Mind
+
+The current code builds and the sample run converges, but there are a few
+points worth noticing when reusing or extending it:
+
+- In `Newton::solve()`, when backtracking is active the stored step length is
+  computed as `||delta||` before damping. If `lambda < 1`, the accepted step is
+  actually `||lambda * delta||`, so the reported value and the convergence test
+  may be stricter than intended.
+
+- In `BroydenB::setB()`, `BroydenG::setB()`, and
+  `Eirola_Nevanlinna::setB()`, calling `setB()` with the default empty matrix
+  disables first-time initialization by setting `firstTime = false`. A later
+  `solve()` can then operate with an invalid internal state unless a valid
+  initial matrix is supplied explicitly.
+
+- The quasi-Newton classes keep internal mutable history (`B`, `previousX`,
+  `previousR`), so reusing the same Jacobian object across different problems
+  requires care. Resetting the nonlinear system via `setNonLinSys()` helps, but
+  a full restart policy should be part of the calling code.
+
+## What You Learn Here
+
+- use of traits to centralize algebraic types
+- separation between nonlinear iteration and Jacobian strategy
+- runtime selection of algorithms through a small factory
+- use of aggregates for solver options and results
+- use of callbacks as a lightweight extension mechanism
+
+For a more detailed walkthrough of every file and of the intended purpose of
+the module, see `ContentExplanation.md`.

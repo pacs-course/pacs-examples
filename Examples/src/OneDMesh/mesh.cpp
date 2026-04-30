@@ -1,3 +1,7 @@
+/*!
+ * @file mesh.cpp
+ * @brief Implementation of the `Mesh1D` class.
+ */
 #include "mesh.hpp"
 #include <algorithm>
 #include <limits>

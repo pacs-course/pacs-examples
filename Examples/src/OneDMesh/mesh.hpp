@@ -1,95 +1,128 @@
 #ifndef _HH_MESH_HH
 #define _HH_MESH_HH
+/*!
+ * @file mesh.hpp
+ * @brief Storage class for one-dimensional meshes.
+ */
 #include "domain.hpp"
 #include "meshGenerators.hpp"
 #include <cstddef>
 #include <vector>
 namespace Geometry
 {
+/*!
+ * @brief Concrete one-dimensional mesh made of ordered node coordinates.
+ *
+ * The class stores the discretized domain together with the vector of node
+ * positions. A mesh can be built either directly from a uniform discretization
+ * request or from any object implementing the `OneDMeshGenerator` interface.
+ */
 class Mesh1D
 {
 public:
-  //! Default constructor is defaulted.
+  //! Default constructor.
   Mesh1D() = default;
-  //! Constructor for an equaly spaced mesh
   /*!
-    \param d  A domain
-    \param n  Number of intervals (not nodes!)
-  */
+   * @brief Construct a uniformly spaced mesh.
+   * @param d Domain to be discretized.
+   * @param n Number of intervals, not number of nodes.
+   */
   Mesh1D(Domain1D const &d, std::size_t n);
-  //! Constructor for an variably spaced mesh
   /*!
-    \param gf the policy for generating mesh
-  */
+   * @brief Construct a mesh from a generator policy.
+   * @param gf Generator used to compute the mesh nodes.
+   */
   explicit Mesh1D(Geometry::OneDMeshGenerator const &gf)
     : myDomain{gf.getDomain()}, myNodes{gf()} {};
-  //! Generate mesh (it will destroy old mesh)
   /*!
-    @param mg a mesh generator
+   * @brief Replace the current mesh with a newly generated one.
+   * @param mg Mesh generator to be used.
    */
   void reset(OneDMeshGenerator const &mg);
 
-  //! Number of nodes.
+  //! @brief Number of nodes stored in the mesh.
   [[nodiscard]] std::size_t
   numNodes() const noexcept
   {
     return myNodes.size();
   }
-  //! The i-th node.
+  /*!
+   * @brief Unchecked access to the `i`-th node.
+   * @param i Node index.
+   * @return Coordinate of the selected node.
+   */
   [[nodiscard]] double
   operator[](std::size_t i) const
   {
     return myNodes[i];
   }
+  /*!
+   * @brief Bounds-checked access to the `i`-th node.
+   * @param i Node index.
+   * @return Coordinate of the selected node.
+   * @throw std::out_of_range if `i >= numNodes()`.
+   */
   [[nodiscard]] double at(std::size_t i) const { return myNodes.at(i); }
-  //! To use the mesh in range based for loop I need begin()
+  //! @brief Iterator to the first node.
   std::vector<double>::iterator
   begin()
   {
     return myNodes.begin();
   }
+  //! @brief Constant iterator to the first node.
   std::vector<double>::const_iterator
   begin() const
   {
     return myNodes.begin();
   }
+  //! @brief Constant iterator to the first node.
   std::vector<double>::const_iterator
   cbegin() const
   {
     return myNodes.cbegin();
   }
-  //! To use the mesh in range based for loop I need end()
+  //! @brief Iterator past the last node.
   std::vector<double>::iterator
   end()
   {
     return myNodes.end();
   }
+  //! @brief Constant iterator past the last node.
   std::vector<double>::const_iterator
   end() const
   {
     return myNodes.end();
   }
+  //! @brief Constant iterator past the last node.
   std::vector<double>::const_iterator
   cend() const
   {
     return myNodes.cend();
   }
-  //! Return the domain associated with this mesh.
   /*!
-    The mesh generator may store state, so this provides direct access.
-  */
+   * @brief Access the domain associated with the mesh.
+   * @return The stored one-dimensional domain.
+   */
   [[nodiscard]] Domain1D const &
   domain() const noexcept
   {
     return myDomain;
   }
-  //! The minimum mesh size (distance between consecutive nodes).
+  /*!
+   * @brief Minimum element size.
+   * @return Minimum distance between consecutive nodes.
+   */
   [[nodiscard]] double hmin() const;
-  //! The maximum mesh size (distance between consecutive nodes).
+  /*!
+   * @brief Maximum element size.
+   * @return Maximum distance between consecutive nodes.
+   */
   [[nodiscard]] double hmax() const;
 
 private:
+  //! Domain represented by the mesh.
   Domain1D            myDomain;
+  //! Node coordinates.
   std::vector<double> myNodes;
 };
 

@@ -1,3 +1,11 @@
+/*!
+ * @file main_testGenerators.cpp
+ * @brief Example program exercising the 1D mesh generators.
+ *
+ * The program builds both a uniform mesh and a variable-size mesh on the same
+ * domain, prints a few statistics, and writes the node coordinates to data
+ * files that can be visualized with external tools such as `gnuplot`.
+ */
 #include "mesh.hpp"
 #include <cmath>
 #include <fstream>
@@ -8,6 +16,7 @@ int
 main()
 {
   using namespace Geometry;
+  //! Domain used in the example.
   Domain1D     domain(0., 10.);
   constexpr double pi = std::numbers::pi_v<double>;
   // Uniform mesh

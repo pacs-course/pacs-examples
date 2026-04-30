@@ -1,3 +1,7 @@
+/*!
+ * @file domain.cpp
+ * @brief Implementation of the one-dimensional domain utilities.
+ */
 #include "domain.hpp"
 #include <cmath>
 namespace Geometry
