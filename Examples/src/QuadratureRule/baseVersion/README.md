@@ -1,46 +1,216 @@
-# Basic classes and function for numerical integration #
+# Base Version Of The Quadrature Library
 
-The code contained in this directory produces the basic libary for the
-example on numerical integration seen at lecture.
+This directory contains the core code used by the numerical integration
+examples. It defines:
 
-In particular:
+- the hierarchy of quadrature rules
+- the `CompositeQuadrature` class, which applies a rule on each interval of a
+  mesh
+- decorators for error estimation and adaptive integration
+- a small executable, `main_integration`, used as a test and demonstration
 
-* `QuadratureRuleTraits.hpp` The basic types used throughout the code;
+## Main Components
 
-* `QuadratureRuleBase.hpp` Contains the declaration of the base class `QuadratureRuleBase`, needed to all files that creates a concrete quadature rule. It is a header only file that contains the code for the basis (abstract) class of standard quadrature rules `QuadratureRule`. It must be included by any file that defines a quadrature rule
+- `QuadratureRuleTraits.hpp`
+  Basic types used throughout the quadrature code.
 
-* `StandardQuadratureRule.hpp` It contains the base class `StandardQuadratureRule`, derived from `QuadratureRule`, of all the standard quadrature rules.
+- `QuadratureRuleBase.hpp`
+  Abstract base class for all quadrature rules.
 
-* `Adams_rule.hpp|cpp` and `Gauss_rule.hpp` Contain the definition of some concrete standard quadrature rule.
+- `StandardQuadratureRule.hpp`
+  Base class for standard quadrature rules defined on a reference interval.
 
-* `QuadratureRuleWithError.hpp` is a header only file that contains a
-  decorator to implement a standard quadrature rule with the
-  computation of an estimate of the error. It decorates `StandardQuadratureRule`,
+- `Adams_rule.hpp` / `Adams_rule.cpp`
+  Newton-Cotes rules such as MidPoint, Trapezoidal, and Simpson.
 
-* `QuadratureRuleAdaptive.hpp` is an header only file that containes a decorator of  `StandardQuadratureRule` to implement adaptive numerical integration
+- `Gauss_rule.hpp`
+  Gaussian and Gauss-Lobatto quadrature rules.
 
-* `montecarlo.hpp` Defines a decorator of `QuadratureRule` that implements Montecarlo integration.
+- `QuadratureRulePlusError.hpp`
+  Decorator adding an error estimate to a standard rule.
 
-* `numerical_integration.hpp` contains the definition of the class
-  that implements composite quadrature rule. It uses a quadrature rule
-  as policy to apply  a concrete rule on each sub-interval. It impements the Strategy design pattern.
+- `QuadratureRuleAdaptive.hpp`
+  Decorator implementing adaptive integration.
 
-* `libquadrature` is the library that stores the code for composite quadrature rule. It depends on the library `libMesh1D`, and on GetPot so you have first
-to to `OneDMesh` and  look carefully at the README files to install it (it depends on other libraries as well).
+- `montecarlo.hpp` / `montecarlo.cpp`
+  Monte Carlo integration rule.
 
-* `libintegrands` is a library that stores some possible integrands
+- `numerical_integration.hpp` / `numerical_integration.cpp`
+  Definition and implementation of `CompositeQuadrature`.
 
-To do everything, including the test program:
+- `helperfunction.hpp` / `helperfunction.cpp`
+  Utility functions to read parameters and print formatted results.
 
-    make distclean
-    make alllibs (maybe with DEBUG=no)
-    make install
-    
-You may also have a look at `main.integration.cpp`,which stores the test program, and try to run it.
+- `integrands.hpp` / `integrands.cpp`
+  Sample integrands and exact reference values.
 
-# What do I learn here?  #
-- An example of polymorphism. All quadrature rules derive from a common base
-- An example of the **Decorator design pattern**, look [here](https://refactoring.guru/design-patterns/cpp) if you are interested in design patterns. Indeed, some rules are made by decorating existing classes. The Decorator patter is useful
-when you want to extend the capabilities of an existing hyerarchy of classes, uniformly over all of them; 
-- Another example of use of helper objects to enucleate a task, in this case reading parameters from a getpot file. When you have a well defined task enucleate it in an object (a class or a function). You will be able to verify the code separately, and reuse the it in other contexts more easily;
+- `main_integration.cpp`
+  Example driver exercising the library.
 
+## Produced Libraries
+
+The Makefile builds three libraries:
+
+- `libquadrules`
+  Basic quadrature rules and Monte Carlo rules.
+
+- `libquadrature`
+  Composite quadrature support, including `CompositeQuadrature`.
+
+- `libintegrands`
+  Sample integrand functions used by the test program.
+
+## Dependencies
+
+Before building this directory, make sure the required dependencies are
+available.
+
+### Required project dependency
+
+`libquadrature` depends on `libMesh1D`, so `Examples/src/OneDMesh` must be
+built and installed first.
+
+Recommended order:
+
+```bash
+cd Examples/src/OneDMesh
+make alllibs DEBUG=no
+make install
+```
+
+### External dependency
+
+The code also uses `GetPot` for parameter handling. The repository-wide build
+configuration must already know where `GetPot` is installed.
+
+## Compilation Process
+
+This folder uses the common PACS make infrastructure. The most useful targets
+are:
+
+```bash
+make
+make static
+make dynamic
+make alllibs
+make exec
+make clean
+make distclean
+make install
+```
+
+### Meaning of the targets
+
+- `make static`
+  Builds the three static libraries:
+  `libquadrules.a`, `libquadrature.a`, and `libintegrands.a`.
+
+- `make dynamic`
+  Builds the three shared libraries:
+  `libquadrules.so`, `libquadrature.so`, and `libintegrands.so`.
+
+- `make alllibs`
+  Builds both the static and dynamic versions of all three libraries.
+
+- `make exec`
+  Compiles the example executable `main_integration`.
+  This target assumes the required libraries are already available either in
+  the current directory or in the PACS library directory, depending on the
+  build mode.
+
+- `make clean`
+  Removes object files and executables but keeps built libraries.
+
+- `make distclean`
+  Removes executables, object files, dependency files, and generated
+  libraries.
+
+- `make install`
+  Builds both static and dynamic libraries first, then installs headers and
+  libraries into the PACS include/lib directories.
+
+### Build options
+
+- `DEBUG=no`
+  Enables release-style compilation and defines `NDEBUG`.
+
+- `DEBUG=yes`
+  Keeps debug information and uses the local libraries when linking the test
+  executable.
+
+- `LIBTYPE=STATIC` or `LIBTYPE=DYNAMIC`
+  Affects which kind of library is used in the recursive build targets.
+
+## Recommended Build Workflows
+
+### 1. Build only the libraries
+
+```bash
+make distclean
+make alllibs DEBUG=no
+```
+
+This is the standard choice if you want to use the quadrature libraries from
+other examples.
+
+### 2. Build the example executable for local testing
+
+```bash
+make distclean
+make alllibs
+make exec
+```
+
+This produces the libraries locally and then builds `main_integration`.
+
+### 3. Install the libraries and headers
+
+```bash
+make distclean
+make install DEBUG=no
+```
+
+Since `install` already depends on `alllibs`, this is enough to:
+
+1. build the static and shared libraries
+2. copy public headers to `$(PACS_INC_DIR)`
+3. move the generated libraries to `$(PACS_LIB_DIR)`
+
+## What `make install` Does
+
+The installation step copies or moves the following artefacts:
+
+- headers from the rule and composite quadrature parts into
+  `$(PACS_INC_DIR)`
+- `libquadrules.a`, `libquadrules.so`
+- `libquadrature.a`, `libquadrature.so`
+
+into `$(PACS_LIB_DIR)`
+
+Note that the install rule moves the generated libraries out of the local
+directory, so after installation the local folder no longer contains the built
+libraries.
+
+## Running The Example
+
+After building the executable:
+
+```bash
+./main_integration
+```
+
+If you compile in release mode and rely on installed shared libraries, you may
+need:
+
+```bash
+export LD_LIBRARY_PATH=$(PACS_LIB_DIR):.
+```
+
+This is consistent with the note already printed by the Makefile help output.
+
+## What You Learn Here
+
+- use of polymorphism through a common quadrature-rule base class
+- strategy-based design through `CompositeQuadrature`
+- decorator-based extensions for adaptive integration and error estimation
+- separation between rules, mesh-based integration, and sample test functions

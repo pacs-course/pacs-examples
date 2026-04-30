@@ -2,7 +2,7 @@
 
 ## Overview
 
-This folder contains a complete example of **dynamic loading of quadrature rules and integrand functions** to build a plugin-style numerical integration application. The core idea is to load rules and functions from shared libraries at runtime, select them using a factory, and then run composite integration over a mesh.
+This folder contains a complete example of **dynamic loading of quadrature rules and integrand functions** to build a plugin-style numerical integration application. The core idea is to load rules and functions from shared libraries at runtime, select them using a factory, and then run composite integration over a mesh through `CompositeQuadrature`.
 
 The example demonstrates **runtime extensibility**, **object factories**, **dynamic linking**, and **config-driven execution** (GetPot and JSON), plus optional runtime parsing of functions with **muParser**.
 
@@ -14,7 +14,7 @@ The example demonstrates **runtime extensibility**, **object factories**, **dyna
 2. **Plugin libraries** register themselves into factories at load time.
 3. The main executable **loads shared libraries** with `dlopen` and queries factories for the chosen rule/integrand.
 4. Integration parameters are read from **GetPot** or **JSON**.
-5. Integration is executed using the existing composite quadrature machinery (from the base version library).
+5. Integration is executed using the existing `CompositeQuadrature` machinery (from the base version library).
 
 ---
 
@@ -27,7 +27,7 @@ The example demonstrates **runtime extensibility**, **object factories**, **dyna
   - Loads parameter file (GetPot or JSON).
   - Dynamically loads quadrature rule libraries and integrand libraries using `dlopen`.
   - Queries factories to create the selected rule and integrand.
-  - Runs composite integration and prints results.
+  - Runs composite integration with `CompositeQuadrature` and prints results.
   - Supports `--help` and `--list` to show available rules.
 
 ### Factories and Registration

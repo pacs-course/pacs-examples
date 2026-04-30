@@ -12,19 +12,19 @@ using namespace Geometry;
 
   It is implemented using the following design:
   - Composition with a QuadraturRule is implemented via a
-    unique_ptr<>. A Quadrature object thus owns a polymorphic object
+    unique_ptr<>. A CompositeQuadrature object thus owns a polymorphic object
     of type QuadratureRule. This allows to assign the quadrature rule
     run-time.
 
   - A 1D mesh is simply aggregated as an object. So a copy is
     made. We however support move semantic (introduced in C++11) so that
     if the mesh class implements a move constructor we can move the
-    mesh into the Quadrature, saving memory.
+    mesh into the CompositeQuadrature, saving memory.
 
     It is an example of the Bridge Design pattern: part of the implementation
     is delegated to a polymorphic object (the QuadratureRule).
  */
-class Quadrature
+class CompositeQuadrature
 {
 public:
   typedef apsc::NumericalIntegration::FunPoint FunPoint;
@@ -34,7 +34,7 @@ public:
     \param mesh The 1D mesh (passed via universal reference)
    */
   template <typename QuadHandler, typename MESH>
-  Quadrature(QuadHandler &&rule, MESH &&mesh)
+  CompositeQuadrature(QuadHandler &&rule, MESH &&mesh)
     : rule_(std::forward<QuadHandler>(rule)), mesh_(std::forward<MESH>(mesh))
   {}
 
@@ -49,7 +49,7 @@ public:
     \param mesh The 1D mesh
    */
   template <typename MESH>
-  Quadrature(const QuadratureRuleBase &rule, MESH &&mesh)
+  CompositeQuadrature(const QuadratureRuleBase &rule, MESH &&mesh)
     : rule_(rule.clone()), mesh_(std::forward<MESH>(mesh))
   {}
   //! Copy constructor.
@@ -60,16 +60,16 @@ public:
     if I want to make the class copiable/movable with a deep copy, I need
     to write the operators myself, exploiting clone().
    */
-  Quadrature(Quadrature const &rhs) = default;
+  CompositeQuadrature(CompositeQuadrature const &rhs) = default;
   /*!
    * Move constructor.
    * @param rhs The input quadrature
    */
-  Quadrature(Quadrature &&rhs) = default;
+  CompositeQuadrature(CompositeQuadrature &&rhs) = default;
   //! Copy assignment.
-  Quadrature &operator=(Quadrature const &) = default;
+  CompositeQuadrature &operator=(CompositeQuadrature const &) = default;
   //! Move assignment.
-  Quadrature &operator=(Quadrature &&) = default;
+  CompositeQuadrature &operator=(CompositeQuadrature &&) = default;
   //! Calculates the integal on the passed integrand function.
   double apply(FunPoint const &) const;
   QuadratureRuleBase const &

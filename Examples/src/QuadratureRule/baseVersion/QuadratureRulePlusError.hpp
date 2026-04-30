@@ -18,7 +18,8 @@ namespace apsc::NumericalIntegration
   an estimate of the error using the classical formula based
   on comparing the integral over h and that over h/2.
 
-  Since the Quadrature rule is composed inside the class that
+  Since the quadrature rule is composed inside CompositeQuadrature,
+  the class that
   implements composite integration, I need a way to
   gather the information about the value of the error estimate of
   the given rule. I have chosen to use an mutable variable of an embedded struct

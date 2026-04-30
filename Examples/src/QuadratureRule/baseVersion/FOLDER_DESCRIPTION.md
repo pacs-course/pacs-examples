@@ -10,7 +10,7 @@ The library is structured around a polymorphic class hierarchy with `QuadratureR
 
 ### Core Design Patterns
 
-1. **Strategy Pattern**: The `Quadrature` class uses quadrature rules as policies
+1. **Strategy Pattern**: The `CompositeQuadrature` class uses quadrature rules as policies
 2. **Decorator Pattern**: Adaptive rules and error estimators enhance basic quadrature rules
 3. **Virtual Constructor (Clone) Idiom**: All rules implement `clone()` for deep copying
 
@@ -90,7 +90,7 @@ Implements Monte Carlo integration:
 ### Composite Integration
 
 #### `numerical_integration.hpp` / `numerical_integration.cpp`
-Contains the **`Quadrature`** class implementing composite integration:
+Contains the **`CompositeQuadrature`** class implementing composite integration:
 - Aggregates a `Mesh1D` (1D mesh from geometry library)
 - Composes with a `QuadratureRuleBase` via `QuadratureRuleHandler`
 - Applies the rule to each mesh interval and sums results

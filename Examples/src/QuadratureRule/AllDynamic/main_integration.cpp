@@ -213,7 +213,7 @@ main(int argc, char **argv)
   // Compute integral
   Domain1D   domain(a, b);
   Mesh1D     mesh(domain, nint);
-  Quadrature s(*theRule, mesh);
-  double     approxs = s.apply(f);
+  CompositeQuadrature s(*theRule, mesh);
+  double              approxs = s.apply(f);
   cout << "Result= " << approxs << endl;
 }

@@ -1,55 +1,255 @@
-# Dynamic loading of numerical rules and integrands #
+# Dynamic Quadrature Plugins
 
+This directory contains the dynamic-loading version of the quadrature example.
+Instead of selecting rules and integrands only at compile time, the executable
+loads shared libraries at runtime and discovers available rules and functions
+through factories.
 
-This is a rather complex example, where we show the use of dynamic library loading to implement a plugin-type architecture and
-dynamically load the integrand for our approximated integral. We also show how we can fit in the scheme the possibility of indicating the integral using `muParser` (for other examples and a description of `muParser` go in the `muParserInterface` folder).
+The composite integration step is performed by the `CompositeQuadrature` class
+from `QuadratureRule/baseVersion`, while this folder adds:
 
-Here we accomplish the following objectives:
-- A code for univariate numerical integration (quadrature) capable of extending the applicable quadrature rule by loading "plugins" (shared libraries) dynamically. The user may specify which plugins are needed. To this purpose we use an object factory, specializing the factory in `GenericFactory`.
-- We are able also to load the integrands from a library indicated by the user. Here we use the specialization of `GenericFactory`, called `FunctionFactory` to handle callable objects.
-- We show how the proposed technique of dynamic loading of integrand function may be extended to functions that are specified at runtime by reading the function expression from a file! To this purpose we use `muParser`. We recall that using a parser gives great flexibility but it is also computationally much less efficient than a compiled function.
-- We use `GetPot` to read all information about the plugins, the library of user defined functions and to specify all the parameters
-needed for the numerical integration.
+- runtime loading of quadrature-rule plugins
+- runtime loading of integrand libraries
+- a shared factory used by all loaded modules
+- optional integrands parsed at runtime with `muParser`
 
-To make it work:
+## Main Components
 
-* go in `Extra/muParser` and follow the instructions in `README_PACS.md` to install it.
+- `main_integration.cpp`
+  Main executable. It reads the input file, loads plugin libraries with
+  `dlopen`, queries the factories, and runs the integration.
 
-* go in `../baseversion`, follow the instructions in the `README` file, and finally do
+- `ruleFactory.hpp` / `ruleFactory.cpp`
+  Shared factory for quadrature rules.
 
-    make alllibs (maybe with DEBUG=no)
-    make install
+- `ruleProxy.hpp`
+  Alternative registration mechanism for factory entries.
 
-To compile the libraries:
+- `udfHandler.hpp` / `udfHandler.cpp`
+  Shared factory for integrand callables.
 
-    make alllib [DEBUG=no]
+- `udf.cpp`
+  Integrand library, including the bridge to runtime-parsed functions.
 
-to compile the executable
+- `muParserFunction.hpp` / `muParserFunction.cpp`
+  Utility class wrapping `muParser`.
 
-    make exec [DEBUG=no]
+- `AdamsRules.cpp`, `GaussRules.cpp`, `MontecarloRules.cpp`
+  Shared plugin libraries registering different rule families.
 
-We create several dynamic libraries
+- `QuadParameters.hpp` / `QuadParameters.cpp`
+  Utilities to read parameters from `GetPot` or JSON input files.
 
-- `libRulesFactory.so` contains the factory of quadrature rules as a namespace variable. It must be linked to **all** code that uses the factory!
-- `libudf.so` Contains the user defined functions, and also the wrapper for muParser. The latter makes use of the utility contained in `muParserFunction.hpp`.
-- `libAdamsRules.so`, `libGaussRules.so` and `libMontecarloRules.so` are the plugin dynamic libraries that define a different set of quadrature rules.
+- `quadratura.getpot`, `quadraturam.getpot`, `quadratura.json`
+  Example input files.
 
+- `parsedFunction.txt`
+  Text file containing the expression used by the parsed integrand example.
 
-## Things to note ##
-- The use of two alternatives (one is commented) to register the rules into the factory as soon as the corresponding library is loaded. One uses an attribute of the compiler, the second, some helper object whose creation registers the rule (you find the explanation in the `README` file in the `GenericFactory/` folder) ;
-- The factory implements the Singleton design pattern, useful to avoid dangerous copies, and is implemented as a global (namespace) variable, so that we ensure that all code sees the same factory. Beware: the object code that provides the factory MUST be contained in a shared library! Otherwise you have problems due to the way the linker (at least the gnu linker) works (I avoid going into details here).
-- The function `parsedFunction` reads the function expression from the file `parsedFunction.txt` (you cannot change the name, sorry). The muParser code is enucleated in a special class, called `muParserFunction`. To be able to use the parser properly, I need to create a static object inside the function. When the function `parsedFunction()` is called the first time, a `muParserFunction` object is created, which reads the expression from the file. 
+## Produced Shared Libraries
 
-# What do I learn here? #
-- A rather complete code that makes use of dynamic loading of shared libraries to implement a plugin-type architecture.
-- An example of use of singleton objects
-- An example of interfacing with `muParser`
-- Another example of `GetPot` usage.
-- An example of the use of `FunctionFactory` to handle callable objects.
+This folder builds only dynamic libraries:
 
- 
-- 
+- `librulesFactory.so`
+  Shared quadrature-rule factory.
 
+- `libudf.so`
+  Shared integrand library.
 
+- `libAdamsRules.so`
+  Plugin with Newton-Cotes rules.
 
+- `libGaussRules.so`
+  Plugin with Gauss and Gauss-Lobatto rules.
 
+- `libMontecarloRules.so`
+  Plugin with Monte Carlo rules.
+
+The executable is:
+
+- `main_integration`
+
+## Dependencies
+
+This example depends on both project libraries and external packages.
+
+### Project dependencies
+
+Before building `AllDynamic`, install the libraries from:
+
+1. `Examples/src/OneDMesh`
+2. `Examples/src/QuadratureRule/baseVersion`
+
+Recommended order:
+
+```bash
+cd Examples/src/OneDMesh
+make alllibs DEBUG=no
+make install
+
+cd ../QuadratureRule/baseVersion
+make alllibs DEBUG=no
+make install
+
+cd ../AllDynamic
+```
+
+`AllDynamic` uses:
+
+- `libMesh1D`
+- `libquadrules`
+- `libquadrature`
+
+from those installed locations.
+
+### External dependencies
+
+The folder also relies on:
+
+- `GetPot`
+- `muParser`
+- the POSIX dynamic loading library `dl`
+
+Before building this example, `muParser` must be installed and visible to the
+global build configuration.
+
+## Compilation Process
+
+This folder is intentionally built around shared libraries only. The Makefile
+does not provide static library targets and does not provide an `install`
+target.
+
+The useful commands are:
+
+```bash
+make
+make dynamic
+make alllib
+make exec
+make clean
+make distclean
+```
+
+### Meaning of the targets
+
+- `make dynamic`
+  Builds all shared libraries used by the plugin system.
+
+- `make alllib`
+  Alias for `make dynamic`.
+
+- `make exec`
+  Builds the shared libraries first and then links `main_integration`.
+
+- `make clean`
+  Removes object files and the executable but keeps generated `.so` files.
+
+- `make distclean`
+  Removes objects, executable, shared libraries, and dependency files.
+
+### Build options
+
+- `DEBUG=no`
+  Enables optimized compilation and keeps the runtime rpath pointing to
+  `$(PACS_LIB_DIR)`.
+
+- `DEBUG=yes`
+  Keeps debug information while still using the same installed-library search
+  path.
+
+## Recommended Build Workflow
+
+From a clean tree:
+
+```bash
+make distclean
+make exec DEBUG=no
+```
+
+This is the most practical command because `exec` already depends on `alllib`,
+which in turn builds all required plugin libraries.
+
+If you only want to rebuild the plugin libraries and not the executable:
+
+```bash
+make distclean
+make dynamic DEBUG=no
+```
+
+## Installation Note
+
+Unlike `QuadratureRule/baseVersion`, this folder does **not** define a
+`make install` target.
+
+That is consistent with the role of the folder:
+
+- it is primarily an executable example
+- its plugin shared libraries are meant to be loaded from the local directory
+  during testing
+- its main reusable dependencies are already installed from `OneDMesh` and
+  `baseVersion`
+
+If you want to reuse the generated plugins elsewhere, you currently need to
+copy the `.so` files manually or extend the Makefile with an installation rule.
+
+## Running The Example
+
+After building:
+
+```bash
+./main_integration
+```
+
+or with an explicit input file:
+
+```bash
+./main_integration InputFile=quadratura.getpot
+./main_integration InputFile=quadratura.json
+```
+
+Useful command-line options:
+
+- `-h` or `--help`
+  Show usage information.
+
+- `-l` or `--list`
+  List the rules currently registered after loading the selected plugin
+  libraries.
+
+Since the executable loads shared libraries at runtime, make sure the dynamic
+loader can find both the installed PACS libraries and the local plugin
+libraries. In practice this usually means:
+
+```bash
+export LD_LIBRARY_PATH=$(PACS_LIB_DIR):.
+```
+
+## How The Build Is Structured
+
+The shared-library dependency graph is roughly:
+
+- `librulesFactory.so`
+  Must be shared and common to all plugin modules so that every loaded object
+  sees the same factory instance.
+
+- `libAdamsRules.so`, `libGaussRules.so`, `libMontecarloRules.so`
+  Register quadrature rules into `librulesFactory.so` when loaded.
+
+- `libudf.so`
+  Registers integrands into the integrand factory and links to `muParser`.
+
+- `main_integration`
+  Links against `libquadrature`, `libMesh1D`, `librulesFactory.so`, and `dl`,
+  then loads the actual rule and integrand plugins at runtime.
+
+This shared-factory arrangement is essential. If the factory lived in ordinary
+object code instead of a shared library, different modules could end up seeing
+different registries.
+
+## What You Learn Here
+
+- how to implement a plugin architecture with `dlopen`
+- how to register objects into shared factories at load time
+- how to combine runtime extensibility with the `CompositeQuadrature` solver
+- how to integrate compiled integrands and runtime-parsed expressions in one
+  framework

@@ -29,10 +29,10 @@ main(int argc, char **argv)
   Domain1D domain{a, b};
   Mesh1D   mesh{domain, nint};
 
-  Quadrature s{Simpson{}, mesh};
-  Quadrature m{MidPoint{}, mesh};
-  Quadrature t{Trapezoidal{}, mesh};
-  Quadrature gL{GaussLegendre3p{}, mesh};
+  CompositeQuadrature s{Simpson{}, mesh};
+  CompositeQuadrature m{MidPoint{}, mesh};
+  CompositeQuadrature t{Trapezoidal{}, mesh};
+  CompositeQuadrature gL{GaussLegendre3p{}, mesh};
 
   cout << " Now the mesh has " << mesh.numNodes() << " nodes" << endl;
 
@@ -47,7 +47,7 @@ main(int argc, char **argv)
   MonteCarlo mcRule;
   // Desired error
   mcRule.setError(1.e-3);
-  Quadrature mc(mcRule, mesh);
+  CompositeQuadrature mc(mcRule, mesh);
 
   auto approxmc = mc.apply(f);
   cout << format(
@@ -57,13 +57,14 @@ main(int argc, char **argv)
       std::abs(exactVal - approxmc));
 
   // Now the adaptive
-  Quadrature sa{QuadratureRuleAdaptive<Simpson>(targetError, 10000), mesh};
+  CompositeQuadrature sa{QuadratureRuleAdaptive<Simpson>(targetError, 10000),
+                         mesh};
   double     adaptiveResult = sa.apply(f);
   printout(adaptiveResult, exactVal, targetError, "SImpson Adaptive");
 
   // Now the adaptive
-  Quadrature ga{QuadratureRuleAdaptive<GaussLobatto4p>(targetError, 10000),
-                mesh};
+  CompositeQuadrature ga{
+    QuadratureRuleAdaptive<GaussLobatto4p>(targetError, 10000), mesh};
   adaptiveResult = ga.apply(f);
   printout(adaptiveResult, exactVal, targetError, "Gauss Lobatto Adaptive");
 }

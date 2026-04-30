@@ -6,7 +6,7 @@
 namespace apsc::NumericalIntegration
 {
 // I need to copy the QuadratureRule not its handler!
-/*Quadrature & Quadrature::operator=(Quadrature const & rhs){
+/*CompositeQuadrature & CompositeQuadrature::operator=(CompositeQuadrature const & rhs){
   if(this!=&rhs){
     mesh_=rhs.mesh_;
     // Resets the current value replacing with the pointer
@@ -23,7 +23,7 @@ I show different implementations:
 - Parallel STL
 */
 double
-Quadrature::apply(FunPoint const &f) const
+CompositeQuadrature::apply(FunPoint const &f) const
 {
   double result(0);
 #ifndef PARALLELCPP
