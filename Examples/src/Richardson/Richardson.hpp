@@ -19,6 +19,9 @@ namespace apsc::LinearAlgebra
  * @tparam Function A callable object double -> double representing y(h)
  */
 template <class Function = std::function<double(double const &)>>
+  requires requires(Function f, double h) {
+    { f(h) } -> std::convertible_to<double>;
+  }
 class Richardson
 {
 public:
@@ -32,6 +35,7 @@ public:
    * is a standard Taylor expansion, i.e. k_i=i
    * @param f The function
    * @param M The number of terms.
+   * @pre M>0
    */
   Richardson(Function const &f, unsigned int M)
     : row0(M + 1), row1(M + 1), y(f), k(M), kfact(M), iterates(M + 1)
@@ -57,6 +61,9 @@ public:
   /*!
    * The last error
    * @return the error
+   * @note the error is computed as the difference between the last two
+   * iterates.
+   * @pre cannot be called before at least two iterations have been performed
    */
   double
   getError() const
@@ -67,7 +74,7 @@ public:
    * @return the number of terms in the Richardson extrapolation
    */
   auto
-  size() const
+  size() const noexcept
   {
     return k.size();
   };
@@ -92,14 +99,20 @@ public:
   setK(std::size_t M)
   {
     k.resize(M);
-    k = std::iota(k.begin(), k.end(), 1u);
+    std::iota(k.begin(), k.end(), 1u);
     resize(M);
     setKfact();
   }
   /*!
    * Returns all the Richardson extrapolations
+   * @return the iterates
+   * @note the iterates are ordered from the least accurate to the most
+   * accurate, i.e. the last one is the most accurate extrapolation. I return a
+   * const reference to avoid copying the vector if I just want to extract a
+   * component of it.
+   *
    */
-  auto
+  auto const &
   getIterates() const
   {
     return iterates;
@@ -128,20 +141,28 @@ private:
   {
     std::size_t j = 0u;
     for(auto kval : k)
+      // I compute t^k
+      // I precompute these values and save some time in the extrapolation
+      // if t=2 I can use std::ldexp(1.0, kval) instead of std::pow(t,kval)
+      // is more efficient
       kfact[j++] = std::pow(t, kval);
   }
 };
 
 template <class Function>
+  requires requires(Function f, double h) {
+    { f(h) } -> std::convertible_to<double>;
+  }
+
 double
 Richardson<Function>::operator()(double h)
 {
-  const unsigned int M = k.size();
-  for(unsigned int i = 0; i <= M; ++i)
+  const auto M = k.size();
+  for(std::size_t i = 0; i <= M; ++i)
     {
       row1[0] = y(h);
       h /= t;
-      for(unsigned int j = 1; j <= i; ++j)
+      for(std::size_t j = 1; j <= i; ++j)
         {
           row1[j] =
             (kfact[j - 1] * row1[j - 1] - row0[j - 1]) / (kfact[j - 1] - 1.);

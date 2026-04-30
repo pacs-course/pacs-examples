@@ -18,6 +18,7 @@
 #include "Richardson.hpp"
 #include "basicZeroFun.hpp"
 #include <iostream>
+#include <stdexcept>
 #include <tuple>
 #include <vector>
 // Function f(y,t)
@@ -41,7 +42,7 @@ CrankNicolsonStep(Function const &f, double y0, double t0, double h)
       std::tie(y1, status2) =
         apsc::secant(fStep, y0, y0 + 0.01 * h * fn, 1.e-8, 1.e-10, 200);
       if(status2 == false)
-        std::cerr << " Failed also at second attempt! Reduce h!\n";
+        throw std::runtime_error(" Failed also at second attempt! Reduce h!\n");
     }
   return y1;
 }
