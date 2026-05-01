@@ -25,3 +25,6 @@
 	path = Examples/src/pybind11/pybind11_examples
 	url = https://github.com/pacs-course/pybind11_examples.git
         branch = master
+[submodule "Examples/src/LinearAlgebra/CppNumericalSolvers"]
+	path = Examples/src/LinearAlgebra/CppNumericalSolvers
+	url = git@github.com:pacs-course/CppNumericalSolvers.git
