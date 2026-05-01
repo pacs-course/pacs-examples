@@ -17,6 +17,7 @@
 #endif
 
 #include <iostream>
+#include <limits>
 #include <random>
 
 int
@@ -50,10 +51,10 @@ main()
   std::random_device r;
   // the random engine is initialised with the random device.
   // Each run will be different since I will be using a different realization.
-  std::default_random_engine rand(r());
+  std::mt19937 rand(r());
   // I assume error nomally distributed with mean zero and small variance
   std::normal_distribution<double> normaldist(0.0, 1e-2);
-  for(int i = 0; i < trainx.size(); ++i)
+  for(Eigen::Index i = 0; i < trainx.size(); ++i)
     {
       trainx(i) = static_cast<double>(i);
       trainy(i) = static_cast<double>(i * i) + normaldist(rand);

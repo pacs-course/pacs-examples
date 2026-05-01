@@ -8,6 +8,7 @@
 #ifndef SRC_REGRESSION_POLYNOMIALREGRESSIONEVALUATOR_HPP_
 #define SRC_REGRESSION_POLYNOMIALREGRESSIONEVALUATOR_HPP_
 #include "RegressionTraits.hpp"
+
 #include <utility>
 
 #include "PolynomialBasis.hpp"
@@ -26,13 +27,12 @@ public:
   using Parameters = typename Trait::Parameters;
   using Vector = typename Trait::Vector;
   //! The constructor that takes a well formed ModelBasis object
-  /*
-   * I use std::forward and the Universal Reference trick so that
-   * if the argument can be moved it will be moved.
-   */
-  template <typename M = ModelBasis>
-  PolynomialRegressionEvaluator(M &&modelbasis)
-    : M_basis{std::forward<M>(modelbasis)}
+  explicit PolynomialRegressionEvaluator(ModelBasis const &modelbasis)
+    : M_basis{modelbasis}
+  {}
+  //! Move constructor for the basis object
+  explicit PolynomialRegressionEvaluator(ModelBasis &&modelbasis)
+    : M_basis{std::move(modelbasis)}
   {}
   //! Default constuctor
   PolynomialRegressionEvaluator() = default;
@@ -45,8 +45,8 @@ public:
    * @note the size of parameters must match the number of basis functions in
    * ModelBasis
    */
-  double
-  eval(double const &x, Parameters const &parameters) const
+  [[nodiscard]] double
+  eval(double x, Parameters const &parameters) const
   {
     // dot is a method of Eigen vectors so model.eval() and parameters should be
     // Eigen vectors
@@ -56,8 +56,8 @@ public:
   /*!
    * Not really necessary for our purposes. Only for completeness
    */
-  double
-  evalDerx(double const &x, Parameters const &parameters) const
+  [[nodiscard]] double
+  evalDerx(double x, Parameters const &parameters) const
   {
     // dot is a method of Eigen vectors so model.eval() and parameters should be
     // Eigen vectors
@@ -68,14 +68,13 @@ public:
    * @note Only required if we use a gradient scheme to compute the optimal
    * parameters
    */
-  Vector
-  evalDerPar(double const &x, Parameters const &parameters) const
+  [[nodiscard]] Vector
+  evalDerPar(double x, [[maybe_unused]] Parameters const &parameters) const
   {
     return M_basis.eval(x);
-    ;
   }
   //! Get the basis functions
-  ModelBasis
+  [[nodiscard]] ModelBasis const &
   getModelBasis() const
   {
     return M_basis;
@@ -85,15 +84,15 @@ public:
    *  This is a different way of making a setter!
    *  I relies on function overloading.
    */
-  ModelBasis &
+  [[nodiscard]] ModelBasis &
   getModelBasis()
   {
     return M_basis;
   }
 
   //! The capacity of the underlying model
-  std::size_t
-  size() const
+  [[nodiscard]] std::size_t
+  size() const noexcept
   {
     return M_basis.size();
   }

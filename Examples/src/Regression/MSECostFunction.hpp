@@ -9,6 +9,9 @@
 #define SRC_REGRESSION_MSECOSTFUNCTION_HPP_
 #include "PolynomialRegressionEvaluator.hpp"
 #include "RegressionTraits.hpp"
+
+#include <cassert>
+#include <concepts>
 #include <utility>
 namespace LinearAlgebra
 {
@@ -27,20 +30,21 @@ public:
   using Vector = typename Trait::Vector;
   //! Constructor that takes a ModelEvaluator in input
   //
-  MSECostFunction(ModelEvaluator const &m) : M_model(m) {}
+  explicit MSECostFunction(ModelEvaluator const &m) : M_model(m) {}
   //! Constructor thet moves a ModelEvaluator
-  MSECostFunction(ModelEvaluator &&m) : M_model(std::move(m)) {}
+  explicit MSECostFunction(ModelEvaluator &&m) : M_model(std::move(m)) {}
   //! Default constructor
   MSECostFunction() = default;
   //! To set a model
   template <class M>
+    requires std::assignable_from<ModelEvaluator &, M &&>
   void
   setModel(M &&m)
   {
     M_model = std::forward<M>(m);
   }
   //! Get the model evaluator
-  auto
+  [[nodiscard]] auto const &
   get_model() const
   {
     return M_model;
@@ -52,29 +56,33 @@ public:
    * @param model The underlying model
    * @param parameters The vector of parameters
    */
-  double
+  [[nodiscard]] double
   eval(Vector const &X, Vector const &Y, Parameters const &parameters) const
   {
+    assert(X.size() == Y.size() && "X and Y must have the same size");
+    assert(X.size() > 0 && "At least one sample is required");
     double sum = 0.0;
-    for(int i = 0; i < X.size(); ++i)
+    for(Eigen::Index i = 0; i < X.size(); ++i)
       {
-        auto val = M_model.eval(X(i), parameters) - Y(i);
-        sum += val * val;
+        auto const residual = M_model.eval(X(i), parameters) - Y(i);
+        sum += residual * residual;
       }
-    return 0.5 * sum / X.size();
+    return 0.5 * sum / static_cast<double>(X.size());
   }
   //! Gradiens w.r.t. parameters
-  Vector
+  [[nodiscard]] Vector
   evalDerPar(Vector const &X, Vector const &Y,
              Parameters const &parameters) const
   {
+    assert(X.size() == Y.size() && "X and Y must have the same size");
+    assert(X.size() > 0 && "At least one sample is required");
     Vector res = Vector::Zero(parameters.size());
-    for(int i = 0; i < X.size(); ++i)
+    for(Eigen::Index i = 0; i < X.size(); ++i)
       {
         res += (M_model.eval(X(i), parameters) - Y(i)) *
                M_model.evalDerPar(X(i), parameters);
       }
-    return res / X.size();
+    return res / static_cast<double>(X.size());
   }
 
   //! Get the underlying Model Evaluator
@@ -85,7 +93,7 @@ public:
    *
    * @return the model
    */
-  ModelEvaluator
+  [[nodiscard]] ModelEvaluator const &
   getModel() const
   {
     return M_model;
@@ -98,20 +106,10 @@ public:
    *
    * @return
    */
-  ModelEvaluator &
+  [[nodiscard]] ModelEvaluator &
   getModel()
   {
     return M_model;
-  }
-
-  //! This is more classic setter
-  /*!
-   * @param model the model evaluator to set
-   */
-  void
-  setModel(ModelEvaluator const &model)
-  {
-    M_model = model;
   }
 
 private:

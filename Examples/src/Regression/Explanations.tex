@@ -1,0 +1,426 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\RequirePackage{listings}
+\RequirePackage{color}
+\RequirePackage{graphicx}
+
+\definecolor{DarkGreen}{rgb}{0, .5, 0}
+\definecolor{DarkBlue}{rgb}{0, 0, .5}
+\definecolor{DarkRed}{rgb}{.5, 0, 0}
+\definecolor{LightGray}{rgb}{.95, .95, .95}
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\definecolor{darkblue}{rgb}{0,0,0.9}
+\definecolor{darkred}{rgb}{0.8,0,0}
+\definecolor{darkgreen}{rgb}{0.0,0.85,0}
+
+\lstset{
+  language=[ISO]C++,
+  basicstyle=\sf,
+  backgroundcolor=\color{White},
+  keywordstyle=\color{DarkBlue}\bfseries,
+  commentstyle=\color{DarkGreen}\itshape,
+  stringstyle=\color{DarkRed},
+  extendedchars=true,
+  breaklines=true,
+  basewidth={0.5em,0.4em},
+  fontadjust=true,
+  linewidth=\textwidth,
+  breakatwhitespace=true,
+  lineskip=0ex,
+}
+
+\author{Luca Formaggia}
+\newcommand{\blue}{\color{blue}}
+\newcommand{\red}{\color{red}}
+\newcommand{\black}{\color{black}}
+\newcommand{\darkred}{\color{darkred}}
+\newcommand{\darkgreen}{\color{darkgreen}}
+\newcommand{\til}{{$\tilde\null\,\,$}}
+\newcommand{\li}{\lstinline}
+\newcommand{\Exampledir}{run:./../Material/Examples}
+\newcommand{\program}[1]{run:./../Material/Examples/src/#1}
+\newcommand{\programname}[1]{./../Material/Examples/src/#1}
+\newcommand{\onlyprogramname}[1]{Material/Examples/src/#1}
+\usepackage{a4wide}
+\title{Some Tools for Parameter Fitting}
+\date{January 2021}
+
+\begin{document}
+\maketitle
+
+The directory \onlyprogramname{Regression} contains an example of fitting data with simple parametric models. The chosen paradigm is to have a collection of simple classes that can be composed to create different types of models and solution procedures. For this purpose, generic programming with templates is advantageous because it allows us to create only loosely related classes, unlike polymorphism, which requires a precise class hierarchy and a carefully designed interface. I will use terminology that is not always standard, but it is sufficient to illustrate the main components of a simple univariate parametric fitting framework.
+
+\section{The general framework}
+A rather general framework for parametric fitting in a supervised-learning setting consists of the following ingredients:
+\begin{itemize}
+  \item \textbf{Data.} The data are $\boldsymbol{\chi}=(\mathbf{X},\mathbf{Y})=\lbrace(x_i,y_i),i=1,\ldots,n\rbrace$, assumed to be i.i.d. The goal is to find a relationship $x \to y$ that represents the way the data are generated and allows us to make predictions on unseen values of $x$. In this example both $x$ and $y$ are scalar, but the general framework also applies to vector-valued variables.
+  \item \textbf{Predictor.} A model, i.e. a predictor $m(x|\boldsymbol{\beta})$ parameterized by $\boldsymbol{\beta}= \lbrace\beta_1,\cdots,\beta_p\rbrace$, which for a given value of the parameters provides a prediction $y=m(x|\boldsymbol{\beta})$. We seek parameters $\boldsymbol{\beta}^*$ such that a suitable distance between $\boldsymbol{Y}$ and $m(\boldsymbol{X}|\boldsymbol{\beta}^*)$ is minimized.
+  \item \textbf{Loss function.} A loss function $l(y,\hat{y})$ that takes a datum $(x_i,y_i)\in\boldsymbol{\chi}$ and a prediction $\hat{y}_i=m(x_i|\boldsymbol{\beta})$ and measures their discrepancy. Given the model and the datum $(x_i,y_i)$, the loss can be expressed as a function of the parameters only:
+  \begin{equation}\label{eq:lossfun}
+    l_i(\boldsymbol{\beta})=l(y_i,m(x_i|\boldsymbol{\beta})).
+  \end{equation}
+  A possible choice (but not the only one, and not always the most appropriate one) is the squared loss:
+  \[
+    l(y,\hat{y})=\Vert y-\hat{y}\Vert^2,
+  \]
+  which is linked to a particular case of the negative log-likelihood\footnote{The logarithm is used to obtain an additive loss, and the negative sign turns a maximization problem into a minimization problem. Thus, minimizing $J$ in~\eqref{eq:empiricalr} is equivalent to maximizing $\prod p_m(y_i|x_i,\boldsymbol{\beta})$.}:
+  \begin{equation}\label{eq:lossfunnl}
+    l_i(\boldsymbol{\beta})=-\log(p_m(y_i|x_i,\boldsymbol{\beta})).
+  \end{equation}
+  This happens when the probabilistic distribution $p_m$ of $y$ is Gaussian with constant variance $\sigma^2$ and the model $m(x_i|\boldsymbol{\beta})$ represents the expected value of $y$ at $x=x_i$; see Section~\ref{sec:logequivalence}.
+  \item \textbf{Empirical risk.} A cost function (empirical risk) of the form
+  \begin{equation}\label{eq:empiricalr}
+    J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^{n} l_i(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^{n}l(y_i,m(x_i|\boldsymbol{\beta})).
+  \end{equation}
+  Often, to guarantee uniqueness of the solution, a regularization term is added:
+  \begin{equation}\label{eq:empiricalrreg}
+    J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^{n} l_i(\boldsymbol{\beta})+\Vert\boldsymbol{\beta}-\boldsymbol{\beta}_0\Vert^2_W,
+  \end{equation}
+  where $\boldsymbol{\beta}_0$ is a possible prior on the parameters (often taken to be zero) and
+  \[
+    \Vert\boldsymbol{\beta}\Vert^2_W=\boldsymbol{\beta}^T \mathbf{W} \boldsymbol{\beta},
+  \]
+  with $\mathbf{W}$ symmetric positive definite.
+  \item \textbf{Minimization.} A minimization procedure to find
+  \begin{equation}\label{eq:minim}
+    \boldsymbol{\beta}^*=\arg\min_{\boldsymbol{\beta}\in \mathcal{T}}J(\boldsymbol{\beta}),
+  \end{equation}
+  where $\mathcal{T}\subset\mathbb{R}^p$ is the set of admissible parameters, typically convex.
+\end{itemize}
+
+In the case of squared loss functions, the minimization problem is equivalent to a mean square error (MSE) strategy. If the model is linear in the parameters, we may use a QR factorization of the matrix associated with the least-squares problem. More generally, we may use optimization methods such as gradient descent, stochastic gradient descent, Newton-Raphson, Levenberg-Marquardt, BFGS, or trust-region methods.
+
+\subsection{Putting it together}
+We have a clear functional hierarchy: the solver needs the cost function, the cost function needs a model, and the model needs the data types on which it operates. This is a classical situation in which composition works well, and templates let us keep the components flexible and loosely coupled.
+
+\section{A particular case: linear regression}
+In this example we implement only polynomial univariate regression, as an example of a linear model of the form
+\begin{equation}
+  m(x;\boldsymbol{\beta})=\sum_{i=0}^{N-1} \beta_i\phi_i(x),
+\end{equation}
+where the $\beta_i$ are the parameters and the $\phi_i$ are basis functions.
+
+The model is linear in the parameters and, in the case of polynomial regression, a natural choice is the monomial basis $\phi_i=x^i$, although other choices are possible.
+
+We also created a class for cost functions. At the moment we have implemented only the mean squared error (MSE).
+
+If the model is linear with respect to the parameters, the parameters that minimize $J$ for a set of training points $\{\mathbf{x},\mathbf{y}\}$ can be computed using QR factorization. This is very effective if the number of parameters is not too large, say $\le 100$.
+
+One builds
+\[
+  A=\begin{bmatrix}
+    \phi_0(x_0)&\ldots&\phi_{N-1}(x_0)\\
+    &\cdots &\\
+    \phi_0(x_{n-1})&\ldots&\phi_{N-1}(x_{n-1})\\
+  \end{bmatrix},
+\]
+computes its (thin) QR factorization, $A=QR$, and solves the triangular system
+\[
+  R\boldsymbol{\beta}=Q^T\mathbf{y}.
+\]
+
+For the QR factorization we use the tools available in the \texttt{Eigen} library.
+
+One may also minimize the cost function using an optimization algorithm. We implemented that option using the \texttt{CppNumericalSolvers} library. It is available as a git submodule, so if you have not installed the submodules, run
+\begin{verbatim}
+git submodule update --init --recursive
+\end{verbatim}
+
+After downloading the submodule, go into
+\begin{verbatim}
+Examples/src/LinearAlgebra/CppNumericalSolvers
+\end{verbatim}
+and run
+\begin{verbatim}
+make
+\end{verbatim}
+
+To interface our code with \texttt{CppNumericalSolvers}, we created a proxy around a \texttt{CostFunction} object so that it exposes the required interface.
+
+\paragraph{A note:} If you compile the code without specifying \texttt{RELEASE=yes} or \texttt{DEBUG=no}, the code is compiled without optimization and with the \texttt{-g} flag enabled. In this case, the optimization-based path prints verbose output. The verbose output is disabled if you run
+\begin{verbatim}
+make RELEASE=yes
+\end{verbatim}
+or
+\begin{verbatim}
+make DEBUG=no
+\end{verbatim}
+
+\section{Details on the code}
+\subsection{Traits}
+In \texttt{RegressionTraits.hpp} I give an example of the use of traits. Traits are classes (typically \li!struct!) that encapsulate a set of types and functions needed by template classes and functions to manipulate the objects on which they are instantiated.
+
+Traits are useful because they let us collect the main types used in a program in a single place and possibly change them according to the value of a template parameter. In this code I use the Eigen library to provide vectors, matrices, and basic linear algebra methods. In the future, I might want to support a different library such as Armadillo.
+
+At the moment only the Eigen specialization is implemented. Here is a snippet:
+\begin{lstlisting}[title={RegressionTraits.hpp}]
+namespace LinearAlgebra
+{
+  enum LinearAlgebraLibrary {EIGEN, ARMADILLO};
+
+  template <LinearAlgebraLibrary>
+  struct RegressionTraits{};
+
+  template <>
+  struct RegressionTraits<EIGEN>
+  {
+    using Function = std::function<double(double const &)>;
+    using BasisFunctions = std::vector<Function>;
+    using Vector = Eigen::VectorXd;
+    using Matrix = Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic>;
+    using Parameters = Vector;
+    using CostFunction = Function;
+  };
+}
+\end{lstlisting}
+
+I use an enum to select the linear algebra library. The primary template is empty, and the Eigen specialization defines the various types used in the code. Sometimes traits also provide methods that help adapt to differences between libraries; in that case they behave as a policy as well.
+
+\subsection{The monomials}
+Since I want a polynomial model, I first define the monomials as basis functions. This is not the only possible choice; for instance, one could use Lagrange polynomials instead.
+
+The content of the class \li!PolynomialMonomialBasisFunction! is split into two files, the second one containing the implementation. The declaration is:
+\begin{lstlisting}[title={PolynomialBasis.hpp}]
+namespace LinearAlgebra
+{
+  template<LinearAlgebraLibrary L=LinearAlgebra::EIGEN>
+  class PolynomialMonomialBasisFunction
+  {
+  public:
+    using Trait = RegressionTraits<L>;
+    using BasisFunctions = typename Trait::BasisFunctions;
+    using Vector = typename Trait::Vector;
+
+    explicit PolynomialMonomialBasisFunction(std::size_t n=0u);
+    void setFunctions(std::size_t n);
+    [[nodiscard]] auto const & getFunction(std::size_t i)
+    { return this->M_basisFunctions[i]; }
+    [[nodiscard]] Vector eval(double x) const;
+    [[nodiscard]] Vector derivatives(double x) const;
+    [[nodiscard]] std::size_t size() const noexcept
+    { return M_basisFunctions.size(); }
+    [[nodiscard]] std::size_t degree() const noexcept
+    { return this->size()-1u; }
+
+  private:
+    BasisFunctions M_basisFunctions;
+    BasisFunctions M_derivatives;
+  };
+}
+\end{lstlisting}
+
+The main methods are \li!eval()! and \li!derivatives()!, which compute the values of the basis functions and of their derivatives at a point. These methods are the main interface of the class, since they are used by the classes that build the polynomial regression model. Any other basis class used in this framework must provide methods with the same interface.
+
+In \texttt{PolynomialBasis\_impl.hpp} you can find the implementation. It uses helper functions that compute monomials recursively:
+\begin{lstlisting}[title={The functions for computing a monomial and its derivative}]
+namespace internal
+{
+  constexpr double POW(const double &x, const unsigned int N)
+  {
+    return (N == 0u) ? 1.0 : x * POW(x, N - 1);
+  }
+
+  constexpr double POWDer(const double &x, const unsigned int N)
+  {
+    if (N == 0u)
+      return 0.0;
+    else
+      return N * POW(x, N - 1);
+  }
+}
+\end{lstlisting}
+
+\subsection{Evaluation of the model}
+We have implemented only polynomial models, so we have only one evaluator class built on top of the basis functions:
+\begin{lstlisting}[title={PolynomialRegressionEvaluator.hpp}]
+#include "PolynomialBasis.hpp"
+
+namespace LinearAlgebra
+{
+  template <class ModelBasis>
+  class PolynomialRegressionEvaluator
+  {
+  public:
+    using Trait = typename ModelBasis::Trait;
+    using Parameters = typename Trait::Parameters;
+    using Vector = typename Trait::Vector;
+
+    explicit PolynomialRegressionEvaluator(ModelBasis const &modelbasis):
+      M_basis{modelbasis}{}
+    explicit PolynomialRegressionEvaluator(ModelBasis &&modelbasis):
+      M_basis{std::move(modelbasis)}{}
+    PolynomialRegressionEvaluator() = default;
+
+    [[nodiscard]] double eval(double x, Parameters const &parameters) const
+    {
+      return parameters.dot(M_basis.eval(x));
+    }
+
+    [[nodiscard]] double evalDerx(double x,
+                                  Parameters const &parameters) const
+    {
+      return parameters.dot(M_basis.derivatives(x));
+    }
+
+    [[nodiscard]] Vector evalDerPar(
+      double x, [[maybe_unused]] Parameters const &parameters) const
+    {
+      return M_basis.eval(x);
+    }
+
+    ModelBasis const & getModelBasis() const { return M_basis; }
+    ModelBasis & getModelBasis() { return M_basis; }
+    [[nodiscard]] std::size_t size() const noexcept
+    { return M_basis.size(); }
+
+  private:
+    ModelBasis M_basis;
+  };
+}
+\end{lstlisting}
+
+The template parameter must be a class that implements basis functions, such as the one shown in the previous section. The evaluator reuses the associated types through the trait, so the interfaces remain consistent.
+
+Note that \li!dot! is an Eigen method. If I wanted to switch to a different linear algebra library without rewriting the evaluator, I would need to wrap that operation through the trait.
+
+\subsection{The cost function}
+At the moment I have implemented only MSE. In general, a cost function is a class template that takes as argument a class able to evaluate the model at a point for given parameters, such as the one presented in the previous section. Again, I reuse the trait from the model evaluator so that the interfaces stay consistent.
+
+I do not report the full implementation here; the code contains the complete definitions. The public interface is:
+\begin{lstlisting}[title={MSECostFunction.hpp}]
+namespace LinearAlgebra
+{
+  template<class ModelEvaluator>
+  class MSECostFunction
+  {
+  public:
+    using Trait = typename ModelEvaluator::Trait;
+    using Parameters = typename Trait::Parameters;
+    using Vector = typename Trait::Vector;
+
+    explicit MSECostFunction(ModelEvaluator const &m): M_model(m) {}
+    explicit MSECostFunction(ModelEvaluator &&m): M_model(std::move(m)) {}
+    MSECostFunction() = default;
+
+    template<class M>
+      requires std::assignable_from<ModelEvaluator &, M&&>
+    void setModel(M&& m) { M_model = std::forward<M>(m); }
+
+    auto const & get_model() const { return M_model; }
+
+    [[nodiscard]] double eval(
+      Vector const &X, Vector const &Y, Parameters const &parameters) const;
+
+    [[nodiscard]] Vector evalDerPar(
+      Vector const &X, Vector const &Y, Parameters const &parameters) const;
+
+  private:
+    ModelEvaluator M_model;
+  };
+}
+\end{lstlisting}
+
+\subsection{The solvers}
+I implemented two solvers. One uses QR factorization and is implemented in \texttt{RegressionSolver.hpp}. I do not report the full code here since it is quite simple. The main method is \li!solve()!, which assembles the matrix and performs the linear solve. Eigen provides several flavors of QR factorization; here I use the Householder-based one, which is generally robust. I assume that the matrix built from the data has full rank, so I do not need a rank-revealing factorization.
+
+More interesting, perhaps, is the use of the library \texttt{CppNumericalSolvers}, for which I wrote a wrapper class that exposes an interface compatible with the rest of the regression code.
+
+\subsubsection{Interfacing with the CppNumericalSolvers library}
+Again, I do not report every detail. The class template takes as argument a \li!CostFunction!, for instance the MSE cost function shown before. The only requirement is that the cost function provide methods to compute both the value and the gradient for a given data set and parameter vector.
+
+The proxy derives from \li!cppoptlib::Problem<double>!, the generic base class for optimization methods in CppNumericalSolvers, and it must provide the methods \li!value()! and \li!gradient()!. Optionally, it may also define a \li!callback()! function to print statistics during the iterations. I enabled this only in debug builds.
+
+The relevant part of the class is:
+\begin{lstlisting}[title={CostFunctionProxyCppNumSolver.hpp}]
+namespace LinearAlgebra
+{
+  template <class CostFunction>
+  class CostFunctionProxyCppSolver : public cppoptlib::Problem<double>
+  {
+  public:
+    using Trait = typename CostFunction::Trait;
+    using CorrectTrait =
+      LinearAlgebra::RegressionTraits<LinearAlgebra::EIGEN>;
+    using Parameters = typename CorrectTrait::Parameters;
+    using Vector = typename CorrectTrait::Vector;
+
+    static_assert(std::is_same_v<Trait, CorrectTrait>,
+      "The cost function for CppSolver must use Eigen library");
+
+    CostFunctionProxyCppSolver(
+      CostFunction const &c, Vector const &X, Vector const &Y):
+      M_cost{c}, M_X{X}, M_Y{Y} {}
+
+    double value(Parameters const &p) override
+    {
+      return M_cost.eval(M_X, M_Y, p);
+    }
+
+    void gradient(Parameters const &p, Vector &grad) override
+    {
+      grad = M_cost.evalDerPar(M_X, M_Y, p);
+    }
+
+#ifndef NDEBUG
+    bool callback(const cppoptlib::Criteria<double> &state,
+                  const Vector &x) override
+    {
+      std::cout << "(" << std::setw(2) << state.iterations << ")"
+                << " ||dx|| = " << std::fixed << std::setw(8)
+                << std::setprecision(4) << state.gradNorm
+                << " ||x|| = " << std::setw(6) << x.norm()
+                << " f(x) = " << std::setw(8) << value(x)
+                << " x = [" << std::setprecision(8)
+                << x.transpose() << "]" << std::endl;
+      return true;
+    }
+#endif
+
+  private:
+    CostFunction const &M_cost;
+    Vector const &M_X;
+    Vector const &M_Y;
+  };
+}
+\end{lstlisting}
+
+\section{The main}
+In \texttt{main.cpp} I build a small synthetic data set and test the code. Among the solvers provided by CppNumericalSolvers, I use \li!BfgsSolver!, which implements the BFGS method.
+
+\section{Equivalence between Gaussian log-likelihood and least squares}
+\label{sec:logequivalence}
+Let us take
+\[
+  p_m(y|x,\boldsymbol{\beta})=\frac{1}{\sqrt{2\sigma^2(x)}}e^{-\frac{(y-m(x|\boldsymbol{\beta}))^2}{2\sigma^2(x)}}
+\]
+where $\sigma=\sigma(x)$ is assumed to be known. Then
+\[
+  -\log p_m(y|x,\boldsymbol{\beta})=-\log{\frac{1}{\sqrt{2\sigma^2(x)}}}+\frac{(y-m(x|\boldsymbol{\beta}))^2}{2\sigma^2(x)},
+\]
+thus
+\[
+  p_i(\boldsymbol{\beta})=-\log p_m(y_i|x_i,\boldsymbol{\beta})=-\log{\frac{1}{\sqrt{2\sigma^2_i}}}+\frac{(y_i-m(x_i|\boldsymbol{\beta}))^2}{2\sigma^2_i},
+\]
+with $\sigma_i=\sigma(x_i)$. Consider
+\[
+  J_1(\boldsymbol{\beta})=\sum_i p_i(\boldsymbol{\beta})=
+  -\sum_i \log{\frac{1}{\sqrt{2\sigma^2_i}}}
+  +\sum_i \frac{(y_i-m(x_i|\boldsymbol{\beta}))^2}{2\sigma^2_i}.
+\]
+The first term does not depend on the parameters, so it can be ignored in the minimization procedure. Also, the factor $2$ is irrelevant when looking for the minimizer and can be replaced by $1/n$. Therefore, minimizing $J_1$ is equivalent to minimizing
+\[
+  J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^n \frac{(y_i-m(x_i|\boldsymbol{\beta}))^2}{\sigma^2_i},
+\]
+which is a weighted least-squares functional with diagonal weights $\frac{1}{\sigma_i^2}$. If the variance $\sigma$ is constant, the minimization of $J_1$ further simplifies to the minimization of
+\[
+  J(\boldsymbol{\beta})=\frac{1}{n}\sum_{i=1}^n (y_i-m(x_i|\boldsymbol{\beta}))^2,
+\]
+which is simply the classical least-squares problem.
+
+A final remark: often the minimization of $J$ is replaced by the minimization of
+\[
+  \frac{1}{2}\sum_{i=1}^n (y_i-m(x_i|\boldsymbol{\beta}))^2.
+\]
+The minimizer is the same, and the factor $\frac{1}{2}$ simplifies some algebraic manipulations when computing gradients.
+
+\end{document}

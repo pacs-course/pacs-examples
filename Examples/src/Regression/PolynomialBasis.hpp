@@ -24,30 +24,30 @@ public:
   //! The type for a Vector
   using Vector = typename Trait::Vector;
   //! Construct the basis function for a polynomial space
-  PolynomialMonomialBasisFunction(std::size_t n = 0u);
+  explicit PolynomialMonomialBasisFunction(std::size_t n = 0u);
   //! Sets the basis functions on an existing object
   void setFunctions(std::size_t n);
   //! Returns the ith basis function
-  auto
+  [[nodiscard]] auto const &
   getFunction(std::size_t i)
   {
     return this->M_basisFunctions[i];
   }
   //! Evaluation at a point
-  Vector eval(const double &x) const;
+  [[nodiscard]] Vector eval(double x) const;
   //! Evaluation of the derivatives at a point
-  Vector derivatives(const double &x) const;
+  [[nodiscard]] Vector derivatives(double x) const;
   //! The number of basis functions, i.e the capacity of the model
-  std::size_t
-  size() const
+  [[nodiscard]] std::size_t
+  size() const noexcept
   {
     return M_basisFunctions.size();
   }
   //! If I want to know the degree of a the polynomial I am using
-  int
-  degree() const
+  [[nodiscard]] std::size_t
+  degree() const noexcept
   {
-    return this->size() - 1;
+    return this->size() - 1u;
   }
 
 private:

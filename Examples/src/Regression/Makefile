@@ -21,6 +21,10 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 # This is optional. If not present is not an error
 -include Makefile.inc
 
+# Optional extra preprocessor flags, for instance:
+# make CPPFLAGS_EXTRA=-DNOCPPSOLVER
+CPPFLAGS += $(CPPFLAGS_EXTRA)
+
 #
 # The general setting is as follows:
 # mains are identified bt main_XX.cpp
@@ -71,7 +75,6 @@ $(DEPEND): $(SRCS)
 	pdflatex $<
 
 -include $(DEPEND)
-
 
 
 

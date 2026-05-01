@@ -45,13 +45,13 @@ LinearAlgebra::PolynomialMonomialBasisFunction<
 
 template <LinearAlgebra::LinearAlgebraLibrary L>
 typename LinearAlgebra::PolynomialMonomialBasisFunction<L>::Vector
-LinearAlgebra::PolynomialMonomialBasisFunction<L>::eval(const double &x) const
+LinearAlgebra::PolynomialMonomialBasisFunction<L>::eval(double x) const
 {
   Vector a;
   a.resize(this->size());
-  size_t i = 0;
+  Eigen::Index i = 0;
   // fill vector with values
-  for(auto f : this->M_basisFunctions)
+  for(auto const &f : this->M_basisFunctions)
     a(i++, 0) = f(x);
   return a;
 }
@@ -78,13 +78,13 @@ LinearAlgebra::PolynomialMonomialBasisFunction<L>::setFunctions(std::size_t n)
 template <LinearAlgebra::LinearAlgebraLibrary L>
 typename LinearAlgebra::PolynomialMonomialBasisFunction<L>::Vector
 LinearAlgebra::PolynomialMonomialBasisFunction<L>::derivatives(
-  const double &x) const
+  double x) const
 {
   Vector a;
   a.resize(this->size());
-  size_t i = 0;
+  Eigen::Index i = 0;
   // fill vector with values
-  for(auto f : this->M_derivatives)
+  for(auto const &f : this->M_derivatives)
     a(i++, 0) = f(x);
   return a;
 }
