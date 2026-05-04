@@ -79,6 +79,7 @@ Before building `AllDynamic`, install the libraries from:
 
 1. `Examples/src/OneDMesh`
 2. `Examples/src/QuadratureRule/baseVersion`
+3. `Examples/src/LoadLibraries`
 
 Recommended order:
 
@@ -87,9 +88,14 @@ cd Examples/src/OneDMesh
 make alllibs DEBUG=no
 make install
 
+cd ../LoadLibraries
+make alllibs
+make install
+
 cd ../QuadratureRule/baseVersion
 make alllibs DEBUG=no
 make install
+
 
 cd ../AllDynamic
 ```

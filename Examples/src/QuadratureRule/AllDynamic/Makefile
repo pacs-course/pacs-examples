@@ -34,7 +34,7 @@ LIB5_SRCS:=MontecarloRules.cpp
 LIB5_OBJS:=$(LIB5_SRCS:.cpp=.o)
 LIB5_HEADERS:=$(LIB5_SRCS:.cpp=.hpp)
 
-LIBLIB= -L$(PACS_LIB_DIR) -lquadrules -L. -lrulesFactory -lmuparser
+LIBLIB= -L$(PACS_LIB_DIR) -lquadrules  -L. -lrulesFactory -lmuparser
 
 
 # Library with factory
@@ -52,7 +52,7 @@ LIB3_OBJS:=$(LIB3_SRCS:.cpp=.o)
 LIB3_HEADERS:=$(LIB3_SRCS:.cpp=.hpp)
 
 # Additional libraries for the main
-OTHER_LIBRARIES=-lquadrature -lMesh1D -l$(LIBNAME2) -ldl 
+OTHER_LIBRARIES=-lquadrature -lMesh1D -lloadlibs -l$(LIBNAME2) -ldl 
 
 include $(MAKEFILEH_DIR)/Makefile.inc
 

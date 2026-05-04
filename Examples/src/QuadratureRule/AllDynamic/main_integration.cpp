@@ -1,3 +1,4 @@
+#include "LoadLibraries.hpp"
 #include "QuadParameters.hpp"
 #include "numerical_integration.hpp"
 #include "ruleProxy.hpp"
@@ -16,6 +17,8 @@ printHelp()
   cout << "*** Line Options ***" << endl;
   cout << "[-h  --help] This help" << endl;
   cout << "[-l --list] List available rules" << endl;
+  cout << "[-i --integrands] List available integrands" << endl;
+
   cout << "[InputFile=string] Input file name (quadrature.getpot)" << endl
        << endl;
   cout << "*** File Options ***" << endl;
@@ -89,16 +92,12 @@ main(int argc, char **argv)
       cout << "You need to specify at least one plugin library\n";
       return 1;
     }
-  else
-    {
-      cout << "Opening " << nlibs << " plugin libraries\n";
-    }
+  apsc::LoadLibraries QuadRuleLibraries;
   for(unsigned int i = 0; i < nlibs; ++i)
     {
       string quadlib = parameters.library[i];
-      cout << "Reading plugin library " << quadlib << std::endl;
-      void *dylib = dlopen(quadlib.c_str(), RTLD_NOW);
-      if(dylib == nullptr)
+      cout << "Opening plugin library " << quadlib << std::endl;
+      if(!QuadRuleLibraries.loadSingleLibrary(quadlib))
         {
           cout << "cannot find library" << quadlib << endl;
           cout << dlerror();
@@ -125,19 +124,23 @@ main(int argc, char **argv)
     {
       cout << "Reading " << nlibs << " integrand libraries\n";
     }
+  apsc::LoadLibraries IntegrandLibraries;
   for(unsigned int i = 0; i < nlibs; ++i)
     {
       string intlib = parameters.udflib[i];
       cout << "Integrands library " << intlib << std::endl;
-      void *dylib = dlopen(intlib.c_str(), RTLD_NOW);
-      if(dylib == nullptr)
+      if(!IntegrandLibraries.loadSingleLibrary(intlib))
         {
           cout << "cannot find library" << intlib << endl;
           cout << dlerror();
           return 1;
         }
     }
-
+  if(key_input.search(2, "--integrands", "-i"))
+    {
+      printList(myIntegrands);
+      return 0;
+    }
   // get the integrand
   std::string fun_name = parameters.integrand;
   if(fun_name == "NULL")
@@ -211,8 +214,8 @@ main(int argc, char **argv)
        << " intervals" << endl;
   cout << "Using rule " << rule << " and integrand " << fun_name << endl;
   // Compute integral
-  Domain1D   domain(a, b);
-  Mesh1D     mesh(domain, nint);
+  Domain1D            domain(a, b);
+  Mesh1D              mesh(domain, nint);
   CompositeQuadrature s(*theRule, mesh);
   double              approxs = s.apply(f);
   cout << "Result= " << approxs << endl;

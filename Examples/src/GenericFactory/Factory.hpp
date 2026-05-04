@@ -38,11 +38,16 @@ namespace GenericFactory
  * @throw std::invalid_argument Thrown by `get()` and `add()` on lookup failure
  * or duplicate registration.
  *
+ * @pre `Builder` must return a type that can be converted to
+ * `std::unique_ptr<AbstractProduct>`
+ * @pre `Identifier` must be equality comparable, because the factory uses an
+ * `std::unordered_map` for storage.
  * @note `Identifier` must be streamable to `std::ostream`, because diagnostic
  * messages are built through `std::stringstream`.
  */
 template <typename AbstractProduct, typename Identifier,
           typename Builder = std::function<std::unique_ptr<AbstractProduct>()> >
+  requires std::equality_comparable<Identifier>
 class Factory
 {
 public:
@@ -74,6 +79,8 @@ public:
    * `AbstractProduct = void`, use `get()` instead.
    */
   template <typename... Args>
+    requires std::is_invocable_r_v<std::unique_ptr<AbstractProduct>, Builder,
+                                   Args...>
   std::unique_ptr<AbstractProduct> create(Identifier const &name,
                                           Args &&...args) const;
 
@@ -161,6 +168,7 @@ using FunctionFactory = Factory<void, Identifier, FunType>;
 //    ****   IMPLEMENTATIONS  ****
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
+  requires std::equality_comparable<Identifier>
 Factory<AbstractProduct, Identifier, Builder> &
 Factory<AbstractProduct, Identifier, Builder>::Instance()
 {
@@ -170,6 +178,7 @@ Factory<AbstractProduct, Identifier, Builder>::Instance()
 }
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
+  requires std::equality_comparable<Identifier>
 Builder
 Factory<AbstractProduct, Identifier, Builder>::get(Identifier const &name) const
 {
@@ -190,7 +199,10 @@ Factory<AbstractProduct, Identifier, Builder>::get(Identifier const &name) const
 }
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
+  requires std::equality_comparable<Identifier>
 template <typename... Args>
+  requires std::is_invocable_r_v<std::unique_ptr<AbstractProduct>, Builder,
+                                 Args...>
 std::unique_ptr<AbstractProduct>
 Factory<AbstractProduct, Identifier, Builder>::create(Identifier const &name,
                                                       Args &&...args) const
@@ -202,6 +214,7 @@ Factory<AbstractProduct, Identifier, Builder>::create(Identifier const &name,
 }
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
+  requires std::equality_comparable<Identifier>
 void
 Factory<AbstractProduct, Identifier, Builder>::add(Identifier const   &name,
                                                    Builder_type const &func)
@@ -219,6 +232,7 @@ Factory<AbstractProduct, Identifier, Builder>::add(Identifier const   &name,
 }
 
 template <typename AbstractProduct, typename Identifier, typename Builder>
+  requires std::equality_comparable<Identifier>
 std::vector<Identifier>
 Factory<AbstractProduct, Identifier, Builder>::registered() const
 {
