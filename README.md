@@ -150,6 +150,7 @@ working with submodules.
 If you also want the repository used for the course laboratories, see:
 
 [AMSC-Labs](https://github.com/HPC-Courses/AMSC-Labs)
+[PACS-Labs](https://github.com/pacs-course/pacs-Labs)
 
 ## Why Makefiles?
 
@@ -157,8 +158,8 @@ The examples are intentionally organized as relatively independent pieces of
 software that still share some common infrastructure. In this setting, plain
 Makefiles remain simple and practical.
 
-Migrating the repository to CMake would be possible, but it is not currently
-planned.
+Migrating the repository to CMake is possible, but it is not currently
+planned. However, there is an experimental branch, called `cmake` that contains an
 
 ## Disclaimer
 
