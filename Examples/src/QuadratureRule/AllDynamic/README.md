@@ -13,6 +13,11 @@ from `QuadratureRule/baseVersion`, while this folder adds:
 - a shared factory used by all loaded modules
 - optional integrands parsed at runtime with `muParser`
 
+Compared with the `baseVersion` example, this directory focuses less on the
+quadrature algorithm itself and more on the plugin architecture around it:
+shared factories, dynamic registration, runtime discovery, and late binding of
+both rules and user-defined functions.
+
 ## Main Components
 
 - `main_integration.cpp`
@@ -229,6 +234,20 @@ libraries. In practice this usually means:
 ```bash
 export LD_LIBRARY_PATH=$(PACS_LIB_DIR):.
 ```
+
+## Typical Runtime Flow
+
+At execution time, the program works roughly as follows:
+
+1. read the input file and determine which plugins and integrands are needed
+2. load the shared libraries with `dlopen`
+3. let each loaded module register its objects into the shared factories
+4. query the factories to create the requested quadrature rule and integrand
+5. run the composite quadrature algorithm and print the result
+
+This sequence is the key idea of the example: the executable knows only the
+common interfaces and the factories, while the concrete implementations remain
+in separately compiled shared libraries.
 
 ## How The Build Is Structured
 

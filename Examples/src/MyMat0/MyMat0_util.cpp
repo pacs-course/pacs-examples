@@ -3,6 +3,11 @@
 #include <cblas.h> // the blas
 namespace LinearAlgebra
 {
+//! BLAS-assisted multiplication for row-major times row-major matrices.
+/*!
+  A temporary buffer stores one column of the right-hand-side matrix so that
+  the dot product can be passed to `cblas_ddot`.
+ */
 MyMat0<double, ROWMAJOR>
 matMulOptBlas(MyMat0<double, ROWMAJOR> const &m1,
               MyMat0<double, ROWMAJOR> const &m2)
@@ -25,6 +30,11 @@ matMulOptBlas(MyMat0<double, ROWMAJOR> const &m1,
   return res;
 }
 
+//! BLAS-assisted multiplication for column-major times row-major matrices.
+/*!
+  The left-hand-side matrix is first copied into row-major storage and then the
+  row-major overload is reused.
+ */
 MyMat0<double, ROWMAJOR>
 matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
               MyMat0<double, ROWMAJOR> const    &m2)
@@ -35,6 +45,11 @@ matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
   return matMulOptBlas(mc1, m2);
 }
 
+//! BLAS-assisted multiplication for column-major times column-major matrices.
+/*!
+  Each row of the left-hand-side matrix is copied into a temporary buffer and
+  multiplied by contiguous columns of the right-hand-side matrix.
+ */
 MyMat0<double, ROWMAJOR>
 matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
               MyMat0<double, COLUMNMAJOR> const &m2)
@@ -58,6 +73,12 @@ matMulOptBlas(MyMat0<double, COLUMNMAJOR> const &m1,
   return res;
 }
 
+//! BLAS-assisted multiplication for row-major times column-major matrices.
+/*!
+  This case can pass both operands directly to `cblas_ddot` because the row of
+  the left-hand-side matrix and the column of the right-hand-side matrix are
+  already contiguous.
+ */
 MyMat0<double, ROWMAJOR>
 matMulOptBlas(MyMat0<double, ROWMAJOR> const    &m1,
               MyMat0<double, COLUMNMAJOR> const &m2)

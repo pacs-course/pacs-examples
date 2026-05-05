@@ -2,6 +2,7 @@
 #include "MyMat0_views.hpp"
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 struct Foo
 {
@@ -13,6 +14,17 @@ int
 main()
 {
   using namespace LinearAlgebra;
+  auto printVector = [](auto const &values)
+  {
+    std::cout << "[";
+    for(std::size_t i = 0; i < values.size(); ++i)
+      {
+        if(i != 0)
+          std::cout << ", ";
+        std::cout << values[i];
+      }
+    std::cout << "]";
+  };
   // I create two matrices
   MyMat0<double, COLUMNMAJOR> a;
 
@@ -25,8 +37,9 @@ main()
   a(2, 2) = 20;
 
   //! file to output the matrix
-  std::ofstream ofile;
-  ofile.open("Matrix.dat");
+  std::ofstream ofile{"Matrix.dat"};
+  if(!ofile)
+    throw std::runtime_error("Unable to open Matrix.dat for writing");
   std::cout << "Some output is in the file Matrix.dat" << std::endl;
   /// I want a certain format and precision
   ofile.setf(std::ios_base::scientific, std::ios_base::floatfield);
@@ -42,14 +55,11 @@ main()
 
   std::vector<double> va(4, 1.0);
   std::vector<double> res(a * va);
-  std::cout << "result of a*[";
-  for(auto it = va.cbegin(); it < va.cend() - 1; ++it)
-    std::cout << *it << ",";
-  std::cout << *(va.end() - 1) << "]^T =";
-  std::cout << "[";
-  for(auto i = res.cbegin(); i < res.cend() - 1; ++i)
-    std::cout << *i << ", ";
-  std::cout << *(res.end() - 1) << "]" << std::endl;
+  std::cout << "Result of a*";
+  printVector(va);
+  std::cout << "^T = ";
+  printVector(res);
+  std::cout << std::endl;
   std::cout << "Norm1, NormInf and NormF of a: " << a.norm1() << " "
             << a.normInf() << " " << a.normF() << std::endl;
 
@@ -67,13 +77,19 @@ main()
   aIntT.showMe();
   aInt(0, 0) = 10;
   TransposeView<const MyMat0<int>> c_aIntT{aInt};
-  auto                             z = c_aIntT(0, 1);
+  auto const                       z = c_aIntT(0, 1);
+  std::cout << "Entry (0,1) of the const transpose view: " << z << std::endl;
 
   std::cout << "Norm1, NormInf and NormF of aIntT: " << aIntT.norm1() << " "
             << aIntT.normInf() << " " << aIntT.normF() << std::endl;
 
-  // Just to test that it compiles fine
+  // Matrix-vector product through the transpose view
   auto res2 = aIntT * std::vector<int>{1, 2};
+  std::cout << "aIntT * ";
+  printVector(std::vector<int>{1, 2});
+  std::cout << " = ";
+  printVector(res2);
+  std::cout << std::endl;
 
   // A matrix of Foos
   MyMat0<Foo, ROWMAJOR> fooMat(2, 2);

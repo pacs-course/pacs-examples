@@ -1,73 +1,72 @@
 ############################################################
 #
-# An example of Makefile for the course on 
+# An example of Makefile for the course on
 # Advanced Programming for Scientific Computing
-# It should be modified for adapting it to the various examples
 #
 ############################################################
-#
-# The environmental variable PACS_ROOT should be set to the
-# root directory where the examples reside. In practice, the directory
-# where this file is found. The resolution of PACS_ROOT is made in the
-# Makefile.h file, where other important variables are also set.
-# The only user defined variable that must be set in this file is
-# the one indicating where Makefile.h resides
 
 MAKEFILEH_DIR=../../
-#
-# You may have an include file also in the current directory
-#
--include Makefile.inc
 
-#
-#
+-include Makefile.inc
 include $(MAKEFILEH_DIR)/Makefile.inc
 
-# The general setting is as follows:
-# mains are identified bt main_XX.cpp
-# all other files are XX.cpp
-#
+SRCS := $(wildcard *.cpp)
+HEADERS := $(wildcard *.hpp)
 
-# get all files *.cpp
-SRCS=$(wildcard *.cpp)
-# get the corresponding object file
-OBJS = $(SRCS:.cpp=.o)
-# get all headers in the working directory
-HEADERS=$(wildcard *.hpp)
-#
-exe_sources=$(filter main%.cpp,$(SRCS))
-EXEC=$(exe_sources:.cpp=)
+MAIN_EXEC := main_myMat0
+TEST_EXEC := test_myMat0
+BENCH_EXEC := benchmark_myMat0
 
-#========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
-.phony= all clean distclean doc
+CORE_OBJS := MyMat0_util.o
+MAIN_OBJS := main_myMat0.o $(CORE_OBJS)
+TEST_OBJS := test_myMat0.o $(CORE_OBJS)
+BENCH_OBJS := benchmark_myMat0.o $(CORE_OBJS)
 
-.DEFAULT_GOAL = all
+TEST_LIBS := -L/usr/local/lib -lgtest -lgtest_main -pthread
+BENCH_LIBS := -L/usr/local/lib -lbenchmark -lbenchmark_main -pthread
+LOCAL_RPATH := -Wl,-rpath=/usr/local/lib
 
-all: $(DEPEND) $(EXEC)
+.PHONY: all clean distclean doc test benchmark check
+
+.DEFAULT_GOAL := all
+
+all: $(DEPEND) $(MAIN_EXEC) $(TEST_EXEC) $(BENCH_EXEC)
+
+$(MAIN_EXEC): $(MAIN_OBJS)
+	$(LINK.o) $(LOCAL_RPATH) $^ $(LDLIBS) -o $@
+
+$(TEST_EXEC): $(TEST_OBJS)
+	$(LINK.o) $(LOCAL_RPATH) $^ $(LDLIBS) $(TEST_LIBS) -o $@
+
+$(BENCH_EXEC): $(BENCH_OBJS)
+	$(LINK.o) $(LOCAL_RPATH) $^ $(LDLIBS) $(BENCH_LIBS) -o $@
+
+%.o: %.cpp $(HEADERS)
+	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+
+test: $(TEST_EXEC)
+	./$(TEST_EXEC)
+
+benchmark: $(BENCH_EXEC)
+	./$(BENCH_EXEC)
+
+check: test benchmark
 
 clean:
-	$(RM) -f $(EXEC) $(OBJS)
+	$(RM) -f $(MAIN_EXEC) $(TEST_EXEC) $(BENCH_EXEC) *.o
 
 distclean:
 	$(MAKE) clean
 	$(RM) -f ./doc $(DEPEND)
-	$(RM) *.out *.bak *~
+	$(RM) -f *.out *.bak *~ Matrix.dat benchmark.out
 
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(OBJS)
-
-$(OBJS): $(SRCS)
-
 $(DEPEND): $(SRCS)
-	$(RM) $(DEPEND)
+	$(RM) -f $(DEPEND)
 	for f in $(SRCS); do \
 	$(CXX) $(STDFLAGS) $(CPPFLAGS) -MM $$f >> $(DEPEND); \
 	done
 
 -include $(DEPEND)
-
-
-
-

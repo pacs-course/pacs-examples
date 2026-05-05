@@ -2,10 +2,11 @@
     Luca Formaggia 2005     */
 #ifndef HH_MYMAT0__HH
 #define HH_MYMAT0__HH
+#include <algorithm>
 #include <cmath>
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
+#include <random>
+#include <stdexcept>
 #include <type_traits>
 #include <vector>
 /*!
@@ -28,23 +29,23 @@ enum StoragePolicySwitch
   COLUMNMAJOR
 };
 
-//! An empty class that transform an enum into a type
-/*!  Used to switch as a tag to switch betwee different
-  implementations
-  If you want to be more fancy you can specialize the type trait
-  std::integral_constant, instead. But for the use done here it is not necessary
-
+//! Converts a storage-policy value into a type.
+/*!
+  This alias is used for tag dispatching so that overload resolution can select
+  the most suitable implementation for a given storage layout at compile time.
  */
-template <StoragePolicySwitch S> struct StorageType
-{};
+template <StoragePolicySwitch S>
+using StorageType = std::integral_constant<StoragePolicySwitch, S>;
 
 using size_type = std::size_t;
 
-//! A simple matrix class of double
+//! A simple dense matrix class.
 /*!
- * It stores a matrix of double entries, allowing different type of
- * storage through an internal policy. The policy is implemented via
- * a pointer to function selected at construction time.
+ * The matrix stores its entries in a flat `std::vector<T>`. The storage order
+ * is selected at compile time through the `storagePolicy` template parameter.
+ *
+ * @tparam T Scalar type stored in the matrix.
+ * @tparam storagePolicy Storage layout used internally.
  */
 template <class T = double, StoragePolicySwitch storagePolicy = ROWMAJOR>
 class MyMat0
@@ -79,25 +80,16 @@ private:
   static constexpr StoragePolicySwitch otherPolicy =
     storagePolicy == ROWMAJOR ? COLUMNMAJOR : ROWMAJOR;
   /*!
-    \defgroup getIndex Functions returning index according to ordering
-
-    I use the argument type deduction to select the correct one. An alternative
-    would be to use template calass specialization. In taht case, you would
-    decleare
-
-    \code{.cpp}
-    size_type getIndex(size_type const & i, size_type const & j) const;
-    \endcode
-
-    without definition and specialize it for different orderings
+    \defgroup getIndex Functions returning the linearized index
     @{
-
    */
+  //! Linearizes a matrix index for row-major storage.
   constexpr size_type
   getIndex(size_type const i, size_type const j, StorageType<ROWMAJOR>) const
   {
     return j + i * nc;
   }
+  //! Linearizes a matrix index for column-major storage.
   constexpr size_type
   getIndex(size_type const i, size_type const j, StorageType<COLUMNMAJOR>) const
   {
@@ -108,35 +100,42 @@ private:
   */
 
   /*!
-    \defgroup extractors-inserters Functions to extract/insert whole rows/colums
-
-    I use the argument type deduction to select the one that does the operation
-    more efficiently.
+    \defgroup extractors-inserters Functions extracting or replacing rows/columns
+    These overloads are selected by tag dispatching so the implementation can
+    follow the matrix storage order.
     @{
-
   */
+  //! Extracts a column from a row-major matrix.
   std::vector<T> col(size_type i, StorageType<ROWMAJOR>) const;
+  //! Extracts a column from a column-major matrix.
   std::vector<T> col(size_type i, StorageType<COLUMNMAJOR>) const;
+  //! Extracts a row from a row-major matrix.
   std::vector<T> row(size_type i, StorageType<ROWMAJOR>) const;
+  //! Extracts a row from a column-major matrix.
   std::vector<T> row(size_type i, StorageType<COLUMNMAJOR>) const;
+  //! Replaces a column in a row-major matrix.
   void replaceCol(size_type i, std::vector<T> const &, StorageType<ROWMAJOR>);
+  //! Replaces a column in a column-major matrix.
   void replaceCol(size_type i, std::vector<T> const &,
                   StorageType<COLUMNMAJOR>);
+  //! Replaces a row in a row-major matrix.
   void replaceRow(size_type i, std::vector<T> const &, StorageType<ROWMAJOR>);
+  //! Replaces a row in a column-major matrix.
   void replaceRow(size_type i, std::vector<T> const &,
                   StorageType<COLUMNMAJOR>);
   /*!
     @}
   */
 public:
-  //! It uses the one selected by the second argument.
-  /*
-    Made public to be able to do faster operations on indexes
+  //! Returns the offset in the flat storage corresponding to `(i,j)`.
+  /*!
+    This function is public so that helper algorithms can access the linearized
+    indexing logic without duplicating it.
    */
   constexpr size_type
   getIndex(size_type const i, size_type const j) const
   {
-    return getIndex(i, j, StorageType<storagePolicy>());
+    return getIndex(i, j, StorageType<storagePolicy>{});
   }
   //! It builds a matrix with n rows and m columns.
   /*!
@@ -147,20 +146,29 @@ public:
 
     @param n number of rows.
     @param m number of columns.
-    @param sPolicy the storage policy (default rowmajor).
-    @param init Initializer (default to default constructor)
+    @param init value used to initialize all entries.
    */
   explicit MyMat0(size_type n = 0, size_type m = 0, T const &init = T())
-    : nr(n), nc(m), data(n * m, init) {};
-  //! Default copy constructor is ok
+    : nr(n), nc(m), data(n * m, init)
+  {}
+  //! Default copy constructor.
   MyMat0(MyMat0 const &) = default;
-  //! Copy constructor for other policy
+  //! Builds a matrix with the same entries but opposite storage order.
+  /*!
+    @param m Source matrix stored with the other policy.
+   */
   MyMat0(MyMat0<T, otherPolicy> const &m);
   //! Default move constructor is ok
   MyMat0(MyMat0 &&) = default;
   //! Default copy assign is ok
   MyMat0 &operator=(MyMat0 const &) = default;
-  //! Copy assign for other ordering
+  //! Assigns from a matrix with the opposite storage order.
+  /*!
+    The matrix is resized if needed and the entries are copied preserving the
+    logical matrix layout.
+    @param m Source matrix stored with the other policy.
+    @return `*this`
+   */
   MyMat0 &operator=(MyMat0<T, otherPolicy> const &);
   //! Default move assign is ok
   MyMat0 &operator=(MyMat0 &&) = default;
@@ -169,6 +177,8 @@ public:
    * The storage policy cannot be changed;
    * If nrow*ncol are equal to that of the existing matrix
    * then the values are kept, otherwise they are set to zero
+   * @param nrow New number of rows.
+   * @param ncol New number of columns.
    */
   void resize(size_type const nrow, size_type const ncol);
   //! Number of rows
@@ -187,45 +197,59 @@ public:
   /*!
     I use tagging technique to implement the best method according
     to the storage policy
+    @param i Column index.
+    @return A copy of the selected column.
    */
   std::vector<T>
   col(size_type i) const
   {
-    return col(i, StorageType<storagePolicy>());
+    return col(i, StorageType<storagePolicy>{});
   }
   //! Returns the ith row
   /*!
     I use tagging technique to implement the best method according
     to the storage policy
+    @param i Row index.
+    @return A copy of the selected row.
    */
   std::vector<T>
   row(size_type i) const
   {
-    return row(i, StorageType<storagePolicy>());
+    return row(i, StorageType<storagePolicy>{});
   }
   //! Replaces the ith column
   /*!
     I use tagging technique to implement the best method according
     to the storage policy
+    @param i Column index.
+    @param v Values to be copied into the column.
+    @throws std::invalid_argument if `v.size()!=nrow()`.
    */
   void
   replaceCol(size_type i, std::vector<T> const &v)
   {
-    replaceCol(i, v, StorageType<storagePolicy>());
+    replaceCol(i, v, StorageType<storagePolicy>{});
   }
   //! Replaces the ith row
   /*!
     I use tagging technique to implement the best method according
     to the storage policy
+    @param i Row index.
+    @param v Values to be copied into the row.
+    @throws std::invalid_argument if `v.size()!=ncol()`.
    */
   void
   replaceRow(size_type i, std::vector<T> const &v)
   {
-    replaceRow(i, v, StorageType<storagePolicy>());
+    replaceRow(i, v, StorageType<storagePolicy>{});
   }
   //! Returns element with no bound check (const version)
   /*!
     It allows a=m(1,1) on constant matrix m
+    @param i Row index.
+    @param j Column index.
+    @return Read-only reference to the selected entry.
+    @warning No bounds checking is performed.
    */
   T const &
   operator()(const size_type i, const size_type j) const
@@ -236,6 +260,10 @@ public:
   //! Returns element with no bound check (non-const version)
   /*!
     It allows m(1,1)=1 on non-constant matrix m
+    @param i Row index.
+    @param j Column index.
+    @return Reference to the selected entry.
+    @warning No bounds checking is performed.
    */
   T &
   operator()(const size_type i, const size_type j)
@@ -246,24 +274,32 @@ public:
 #if __cplusplus >= 202100L
   //! Returns element with no bound check (const version)
   /*!
-    It allows a=m[i,j] on constant matrix m
-  This feature requires C++23
+    It allows `a = m[i,j]` on a constant matrix.
+    @param i Row index.
+    @param j Column index.
+    @return Read-only reference to the selected entry.
+    @warning No bounds checking is performed.
+    @note This overload requires C++23 multidimensional subscripting.
   */
   T const &
   operator[](const size_type i, const size_type j) const
   {
     return data[getIndex(i, j)];
   }
-/*!
-    It allows m[i,j]=1 on non-constant matrix m
-  This feature requires C++23
-*/
-#endif
+  /*!
+    It allows `m[i,j] = value` on a non-constant matrix.
+    @param i Row index.
+    @param j Column index.
+    @return Reference to the selected entry.
+    @warning No bounds checking is performed.
+    @note This overload requires C++23 multidimensional subscripting.
+  */
   T &
   operator[](const size_type i, const size_type j)
   {
     return data[getIndex(i, j)];
   }
+#endif
 
   //! Policy cannot be changed, but it may be queried
   constexpr StoragePolicySwitch
@@ -278,12 +314,23 @@ public:
     They make sense only if T has sensible arithmetic operators.
     @{
   */
-  //! Gives access to the raw data, useful to imlement fast operations
+  //! Gives direct access to the flat storage.
+  /*!
+    @param i Linearized entry index.
+    @return Read-only reference to the `i`-th stored value.
+    @warning No bounds checking is performed.
+   */
   auto const &
   operator[](size_type i) const
   {
     return data[i];
   }
+  //! Gives direct access to the flat storage.
+  /*!
+    @param i Linearized entry index.
+    @return Reference to the `i`-th stored value.
+    @warning No bounds checking is performed.
+   */
   auto &
   operator[](size_type i)
   {
@@ -294,7 +341,7 @@ public:
   double normInf() const;
   //! Computes \f$ ||A||_1 \f$
   double norm1() const;
-  //! Computes Frobenious norm
+  //! Computes the Frobenius norm.
   double normF() const;
   /*! @} */
   //! Generates a random matrix
@@ -302,19 +349,20 @@ public:
    * It fills the matrix with random numbers in [0,1)
    *
    * @param seed Sets the seed value to initiate the pseudorandom generator.
-   * If it is equal to 0 (default) the seed is set using the current time.
-   * Otherwise the given value is used.
+   * If it is equal to 0, a nondeterministic seed is requested from
+   * `std::random_device`. Otherwise the given value is used.
    */
   void fillRandom(unsigned int seed = 0);
-  /*! Multiply the matrix with an std::vector
-
-    @param res vector where to store result
-    @param v vector to be multiplied. It must have size()>=nc (no check is made)
+  /*! Multiplies the matrix by a vector.
+    @param v Vector to be multiplied.
+    @param res Vector where the result is stored.
+    @throws std::invalid_argument if `v.size()!=ncol()`.
    */
   void vecMultiply(const std::vector<T> &v, std::vector<T> &res) const;
   //! Iterator to the begin of the internal structure
   /*!
     To be used for fast operation on the data
+    @return Iterator to the first stored entry.
    */
   auto
   begin() -> decltype(data.begin())
@@ -324,6 +372,7 @@ public:
   //! Iterator to the begin of the internal structure
   /*!
     To be used for fast operation on the data
+    @return Constant iterator to the first stored entry.
    */
   auto
   cbegin() const -> decltype(data.cbegin())
@@ -333,6 +382,7 @@ public:
   //! Iterator to the end of the internal structure
   /*!
     To be used for fast operation on the data
+    @return Iterator past the last stored entry.
    */
   auto
   end() -> decltype(data.end())
@@ -342,6 +392,7 @@ public:
   //! Iterator to the end of the internal structure
   /*!
     To be used for fast operation on the data
+    @return Constant iterator past the last stored entry.
    */
   auto
   cend() const -> decltype(data.cend())
@@ -358,10 +409,10 @@ public:
 };
 //! Matrix times vector via operator *
 /*!
-  The vector is anything that
- * @param m The matrix
- * @param v A vector (with size equal to the number of columns)
- * @return The result in a vector of the size = to the number of row
+ * @param m The matrix.
+ * @param v Vector to be multiplied.
+ * @return The product `m*v`.
+ * @throws std::invalid_argument if `v.size()!=m.ncol()`.
  */
 template <class T, StoragePolicySwitch storagePolicy>
 std::vector<T> operator*(MyMat0<T, storagePolicy> const &m,
@@ -423,11 +474,7 @@ MyMat0<T, storagePolicy>::resize(size_type const n, size_type const m)
 {
   if(n * m != nc * nr)
     {
-      // clear data storage
-      data.resize(n * m);
-      data.shrink_to_fit();
-      for(auto &i : data)
-        i = 0.0;
+      data.assign(n * m, T{});
     }
   //! fix number of rows and column
   nr = n;
@@ -446,7 +493,7 @@ MyMat0<T, storagePolicy>::normInf() const
     {
       double vsum = 0;
       for(size_type j = 0; j < nc; ++j)
-        vsum += data[getIndex(i, j)];
+        vsum += std::abs(static_cast<double>(data[getIndex(i, j)]));
       vmax = std::max(vsum, vmax);
     }
   return vmax;
@@ -463,7 +510,7 @@ MyMat0<T, storagePolicy>::norm1() const
     {
       double vsum = 0;
       for(size_type i = 0; i < nr; ++i)
-        vsum += data[getIndex(i, j)];
+        vsum += std::abs(static_cast<double>(data[getIndex(i, j)]));
       vmax = std::max(vsum, vmax);
     }
   return vmax;
@@ -477,7 +524,10 @@ MyMat0<T, storagePolicy>::normF() const
     return 0.0;
   double vsum{0.0};
   for(auto const x : data)
-    vsum += x * x;
+    {
+      auto const value = static_cast<double>(x);
+      vsum += value * value;
+    }
   return std::sqrt(vsum);
 }
 
@@ -487,25 +537,21 @@ MyMat0<T, storagePolicy>::vecMultiply(const std::vector<T> &v,
                                       std::vector<T>       &res) const
 {
   if(v.size() != nc)
-    {
-      std::cerr << " Vector must have the right size" << std::endl;
-      std::exit(1);
-    }
-  res.resize(nr, T(0));
+    throw std::invalid_argument("Vector size must match the number of columns");
+  res.assign(nr, T{});
   // for efficiency I use two different algorithms
 
-  switch(storagePolicy)
+  if constexpr(storagePolicy == ROWMAJOR)
     {
-    case ROWMAJOR:
       // Classic A*v row by row
       for(size_type i = 0; i < nc * nr; ++i)
         res[i / nc] += data[i] * v[i % nc];
-      break;
-    case COLUMNMAJOR:
+    }
+  else
+    {
       // result is a linear combination of the columns of A
       for(size_type i = 0; i < nc * nr; ++i)
         res[i % nr] += data[i] * v[i / nr];
-      break;
     }
 }
 
@@ -513,21 +559,22 @@ template <class T, StoragePolicySwitch storagePolicy>
 void
 MyMat0<T, storagePolicy>::fillRandom(unsigned int seed)
 {
-  // Using the old random stuff.
-  //!\todo porting to C++11
-  if(seed == 0)
-    seed = std::time(0);
-  double rmax = static_cast<double>(RAND_MAX + 2.0);
-  std::srand(seed);
-  if(nr * nc > 0)
-    for(auto &x : data)
-      x = static_cast<T>((std::rand() + 1) / rmax);
+  auto generator =
+    seed == 0 ? std::mt19937{std::random_device{}()} : std::mt19937{seed};
+  std::uniform_real_distribution<double> distribution(0.0, 1.0);
+  for(auto &x : data)
+    x = static_cast<T>(distribution(generator));
 }
 
 template <class T, StoragePolicySwitch storagePolicy>
 void
 MyMat0<T, storagePolicy>::showMe(std::ostream &out) const
 {
+  if(nr == 0 || nc == 0)
+    {
+      out << "[]\n";
+      return;
+    }
   out << "[";
   for(size_type i = 0; i < nr; ++i)
     {
@@ -545,7 +592,7 @@ template <class T, StoragePolicySwitch storagePolicy>
 std::vector<T>
 operator*(MyMat0<T, storagePolicy> const &m, std::vector<T> const &v)
 {
-  std::vector<double> tmp;
+  std::vector<T> tmp;
   m.vecMultiply(v, tmp);
   return tmp;
 }
@@ -567,20 +614,18 @@ template <class T, StoragePolicySwitch storagePolicy>
 std::vector<T>
 MyMat0<T, storagePolicy>::col(size_type j, StorageType<COLUMNMAJOR>) const
 {
-  // I use the assign method and the iterator arithmetic valid for iterators to
-  // vectors
-  return std::vector<T>().assign(data.cbegin() + getIndex(0, j),
-                                 data.cbegin() + getIndex(0, j + 1));
+  auto const first = data.cbegin() + getIndex(0, j);
+  auto const last = first + static_cast<std::ptrdiff_t>(nr);
+  return std::vector<T>(first, last);
 }
 
 template <class T, StoragePolicySwitch storagePolicy>
 std::vector<T>
 MyMat0<T, storagePolicy>::row(size_type i, StorageType<ROWMAJOR>) const
 {
-  // I use the assign method and the iterator arithmetic valid for iterators to
-  // vectors
-  return std::vector<T>().assign(data.cbegin() + getIndex(i, 0),
-                                 data.cbegin() + getIndex(i + 1, 0));
+  auto const first = data.cbegin() + getIndex(i, 0);
+  auto const last = first + static_cast<std::ptrdiff_t>(nc);
+  return std::vector<T>(first, last);
 }
 
 template <class T, StoragePolicySwitch storagePolicy>
@@ -601,6 +646,8 @@ void
 MyMat0<T, storagePolicy>::replaceCol(size_type j, std::vector<T> const &c,
                                      StorageType<ROWMAJOR>)
 {
+  if(c.size() != nr)
+    throw std::invalid_argument("Column size mismatch");
   for(size_type i = 0; i < nr; ++i)
     data[getIndex(i, j)] = c[i];
 }
@@ -610,6 +657,8 @@ void
 MyMat0<T, storagePolicy>::replaceCol(size_type j, std::vector<T> const &c,
                                      StorageType<COLUMNMAJOR>)
 {
+  if(c.size() != nr)
+    throw std::invalid_argument("Column size mismatch");
   // I can trasverse the data in the natural order. The optimizer can exploit
   // cache pre-fetching
   auto start = data.begin() + getIndex(0, j);
@@ -622,11 +671,13 @@ void
 MyMat0<T, storagePolicy>::replaceRow(size_type i, std::vector<T> const &c,
                                      StorageType<ROWMAJOR>)
 {
+  if(c.size() != nc)
+    throw std::invalid_argument("Row size mismatch");
   // I can trasverse the data in the natural order. The optimizer can exploit
   // cache pre-fetching
   auto start = data.begin() + getIndex(i, 0);
-  for(size_type i = 0; i < nc; ++i)
-    *(start++) = c[i];
+  for(size_type j = 0; j < nc; ++j)
+    *(start++) = c[j];
 }
 
 template <class T, StoragePolicySwitch storagePolicy>
@@ -634,8 +685,10 @@ void
 MyMat0<T, storagePolicy>::replaceRow(size_type i, std::vector<T> const &c,
                                      StorageType<COLUMNMAJOR>)
 {
-  for(size_type j = 0; i < nc; ++i)
-    data[getIndex(i, j)] = c[i];
+  if(c.size() != nc)
+    throw std::invalid_argument("Row size mismatch");
+  for(size_type j = 0; j < nc; ++j)
+    data[getIndex(i, j)] = c[j];
 }
 
 } // namespace LinearAlgebra

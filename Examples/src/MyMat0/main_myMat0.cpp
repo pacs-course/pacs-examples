@@ -3,12 +3,24 @@
 #include "chrono.hpp"
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 int
 main()
 {
   using namespace LinearAlgebra;
+  auto printVector = [](std::vector<double> const &values)
+  {
+    std::cout << "[";
+    for(std::size_t i = 0; i < values.size(); ++i)
+      {
+        if(i != 0)
+          std::cout << ", ";
+        std::cout << values[i];
+      }
+    std::cout << "]";
+  };
   // I create two matrices
   MyMat0<double, COLUMNMAJOR> a;
 
@@ -21,8 +33,9 @@ main()
   a(2, 2) = 20;
 
   //! file to output the matrix
-  std::ofstream ofile;
-  ofile.open("Matrix.dat");
+  std::ofstream ofile{"Matrix.dat"};
+  if(!ofile)
+    throw std::runtime_error("Unable to open Matrix.dat for writing");
   std::cout << "Some output is in the file Matrix.dat" << std::endl;
   /// I want a certain format and precision
   ofile.setf(std::ios_base::scientific, std::ios_base::floatfield);
@@ -38,20 +51,17 @@ main()
 
   std::vector<double> va(4, 1.0);
   std::vector<double> res(a * va);
-  std::cout << "result of a*[";
-  for(auto it = va.cbegin(); it < va.cend() - 1; ++it)
-    std::cout << *it << ",";
-  std::cout << *(va.end() - 1) << "]^T =";
-  std::cout << "[";
-  for(auto i = res.cbegin(); i < res.cend() - 1; ++i)
-    std::cout << *i << ", ";
-  std::cout << *(res.end() - 1) << "]" << std::endl << std::endl;
-  std::cout << "Norm1, NOrmInf and NormF of a: " << a.norm1() << " "
+  std::cout << "Result of a*";
+  printVector(va);
+  std::cout << "^T = ";
+  printVector(res);
+  std::cout << std::endl << std::endl;
+  std::cout << "Norm1, NormInf and NormF of a: " << a.norm1() << " "
             << a.normInf() << " " << a.normF() << std::endl;
 
   // Testing different implementation of matrix/matrix
-  constexpr int NR = 1000;
-  constexpr int NC = 1000;
+  constexpr std::size_t NR = 1000;
+  constexpr std::size_t NC = 1000;
   {
     // Creating 2 big matrices
     std::cout << "Creating two big matrices ROWMAJOR ROWMAJOR" << std::endl;
@@ -61,7 +71,7 @@ main()
     B.fillRandom();
     std::cout << "Done" << std::endl;
     Timings::Chrono watch;
-    std::cout << "Standard Matrix Moltiplication"
+    std::cout << "Standard Matrix Multiplication"
               << "\n";
     watch.start();
     auto res1 = matMul(A, B);
@@ -69,7 +79,7 @@ main()
     std::cout << "NormF=" << res1.normF() << std::endl;
     double t1 = watch.wallTime();
     std::cout << watch;
-    std::cout << "Optimized Matrix Moltiplication"
+    std::cout << "Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res2 = matMulOpt(A, B);
@@ -95,14 +105,14 @@ main()
   std::cout << std::endl;
   {
     // Creating 2 big matrices
-    std::cout << "Creating two big matrices ROWMAJOR COLUMMAJOR" << std::endl;
+    std::cout << "Creating two big matrices ROWMAJOR COLUMNMAJOR" << std::endl;
     MyMat0<double, ROWMAJOR> A(NR, NC);
     A.fillRandom();
     MyMat0<double, COLUMNMAJOR> B(NC, NR);
     B.fillRandom();
     std::cout << "Done" << std::endl;
     Timings::Chrono watch;
-    std::cout << "Standard Matrix Moltiplication"
+    std::cout << "Standard Matrix Multiplication"
               << "\n";
     watch.start();
     auto res1 = matMul(A, B);
@@ -110,7 +120,7 @@ main()
     std::cout << "NormF=" << res1.normF() << std::endl;
     double t1 = watch.wallTime();
     std::cout << watch;
-    std::cout << "Optimized Matrix Moltiplication"
+    std::cout << "Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res2 = matMulOpt(A, B);
@@ -136,14 +146,14 @@ main()
   std::cout << std::endl;
   {
     // Creating 2 big matrices
-    std::cout << "Creating two big matrices COLUMMAJOR COLUMMAJOR" << std::endl;
+    std::cout << "Creating two big matrices COLUMNMAJOR COLUMNMAJOR" << std::endl;
     MyMat0<double, COLUMNMAJOR> A(NR, NC);
     A.fillRandom();
     MyMat0<double, COLUMNMAJOR> B(NC, NR);
     B.fillRandom();
     std::cout << "Done" << std::endl;
     Timings::Chrono watch;
-    std::cout << "Standard Matrix Moltiplication"
+    std::cout << "Standard Matrix Multiplication"
               << "\n";
     watch.start();
     auto res1 = matMul(A, B);
@@ -151,7 +161,7 @@ main()
     std::cout << "NormF=" << res1.normF() << std::endl;
     double t1 = watch.wallTime();
     std::cout << watch;
-    std::cout << "Optimized Matrix Moltiplication"
+    std::cout << "Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res2 = matMulOpt(A, B);
@@ -162,7 +172,7 @@ main()
     std::cout << "Gain: " << 100 * (t1 - t2) / t1 << "%" << std::endl;
     std::cout << "Speedup: " << t1 / t2 << std::endl;
 #ifndef NOBLAS
-    std::cout << " Blas Optimized Matrix Moltiplication"
+    std::cout << " Blas Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res3 = matMulOptBlas(A, B);
@@ -177,14 +187,14 @@ main()
   std::cout << std::endl;
   {
     // Creating 2 big matrices
-    std::cout << "Creating two big matrices COLUMMAJOR ROWMAJOR" << std::endl;
+    std::cout << "Creating two big matrices COLUMNMAJOR ROWMAJOR" << std::endl;
     MyMat0<double, COLUMNMAJOR> A(NR, NC);
     A.fillRandom();
     MyMat0<double, ROWMAJOR> B(NC, NR);
     B.fillRandom();
     std::cout << "Done" << std::endl;
     Timings::Chrono watch;
-    std::cout << "Standard Matrix Moltiplication"
+    std::cout << "Standard Matrix Multiplication"
               << "\n";
     watch.start();
     auto res1 = matMul(A, B);
@@ -192,7 +202,7 @@ main()
     std::cout << "NormF=" << res1.normF() << std::endl;
     double t1 = watch.wallTime();
     std::cout << watch;
-    std::cout << "Optimized Matrix Moltiplication"
+    std::cout << "Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res2 = matMulOpt(A, B);
@@ -203,7 +213,7 @@ main()
     std::cout << "Gain: " << 100 * (t1 - t2) / t1 << "%" << std::endl;
     std::cout << "Speedup: " << t1 / t2 << std::endl;
 #ifndef NOBLAS
-    std::cout << " Blas Optimized Matrix Moltiplication"
+    std::cout << " Blas Optimized Matrix Multiplication"
               << "\n";
     watch.start();
     auto res3 = matMulOptBlas(A, B);

@@ -1,24 +1,26 @@
 #ifndef HH_MYMAT0_Views_HH
 #define HH_MYMAT0_Views_HH
 #include "MyMat0.hpp"
+#include <algorithm>
+#include <stdexcept>
 #include <type_traits>
 namespace LinearAlgebra
 {
-//! @file MyMat0_views.hpp Example of views.
+//! @file MyMat0_views.hpp
 /*!
-  @detail Views are a design pattern to access an existing resources with a
-  different semantic. For instance, the transpose of a given matrix may be a
-  view on a matrix where the semantic of some methods has changed.
+  Example of a view class applied to `MyMat0`.
 
-  The key idea is to have a class that hold a reverence to the object to be
-  'vewed' and redifines all methods of the viewed class as function of the
-  methods defined in the references object. It is an example of delegation.
-
-  Here some examples.
+  A view is an object that reuses an existing resource but exposes a different
+  semantic interface. In this file, the transpose of a matrix is represented
+  without building a new matrix. The view delegates the work to the underlying
+  matrix and remaps the meaning of the public operations.
  */
 
+//! Transpose view of a matrix-like object.
 /*!
-  A view for the transpose of a Matix.
+  The class stores a reference to an existing matrix and exposes the interface
+  of its transpose.
+  @tparam MAT Underlying matrix type.
  */
 template <typename MAT> class TransposeView
 {
@@ -27,24 +29,27 @@ public:
   using size_type = typename MAT::size_type;
 
 private:
-  //! an example of use of type_traits
-  /*!
-   * If MAT is a constant matrix I will return values,
-   * if not I will return a reference, so that we can modify
-   * values stored in the "viewed" matrix
-   */
 public:
+  //! Builds a transpose view from an existing matrix.
+  /*!
+    @param m Matrix to be viewed through transposed semantics.
+   */
   explicit TransposeView(MAT &m) : M_mat(m) {}
   //! It will give an error if the viewed matrix is constant
+  /*!
+    Sets all entries of the underlying matrix to zero through the view.
+   */
   void
   fillZero()
   {
-    M_mat.fillZero();
+    std::fill(M_mat.begin(), M_mat.end(), value_type{});
   }
   //! Resizing the matrix
   /*!
    * I resize the reference, exchanging rows with cols
    * It will give an error if the viewed matrix is constant.
+   * @param nrow New number of rows of the view.
+   * @param ncol New number of columns of the view.
    */
   void
   resize(size_type const nrow, size_type const ncol)
@@ -70,14 +75,22 @@ public:
     const This avoids errors if I call the operator on a transpose view of a
     constant matrix! Note the trick of a default template parameter to allow
     enable_if to work
+    @param i Row index in the view.
+    @param j Column index in the view.
+    @return Reference to the selected entry of the underlying matrix.
    */
   template <typename T = MAT>
-  std::enable_if_t<!std::is_const<T>::value, value_type &>
+  std::enable_if_t<!std::is_const_v<T>, value_type &>
   operator()(const size_type i, const size_type j)
   {
     return M_mat(j, i);
   }
-  //! this is always present
+  //! Returns a view entry in a constant context.
+  /*!
+    @param i Row index in the view.
+    @param j Column index in the view.
+    @return Value of the selected entry.
+   */
   value_type
   operator()(const size_type i, const size_type j) const
   {
@@ -90,81 +103,57 @@ public:
     return M_mat.getStoragePolicy();
   }
 
-  /*! Norm inf
-    We exploit the fact that the infinity norm of the transpose is the 1-norm of
-    the matrix!
-
-    IMPORTANT
-    In c++11 we have to use the syntax
-    @code
-    auto normInf() const -> decltype(this->M_mat.norm1())
-    @endcode
-    to make sure that the return type is the correct one (the same of the
-    underlying matrix). In c++14 and over you can use automatic return type
-    @code
-    auto normInf() const
-    {
-    return M_mat.norm1();
-    }
-    @endcode
-    but you need to activate c++14 support (or later).
-
-    For completeness, I present here the technique that works also in c++11.
-    Unfortunately,
-    @code
-    auto normInf() const -> decltype(M_mat.norm1())
-    @endcode
-    won't work. The reason is that the compiler is unable to locate M_mat.
-
-    What I can do (and it works) is
-    @code
-    auto normInf() const -> decltype(MAT().norm1());
-    @endcode
-
-    yet this requires that the matrix MAT have a default constructor (and why
-    should I contruct
-
-    If you want to be be able to extract the type returned by a method, in this
-    case norm1() without requiring any contructors you need to use the declval
-    magic:
-
-    @code
-    auto normInf() const -> decltype(std::declval<MAT>().norm1())
-    @endcode
-
-    std::declval<T>() returns a reference to T and it allows to extract, using
-    decltype(), the type of a method of T without *the need of any constructor*.
-    It can be used only in unevaluated context, in practice with decltype() and
-    little else.
-  */
-
+  //! Computes the infinity norm of the transpose view.
+  /*!
+    For a transpose, the infinity norm coincides with the 1-norm of the
+    underlying matrix.
+   */
   auto
   normInf() const
   {
     return M_mat.norm1();
   }
 
+  //! Computes the 1-norm of the transpose view.
+  /*!
+    For a transpose, the 1-norm coincides with the infinity norm of the
+    underlying matrix.
+   */
   auto
   norm1() const
   {
     return M_mat.normInf();
   }
 
+  //! Computes the Frobenius norm of the transpose view.
   auto
   normF() const
   {
     return M_mat.normF();
   }
-  //!
+  //! Multiplies the transpose view by a vector.
+  /*!
+    @param v Right-hand-side vector.
+    @param res Vector where the result is stored.
+    @throws std::invalid_argument if `v.size()!=ncol()`.
+   */
   void vecMultiply(const std::vector<value_type> &v,
                    std::vector<value_type> &      res) const;
 
+  //! Fills the underlying matrix with random values.
+  /*!
+    @param seed Optional seed forwarded to the underlying matrix.
+   */
   auto
   fillRandom(unsigned int seed = 0)
   {
     return M_mat.fillRandom(seed);
   }
 
+  //! Prints the transpose view.
+  /*!
+    @param out Output stream.
+   */
   void showMe(std::ostream &out = std::cout) const;
 
 private:
@@ -176,12 +165,9 @@ void
 TransposeView<MAT>::vecMultiply(const std::vector<value_type> &v,
                                 std::vector<value_type> &      res) const
 {
-  if(v.size() != M_mat.ncol())
-    {
-      std::cerr << " Vector must have the right size" << std::endl;
-      std::exit(1);
-    }
-  res.resize(M_mat.nrow(), value_type(0));
+  if(v.size() != this->ncol())
+    throw std::invalid_argument("Vector size must match the number of view columns");
+  res.assign(this->nrow(), value_type{});
   // for efficiency I use two different algorithms
   // I could have used overloading!
   switch(M_mat.getStoragePolicy())
@@ -189,12 +175,12 @@ TransposeView<MAT>::vecMultiply(const std::vector<value_type> &v,
     case COLUMNMAJOR:
       // Classic A^T*v row by row
       for(size_type i = 0; i < M_mat.ncol() * M_mat.nrow(); ++i)
-        res[i / M_mat.ncol()] += M_mat[i] * v[i % M_mat.ncol()];
+        res[i / M_mat.nrow()] += M_mat[i] * v[i % M_mat.nrow()];
       break;
     case ROWMAJOR:
       // result is a linear combination of the columns of A^T
       for(size_type i = 0; i < M_mat.ncol() * M_mat.nrow(); ++i)
-        res[i % M_mat.nrow()] += M_mat[i] * v[i / M_mat.nrow()];
+        res[i % M_mat.ncol()] += M_mat[i] * v[i / M_mat.ncol()];
       break;
     }
 }
@@ -203,8 +189,13 @@ template <typename MAT>
 void
 TransposeView<MAT>::showMe(std::ostream &out) const
 {
-  auto nc = M_mat.ncol();
-  auto nr = M_mat.nrow();
+  auto const nr = this->nrow();
+  auto const nc = this->ncol();
+  if(nr == 0 || nc == 0)
+    {
+      out << "[]\n";
+      return;
+    }
   out << "[";
   for(size_type i = 0; i < nr; ++i)
     {

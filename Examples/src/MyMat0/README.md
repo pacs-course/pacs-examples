@@ -1,98 +1,149 @@
-# A simple class for full matrices #
+# `MyMat0`: a simple dense matrix class
 
-An example on how to switch from row major to column major ordering using the
-type-tag strategy. 
+This folder contains a small dense-matrix class used to discuss storage layout,
+basic matrix operations, and the effect of memory access patterns on
+performance.
 
-To recall how it works, type-tag is a technique that expoits function
-overloading to select the function/method to be called. Since
-overloading applies on argument types we need to find a way to convert
-a value (typically an integer or an enumerator) into a type, so that
-different values correspond to different types. For integral values
-the standard library introduces `std::integral_constan<T,Value>` for
-the purpose. But here, I preferred to do it directly (it is very
-simple).
+The core class is [`MyMat0.hpp`](./MyMat0.hpp). It stores matrix entries in a
+`std::vector<T>` and supports two storage policies:
 
-The type of storage is defined by an enumerator, whose type is
-`StoragePolicySwitch` and may take the values `COLUMNMAJOR` or `ROWMAJOR`. Then, to convert it to a value you simply define
+- `ROWMAJOR`
+- `COLUMNMAJOR`
 
+The storage policy is a template parameter, so the choice is made at compile
+time.
 
-    template< StoragePolicySwitch S>
-    struct StorageType{};
+## Why this example is useful
 
-an empy template stuct!.
-Then, the function that returns the index in the data storage correspinding to the matrix indexes i and j is provided by two overloaded private methods
+The example shows how the same matrix interface can be implemented with
+different internal memory layouts, while keeping the cost of the selection at
+compile time instead of at run time.
 
-    
-    size_type getIndex(size_type const i, size_type const j, StorageType<ROWMAJOR>)
-    size_type getIndex(size_type const i, size_type const j, StorageType<COLUMNMAJOR>)
+This is useful because:
 
-The storage policy is a template parameter of the matrix, so, for simplicity, 
-the actual function to select the index is another overloading
+- indexing depends on the storage order
+- extracting rows or columns has different costs depending on the layout
+- matrix-vector and matrix-matrix products can be reorganized to be more cache
+  friendly
 
-    size_type getIndex(size_type const i, size_type const j) const
-    {
-    return getIndex(i,j,StorageType<storagePolicy>());
-    }
+## Tag dispatching
 
-which, in turn, calls the correct one!
+The class uses tag dispatching to select different implementations depending on
+the storage policy. The tag type is built from the enum value:
 
-In this example, some utilities are introduced to implement matrix matrix multiplication, in the standard or in a more cache friendly way, again by exploiting 
-type tag.
+```cpp
+template <StoragePolicySwitch S>
+using StorageType = std::integral_constant<StoragePolicySwitch, S>;
+```
 
-The main uses the utility chrono to do some timing. Compile with `DEBUG=no` if you want that the timings be meaningful.
+This tag is then used to select the appropriate overload for internal
+operations such as:
 
-*BEWARE:* the test uses also the blas library to show how it can be
-implemented to speed-up some operatio!  The
-[BLAS](https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms)
-library is a highly optimised library for basic linear operations.  It
-is normally available in any system since it is used by many
-applications. If not, check it is surely among the packages
-installable in your system, you need the developer version.
+- `getIndex()`
+- `row()`
+- `col()`
+- `replaceRow()`
+- `replaceCol()`
 
-*You may have to correct the local Makefile.inc so that it addresses
-the `libblas` library installed in your system!* If you do not have the
-blas, compile with BLAS=no, for instance compiling with
+For example, the public `getIndex(i, j)` simply forwards to the correct
+overload:
 
-**Note** Of course, the selection of the type of indexing could have been made also with an if statement
+```cpp
+constexpr size_type getIndex(size_type i, size_type j) const
+{
+  return getIndex(i, j, StorageType<storagePolicy>{});
+}
+```
 
+In modern C++, some of these choices could also be expressed with
+`if constexpr`. This example keeps tag dispatching because it is explicit,
+compact, and still a useful technique to know.
 
-    size_type getIndex(size_type const i, size_type const j) const
-    {
-        if(storagePolicy==ROWMAJOR)
-        //do something
-        else
-        // do something else
-    }
+## Files in this folder
 
+- `MyMat0.hpp`
+  The matrix class template.
 
-but in this case the selection is made **run-time** and since the computation of the index will be made very often (everytime the Matrix is accessed!) this is 
-inefficient (run-time if statement are expensive). Tag-dispatching is instead resolved **compile-time**.
+- `MyMat0_util.hpp`
+  Utility functions for matrix-matrix multiplication, including more
+  cache-friendly variants.
 
-**Note** C++17 has introduced compile-time if statement (`if constexpr`) which may replace the use of tag dispatching:
+- `MyMat0_util.cpp`
+  BLAS-based implementations for `double`, enabled when BLAS support is
+  available.
 
-    
-    size_type getIndex(size_type const i, size_type const j) const
-    {
-        if constexpr (storagePolicy==ROWMAJOR)
-        //do something
-        else
-        // do something else
-    }
+- `main_myMat0.cpp`
+  A driver program that builds matrices, exercises the class, and compares the
+  timings of different multiplication strategies.
 
-This `if` is resolved **compile-time**, so in this case we could have avoided tag-dispatching. There are still cases where tag-dispatching is better and, afrer all, is not so complicated, so I decided to keep this version.
+- `Makefile`, `Makefile.inc`
+  Build configuration for the example.
 
-## Matrix multiplication ##
-We also present different ways to perform matrix matrix multiplication depending on how the matrices are stored. We recall the basic, referring however to matrix times vector (since it is simpler). The idea is to perform the operations so that they are more *cache friendly*, that is to try to access elements contigous in memory, to exploit the "prefetching@ of data from memory to the cache. Now if you have to perform A*x, A being a matrix and v a vector, what is the best strategy "cachewise"? Well it depends. If the
-matrix is stored rowise it is better to perform the operation in the usual way, a loop over the row of the matrix forllowed by an internal loop that multiplies the elements
-of the row with the corresponding elements in the vector. But is the matrix is stored columnwise this means that the element of the matrix are not accesses contigously in memory. In that case it may be better to recall that multiplying a matrix times a vector is equivalent to make a linear combination of the columns of the matrix, with the element of the vector as coefficients of the linear combination. So you can perform a loop over the columns and multiply all column elements by the corresponding element in the vector. The same idea applied to the multiplication of two matrices, with the difference that here you have to consider 4 possibilities.
+## Matrix multiplication
 
-**IMPORTANT NOTE** The code uses the blas library if BLAS is set to yes in the `Makefile.inc` file. Check `Makefile.inc` to suit your needs.
+The folder contains several implementations of matrix-matrix multiplication.
 
-# What do I learn here? # 
-- A rather complete example of a full matrix;
-- The use of tag dispatching to select between different internal operations;
-- That performing oeration in a cache friently way may give improvements in the performance;
-- Some examples of function overloading to select automatically the best algorithm;
-- Interfacing with the some utilities of the blas library. The blas are tools for basic linear algebra operation, normally highly optimised. You should have in your system some standard blas implementation. If you want high performance blas you may use the [goto](http://www.csar.cfs.ac.uk/user_information/software/maths/goto.shtml). Anather alternative is to compile and install the [atlas](http://math-atlas.sourceforge.net/) that produces a blas library tuned for your computer!
+### `matMul`
 
+This is the straightforward triple-loop version. It is simple, but it does not
+try to optimize memory access.
 
+### `matMulOpt`
+
+These overloads reorganize the computation depending on the storage layout of
+the two matrices. The goal is to access data in contiguous memory whenever
+possible, reducing cache misses.
+
+There are four relevant cases:
+
+1. row-major × row-major
+2. row-major × column-major
+3. column-major × column-major
+4. column-major × row-major
+
+Some cases are naturally efficient, while others require temporary copies or
+less favorable access patterns.
+
+### `matMulOptBlas`
+
+When BLAS is enabled, the example also shows how to delegate the inner products
+to an optimized external library. This is often the fastest solution in
+practice for large matrices.
+
+## What the main program demonstrates
+
+The executable:
+
+- creates small matrices and prints them
+- computes a matrix-vector product
+- evaluates a few matrix norms
+- benchmarks different matrix-matrix multiplication strategies on larger
+  matrices
+- optionally compares the hand-written code with a BLAS-based implementation
+
+For meaningful timings, compile in optimized mode:
+
+```bash
+make DEBUG=no
+```
+
+## BLAS note
+
+If BLAS is available on your system, this example can use it. Check
+[`Makefile.inc`](./Makefile.inc) and adapt the library path or library name if
+needed.
+
+If BLAS is not available, build with:
+
+```bash
+make BLAS=no
+```
+
+## What to learn from this folder
+
+- how storage order affects matrix indexing
+- how tag dispatching can select implementations at compile time
+- why cache-friendly traversal matters for performance
+- how the same algorithm may need different implementations for different data
+  layouts
+- how to connect simple custom code with BLAS routines
