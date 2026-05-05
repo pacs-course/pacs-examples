@@ -1,288 +1,251 @@
-# Course on Advanced programming for scientific computing #
-## Mathematical Engineering, Politecnico di Milano ##
-# Course on Advanced Modelling for scientific computing #
-## HPC and Big Data, Politecnico di Milano ##
-## Copyright Luca Formaggia 2012-2023 ##
+# Course on Advanced Programming for Scientific Computing
+## Mathematical Engineering, Politecnico di Milano
+# Course on Advanced Modelling for Scientific Computing
+## HPC and Big Data, Politecnico di Milano
+## Copyright Luca Formaggia 2012-2023
 
-## LICENCING ##
-The software contained in the subfolders of this directory is free-software released under a GNU General Public Licens (GPL). The details of the licence are availabe in the `COPYRIGHT` file in the root directory.
+## Licensing
 
-## CONTENT ##
+The software contained in the subfolders of this directory is free software
+released under the GNU General Public License (GPL). Details are available in
+the `COPYRIGHT` file in the root directory of the repository.
 
-`bin/` -> Directory where the executables are installed. It contains some scripts to beautify your code (see below)
+## Directory Layout
 
-`lib/` -> Directory where the libraries are installed. Initially empty, but it will be filled with the libraries produced by the examples
+- `bin/`: helper scripts and installed executables.
+- `include/`: headers installed by some examples and utilities.
+- `lib/`: libraries built and installed by some examples and utilities.
+- `lib64/`: compatibility symlink to `lib`.
+- `share/`: documentation and auxiliary files installed by some examples.
+- `src/`: the example sources. See `CONTENT.md` for an overview.
+- `astyle_scripts_and_hooks/`: formatting helpers based on
+  [Artistic Style](http://astyle.sourceforge.net/).
+- `clang-format_script_and_hooks/`: formatting helpers based on
+  [clang-format](https://clang.llvm.org/docs/ClangFormat.html).
+- `environment.sh`: a shell script that sets environment variables used by the
+  examples.
+- `Makefile.user`: template file that should be copied to `Makefile.inc` and
+  adapted to your system.
+- `setup.sh`: convenience script that installs the common utility libraries.
+- `Makefile_description.md`: description of the Makefile structure used across
+  the examples.
 
-`lib64/` -> Only for compatibility. In fact is a link to `lib`
+## How To Compile the Examples
 
-`include/` -> General include files. Initially empty, but it will be filled with the include files of the examples
+### 1. Initial Setup
 
-`share/` -> Directory where the documentation is installed. Initially empty, but it will be filled with the documentation of the examples
+Open a terminal in the `Examples/` directory of the repository. In the rest of
+this file, this directory is called the *root directory*.
 
-`src/` -> Directory with the example sources. Probably the most important directory. Look at the `CONTENT.md` file for a description of the examples.
+Copy `Makefile.user` to `Makefile.inc`:
 
-`astyle_scripts_and_hooks/` Some tools to beautify your code, based on [Artistic Style](http://astyle.sourceforge.net/) (you must install astyle if you wish to use the tools in this directory).
+```bash
+cp Makefile.user Makefile.inc
+```
 
-`clang-format_scripts_and_hooks/` Some tools to beautify your code, based on [clang-format](https://www.electronjs.org/docs/latest/development/clang-format) (you must have clang-tools installed! if you want to use the utilities in this directory)
-
-`environment.sh` A bash script that sets the environment variables needed by the examples. It can simplify life if you are not using the mk-modules adopted in the course. In that case you can copy it in your `.profile` file in your home directory (see note at the end of the file), **after having changed the path correctly**. 
-
-`Makefile.user` A makefile that you must copy to `Makefile.inc` and edit to suit your system. It is used by all the examples. It is explained in the next section.
-
-`setup.sh` A bash script that compiles the main utilities in one shot so that you have everything set. It is explained in the next section.
-
-`Makefile_description.md` A file that describes the structure of the makefiles used in the examples. It is explained in the next section.
-
-## HOW TO COMPILE AND INSTALL THE EXAMPLES: ##
-
-### THE FIRST STEP ###
-
-Open a terminal and go in the directory `Examples` of the repository (*it is the directory that contains this README.md file!, from now on denoted as **root directory***) 
-The first operation is to copy the  file `Makefile.user` to `Makefile.inc`:
-
-    $ cp Makefile.user Makefile.inc
-
-and edit the latter to suit your system. In particular, you have to set `PACS_ROOT` to the root directory (with the full path, i.e. the path should start with `/`).
-If you do not know it
-just type
+Then edit `Makefile.inc` to suit your system. In particular, set
+`PACS_ROOT` to the absolute path of the `Examples/` directory. If you do not
+know the full path, run:
 
 ```bash
 pwd
 ```
-in the terminal and you have it.
 
-(Almost) all `Makefiles` of the examples include the file `Makefile.inc` of the root directory
-directory and possibly a `Makefile.inc` file local to the example
-under consideration.  You may modify those files to suit your need. 
-In particular, the user may modify the `Makefile.inc` to change some
-compilation options. But normally you don't need it.
-
-As an example:
-
-    PACS_ROOT=/home/myname/pacs/Examples/
-
-Alternatively, to editing the file, you may set an environmental
-variable with the same name inserting the bash command 
-
-    export PACS_ROOT=/home/myname/pacs/Examples/ 
-
-in the `.profile` or in the `.bashrc` file in your home directory (see Note
-at the end of the file). The file `Makefile.inc` is included in all the Makefiles and defines and
-exports the following make macros:
-
-- `PACS_ROOT` the directory where the Examples resides
-- `AMSC_ROOT` for compatibility with the AMSC course
-- `CXX` the c++ compiler of choice
-- `STANDARD` contains the C++ standard used in compilation
-- `MPI_LIBDIR` and `MPI_INCDIR` where to find mpi libraries and header files, respectively
-- `TBB_LIBDIR` and `TBB_INCDIR`  where the threading building block libraries for c++ parallel ulitities are stored (libraries and header files).
-- `EIGEN_DIR` The directory containing the headers of the eigen library for linear algebra
-- `PACS_INC_DIR` and `PACS_LIB_DIR` directory for library and include files used by the examples, respectively
-- `DOXYFILE` Location of the configuration file for DOxygen used in the examples
-- `CPPFLAGS` Flags for the cpp preprocessor
-- `CXXFLAGS` Flags for the c++ compiler
-- `DEPEND` the file containing the autogenerated dependencies
-- `LDFLAGS` Flags for the linker
-- `LDLIBS` Common libraries (in the form `-Ldir -llib`)
-
-Note that a local `Makefile.inc` may be contained (and included) in the
-various directories when needed and it may override some of the macros
-defined in the common `Makefile.inc`
-
-I recall that any macro may be overrlued by specifying it when calling make
 Example:
 
-    make CXXFLAGS+=-DSOMETHING LDFLAGS=SOMETHINGELSE
-
-or by editing the corresponding `Makefile` (or, better, the `Makefile.inc`)
-
-All examples are provided with a `Makefile` which accepts the following
-options (some Makefile may have additional options, reported in the
-`README.md` file specific for the example)
-
-- `all` -makes the example
-- `clean` -as it says
-- `distclean` -clean and also deletes temporary file and local doc directory
-- `doc` -creates directory doc and fills it with the documentation of the
-example produced by doxygen. The file DoxiFileCommon contains the common 
-doxygen configuration for all examples
-- `library` - makes a library (whenever relevant)
-- `install` -installs everithing in `PACS_LIB_DIR` and `PACS_INC_DIR`
-
-Being all the first target of (almost all) the makefiles, to compile
-the examples is often sufficient to type `make`. with `make doc` you
-compile the documentation.
-
-More details in the `Makefile_description.md` file.
-
-## WORKING WITH MODULES (but also if you do not use them...) ##
-
-If you are using modules, some environmental variables are set by the
-module system and will be inherited from the main `Makefile.inc` (the
-one that you have created by copying Makefile.user).  In particular
-
-- `mkEigenInc`    Where the Eigen libraries (infact the header files) is stored
-- `mkOpenmpiLib`  The directory with the mpi libraries
-- `mkOpenmpiInc`  The directory with the mpi headers
-- `mkTbbInc`  Include files for the threding building block libraries (needed for parallel algorithms)
-- `mkTbbLib`  Library files for the threading building block libraries (needed for parallel algorithms)
-- `mkCxxCompiler` The C++ compiler of your choice
-- `mkEigenHome`      Where the Eigen files are kept (normally equal to MkEigenInc)
-
-
-Other important environment variables set up by the module system that may be 
-not  used in `Makefile.user` but may be used by other makefiles of the examples are
-
-- `mkClangSystemBin`  The directory holding all clang compiler executables 
-- `mkCCompiler`       The C compiler of your choice
-- `mkSuitesparseLib`  Directory holding the libraries of the suitesparse suite (umfpack for instance)
-- `mkSuitesparseInc`  Directory holding the header files of the suitesparse suite (umfpack for instance)
-- `mkCgalLib`         Directory with the CGAL libraries (computational geometry libraries)
-- `mkCgalInc`         Directory with the CGAL header files
-- `mkBoostInc`        Directory with the boost libraries     
-- `mkBoostLib`        Directory with the boost header files
-- `mkHdf5Lib `       The directory with the hdf5 libraries
-- `mkHdf5Inc`        The directory with the hdf5 header files
-
-
-So, you have two main choices
-
-  * You use the module system provided with the virtual machine given in the course. Then
-in your `Makefile.inc` you have to set only `PACS_ROOT`, all other
-variables are set by the module system.  I recall that if you want to
-see all environmental variables set by the modules you may do (all
-variables starts with `mk`):
-
--------------------------------------------------------------------------------
-
-```
-env | grep mk 
+```make
+export PACS_ROOT=/home/myname/pacs-examples/Examples
 ```
 
--------------------------------------------------------------------------------
+Most example Makefiles include the root `Makefile.inc`, and some examples also
+provide a local `Makefile.inc` to override or extend the common settings.
 
-  * You do not use the module system. Then you have again two choices
-   * You set the various macro in your `Makefile.inc` (and possibly the other Makefiles, if needed) by yourself
-   * You simulate the module environment by creating the environmental variables: you have to put in the `.bash-profile` (or `.profile `) 
-   file in your home directory the corresponding instructions
-        for the bash (the `.bash-profile` and `~/.profile` files are sourced by the bash shell every time you do a login).  For example, in my `.profile` I have:
+Instead of editing the file, you may also define `PACS_ROOT` in your shell
+startup file, for example:
 
--------------------------------------------------------------------------------
+```bash
+export PACS_ROOT=/home/myname/pacs-examples/Examples
+```
 
-    export mkSuitesparseInc=/usr/include/suitesparse/
-    export mkSuitesparseLib=/usr/lib/x86_64-linux-gnu
-    export mkCCompiler=gcc
-    export mkCxxCompiler=g++
-    export mkTbbInc=/usr/include
-    export mkTbbLib=/usr/lib/x86_64-linux-gnu/
-    export mkHdf5Inc=/usr/include/hdf5/serial/
-    export mkEigenHome=/usr/local/include/eigen3
-    export mkEigenInc=/usr/local/include/eigen3
-    export mkBoostInc=/usr/local/boost_1_72_0/include
-    export mkBoostLib=/usr/local/boost_1_72_0/lib
-    export mkOpenmpiLib=/usr/lib/x86_64-linux-gnu
-    export mkOpenmpiInc=/usr/include
-    export mkCgalInc=/usr/include
-    export mkCgalLib=/usr/lib/x86_64-linux-gnu
+The common `Makefile.inc` defines or exports, among others:
 
+- `PACS_ROOT`: root directory of `Examples`.
+- `AMSC_ROOT`: compatibility alias used by older material.
+- `CXX`: C++ compiler.
+- `STANDARD`: C++ standard used for compilation.
+- `MPI_LIBDIR`, `MPI_INCDIR`: MPI library and header directories.
+- `TBB_LIBDIR`, `TBB_INCDIR`: Intel oneTBB library and header directories.
+- `EIGEN_DIR`: directory containing Eigen headers.
+- `PACS_INC_DIR`, `PACS_LIB_DIR`: install directories for headers and
+  libraries produced by the examples.
+- `DOXYFILE`: common Doxygen configuration file.
+- `CPPFLAGS`, `CXXFLAGS`, `LDFLAGS`, `LDLIBS`: usual build flags.
+- `DEPEND`: autogenerated dependency file.
 
--------------------------------------------------------------------------------
+Any Make variable may still be overridden on the command line. For example:
 
-Remember that after you have modified your .profile file you need to do a new login for the changes to be effective (see note at the end of the file)
+```bash
+make CXXFLAGS+=-DSOMETHING LDFLAGS=SOMETHINGELSE
+```
 
-### SECOND STEP: INSTALL UTILITIES ###
+### 2. Common Make Targets
 
-The examples require some common utilities that are contained in `src/Utilities/`. So it is simpler if we compile and install them once for all.
+Almost every example provides a `Makefile`. The most common targets are:
 
-You must go to `src/Utilities` and do
+- `all`: build the main target of the example.
+- `clean`: remove object files and executables.
+- `distclean`: perform a deeper cleanup, usually including local
+  documentation.
+- `doc`: generate Doxygen documentation when supported.
+- `library`: build a library, when the example provides one.
+- `install`: install headers and/or libraries into `PACS_INC_DIR` and
+  `PACS_LIB_DIR`.
 
-    make
-    make install
+In many directories, `make` is enough to build the example. Some folders define
+additional targets; check the local `README.md` when needed.
 
+More details are available in `Makefile_description.md`.
 
-This way, a library called libpacs.a (and ist dynamic equivalent
-libpacs.so) is installed in `PACS_LIB_DIR` and some header files are
-installed in `PACS_INC_DIR`
+## Working With Modules
 
-If you then do `make exec` you should compile the programs that test the utilities. If everything is fine,
-compilation should complete with no errors. You may have at look at the tests and try to execute them.
+If you use the module system adopted in the course environment, several
+variables are already provided and are picked up by `Makefile.inc`. The most
+important ones are:
 
-More advanced examples may use also the Utilities in `LinearAlgebraUtil`. Go in that directory and  just type
+- `mkEigenInc`
+- `mkOpenmpiLib`
+- `mkOpenmpiInc`
+- `mkTbbInc`
+- `mkTbbLib`
+- `mkCxxCompiler`
+- `mkEigenHome`
 
-    make install
+Other module variables used by some examples include:
 
-to install everything in the `Examples/include` directory.
-Here the tests have been collected in the subfolder `test`, but the rule is the same, go there, type `make`
+- `mkClangSystemBin`
+- `mkCCompiler`
+- `mkSuitesparseLib`
+- `mkSuitesparseInc`
+- `mkCgalLib`
+- `mkCgalInc`
+- `mkBoostInc`
+- `mkBoostLib`
+- `mkHdf5Lib`
+- `mkHdf5Inc`
 
-Have a look at the tests because they contain information on how to use the utilities!
+To inspect the module-related variables currently defined in your shell:
 
-To simplify life, you can just do
+```bash
+env | grep '^mk'
+```
+
+If you do not use modules, you have two options:
+
+- set the corresponding variables directly in `Makefile.inc`;
+- export them in `.bash_profile`, `.profile`, or `.bashrc`.
+
+## Install the Common Utilities
+
+Many examples depend on the utility libraries in `src/Utilities` and
+`src/LinearAlgebraUtil`.
+
+The quickest way to install both is:
+
 ```bash
 bash ./setup.sh
 ```
-and averything is done for you.
 
+The script simply runs:
 
-### THIRD STEP EXTRAS ###
-Some utilities that are used in a few examples (and interesting on their own) are kept as submodules, since they refer to third party software.
-To compile and install them, go in the `Extras` directory of the repository and follow the instructions in the `README.md` file stored in that directory.
+```bash
+(cd src/Utilities; make; make install)
+(cd src/LinearAlgebraUtil; make install)
+```
 
-**NOW YOU ARE READY TO ENJOY THE EXAMPLES**
+You can also do these steps manually.
 
-**NOTE FOR C++ PARALLEL ALGORITHMS** 
-Some test use the native parallel programming of c++ that, at
-least with gnu and LLVM compiler, requires having the multithreading
-building block library installed, and to link to the `libtbb.so`
-library when compiling your code. Check that the library is installed in your system (it's
-available on all Linux distribution, but not necessarily by default!).
+### `src/Utilities`
 
+Run:
 
-## CODE DOCUMENTATION ##
-I tried, as far as possible, to use [Doxygen](https://www.doxygen.nl/) to document the code. Doxygen requires to be run in the directory with the specific source files
-of which you want to produce documentation. It uses a *special file*, typically called `Doxyfile`, of which you can generate a prototype with the command `doxygen -g`. The file should then be changed to satisfy your needs. However, I have produced in this folder a Doxyfile, called `DoxyfileCommon`, with the most useful options already set. You have to
+```bash
+cd src/Utilities
+make
+make install
+```
 
-- Look for the line with `INCLUDE_PATH` and change the last path with the full path of the folder where the general include files of the Examples reside in your PC. It may be found easily by adding `/include` to the string
-obtaining by typing `pwd` in the folder where this README file resides. 
-- If you have not [graphviz](https://graphviz.org/) installed (but I warmly suggest you to intall it, it is available in any Linux distro), you also have to set `HAS_DOT` to `NO`.
-- After this preliminary steps, go in the directory where the specific example reside, copy the `DoxyfileCommon` with the name `Doxyfile` and run `doxygen` (or `doxygen Doxifile`).
-- In the sub-directory `doc/html` you should have the file `index.html`, that you can open with your favourite browser and look at the documentation. More info on how to use Doxygen is availabel in the Doxigen site.
+This builds and installs `libpacs.a` and `libpacs.so`, together with the
+associated headers. After that, you can run:
 
-## FURTHER INFO ##
+```bash
+make test
+```
 
-- An overview of the examples is in the `CONTENT.md` file
-- The bash script `directories.sh` creates a searcheable
-tree, `directory.html` of the subfolder `src` that may be parsed with
-a browser. To run it you must have the unix utility `tree`
-installed. Anyway, a copy of `directories.html` is present in this directory.
+to build the test executables.
 
-### The content of `src` Directory ###
-A description of the examples in the `src` directory is found in `CONTENT.md`.
+### `src/LinearAlgebraUtil`
 
-### A note on `.bashrc` or `.profile` (or `.bash_profile`) ### 
+Run:
 
-To control the settings of your Linux environment everytime you login
-the (hidden) file `.bash_profile` (or `.profile` if you are using its
-old, but still valid, name) in your home directory is sourced (its
-content is run as if typed on a terminal). Everytime you open a bash
-shell the `.bashrc` file is sourced. 
+```bash
+cd src/LinearAlgebraUtil
+make install
+```
 
-What's the difference? Well today people prefer to put everything in
-the `.bashrc` file, but in principle definitions of environmental variables
-should be put in the `.bash_profile`  (or `.profile`),
-while `.bashrc` should be reserved for command alias or customization
-that need to change depending whether you are in a interactive shell (i.e. a terminal)
-or not (batch job). 
+This installs the headers used by several linear-algebra-related examples.
+Tests are collected in `src/LinearAlgebraUtil/test`.
 
-A practical difference is that if you change `.bash_profile`  (or `.profile`)
-the changes become operative only after a new login. 
-Changes in `.bashrc` becomes active just by opening a new terminal.
+## Extras
 
-If this is too confusing for you, replace `.profile` with `.bashrc` in
-my instructions above and everything will work the same way in
-practice.
+Some examples rely on third-party software distributed in the `Extras/`
+directory of the repository, typically as submodules. If you need them, go to
+`Extras/` and follow the instructions in its `README.md`.
 
-If you want to know more (and discover that you have also
-`.bash_login`) go
-[here](https://www.baeldung.com/linux/bashrc-vs-bash-profile-vs-profile),
-or look to any good Unix reference manual.
+Examples that may require material from `Extras/` include, for instance,
+`muParserInterface` and some `pybind11` examples.
 
+## Note on C++ Parallel Algorithms
+
+Some examples use the parallel algorithms of the C++ standard library. With
+GNU and LLVM toolchains, this often requires the oneTBB runtime and linking
+against `libtbb`. Check that the library is installed on your system.
+
+## Code Documentation
+
+Most examples can generate API documentation with
+[Doxygen](https://www.doxygen.nl/). The common configuration file is
+`DoxyfileCommon`.
+
+Typical workflow:
+
+1. Adjust the include path in `DoxyfileCommon` if needed.
+2. Disable `HAS_DOT` if you do not have
+   [Graphviz](https://graphviz.org/) installed.
+3. Go to the example directory.
+4. Run:
+
+```bash
+doxygen $(PACS_ROOT)/DoxyfileCommon
+```
+
+When a local `doc/` tree is generated, the entry point is usually
+`doc/html/index.html`.
+
+## Further Information
+
+- `CONTENT.md` provides an overview of the examples in `src/`.
+- `directories.sh` generates `directories.html`, a browsable tree of the
+  `src/` directory. It requires the Unix utility `tree`.
+
+## Note on `.bashrc` and `.profile`
+
+Environment variables may be defined either in `.bash_profile` or `.profile`
+for login shells, or in `.bashrc` if that better matches your workflow.
+
+In practice:
+
+- changes to `.bash_profile` or `.profile` usually require a new login;
+- changes to `.bashrc` become active in newly opened interactive shells.
+
+If you are unsure which file to use, `.bashrc` is often the simplest practical
+choice on a personal machine.

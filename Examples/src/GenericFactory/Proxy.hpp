@@ -38,7 +38,7 @@ public:
    * This overload assumes that `Builder_type` is compatible with the static
    * member `Build()`.
    */
-  Proxy(Identifier_type const &name);
+  explicit Proxy(Identifier_type const &name);
 
   /*!
    * @brief Registers `ConcreteProduct` using an explicitly supplied builder.
@@ -70,7 +70,7 @@ public:
 
 private:
   //! Proxies are not copyable.
-  Proxy(Proxy const &) = delete;            //
+  Proxy(Proxy const &) = delete; //
   //! Proxies are not copy-assignable.
   Proxy &operator=(Proxy const &) = delete; //
 };
@@ -79,7 +79,7 @@ template <typename F, typename C>
 Proxy<F, C>::Proxy(Identifier_type const &name)
 {
   // Accessing the singleton factory also creates it on first use.
-  Factory_type &factory(Factory_type::Instance());
+  Factory_type &factory = Factory_type::Instance();
   // Register the default builder for the concrete product.
   factory.add(name, &Proxy<F, C>::Build);
   std::clog << "Added " << name << " to factory" << std::endl;
@@ -89,7 +89,7 @@ template <typename F, typename C>
 Proxy<F, C>::Proxy(Identifier_type const &name, Builder_type const &b)
 {
   // Accessing the singleton factory also creates it on first use.
-  Factory_type &factory(Factory_type::Instance());
+  Factory_type &factory = Factory_type::Instance();
   // Register the caller-supplied builder.
   factory.add(name, b);
   std::clog << "Added " << name << " to factory" << std::endl;

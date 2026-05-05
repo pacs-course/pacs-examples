@@ -41,14 +41,14 @@ MPI_INCDIR=${mkOpenmpiInc}
 mkTbbInc?=/usr/include
 mkTbbLib?=/usr/lib/x86_64-linux-gnu/
 TBB_LIBDIR=${mkTbbLib}
-TBB_INCDIR=${mkTbbIn}
+TBB_INCDIR=${mkTbbInc}
 #
 # Boost libraries
 # 
 mkBoostInc?=/usr/include/boost/
 mkBoostLib?=/usr/lib/x86_64-linux-gnu/
-BOOST_INCDIR=mkBoostInc
-BOOST_LIBDIR=mkBoostLib
+BOOST_INCDIR=${mkBoostInc}
+BOOST_LIBDIR=${mkBoostLib}
 #
 # Name of additional libraries (set by the local Makefile.inc if necessary)
 #
@@ -206,5 +206,4 @@ export ARFLAGS=rsU
 %.pdf:%.tex
 	pdflatex $<
 	pdflatex $<
-
 
