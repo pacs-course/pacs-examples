@@ -1,35 +1,26 @@
-# A possible use of MPI_Probe()
+# Receiving Messages of Unknown Size
 
-`MPI_Probe` obtains information about a message that is waiting for reception, **without actually receiving it**. In other words, the message probed remains waiting for reception afterwards. What it receive is a `MPI_Status` object that refers to the message to be received. The status contains, among other things, the length of the message. 
+`MPI_Probe` lets a process inspect a pending message without actually receiving
+it. This is useful when the message size is not known in advance.
 
-Thus, this approach allows, for instance, to receive messages of unknown length by probing them to get their length first. If there is no message from the given source with the given tag waiting for reception, MPI_Probe will block until such a message arrives.
+The usual pattern is:
 
-The synopsis is 
+1. probe the message
+2. inspect the resulting `MPI_Status`
+3. use `MPI_Get_count` to determine how large the receive buffer should be
+4. allocate the buffer
+5. receive the message
 
-	int MPI_Probe(int source,int tag, MPI_Comm communicator, MPI_Status* status);
-	
-- `source`  The rank of the sender, which can be `MPI_ANY_SOURCE` to exclude the sender's rank from message filtering.
-- `tag` The tag to require from the message. If no tag is required, `MPI_ANY_TAG` can be passed.
-- `communicator` The communicator concerned.
-- `status` The variable in which store the status corresponding to the message probed (if any), which can be `MPI_STATUS_IGNORE` if unused (but normally it is the status you want to probe!).
+That is exactly what this example demonstrates.
 
-Having obtained the status, if the message lenght is what you are looking for, you can use `MPI_Get_count`:
+The program is meant to be run with two processes:
 
-	int MPI_Get_count(const MPI_Status* status,MPI_Datatype datatype,int* count);
+```bash
+mpirun -n 2 ./main_probe
+```
 
-with which you get in `count` a number that represents the size of the message to which `status` refer, in terms of number of elements of type `datatype`.
+## What You Learn Here
 
-In this simple code, the probing is indeed used to dimension a `std::vector` correctly, before receiving it from another process.
-
-To run the code after compilation:
-
-	mpirun -n 2 ./main_probe
-
-since this code runs only with just 2 MPI processes (it's just an example!).
-
-# What do I learn here?
-
--How the use of probing allow to correctly dimension receive data buffers of unknown length.
-- How to use `MPI_Probe` and `MPI_Get_count` to obtain information about a message without actually receiving it.
-
-
+- how `MPI_Probe` works
+- how to use `MPI_Get_count`
+- how to allocate receive buffers dynamically and safely

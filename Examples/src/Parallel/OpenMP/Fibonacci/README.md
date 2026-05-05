@@ -1,71 +1,47 @@
-# Code for generating Fibonacci numbers #
+# Fibonacci Numbers with OpenMP Tasks
 
-Here we have implemented a recursive algorithm for th egeneration of Fibnacci sequences, and a parallel version using OpenMP *tasks*.
+This folder compares several ways of computing Fibonacci numbers:
 
-The use of tasks is here necesssary because of the nature of the algorithm, which is not formulated as a loop or as a fixed, predetermined number of parallel parts.
+- a recursive serial version
+- a non-recursive serial version
+- a recursive task-based OpenMP version
 
-We indeed use a recursion based on the formula
+The OpenMP implementation uses tasks because the recursion tree does not map
+naturally to a simple `parallel for`.
 
-	F(k) = F(k-1)+ F(k-2), k=n,n-1,..1; F(1)=1, F(0)=0;
-	
-A (very moderate) level of parallelization is achived by noting that the computation of `F(k-1)` and `F(k-2)` can be carried out concurrently. Therefore, we can assign the computation to two different tasks:
+The parallel idea is straightforward: once `F(n)` is split into `F(n-1)` and
+`F(n-2)`, those two recursive calls can in principle be computed concurrently.
+The program therefore creates tasks for the two branches and synchronizes them
+with `taskwait`.
 
-```
-  long unsigned int fib(long unsigned int n)
-  {
-    long unsigned int i{0ul};
-    long unsigned int j{0ul};
-    if(n<=1ul) // break recursion
-      {
-        fibs[n]=n;
-        return n;
-      }
+## Why This Example Is Interesting
 
-#pragma omp task shared(i) if (n>par_limit)
-    i = fib(n-1ul); // compute F(n-1)
-#pragma omp task shared(j) if (n>par_limit)
-    j = fib(n-2ul); // compute F(n-2)
-#pragma omp taskwait // syncronize tasks
-    fibs[n]= i+j; // store value F(n)
-    return fibs[n]; // return last value
-  }
-```
-The creation of the teams of threads is done by the public method `compute()`:
+This is a good example of a parallelization that is technically possible but
+often not worthwhile.
 
-```
-  auto const &
-  compute(long unsigned int n)
-  {
-    fibs.resize(n+1ul,0ul);
-#pragma omp parallel num_threads(num_threads)
-#pragma omp single
-    fib(n);
-return fibs;
-  }
+The reason is that:
+
+- each task performs very little work
+- the number of tasks grows very quickly
+- task creation and synchronization overhead can dominate the useful work
+
+The non-recursive serial implementation is usually much faster on ordinary
+machines.
+
+## Running the Program
+
+```bash
+./main_fibs -t num_threads -l task_limit
 ```
 
-Note the use of some namespace inline variables. A variable is declared inline when is defined in a header file and you want to avoid problems with the one definition rule (since C++17).
+- `-t` sets the number of threads
+- `-l` sets the threshold below which the recursive code switches back to the
+  serial version
 
-The parallel code is in fact **higly inefficient**, let's see why. Each task has to do very little work (an addition of two integers!), and (if we ignore the `if (n>par_limit)` clause) the computation of `compute(n)` generates `2^(n-1)` tasks!.
-The overhead of taks creation and destruction may exceed greatly the advantage of parallel computations. Moreover, differently than the example in forlder `Sort` we have a `taskwait` clause that obliges sincronysation of each couple of tasks.
+The program is interactive and asks which Fibonacci number should be computed.
 
-This example shows also a serial nonrecursive implementation. Just to show that recursive algorithm are elegant but may be inefficient!. **The non recursive version is (at least on my computer) the fastest, and by far!**. For two reasons: 1) you do not have the overhead of repeated function calls, 2) in this case, the non recursive version is much more *cache friendly* than the non recursive one, since the iteration access consecutive elements.
+## What You Learn Here
 
-
-# What do I learn here #
-- That recursive algorithm may be difficult, if not impossible, to parallelize efficiently, in particular in  machines with 
-a small number of cores. Better results are in the `Sort` folder, where we show a parallel implementation of another recursive algorithm.
-- The serial non recursive version of the algorithm cannot be made parallel, but (at least on ordinary PCs) the fastest, and by far! 
-- A possible use of inline variables in c++
-
-
-
-
-
-
-
-
-
-
-
- 
+- how OpenMP tasks are used
+- why recursive algorithms are not always good candidates for parallelism
+- why algorithmic structure matters more than simply adding threads

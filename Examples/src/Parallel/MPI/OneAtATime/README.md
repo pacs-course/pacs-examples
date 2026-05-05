@@ -1,26 +1,19 @@
-# A critical section in MPI #
-A critical section is a block of code that can be executed by a process at a time. MPI does not have a specific function to define critical section. We have `MPI_Barrier()` that however is just a syncronization point: all processes stop until the last one calls it.
+# One Process at a Time
 
-To simulate a critical section we have to use a little trick. 
+MPI does not have a direct equivalent of an OpenMP-style critical section for
+arbitrary code blocks. This example shows a simple trick to emulate a
+"one-process-at-a-time" region.
 
-```
-  int rank=0;
-  MPI_Barrier(MPI_COMM_WORLD);
-  while (rank < mpi_size) // all processes carry the loop
-     {
-      if(mpi_rank==rank) //but only this one enters the block
-      {
-          // This is the critical section
-      }
-      rank++;
-      MPI_Barrier(mpi_comm); //syncronize processes
-     }
-```
+The idea is:
 
-The last `MPI_Barrier()` is optional. Its role is to force the rank ordering in accessing the critical section. If you comment it out, ordering is not guaranteed. 
+- all processes enter a loop over the ranks
+- only the process whose rank matches the current loop value executes the block
+- barriers are used to keep the ordering clean
 
-In the example in this folder, the trick is used to let each process to print some data on the screen without interfering each other.
+This is especially useful when several processes must print diagnostic
+information without interleaving their output.
 
+## What You Learn Here
 
-# What do I learn here? #
-A trick to implement a critical section in MPI
+- how to serialize output in an MPI program
+- a practical use of `MPI_Barrier()`

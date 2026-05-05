@@ -1,19 +1,29 @@
-# Parallel matrix-vector product #
+# Parallel Matrix-Vector Product with MPI
 
-Matrix-vector product is one of the classic parallel algorithm. Typically, one splits
-the matrix by assigning a given number of rows to each process, while the vector, being less memory demanding, is kept replicated.
+Matrix-vector multiplication is one of the classic examples used to introduce
+distributed linear algebra.
 
-Here we use a simple matrix linearised as a vector of double, where the element (i,j) of the matrix is mapped to v[j +n_cols*i], being n_cols the number of columns. Alternativley, one may use specialised libraries for matrices and vectors.
+In this folder, the matrix is partitioned by rows across MPI processes, while
+the vector is replicated where needed. The example also measures the time spent
+in the different stages of the computation.
 
-In this example we show also how one can have a hybrid implementation, where the each MPI process is itself further parallelised with OpenMP. 
+The code shows the use of several collective operations, including:
 
-This may optimise the use of resources in hybrid architecture, for instance a clusters of PCs where each processor is multicore. An alternative, not presented here, is to use at low level vailable higly optimised linear algebra software, for instance the [BLAS](https://netlib.org/blas/).
+- broadcast
+- scatter
+- gather
+- barriers for synchronization
 
-The code  compute the rimings (using MPI timing tools) of the different parts of the procedure separately. One may note how the scatter of matrix elements is rather costly. Not only, having to store the full matrix on the root process is memory demanding. In practical situation, one tries to build the matrix locally, whenever possible.
+It also highlights a practical issue: scattering the matrix can be expensive,
+and storing the full matrix on the root process is memory-intensive. In real
+applications one often tries to build local matrix blocks directly on each
+process instead of assembling everything on rank 0 first.
 
-# What do I learn here? #
+The implementation also serves as a simple example of a hybrid design, since
+each MPI process may in turn use OpenMP for local work.
 
-Some MPI procedures: Gathes, Scatter, Broadcast, Barrier... A trick to output local data in the order of the ranks.
+## What You Learn Here
 
-
-
+- a classic distributed matrix-vector product pattern
+- the use of collective MPI communication
+- the cost of setup and data movement in distributed linear algebra

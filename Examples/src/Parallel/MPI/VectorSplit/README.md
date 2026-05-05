@@ -1,10 +1,26 @@
-# An example of vector partitioning in MPI #
+# Splitting a Vector Across MPI Processes
 
-This example shows how to partition a vector among MPI processes. The vector is first created on the root process, then partitioned and distributed to the other processes. The partitioning is done with the `MPI_Scatterv` function, which is the inverse of `MPI_Gatherv`.
+This example shows a typical MPI data-distribution pattern.
 
-Then, some statistics on the vector elements are computed in parallel. The results are collected on the root process with the `MPI_Reduce` function.
+The root process computes how a global vector should be partitioned, then:
 
-## What do I learn here? ##
-* How to partition a vector among MPI processes
-* How to use `MPI_Scatterv` and `MPI_Gatherv`
-* How to use `MPI_Reduce` to collect results from different processes
+- chunk sizes are distributed with `MPI_Scatter`
+- local vectors are created on each process
+- each process works on its local data
+- results are collected with `MPI_Gather`, `MPI_Gatherv`, and reductions
+
+In the current implementation, each process fills its local chunk with random
+numbers and computes local statistics such as:
+
+- mean value
+- minimum
+- maximum
+
+The root process then reconstructs the global results and compares them with the
+statistics computed from the gathered full vector.
+
+## What You Learn Here
+
+- how to partition a vector among processes
+- how to use `MPI_Scatter`, `MPI_Gather`, and `MPI_Gatherv`
+- how to assemble global information from local computations

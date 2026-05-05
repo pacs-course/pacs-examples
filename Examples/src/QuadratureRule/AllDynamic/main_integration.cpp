@@ -69,6 +69,10 @@ main(int argc, char **argv)
       std::cerr << "Input file " << inputFile << " does not exists\n";
       return 1;
     }
+  else
+    {
+      std::cout << "Reading input file " << inputFile << std::endl;
+    }
   bool jsonFile = (inputFile.find(".json") != std::string::npos);
 
   // get the parameters
@@ -146,14 +150,13 @@ main(int argc, char **argv)
   if(fun_name == "NULL")
     {
       std::cerr << "Getpot file must contain integrand=integrandName\n";
-      std::cerr << "Valid integrands in the FunctionFactory:\n";
+      std::cerr << " Valid integrands in the FunctionFactory:\n";
       printList(myIntegrands);
       return 2;
     }
   else if(fun_name == "?")
     {
-      printList(myIntegrands);
-      std::cerr << "Valid integrand in the FunctionFactory:\n";
+      std::cerr << " Valid integrands in the FunctionFactory:\n";
       printList(myIntegrands);
       return 0;
     }

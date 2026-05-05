@@ -1,48 +1,219 @@
-# This directory contains a series of examples of optimization and profiling #
+# Optimization, Debugging, and Profiling Examples
 
-The makefile is specially written so it compiles and executes some of examples. We need some of the tools of the `Utility` folder. So, if you have not done it yet, 
-you to go in the directory `Utilities/` and follow the instruction to install the utilities.
+This directory collects small stand-alone examples used to discuss:
 
-This  set of stand-alone examples are meant to explain some tools for profiling, coverage, and also on how to asserts in a smarter way than the classic `assert`. 
-I recall that `assert` is a test made **run time** (do not confuse it with `static_assert`, which works at compile time). Normally, asserts are used to
-control code execution during the development phase and catch possible bugs. They are disactivated by the `NDEBUG` cpp macro. The basic `assert` utility of C++ (inherited from C++) is in fact a preprocessor macro that just stops the program if a condition is not met. The asserts proposed in `extendedAssert.hpp` (contained in `Utility/`)  are build on top 
-of the basic assert facility, but they provide the possibility of adding a user-defined message and a finer control on activation/deactivation.
+- debugging
+- assertions
+- compiler optimization
+- profiling
+- memory analysis
+- code coverage
+- a few common programming mistakes
 
-* `make esempioExtAss`: produces an example of use of the extendedAssert
-     facility provided . The programs `esempioExtAss_debug` and `esempioExtAss_release` are generated one with the assertions
-     activated and the other not. The file `Rational.dat` is read and contains a list of rationals in the form numerator denominator.
-     It may be modified to assess the activation of the assertions (try a zero denominator).
+Some examples are intentionally buggy. That is part of their teaching purpose:
+they are meant to be inspected with a debugger, a profiler, or a memory-checking
+tool rather than taken as correct production code.
 
-* `make optimize` shows the effect of different optimization level on the CPU time to solve a simple fem program. In the file dati you should write the number of elements you want. Suggested: 300.
+## Prerequisites
 
-* `make debug`. Produces two executable, `esempio0_debug` and
-     `esempio1_debug`. The latter contains an error. You should try to
-     use the debugger. Use `ulimit -c unlimited` to do static debugging (see note below).
+Some targets depend on utilities provided elsewhere in the repository.
 
-* `make leak`. An example of use of valgrind to find a memory leak. You should have [valgrind](https://valgrind.org/) installed.
+Before using the examples related to extended assertions, make sure the helper
+utilities from `Examples/src/Utilities` are available and built as described in
+that folder.
 
+Some targets also require external tools:
 
-* `make profile`. An example of use of `gprof` profiler. The `--annotated-source` option is  working only if the compiler option `-g` is activated. But better use `gcov` to have the 
-info provided by `--annotated-source`, so I am not using it.
+- `valgrind` for `leak`, `callgrind`, and `massif`
+- `gprof` for `profile`
+- `gcov` for `coverage`
+- `lcov` and `genhtml` for `lcoverage`
+- `kcachegrind` if you want to inspect the output of `callgrind` graphically
 
-* `make massif`. An example of use of `massif` tool of `valgrind`  to analyze memory usage.
+## Main Makefile Targets
 
-* `make aliasing`: a code that may produce wrong results because of aliasing
+Running `make` in this folder prints the list of the most useful targets. The
+main ones are the following.
 
-* `make coverage` : use of `gcov` to to the coverage of a program. It produces a lot
-     of files, but you can clean the folder up using `make clean`
+### `make esempioExtAss`
 
-* `make lcoverage` : like `coverage` but uses `lcov` and `genhtml` to have nicer result in html format!  You must have them installed!
-     
-* `namemangling,cpp` does not create any executable. is only to test namemangling. You should do `g++ -c namemangling.cpp`
-    and run `nm namemangling.o` or `nm --demangle namemangling.o` to see the difference.
+Builds two executables showing the use of the extended assertion utilities:
 
-`rational.[h|c]pp` and `GetPot` are only support utilities used in some of the previous examples. 
+- `esempioExtAss_debug`
+- `esempioExtAss_release`
 
-# What do I learn here? #
-- Different tools and utilities for debugging and profiling
+The program reads [`Rational.dat`](./Rational.dat), which contains rational
+numbers stored as pairs `numerator denominator`. You can modify the file to
+trigger assertion failures, for example by inserting a zero denominator.
 
-## A note on core dump
-Normally core dumping is suppressed to avoid having big files around when not needed. The `ulimit -c unlimited` command
-removes this restriction. However **on ubuntu systems** this is not enogh if you have *apport* active. Apport is a daemon that automatically reports to Canonical possible system bugs and handles the core, which is then are no more saved in the working directory. Therefore, if you want to use static debugging on the given example you have also to stop apport with `sudo systemctl stop apport` or (alternatively) `sudo service apport stop`. 
-These commands suspend apport until you run them again with `stop` replaced by `start`, or at the next reboot. If you want to disable apport permanently, look at the documentation on line.
+### `make optimize`
+
+Compiles and runs three versions of [`esempio.cpp`](./esempio.cpp) with
+different optimization levels:
+
+- `esempio0` with `-O0`
+- `esempio2` with `-O2`
+- `esempio3` with `-O3 -ffast-math -funroll-loops ...`
+
+The program solves a simple one-dimensional heat-transfer problem and writes
+its results to `result.dat`. The input file [`dati`](./dati) specifies the
+number of elements.
+
+This target is meant to show how optimization flags affect execution time.
+
+### `make debug`
+
+Builds two debug-oriented executables:
+
+- `esempio0_debug`, built from the correct example
+- `esempio1_debug`, built from [`esempio_errore.cpp`](./esempio_errore.cpp)
+
+The second program is intentionally wrong: it declares an empty `std::vector`
+and then writes into it without resizing it first. This is meant to be
+investigated with a debugger.
+
+If you want to inspect crashes through a core dump, see the note at the end of
+this README.
+
+### `make leak`
+
+Builds and runs [`leak.cpp`](./leak.cpp) under Valgrind.
+
+This example is intentionally flawed. It shows how returning raw pointers and
+forgetting ownership can easily produce memory leaks. The Valgrind report is
+written to `leak.log`.
+
+### `make profile`
+
+Builds and profiles [`esempio.cpp`](./esempio.cpp) with `gprof`, both without
+optimization and with optimization enabled.
+
+It produces:
+
+- `Profiling_nopt.txt`
+- `Profiling_opt.txt`
+
+This target is useful to compare how the profile changes when compiler
+optimizations are enabled.
+
+### `make callgrind`
+
+Runs [`esempio.cpp`](./esempio.cpp) under Valgrind's `callgrind` tool with and
+without optimization.
+
+It produces:
+
+- `callgrind_O0.out`
+- `callgrind_03.out`
+
+These files can be inspected with `kcachegrind`.
+
+### `make massif`
+
+Builds and runs [`provamassif.cpp`](./provamassif.cpp) under Valgrind's
+`massif` tool to inspect memory usage over time.
+
+It also creates a text summary:
+
+- `massif.txt`
+
+### `make aliasing`
+
+Builds [`aliasing.cpp`](./aliasing.cpp), a small example showing how argument
+aliasing can produce incorrect results.
+
+The code presents several versions of the same operation:
+
+- one that breaks under aliasing
+- one that fixes only part of the problem
+- one that is safe because it works on copies
+
+This is not a performance example; it is mainly about correctness and API
+design.
+
+### `make coverage`
+
+Builds [`esempio.cpp`](./esempio.cpp) with GCC coverage instrumentation and
+processes the execution with `gcov`.
+
+This produces coverage data and a text summary in:
+
+- `summary.txt`
+
+It also creates `.gcda`, `.gcno`, and related files.
+
+### `make lcoverage`
+
+Similar to `coverage`, but uses `lcov` and `genhtml` to generate an HTML
+coverage report. The output is written in the `html/` directory.
+
+## Important Source Files
+
+- [`esempio.cpp`](./esempio.cpp)
+  Main optimization/profiling example. It solves a small numerical problem and
+  is used by several targets.
+
+- [`esempio_errore.cpp`](./esempio_errore.cpp)
+  Intentionally buggy version used for debugging practice.
+
+- [`esempioExtAss.cpp`](./esempioExtAss.cpp)
+  Example of extended assertions applied to rational numbers.
+
+- [`leak.cpp`](./leak.cpp)
+  Intentionally faulty memory-management example.
+
+- [`aliasing.cpp`](./aliasing.cpp)
+  Example showing the effect of aliasing in function arguments.
+
+- [`provamassif.cpp`](./provamassif.cpp)
+  Example used to inspect memory growth with `massif`.
+
+- [`namemangling.cpp`](./namemangling.cpp)
+  Small file used to inspect name mangling. It is not tied to a Makefile
+  target. Compile it manually, for example:
+
+  ```bash
+  g++ -c namemangling.cpp
+  nm namemangling.o
+  nm --demangle namemangling.o
+  ```
+
+- [`rational.hpp`](./rational.hpp), [`rational.cpp`](./rational.cpp)
+  Support code used by the extended-assert example.
+
+## What You Learn Here
+
+- how optimization flags can change runtime behavior and performance
+- how to debug a crashing program
+- how to inspect memory leaks and memory usage
+- how to use `gprof`, `callgrind`, `gcov`, and `lcov`
+- why some programs are correct but slow, while others are fast but unsafe
+- why API choices such as raw pointers or aliased references can be dangerous
+
+## Note on Core Dumps
+
+On many systems, core dumps are disabled by default. The command
+
+```bash
+ulimit -c unlimited
+```
+
+removes that restriction for the current shell.
+
+On Ubuntu systems this may still not be enough if `apport` is active, because
+it intercepts crashes and handles the core dump itself. In that case, if you
+want the core file to be written locally for debugging, you may need to stop it
+temporarily with:
+
+```bash
+sudo systemctl stop apport
+```
+
+or:
+
+```bash
+sudo service apport stop
+```
+
+You can restart it later by replacing `stop` with `start`, or simply reboot the
+machine.

@@ -1,19 +1,49 @@
-# A set of examples exploiting shared memory parallelism using OpenMP
+# OpenMP Examples
 
-The number of parallel threads used to run an executable can be set through the `OMP_NUM_THREADS` environment variable, *e.g.* with
+This directory contains examples of shared-memory parallel programming with
+OpenMP.
+
+The number of threads can usually be controlled through the environment
+variable `OMP_NUM_THREADS`, for example:
+
 ```bash
 export OMP_NUM_THREADS=4
-./executable1 # Runs on 4 threads.
-./executable2 # Runs on 4 threads.
+./executable
 ```
-or, without permanently altering the environment:
+
+or, for a single command only:
+
 ```bash
-OMP_NUM_THREADS=4 ./executable1 # Runs on 4 threads.
-OMP_NUM_THREADS=1 ./executable2 # Runs on 1 thread, i.e. in serial.
+OMP_NUM_THREADS=4 ./executable
 ```
 
-* *HelloWorld* Two simple examples showing the use of the basics of `OpenMP`, such as `#pragma omp parallel`, `#pragma omp critical`, `omp_get_thread_num()` and so on.
+## Subfolders
 
-* *DataRace* An example showing a possible issue of parallel programs, *i.e.* data race: each entry of an array is filled in parallel (using `#pragma omp for`) with a value based on the corresponding next entry. Depending on which thread first fills each entry, the result may be wrong. The serial and the parallel output are compared.
+- `HelloWorld`
+  Basic OpenMP constructs such as `parallel`, `critical`, `barrier`, and
+  thread identifiers.
 
-* *PI* An example of computing an integral using the composite midpoint rule in parallel, where the subintervals are assigned to different threads. The use of `#pragma omp for reduction` is also shown.
+- `DataRace`
+  A deliberately wrong example showing how a data race can corrupt a result.
+
+- `PI`
+  Parallel numerical integration with both an explicit accumulation strategy and
+  a reduction-based implementation.
+
+- `Fibonacci`
+  Recursive and task-based Fibonacci examples, mainly to discuss when task
+  parallelism is a poor fit.
+
+- `Locks`
+  A simple use of OpenMP locks to protect updates to shared state.
+
+- `Scheduling`
+  A small program illustrating the behavior of the main OpenMP scheduling
+  strategies.
+
+- `Sort`
+  Comparison of several sorting approaches, including OpenMP task-based
+  quicksort.
+
+- `SimpsonHybrid`
+  A hybrid MPI/OpenMP version of the Simpson integration example.

@@ -1,9 +1,17 @@
-# Hello World! #
+# MPI Hello World
 
-The classic "Hello World" program, with MPI flavour.
+This is the classic introductory MPI program.
 
-## What do I learn here? ##
+Each process starts, discovers:
 
-The basic tools to start a MPI program. No communication among the processes here. Each process run independently.
+- its rank
+- the total number of processes
+- the communicator being used
 
-*Note* Indeed, different runs may produce different outputs, since the order into which the processor write on the standard output is not deterministic. 
+and prints a message.
+
+There is no communication among processes here. The example is only meant to
+show the basic structure of an MPI program and the use of `MPI_Init`,
+`MPI_Comm_rank`, `MPI_Comm_size`, and `MPI_Finalize`.
+
+Different runs may print the messages in different orders. This is normal.

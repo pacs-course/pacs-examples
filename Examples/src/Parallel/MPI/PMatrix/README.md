@@ -1,85 +1,53 @@
-# An example of parallel matrix #
+# A Simple Parallel Matrix Class
 
-*(if you have a compilation error see the note at the bottom)*
+This folder contains a class template representing a distributed full matrix for
+MPI-based matrix-vector products.
 
-In this example we illustrate a class template that represents a parallel (full) matrix and is able to perform matrix-vector multiplication in parallel in an MPI environment. It supports two types of matrix partitioning: `block row` and `block column`. I recall that they consist in distributing the rows of the matrix, respectively the columns, to the different processes so that the local number of rows (columns) is (nearly) the same.
+The class supports two partitioning strategies:
 
-The choice of making row-based or column-based partitioning is automatically determined by the type of the `Matrix` template parameter. If it is a row-wise ordered matrix the row block partition is adopted, and vice versa. The class has a default constructor and you can pass the global matrix to be partitioned and the MPI communicator using the method `setup`. Indeed, we have adopted the strategy where the master process (by default of rank 0) has the global matrix (a different technique is to have each process set the local matrix, maybe by reading from a file, but here it is not implemented).
+- block-row partitioning
+- block-column partitioning
 
-Let's see an example, taken from the test program present in this directory.
+The choice is driven automatically by the storage layout of the underlying local
+matrix type.
 
-```
-using RowMatrix=apsc::LinearAlgebra::Matrix<double,ORDERING::ROWMAJOR>;
-RowMatrix mr; // the global matrix 
-  if(mpi_rank==0)
-    {
-    ... //fill the global matrix with values
-    }
-  apsc::PMatrix<RowMatrix> pmr; // the parallel matrix class
-  pmr.setup(mr,MPI_COMM_WORLD);
-```
-We have used for convenience a type alias to specify the `Matrix<>` type instance corresponding to a row-major matrix of doubles.
+## Main Idea
 
-Now all processes have their local version and, if you wish, you can erase the global matrix.
-All processes must have a copy of the global vector with which we want to multiply the matrix, let's call it `v`. The parallel product is made with the method `product()`.
+The `PMatrix` class receives a global matrix on the master process, partitions
+it, and distributes the local pieces across the MPI communicator. Once the
+distribution is complete, the class can perform parallel matrix-vector products.
 
-```
-   pmr.product(v); 
-```
+The result can then be:
 
-The result may be extracted with the method `collectGlobal()`
+- collected only on the root process
+- collected on all processes
 
-```
- std::vector<double> result;
- pmr.collectGlobal(result);
-```
-In this form, **only the master process obtains the result**, in the other processes `result` is an empty vector. If you want all processes to get the result (more costly since you need an all-to-all communication), you do
+depending on which gathering method is used.
 
-```
- std::vector<double> result;
- pmr.AllCollectGlobal(result);
-```
-That's it.
+## Why This Example Matters
 
-## Note on the procedure for parallel matrix-vector product ##
-Let the (global) matrix dimensions be `m x n`, `p` the number of processes, and `v` the vector to be multiplied with, of dimension `n`. 
-We need to distinguish the two cases:
+The example is not only about matrix-vector multiplication. It also shows an
+important performance lesson: distributing the matrix from one root process can
+be much more expensive than the local computation itself. This is often the
+dominant setup cost in toy implementations.
 
-**Row block partition case**
- 
- - After the partition, each process `i` owns a local matrix `A_i` of dimension `l x n`, where `l` is at most `m/p +1`;
- - The local matrix-vector multiplication is carried out normally: `r_i=A_i v`, and `r_i` has dimension `l`;
- - The global solution vector is obtained by gathering the contribution `r_i` of each process using `MPI_Gatherv` or `MPI_Allgatherv`. 
- 
-**Column block partition case**
- 
- - After the partition, each process `i` owns a local matrix `A_i` of dimension `m x l`, where `l` is at most `n/p +1`;
- - The local matrix-vector multiplication is carried out by extracting from `v` the `l` rows corresponding to the global index of the columns of 
- `A` contained in `A_i`.  The local solution vector `r_i=A_i v_i` has dimension `m`;
- - The global solution vector is obtained by summing the local solution `r_i` of each process using `MPI_Reduce` or `MPI_Allreduce`. 
- 
-## Note on the result of the test program ##
-First of all, in the compilation I have not activated OpenMP. If you do, by adding `-fopenmp` to the `CXXFLAGS` in `Makefile.inc` you have a hybrid parallelization, since the class `Matrix` uses multithreading in the local matrix-vector product. However, hybrid parallelism does not always work well on a computer not meant for hybrid parallel computing like a normal PC, that's why I have taken it away by default. Remember to compile with 
+In practice, this kind of class is most useful when:
 
-```
-make DEBUG=no
-```
-if you want to get full optimization (do a `make clean` before, to be sure you recompile everything).
+- the same matrix is reused many times
+- the setup cost can be amortized
 
-Try to run the code using a different number of processes (you are clearly limited by your machine...):
+## Build Note
 
-```
-mpirun -n <NP> ./main_PMatrix
-```
+This example depends on utilities installed from:
 
-You may note that the setup time, i.e. the time taken to partition the matrix and distribute it, is dominant (at least on a normal PC computer), while the time for the actual matrix-vector parallel execution is rather satisfactory, showing a reasonable speedup even on a simple multicore PC. The conclusions are:
+- `Parallel/Utilities`
+- `Matrix`
 
-- The technique where a master process distributes the global matrix partitions to the processes implies a certain overhead due to the need of communicating large amounts of data during the setup phase. In practical situations, it's better to have each processor build its own local matrix, whenever possible.
-- The parallel matrix-vector computation becomes more advantageous if repeated many times with the same matrix. Indeed, in this case the setup phase overhead may become irrelevant. Luckily, this is the most common situation, for instance in iterative techniques for the solution of linear systems.
+If compilation fails because headers are missing, build and install those
+dependencies first.
 
-## Note on the use of the class ## 
+## What You Learn Here
 
-The `PMatrix.hpp` file includes other header files, in particular `partitioner.hpp`, `mpi_utils.h` and `Matrix.hpp`. To have them in the include directory of the Examples and thus available for the compilation of the test program using `make`, you need to:
-
-- go to the `Parallel/Utilities/` folder and type `make install`
-- go to the `Matrix/` folder and type `make install`
+- how a simple distributed matrix abstraction can be designed
+- the difference between row-block and column-block partitioning
+- why data distribution cost matters in parallel linear algebra

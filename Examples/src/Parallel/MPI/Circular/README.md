@@ -1,17 +1,20 @@
-# An example of "circular" point-to-point communication #
+# Circular MPI Communication
 
-Every process sends a message to the process with rank+1 modulo the
-number of processes.
+In this example, each process sends a message to the next process in a ring:
 
-To avoid deadlock, I have chosen here a asyncronous non-blocking
-(immediate return) send.
+- rank `0` sends to rank `1`
+- rank `1` sends to rank `2`
+- ...
+- the last rank sends back to rank `0`
 
-You may note that, while messages are correctly sent/received, the order is not deterministic. This is quite common: every process run independently from the others.
+The code uses a non-blocking send so that the circular communication can be
+implemented safely without creating a deadlock.
 
+Because the processes run independently, the order in which messages are printed
+or completed is not deterministic.
 
-# What do I learn here? #
+## What You Learn Here
 
-A less basic usage of `MPI_Isend` and `MPI_Recv
-`
-The use of a `MPI_Request` and `MPI_Wait`. 
-
+- how to implement ring-style communication
+- the use of `MPI_Isend`
+- the roles of `MPI_Request` and `MPI_Wait`

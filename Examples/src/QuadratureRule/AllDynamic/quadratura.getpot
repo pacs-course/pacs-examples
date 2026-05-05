@@ -1,4 +1,5 @@
-integrand=?
+integrand=fsincos
+#integrand=?
 #integrand=parsedFunction
 udflib=./libudf.so
 library='./libAdamsRules.so ./libGaussRules.so'

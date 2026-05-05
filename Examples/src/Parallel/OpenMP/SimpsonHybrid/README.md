@@ -1,40 +1,31 @@
-# Numerical integration with a parallel Simpson composite quadrature, hybrid implementation.
+# Hybrid MPI/OpenMP Simpson Integration
 
+This folder contains a hybrid parallel version of the Simpson integration
+example from `Parallel/MPI/Simpson`.
 
-This code illustrates a hybrid MPI-OpenMP implementation of the same code contained in `MPI/Simpson`. We leave the general description to the README file in that folder.
+The general idea is the same:
 
-We only show the difference. The function to compute the composite rule has been changed in 
+- the integration interval is split across MPI processes
+- each process computes a local composite Simpson rule
+- the partial integrals are combined with `MPI_Reduce`
 
-	inline double SimpsonRule_mt(std::function<double (double const &)> const & f,
-                          double a, double b, unsigned int n, unsigned int num_threads)
-	{
-	  double integral{0.};
-	  double h=(b-a)/n;
-	#pragma omp parallel for num_threads(num_threads) shared(a,h,f,n) reduction(+:integral)
-	  for (auto i= 0u; i< n;++i)
-	    {
-	      integral+=(f(a+i*h)+4.*f(a+(i+0.5)*h)+f(a+(i+1.)*h));
-	    }
-	  return (h/6.)*integral;
-	}
-where a `parallel for` directive with reduction clause is used to compute the contribution to the integral by the given MPI process.
+The difference is that the local Simpson computation is itself parallelized with
+OpenMP using a `parallel for` and a reduction clause.
 
-The number of threads are given in the json file `data.pot`, and may be changed at will. Integrand function is defined in the main program, it can be done better.
+The input data are read from a JSON file, and the number of threads is also
+configured there.
 
- The code is then compiled with `make` and then run as usual. For instance,
- 
- ```
- mpirun -n 2 ./main_simpsonHybrid
- ```
- if you want 2 processes. 
- 
-# What do I learn here?
- 
-- A simple usage  of the json reader. Much, much more in [Json for modern C++](https://github.com/nlohmann/json)
-- The use of `MPI_Reduce()` to collect partial sums
-- The use of `omp parallel for` directive with reduction clause.
-- The C++ function wrapper
-- The use of a C++ `std::tuple<>` to pack heterogeneous data. 
+## Running
 
- 
- 
+After compilation, a typical execution is:
+
+```bash
+mpirun -n 2 ./main_simpsonHybrid
+```
+
+## What You Learn Here
+
+- a simple hybrid MPI/OpenMP design
+- the use of `omp parallel for` with reduction
+- the use of `MPI_Reduce()` to combine process-local results
+- a small example of JSON-based configuration
