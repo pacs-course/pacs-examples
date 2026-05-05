@@ -1,111 +1,173 @@
-# IMPORTANT NOTICE #
-On the 16th of February 2026, this repo underwent a major update. It is no longer compatible with the previous state
-If you cloned the repository before the 16th of February, you need to clone it again! Pull and push will not work
+# Important Notice
 
-EXAMPLES AND EXERCISES FOR AMSC and APSC (PACS) COURSES
---------------------------------------
-This repo contains source code and descriptions for the examples and exercises
-that will be explained during the PACS (Programmazione Avanzata per il Calcolo
-Scientifico - Advanced Programming for Scientific Computing) and Advanced Methods for Scientific Computing (AMSC) courses at Politecnico di Milano.
-*For the AMSC course, only a subset of the examples will be used at the lectures and labs.*
-I encourage interested students to look at the various examples.
+On February 16, 2026, this repository underwent a major restructuring and is
+not backward-compatible with earlier clones.
 
-**Essential note**: The examples for the AMSC course are located in the `AMSC` branch, not in the `master` branch. 
-You can create other branches for your experiments, if you want, but **do not mess around with the `master` branch**
-The master branch is the main branch for the APSC (PACS) course.
+If you cloned the repository before February 16, 2026, clone it again. A
+simple `git pull` is not enough for that transition.
 
+# Examples and Exercises for the AMSC and APSC (PACS) Courses
 
-The repository contains git submodules, so to check it out properly, you have to type
+This repository contains source code and documentation for examples and
+exercises used in the PACS course (*Programmazione Avanzata per il Calcolo
+Scientifico*, Advanced Programming for Scientific Computing) and in the AMSC
+course (Advanced Methods for Scientific Computing) at Politecnico di Milano.
 
-```
+For the AMSC course, only a subset of the material is typically used in
+lectures and labs, but interested students are encouraged to explore the full
+collection.
+
+## Branches
+
+The material for the AMSC course is in the `AMSC` branch, not in `master`.
+The `master` branch is the main branch for the APSC/PACS course.
+
+You may of course create your own branches for experiments.
+
+## Cloning the Repository
+
+This repository uses Git submodules, so it should be cloned with:
+
+```bash
 git clone --recurse-submodules https://github.com/HPC-Courses/AMSC-CodeExamples.git
 ```
 
-or **(preferably)**
+or, if you use SSH,
 
-```
+```bash
 git clone --recurse-submodules git@github.com:HPC-Courses/AMSC-CodeExamples.git
 ```
-*In the latter case, you must register your ssh keys on a personal GitHub account*.
 
+In the latter case, your SSH keys must already be registered with GitHub.
 
-To keep your local repo updated with changes upstream, do frequently:
+To keep your local repository up to date, use:
 
 ```bash
 git pull --recurse-submodules
 ```
 
-or just from this directory,
+or, from the root of this repository,
 
 ```bash
 ./update.sh
 ```
 
-The software requires a C++ compiler, i.e., gcc >= 13.0 or clang >= 18.
-You may check the version of your compiler with the option -v. Several examples have now been ported to C++20, and some C++23 constructs are also used sometimes. Check whether your compiler supports those standards. You may have a look
-[here](https://en.cppreference.com/w/cpp/compiler_support)
+## Compiler Requirements
 
-## Module (mk) system
+You need a reasonably recent C++ compiler with solid C++20 support, and some
+examples also require C++23 features. In practice, the current configuration in
+`Examples/Makefile.user` defaults to `c++23`.
 
-In the course, we may use the mk module system provided in [this repository](https://github.com/pcafrica/mk_) (nothing to do with git submodules!). However, this is not strictly required; we can do without it if you have
-a recent Linux distribution.
+As a rule of thumb, use at least:
 
-You may want to use an IDE. Either [eclipse](https://www.eclipse.org/ide/), [CLion](https://www.jetbrains.com/clion/) or [VisualStudio](https://www.jetbrains.com/clion/) are good choices (in my opinion). Clion and Visual Studio support Copilot integration. Visual Studio also allows integration with dev containers
+- `gcc` 13 or newer, or
+- `clang` 18 or newer.
 
-## Directory Contents
-
-This directory contains some utilities:
-
-**load_modules**
-If you use the module (mk) system, by typing
+To check your compiler version, run for example:
 
 ```bash
-source load_modules
+g++ -v
 ```
 
-or
+Compiler support tables are available
+[here](https://en.cppreference.com/w/cpp/compiler_support).
+
+## The `mk` Module System
+
+The course environment may use the `mk` module system provided in
+[this repository](https://github.com/pcafrica/mk_). This is unrelated to Git
+submodules.
+
+Using that module system is convenient, but not strictly required if you have a
+recent Linux installation and install the required packages yourself.
+
+The script `load_modules.sh` contains one example of a module setup used in the
+course environment.
+
+## IDEs
+
+You may want to use an IDE. Common choices are:
+
+- [Eclipse](https://www.eclipse.org/ide/)
+- [CLion](https://www.jetbrains.com/clion/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+
+CLion and Visual Studio Code can be integrated with AI-assisted coding tools.
+
+## Repository Contents
+
+At the top level, the most relevant directories and scripts are:
+
+- `Examples/`: the main collection of examples and their build instructions.
+- `Extras/`: third-party or auxiliary material used by some examples.
+- `shared_files/`: additional shared material.
+- `load_modules.sh`: helper script for environments that use the `mk` module
+  system.
+- `install-git-submodules.sh`: initializes and updates submodules if you did
+  not clone with `--recurse-submodules`.
+- `change_submodules_url_https.sh`: switches submodule URLs to HTTPS.
+- `change_submodules_url_ssh.sh`: switches submodule URLs back to SSH.
+- `update.sh`: pulls the repository and its submodules, then runs the
+  `Examples/setup.sh` helper.
+
+## Using `load_modules.sh`
+
+If you use the `mk` module system, you may load the main modules with:
 
 ```bash
-. load_modules.sh
+source load_modules.sh
 ```
 
-will load the main modules used in the examples, apart from  `hdf5`, which is used only in the example on input-output streams. If you do not use the mk module system, you do not need it.
-
-**change_submodules_url.sh**
-This script changes the submodules' protocols to https. You may need it if you use containers (see later on)
-
-**change_submodules_url_ssh.sh**
-This script changes the submodules' protocol to SSH. SSS protocol is the default for the submodules. You may need this utility if you use containers (see later on)
-
-## Installing git submodules
-
-If you have not used `--recurse-submodules` when cloning this repo, and you want to use
-The git submodules containing third-party software type:
+or equivalently:
 
 ```bash
-./install_git_submodules.sh
+. ./load_modules.sh
 ```
 
+This loads the main toolchain and several libraries used by the examples.
+`hdf5` is left commented out because it is only needed by a small subset of the
+code.
 
-The file submodule_commands.txt contains some reminders of useful git commands for operating with submodules
+## Installing Git Submodules Later
 
-- `change_submodules_url.sh` changes the protocol of the submodules to https. You should not need it!
+If you cloned the repository without `--recurse-submodules`, you can initialize
+the submodules afterwards with:
 
-- `change_submodules_url_ssh.sh` changes the protocol of the submodules to ssh. You should not need it!
+```bash
+./install-git-submodules.sh
+```
 
-## WHAT TO DO NEXT?
+The file `submodule_commands.txt` also contains a few useful reminders for
+working with submodules.
 
-- Go to the `Extras/` directory, which contains additional software used by some examples, and follow the instructions in the local `README.md` file.
-- Go to the `Examples/` directory and follow the instructions in the local `README.md` file. 
+## What To Do Next
 
-## What ELSE? ##
+1. Go to `Extras/` and read its local `README.md`.
+2. Go to `Examples/` and follow the instructions in its local `README.md`.
 
-If you want the repository of the laboratories of the course, you can clone  [this repo](https://github.com/HPC-Courses/AMSC-Labs)
+## Related Material
 
-## WHY MAKEFILES? ##
-I have used standard makefiles since I find that they allow simpler handling of "disaggregated software", where you have several partially independent examples which share, however, some common features. Indeed, porting to `cmake` is possible, but it is not planned so far. 
+If you also want the repository used for the course laboratories, see:
 
-## DISCLAIMER ##
-The code in this repository is just a collection of examples. Some of them are rather complete and may form the basis of derivative work. You are free to use them at your discretion (please give credit and let me know of any bugs or possible improvements), but remember that *I do not make any claim about their suitability for your work, nor that they are free of bugs*. 
+[AMSC-Labs](https://github.com/HPC-Courses/AMSC-Labs)
 
-Luca Formaggia (github username: lformaggia)
+## Why Makefiles?
+
+The examples are intentionally organized as relatively independent pieces of
+software that still share some common infrastructure. In this setting, plain
+Makefiles remain simple and practical.
+
+Migrating the repository to CMake would be possible, but it is not currently
+planned.
+
+## Disclaimer
+
+This repository is a collection of teaching examples. Some parts are small and
+illustrative; others are more complete and may serve as a starting point for
+further work.
+
+You are free to use the code, but please give credit where appropriate and keep
+in mind that no warranty is provided regarding correctness, suitability, or
+absence of bugs.
+
+Luca Formaggia (`lformaggia` on GitHub)

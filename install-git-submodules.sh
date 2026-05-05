@@ -1,2 +1,2 @@
-#/bin/bash
+#!/bin/bash
 git submodule update --init --recursive --remote --rebase
