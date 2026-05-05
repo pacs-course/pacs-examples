@@ -159,7 +159,8 @@ software that still share some common infrastructure. In this setting, plain
 Makefiles remain simple and practical.
 
 Migrating the repository to CMake is possible, but it is not currently
-planned. However, there is an experimental branch, called `cmake` that contains an
+planned. However, there is an experimental branch, called `cmake` that contains a 
+previous version of these examples, ported to cmake. Have a try if you wish.
 
 ## Disclaimer
 
