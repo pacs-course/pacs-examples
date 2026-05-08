@@ -19,7 +19,7 @@ printHelp()
   cout << "[-l --list] List available rules" << endl;
   cout << "[-i --integrands] List available integrands" << endl;
 
-  cout << "[InputFile=string] Input file name (quadrature.getpot)" << endl
+  cout << "[InputFile=string] Input file name (quadratura.getpot)" << endl
        << endl;
   cout << "*** File Options ***" << endl;
   cout << "[library=string] Quadrature rule library (libmyrules.so)" << endl;
@@ -45,6 +45,21 @@ printList(Factory const &rulesFactory)
   std::cout << " The following rules are registered " << std::endl;
   for(auto i : lista)
     std::cout << i << std::endl;
+}
+/*!
+Clears factories.
+
+@details This is useful to ensure that you clear the factories before loading
+new libraries. Otherwise, if you load a library with the same rule names as a
+previously loaded library, you will get an error because the factory does not
+allow duplicate entries. By clearing the factories, before closing the
+libraries.
+*/
+void
+clearFactories()
+{
+  apsc::QuadratureRuleFactory::MyFactory.clear();
+  apsc::NumericalIntegration::myIntegrands.clear();
 }
 
 int
@@ -82,8 +97,12 @@ main(int argc, char **argv)
   else
     parameters = readQuadParameters_GP(inputFile);
 
-  // get the factory: this is the correct way
+  // get the factory: this is the correct way to get a handle to the
+  // factory fo rthe rules
   RulesFactory const &rulesFactory = apsc::QuadratureRuleFactory::MyFactory;
+  // Now get the library with the functions to be integrated
+  // Get a handle to the factory
+  auto const &myIntegrands = apsc::NumericalIntegration::myIntegrands;
   // This is wrong. You should get the global variable
   // RulesFactory const & rulesFactory=RulesFactory::Instance();
   // Load library with the rules
@@ -93,35 +112,31 @@ main(int argc, char **argv)
   auto nlibs = parameters.library.size();
   if(nlibs == 0)
     {
-      cout << "You need to specify at least one plugin library\n";
+      cerr << "You need to specify at least one plugin library\n";
       return 1;
     }
   apsc::LoadLibraries QuadRuleLibraries;
-  for(unsigned int i = 0; i < nlibs; ++i)
+  auto                good = QuadRuleLibraries.loadLibs(parameters.library);
+  if(!good)
     {
-      string quadlib = parameters.library[i];
-      cout << "Opening plugin library " << quadlib << std::endl;
-      if(!QuadRuleLibraries.loadSingleLibrary(quadlib))
-        {
-          cout << "cannot find library" << quadlib << endl;
-          cout << dlerror();
-          return 1;
-        }
+      cerr << "cannot find one of the libraries" << endl;
+      cerr << dlerror();
+      clearFactories();
+      return 1;
     }
 
   if(key_input.search(2, "--list", "-l"))
     {
       printList(rulesFactory);
+      clearFactories();
       return 0;
     }
-  // Now get the library with the functions to be integrated
-  // Get a handle to the factory
-  auto &myIntegrands = apsc::NumericalIntegration::myIntegrands;
   //@ to do enucleate this part: useless code repetition!
   nlibs = parameters.udflib.size();
   if(nlibs == 0)
     {
-      cout << "You need to specify at least one myIntegrands library\n";
+      cerr << "You need to specify at least one myIntegrands library\n";
+      clearFactories();
       return 1;
     }
   else
@@ -129,20 +144,18 @@ main(int argc, char **argv)
       cout << "Reading " << nlibs << " integrand libraries\n";
     }
   apsc::LoadLibraries IntegrandLibraries;
-  for(unsigned int i = 0; i < nlibs; ++i)
+  auto                good2 = IntegrandLibraries.loadLibs(parameters.udflib);
+  if(!good2)
     {
-      string intlib = parameters.udflib[i];
-      cout << "Integrands library " << intlib << std::endl;
-      if(!IntegrandLibraries.loadSingleLibrary(intlib))
-        {
-          cout << "cannot find library" << intlib << endl;
-          cout << dlerror();
-          return 1;
-        }
+      cerr << "cannot find one of the function libraries" << endl;
+      cerr << dlerror();
+      clearFactories();
+      return 1;
     }
   if(key_input.search(2, "--integrands", "-i"))
     {
       printList(myIntegrands);
+      clearFactories();
       return 0;
     }
   // get the integrand
@@ -152,12 +165,14 @@ main(int argc, char **argv)
       std::cerr << "Getpot file must contain integrand=integrandName\n";
       std::cerr << " Valid integrands in the FunctionFactory:\n";
       printList(myIntegrands);
+      clearFactories();
       return 2;
     }
   else if(fun_name == "?")
     {
       std::cerr << " Valid integrands in the FunctionFactory:\n";
       printList(myIntegrands);
+      clearFactories();
       return 0;
     }
 
@@ -210,6 +225,7 @@ main(int argc, char **argv)
       cout << "Rule " << rule << "does not exist" << endl;
       cout << "Registered Rules are " << endl;
       printList(rulesFactory);
+      clearFactories();
       return 2; // exit with error status
     }
   //  get the rule
@@ -222,4 +238,6 @@ main(int argc, char **argv)
   CompositeQuadrature s(*theRule, mesh);
   double              approxs = s.apply(f);
   cout << "Result= " << approxs << endl;
+  clearFactories();
+  return 0;
 }
