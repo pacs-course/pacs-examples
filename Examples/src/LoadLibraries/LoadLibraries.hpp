@@ -8,6 +8,7 @@
 #ifndef EXAMPLES_SRC_LOADLIBRARIES_LOADLIBRARIES_HPP_
 #define EXAMPLES_SRC_LOADLIBRARIES_LOADLIBRARIES_HPP_
 #include <dlfcn.h>
+#include <ranges>
 #include <string>
 #include <unordered_map>
 
@@ -32,9 +33,11 @@ public:
   LoadLibraries(LoadLibraries &&) = default;
   //! Moves the repository, transferring ownership of every loaded handle.
   LoadLibraries &operator=(LoadLibraries &&) = default;
-  //! Copy assignment is disabled because the class uniquely owns library handles.
+  //! Copy assignment is disabled because the class uniquely owns library
+  //! handles.
   LoadLibraries &operator=(LoadLibraries const &) = delete;
-  //! Copy construction is disabled because the class uniquely owns library handles.
+  //! Copy construction is disabled because the class uniquely owns library
+  //! handles.
   LoadLibraries(LoadLibraries const &) = delete;
   /*!
    * @brief Builds the repository and immediately loads libraries from a file.
@@ -72,6 +75,27 @@ public:
    * @param mode Dynamic loader mode forwarded to `dlopen()`.
    * @return `true` on success, `false` if `dlopen()` fails.
    */
+  /*
+  @brief Load libraries from a Range of strings
+  */
+  bool
+  loadLibs(std::ranges::input_range auto &&libNames, int mode = RTLD_NOW)
+  {
+    bool good = true;
+    for(auto &&libName : libNames)
+      {
+        if(libName.empty())
+          {
+            good = false;
+            break;
+          }
+        good = this->loadSingleLibrary(libName, mode);
+        if(!good)
+          break;
+      }
+    return good;
+  }
+
   bool loadSingleLibrary(std::string libName, int mode = RTLD_NOW);
   //! Closes every loaded library and clears the internal repository.
   void close();
