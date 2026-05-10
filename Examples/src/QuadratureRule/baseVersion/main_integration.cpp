@@ -59,7 +59,7 @@ main(int argc, char **argv)
   // Now the adaptive
   CompositeQuadrature sa{QuadratureRuleAdaptive<Simpson>(targetError, 10000),
                          mesh};
-  double     adaptiveResult = sa.apply(f);
+  double              adaptiveResult = sa.apply(f);
   printout(adaptiveResult, exactVal, targetError, "SImpson Adaptive");
 
   // Now the adaptive

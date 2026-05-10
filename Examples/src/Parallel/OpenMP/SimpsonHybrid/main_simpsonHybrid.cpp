@@ -13,7 +13,7 @@
 #include <tuple>
 #include <vector>
 
-#include "../SimpsonHybrid/SimpsonRule.hpp"
+#include "SimpsonRule.hpp"
 int
 main()
 {
