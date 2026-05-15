@@ -7,20 +7,26 @@
 using funct = const std::function<double(double)> &;
 using functl = const std::function<long double(long double)> &;
 
-template double apsc::regulaFalsi(funct f, double a, double b, double tol,
-                                  double tola);
-template double apsc::bisection(funct f, double a, double b, double tol);
-template double apsc::bisection(functl f, double a, double b, double tol);
+template double apsc::regulaFalsi(funct f, double a, double b,
+                                  double tol = 1.e-6, double tola);
+template double apsc::bisection(funct f, double a, double b,
+                                double tol = 1.e-6);
+template double apsc::bisection(functl f, double a, double b,
+                                double tol = 1.e-6);
 template std::tuple<double, bool> apsc::secant(funct f, double a, double b,
-                                               double tol, double tola,
-                                               unsigned int maxit);
+                                               double       tol = 1.e-6,
+                                               double       tola = 1.e-6,
+                                               unsigned int maxit = 100);
 template std::tuple<double, bool> apsc::Newton(funct f, funct df, double a,
-                                               double tol, double tola,
-                                               unsigned int maxit);
+                                               double       tol = 1.e-6,
+                                               double       tola = 1.e-6,
+                                               unsigned int maxit = 100);
 template std::tuple<double, double, bool>
 apsc::bracketInterval(funct f, double x1, double h, unsigned int maxIter);
-template std::tuple<double, bool>
-apsc::brent_search(funct f, double a, double b, double tol, unsigned int maxit);
+template std::tuple<double, bool> apsc::brent_search(funct f, double a,
+                                                     double       b,
+                                                     double       tol = 1.e-6,
+                                                     unsigned int maxit = 100);
 
 /*!
 python binder.
@@ -33,7 +39,7 @@ PYBIND11_MODULE(zeroFun, m)
   namespace py = pybind11;
   // Bind the regulaFalsi function
   m.def("regulaFalsi", &regulaFalsi<funct>, py::arg("f"), py::arg("a"),
-        py::arg("b"), py::arg("tol"), py::arg("tola"),
+        py::arg("b"), py::arg("tol") = 1.e-6, py::arg("tola") = 1.e-6,
         R"pbdoc(
                         Find the zero of a function using the regula falsi method.
 
@@ -47,7 +53,7 @@ PYBIND11_MODULE(zeroFun, m)
 
   // Bind the bisection function
   m.def("bisectionld", &bisection<functl>, py::arg("f"), py::arg("a"),
-        py::arg("b"), py::arg("tol"),
+        py::arg("b"), py::arg("tol") = 1.e-6,
         R"pbdoc(
                         Find the zero of a function using the bisection method.
 
@@ -58,7 +64,7 @@ PYBIND11_MODULE(zeroFun, m)
                         :return: The zero of the function.
                     )pbdoc");
   m.def("bisection", &bisection<funct>, py::arg("f"), py::arg("a"),
-        py::arg("b"), py::arg("tol"),
+        py::arg("b"), py::arg("tol") = 1.e-6,
         R"pbdoc(
                         Find the zero of a function using the bisection method.
 
@@ -71,7 +77,7 @@ PYBIND11_MODULE(zeroFun, m)
 
   // Bind the secant function
   m.def("secant", &secant<funct>, py::arg("f"), py::arg("a"), py::arg("b"),
-        py::arg("tol"), py::arg("tola"), py::arg("maxit"),
+        py::arg("tol") = 1.e-6, py::arg("tola") = 1.e-6, py::arg("maxit") = 100,
         R"pbdoc(
                         Find the zero of a function using the secant method.
 
@@ -86,7 +92,8 @@ PYBIND11_MODULE(zeroFun, m)
 
   // Bind the Newton function
   m.def("Newton", &Newton<funct, funct>, py::arg("f"), py::arg("df"),
-        py::arg("a"), py::arg("tol"), py::arg("tola"), py::arg("maxit"),
+        py::arg("a"), py::arg("tol") = 1.e-6, py::arg("tola") = 1.e-6,
+        py::arg("maxit") = 100,
         R"pbdoc(
                         Find the zero of a function using the Newton method.
 
@@ -101,7 +108,7 @@ PYBIND11_MODULE(zeroFun, m)
 
   // Bind the bracketInterval function
   m.def("bracketInterval", &bracketInterval<funct>, py::arg("f"), py::arg("x1"),
-        py::arg("h"), py::arg("maxIter"),
+        py::arg("h"), py::arg("maxIter") = 100,
         R"pbdoc(
                         Find an interval that brackets a zero of a function.
 
@@ -114,7 +121,7 @@ PYBIND11_MODULE(zeroFun, m)
 
   // Bind the brent_search function
   m.def("brent_search", &brent_search<funct>, py::arg("f"), py::arg("a"),
-        py::arg("b"), py::arg("tol"), py::arg("maxit"),
+        py::arg("b"), py::arg("tol") = 1.e-6, py::arg("maxit") = 100,
         R"pbdoc(
                         Find the zero of a function using Brent's method.
 
