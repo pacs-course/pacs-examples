@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.18)
+project(pacs_pybind11 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m pybind11 --cmakedir
+  OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE pybind11_DIR)
+find_package(pybind11 CONFIG REQUIRED)
+find_package(Eigen3 CONFIG QUIET)
+
+pybind11_add_module(pacs_py bindings_pybind11.cpp)
+if (Eigen3_FOUND)
+    target_link_libraries(pacs_py PRIVATE Eigen3::Eigen)
+else()
+    target_include_directories(pacs_py PRIVATE /usr/include/eigen3)
+endif()
