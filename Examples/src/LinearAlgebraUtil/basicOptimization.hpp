@@ -73,9 +73,9 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
   // test for convergence: have I found the minimum
   // I estimate the derivative with a finite difference
   constexpr double epsilon = std::numeric_limits<double>::epsilon();
-  bool             ok = std::abs(d - c) > epsilon
-                          ? std::abs(f(c) - f(d)) / std::abs(d - c) < tol
-                          : true; // If d and c are too close, consider converged
+  bool ok = std::abs(d - c) > epsilon
+              ? std::abs(f(c) - f(d)) / std::abs(d - c) < tol
+              : true; // If d and c are too close, consider converged
   return {0.5 * (a + b), ok};
 }
 
@@ -87,8 +87,8 @@ golden_search(Function const &f, double a, double b, double tol = 1.e-5,
  * @param x1 An initial guess
  * @param h The initial increment
  * @param maxIter Maximum number of iteration
- * @return The found bracket points and a status (0=ok, 1= bad initial point, 2
- * max iteration exceeded)
+ * @return The found bracket points and a status (0=ok, 1=bad initial point,
+ * 2=max iteration exceeded)
  *
  * @note The initial point is not valid if it is near a maximum.
  */
@@ -98,37 +98,61 @@ bracketIntervalMinimum(Function const &f, double x1, double h = 0.01,
                        unsigned int maxIter = 100)
 {
   constexpr double expandFactor = 1.5;
-  int              status = 0;  
-auto y1 = f(x1);
-  if(f(x1 - h) < y1 && f(x1 + h) > y1)
-    h = -h;                            // change direction
-  if(f(x1 - h) > y1 && f(x1 + h) > y1) // I have found the bracket
-    return {x1 - h, x1 + h, 0};
-  h = -h;                               // change direction
-  if(f(x1 - h) > y1 and f(x1 + h) > y1) // I have found the bracket
-    return {x1 - h, x1 + h, 0};
-  bool         isOk{false};
+
+  if(h == 0.0)
+    return {x1, x1, 1};
+
+  auto y1 = f(x1);
+  auto xForward = x1 + h;
+  auto yForward = f(xForward);
+  auto xBackward = x1 - h;
+  auto yBackward = f(xBackward);
+
+  if(yForward >= y1 && yBackward >= y1)
+    {
+      if(xBackward > xForward)
+        std::swap(xBackward, xForward);
+      return {xBackward, xForward, 0};
+    }
+
+  if(yForward < y1 && yBackward < y1)
+    {
+      if(xBackward > xForward)
+        std::swap(xBackward, xForward);
+      return {xBackward, xForward, 1};
+    }
+
+  if(yBackward < y1)
+    {
+      h = -h; // expand in the downhill direction
+      xForward = xBackward;
+      yForward = yBackward;
+    }
+
+  auto         x0 = x1;
+  auto         x2 = xForward;
+  auto         y2 = yForward;
   unsigned int iter{0u};
-  auto         x2 = x1;
-  do
+  while(iter < maxIter)
     {
       h *= expandFactor;
-      x2 += h;
-      auto y2 = f(x2);
-      isOk = (y2 > y1);
-      if(!isOk)
-        {
-          x1 = x2;
-          y1 = y2;
-        }
+      auto x3 = x2 + h;
+      auto y3 = f(x3);
       ++iter;
-  } while(!isOk and iter < maxIter);
-  if(iter >= maxIter)
-    status = iter;
-  x1 -= h;
-  if(x1 > x2)
-    std::swap(x1, x2);
-  return std::make_tuple(x1, x2, status);
+      if(y3 >= y2)
+        {
+          if(x0 > x3)
+            std::swap(x0, x3);
+          return {x0, x3, 0};
+        }
+      x0 = x2;
+      x2 = x3;
+      y2 = y3;
+    }
+
+  if(x0 > x2)
+    std::swap(x0, x2);
+  return std::make_tuple(x0, x2, 2);
 }
 
 //****************************************************************************80
