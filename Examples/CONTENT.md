@@ -30,6 +30,16 @@ The collection is broad, but most folders fall into one of these groups:
 - `Aggregates`: aggregate types and aggregate initialization.
 - `Arrays`: examples based on `std::array`.
 - `Bindings`: reference binding rules, forwarding, and move-related behavior.
+- `C++23`: SOme xamples showing topical C++23 features:
+- `C++23/CRTP_WithoutCR`: explicit object parameters (deducing this) for static
+  polymorphism without a CRTP base class.
+- `C++23/ExpressionTemplateWithoutCRPT`: lazy vector arithmetic with expression
+  templates, exploring deducing this as an alternative to CRTP forwarding.
+- `C++23/expected`: the use of `std::expected`: string-to-integer conversion with `std::expected`, explicit error handling, and fallback values.
+- `C++23/mdspan`: non-owning multidimensional views with `std::mdspan`, static
+  and runtime extents, and row-major and column-major layouts.
+- `C++23/visitor23`: Visitor design pattern implemented with  with `std::variant` and `std::visit`,
+  and using deducing this for recursive traversal of components.
 - `Concepts`: user-defined concepts and constrained templates.
 - `Constexpr`: compile-time computation with `constexpr`.
 - `CRTP`: Curiously Recurring Template Pattern.
