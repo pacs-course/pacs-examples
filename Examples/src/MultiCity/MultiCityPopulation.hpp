@@ -45,7 +45,7 @@ namespace multicity
   template <int NumCities> struct InitializePopulation
   {
     virtual MultiCityPopulationVariables<NumCities> initialize() = 0;
-    virtual ~InitializePopulation<NumCities>() = default;
+    virtual ~InitializePopulation() = default;
   };
   //! The two city case of the article
   struct initialize2Cities : public InitializePopulation<2>
