@@ -212,6 +212,9 @@ The script requires `matplotlib`.
 4. Eigen documentation:
    [https://eigen.tuxfamily.org](https://eigen.tuxfamily.org)
 
+For a theory note that also documents the implementation choices in this
+folder, see [StrassenTheory.tex](StrassenTheory.tex).
+
 For performance-oriented discussions of fast matrix multiplication in practice,
 it is also worth consulting the numerical linear algebra literature on cache
 effects, blocking, and communication costs. The main lesson is that a lower

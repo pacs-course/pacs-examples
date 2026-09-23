@@ -7,7 +7,9 @@
 #ifndef EXAMPLES_SRC_LINESEARCH_OPTIMIZATION_OPTIONS_HPP_
 #define EXAMPLES_SRC_LINESEARCH_OPTIMIZATION_OPTIONS_HPP_
 #include "LineSearch_traits.hpp"
+#include <nlohmann/json.hpp>
 #include <exception>
+#include <fstream>
 #include <vector>
 namespace apsc
 {
@@ -19,7 +21,48 @@ struct OptimizationOptions
   using Scalar = apsc::LineSearch_traits::Scalar;
   Scalar       relTol = 1.e-12; //!< relative tolerance
   Scalar       absTol = 1.e-12; //!< absolute tolerance
-  unsigned int maxIter = 500;  //!< max n. of Iteration
+  unsigned int maxIter = 500;   //!< max n. of Iteration
+
+  /*! Reads optimization options from a json file.
+   * Expected keys are: relTol, absTol, maxIter.
+   * Missing keys keep their default value.
+   */
+  void
+  readFromFile(std::string const &filename)
+  {
+    std::ifstream input(filename);
+    if(!input)
+      {
+        throw std::runtime_error("Cannot open json file " + filename);
+      }
+
+    nlohmann::json jsonData;
+    input >> jsonData;
+
+    OptimizationOptions options;
+    if(jsonData.contains("relTol"))
+      {
+        this->relTol = jsonData.at("relTol").get<Scalar>();
+      }
+    if(jsonData.contains("absTol"))
+      {
+        this->absTol = jsonData.at("absTol").get<Scalar>();
+      }
+    if(jsonData.contains("maxIter"))
+      {
+        this->maxIter = jsonData.at("maxIter").get<unsigned int>();
+      }
+  }
+  //! streaming operator that prints the current options to a stream
+  friend std::ostream &
+  operator<<(std::ostream &os, const OptimizationOptions &options)
+  {
+    os << "OptimizationOptions:\n";
+    os << "  relTol: " << options.relTol << "\n";
+    os << "  absTol: " << options.absTol << "\n";
+    os << "  maxIter: " << options.maxIter << "\n";
+    return os;
+  }
 };
 
 /*!

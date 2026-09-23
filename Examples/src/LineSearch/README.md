@@ -1,66 +1,88 @@
-# A tool for line search methods for unconstrained and box-constrained optimization #
+# Line-search optimization methods
 
-This set of files introduce a general framework for line search methods for the minimization of a function
-f: Rn -> R.
+This folder contains an educational C++ implementation of iterative methods for
+minimizing a scalar function
 
-We recall that a line search method follows this general algorithm. For a given X0
+\[
+  \min_{x \in \mathbb{R}^n} f(x),
+\]
 
-- Compute a descent direction d
-- Compute the "step lenght" alpha via backtracking: you make sure that f(xk+alpha d) is sufficiently smaller than f(xk)
-- Adjourn x: x_{k+1} = xk + alpha d
-- Test for convergence
+optionally subject to component-wise bounds \(l \leq x \leq u\).  Each outer
+iteration computes a search direction, chooses a step length with backtracking,
+and updates the current point.  The implementation uses Eigen dynamic vectors
+and matrices and supports user-supplied, finite-difference, or automatic-
+differentiation derivatives.
 
-From this algorithm description if it clear that that key component is the search of a good descent direction. In this respect many techniques are possible: 
-gradient method, quasi-Newton (like BFGS), Barzilai-Borwain, non linear conjugate gradient, gradient with moment....just to mention few.
+The principal executable is `main_linesearch`; it solves a small two-variable
+example and shows how to select the descent-direction algorithm, enable bounds,
+and supply derivatives. `test_gradientAD` is a separate check of the automatic
+differentiation wrapper.
 
-So the idea was to define a general framework for the computation of the descent direction, in the form of an abstract class, 
-and implement a few methods via inheritance and polymorphism.
+## Build and run
 
-We have (so far) implemented
+From this directory:
 
-- Gradient scheme;
-- classic BFGS that approximates the Hessian;
-- BFGS that approximates the inverse of the Hessian directly;
-- Borzilai-Borwain method
-- Newton method
+```sh
+make
+./main_linesearch
+./test_gradientAD
+```
 
-This version implements also the projected-gradient and projected-Newton methods for 
-box constrained problems (not for the other methods).
+`main_linesearch` reads the optional JSON files in the current directory:
 
-We give a brief description of the main files
+- `linesearch_options.json` configures the Armijo backtracking parameters and
+  the direction name;
+- `optimization_options.json` configures stopping tolerances and the maximum
+  number of outer iterations.
 
-- *LineSearch_traits.hpp* contains the main types used throughout the utilities, to maintain concistency of types;
-- *LineSearch_options.hpp* The structure with the options for the backtracking (it should be renamed to backtracking_options.hpp);
-- *Optimization_options.hpp* The options for the line search algorithm;
-- *DescentDirectionBase.hpp* The base class for descent direction computation;
-- *DescentDirections.hpp* The implemented conclrete classes for computing descent directions;
-- *LineSearchSolver.hpp* The class with the line search algorithm;
-- *GradientFiniteDifference.hpp* If you are lazy and you do not want to compute the gradient by hand.
+The Makefile enables verbose iteration diagnostics. Build artefacts can be
+removed with `make clean`.
 
-In *main_linesearch.cpp* you have an example of use, with different options commented.
+## What is included
 
-## What do I learn here? ##
-- A rather complete code (however, read the notes) that implements one of the basic technique for optimization.
-- The use of polymorphism to select different implementations of the descent direction computation
-- The use of aggregates to store the parameters of the algorithm in a single place
-- The use of mutable objects for the private state variables of the class part of the interface
-- The use of smart pointers to manage the memory of the descent direction objects
+The following direction names can be selected through
+`LineSearchOptions::descentDirection`:
 
+| Name | Method | Derivatives required |
+| --- | --- | --- |
+| `GradientDirection` | Steepest descent | Gradient |
+| `NewtonDirection` | Newton step | Gradient and Hessian |
+| `BFGSDirection` | BFGS Hessian approximation | Gradient |
+| `BFGSIDirection` | BFGS inverse-Hessian approximation | Gradient |
+| `BBDirection` | Barzilai--Borwein scaled gradient | Gradient |
+| `CGDirection` | Nonlinear conjugate gradient (Polak--Ribiere) | Gradient |
 
-##Notes##
+The line search enforces the Armijo sufficient-decrease condition. For a
+complete explanation of the algorithms, the class design, derivative options,
+and the handling of box constraints, see [Description.md](Description.md).
+The accompanying theory note is [LineSearchTheory.tex](LineSearchTheory.tex).
 
-The object containing the concrete implementation of the descent direction is stored in the LineSearchSolver class as a unique pointer to the base class. I have  implemented
-cloning toenable a proper composition with a polymorphic objects. 
+## Main files
 
-Many improvement can be made. For instance: 
-- reading options from a text (maybe GetPot) file; 
-- adding more methods for the computation of the descent direction;
-- extend it to more general constraints;
-- implement the 2nd Wolfe condition
-- make it a library.
-	
+- `LineSearchSolver.hpp/.cpp` — outer optimization loop, Armijo backtracking,
+  and projection onto box bounds.
+- `DescentDirectionBase.hpp`, `DescentDirections.hpp/.cpp` — common interface
+  and the concrete direction strategies.
+- `DescentDirectionFactory.hpp/.cpp` — registration and construction of a
+  strategy from its string name.
+- `LineSearch_traits.hpp` — common Eigen and callable types.
+- `LineSearch_options.hpp`, `Optimization_options.hpp` — configuration and
+  problem-data aggregates, including JSON readers.
+- `GradientFiniteDifference.hpp` — forward, backward, and centered numerical
+  gradients.
+- `GradientsAD.hpp` — reverse-mode autodiff wrapper for cost, gradient, and
+  Hessian callables.
+- `main_linesearch.cpp` — worked example.
 
- 
+## Scope
 
+This is a compact teaching library rather than a production optimizer. It
+supports simple box bounds only; it does not implement general constraints,
+Wolfe curvature checks, trust regions, or limited-memory quasi-Newton methods.
+The boxed-constraint behavior and its current caveats are documented in
+[Description.md](Description.md).
 
+# What do I learn here?
 
+- An Example of several line serch strategies for function optimization
+- The use of object factories, json interface

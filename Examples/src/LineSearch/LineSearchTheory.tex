@@ -1,0 +1,229 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage[a4paper,margin=2.7cm]{geometry}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\grad}{\nabla}
+\newcommand{\trans}{\mathsf{T}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+
+\title{Line-Search Methods for Optimization\\
+\large Theory and relation to the \texttt{LineSearch} example}
+\author{PACS examples}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note presents the theory behind the line-search methods implemented in the
+\texttt{LineSearch} folder. The code combines interchangeable search-direction
+strategies with Armijo backtracking and illustrates a simple projection approach
+for component-wise box constraints.
+\end{abstract}
+
+\section{Unconstrained minimization and line search}
+
+Consider the smooth optimization problem
+\begin{equation}
+  \min_{x\in\R^n} f(x).
+  \label{eq:problem}
+\end{equation}
+At an unconstrained local minimizer $x_\star$, a necessary first-order
+condition is $\grad f(x_\star)=0$. Line-search methods produce the sequence
+\begin{equation}
+  x_{k+1}=x_k+\alpha_kd_k,
+  \label{eq:update}
+\end{equation}
+where $d_k$ is a direction and $\alpha_k>0$ is a step length. A direction is
+strictly descending if
+\begin{equation}
+  \grad f(x_k)^\trans d_k<0.
+  \label{eq:descent}
+\end{equation}
+Since
+\[
+  f(x_k+\alpha d_k)=f(x_k)+\alpha\grad f(x_k)^\trans d_k+o(\alpha),
+\]
+a sufficiently small positive step decreases the objective. The solver checks
+this property before backtracking and falls back to the negative gradient if a
+strategy returns a non-descent direction.
+
+The direction and the step length have different roles. The former carries
+local first- or second-order information, while the latter controls global
+progress and prevents an overly long step from increasing the objective.
+
+\section{Armijo backtracking}
+
+The source file \texttt{LineSearchSolver.cpp} implements geometric
+backtracking using the Armijo sufficient-decrease condition:
+\begin{equation}
+ f(x_k+\alpha d_k)\leq f(x_k)+c_1\alpha\grad f(x_k)^\trans d_k,
+ \qquad 0<c_1<1.
+ \label{eq:armijo}
+\end{equation}
+It starts from a trial value $\alpha$, accepts it if \eqref{eq:armijo} holds,
+and otherwise replaces it by $\rho\alpha$, with $0<\rho<1$, until acceptance or
+a maximum number of reductions.
+
+The corresponding configuration fields are
+\texttt{initialStep}, \texttt{sufficientDecreaseCoefficient},
+\texttt{stepSizeDecrementFactor}, and \texttt{maxIter} in
+\texttt{LineSearchOptions}. Their defaults are $1$, $10^{-2}$, $0.5$, and
+$40$. The implementation currently enforces only the first Wolfe condition,
+\eqref{eq:armijo}. The option \texttt{secondWolfConditionFactor} is reserved
+for the curvature condition
+\[
+ \left\lvert\grad f(x_k+\alpha d_k)^\trans d_k\right\rvert
+ \leq c_2\left\lvert\grad f(x_k)^\trans d_k\right\rvert,
+ \qquad c_1<c_2<1,
+\]
+but that condition is not yet implemented. Strong-Wolfe searches are important
+in standard global-convergence theory for BFGS and nonlinear conjugate-gradient
+methods.
+
+\section{Directions in the library}
+
+\texttt{DescentDirectionBase} is the common interface for all direction
+strategies. Its call operator receives the current point, cost, gradient,
+Hessian, and bound data. \texttt{DescentDirectionFactory} maps the names in
+Table~\ref{tab:directions} to concrete strategies, enabling selection from
+\texttt{linesearch\_options.json}.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+Name & Direction & Information required \\
+\midrule
+\texttt{GradientDirection} & $-g_k$ & gradient \\
+\texttt{NewtonDirection} & $H_kd_k=-g_k$ & gradient and Hessian \\
+\texttt{BFGSDirection} & $B_kd_k=-g_k$ & gradient \\
+\texttt{BFGSIDirection} & $d_k=-C_kg_k$ & gradient \\
+\texttt{BBDirection} & $d_k=-\gamma_kg_k$ & gradient \\
+\texttt{CGDirection} & Polak--Ribiere recurrence & gradient \\
+\bottomrule
+\end{tabular}
+\caption{Implemented strategies. Here $g_k=\grad f(x_k)$,
+$H_k=\grad^2f(x_k)$, $B_k$ approximates the Hessian, and $C_k$ its inverse.}
+\label{tab:directions}
+\end{table}
+
+Steepest descent takes $d_k=-g_k$, for which
+$g_k^\trans d_k=-\norm{g_k}^2$. It is robust but can be slow on
+ill-conditioned problems. Newton's method minimizes the local quadratic model
+\[
+ f(x_k+p)\approx f(x_k)+g_k^\trans p+\tfrac12p^\trans H_kp
+\]
+and solves $H_kp=-g_k$. It has local quadratic convergence near a minimizer
+with a positive-definite Hessian. The unbounded implementation uses an LLT
+solve, so it assumes such a Hessian; production solvers normally safeguard
+indefinite Hessians with modifications or trust regions.
+
+For BFGS, define $s_k=x_{k+1}-x_k$ and $y_k=g_{k+1}-g_k$. The direct update is
+\begin{equation}
+ B_{k+1}=B_k+\frac{y_ky_k^\trans}{y_k^\trans s_k}
+ -\frac{B_ks_ks_k^\trans B_k}{s_k^\trans B_ks_k}.
+ \label{eq:bfgs}
+\end{equation}
+When $B_k$ is positive definite and $y_k^\trans s_k>0$, it preserves positive
+definiteness. \texttt{BFGSDirection} stores $B_k$, while
+\texttt{BFGSIDirection} stores an inverse approximation $C_k$. Both start from
+the identity and skip updates that fail a positive-curvature test.
+
+\texttt{BBDirection} uses a scaled gradient based on the two
+Barzilai--Borwein estimates
+\[
+ \gamma_k^{(1)}=\frac{s_k^\trans y_k}{y_k^\trans y_k},\qquad
+ \gamma_k^{(2)}=\frac{s_k^\trans s_k}{s_k^\trans y_k}.
+\]
+It averages them when safe and otherwise reverts to steepest descent.
+\texttt{CGDirection} uses the Polak--Ribiere recurrence
+\[
+ d_{k+1}=-g_{k+1}+\beta_kd_k,\qquad
+ \beta_k=\frac{g_{k+1}^\trans(g_{k+1}-g_k)}{g_k^\trans g_k},
+\]
+and restarts to the negative gradient if this ceases to be descending. BFGS,
+BB, and CG retain previous-iteration data; their \texttt{reset()} method is
+therefore called when the solver receives a new initial point.
+
+\section{Derivative evaluation}
+
+\texttt{OptimizationData} stores callable cost, gradient, and Hessian
+functions. Analytic derivatives can be supplied directly.
+\texttt{GradientFiniteDifference} offers forward, backward, and centered
+finite-difference gradients. \texttt{GradientsAD} wraps the bundled
+\texttt{autodiff} library: a scalar cost written with
+\texttt{autodiff::var} variables is converted into ordinary cost, gradient,
+and Hessian callables. Reverse mode is well suited to gradients of scalar
+objectives with many inputs. The solver may request quantities separately;
+\texttt{GradientsAD::evaluateAll()} is available when all are needed together.
+
+\section{Box constraints and projection}
+
+The code can constrain iterates to
+\[
+ \mathcal{B}=\{x\in\R^n:l_i\leq x_i\leq u_i,\quad i=1,\ldots,n\}.
+\]
+After \texttt{setBounds()} is called, the initial point must be feasible.
+Backtracking projects each trial point component-wise:
+\begin{equation}
+ x_{k+1}=\Pi_{\mathcal B}(x_k+\alpha_kd_k),\qquad
+ [\Pi_{\mathcal B}(z)]_i=\min\{\max\{z_i,l_i\},u_i\}.
+ \label{eq:projection}
+\end{equation}
+This ensures feasible accepted points. The bounded Newton direction also
+identifies active components and removes them from its inverse-Hessian
+calculation.
+
+For a box-constrained minimizer, ordinary stationarity is replaced by
+\begin{equation}
+ \grad f(x_\star)^\trans(y-x_\star)\geq0
+ \quad\text{for all }y\in\mathcal B.
+ \label{eq:box-stationarity}
+\end{equation}
+Equivalently, the projected gradient vanishes. The present example still uses
+the ordinary gradient norm among its stopping tests, and its non-Newton
+strategies do not explicitly form projected directions. It is consequently a
+compact projection example, not a complete active-set implementation. A robust
+extension should add a projected-gradient stopping test, tolerance-aware active
+sets, feasible directions for every strategy, or a dedicated method such as
+L-BFGS-B.
+
+\section{Reading the implementation}
+
+\begin{itemize}
+\item \texttt{LineSearchSolver.hpp/.cpp}: iteration, Armijo backtracking,
+      stopping tests, and projection.
+\item \texttt{DescentDirectionBase.hpp} and
+      \texttt{DescentDirections.hpp/.cpp}: strategy interface and formulas.
+\item \texttt{LineSearch\_traits.hpp}, \texttt{Optimization\_options.hpp}, and
+      \texttt{LineSearch\_options.hpp}: common types, problem data, and
+      configuration.
+\item \texttt{main\_linesearch.cpp}: a worked driver.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{NocedalWright}
+J.~Nocedal and S.~J.~Wright, \emph{Numerical Optimization}, 2nd ed.,
+Springer, 2006.
+
+\bibitem{DennisSchnabel}
+J.~E.~Dennis, Jr. and R.~B.~Schnabel,
+\emph{Numerical Methods for Unconstrained Optimization and Nonlinear
+Equations}, SIAM, 1996.
+
+\bibitem{Fletcher}
+R.~Fletcher, \emph{Practical Methods of Optimization}, 2nd ed., Wiley, 1987.
+
+\bibitem{ByrdLuNocedalZhu}
+R.~H.~Byrd, P.~Lu, J.~Nocedal, and C.~Zhu,
+A limited memory algorithm for bound constrained optimization,
+\emph{SIAM Journal on Scientific Computing}, 16(5), pp.~1190--1208, 1995.
+\end{thebibliography}
+
+\end{document}

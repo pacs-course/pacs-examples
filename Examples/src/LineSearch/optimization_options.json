@@ -1,0 +1,5 @@
+{
+  "relTol": 1e-12,
+  "absTol": 1e-12,
+  "maxIter": 500
+}

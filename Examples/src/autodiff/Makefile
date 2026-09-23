@@ -13,16 +13,14 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-DEBUG=no # commento out if you want debugging information in the compilation
 MAKEFILEH_DIR=../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
-#
+# This is optional. If not present is not an error
 -include Makefile.inc
-#CPPFLAGS+=-DVERBOSE
-#
+
 # The general setting is as follows:
 # mains are identified bt main_XX.cpp
 # all other files are XX.cpp
@@ -32,23 +30,21 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
-OBJS := $(filter-out test_gradientAD.o, $(OBJS))
-LIB_OBJS = $(filter-out main%.o, $(OBJS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
-exe_sources=$(filter main%.cpp,$(SRCS))
+exe_sources=$(SRCS)
 EXEC=$(exe_sources:.cpp=)
 
-#========================== ORA LA DEFINIZIONE DEGLI OBIETTIVI
+#========================== NEW THE DEFINITION OF THE TARGETS
 .phony= all clean distclean doc
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) $(EXEC) test_gradientAD
+all: $(DEPEND) $(EXEC)
 
 clean:
-	$(RM) -f $(EXEC) $(OBJS) test_gradientAD test_gradientAD.o
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
@@ -58,23 +54,17 @@ distclean:
 doc:
 	doxygen $(DOXYFILE)
 
-$(EXEC): $(OBJS)
+autodiff_demo: autodiff_demo.o
 
-library: lineSearch.so
+autodiff_demo.o: autodiff_demo.cpp
 
-lineSearch.so:
-	$(MAKE) DEBUG=no CXXFLAGS="$(CXXFLAGS) -fPIC"  $(LIB_OBJS)
-	$(CXX) -shared $(LDFLAGS)  -o $@ $(LIB_OBJS)
+autodiff_reverse_demo: autodiff_reverse_demo.o
 
-test_gradientAD.o:  test_gradientAD.cpp GradientsAD.hpp
+autodiff_reverse_demo.o: autodiff_reverse_demo.cpp
 
-test_gradientAD: test_gradientAD.o
 
-install: lineSearch.so
-# install all header files in $(PACS_ROOT)/include
-	cp $(HEADERS) $(PACS_ROOT)/include
-# install the library in $(PACS_ROOT)/lib
-	cp lineSearch.so $(PACS_ROOT)/lib
+install:
+	echoe "No installation procedure is defined for this example"
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)
@@ -83,7 +73,3 @@ $(DEPEND): $(SRCS)
 	done
 
 -include $(DEPEND)
-
-
-
-

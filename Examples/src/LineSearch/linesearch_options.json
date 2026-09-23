@@ -1,0 +1,8 @@
+{
+  "sufficientDecreaseCoefficient": 0.01,
+  "stepSizeDecrementFactor": 0.5,
+  "secondWolfConditionFactor": 0.9,
+  "initialStep": 1.0,
+  "maxIter": 40,
+  "descentDirection": "GradientDirection"
+}

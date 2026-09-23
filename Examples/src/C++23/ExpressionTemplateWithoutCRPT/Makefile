@@ -13,15 +13,14 @@
 # The only user defined variable that must be set in this file is
 # the one indicating where Makefile.h resides
 
-DEBUG=no # commento out if you want debugging information in the compilation
-MAKEFILEH_DIR=../../
+MAKEFILEH_DIR=../../../
 #
 include $(MAKEFILEH_DIR)/Makefile.inc
 #
 # You may have an include file also in the current directory
 #
 -include Makefile.inc
-#CPPFLAGS+=-DVERBOSE
+
 #
 # The general setting is as follows:
 # mains are identified bt main_XX.cpp
@@ -32,8 +31,6 @@ include $(MAKEFILEH_DIR)/Makefile.inc
 SRCS=$(wildcard *.cpp)
 # get the corresponding object file
 OBJS = $(SRCS:.cpp=.o)
-OBJS := $(filter-out test_gradientAD.o, $(OBJS))
-LIB_OBJS = $(filter-out main%.o, $(OBJS))
 # get all headers in the working directory
 HEADERS=$(wildcard *.hpp)
 #
@@ -45,10 +42,10 @@ EXEC=$(exe_sources:.cpp=)
 
 .DEFAULT_GOAL = all
 
-all: $(DEPEND) $(EXEC) test_gradientAD
+all: $(DEPEND) $(EXEC)
 
 clean:
-	$(RM) -f $(EXEC) $(OBJS) test_gradientAD test_gradientAD.o
+	$(RM) -f $(EXEC) $(OBJS)
 
 distclean:
 	$(MAKE) clean
@@ -60,21 +57,7 @@ doc:
 
 $(EXEC): $(OBJS)
 
-library: lineSearch.so
-
-lineSearch.so:
-	$(MAKE) DEBUG=no CXXFLAGS="$(CXXFLAGS) -fPIC"  $(LIB_OBJS)
-	$(CXX) -shared $(LDFLAGS)  -o $@ $(LIB_OBJS)
-
-test_gradientAD.o:  test_gradientAD.cpp GradientsAD.hpp
-
-test_gradientAD: test_gradientAD.o
-
-install: lineSearch.so
-# install all header files in $(PACS_ROOT)/include
-	cp $(HEADERS) $(PACS_ROOT)/include
-# install the library in $(PACS_ROOT)/lib
-	cp lineSearch.so $(PACS_ROOT)/lib
+$(OBJS): $(SRCS)
 
 $(DEPEND): $(SRCS)
 	$(RM) $(DEPEND)

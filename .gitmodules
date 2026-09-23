@@ -28,3 +28,7 @@
 [submodule "Examples/src/LinearAlgebra/CppNumericalSolvers"]
 	path = Examples/src/LinearAlgebra/CppNumericalSolvers
 	url = git@github.com:pacs-course/CppNumericalSolvers.git
+[submodule "Extras/autodiff"]
+	path = Extras/autodiff
+	url = git@github.com:pacs-course/autodiff.git
+	branch = main

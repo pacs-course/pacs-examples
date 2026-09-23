@@ -1,0 +1,218 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage[a4paper,margin=2.7cm]{geometry}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\trans}{\mathsf{T}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+
+\title{Matrix Multiplication with Strassen's Algorithm\\
+\large Theory and implementation in the \code{Strassen} example}
+\author{PACS examples}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note describes Strassen's algorithm for dense matrix multiplication and
+relates it to the implementation in
+\code{Examples/src/LinearAlgebra/Strassen}. The code is not intended to replace
+Eigen's optimized product indiscriminately. Instead, it uses a hybrid
+algorithm: Strassen recursion is applied only above a configurable threshold,
+while Eigen computes products at the lower recursion levels.
+\end{abstract}
+
+\section{The matrix multiplication problem}
+
+Given $A\in\R^{m\times k}$ and $B\in\R^{k\times n}$, we seek to compute
+$C=AB\in\R^{m\times n}$. For square $n\times n$ matrices, the classical
+algorithm performs approximately $n^3$ scalar multiplications and a comparable
+number of additions. Its arithmetic complexity is therefore $O(n^3)$.
+
+Strassen observed that splitting each square matrix into four equally sized
+blocks permits seven block products instead of the eight required by ordinary
+block multiplication. Recursing on these products gives
+\[
+ T(n)=7T(n/2)+O(n^2),
+\]
+and hence
+\[
+ T(n)=O\left(n^{\log_2 7}\right)\approx O(n^{2.807}).
+\]
+This is an asymptotic improvement; it does not necessarily yield a lower
+execution time for finite matrix sizes. Strassen requires additional additions,
+temporary storage, and less regular memory-access patterns.
+
+\section{Strassen's formula}
+
+For simplicity, suppose that $n$ is even and write
+\[
+ A=\begin{bmatrix}A_{11}&A_{12}\\A_{21}&A_{22}\end{bmatrix},
+ \qquad
+ B=\begin{bmatrix}B_{11}&B_{12}\\B_{21}&B_{22}\end{bmatrix},
+\]
+where each block has size $(n/2)\times(n/2)$. Instead of calculating the
+eight products of ordinary block multiplication, Strassen forms
+\begin{align*}
+ M_1 &= (A_{11}+A_{22})(B_{11}+B_{22}), &
+ M_2 &= (A_{21}+A_{22})B_{11}, \\
+ M_3 &= A_{11}(B_{12}-B_{22}), &
+ M_4 &= A_{22}(B_{21}-B_{11}), \\
+ M_5 &= (A_{11}+A_{12})B_{22}, &
+ M_6 &= (A_{21}-A_{11})(B_{11}+B_{12}), \\
+ M_7 &= (A_{12}-A_{22})(B_{21}+B_{22}).
+\end{align*}
+The result blocks are reconstructed as
+\begin{align*}
+ C_{11} &= M_1+M_4-M_5+M_7, &
+ C_{12} &= M_3+M_5, \\
+ C_{21} &= M_2+M_4, &
+ C_{22} &= M_1-M_2+M_3+M_6.
+\end{align*}
+Only the seven products $M_i$ are recursive operations; all other operations
+are block additions or subtractions, with local $O(n^2)$ cost.
+
+\section{Why the algorithm is hybrid}
+
+Recursing down to very small matrices is normally inefficient. The constant
+costs of additions, recursive calls, temporaries, and weaker memory locality
+can dominate the savings in multiplications. Moreover, Eigen implements
+blocked and vectorized dense products that are highly efficient at moderate
+sizes.
+
+For this reason, the public interface
+\[
+  \code{apsc::strassen(A, B, cutoff)}
+\]
+uses Strassen only when the problem size exceeds \code{cutoff}; below the
+threshold it directly executes Eigen's product
+\[
+  C=AB.
+\]
+The best threshold depends on the architecture, compiler, scalar type, problem
+size, and Eigen or BLAS implementation. There is no universally optimal value:
+the benchmark included in this directory is designed to measure it.
+
+\section{Mapping to the code}
+
+\subsection{Interface and dispatcher}
+
+The template function \code{apsc::strassen} in \code{strassen.hpp} accepts
+compatible Eigen expressions, verifies $A.cols()=B.rows()$, and evaluates each
+expression once into an owned dense matrix. This avoids both recomputation of
+Eigen expressions and a proliferation of nested template types in the
+recursion.
+
+The \code{detail::strassen_dispatch} dispatcher handles:
+\begin{itemize}
+\item empty matrices, returning a zero matrix of the correct size;
+\item problems below the threshold, using Eigen's direct GEMM;
+\item square matrices of equal order, starting the recursion immediately;
+\item rectangular products or square matrices of unequal order, padding once
+      to a square matrix and cropping the useful result block afterwards.
+\end{itemize}
+
+The initial padding uses the even order
+\[
+  N=2\left\lceil
+  \frac{\max\{m,k,n\}}{2}\right\rceil,
+\]
+filling the added portions with zeros. It makes square recursion possible, but
+can increase work and memory usage, especially for highly rectangular products.
+
+\subsection{Recursive kernel and product assembly}
+
+\code{detail::strassen_impl} receives non-owning views of $A$, $B$, and the
+destination $C$. For an even order, it creates the four quadrant views, forms
+the linear combinations required by $M_1,\ldots,M_7$, and recursively invokes
+itself. The seven products are not all retained in memory: each product is
+written to the current level's \code{M} buffer and immediately added to or
+subtracted from the appropriate blocks of $C$. The accumulation order in the
+code follows exactly the formula in the preceding section.
+
+The base case is \code{gemm_into}, which executes
+\code{dst.noalias() = A * B}. The \code{noalias()} declaration tells Eigen that
+destination and operands do not overlap, allowing the kernel to avoid
+unnecessary temporaries.
+
+\subsection{Odd dimensions}
+
+Strassen recursion requires division into equally sized quadrants. When a
+square subproblem has odd order, this implementation does not pad it to the
+next even order at every level. Instead, \code{strassen_peel} separates the
+last row and column, recurses on the $(n-1)\times(n-1)$ block, and completes
+the result using a rank-one update, two matrix-vector products, and one dot
+product. This correction costs $O(n^2)$ and avoids repeated padding.
+
+\subsection{Temporary-memory management}
+
+The \code{ScratchPool} structure preallocates three temporary matrices per
+level: \code{TA} and \code{TB} for operand linear combinations, and \code{M}
+for the recursive product. Recursion is sequential, so sibling calls at the
+same level reuse the same buffers. The pool is built once by the dispatcher and
+the recursive kernel performs no heap allocations. Memory for square blocks is
+bounded by a geometric series of order $4n^2/3$, in addition to small buffers
+used by the odd-size treatment.
+
+Eigen views such as \code{Ref}, \code{Block}, and \code{topLeftCorner} make it
+possible to operate on quadrants without copying. This combination of views
+and preallocated buffers makes the code closer to a practical numerical kernel
+than a literal translation that allocates new temporaries at each recursive
+call.
+
+\section{Benchmarking and numerical correctness}
+
+\code{main_StrassenBenchmark.cpp} compares \code{apsc::strassen} with Eigen's
+direct product for a set of sizes and cutoffs. Each measurement is repeated,
+sorted, and reported as minimum, median, and maximum elapsed time. The program
+emits CSV fields for size, method, cutoff, timing, speedup, and relative error:
+\[
+  \frac{\norm{C_{\mathrm{Eigen}}-C_{\mathrm{Strassen}}}}
+       {\norm{C_{\mathrm{Eigen}}}}.
+\]
+The reported speedup is the ratio of Eigen's median time to Strassen's median
+time; a value larger than one favors Strassen.
+
+The script \code{plot_strassen_benchmark.py} reads the CSV and creates Eigen
+timing plots and heat maps for Strassen time, speedup, and relative error.
+Because Strassen changes the order of additions and subtractions, floating
+point results are not expected to be bitwise identical to Eigen's. The relative
+error reveals the effect of these rounding differences.
+
+\section{Limitations and extensions}
+
+This example is intended for teaching and benchmarking. For general
+applications, Eigen or an optimized BLAS library will often remain the better
+choice. Possible extensions include automatic cutoff selection, parallel
+kernels, a rectangular-matrix-specific memory strategy, and Strassen or
+Winograd variants using fewer additions. Any performance comparison should be
+run on the target system with data types and matrix sizes representative of the
+application.
+
+\begin{thebibliography}{9}
+\bibitem{Strassen}
+V.~Strassen, Gaussian elimination is not optimal,
+\emph{Numerische Mathematik}, 13, pp.~354--356, 1969.
+
+\bibitem{GolubVanLoan}
+G.~H.~Golub and C.~F.~Van Loan,
+\emph{Matrix Computations}, 4th ed., Johns Hopkins University Press, 2013.
+
+\bibitem{Higham}
+N.~J.~Higham, \emph{Accuracy and Stability of Numerical Algorithms},
+2nd ed., SIAM, 2002.
+
+\bibitem{IronyToledoTiskin}
+D.~Irony, S.~Toledo, and A.~Tiskin,
+Communication lower bounds for distributed-memory matrix multiplication,
+\emph{Journal of Parallel and Distributed Computing}, 64(9), pp.~1017--1026,
+2004.
+\end{thebibliography}
+
+\end{document}

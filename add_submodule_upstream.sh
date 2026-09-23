@@ -19,5 +19,8 @@ popd
 pushd Extras/pybind11
 git remote add upstream git@github.com:pybind/pybind11.git
 popd
+pushd Extras/autodiff
+git remote add upstream git@github.com:autodiff/autodiff.git
+popd
 
 

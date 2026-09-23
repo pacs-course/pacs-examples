@@ -5,10 +5,11 @@
  *      Author: forma
  */
 #include "LineSearchSolver.hpp"
+#include <algorithm>
 #include <exception>
+#include <iomanip>
 #include <iostream>
 #include <limits>
-#include <algorithm>
 void
 apsc::LinearSearchSolver::setInitialPoint(
   apsc::LineSearch_traits::Vector initialPoint)
@@ -60,29 +61,29 @@ apsc::LinearSearchSolver::solve()
   auto const &relTol = this->options.relTol;
   auto const &absTol = this->options.absTol;
   auto const &maxIter = this->options.maxIter;
-  auto &      currentPoint = this->currentValues.currentPoint;
-  auto &      currentValue = this->currentValues.currentCostValue;
-  auto &      currentGradient = this->currentValues.currentGradient;
-  auto &      currentHessian = this->currentValues.currentHessian;
+  auto       &currentPoint = this->currentValues.currentPoint;
+  auto       &currentValue = this->currentValues.currentCostValue;
+  auto       &currentGradient = this->currentValues.currentGradient;
+  auto       &currentHessian = this->currentValues.currentHessian;
   auto        gradientNorm = currentGradient.norm();
   // the relative tolerance is respect initial gradient norm.
   auto const  testValue = relTol * gradientNorm;
   std::size_t iter = 0;
-//  bool const &bounded = this->optimizationData.bounded;
-  auto        stepLength = 2 * absTol;
-  auto        valTol =absTol + relTol*std::abs(currentValue);
-  auto        valChange  = 2 * valTol;
+  //  bool const &bounded = this->optimizationData.bounded;
+  auto stepLength = 2 * absTol;
+  auto valTol = absTol + relTol * std::abs(currentValue);
+  auto valChange = 2 * valTol;
 
 #ifdef VERBOSE
-      std::clog << "Initial values.\t Grad=" << currentGradient.transpose()
-                <<"\t Point " << currentPoint.transpose() << std::endl;
+  std::clog << "Initial values.\t Grad=" << currentGradient.transpose()
+            << "\t Point " << currentPoint.transpose() << std::endl;
 #endif
 
   while(gradientNorm > (testValue + absTol) and stepLength > absTol and
-        valChange >valTol and iter < maxIter)
+        valChange > valTol and iter < maxIter)
     {
       // get descent direction
-      apsc::LineSearch_traits::Vector    dd =
+      apsc::LineSearch_traits::Vector dd =
         this->descentDirectionFinderPtr->operator()(this->currentValues);
       auto [newPoint, newValue, status] = this->backtrack(dd);
       // check what happened
@@ -97,18 +98,25 @@ apsc::LinearSearchSolver::solve()
               "I cannot satisfy the sufficient decrease condition. Try to "
               "change line search options\n");
         }
+
+#ifdef VERBOSE
+      std::clog.setf(std::ios::scientific);
+      std::clog.precision(6);
+      std::clog << std::right << "it=" << std::setw(4) << iter
+                << "  f=" << std::setw(13) << currentValue << "  g=["
+                << currentGradient.transpose() << "]"
+                << "  |g|=" << std::setw(13) << gradientNorm
+                << "  s=" << std::setw(11) << stepLength << "  x=["
+                << currentPoint.transpose() << "]"
+                << "  d=[" << dd.transpose() << "]" << std::endl;
+#endif
       stepLength = (newPoint - currentPoint).norm();
       currentPoint = newPoint;
-      valChange=std::abs(currentValue-newValue);
+      valChange = std::abs(currentValue - newValue);
       currentValue = newValue;
       currentGradient = this->optimizationData.gradient(newPoint);
       currentHessian = this->optimizationData.hessian(newPoint);
       gradientNorm = currentGradient.norm();
-#ifdef VERBOSE
-      std::clog << "iter=" << iter << "\t Grad=" << currentGradient.transpose()
-                << "\t StepL=" << stepLength << " Point "
-                << " " << currentPoint.transpose() << "\t DD "<<dd.transpose()<<"\t Value "<<currentValue<<std::endl;
-#endif
       ++iter;
     }
   int status = iter < maxIter ? 0 : 1;
@@ -121,9 +129,9 @@ std::tuple<apsc::LineSearch_traits::Vector, apsc::LineSearch_traits::Scalar,
 apsc::LinearSearchSolver::backtrack(
   apsc::LineSearch_traits::Vector &searchDirection) const
 {
-  apsc::OptimizationData const &         data = this->optimizationData;
+  apsc::OptimizationData const          &data = this->optimizationData;
   apsc::OptimizationCurrentValues const &currentValues = this->currentValues;
-  apsc::LineSearchOptions const &        options = this->lineSearchOptions;
+  apsc::LineSearchOptions const         &options = this->lineSearchOptions;
   using Scalar = apsc::LineSearch_traits::Scalar;
   using Vector = apsc::LineSearch_traits::Vector;
   using CostFunction = apsc::LineSearch_traits::CostFunction;
@@ -139,9 +147,9 @@ apsc::LinearSearchSolver::backtrack(
       gradstep = -searchDirection.squaredNorm();
     }
 
-  CostFunction const &            f = data.costFunction;
+  CostFunction const             &f = data.costFunction;
   Vector                          currentPoint = currentValues.currentPoint;
-  auto const &                    maxIter = options.maxIter;
+  auto const                     &maxIter = options.maxIter;
   auto                            alpha = options.initialStep;
   unsigned int                    iter = 0u;
   apsc::LineSearch_traits::Vector nextPoint;
@@ -154,15 +162,16 @@ apsc::LinearSearchSolver::backtrack(
   Scalar nextValue = f(nextPoint);
   // iterate until sufficient decrease condition is met.
   // Some code repetition to avoid an if into a tight loop
-  alpha=std::min(1.0,1./searchDirection.norm());
+  alpha = std::min(1.0, 1. / searchDirection.norm());
   if(this->optimizationData.bounded)
     {
       // If I am on the boundary I relax sufficient decrease since
       // gradstep may be incorrect in this case.
-      auto gradstepb=gradstep;
+      auto gradstepb = gradstep;
       if(bumped)
         {
-          apsc::LineSearch_traits::Vector newGradient = this->projectGrad(nextPoint,currentValues.currentGradient);
+          apsc::LineSearch_traits::Vector newGradient =
+            this->projectGrad(nextPoint, currentValues.currentGradient);
           gradstepb = newGradient.dot(searchDirection);
         }
       while((nextValue >=
@@ -207,7 +216,7 @@ apsc::LinearSearchSolver::project(
       x = std::clamp(x, this->optimizationData.lowerBounds[i],
                      this->optimizationData.upperBounds[i]);
       bumped = bumped or (x == this->optimizationData.lowerBounds[i] or
-                           x == this->optimizationData.upperBounds[i]);
+                          x == this->optimizationData.upperBounds[i]);
       ++i;
     }
   return {res, bumped};
@@ -215,23 +224,22 @@ apsc::LinearSearchSolver::project(
 
 apsc::LineSearch_traits::Vector
 apsc::LinearSearchSolver::projectGrad(
-    apsc::LineSearch_traits::Vector const &newPoint, apsc::LineSearch_traits::Vector const &gradient) const
+  apsc::LineSearch_traits::Vector const &newPoint,
+  apsc::LineSearch_traits::Vector const &gradient) const
 {
   std::size_t                     i = 0u;
   apsc::LineSearch_traits::Vector res = gradient;
   for(auto &x : res)
     {
-      if ((newPoint[i]==this->optimizationData.lowerBounds[i] and x>0.)or
-          (newPoint[i]==this->optimizationData.upperBounds[i] and x<0.))
+      if((newPoint[i] == this->optimizationData.lowerBounds[i] and x > 0.) or
+         (newPoint[i] == this->optimizationData.upperBounds[i] and x < 0.))
         {
-          x=0.;
+          x = 0.;
           ++i;
         }
     }
   return res;
 }
-
-
 
 void
 apsc::LinearSearchSolver::projectDirection(

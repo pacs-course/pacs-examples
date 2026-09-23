@@ -24,8 +24,8 @@ enum LinearAlgebraLibrary
   ARMADILLO
 };
 // ! The primary template.
-template <LinearAlgebraLibrary> struct RegressionTraits
-{}; //!< Empty. I use only specializations!
+template <LinearAlgebraLibrary>
+struct RegressionTraits; //!< Empty. I use only specializations!
 
 //! The specialization for Eigen classes
 template <> struct RegressionTraits<EIGEN>
