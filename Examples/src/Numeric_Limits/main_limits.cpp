@@ -21,11 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR
-    {std::float_round_style::round_toward_zero, "round_toward_zero"},
-    {std::float_round_style::round_to_nearest, "round_to_nearest"},
-    {std::float_round_style::round_toward_infinity, "round_toward_infinity"},
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
 OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
 SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
@@ -42,6 +38,10 @@ OF SUCH DAMAGE.
 // numbers has been introduced in C++20
 #if __cplusplus >= 202002L
 #include <numbers>
+#endif
+// stdfloat has been introduced in C++23
+#if __cplusplus >= 202100L
+#include <stdfloat>
 #endif
 /*!
  * \file main_limits.cpp
@@ -166,7 +166,6 @@ main()
 {
   // in global scope only to make life easier
   using namespace std;
-
   // write true/false instead of 0/1
   cout.setf(ios::boolalpha);
   cout << "**********************************************" << endl;
@@ -176,6 +175,10 @@ main()
   printFloatLimits<float>(" FLOAT ");
   printFloatLimits<double>(" DOUBLE ");
   printFloatLimits<long double>(" LONG DOUBLE ");
+  #if __cplusplus >= 202100L
+  printFloatLimits<std::float16_t>(" FLOAT16 ");
+  printFloatLimits<std::bfloat16_t>(" BFLOAT16 ");
+  #endif
   printIntegerLimits<int>(" INT ");
   printIntegerLimits<unsigned int>(" UNSIGNED INT ");
   printIntegerLimits<long int>(" LONG INT ");
