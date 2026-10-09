@@ -40,6 +40,7 @@ The collection is broad, but most folders fall into one of these groups:
   and runtime extents, and row-major and column-major layouts.
 - `C++23/visitor23`: Visitor design pattern implemented with  with `std::variant` and `std::visit`,
   and using deducing this for recursive traversal of components.
+- `C++23/chunkAndSlides`. Some nice reange adaptors added in c++23 to sride or chunk a range
 - `Concepts`: user-defined concepts and constrained templates.
 - `Constexpr`: compile-time computation with `constexpr`.
 - `CRTP`: Curiously Recurring Template Pattern.
